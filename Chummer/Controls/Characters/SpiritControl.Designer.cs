@@ -83,7 +83,6 @@ namespace Chummer
             this.nudServices.Name = "nudServices";
             this.nudServices.Size = new System.Drawing.Size(197, 20);
             this.nudServices.TabIndex = 4;
-            this.nudServices.ValueChanged += new System.EventHandler(this.nudServices_ValueChanged);
             // 
             // lblForce
             // 
@@ -123,7 +122,6 @@ namespace Chummer
             0,
             0,
             0});
-            this.nudForce.ValueChanged += new System.EventHandler(this.nudForce_ValueChanged);
             // 
             // chkBound
             // 
@@ -140,7 +138,6 @@ namespace Chummer
             this.chkBound.Tag = "Checkbox_Spirit_Bound";
             this.chkBound.Text = "Bound";
             this.chkBound.UseVisualStyleBackColor = true;
-            this.chkBound.CheckedChanged += new System.EventHandler(this.chkBound_CheckedChanged);
             // 
             // cboSpiritName
             // 
@@ -152,7 +149,6 @@ namespace Chummer
             this.cboSpiritName.Size = new System.Drawing.Size(120, 21);
             this.cboSpiritName.TabIndex = 7;
             this.cboSpiritName.TooltipText = "";
-            this.cboSpiritName.SelectedIndexChanged += new System.EventHandler(this.cboSpiritName_SelectedIndexChanged);
             // 
             // cmsSpirit
             // 
@@ -231,7 +227,6 @@ namespace Chummer
             this.txtCritterName.Name = "txtCritterName";
             this.txtCritterName.Size = new System.Drawing.Size(120, 20);
             this.txtCritterName.TabIndex = 12;
-            this.txtCritterName.TextChanged += new System.EventHandler(this.txtCritterName_TextChanged);
             // 
             // chkFettered
             // 
@@ -245,7 +240,6 @@ namespace Chummer
             this.chkFettered.Tag = "Checkbox_Spirit_Fettered";
             this.chkFettered.Text = "Fettered";
             this.chkFettered.UseVisualStyleBackColor = true;
-            this.chkFettered.CheckedChanged += new System.EventHandler(this.chkFettered_CheckedChanged);
             // 
             // tlpMain
             // 

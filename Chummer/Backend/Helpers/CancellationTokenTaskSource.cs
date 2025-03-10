@@ -29,7 +29,7 @@ namespace Chummer
     /// https://github.com/StephenCleary/AsyncEx/blob/master/src/Nito.AsyncEx.Tasks/CancellationTokenTaskSource.cs
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class CancellationTokenTaskSource<T> : IDisposable
+    public readonly struct CancellationTokenTaskSource<T> : IDisposable
     {
         /// <summary>
         /// The cancellation token registration, if any. This is <c>null</c> if the registration was not necessary.
@@ -45,6 +45,7 @@ namespace Chummer
             if (token.IsCancellationRequested)
             {
                 Task = System.Threading.Tasks.Task.FromCanceled<T>(token);
+                objTokenRegistration = null;
                 return;
             }
             TaskCompletionSource<T> objTaskCompletionSource = new TaskCompletionSource<T>();

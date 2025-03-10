@@ -76,7 +76,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strFilePath, value);
             }
         }
@@ -90,7 +90,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strFileName, value);
             }
         }
@@ -104,7 +104,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strErrorText, value);
             }
         }
@@ -118,7 +118,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strDescription, value);
             }
         }
@@ -132,7 +132,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strBackground, value);
             }
         }
@@ -146,7 +146,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strGameNotes, value);
             }
         }
@@ -160,7 +160,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strCharacterNotes, value);
             }
         }
@@ -174,7 +174,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strConcept, value);
             }
         }
@@ -188,7 +188,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strKarma, value);
             }
         }
@@ -202,7 +202,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strMetatype, value);
             }
         }
@@ -216,7 +216,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strMetavariant, value);
             }
         }
@@ -230,7 +230,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strPlayerName, value);
             }
         }
@@ -244,7 +244,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strCharacterName, value);
             }
         }
@@ -258,7 +258,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strCharacterAlias, value);
             }
         }
@@ -272,7 +272,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strBuildMethod, value);
             }
         }
@@ -286,7 +286,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strEssence, value);
             }
         }
@@ -303,7 +303,7 @@ namespace Chummer
             }
             private set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _imgMugshot, value)?.Dispose();
             }
         }
@@ -318,7 +318,7 @@ namespace Chummer
             set
             {
                 int intNewValue = value.ToInt32();
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _intCreated, intNewValue);
             }
         }
@@ -332,7 +332,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strSettingsFile, value);
             }
         }
@@ -359,7 +359,7 @@ namespace Chummer
             set
             {
                 Task<string> tskOld;
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, value);
                 if (tskOld != null && tskOld != value)
                     Utils.SafelyRunSynchronously(() => tskOld);
@@ -407,7 +407,7 @@ namespace Chummer
         public void CopyFrom(CharacterCache objExistingCache)
         {
             using (LockObject.EnterWriteLock())
-            using (objExistingCache.LockObject.EnterHiPrioReadLock())
+            using (objExistingCache.LockObject.EnterReadLock())
             {
                 _strBackground = objExistingCache.Background;
                 _strBuildMethod = objExistingCache.BuildMethod;
@@ -435,8 +435,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 =
-                    await objExistingCache.LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = await objExistingCache.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -491,7 +490,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _onMyDoubleClick, value);
             }
         }
@@ -508,7 +507,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _onMyContextMenuDeleteClick, value);
             }
         }
@@ -525,7 +524,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _onMyAfterSelect, value);
             }
         }
@@ -542,27 +541,37 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _onMyKeyDown, value);
             }
         }
 
         public async void OnDefaultDoubleClick(object sender, EventArgs e)
         {
-            Character objOpenCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == FileName)
-                                                      .ConfigureAwait(false);
-            if (objOpenCharacter == null)
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync().ConfigureAwait(false);
+            try
             {
-                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program
-                                                                        .CreateAndShowProgressBarAsync(
-                                                                            FilePath, Character.NumLoadingSections)
-                                                                        .ConfigureAwait(false))
-                    objOpenCharacter = await Program.LoadCharacterAsync(FilePath, frmLoadingBar: frmLoadingBar.MyForm)
-                                                    .ConfigureAwait(false);
-            }
+                Character objOpenCharacter = await Program.OpenCharacters
+                    .FirstOrDefaultAsync(x => string.Equals(x.FileName, FileName, StringComparison.Ordinal))
+                    .ConfigureAwait(false);
+                if (objOpenCharacter == null)
+                {
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program
+                               .CreateAndShowProgressBarAsync(
+                                   FilePath, Character.NumLoadingSections)
+                               .ConfigureAwait(false))
+                        objOpenCharacter = await Program
+                            .LoadCharacterAsync(FilePath, frmLoadingBar: frmLoadingBar.MyForm)
+                            .ConfigureAwait(false);
+                }
 
-            if (!await Program.SwitchToOpenCharacter(objOpenCharacter).ConfigureAwait(false))
-                await Program.OpenCharacter(objOpenCharacter).ConfigureAwait(false);
+                if (!await Program.SwitchToOpenCharacter(objOpenCharacter).ConfigureAwait(false))
+                    await Program.OpenCharacter(objOpenCharacter).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public void OnDefaultContextMenuDeleteClick(object sender, EventArgs e)
@@ -795,41 +804,49 @@ namespace Chummer
         {
             string strSpace = LanguageManager.GetString("String_Space");
             string strReturn;
-            if (!string.IsNullOrEmpty(ErrorText))
+            using (LockObject.EnterReadLock())
             {
-                strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + '(' + LanguageManager.GetString("String_Error") + ')';
-            }
-            else
-            {
-                strReturn = CharacterAlias;
-                if (string.IsNullOrEmpty(strReturn))
+                if (!string.IsNullOrEmpty(ErrorText))
                 {
-                    strReturn = CharacterName;
+                    strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + '(' +
+                                LanguageManager.GetString("String_Error") + ')';
+                }
+                else
+                {
+                    strReturn = CharacterAlias;
                     if (string.IsNullOrEmpty(strReturn))
-                        strReturn = LanguageManager.GetString("String_UnnamedCharacter");
+                    {
+                        strReturn = CharacterName;
+                        if (string.IsNullOrEmpty(strReturn))
+                            strReturn = LanguageManager.GetString("String_UnnamedCharacter");
+                    }
+
+                    string strBuildMethod = LanguageManager.GetString("String_" + BuildMethod, false);
+                    if (string.IsNullOrEmpty(strBuildMethod))
+                        strBuildMethod = LanguageManager.GetString("String_Unknown");
+                    strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
+                                 + LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
                 }
 
-                string strBuildMethod = LanguageManager.GetString("String_" + BuildMethod, false);
-                if (string.IsNullOrEmpty(strBuildMethod))
-                    strBuildMethod = LanguageManager.GetString("String_Unknown");
-                strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
-                             + LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
-            }
-
-            if (blnAddMarkerIfOpen && Program.MainForm != null)
-            {
-                string strMarker = string.Empty;
-                if (Program.MainForm.OpenCharacterEditorForms?.Any(
-                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath) == true)
-                    strMarker += '*';
-                if (Program.MainForm.OpenCharacterSheetViewers?.Any(
-                        x => x.CharacterObjects.Any(y => !y.IsDisposed && y.FileName == FilePath)) == true)
-                    strMarker += '^';
-                if (Program.MainForm.OpenCharacterExportForms?.Any(
-                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath) == true)
-                    strMarker += '\'';
-                if (!string.IsNullOrEmpty(strMarker))
-                    strReturn = strMarker + strSpace + strReturn;
+                if (blnAddMarkerIfOpen && Program.MainForm != null)
+                {
+                    string strMarker = string.Empty;
+                    if (Program.MainForm.OpenCharacterEditorForms?.Any(
+                            x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, FilePath,
+                                StringComparison.Ordinal)) == true)
+                        strMarker += '*';
+                    if (Program.MainForm.OpenCharacterSheetViewers?.Any(
+                            x => x.CharacterObjects.Any(y =>
+                                !y.IsDisposed && string.Equals(y.FileName, FilePath,
+                                    StringComparison.Ordinal))) == true)
+                        strMarker += '^';
+                    if (Program.MainForm.OpenCharacterExportForms?.Any(
+                            x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, FilePath,
+                                StringComparison.Ordinal)) == true)
+                        strMarker += '\'';
+                    if (!string.IsNullOrEmpty(strMarker))
+                        strReturn = strMarker + strSpace + strReturn;
+                }
             }
 
             return strReturn;
@@ -841,60 +858,82 @@ namespace Chummer
         /// <param name="blnAddMarkerIfOpen">Whether to add an asterisk to the beginning of the name if the character is open.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> CalculatedNameAsync(bool blnAddMarkerIfOpen = true, CancellationToken token = default)
+        public async Task<string> CalculatedNameAsync(bool blnAddMarkerIfOpen = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             string strReturn;
-            if (!string.IsNullOrEmpty(ErrorText))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + '(' + await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) + ')';
-            }
-            else
-            {
-                strReturn = CharacterAlias;
-                if (string.IsNullOrEmpty(strReturn))
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(ErrorText))
                 {
-                    strReturn = CharacterName;
+                    strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + '(' +
+                                await LanguageManager.GetStringAsync("String_Error", token: token)
+                                    .ConfigureAwait(false) + ')';
+                }
+                else
+                {
+                    strReturn = CharacterAlias;
                     if (string.IsNullOrEmpty(strReturn))
-                        strReturn = await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token).ConfigureAwait(false);
+                    {
+                        strReturn = CharacterName;
+                        if (string.IsNullOrEmpty(strReturn))
+                            strReturn = await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token)
+                                .ConfigureAwait(false);
+                    }
+
+                    string strBuildMethod = await LanguageManager.GetStringAsync("String_" + BuildMethod, false, token)
+                        .ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(strBuildMethod))
+                        strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token)
+                            .ConfigureAwait(false);
+                    strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
+                                 + await LanguageManager
+                                     .GetStringAsync(Created ? "Title_CareerMode" : "Title_CreateMode", token: token)
+                                     .ConfigureAwait(false) + ')';
                 }
 
-                string strBuildMethod = await LanguageManager.GetStringAsync("String_" + BuildMethod, false, token).ConfigureAwait(false);
-                if (string.IsNullOrEmpty(strBuildMethod))
-                    strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
-                             + await LanguageManager.GetStringAsync(Created ? "Title_CareerMode" : "Title_CreateMode", token: token).ConfigureAwait(false) + ')';
+                if (blnAddMarkerIfOpen && Program.MainForm != null)
+                {
+                    string strMarker = string.Empty;
+                    ThreadSafeObservableCollection<CharacterShared> lstToProcess1
+                        = Program.MainForm.OpenCharacterEditorForms;
+                    if (lstToProcess1 != null && await lstToProcess1
+                            .AnyAsync(
+                                async x => !x.CharacterObject.IsDisposed &&
+                                           string.Equals(
+                                               await x.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false),
+                                               FilePath, StringComparison.Ordinal), token)
+                            .ConfigureAwait(false))
+                        strMarker += '*';
+                    ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
+                        = Program.MainForm.OpenCharacterSheetViewers;
+                    if (lstToProcess1 != null && await lstToProcess2
+                            .AnyAsync(
+                                x => x.CharacterObjects.AnyAsync(
+                                    async y => !y.IsDisposed && string.Equals(
+                                        await y.GetFileNameAsync(token).ConfigureAwait(false), FilePath,
+                                        StringComparison.Ordinal), token), token).ConfigureAwait(false))
+                        strMarker += '^';
+                    ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
+                        = Program.MainForm.OpenCharacterExportForms;
+                    if (lstToProcess1 != null && await lstToProcess3
+                            .AnyAsync(
+                                async x => !x.CharacterObject.IsDisposed &&
+                                           string.Equals(
+                                               await x.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false),
+                                               FilePath, StringComparison.Ordinal), token)
+                            .ConfigureAwait(false))
+                        strMarker += '\'';
+                    if (!string.IsNullOrEmpty(strMarker))
+                        strReturn = strMarker + strSpace + strReturn;
+                }
             }
-
-            if (blnAddMarkerIfOpen && Program.MainForm != null)
+            finally
             {
-                string strMarker = string.Empty;
-                ThreadSafeObservableCollection<CharacterShared> lstToProcess1
-                    = Program.MainForm.OpenCharacterEditorForms;
-                if (lstToProcess1 != null && await lstToProcess1
-                                                   .AnyAsync(
-                                                       x => !x.CharacterObject.IsDisposed
-                                                            && x.CharacterObject.FileName == FilePath, token)
-                                                   .ConfigureAwait(false))
-                    strMarker += '*';
-                ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
-                    = Program.MainForm.OpenCharacterSheetViewers;
-                if (lstToProcess1 != null && await lstToProcess2
-                                                   .AnyAsync(
-                                                       x => x.CharacterObjects.Any(
-                                                           y => !y.IsDisposed && y.FileName == FilePath), token)
-                                                   .ConfigureAwait(false))
-                    strMarker += '^';
-                ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
-                    = Program.MainForm.OpenCharacterExportForms;
-                if (lstToProcess1 != null && await lstToProcess3
-                                                   .AnyAsync(
-                                                       x => !x.CharacterObject.IsDisposed
-                                                            && x.CharacterObject.FileName == FilePath, token)
-                                                   .ConfigureAwait(false))
-                    strMarker += '\'';
-                if (!string.IsNullOrEmpty(strMarker))
-                    strReturn = strMarker + strSpace + strReturn;
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return strReturn;
@@ -929,7 +968,7 @@ namespace Chummer
             using (LockObject.EnterWriteLock())
             {
                 Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
-                Task tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
+                Task<string> tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
                 if (tskOld != null)
                     Utils.SafelyRunSynchronously(() => tskOld);
             }
@@ -946,7 +985,7 @@ namespace Chummer
             try
             {
                 Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
-                Task tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
+                Task<string> tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
                 if (tskOld != null)
                     await tskOld.ConfigureAwait(false);
             }

@@ -43,10 +43,10 @@ namespace Chummer
 
         public SelectComplexForm(Character objCharacter)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = _objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNodeAndCacheExpression("/chummer/complexforms");
 
@@ -89,7 +89,7 @@ namespace Chummer
             try
             {
                 string strDuration;
-                switch ((await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("duration").ConfigureAwait(false))?.Value)
+                switch (xmlComplexForm.SelectSingleNodeAndCacheExpression("duration")?.Value)
                 {
                     case "P":
                         strDuration = await LanguageManager.GetStringAsync("String_SpellDurationPermanent").ConfigureAwait(false);
@@ -111,7 +111,7 @@ namespace Chummer
                 await lblDuration.DoThreadSafeAsync(x => x.Text = strDuration).ConfigureAwait(false);
 
                 string strTarget;
-                switch ((await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("target").ConfigureAwait(false))?.Value)
+                switch (xmlComplexForm.SelectSingleNodeAndCacheExpression("target")?.Value)
                 {
                     case "Persona":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetPersona").ConfigureAwait(false);
@@ -148,7 +148,7 @@ namespace Chummer
 
                 await lblTarget.DoThreadSafeAsync(x => x.Text = strTarget).ConfigureAwait(false);
 
-                string strFv = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("fv").ConfigureAwait(false))?.Value.Replace('/', '÷').Replace('*', '×')
+                string strFv = xmlComplexForm.SelectSingleNodeAndCacheExpression("fv")?.Value.Replace('/', '÷').Replace('*', '×')
                                ?? string.Empty;
                 if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
@@ -170,10 +170,10 @@ namespace Chummer
 
                 await lblFV.DoThreadSafeAsync(x => x.Text = strFv).ConfigureAwait(false);
 
-                string strSource = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value ??
+                string strSource = xmlComplexForm.SelectSingleNodeAndCacheExpression("source")?.Value ??
                                    await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                string strPage = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ??
-                                 (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value ??
+                string strPage = xmlComplexForm.SelectSingleNodeAndCacheExpression("altpage")?.Value ??
+                                 xmlComplexForm.SelectSingleNodeAndCacheExpression("page")?.Value ??
                                  await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                 SourceString objSource = await SourceString.GetSourceStringAsync(
                     strSource, strPage, GlobalSettings.Language,
@@ -256,7 +256,7 @@ namespace Chummer
         #region Properties
 
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Whether the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain => _blnAddAgain;
 
@@ -269,7 +269,7 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask BuildComplexFormList(CancellationToken token = default)
+        private async Task BuildComplexFormList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -285,23 +285,22 @@ namespace Chummer
                 foreach (XPathNavigator xmlComplexForm in _xmlBaseComplexFormsNode.Select(
                              "complexform[" + strFilter + ']'))
                 {
-                    string strId = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
+                    string strId = xmlComplexForm.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
 
                     if (!await xmlComplexForm.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                         continue;
 
-                    string strName = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                    string strName = xmlComplexForm.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                     // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
-                    if (_xmlOptionalComplexFormNode != null
-                        && await _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpressionAsync("complexform", token: token).ConfigureAwait(false) != null
+                    if (_xmlOptionalComplexFormNode?.SelectSingleNodeAndCacheExpression("complexform", token: token) != null
                         && _xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + ']') == null)
                         continue;
 
                     lstComplexFormItems.Add(
-                        new ListItem(strId, (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
+                        new ListItem(strId, xmlComplexForm.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strName));
                 }
 
                 lstComplexFormItems.Sort(CompareListItems.CompareNames);

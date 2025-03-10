@@ -31,7 +31,7 @@ using NLog;
 
 namespace Chummer
 {
-    public class SustainedObject : IHasInternalId, INotifyPropertyChanged
+    public sealed class SustainedObject : IHasInternalId, INotifyPropertyChangedAsync, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -42,6 +42,8 @@ namespace Chummer
         private int _intNetHits;
         private IHasInternalId _objLinkedObject;
         private Improvement.ImprovementSource _eLinkedObjectType;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -157,7 +159,7 @@ namespace Chummer
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -262,27 +264,27 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (_eLinkedObjectType)
             {
                 case Improvement.ImprovementSource.Spell:
                     if (_objLinkedObject is Spell objSpell)
-                        return await objSpell.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        return objSpell.DisplayNameShortAsync(strLanguage, token);
                     break;
 
                 case Improvement.ImprovementSource.ComplexForm:
                     if (_objLinkedObject is ComplexForm objComplexForm)
-                        return await objComplexForm.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        return objComplexForm.DisplayNameShortAsync(strLanguage, token);
                     break;
 
                 case Improvement.ImprovementSource.CritterPower:
                     if (_objLinkedObject is CritterPower objCritterPower)
-                        return await objCritterPower.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        return objCritterPower.DisplayNameShortAsync(strLanguage, token);
                     break;
             }
-            return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token).ConfigureAwait(false);
+            return LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token);
         }
 
         /// <summary>
@@ -308,32 +310,32 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (_eLinkedObjectType)
             {
                 case Improvement.ImprovementSource.Spell:
                     if (_objLinkedObject is Spell objSpell)
-                        return await objSpell.DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
+                        return objSpell.DisplayNameAsync(strLanguage, token);
                     break;
 
                 case Improvement.ImprovementSource.ComplexForm:
                     if (_objLinkedObject is ComplexForm objComplexForm)
-                        return await objComplexForm.DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
+                        return objComplexForm.DisplayNameAsync(strLanguage, token);
                     break;
 
                 case Improvement.ImprovementSource.CritterPower:
                     if (_objLinkedObject is CritterPower objCritterPower)
-                        return await objCritterPower.DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
+                        return objCritterPower.DisplayNameAsync(strLanguage, token);
                     break;
             }
-            return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token).ConfigureAwait(false);
+            return LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token);
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.Language, token);
 
         public string Name
@@ -362,12 +364,39 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyName)));
+            PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
+            if (_setPropertyChangedAsync.Count > 0)
+                Utils.RunWithoutThreadLock(_setPropertyChangedAsync.Select(x => new Func<Task>(() => x.Invoke(this, objArgs))));
+            if (PropertyChanged != null)
+                Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, objArgs));
             if (strPropertyName == nameof(SelfSustained) || strPropertyName == nameof(LinkedObjectType))
                 _objCharacter.RefreshSustainingPenalties();
+        }
+
+        public async Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
+            if (_setPropertyChangedAsync.Count > 0)
+                await Task.WhenAll(_setPropertyChangedAsync.Select(x => x.Invoke(this, objArgs, token))).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            if (PropertyChanged != null)
+                await Utils.RunOnMainThreadAsync(() => PropertyChanged?.Invoke(this, objArgs), token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            if (strPropertyName == nameof(SelfSustained) || strPropertyName == nameof(LinkedObjectType))
+                await _objCharacter.RefreshSustainingPenaltiesAsync(token).ConfigureAwait(false);
         }
     }
 }

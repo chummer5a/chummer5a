@@ -26,9 +26,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
@@ -89,14 +87,13 @@ namespace Chummer
             }
         }
 
+        public bool IsClosing => _intFormClosing > 0;
+
 #region Control Events
 
         public ChummerMainForm(bool blnIsUnitTest = false, bool blnIsUnitTestForUI = false)
         {
             _objGenericToken = _objGenericCancellationTokenSource.Token;
-#if !DEBUG
-            Disposed += (sender, args) => _objVersionUpdaterCancellationTokenSource?.Dispose();
-#endif
             Utils.IsUnitTest = blnIsUnitTest;
             Utils.IsUnitTestForUI = blnIsUnitTestForUI;
             InitializeComponent();
@@ -119,18 +116,22 @@ namespace Chummer
 
             Disposed += (sender, args) =>
             {
+#if !DEBUG
+                _objVersionUpdaterCancellationTokenSource?.Dispose();
+#endif
                 _tmrCharactersToOpenCheck.Dispose();
                 _objGenericCancellationTokenSource.Dispose();
                 _objFormOpeningSemaphore.Dispose();
+                dlgOpenFile?.Dispose();
                 DisposeOpenForms();
             };
 
-            _lstOpenCharacterEditorForms.BeforeClearCollectionChanged += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
-            _lstOpenCharacterEditorForms.CollectionChanged += OpenCharacterEditorFormsOnCollectionChanged;
-            _lstOpenCharacterSheetViewers.BeforeClearCollectionChanged += OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
-            _lstOpenCharacterSheetViewers.CollectionChanged += OpenCharacterSheetViewersOnCollectionChanged;
-            _lstOpenCharacterExportForms.BeforeClearCollectionChanged += OpenCharacterExportFormsOnBeforeClearCollectionChanged;
-            _lstOpenCharacterExportForms.CollectionChanged += OpenCharacterExportFormsOnCollectionChanged;
+            _lstOpenCharacterEditorForms.BeforeClearCollectionChangedAsync += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
+            _lstOpenCharacterEditorForms.CollectionChangedAsync += OpenCharacterEditorFormsOnCollectionChanged;
+            _lstOpenCharacterSheetViewers.BeforeClearCollectionChangedAsync += OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
+            _lstOpenCharacterSheetViewers.CollectionChangedAsync += OpenCharacterSheetViewersOnCollectionChanged;
+            _lstOpenCharacterExportForms.BeforeClearCollectionChangedAsync += OpenCharacterExportFormsOnBeforeClearCollectionChanged;
+            _lstOpenCharacterExportForms.CollectionChangedAsync += OpenCharacterExportFormsOnCollectionChanged;
             _tmrCharactersToOpenCheck.Interval = 1000;
             _tmrCharactersToOpenCheck.Tick += CharactersToOpenCheckOnTick;
 
@@ -173,30 +174,28 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
             try
             {
-                if (e.OldItems == null)
-                    return;
                 foreach (ExportCharacter objOldForm in e.OldItems)
                 {
+                    token.ThrowIfCancellationRequested();
                     foreach (Character objCharacter in objOldForm.CharacterObjects)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (objCharacter == null)
                             continue;
-                        if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken)
-                                .ConfigureAwait(false))
+                        if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                         {
                             if (await Program.OpenCharacters.AllAsync(
-                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter),
-                                    token: _objGenericToken).ConfigureAwait(false)
+                                    async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                 && Program.MainForm.OpenFormsWithCharacters.All(
                                     x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken)
-                                    .ConfigureAwait(false);
+                                await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                         }
                         else
                             await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -209,17 +208,17 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterExportFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterExportFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intFormClosing > 0)
                 return;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    if (e.NewItems == null)
-                        return;
                     foreach (ExportCharacter objNewForm in e.NewItems)
                     {
+                        token.ThrowIfCancellationRequested();
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
@@ -243,23 +242,23 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Remove:
                     if (Utils.IsUnitTest)
                         return;
-                    if (e.OldItems == null)
-                        return;
                     try
                     {
                         foreach (ExportCharacter objOldForm in e.OldItems)
                         {
+                            token.ThrowIfCancellationRequested();
                             foreach (Character objCharacter in objOldForm.CharacterObjects)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objCharacter == null)
                                     continue;
-                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                            async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && Program.MainForm.OpenFormsWithCharacters.All(
                                             x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                        await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
                                 else
                                     await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -272,29 +271,27 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    if (e.OldItems == null)
-                        return;
-                    if (e.NewItems == null)
-                        return;
                     if (!Utils.IsUnitTest)
                     {
                         try
                         {
                             foreach (ExportCharacter objOldForm in e.OldItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (e.NewItems.Contains(objOldForm))
                                     continue;
                                 foreach (Character objCharacter in objOldForm.CharacterObjects)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (objCharacter == null)
                                         continue;
-                                    if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                                    if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                     {
                                         if (await Program.OpenCharacters.AllAsync(
-                                                x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                                async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                             && Program.MainForm.OpenFormsWithCharacters.All(
                                                 x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                            await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                            await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                     }
                                     else
                                         await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -309,6 +306,7 @@ namespace Chummer
 
                     foreach (ExportCharacter objNewForm in e.NewItems)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (e.OldItems.Contains(objNewForm))
                             continue;
 
@@ -335,27 +333,28 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterSheetViewersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterSheetViewersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (Utils.IsUnitTest || _intFormClosing > 0)
-                return;
-            if (e.OldItems == null)
                 return;
             try
             {
                 foreach (CharacterSheetViewer objOldForm in e.OldItems)
                 {
+                    token.ThrowIfCancellationRequested();
                     foreach (Character objCharacter in objOldForm.CharacterObjects)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (objCharacter == null)
                             continue;
-                        if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                        if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                         {
                             if (await Program.OpenCharacters.AllAsync(
-                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                    async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                 && OpenFormsWithCharacters.All(
                                     x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                         }
                         else
                             await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -368,17 +367,17 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterSheetViewersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterSheetViewersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intFormClosing > 0)
                 return;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    if (e.NewItems == null)
-                        return;
                     foreach (CharacterSheetViewer objNewForm in e.NewItems)
                     {
+                        token.ThrowIfCancellationRequested();
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
@@ -403,23 +402,23 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Remove:
                     if (Utils.IsUnitTest)
                         return;
-                    if (e.OldItems == null)
-                        return;
                     try
                     {
                         foreach (CharacterSheetViewer objOldForm in e.OldItems)
                         {
+                            token.ThrowIfCancellationRequested();
                             foreach (Character objCharacter in objOldForm.CharacterObjects)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objCharacter == null)
                                     continue;
-                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                            async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && OpenFormsWithCharacters.All(
                                             x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                        await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
                                 else
                                     await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -432,27 +431,25 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    if (e.OldItems == null)
-                        return;
-                    if (e.NewItems == null)
-                        return;
                     if (!Utils.IsUnitTest)
                     {
                         foreach (CharacterSheetViewer objOldForm in e.OldItems)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (e.NewItems.Contains(objOldForm))
                                 continue;
                             foreach (Character objCharacter in objOldForm.CharacterObjects)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objCharacter == null)
                                     continue;
-                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                            async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && Program.MainForm.OpenFormsWithCharacters.All(
                                             x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                        await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
                                 else
                                     await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -462,6 +459,7 @@ namespace Chummer
 
                     foreach (CharacterSheetViewer objNewForm in e.NewItems)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (e.OldItems.Contains(objNewForm))
                             continue;
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
@@ -491,17 +489,17 @@ namespace Chummer
         private int _intSkipReopenUntilAllClear;
         private ConcurrentBag<Character> _lstCharactersToReopen = new ConcurrentBag<Character>();
 
-        private async void OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (Utils.IsUnitTest || _intFormClosing > 0)
-                return;
-            if (e.OldItems == null)
                 return;
             Interlocked.Increment(ref _intSkipReopenUntilAllClear);
             try
             {
                 foreach (CharacterShared objOldForm in e.OldItems)
                 {
+                    token.ThrowIfCancellationRequested();
                     if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
                     {
                         _lstCharactersToReopen.Add(objOldCreateForm.CharacterObject);
@@ -511,15 +509,15 @@ namespace Chummer
                     Character objCharacter = objOldForm.CharacterObject;
                     if (objCharacter == null)
                         continue;
-                    if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken)
+                    if (await Program.OpenCharacters.ContainsAsync(objCharacter, token)
                                      .ConfigureAwait(false))
                     {
                         if (await Program.OpenCharacters
-                                         .AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter),
-                                                   token: _objGenericToken).ConfigureAwait(false)
+                                         .AllAsync(async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter),
+                                                   token: token).ConfigureAwait(false)
                             && Program.MainForm.OpenFormsWithCharacters.All(
                                 x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                            await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken)
+                            await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                          .ConfigureAwait(false);
                     }
                     else
@@ -538,17 +536,17 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterEditorFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OpenCharacterEditorFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intFormClosing > 0)
                 return;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    if (e.NewItems == null)
-                        return;
                     foreach (CharacterShared objNewForm in e.NewItems)
                     {
+                        token.ThrowIfCancellationRequested();
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
@@ -572,12 +570,11 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Remove:
                     if (Utils.IsUnitTest)
                         return;
-                    if (e.OldItems == null)
-                        return;
                     try
                     {
                         foreach (CharacterShared objOldForm in e.OldItems)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
                             {
                                 _lstCharactersToReopen.Add(objOldCreateForm.CharacterObject);
@@ -586,11 +583,11 @@ namespace Chummer
                             Character objCharacter = objOldForm.CharacterObject;
                             if (objCharacter == null)
                                 continue;
-                            if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                            if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                             {
-                                if (await Program.OpenCharacters.AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                if (await Program.OpenCharacters.AllAsync(async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                     && Program.MainForm.OpenFormsWithCharacters.All(x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                    await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                    await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                             }
                             else
                                 await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -602,16 +599,13 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    if (e.OldItems == null)
-                        return;
-                    if (e.NewItems == null)
-                        return;
                     if (!Utils.IsUnitTest)
                     {
                         try
                         {
                             foreach (CharacterShared objOldForm in e.OldItems)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (e.NewItems.Contains(objOldForm))
                                     continue;
                                 if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
@@ -622,13 +616,13 @@ namespace Chummer
                                 Character objCharacter = objOldForm.CharacterObject;
                                 if (objCharacter == null)
                                     continue;
-                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                                if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
+                                            async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && Program.MainForm.OpenFormsWithCharacters.All(
                                             x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                        await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
                                 else
                                     await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -642,6 +636,7 @@ namespace Chummer
 
                     foreach (CharacterShared objNewForm in e.NewItems)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (e.OldItems.Contains(objNewForm))
                             continue;
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
@@ -669,7 +664,6 @@ namespace Chummer
 
         //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
         //in case of a commandline argument not asking for the mainform to be shown.
-        [SupportedOSPlatform("windows")]
         private async void ChummerMainForm_Load(object sender, EventArgs e)
         {
             try
@@ -751,6 +745,7 @@ namespace Chummer
                                                          .ConfigureAwait(false),
                                     token: _objGenericToken).ConfigureAwait(false);
 
+                                Program.OpenCharacters.BeforeClearCollectionChanged += OpenCharactersOnBeforeClearCollectionChanged;
                                 Program.OpenCharacters.CollectionChanged += OpenCharactersOnCollectionChanged;
 
                                 // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
@@ -758,30 +753,29 @@ namespace Chummer
                                 if (!Utils.IsUnitTest)
                                 {
                                     string[] strArgs = Environment.GetCommandLineArgs();
-                                    ProcessCommandLineArguments(strArgs, out blnShowTest,
-                                                                out HashSet<string> setFilesToLoad,
-                                                                opFrmChummerMain);
-                                    try
+                                    using (ProcessCommandLineArguments(strArgs, out blnShowTest,
+                                               out HashSet<string> setFilesToLoad,
+                                               opFrmChummerMain))
                                     {
                                         if (Directory.Exists(Utils.GetAutosavesFolderPath))
                                         {
                                             // Always process newest autosave if all MRUs are empty
                                             bool blnAnyAutosaveInMru
-                                                = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
-                                                  GlobalSettings.FavoriteCharacters.Count == 0;
+                                                = await GlobalSettings.MostRecentlyUsedCharacters.GetCountAsync(_objGenericToken).ConfigureAwait(false) == 0 &&
+                                                  await GlobalSettings.FavoriteCharacters.GetCountAsync(_objGenericToken).ConfigureAwait(false) == 0;
                                             FileInfo objMostRecentAutosave = null;
                                             List<string> lstOldAutosaves = new List<string>(10);
                                             DateTime objOldAutosaveTimeThreshold =
                                                 DateTime.UtcNow.Subtract(TimeSpan.FromDays(90));
                                             foreach (string strAutosave in Directory
-                                                                           .EnumerateFiles(
-                                                                               Utils.GetAutosavesFolderPath,
-                                                                               "*.chum5",
-                                                                               SearchOption.AllDirectories)
-                                                                           .Concat(Directory.EnumerateFiles(
-                                                                               Utils.GetAutosavesFolderPath,
-                                                                               "*.chum5lz",
-                                                                               SearchOption.AllDirectories)))
+                                                         .EnumerateFiles(
+                                                             Utils.GetAutosavesFolderPath,
+                                                             "*.chum5",
+                                                             SearchOption.AllDirectories)
+                                                         .Concat(Directory.EnumerateFiles(
+                                                             Utils.GetAutosavesFolderPath,
+                                                             "*.chum5lz",
+                                                             SearchOption.AllDirectories)))
                                             {
                                                 FileInfo objAutosave;
                                                 try
@@ -831,19 +825,19 @@ namespace Chummer
                                                             x => Path.GetFileNameWithoutExtension(x)
                                                                  != strAutosaveName, _objGenericToken).ConfigureAwait(false))
                                                     {
-                                                        if (Program.ShowScrollableMessageBox(
+                                                        if (await Program.ShowScrollableMessageBoxAsync(
                                                                 string.Format(GlobalSettings.CultureInfo,
-                                                                              await LanguageManager.GetStringAsync(
-                                                                                      "Message_PossibleCrashAutosaveFound",
-                                                                                      token: _objGenericToken)
-                                                                                  .ConfigureAwait(false),
-                                                                              objMostRecentAutosave.Name,
-                                                                              objMostRecentAutosave.LastWriteTimeUtc
-                                                                                  .ToLocalTime()),
+                                                                    await LanguageManager.GetStringAsync(
+                                                                            "Message_PossibleCrashAutosaveFound",
+                                                                            token: _objGenericToken)
+                                                                        .ConfigureAwait(false),
+                                                                    objMostRecentAutosave.Name,
+                                                                    objMostRecentAutosave.LastWriteTimeUtc
+                                                                        .ToLocalTime()),
                                                                 await LanguageManager.GetStringAsync(
                                                                     "MessageTitle_AutosaveFound",
                                                                     token: _objGenericToken).ConfigureAwait(false),
-                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: _objGenericToken).ConfigureAwait(false)
                                                             == DialogResult.Yes)
                                                             setFilesToLoad.Add(objMostRecentAutosave.FullName);
                                                         else
@@ -883,10 +877,6 @@ namespace Chummer
                                                 setNewCharactersToOpen.TryAdd(strFile);
                                             _tmrCharactersToOpenCheck.Start();
                                         }
-                                    }
-                                    finally
-                                    {
-                                        Utils.StringHashSetPool.Return(ref setFilesToLoad);
                                     }
                                 }
 
@@ -1040,7 +1030,7 @@ namespace Chummer
                             Properties.Settings.Default.Reset();
                             Properties.Settings.Default.Save();
                             Log.Warn(
-                                "Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+                                "Configuration Settings were invalid and had to be reset. Exception: " + ex.Message);
                         }
                         catch (System.Configuration.ConfigurationErrorsException ex)
                         {
@@ -1048,7 +1038,7 @@ namespace Chummer
                             Properties.Settings.Default.Reset();
                             Properties.Settings.Default.Save();
                             Log.Warn(
-                                "Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+                                "Configuration Settings were invalid and had to be reset. Exception: " + ex.Message);
                         }
 
                         if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0
@@ -1111,41 +1101,60 @@ namespace Chummer
         [CLSCompliant(false)]
         public PageViewTelemetry MyStartupPvt { get; set; }
 
+        private void OpenCharactersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            foreach (Character objCharacter in e.OldItems)
+            {
+                if (objCharacter?.IsDisposed != false)
+                    continue;
+                try
+                {
+                    objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+            }
+        }
+
         private void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
                 switch (e.Action)
                 {
+                    case NotifyCollectionChangedAction.Reset:
+                    {
+                        foreach (Character objCharacter in Program.OpenCharacters)
+                        {
+                            objCharacter.PropertyChangedAsync += UpdateCharacterTabTitle;
+                        }
+
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Add:
                     {
-                        if (e.NewItems == null)
-                            return;
                         foreach (Character objCharacter in e.NewItems)
                         {
-                            using (objCharacter.LockObject.EnterWriteLock(_objGenericToken))
-                                objCharacter.PropertyChanged += UpdateCharacterTabTitle;
+                            objCharacter.PropertyChangedAsync += UpdateCharacterTabTitle;
                         }
 
                         break;
                     }
                     case NotifyCollectionChangedAction.Remove:
                     {
-                        if (e.OldItems == null)
-                            return;
                         foreach (Character objCharacter in e.OldItems)
                         {
-                            if (objCharacter?.IsDisposed == false)
+                            if (objCharacter?.IsDisposed != false)
+                                continue;
+                            try
                             {
-                                try
-                                {
-                                    using (objCharacter.LockObject.EnterWriteLock(_objGenericToken))
-                                        objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
+                                objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                //swallow this
                             }
                         }
 
@@ -1153,30 +1162,23 @@ namespace Chummer
                     }
                     case NotifyCollectionChangedAction.Replace:
                     {
-                        if (e.OldItems == null)
-                            return;
                         foreach (Character objCharacter in e.OldItems)
                         {
-                            if (objCharacter?.IsDisposed == false)
+                            if (objCharacter?.IsDisposed != false)
+                                continue;
+                            try
                             {
-                                try
-                                {
-                                    using (objCharacter.LockObject.EnterWriteLock(_objGenericToken))
-                                        objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
+                                objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                //swallow this
                             }
                         }
 
-                        if (e.NewItems == null)
-                            return;
                         foreach (Character objCharacter in e.NewItems)
                         {
-                            using (objCharacter.LockObject.EnterWriteLock(_objGenericToken))
-                                objCharacter.PropertyChanged += UpdateCharacterTabTitle;
+                            objCharacter.PropertyChangedAsync += UpdateCharacterTabTitle;
                         }
 
                         break;
@@ -1237,7 +1239,7 @@ namespace Chummer
 
         private CancellationTokenSource _objVersionUpdaterCancellationTokenSource;
 
-        private async ValueTask DoCacheGitVersion(CancellationToken token = default)
+        private async Task DoCacheGitVersion(CancellationToken token = default)
         {
             CancellationTokenSource objSource = null;
             if (token != _objGenericToken)
@@ -1289,7 +1291,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
 
                         // Get the stream containing content returned by the server.
-                        await using (Stream dataStream = response.GetResponseStream())
+                        using (Stream dataStream = response.GetResponseStream())
                         {
                             if (dataStream == null)
                             {
@@ -1364,7 +1366,6 @@ namespace Chummer
             }
         }
 
-        [SupportedOSPlatform("windows")]
         private void StartAutoUpdateChecker(CancellationToken token = default)
         {
             CancellationTokenSource objSource = null;
@@ -1515,7 +1516,20 @@ namespace Chummer
         private void closeWindowToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (tabForms.SelectedTab.Tag is Form frmCurrentForm)
-                frmCurrentForm.Close();
+            {
+                try
+                {
+                    frmCurrentForm.Close();
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }
         }
 
         private void CloseAllToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1523,7 +1537,20 @@ namespace Chummer
             foreach (Form childForm in MdiChildren)
             {
                 if (childForm != CharacterRoster && childForm != MasterIndex)
-                    childForm.Close();
+                {
+                    try
+                    {
+                        childForm.Close();
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
+                    catch (ArgumentException)
+                    {
+                        // swallow this
+                    }
+                }
             }
         }
 
@@ -1786,9 +1813,35 @@ namespace Chummer
         private void ResetChummerUpdater(ChummerUpdater frmExistingUpdater)
         {
             if (frmExistingUpdater == null)
-                Interlocked.Exchange(ref _frmUpdate, null)?.Close();
+            {
+                try
+                {
+                    Interlocked.Exchange(ref _frmUpdate, null)?.Close();
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }
             else if (Interlocked.CompareExchange(ref _frmUpdate, null, frmExistingUpdater) == frmExistingUpdater)
-                frmExistingUpdater.Close();
+            {
+                try
+                {
+                    frmExistingUpdater.Close();
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }
         }
 
         private async void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2343,17 +2396,17 @@ namespace Chummer
             }
         }
 
-        public async void UpdateCharacterTabTitle(object sender, PropertyChangedEventArgs e)
+        public async Task UpdateCharacterTabTitle(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Change the TabPage's text to match the character's name (or "Unnamed Character" if they are currently unnamed).
-                if (e?.PropertyName == nameof(Character.CharacterName) && sender is Character objCharacter
-                                                                       && await tabForms.DoThreadSafeFuncAsync(
-                                                                           x => x.TabCount, token: _objGenericToken).ConfigureAwait(false)
-                                                                       > 0)
+                if (e?.PropertyName == nameof(Character.CharacterName)
+                    && sender is Character objCharacter
+                    && await tabForms.DoThreadSafeFuncAsync(x => x.TabCount, token: token).ConfigureAwait(false) > 0)
                 {
-                    await UpdateCharacterTabTitle(objCharacter, objCharacter.CharacterName.Trim(), _objGenericToken).ConfigureAwait(false);
+                    await UpdateCharacterTabTitle(objCharacter, objCharacter.CharacterName.Trim(), token).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -2585,13 +2638,11 @@ namespace Chummer
         private bool IsVisibleOnAnyScreen()
         {
             Rectangle objMyRectangle = ClientRectangle;
-            return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(objMyRectangle));
+            return Screen.AllScreens.Exists(screen => screen.WorkingArea.IntersectsWith(objMyRectangle));
         }
 
         private async void ChummerMainForm_DragDrop(object sender, DragEventArgs e)
         {
-            if (e.Data == null)
-                return;
             try
             {
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
@@ -2637,7 +2688,7 @@ namespace Chummer
         private void ChummerMainForm_DragEnter(object sender, DragEventArgs e)
         {
             // Only use a drop effect if a file is being dragged into the window.
-            e.Effect = e.Data?.GetDataPresent(DataFormats.FileDrop) == true ? DragDropEffects.All : DragDropEffects.None;
+            e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.All : DragDropEffects.None;
         }
 
         private void mnuToolsTranslator_Click(object sender, EventArgs e)
@@ -2649,89 +2700,105 @@ namespace Chummer
 
         private async void ChummerMainForm_Closing(object sender, FormClosingEventArgs e)
         {
+            Form frmSender = sender as Form;
+            if (frmSender != null)
+            {
+                e.Cancel = true; // Always have to cancel because of issues with async FormClosing events
+                await frmSender.DoThreadSafeAsync(x => x.Enabled = false, CancellationToken.None).ConfigureAwait(false); // Disable the form to make sure we can't interract with it anymore
+            }
+
+            // Caller returns and form stays open (weird async FormClosing event issue workaround)
+            await Task.Yield();
+
             if (Interlocked.Exchange(ref _intFormClosing, 1) == 1)
+            {
+                e.Cancel = true;
                 return;
-            _objGenericCancellationTokenSource.Cancel(false);
-            Program.OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
-            foreach (Character objCharacter in Program.OpenCharacters)
-            {
-                if (objCharacter?.IsDisposed == false)
-                {
-                    try
-                    {
-                        IAsyncDisposable objLocker = await objCharacter.LockObject
-                                                                       .EnterWriteLockAsync(CancellationToken.None)
-                                                                       .ConfigureAwait(false);
-                        try
-                        {
-                            objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
-                        }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
-                    }
-                }
-            }
-
-#if !DEBUG
-            CancellationTokenSource objTemp = Interlocked.Exchange(ref _objVersionUpdaterCancellationTokenSource, null);
-            if (objTemp?.IsCancellationRequested == false)
-            {
-                objTemp.Cancel(false);
-                objTemp.Dispose();
-            }
-
-            Task tskOld = Interlocked.Exchange(ref _tskVersionUpdate, null);
-            if (tskOld != null)
-            {
-                try
-                {
-                    await tskOld;
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-#endif
-            await DisposeOpenFormsAsync().ConfigureAwait(false);
-
-            FormWindowState eWindowState = await this.DoThreadSafeFuncAsync(x => x.WindowState, CancellationToken.None)
-                                                     .ConfigureAwait(false);
-            Properties.Settings.Default.WindowState = eWindowState;
-            if (eWindowState == FormWindowState.Normal)
-            {
-                Properties.Settings.Default.Location = await this
-                                                             .DoThreadSafeFuncAsync(
-                                                                 x => x.Location, CancellationToken.None)
-                                                             .ConfigureAwait(false);
-                Properties.Settings.Default.Size = await this.DoThreadSafeFuncAsync(x => x.Size, CancellationToken.None)
-                                                             .ConfigureAwait(false);
-            }
-            else
-            {
-                Properties.Settings.Default.Location = await this
-                                                             .DoThreadSafeFuncAsync(
-                                                                 x => x.RestoreBounds.Location, CancellationToken.None)
-                                                             .ConfigureAwait(false);
-                Properties.Settings.Default.Size = await this
-                                                         .DoThreadSafeFuncAsync(
-                                                             x => x.RestoreBounds.Size, CancellationToken.None)
-                                                         .ConfigureAwait(false);
             }
 
             try
             {
-                Properties.Settings.Default.Save();
+                _objGenericCancellationTokenSource.Cancel(false);
+                Program.OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
+                await Program.OpenCharacters.ForEachWithSideEffectsAsync(objCharacter =>
+                {
+                    if (objCharacter?.IsDisposed == false)
+                    {
+                        try
+                        {
+                            objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                    }
+                }, CancellationToken.None).ConfigureAwait(false);
+
+#if !DEBUG
+                CancellationTokenSource objTemp = Interlocked.Exchange(ref _objVersionUpdaterCancellationTokenSource, null);
+                if (objTemp?.IsCancellationRequested == false)
+                {
+                    objTemp.Cancel(false);
+                    objTemp.Dispose();
+                }
+
+                Task tskOld = Interlocked.Exchange(ref _tskVersionUpdate, null);
+                if (tskOld != null)
+                {
+                    try
+                    {
+                        await tskOld;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+                }
+#endif
+                FormWindowState eWindowState = await this
+                    .DoThreadSafeFuncAsync(x => x.WindowState, CancellationToken.None)
+                    .ConfigureAwait(false);
+                Properties.Settings.Default.WindowState = eWindowState;
+                if (eWindowState == FormWindowState.Normal)
+                {
+                    Tuple<Point, Size> tupBounds = await this
+                        .DoThreadSafeFuncAsync(x => new Tuple<Point, Size>(x.Location, x.Size), CancellationToken.None)
+                        .ConfigureAwait(false);
+                    Properties.Settings.Default.Location = tupBounds.Item1;
+                    Properties.Settings.Default.Size = tupBounds.Item2;
+                }
+                else
+                {
+                    Rectangle recBounds = await this.DoThreadSafeFuncAsync(x => x.RestoreBounds, CancellationToken.None)
+                        .ConfigureAwait(false);
+                    Properties.Settings.Default.Location = recBounds.Location;
+                    Properties.Settings.Default.Size = recBounds.Size;
+                }
+
+                try
+                {
+                    Properties.Settings.Default.Save();
+                }
+                catch (IOException ex)
+                {
+                    Log.Warn(ex, ex.Message);
+                }
+
+                // Now we close the original caller (weird async FormClosing event issue workaround)
+                if (frmSender != null)
+                {
+                    await frmSender.DoThreadSafeAsync(x =>
+                    {
+                        x.FormClosing -= ChummerMainForm_Closing;
+                        x.Close();
+                    }, CancellationToken.None).ConfigureAwait(false);
+                }
             }
-            catch (IOException ex)
+            finally
             {
-                Log.Warn(ex, ex.Message);
+                if (frmSender != null)
+                    await frmSender.DoThreadSafeAsync(x => x.Enabled = true, CancellationToken.None).ConfigureAwait(false); // Doesn't matter if we're closed
             }
         }
 
@@ -2745,9 +2812,27 @@ namespace Chummer
                 {
                     for (int i = lstToClose1.Count - 1; i >= 0; --i)
                     {
+                        if (i >= lstToClose1.Count)
+                            continue;
                         CharacterShared frmToClose = lstToClose1[i];
+                        if (frmToClose.IsNullOrDisposed())
+                            continue;
                         Character objFormCharacter = frmToClose.CharacterObject;
-                        frmToClose.DoThreadSafe(x => x.Close());
+                        frmToClose.DoThreadSafe(x =>
+                        {
+                            try
+                            {
+                                x.Close();
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+                            catch (ArgumentException)
+                            {
+                                // swallow this
+                            }
+                        }, CancellationToken.None);
                         objFormCharacter.Dispose();
                     }
                 }
@@ -2763,9 +2848,27 @@ namespace Chummer
                 {
                     for (int i = lstToClose2.Count - 1; i >= 0; --i)
                     {
+                        if (i >= lstToClose2.Count)
+                            continue;
                         ExportCharacter frmToClose = lstToClose2[i];
+                        if (frmToClose.IsNullOrDisposed())
+                            continue;
                         Character objFormCharacter = frmToClose.CharacterObject;
-                        frmToClose.DoThreadSafe(x => x.Close());
+                        frmToClose.DoThreadSafe(x =>
+                        {
+                            try
+                            {
+                                x.Close();
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+                            catch (ArgumentException)
+                            {
+                                // swallow this
+                            }
+                        }, CancellationToken.None);
                         objFormCharacter.Dispose();
                     }
                 }
@@ -2781,9 +2884,28 @@ namespace Chummer
                 {
                     for (int i = lstToClose3.Count - 1; i >= 0; --i)
                     {
+                        if (i >= lstToClose3.Count)
+                            continue;
                         CharacterSheetViewer frmToClose = lstToClose3[i];
+                        if (frmToClose.IsNullOrDisposed())
+                            continue;
                         List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
-                        frmToClose.DoThreadSafe(x => x.Close());
+                        // ReSharper disable once MethodSupportsCancellation
+                        frmToClose.DoThreadSafe(x =>
+                        {
+                            try
+                            {
+                                x.Close();
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+                            catch (ArgumentException)
+                            {
+                                // swallow this
+                            }
+                        });
                         foreach (Character objFormCharacter in lstFormCharacters)
                             objFormCharacter.Dispose();
                     }
@@ -2791,117 +2913,76 @@ namespace Chummer
 
                 lstToClose3.Dispose();
             }
-        }
 
-        private async ValueTask DisposeOpenFormsAsync()
-        {
-            ThreadSafeObservableCollection<CharacterShared> lstToClose1
-                = Interlocked.Exchange(ref _lstOpenCharacterEditorForms, null);
-            if (lstToClose1 != null)
+            Interlocked.Exchange(ref _frmMasterIndex, null)?.DoThreadSafe(x =>
             {
-                // ReSharper disable once MethodSupportsCancellation
-                IAsyncDisposable objLocker = await lstToClose1.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    // ReSharper disable once MethodSupportsCancellation
-                    for (int i = await lstToClose1.GetCountAsync()
-                             .ConfigureAwait(false) - 1;
-                         i >= 0;
-                         --i)
-                    {
-                        CharacterShared frmToClose = await lstToClose1
-                            // ReSharper disable once MethodSupportsCancellation
-                            .GetValueAtAsync(i)
-                                                           .ConfigureAwait(false);
-                        Character objFormCharacter = frmToClose.CharacterObject;
-                        // ReSharper disable once MethodSupportsCancellation
-                        await frmToClose.DoThreadSafeAsync(x => x.Close())
-                                        .ConfigureAwait(false);
-                        await objFormCharacter.DisposeAsync().ConfigureAwait(false);
-                    }
+                    x.Close();
                 }
-                finally
+                catch (ObjectDisposedException)
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    // swallow this
                 }
-
-                await lstToClose1.DisposeAsync().ConfigureAwait(false);
-            }
-
-            ThreadSafeObservableCollection<ExportCharacter> lstToClose2
-                = Interlocked.Exchange(ref _lstOpenCharacterExportForms, null);
-            if (lstToClose2 != null)
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }, CancellationToken.None);
+            Interlocked.Exchange(ref _frmCharacterRoster, null)?.DoThreadSafe(x =>
             {
-                // ReSharper disable once MethodSupportsCancellation
-                IAsyncDisposable objLocker = await lstToClose2.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    // ReSharper disable once MethodSupportsCancellation
-                    for (int i = await lstToClose2.GetCountAsync().ConfigureAwait(false) - 1;
-                         i >= 0;
-                         --i)
-                    {
-                        ExportCharacter frmToClose = await lstToClose2
-                            // ReSharper disable once MethodSupportsCancellation
-                            .GetValueAtAsync(i)
-                                                           .ConfigureAwait(false);
-                        Character objFormCharacter = frmToClose.CharacterObject;
-                        // ReSharper disable once MethodSupportsCancellation
-                        await frmToClose.DoThreadSafeAsync(x => x.Close())
-                                        .ConfigureAwait(false);
-                        await objFormCharacter.DisposeAsync().ConfigureAwait(false);
-                    }
+                    x.Close();
                 }
-                finally
+                catch (ObjectDisposedException)
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    // swallow this
                 }
-
-                await lstToClose2.DisposeAsync().ConfigureAwait(false);
-            }
-
-            ThreadSafeObservableCollection<CharacterSheetViewer> lstToClose3
-                = Interlocked.Exchange(ref _lstOpenCharacterSheetViewers, null);
-            if (lstToClose3 != null)
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }, CancellationToken.None);
+            Interlocked.Exchange(ref _frmDiceRoller, null)?.DoThreadSafe(x =>
             {
-                // ReSharper disable once MethodSupportsCancellation
-                IAsyncDisposable objLocker = await lstToClose3.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    // ReSharper disable once MethodSupportsCancellation
-                    for (int i = await lstToClose3.GetCountAsync()
-                             .ConfigureAwait(false) - 1;
-                         i >= 0;
-                         --i)
-                    {
-                        CharacterSheetViewer frmToClose = await lstToClose3
-                            // ReSharper disable once MethodSupportsCancellation
-                            .GetValueAtAsync(i)
-                                                                .ConfigureAwait(false);
-                        List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
-                        // ReSharper disable once MethodSupportsCancellation
-                        await frmToClose.DoThreadSafeAsync(x => x.Close())
-                                        .ConfigureAwait(false);
-                        foreach (Character objFormCharacter in lstFormCharacters)
-                            await objFormCharacter.DisposeAsync().ConfigureAwait(false);
-                    }
+                    x.Close();
                 }
-                finally
+                catch (ObjectDisposedException)
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    // swallow this
                 }
-
-                await lstToClose3.DisposeAsync().ConfigureAwait(false);
-            }
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }, CancellationToken.None);
+            Interlocked.Exchange(ref _frmUpdate, null)?.DoThreadSafe(x =>
+            {
+                try
+                {
+                    x.Close();
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }, CancellationToken.None);
         }
 
         private async void mnuHeroLabImporter_Click(object sender, EventArgs e)
         {
             try
             {
-                if (Program.ShowScrollableMessageBox(await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning", token: _objGenericToken).ConfigureAwait(false),
-                                                     await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning_Title", token: _objGenericToken).ConfigureAwait(false),
-                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                if (await Program.ShowScrollableMessageBoxAsync(await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning", token: _objGenericToken).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning_Title", token: _objGenericToken).ConfigureAwait(false),
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: _objGenericToken).ConfigureAwait(false) != DialogResult.Yes)
                     return;
 
                 HeroLabImporter frmImporter = await this.DoThreadSafeFuncAsync(() => new HeroLabImporter(), token: _objGenericToken).ConfigureAwait(false);
@@ -2968,7 +3049,18 @@ namespace Chummer
         {
             if (tabForms.SelectedTab.Tag is CharacterShared objShared)
             {
-                objShared.Close();
+                try
+                {
+                    objShared.Close();
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
             }
         }
 
@@ -3217,7 +3309,7 @@ namespace Chummer
                     {
                         bool blnMaximizeNewForm
                             = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
-                                                                    || x.MdiChildren.Any(
+                                                                    || x.MdiChildren.Exists(
                                                                         y => y.WindowState
                                                                              == FormWindowState.Maximized),
                                                                token).ConfigureAwait(false);
@@ -3251,14 +3343,14 @@ namespace Chummer
                                         x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                     continue;
                                 if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500)
-                                    && Program.ShowScrollableMessageBox(
+                                    && await Program.ShowScrollableMessageBoxAsync(
                                         string.Format(strTooManyHandles, objCharacter.CharacterName),
                                         strTooManyHandlesTitle,
-                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {
                                     if (await Program.OpenCharacters
                                             .AllAsync(
-                                                x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter),
+                                                async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter),
                                                 token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                             .ConfigureAwait(false);
@@ -3270,7 +3362,7 @@ namespace Chummer
                                 await this.DoThreadSafeAsync(y =>
                                 {
                                     CharacterShared frmNewCharacter = objCharacter.Created
-                                        ? new CharacterCareer(objCharacter)
+                                        ? (CharacterShared) new CharacterCareer(objCharacter)
                                         : new CharacterCreate(objCharacter);
                                     frmNewCharacter.MdiParent = y;
                                     bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
@@ -3434,7 +3526,7 @@ namespace Chummer
                     {
                         bool blnMaximizeNewForm
                             = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
-                                                                    || x.MdiChildren.Any(
+                                                                    || x.MdiChildren.Exists(
                                                                         y => y.WindowState
                                                                              == FormWindowState.Maximized),
                                                                token).ConfigureAwait(false);
@@ -3472,14 +3564,14 @@ namespace Chummer
                                     continue;
 
                                 if (Program.MyProcess.HandleCount >= 9500
-                                    && Program.ShowScrollableMessageBox(
+                                    && await Program.ShowScrollableMessageBoxAsync(
                                         string.Format(strTooManyHandles, objCharacter.CharacterName),
                                         strTooManyHandlesTitle,
-                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {
                                     if (await Program.OpenCharacters
                                             .AllAsync(
-                                                x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter),
+                                                async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter),
                                                 token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                             .ConfigureAwait(false);
@@ -3542,7 +3634,7 @@ namespace Chummer
                                 foreach (Form frmLoop in x.MdiChildren)
                                 {
                                     if (frmLoop.WindowState == FormWindowState.Maximized
-                                        && lstNewFormsToProcess.All(z => !ReferenceEquals(z.Item1, frmLoop)))
+                                        && lstNewFormsToProcess.TrueForAll(z => !ReferenceEquals(z.Item1, frmLoop)))
                                     {
                                         frmLoop.WindowState = FormWindowState.Normal;
                                         stkToMaximize.Push(frmLoop);
@@ -3679,7 +3771,7 @@ namespace Chummer
                     {
                         bool blnMaximizeNewForm
                             = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
-                                                                    || x.MdiChildren.Any(
+                                                                    || x.MdiChildren.Exists(
                                                                         y => y.WindowState
                                                                              == FormWindowState.Maximized),
                                                                token).ConfigureAwait(false);
@@ -3712,14 +3804,14 @@ namespace Chummer
                                         x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                     continue;
                                 if (Program.MyProcess.HandleCount >= 9500
-                                    && Program.ShowScrollableMessageBox(
+                                    && await Program.ShowScrollableMessageBoxAsync(
                                         string.Format(strTooManyHandles, objCharacter.CharacterName),
                                         strTooManyHandlesTitle,
-                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {
                                     if (await Program.OpenCharacters
                                             .AllAsync(
-                                                x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter),
+                                                async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter),
                                                 token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                             .ConfigureAwait(false);
@@ -3767,10 +3859,13 @@ namespace Chummer
                                             stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
                                     }
                                 }, token).ConfigureAwait(false);
-                                if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                    && File.Exists(objCharacter.FileName))
-                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                        0, objCharacter.FileName, token).ConfigureAwait(false);
+                                if (blnIncludeInMru)
+                                {
+                                    string strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strFile) && File.Exists(strFile))
+                                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                            0, strFile, token).ConfigureAwait(false);
+                                }
                                 //Timekeeper.Finish("load_event_time");
                             }
                         }
@@ -3794,7 +3889,7 @@ namespace Chummer
         private async Task ProcessQueuedCharactersToOpen(CancellationToken token = default)
         {
             ConcurrentStringHashSet setCharactersToOpen = Interlocked.Exchange(ref _setCharactersToOpen, null);
-            if (setCharactersToOpen == null || setCharactersToOpen.IsEmpty)
+            if (setCharactersToOpen?.IsEmpty != false)
                 return;
 
             CancellationTokenSource objSource = null;
@@ -3858,7 +3953,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoPopulateMruToolstripMenu(string strText = "", CancellationToken token = default)
+        private async Task DoPopulateMruToolstripMenu(string strText = "", CancellationToken token = default)
         {
             CancellationTokenSource objSource = null;
             if (token != _objGenericToken)
@@ -3869,182 +3964,199 @@ namespace Chummer
 
             try
             {
-                await menuStrip.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker = await GlobalSettings.FavoriteCharacters.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    await menuStrip.DoThreadSafeAsync(() => mnuFileMRUSeparator.Visible
-                                                          = GlobalSettings.FavoriteCharacters.Count > 0
-                                                            || GlobalSettings.MostRecentlyUsedCharacters
-                                                                             .Count > 0, token).ConfigureAwait(false);
-
-                    if (strText != "mru")
+                    token.ThrowIfCancellationRequested();
+                    IAsyncDisposable objLocker2 = await GlobalSettings.MostRecentlyUsedCharacters.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
+                        token.ThrowIfCancellationRequested();
+                        int intFavoriteCharactersCount = await GlobalSettings.FavoriteCharacters.GetCountAsync(token).ConfigureAwait(false);
+                        int intMruCharactersCount = await GlobalSettings.MostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false);
+                        await menuStrip.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                        try
                         {
-                            DpiFriendlyToolStripMenuItem objItem;
-                            switch (i)
+                            await menuStrip.DoThreadSafeAsync(() => mnuFileMRUSeparator.Visible = intFavoriteCharactersCount > 0 || intMruCharactersCount > 0, token).ConfigureAwait(false);
+
+                            if (strText != "mru")
                             {
-                                case 0:
-                                    objItem = mnuStickyMRU0;
-                                    break;
+                                for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
+                                {
+                                    DpiFriendlyToolStripMenuItem objItem;
+                                    switch (i)
+                                    {
+                                        case 0:
+                                            objItem = mnuStickyMRU0;
+                                            break;
 
-                                case 1:
-                                    objItem = mnuStickyMRU1;
-                                    break;
+                                        case 1:
+                                            objItem = mnuStickyMRU1;
+                                            break;
 
-                                case 2:
-                                    objItem = mnuStickyMRU2;
-                                    break;
+                                        case 2:
+                                            objItem = mnuStickyMRU2;
+                                            break;
 
-                                case 3:
-                                    objItem = mnuStickyMRU3;
-                                    break;
+                                        case 3:
+                                            objItem = mnuStickyMRU3;
+                                            break;
 
-                                case 4:
-                                    objItem = mnuStickyMRU4;
-                                    break;
+                                        case 4:
+                                            objItem = mnuStickyMRU4;
+                                            break;
 
-                                case 5:
-                                    objItem = mnuStickyMRU5;
-                                    break;
+                                        case 5:
+                                            objItem = mnuStickyMRU5;
+                                            break;
 
-                                case 6:
-                                    objItem = mnuStickyMRU6;
-                                    break;
+                                        case 6:
+                                            objItem = mnuStickyMRU6;
+                                            break;
 
-                                case 7:
-                                    objItem = mnuStickyMRU7;
-                                    break;
+                                        case 7:
+                                            objItem = mnuStickyMRU7;
+                                            break;
 
-                                case 8:
-                                    objItem = mnuStickyMRU8;
-                                    break;
+                                        case 8:
+                                            objItem = mnuStickyMRU8;
+                                            break;
 
-                                case 9:
-                                    objItem = mnuStickyMRU9;
-                                    break;
+                                        case 9:
+                                            objItem = mnuStickyMRU9;
+                                            break;
 
-                                default:
-                                    continue;
+                                        default:
+                                            continue;
+                                    }
+
+                                    if (i < intFavoriteCharactersCount)
+                                    {
+                                        string strSelected = await GlobalSettings.FavoriteCharacters.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                        await menuStrip.DoThreadSafeAsync(() =>
+                                        {
+                                            objItem.Text = strSelected;
+                                            objItem.Tag = strSelected;
+                                            objItem.Visible = true;
+                                        }, token).ConfigureAwait(false);
+                                    }
+                                    else
+                                    {
+                                        await menuStrip.DoThreadSafeAsync(() => objItem.Visible = false, token).ConfigureAwait(false);
+                                    }
+                                }
                             }
 
-                            if (i < GlobalSettings.FavoriteCharacters.Count)
+                            await menuStrip.DoThreadSafeAsync(() =>
                             {
-                                int i1 = i;
+                                mnuMRU0.Visible = false;
+                                mnuMRU1.Visible = false;
+                                mnuMRU2.Visible = false;
+                                mnuMRU3.Visible = false;
+                                mnuMRU4.Visible = false;
+                                mnuMRU5.Visible = false;
+                                mnuMRU6.Visible = false;
+                                mnuMRU7.Visible = false;
+                                mnuMRU8.Visible = false;
+                                mnuMRU9.Visible = false;
+                            }, token).ConfigureAwait(false);
+
+                            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                            int i2 = 0;
+                            for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
+                            {
+                                if (i2 >= intMruCharactersCount || i >= intMruCharactersCount)
+                                    continue;
+                                string strFile = await GlobalSettings.MostRecentlyUsedCharacters.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                if (await GlobalSettings.FavoriteCharacters.ContainsAsync(strFile, token).ConfigureAwait(false))
+                                    continue;
+                                DpiFriendlyToolStripMenuItem objItem;
+                                switch (i2)
+                                {
+                                    case 0:
+                                        objItem = mnuMRU0;
+                                        break;
+
+                                    case 1:
+                                        objItem = mnuMRU1;
+                                        break;
+
+                                    case 2:
+                                        objItem = mnuMRU2;
+                                        break;
+
+                                    case 3:
+                                        objItem = mnuMRU3;
+                                        break;
+
+                                    case 4:
+                                        objItem = mnuMRU4;
+                                        break;
+
+                                    case 5:
+                                        objItem = mnuMRU5;
+                                        break;
+
+                                    case 6:
+                                        objItem = mnuMRU6;
+                                        break;
+
+                                    case 7:
+                                        objItem = mnuMRU7;
+                                        break;
+
+                                    case 8:
+                                        objItem = mnuMRU8;
+                                        break;
+
+                                    case 9:
+                                        objItem = mnuMRU9;
+                                        break;
+
+                                    default:
+                                        continue;
+                                }
+
+                                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                                if (i2 <= 9
+                                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                                    && i2 >= 0)
+                                {
+                                    string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
+                                    await menuStrip.DoThreadSafeAsync(
+                                        () => objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace
+                                            + strFile, token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
+                                    await menuStrip.DoThreadSafeAsync(
+                                        () => objItem.Text = strNumAsString + strSpace + strFile,
+                                        token).ConfigureAwait(false);
+                                }
+
                                 await menuStrip.DoThreadSafeAsync(() =>
                                 {
-                                    objItem.Text = GlobalSettings.FavoriteCharacters[i1];
-                                    objItem.Tag = GlobalSettings.FavoriteCharacters[i1];
+                                    objItem.Tag = strFile;
                                     objItem.Visible = true;
                                 }, token).ConfigureAwait(false);
+                                ++i2;
                             }
-                            else
-                            {
-                                await menuStrip.DoThreadSafeAsync(() => objItem.Visible = false, token).ConfigureAwait(false);
-                            }
+                        }
+                        finally
+                        {
+                            await menuStrip.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                         }
                     }
-
-                    await menuStrip.DoThreadSafeAsync(() =>
+                    finally
                     {
-                        mnuMRU0.Visible = false;
-                        mnuMRU1.Visible = false;
-                        mnuMRU2.Visible = false;
-                        mnuMRU3.Visible = false;
-                        mnuMRU4.Visible = false;
-                        mnuMRU5.Visible = false;
-                        mnuMRU6.Visible = false;
-                        mnuMRU7.Visible = false;
-                        mnuMRU8.Visible = false;
-                        mnuMRU9.Visible = false;
-                    }, token).ConfigureAwait(false);
-
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                    int i2 = 0;
-                    for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
-                    {
-                        if (i2 >= GlobalSettings.MostRecentlyUsedCharacters.Count ||
-                            i >= GlobalSettings.MostRecentlyUsedCharacters.Count)
-                            continue;
-                        string strFile = GlobalSettings.MostRecentlyUsedCharacters[i];
-                        if (await GlobalSettings.FavoriteCharacters.ContainsAsync(strFile, token).ConfigureAwait(false))
-                            continue;
-                        DpiFriendlyToolStripMenuItem objItem;
-                        switch (i2)
-                        {
-                            case 0:
-                                objItem = mnuMRU0;
-                                break;
-
-                            case 1:
-                                objItem = mnuMRU1;
-                                break;
-
-                            case 2:
-                                objItem = mnuMRU2;
-                                break;
-
-                            case 3:
-                                objItem = mnuMRU3;
-                                break;
-
-                            case 4:
-                                objItem = mnuMRU4;
-                                break;
-
-                            case 5:
-                                objItem = mnuMRU5;
-                                break;
-
-                            case 6:
-                                objItem = mnuMRU6;
-                                break;
-
-                            case 7:
-                                objItem = mnuMRU7;
-                                break;
-
-                            case 8:
-                                objItem = mnuMRU8;
-                                break;
-
-                            case 9:
-                                objItem = mnuMRU9;
-                                break;
-
-                            default:
-                                continue;
-                        }
-
-                        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                        if (i2 <= 9
-                            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                            && i2 >= 0)
-                        {
-                            string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
-                            await menuStrip.DoThreadSafeAsync(
-                                () => objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace
-                                    + strFile, token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
-                            await menuStrip.DoThreadSafeAsync(
-                                () => objItem.Text = strNumAsString + strSpace + strFile,
-                                token).ConfigureAwait(false);
-                        }
-
-                        await menuStrip.DoThreadSafeAsync(() =>
-                        {
-                            objItem.Tag = strFile;
-                            objItem.Visible = true;
-                        }, token).ConfigureAwait(false);
-                        ++i2;
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await menuStrip.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -4053,7 +4165,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0, CancellationToken token = default)
+        public async Task OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0, CancellationToken token = default)
         {
             CancellationTokenSource objSource = null;
             if (token != _objGenericToken)
@@ -4152,125 +4264,118 @@ namespace Chummer
                     using (CursorWait.New(this, true))
                     {
                         // Extract the file name
-                        object objData = Marshal.PtrToStructure(
-                            m.LParam, typeof(NativeMethods.CopyDataStruct));
-                        if (objData != null)
+                        NativeMethods.CopyDataStruct objReceivedData
+                            = Marshal.PtrToStructure<NativeMethods.CopyDataStruct>(m.LParam);
+                        _objGenericToken.ThrowIfCancellationRequested();
+                        if (objReceivedData.dwData == Program.CommandLineArgsDataTypeId)
                         {
-                            NativeMethods.CopyDataStruct objReceivedData
-                                = (NativeMethods.CopyDataStruct)objData;
+                            string strParam = Marshal.PtrToStringUni(objReceivedData.lpData) ?? string.Empty;
+                            string[] strArgs = strParam.Split("<>", StringSplitOptions.RemoveEmptyEntries);
+
                             _objGenericToken.ThrowIfCancellationRequested();
-                            if (objReceivedData.dwData == Program.CommandLineArgsDataTypeId)
+                            bool blnShowTest;
+                            using (ProcessCommandLineArguments(strArgs, out blnShowTest,
+                                       out HashSet<string> setFilesToLoad))
                             {
-                                string strParam = Marshal.PtrToStringUni(objReceivedData.lpData) ?? string.Empty;
-                                string[] strArgs = strParam.Split("<>", StringSplitOptions.RemoveEmptyEntries);
-
                                 _objGenericToken.ThrowIfCancellationRequested();
-                                ProcessCommandLineArguments(strArgs, out bool blnShowTest,
-                                    out HashSet<string> setFilesToLoad);
-                                try
+                                if (Directory.Exists(Utils.GetAutosavesFolderPath))
                                 {
-                                    _objGenericToken.ThrowIfCancellationRequested();
-                                    if (Directory.Exists(Utils.GetAutosavesFolderPath))
-                                    {
-                                        // Always process newest autosave if all MRUs are empty
-                                        bool blnAnyAutosaveInMru =
-                                            GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
-                                            GlobalSettings.FavoriteCharacters.Count == 0;
-                                        FileInfo objMostRecentAutosave = null;
-                                        foreach (string strAutosave in Directory.EnumerateFiles(
+                                    // Always process newest autosave if all MRUs are empty
+                                    bool blnAnyAutosaveInMru = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
+                                                               GlobalSettings.FavoriteCharacters.Count == 0;
+                                    FileInfo objMostRecentAutosave = null;
+                                    foreach (string strAutosave in Directory.EnumerateFiles(
+                                                 Utils.GetAutosavesFolderPath,
+                                                 "*.chum5", SearchOption.AllDirectories).Concat(
+                                                 Directory.EnumerateFiles(
                                                      Utils.GetAutosavesFolderPath,
-                                                     "*.chum5", SearchOption.AllDirectories).Concat(
-                                                     Directory.EnumerateFiles(
-                                                         Utils.GetAutosavesFolderPath,
-                                                         "*.chum5lz", SearchOption.AllDirectories)))
+                                                     "*.chum5lz", SearchOption.AllDirectories)))
+                                    {
+                                        _objGenericToken.ThrowIfCancellationRequested();
+                                        FileInfo objAutosave;
+                                        try
                                         {
-                                            _objGenericToken.ThrowIfCancellationRequested();
-                                            FileInfo objAutosave;
-                                            try
-                                            {
-                                                objAutosave = new FileInfo(strAutosave);
-                                            }
-                                            catch (SecurityException)
-                                            {
-                                                continue;
-                                            }
-                                            catch (UnauthorizedAccessException)
-                                            {
-                                                continue;
-                                            }
-
-                                            _objGenericToken.ThrowIfCancellationRequested();
-                                            if (objMostRecentAutosave == null || objAutosave.LastWriteTimeUtc >
-                                                objMostRecentAutosave.LastWriteTimeUtc)
-                                                objMostRecentAutosave = objAutosave;
-                                            string strAutosaveName = Path.GetFileNameWithoutExtension(objAutosave.Name);
-                                            if (GlobalSettings.MostRecentlyUsedCharacters.Any(
-                                                    x => Path.GetFileNameWithoutExtension(x) == strAutosaveName,
-                                                    _objGenericToken) ||
-                                                GlobalSettings.FavoriteCharacters.Any(
-                                                    x => Path.GetFileNameWithoutExtension(x) == strAutosaveName,
-                                                    _objGenericToken))
-                                                blnAnyAutosaveInMru = true;
+                                            objAutosave = new FileInfo(strAutosave);
+                                        }
+                                        catch (SecurityException)
+                                        {
+                                            continue;
+                                        }
+                                        catch (UnauthorizedAccessException)
+                                        {
+                                            continue;
                                         }
 
                                         _objGenericToken.ThrowIfCancellationRequested();
-                                        // Might have had a crash for an unsaved character, so prompt if we want to load them
-                                        if (objMostRecentAutosave != null
-                                            && blnAnyAutosaveInMru
-                                            && !setFilesToLoad.Contains(objMostRecentAutosave.FullName))
-                                        {
-                                            _objGenericToken.ThrowIfCancellationRequested();
-                                            string strAutosaveName
-                                                = Path.GetFileNameWithoutExtension(objMostRecentAutosave.Name);
-                                            if (GlobalSettings.MostRecentlyUsedCharacters.All(
-                                                    x => Path.GetFileNameWithoutExtension(x) != strAutosaveName,
-                                                    _objGenericToken)
-                                                && GlobalSettings.FavoriteCharacters.All(
-                                                    x => Path.GetFileNameWithoutExtension(x) != strAutosaveName,
-                                                    _objGenericToken)
-                                                && Program.ShowScrollableMessageBox(string.Format(
-                                                        GlobalSettings.CultureInfo,
-                                                        LanguageManager.GetString(
-                                                            "Message_PossibleCrashAutosaveFound",
-                                                            token: _objGenericToken),
-                                                        objMostRecentAutosave.Name,
-                                                        objMostRecentAutosave.LastWriteTimeUtc
-                                                            .ToLocalTime()),
-                                                    LanguageManager.GetString(
-                                                        "MessageTitle_AutosaveFound", token: _objGenericToken),
-                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                                                == DialogResult.Yes)
-                                            {
-                                                _objGenericToken.ThrowIfCancellationRequested();
-                                                setFilesToLoad.Add(objMostRecentAutosave.FullName);
-                                            }
-                                        }
+                                        if (objMostRecentAutosave == null || objAutosave.LastWriteTimeUtc >
+                                            objMostRecentAutosave.LastWriteTimeUtc)
+                                            objMostRecentAutosave = objAutosave;
+                                        string strAutosaveName = Path.GetFileNameWithoutExtension(objAutosave.Name);
+                                        if (GlobalSettings.MostRecentlyUsedCharacters.Any(
+                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName,
+                                                _objGenericToken) ||
+                                            GlobalSettings.FavoriteCharacters.Any(
+                                                x => Path.GetFileNameWithoutExtension(x) == strAutosaveName,
+                                                _objGenericToken))
+                                            blnAnyAutosaveInMru = true;
                                     }
 
                                     _objGenericToken.ThrowIfCancellationRequested();
-                                    if (setFilesToLoad.Count > 0)
+                                    // Might have had a crash for an unsaved character, so prompt if we want to load them
+                                    if (objMostRecentAutosave != null
+                                        && blnAnyAutosaveInMru
+                                        && !setFilesToLoad.Contains(objMostRecentAutosave.FullName))
                                     {
-                                        ConcurrentStringHashSet setNewCharactersToOpen = Interlocked.CompareExchange(
-                                            ref _setCharactersToOpen, new ConcurrentStringHashSet(), null);
-                                        foreach (string strFile in setFilesToLoad)
+                                        _objGenericToken.ThrowIfCancellationRequested();
+                                        string strAutosaveName
+                                            = Path.GetFileNameWithoutExtension(objMostRecentAutosave.Name);
+                                        if (GlobalSettings.MostRecentlyUsedCharacters.All(
+                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName,
+                                                _objGenericToken)
+                                            && GlobalSettings.FavoriteCharacters.All(
+                                                x => Path.GetFileNameWithoutExtension(x) != strAutosaveName,
+                                                _objGenericToken)
+                                            && Program.ShowScrollableMessageBox(string.Format(
+                                                    GlobalSettings.CultureInfo,
+                                                    LanguageManager.GetString(
+                                                        "Message_PossibleCrashAutosaveFound", token: _objGenericToken),
+                                                    objMostRecentAutosave.Name,
+                                                    objMostRecentAutosave.LastWriteTimeUtc
+                                                        .ToLocalTime()),
+                                                LanguageManager.GetString(
+                                                    "MessageTitle_AutosaveFound", token: _objGenericToken),
+                                                MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                            == DialogResult.Yes)
                                         {
                                             _objGenericToken.ThrowIfCancellationRequested();
-                                            setNewCharactersToOpen.TryAdd(strFile);
+                                            setFilesToLoad.Add(objMostRecentAutosave.FullName);
                                         }
-
-                                        _tmrCharactersToOpenCheck.Start();
                                     }
                                 }
-                                finally
-                                {
-                                    Utils.StringHashSetPool.Return(ref setFilesToLoad);
-                                }
 
-                                if (blnShowTest)
+                                _objGenericToken.ThrowIfCancellationRequested();
+                                if (setFilesToLoad.Count > 0)
                                 {
-                                    TestDataEntries frmTestData = new TestDataEntries();
-                                    frmTestData.Show();
+                                    ConcurrentStringHashSet setNewCharactersToOpen = new ConcurrentStringHashSet();
+                                    ConcurrentStringHashSet setCharactersToOpen
+                                        = Interlocked.CompareExchange(
+                                            ref _setCharactersToOpen, setNewCharactersToOpen, null);
+                                    if (setCharactersToOpen != null)
+                                        setNewCharactersToOpen = setCharactersToOpen;
+                                    foreach (string strFile in setFilesToLoad)
+                                    {
+                                        _objGenericToken.ThrowIfCancellationRequested();
+                                        setNewCharactersToOpen.TryAdd(strFile);
+                                    }
+
+                                    _tmrCharactersToOpenCheck.Start();
                                 }
+                            }
+
+                            if (blnShowTest)
+                            {
+                                TestDataEntries frmTestData = new TestDataEntries();
+                                frmTestData.Show();
                             }
                         }
                     }
@@ -4302,20 +4407,17 @@ namespace Chummer
             }
         }
 
-        private static void ProcessCommandLineArguments(IReadOnlyCollection<string> strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
+        private static FetchSafelyFromPool<HashSet<string>> ProcessCommandLineArguments(string[] strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
         {
             blnShowTest = false;
-            setFilesToLoad = Utils.StringHashSetPool.Get();
-            if (strArgs.Count == 0)
-                return;
+            FetchSafelyFromPool<HashSet<string>> objReturn = new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out setFilesToLoad);
+            if (strArgs.Length == 0)
+                return objReturn;
             try
             {
                 foreach (string strArg in strArgs)
                 {
-                    string strExeName = Path.GetFileName(Application.ExecutablePath);
-                    if (strArg.EndsWith(strExeName, StringComparison.OrdinalIgnoreCase))
-                        continue;
-                    if (strArg.EndsWith(Path.GetFileNameWithoutExtension(strExeName) + ".dll", StringComparison.OrdinalIgnoreCase))
+                    if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath), StringComparison.OrdinalIgnoreCase))
                         continue;
                     switch (strArg)
                     {
@@ -4326,45 +4428,39 @@ namespace Chummer
                         case "/help":
                         case "?":
                         case "/?":
-                            {
-                                string msg = "Commandline parameters are either " +
+                            string msg = "Commandline parameters are either " +
                                              Environment.NewLine + "\t/test" + Environment.NewLine +
                                              "\t/help" + Environment.NewLine +
                                              "\t(filename to open)" +
                                              Environment.NewLine +
                                              "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" +
                                              Environment.NewLine;
-                                Console.WriteLine(msg);
-                                break;
-                            }
+                            Console.WriteLine(msg);
+                            break;
                         default:
+                            if (strArg.Contains("/plugin"))
                             {
-                                if (strArg.Contains("/plugin"))
-                                {
-                                    Log.Info(
-                                        "Encountered command line argument, that should already have been handled in one of the plugins: " +
-                                        strArg);
-                                }
-                                else if (!strArg.StartsWith('/'))
-                                {
-                                    if (!File.Exists(strArg))
-                                    {
-                                        throw new ArgumentException(
-                                            "Chummer started with unknown command line arguments: " +
-                                            strArgs.Aggregate((j, k) => j + ' ' + k));
-                                    }
-
-                                    string strExtension = Path.GetExtension(strArg);
-                                    if (!string.Equals(strExtension, ".chum5", StringComparison.OrdinalIgnoreCase)
-                                        && !string.Equals(strExtension, ".chum5lz", StringComparison.OrdinalIgnoreCase))
-                                        Utils.BreakIfDebug();
-                                    if (setFilesToLoad.Contains(strArg))
-                                        continue;
-                                    setFilesToLoad.Add(strArg);
-                                }
-
-                                break;
+                                Log.Info(
+                                    "Encountered command line argument, that should already have been handled in one of the plugins: " +
+                                    strArg);
                             }
+                            else if (!strArg.StartsWith('/'))
+                            {
+                                if (!File.Exists(strArg))
+                                {
+                                    throw new ArgumentException(
+                                        "Chummer started with unknown command line arguments: " +
+                                        strArgs.Aggregate((j, k) => j + ' ' + k));
+                                }
+
+                                string strExtension = Path.GetExtension(strArg);
+                                if (!string.Equals(strExtension, ".chum5", StringComparison.OrdinalIgnoreCase)
+                                    && !string.Equals(strExtension, ".chum5lz", StringComparison.OrdinalIgnoreCase))
+                                    Utils.BreakIfDebug();
+                                setFilesToLoad.Add(strArg);
+                            }
+
+                            break;
                     }
                 }
             }
@@ -4381,6 +4477,8 @@ namespace Chummer
                 }
                 Log.Warn(ex);
             }
+
+            return objReturn;
         }
 
 #endregion Methods

@@ -30,14 +30,14 @@ namespace Chummer
         private string _strForceCategory = string.Empty;
 
         public string WeaponType { get; set; }
-        
+
         private readonly Character _objCharacter;
 
         #region Control Events
 
         public SelectWeaponCategory(Character objCharacter)
         {
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -48,7 +48,8 @@ namespace Chummer
             // Build a list of Weapon Categories found in the Weapons file.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
             {
-                XPathNavigator objXmlDocument = await XmlManager.LoadXPathAsync("weapons.xml", _objCharacter?.Settings.EnabledCustomDataDirectoryPaths).ConfigureAwait(false);
+                XPathNavigator objXmlDocument = await XmlManager.LoadXPathAsync("weapons.xml", _objCharacter != null ? await
+                    (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync().ConfigureAwait(false) : null).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(OnlyCategory)
                              ? objXmlDocument.Select("/chummer/categories/category[. = "
                                                       + OnlyCategory.CleanXPath() + ']')
@@ -84,7 +85,7 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ConfirmSelection(strSelect)).ConfigureAwait(false);
                         return;
                 }
-                
+
                 await cboCategory.PopulateWithListItemsAsync(lstCategory).ConfigureAwait(false);
                 await cboCategory.DoThreadSafeAsync(x =>
                 {

@@ -26,7 +26,7 @@ using System.Xml;
 
 namespace Chummer.Backend.Equipment
 {
-    public sealed class Clip
+    public sealed class Clip : IHasCharacterObject
     {
         private readonly Character _objCharacter;
         private readonly Weapon _objWeapon;
@@ -51,6 +51,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         internal string OwnedBy => _objAccessory?.InternalId ?? _objWeapon?.InternalId;
 
+        public Character CharacterObject => _objCharacter;
+
         internal int Ammo { get; set; }
 
         public string DisplayWeaponName(CultureInfo objCulture = null, string strLanguage = "")
@@ -58,7 +60,7 @@ namespace Chummer.Backend.Equipment
             return _objWeapon.DisplayName(objCulture, strLanguage);
         }
 
-        public ValueTask<string> DisplayWeaponNameAsync(CultureInfo objCulture = null, string strLanguage = "", CancellationToken token = default)
+        public Task<string> DisplayWeaponNameAsync(CultureInfo objCulture = null, string strLanguage = "", CancellationToken token = default)
         {
             return _objWeapon.DisplayNameAsync(objCulture, strLanguage, token);
         }
@@ -68,7 +70,7 @@ namespace Chummer.Backend.Equipment
             return _objWeapon.DisplayNameShort(strLanguage);
         }
 
-        public ValueTask<string> DisplayWeaponNameShortAsync(string strLanguage = "", CancellationToken token = default)
+        public Task<string> DisplayWeaponNameShortAsync(string strLanguage = "", CancellationToken token = default)
         {
             return _objWeapon.DisplayNameShortAsync(strLanguage, token);
         }
@@ -83,8 +85,10 @@ namespace Chummer.Backend.Equipment
 
         public Task<string> DisplayAmmoNameAsync(string strLanguage = "", CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             if (AmmoGear != null)
-                return AmmoGear.DisplayNameShortAsync(strLanguage, token).AsTask();
+                return AmmoGear.DisplayNameShortAsync(strLanguage, token);
             return Ammo > 0
                 ? LanguageManager.GetStringAsync("String_MountInternal", strLanguage, token: token)
                 : LanguageManager.GetStringAsync("String_None", strLanguage, token: token);
@@ -113,6 +117,28 @@ namespace Chummer.Backend.Equipment
                 if (objOldGear != null)
                     objOldGear.LoadedIntoClip = null;
             }
+        }
+
+        public async Task SetAmmoGearAsync(Gear value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Gear objOldGear = Interlocked.Exchange(ref _objAmmoGear, value);
+            if (objOldGear == value)
+                return;
+            if (objOldGear != null)
+                objOldGear.PropertyChanged -= UpdateAmmoQuantity;
+            if (value != null)
+            {
+                await value.SetLoadedIntoClip(this, token).ConfigureAwait(false);
+                Ammo = Math.Min(Ammo, value.Quantity.ToInt32());
+                value.PropertyChanged += UpdateAmmoQuantity;
+            }
+            else
+            {
+                Ammo = 0;
+            }
+            if (objOldGear != null)
+                await objOldGear.SetLoadedIntoClip(null, token).ConfigureAwait(false);
         }
 
         private void UpdateAmmoQuantity(object sender, PropertyChangedEventArgs e)
@@ -144,7 +170,7 @@ namespace Chummer.Backend.Equipment
                         : objCharacter.Gear.DeepFindById(strAmmoGuid);
                 }
                 //Fix for older versions where ammo loaded into clips was separate from ammo lying around in the inventory
-                if (objCharacter.LastSavedVersion <= new Version(5, 222, 61) && objGear != null)
+                if (objCharacter.LastSavedVersion <= new ValueVersion(5, 222, 61) && objGear != null)
                 {
                     Gear objNewGear = new Gear(objCharacter);
                     objNewGear.Copy(objGear);
@@ -171,39 +197,38 @@ namespace Chummer.Backend.Equipment
             writer.WriteStartElement("clip");
             writer.WriteElementString("count", Ammo.ToString(GlobalSettings.InvariantCultureInfo));
             writer.WriteElementString("location", AmmoLocation);
-            writer.WriteElementString(
-                "id",
-                AmmoGear != null
-                    ? AmmoGear.InternalId
-                    : Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo));
+            writer.WriteElementString("id", AmmoGear?.InternalId ?? Utils.GuidEmptyString);
             writer.WriteEndElement();
         }
 
-        internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        internal async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
-            if (AmmoGear == null && Ammo == 0) //Don't save empty clips, we are recreating them anyway. Save those kb
+            Gear objAmmoGear = AmmoGear; // For thread-safety, just in case
+            int intAmmo = Ammo;
+            if (objAmmoGear == null && intAmmo == 0) // Don't print empty clips because they are just for the program
                 return;
             await objWriter.WriteStartElementAsync("clip", token: token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("name", await DisplayAmmoNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-            await objWriter.WriteElementStringAsync("count", Ammo.ToString(objCulture), token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("english_name", await DisplayAmmoNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("count", intAmmo.ToString(objCulture), token: token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("location", AmmoLocation, token: token).ConfigureAwait(false);
-            if (AmmoGear != null)
+            if (objAmmoGear != null)
             {
-                await objWriter.WriteElementStringAsync("id", AmmoGear.InternalId, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("id", objAmmoGear.InternalId, token: token).ConfigureAwait(false);
                 await objWriter.WriteStartElementAsync("ammotype", token: token).ConfigureAwait(false);
 
-                await AmmoGear.PrintWeaponBonusEntries(objWriter, objCulture, strLanguageToPrint, true, token).ConfigureAwait(false);
+                await objAmmoGear.PrintWeaponBonusEntries(objWriter, objCulture, strLanguageToPrint, true, token).ConfigureAwait(false);
 
-                if (await AmmoGear.Children.GetCountAsync(token).ConfigureAwait(false) > 0)
+                if (await objAmmoGear.Children.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     // <children>
                     XmlElementWriteHelper objChildrenElement
                         = await objWriter.StartElementAsync("children", token).ConfigureAwait(false);
                     try
                     {
-                        foreach (Gear objGear in await AmmoGear.Children
+                        foreach (Gear objGear in await objAmmoGear.Children
                                                                .DeepWhereAsync(
-                                                                   x => x.Children,
+                                                                   async x => await x.Children.ToListAsync(y => y.Equipped, token).ConfigureAwait(false),
                                                                    x => x.Equipped && (x.WeaponBonus != null
                                                                        || x.FlechetteWeaponBonus != null), token)
                                                                .ConfigureAwait(false))
@@ -224,15 +249,14 @@ namespace Chummer.Backend.Equipment
 
                 // Here for Legacy reasons
                 await objWriter.WriteElementStringAsync(
-                    "DV", await AmmoGear.WeaponBonusDamageAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    "DV", await objAmmoGear.WeaponBonusDamageAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("BonusRange",
-                                                        AmmoGear.WeaponBonusRange.ToString(objCulture), token: token).ConfigureAwait(false);
+                    objAmmoGear.WeaponBonusRange.ToString(objCulture), token: token).ConfigureAwait(false);
 
                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             }
             else
-                await objWriter.WriteElementStringAsync(
-                    "id", Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("id", Utils.GuidEmptyString, token: token).ConfigureAwait(false);
 
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
         }

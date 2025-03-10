@@ -5,33 +5,55 @@
     <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <Configurations>Debug;Release;Debuggable Release;Release with ChummerHub</Configurations>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Chummer5.exe</StartProgram>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Chummer5.exe</StartProgram>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with ChummerHub|AnyCPU'">
-    <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Chummer5.exe</StartProgram>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <Optimize>True</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
-    <Optimize>false</Optimize>
-	<StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Chummer5.exe</StartProgram>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+	<Configurations>Debug;Release;Debuggable Release</Configurations>
+    <EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
   </PropertyGroup>
   <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.InteropServices.ComVisible">
+      <_Parameter1>False</_Parameter1>
+      <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.InteropServices.Guid">
+      <_Parameter1>ea016472-2f78-43f9-af2c-809bdf766645</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\Chummer5.exe</StartProgram>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\Chummer5.exe</StartProgram>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
+    <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
+    <Optimize>false</Optimize>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)Chummer\bin\$(Configuration)\Chummer5.exe</StartProgram>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Update="ucOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -43,55 +65,64 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.4" />
-    <PackageReference Include="NLog" Version="5.2.5" />
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.22.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
-    <PackageReference Include="System.ServiceModel.Primitives" Version="6.1.0" />
-    <PackageReference Include="System.ServiceModel.Http" Version="6.1.0" />
-    <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.0" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="6.1.0" />
-    <PackageReference Include="System.ServiceModel.Security" Version="6.0.0" />
-    <PackageReference Include="System.ServiceModel.Federation" Version="6.1.0" />
+    <PackageReference Include="NLog" Version="5.3.4" />
+    <PackageReference Include="System.Buffers" Version="4.6.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.1" />
+    <PackageReference Include="System.Memory" Version="4.6.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.6.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
-    <PreBuildEvent>echo Statement 1: mkdir "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\"
-mkdir "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\"
-echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\"
-mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\"
+    <PreBuildEvent>echo Statement 1: mkdir "$(TargetDir)Plugins\SamplePlugin\"
+mkdir "$(TargetDir)Plugins\SamplePlugin\"
+echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\"
+mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\"
 Exit 0</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>echo Statement 1: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\SamplePlugin*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\SamplePlugin*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+    <PostBuildEvent>echo Statement 1: copy "$(TargetDir)*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)$(TargetName).*" "$(TargetDir)Plugins\SamplePlugin\" /Y
 echo ----------------------------------------------------------------------------------------------------
 echo ----------------------------------------------------------------------------------------------------
 echo Statement 2: You need to copy every DLL here in the post-build step! This HAS to be done here!
 echo ----------------------------------------------------------------------------------------------------
 echo ----------------------------------------------------------------------------------------------------
-echo Statement 3: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Newtonsoft.Json.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Newtonsoft.Json.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-echo Statement 4: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\NLog.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\NLog.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-echo Statement 5: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\System.Composition.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\System.Composition.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-echo Statement 6: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\System.Diagnostics.DiagnosticSource.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\System.Diagnostics.DiagnosticSource.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-echo Statement 7: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Microsoft.ApplicationInsights.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Microsoft.ApplicationInsights.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-echo Statement 11: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\System.Memory.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\System.Memory.*" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-echo Statement 12: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\*.txt" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\*.txt" "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-echo Statement last: copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
-copy "$(MSBuildProjectDirectory)\$(OutputPath)bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y</PostBuildEvent>
+echo Statement 3: copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement 4: copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement 5: copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement 6: copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement 7: copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement 11: copy "$(TargetDir)System.Memory.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)System.Memory.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement 12: copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SamplePlugin\" /Y
+echo Statement last: copy "$(TargetDir)Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\" /Y
+copy "$(TargetDir)Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\" /Y</PostBuildEvent>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Nullable>disable</Nullable>
   </PropertyGroup>
 </Project>

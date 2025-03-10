@@ -30,7 +30,8 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Type used for unique keys in the internal dictionary</typeparam>
     /// <typeparam name="TValue">Type used for values in the internal dictionary</typeparam>
-    public class TypedOrderedDictionary<TKey, TValue> :
+    [Serializable]
+    public sealed class TypedOrderedDictionary<TKey, TValue> :
         IDictionary<TKey, TValue>,
         IList<KeyValuePair<TKey, TValue>>,
         IDictionary,
@@ -603,14 +604,14 @@ namespace Chummer
 
             public int Compare(TKey x, TKey y)
             {
-                if (x == null)
+                if (Equals(x, default(TKey)))
                 {
-                    if (y == null)
+                    if (Equals(y, default(TKey)))
                         return 0;
                     return -1;
                 }
 
-                if (y == null)
+                if (Equals(y, default(TKey)))
                     return 1;
 
                 return _objMyComparer?.Compare(new KeyValuePair<TKey, TValue>(x, _dicMyDictionary._dicUnorderedData[x]),

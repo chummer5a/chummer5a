@@ -300,23 +300,6 @@
       <page>143</page>
     </skill>
     <skill>
-      <id>6d7f48d3-84a1-4fce-90d3-58d566f70fa6</id>
-      <name>Con</name>
-      <attribute>CHA</attribute>
-      <category>Social Active</category>
-      <default>True</default>
-      <skillgroup>Stagecraft</skillgroup>
-      <specs>
-        <spec>Advance Fee Scam</spec>
-        <spec>Insurance Fraud</spec>
-        <spec>The Badger</spec>
-        <spec>Three-Card Monte</spec>
-        <spec>[Confidence Game]</spec>
-      </specs>
-      <source>SR5</source>
-      <page>138</page>
-    </skill>
-    <skill>
       <id>3db81bcc-264b-47e1-847c-06bdacd88973</id>
       <name>Counterspelling</name>
       <attribute>MAG</attribute>
@@ -487,6 +470,21 @@
       </specs>
       <source>SR5</source>
       <page>132</page>
+    </skill>
+    <skill>
+      <id>e7e5a43f-9762-4863-86dc-3fd7799e53a2</id>
+      <name>Impersonation</name>
+      <attribute>CHA</attribute>
+      <category>Social Active</category>
+      <default>True</default>
+      <skillgroup>Stagecraft</skillgroup>
+      <specs>
+        <spec>Physical</spec>
+        <spec>Vocal</spec>
+        <spec>Behavioral</spec>
+      </specs>
+      <source>SR5</source>
+      <page>138</page>
     </skill>
     <skill>
       <id>470d49b8-69b5-496a-8f28-349625c14859</id>

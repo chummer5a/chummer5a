@@ -56,7 +56,7 @@ namespace Chummer
             {
                 try
                 {
-                    XPathDocument xmlEnglishDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath);
+                    XPathDocument xmlEnglishDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath, token: CancellationToken.None);
                     XPathNodeIterator xmlStringList =
                         xmlEnglishDocument.CreateNavigator().SelectAndCacheExpression("/chummer/strings/string");
                     if (xmlStringList.Count > 0)
@@ -116,8 +116,7 @@ namespace Chummer
                                             bool blnDoResumeLayout = true, CancellationToken token = default)
         {
             // Use RunOnMainThread here because we don't want redraws while we translate a form
-            Utils.RunOnMainThread(
-                () => TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token), token);
+            Utils.RunOnMainThread(() => TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token), token: token);
         }
 
         /// <summary>
@@ -250,7 +249,7 @@ namespace Chummer
             {
                 objNewLanguage = await s_DicLanguageData
                     .GetOrAddAsync(
-                        strKey, x => Task.Run(() => new LanguageData(strLanguage), token), token)
+                        strKey, x => Task.Run(() => LanguageData.CreateAsync(strLanguage, token), token), token)
                     .ConfigureAwait(false);
             }
 
@@ -258,10 +257,14 @@ namespace Chummer
             {
                 if (!objNewLanguage.ErrorAlreadyShown)
                 {
-                    Program.ShowScrollableMessageBox(
-                        "Language with code " + strLanguage + " could not be loaded for the following reasons:" +
-                        Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "Cannot Load Language",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string strMessage = "Language with code " + strLanguage +
+                                        " could not be loaded for the following reasons:" +
+                                        Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage;
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        Program.ShowScrollableMessageBox(strMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    else
+                        await Program.ShowScrollableMessageBoxAsync(strMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                     objNewLanguage.ErrorAlreadyShown = true;
                 }
 
@@ -480,7 +483,7 @@ namespace Chummer
         /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage" /> is a right-to-left language</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        private static async ValueTask UpdateControlsAsync(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft,
+        private static async Task UpdateControlsAsync(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft,
                                            CancellationToken token = default)
         {
             if (objParent == null)
@@ -968,7 +971,7 @@ namespace Chummer
         /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() instead of GetString() for translating localized strings.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public static async ValueTask<string> ProcessCompoundString(string strInput, string strLanguage = "",
+        public static async Task<string> ProcessCompoundString(string strInput, string strLanguage = "",
                                                                     Character objCharacter = null,
                                                                     bool blnUseTranslateExtra = false,
                                                                     CancellationToken token = default)
@@ -1134,7 +1137,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strLanguage">Language to check.</param>
         /// <param name="token">Cancellation token to use.</param>
-        public static async ValueTask VerifyStrings(string strLanguage, CancellationToken token = default)
+        public static async Task VerifyStrings(string strLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strMessage;
@@ -1159,8 +1162,7 @@ namespace Chummer
                             foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator()
                                          .SelectAndCacheExpression("/chummer/strings/string", token))
                             {
-                                string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", token)
-                                                              .ConfigureAwait(false))?.Value;
+                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
                                 if (!string.IsNullOrEmpty(strKey))
                                     setEnglishKeys.Add(strKey);
                             }
@@ -1187,8 +1189,7 @@ namespace Chummer
                             foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator()
                                          .SelectAndCacheExpression("/chummer/strings/string", token))
                             {
-                                string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", token)
-                                                              .ConfigureAwait(false))?.Value;
+                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
                                 if (!string.IsNullOrEmpty(strKey))
                                     setLanguageKeys.Add(strKey);
                             }
@@ -1235,9 +1236,10 @@ namespace Chummer
             }
 
             // Display the message.
-            Program.ShowScrollableMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
-                                             "Language File Contents", MessageBoxButtons.OK,
-                                             MessageBoxIcon.Information);
+            await Program.ShowScrollableMessageBoxAsync(
+                !string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
+                "Language File Contents", MessageBoxButtons.OK,
+                MessageBoxIcon.Information, token: token).ConfigureAwait(false);
         }
 
         // List of arrays for XPaths to search for extras. Item1 is Document, Item2 is XPath, Item3 is the Name getter, Item4 is the Translate getter.
@@ -1396,8 +1398,8 @@ namespace Chummer
                     }
                 };
 
-        private static readonly Regex s_RgxExtraFileSpecifierExpression = new Regex(@"^(\[([a-z])+\.xml\])",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Lazy<Regex> s_RgxExtraFileSpecifierExpression = new Lazy<Regex>(() => new Regex(@"^(\[([a-z])+\.xml\])",
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         public static string MAGAdeptString(string strLanguage = "", bool blnLong = false,
                                             CancellationToken token = default)
@@ -1650,7 +1652,7 @@ namespace Chummer
 
                     default:
                         strReturn = strExtra;
-                        Match objFileSpecifier = s_RgxExtraFileSpecifierExpression.Match(strReturn);
+                        Match objFileSpecifier = s_RgxExtraFileSpecifierExpression.Value.Match(strReturn);
                         if (objFileSpecifier.Success)
                         {
                             strReturn = strReturn.TrimStartOnce(objFileSpecifier.Value).Trim();
@@ -1660,10 +1662,18 @@ namespace Chummer
 
                         string strTemp = string.Empty;
                         string strExtraNoQuotes = strReturn.FastEscape('\"');
-                        using (CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource())
+                        IReadOnlyList<string> lstCustomDataPaths = null;
+                        if (objCharacter != null)
+                        {
+                            if (blnSync)
+                                lstCustomDataPaths = objCharacter.Settings.EnabledCustomDataDirectoryPaths;
+                            else
+                                lstCustomDataPaths = await (await objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
+                        }
+                        using (CancellationTokenSource objFoundItemSource = new CancellationTokenSource())
                         {
                             bool blnEnglishLanguageLoaded;
-                            CancellationToken objCancellationToken = objCancellationTokenSource.Token;
+                            CancellationToken objFoundItemToken = objFoundItemSource.Token;
                             if (!string.IsNullOrEmpty(strPreferFile))
                             {
                                 if (string.Equals(strPreferFile, "lang", StringComparison.OrdinalIgnoreCase))
@@ -1715,18 +1725,17 @@ namespace Chummer
                                 {
                                     using (CancellationTokenSource objCombinedCancellationTokenSource
                                            = CancellationTokenSource.CreateLinkedTokenSource(
-                                               objCancellationToken, token))
+                                               objFoundItemToken, token))
                                     {
                                         CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                                         try
                                         {
                                             strTemp = blnSync
-                                                ? FindString(strPreferFile, objCombinedToken)
-                                                : await Task.Run(
-                                                    () => FindString(strPreferFile, objCombinedToken),
-                                                    objCombinedToken).ConfigureAwait(false);
+                                                ? FindString(strPreferFile, lstCustomDataPaths, objCombinedToken)
+                                                : await FindStringAsync(strPreferFile, lstCustomDataPaths, objCombinedToken)
+                                                    .ConfigureAwait(false);
                                         }
-                                        catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                                        catch (OperationCanceledException) when (!token.IsCancellationRequested)
                                         {
                                             //swallow this
                                         }
@@ -1737,7 +1746,7 @@ namespace Chummer
                                     strReturn = strTemp;
                             }
 
-                            if (objCancellationToken.IsCancellationRequested)
+                            if (objFoundItemToken.IsCancellationRequested)
                                 break;
 
                             // Look through loaded strings first because that's faster than trawling through the XML data
@@ -1782,39 +1791,38 @@ namespace Chummer
                                 }
                             }
 
-
                             using (CancellationTokenSource objCombinedCancellationTokenSource
                                    = CancellationTokenSource.CreateLinkedTokenSource(
-                                       objCancellationToken, token))
+                                       objFoundItemToken, token))
                             {
                                 CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                                 try
                                 {
                                     strTemp = blnSync
-                                        ? FindString(innerToken: objCombinedToken)
-                                        : await Task.Run(
-                                            () => FindString(innerToken: objCombinedToken),
-                                            objCombinedToken).ConfigureAwait(false);
+                                        ? FindString(string.Empty, lstCustomDataPaths, objCombinedToken)
+                                        : await FindStringAsync(string.Empty, lstCustomDataPaths, objCombinedToken).ConfigureAwait(false);
                                 }
-                                catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                                catch (OperationCanceledException) when (!token.IsCancellationRequested)
                                 {
                                     //swallow this
                                 }
                             }
 
-                            string FindString(string strPreferredFileName = "",
-                                              CancellationToken innerToken = default)
+                            string FindString(string strPreferredFileName = "", IReadOnlyList<string> lstInnerCustomDataPaths = null,
+                                CancellationToken innerToken = default)
                             {
+                                innerToken.ThrowIfCancellationRequested();
                                 string strInnerReturn = string.Empty;
                                 foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
                                              Func<XPathNavigator, string>>> aobjPaths
                                          in s_LstAXPathsToSearch)
                                 {
+                                    innerToken.ThrowIfCancellationRequested();
                                     IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
                                         Func<XPathNavigator, string>>> lstToSearch
                                         = !string.IsNullOrEmpty(strPreferredFileName)
                                             ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
-                                                                  StringComparison.OrdinalIgnoreCase))
+                                                StringComparison.OrdinalIgnoreCase))
                                             : aobjPaths;
                                     Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
                                     {
@@ -1831,7 +1839,7 @@ namespace Chummer
                                         {
                                             xmlDocument = XmlManager.LoadXPath(
                                                 objXPathPair.Item1,
-                                                objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
+                                                lstInnerCustomDataPaths,
                                                 strIntoLanguage, token: innerToken);
                                         }
                                         catch (OperationCanceledException)
@@ -1885,13 +1893,134 @@ namespace Chummer
                                             return;
                                         strInnerReturn = strFound;
                                         // ReSharper disable once AccessToDisposedClosure
-                                        objCancellationTokenSource.Cancel(false);
+                                        objFoundItemSource.Cancel(false);
                                     });
                                     if (!string.IsNullOrEmpty(strInnerReturn))
                                         return strInnerReturn;
                                 }
 
                                 return strInnerReturn;
+                            }
+
+                            async Task<string> FindStringAsync(string strPreferredFileName = "", IReadOnlyList<string> lstInnerCustomDataPaths = null,
+                                CancellationToken innerToken = default)
+                            {
+                                innerToken.ThrowIfCancellationRequested();
+                                List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
+                                foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                             Func<XPathNavigator, string>>> aobjPaths
+                                         in s_LstAXPathsToSearch)
+                                {
+                                    lstTasks.Clear();
+                                    IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
+                                        Func<XPathNavigator, string>>> lstToSearch
+                                        = !string.IsNullOrEmpty(strPreferredFileName)
+                                            ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
+                                                StringComparison.OrdinalIgnoreCase))
+                                            : aobjPaths;
+                                    int i = 0;
+                                    foreach (Tuple<string, string, Func<XPathNavigator, string>,
+                                                 Func<XPathNavigator, string>> tupLoop in lstToSearch)
+                                    {
+                                        lstTasks.Add(Task.Run(
+                                            () => FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
+                                                tupLoop.Item4, innerToken), innerToken));
+                                        if (++i == Utils.MaxParallelBatchSize)
+                                        {
+                                            i = 0;
+                                            try
+                                            {
+                                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                            }
+                                            catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                                            {
+                                                // swallow this because it means it's our found item token canceling out
+                                            }
+
+                                            if (objFoundItemToken.IsCancellationRequested)
+                                            {
+                                                foreach (Task<string> tskLoop in lstTasks)
+                                                {
+                                                    if (!tskLoop.IsCanceled)
+                                                    {
+                                                        try
+                                                        {
+                                                            string strLoop = await tskLoop.ConfigureAwait(false);
+                                                            if (!string.IsNullOrEmpty(strLoop))
+                                                                return strLoop;
+                                                        }
+                                                        catch (OperationCanceledException)
+                                                        {
+                                                            // swallow this
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            lstTasks.Clear();
+                                        }
+                                    }
+
+                                    try
+                                    {
+                                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                    }
+                                    catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                                    {
+                                        // swallow this because it means it's our found item token canceling out
+                                    }
+
+                                    if (objFoundItemToken.IsCancellationRequested)
+                                    {
+                                        foreach (Task<string> tskLoop in lstTasks)
+                                        {
+                                            if (!tskLoop.IsCanceled)
+                                            {
+                                                try
+                                                {
+                                                    string strLoop = await tskLoop.ConfigureAwait(false);
+                                                    if (!string.IsNullOrEmpty(strLoop))
+                                                        return strLoop;
+                                                }
+                                                catch (OperationCanceledException)
+                                                {
+                                                    // swallow this
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    async Task<string> FetchAndReturnString(string strDoc, IReadOnlyList<string> lstInnerCustomDataPaths2, string strExpression,
+                                        Func<XPathNavigator, string> funcEnglish,
+                                        Func<XPathNavigator, string> funcTranslated,
+                                        CancellationToken innerToken2)
+                                    {
+                                        innerToken2.ThrowIfCancellationRequested();
+                                        XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(
+                                            strDoc,
+                                            lstInnerCustomDataPaths2,
+                                            strIntoLanguage, token: innerToken2).ConfigureAwait(false);
+
+                                        foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                                     strExpression, innerToken2))
+                                        {
+                                            innerToken2.ThrowIfCancellationRequested();
+                                            if (funcEnglish(objNode) != strExtraNoQuotes)
+                                                continue;
+                                            innerToken2.ThrowIfCancellationRequested();
+                                            string strTranslate = funcTranslated(objNode);
+                                            if (string.IsNullOrEmpty(strTranslate))
+                                                continue;
+                                            // ReSharper disable once AccessToDisposedClosure
+                                            objFoundItemSource.Cancel(false);
+                                            return strTranslate;
+                                        }
+
+                                        return string.Empty;
+                                    }
+                                }
+
+                                return string.Empty;
                             }
                         }
 
@@ -2094,7 +2223,7 @@ namespace Chummer
                 return "None";
             // If no original could be found, just use whatever we were passed.
             string strReturn = strExtra;
-            Match objFileSpecifier = s_RgxExtraFileSpecifierExpression.Match(strReturn);
+            Match objFileSpecifier = s_RgxExtraFileSpecifierExpression.Value.Match(strReturn);
             if (objFileSpecifier.Success)
             {
                 strReturn = strReturn.TrimStartOnce(objFileSpecifier.Value).Trim();
@@ -2104,9 +2233,17 @@ namespace Chummer
 
             string strTemp = string.Empty;
             string strExtraNoQuotes = strReturn.FastEscape('\"');
-            using (CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource())
+            IReadOnlyList<string> lstCustomDataPaths = null;
+            if (objCharacter != null)
             {
-                CancellationToken objCancellationToken = objCancellationTokenSource.Token;
+                if (blnSync)
+                    lstCustomDataPaths = objCharacter.Settings.EnabledCustomDataDirectoryPaths;
+                else
+                    lstCustomDataPaths = await (await objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
+            }
+            using (CancellationTokenSource objFoundItemSource = new CancellationTokenSource())
+            {
+                CancellationToken objFoundItemToken = objFoundItemSource.Token;
                 bool blnFromLanguageLoaded;
                 if (!string.IsNullOrEmpty(strPreferFile))
                 {
@@ -2152,18 +2289,16 @@ namespace Chummer
                     {
                         using (CancellationTokenSource objCombinedCancellationTokenSource
                                = CancellationTokenSource.CreateLinkedTokenSource(
-                                   objCancellationToken, token))
+                                   objFoundItemToken, token))
                         {
                             CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                             try
                             {
                                 strTemp = blnSync
-                                    ? FindString(strPreferFile, token)
-                                    : await Task.Run(
-                                        () => FindString(strPreferFile, objCombinedToken),
-                                        objCombinedToken).ConfigureAwait(false);
+                                    ? FindString(strPreferFile, lstCustomDataPaths, objCombinedToken)
+                                    : await FindStringAsync(strPreferFile, lstCustomDataPaths, objCombinedToken).ConfigureAwait(false);
                             }
-                            catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                            catch (OperationCanceledException) when (!token.IsCancellationRequested)
                             {
                                 //swallow this
                             }
@@ -2174,7 +2309,7 @@ namespace Chummer
                         strReturn = strTemp;
                 }
 
-                if (objCancellationToken.IsCancellationRequested)
+                if (objFoundItemToken.IsCancellationRequested)
                     return strReturn;
 
                 // Look through loaded strings first because that's faster than trawling through the XML data
@@ -2214,34 +2349,33 @@ namespace Chummer
                     }
                 }
 
-
                 using (CancellationTokenSource objCombinedCancellationTokenSource
                        = CancellationTokenSource.CreateLinkedTokenSource(
-                           objCancellationToken, token))
+                           objFoundItemToken, token))
                 {
                     CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                     try
                     {
                         strTemp = blnSync
-                            ? FindString(innerToken: token)
-                            : await Task.Run(
-                                () => FindString(innerToken: objCombinedToken),
-                                objCombinedToken).ConfigureAwait(false);
+                            ? FindString(string.Empty, lstCustomDataPaths, objCombinedToken)
+                            : await FindStringAsync(string.Empty, lstCustomDataPaths, objCombinedToken).ConfigureAwait(false);
                     }
-                    catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                    catch (OperationCanceledException) when (!token.IsCancellationRequested)
                     {
                         //swallow this
                     }
                 }
 
-                string FindString(string strPreferredFileName = "", CancellationToken innerToken = default)
+                string FindString(string strPreferredFileName = "", IReadOnlyList<string> lstInnerCustomDataPaths = null, CancellationToken innerToken = default)
                 {
+                    innerToken.ThrowIfCancellationRequested();
                     string strInnerReturn = string.Empty;
                     foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
                                      Func<XPathNavigator, string>>>
                                  aobjPaths
                              in s_LstAXPathsToSearch)
                     {
+                        innerToken.ThrowIfCancellationRequested();
                         IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
                             Func<XPathNavigator, string>>> lstToSearch
                             = !string.IsNullOrEmpty(strPreferredFileName)
@@ -2263,7 +2397,7 @@ namespace Chummer
                             {
                                 xmlDocument = XmlManager.LoadXPath(
                                     objXPathPair.Item1,
-                                    objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
+                                    lstInnerCustomDataPaths,
                                     strFromLanguage, token: innerToken);
                             }
                             catch (OperationCanceledException)
@@ -2317,13 +2451,133 @@ namespace Chummer
                                 return;
                             strInnerReturn = strFound;
                             // ReSharper disable once AccessToDisposedClosure
-                            objCancellationTokenSource.Cancel(false);
+                            objFoundItemSource.Cancel(false);
                         });
                         if (!string.IsNullOrEmpty(strInnerReturn))
                             return strInnerReturn;
                     }
 
                     return strInnerReturn;
+                }
+
+                async Task<string> FindStringAsync(string strPreferredFileName = "", IReadOnlyList<string> lstInnerCustomDataPaths = null,
+                                CancellationToken innerToken = default)
+                {
+                    innerToken.ThrowIfCancellationRequested();
+                    List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
+                    foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                 Func<XPathNavigator, string>>> aobjPaths
+                             in s_LstAXPathsToSearch)
+                    {
+                        lstTasks.Clear();
+                        IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
+                            Func<XPathNavigator, string>>> lstToSearch
+                            = !string.IsNullOrEmpty(strPreferredFileName)
+                                ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
+                                    StringComparison.OrdinalIgnoreCase))
+                                : aobjPaths;
+                        int i = 0;
+                        foreach (Tuple<string, string, Func<XPathNavigator, string>,
+                                     Func<XPathNavigator, string>> tupLoop in lstToSearch)
+                        {
+                            lstTasks.Add(Task.Run(
+                                () => FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
+                                    tupLoop.Item4, innerToken), innerToken));
+                            if (++i == Utils.MaxParallelBatchSize)
+                            {
+                                i = 0;
+                                try
+                                {
+                                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                }
+                                catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                                {
+                                    // swallow this because it means it's our found item token canceling out
+                                }
+
+                                if (objFoundItemToken.IsCancellationRequested)
+                                {
+                                    foreach (Task<string> tskLoop in lstTasks)
+                                    {
+                                        if (!tskLoop.IsCanceled)
+                                        {
+                                            try
+                                            {
+                                                string strLoop = await tskLoop.ConfigureAwait(false);
+                                                if (!string.IsNullOrEmpty(strLoop))
+                                                    return strLoop;
+                                            }
+                                            catch (OperationCanceledException)
+                                            {
+                                                // swallow this
+                                            }
+                                        }
+                                    }
+                                }
+
+                                lstTasks.Clear();
+                            }
+                        }
+
+                        try
+                        {
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                        {
+                            // swallow this because it means it's our found item token canceling out
+                        }
+
+                        if (objFoundItemToken.IsCancellationRequested)
+                        {
+                            foreach (Task<string> tskLoop in lstTasks)
+                            {
+                                if (!tskLoop.IsCanceled)
+                                {
+                                    try
+                                    {
+                                        string strLoop = await tskLoop.ConfigureAwait(false);
+                                        if (!string.IsNullOrEmpty(strLoop))
+                                            return strLoop;
+                                    }
+                                    catch (OperationCanceledException)
+                                    {
+                                        // swallow this
+                                    }
+                                }
+                            }
+                        }
+
+                        async Task<string> FetchAndReturnString(string strDoc, IReadOnlyList<string> lstInnerCustomDataPaths2, string strExpression,
+                            Func<XPathNavigator, string> funcEnglish,
+                            Func<XPathNavigator, string> funcTranslated,
+                            CancellationToken innerToken2)
+                        {
+                            innerToken2.ThrowIfCancellationRequested();
+                            XPathNavigator xmlDocument = await XmlManager
+                                .LoadXPathAsync(strDoc, lstInnerCustomDataPaths2, strFromLanguage, token: innerToken2)
+                                .ConfigureAwait(false);
+
+                            foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                         strExpression, innerToken2))
+                            {
+                                innerToken2.ThrowIfCancellationRequested();
+                                if (funcTranslated(objNode) != strExtraNoQuotes)
+                                    continue;
+                                innerToken2.ThrowIfCancellationRequested();
+                                string strTranslate = funcEnglish(objNode);
+                                if (string.IsNullOrEmpty(strTranslate))
+                                    continue;
+                                // ReSharper disable once AccessToDisposedClosure
+                                objFoundItemSource.Cancel(false);
+                                return strTranslate;
+                            }
+
+                            return string.Empty;
+                        }
+                    }
+
+                    return string.Empty;
                 }
             }
 
@@ -2354,7 +2608,8 @@ namespace Chummer
                 cboLanguage.PopulateWithListItems(lstSheetLanguageList, token: token);
                 cboLanguage.DoThreadSafe((x, y) =>
                 {
-                    x.SelectedValue = strDefaultSheetLanguage;
+                    if (!string.IsNullOrEmpty(strDefaultSheetLanguage))
+                        x.SelectedValue = strDefaultSheetLanguage;
                     if (x.SelectedIndex == -1)
                         x.SelectedValue
                             = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
@@ -2394,7 +2649,8 @@ namespace Chummer
                                      .ConfigureAwait(false);
                     await cboLanguage.DoThreadSafeAsync(x =>
                     {
-                        x.SelectedValue = strDefaultSheetLanguage;
+                        if (!string.IsNullOrEmpty(strDefaultSheetLanguage))
+                            x.SelectedValue = strDefaultSheetLanguage;
                         if (x.SelectedIndex == -1)
                             x.SelectedValue
                                 = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
@@ -2413,37 +2669,19 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             List<Character> lstCharacterToUse = lstCharacters?.ToList();
             List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(5);
-            foreach (string filePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                XPathDocument xmlDocument;
-                try
-                {
-                    xmlDocument = XPathDocumentExtensions.LoadStandardFromFile(filePath, token: token);
-                }
-                catch (IOException)
-                {
+                if (strFilePath.EndsWith("_data.xml"))
                     continue;
-                }
-                catch (XmlException)
-                {
+                string strLanguageName = GetLanguageNameFromFileName(strFilePath, token: token);
+                if (string.IsNullOrEmpty(strLanguageName))
                     continue;
-                }
-
                 token.ThrowIfCancellationRequested();
-
-                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name", token);
-
-                if (node == null)
+                string strLanguageCode = Path.GetFileNameWithoutExtension(strFilePath);
+                if (!XmlManager.AnyXslFiles(strLanguageCode, lstCharacterToUse, token))
                     continue;
-
-                token.ThrowIfCancellationRequested();
-
-                string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
-                if (XmlManager.AnyXslFiles(strLanguageCode, lstCharacterToUse, token))
-                {
-                    lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
-                }
+                lstLanguages.Add(new ListItem(strLanguageCode, strLanguageName));
             }
 
             token.ThrowIfCancellationRequested();
@@ -2457,45 +2695,129 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             List<Character> lstCharacterToUse = lstCharacters?.ToList();
             List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(5);
-            foreach (string filePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                XPathDocument xmlDocument;
-                try
-                {
-                    xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(filePath, token: token)
-                                                               .ConfigureAwait(false);
-                }
-                catch (IOException)
-                {
+                if (strFilePath.EndsWith("_data.xml"))
                     continue;
-                }
-                catch (XmlException)
-                {
+                string strLanguageName = await GetLanguageNameFromFileNameAsync(strFilePath, token:token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strLanguageName))
                     continue;
-                }
-
                 token.ThrowIfCancellationRequested();
-
-                XPathNavigator node = await xmlDocument.CreateNavigator()
-                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                           "/chummer/name", token: token).ConfigureAwait(false);
-
-                if (node == null)
+                string strLanguageCode = Path.GetFileNameWithoutExtension(strFilePath);
+                if (!await XmlManager.AnyXslFilesAsync(strLanguageCode, lstCharacterToUse, token).ConfigureAwait(false))
                     continue;
-
-                token.ThrowIfCancellationRequested();
-
-                string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
-                if (await XmlManager.AnyXslFilesAsync(strLanguageCode, lstCharacterToUse, token).ConfigureAwait(false))
-                {
-                    lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
-                }
+                lstLanguages.Add(new ListItem(strLanguageCode, strLanguageName));
             }
 
             token.ThrowIfCancellationRequested();
             lstLanguages.Sort(CompareListItems.CompareNames);
             return lstLanguages;
+        }
+
+        /// <summary>
+        /// Memory-efficient way of opening up a language xml file for the sole purpose of reading its name.
+        /// </summary>
+        /// <param name="strFilePath">File path of the language xml file.</param>
+        /// <param name="blnSafe">Whether to use safe or unsafe xml reader settings.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Name of the language associated with <paramref name="strFilePath"/> if one is found, empty string otherwise.</returns>
+        public static string GetLanguageNameFromFileName(string strFilePath, bool blnSafe = true, CancellationToken token = default)
+        {
+            using (FileStream objFileStream
+                   = new FileStream(strFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                token.ThrowIfCancellationRequested();
+                using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                               blnSafe
+                                   ? GlobalSettings.SafeXmlReaderSettings
+                                   : GlobalSettings.UnSafeXmlReaderSettings))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        objReader.MoveToContent();
+                        token.ThrowIfCancellationRequested();
+                        do
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "chummer")
+                                continue;
+                            while (objReader.Read())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "name")
+                                    continue;
+                                while (objReader.Read())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objReader.NodeType == XmlNodeType.Text)
+                                    {
+                                        return objReader.Value;
+                                    }
+                                }
+                            }
+                        } while (objReader.Read());
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Memory-efficient way of opening up a language xml file for the sole purpose of reading its name.
+        /// </summary>
+        /// <param name="strFilePath">File path of the language xml file.</param>
+        /// <param name="blnSafe">Whether to use safe or unsafe xml reader settings.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Name of the language associated with <paramref name="strFilePath"/> if one is found, empty string otherwise.</returns>
+        public static Task<string> GetLanguageNameFromFileNameAsync(string strFilePath, bool blnSafe = true, CancellationToken token = default)
+        {
+            return Task.Run(async () =>
+            {
+                using (FileStream objFileStream
+                       = new FileStream(strFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                   blnSafe
+                                       ? GlobalSettings.SafeXmlReaderAsyncSettings
+                                       : GlobalSettings.UnSafeXmlReaderAsyncSettings))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _ = await objReader.MoveToContentAsync().ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            do
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "chummer")
+                                    continue;
+                                while (await objReader.ReadAsync().ConfigureAwait(false))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "name")
+                                        continue;
+                                    while (await objReader.ReadAsync().ConfigureAwait(false))
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        if (objReader.NodeType == XmlNodeType.Text)
+                                        {
+                                            return objReader.Value;
+                                        }
+                                    }
+                                }
+                            } while (await objReader.ReadAsync().ConfigureAwait(false));
+                        }
+                    }
+                }
+
+                return string.Empty;
+            }, token);
         }
 
         #endregion Methods
@@ -2504,12 +2826,12 @@ namespace Chummer
     public class LanguageData
     {
         private readonly Dictionary<string, string> _dicTranslatedStrings = new Dictionary<string, string>();
-        public bool IsRightToLeftScript { get; }
+        public bool IsRightToLeftScript { get; private set; }
 
         public IReadOnlyDictionary<string, string> TranslatedStrings => _dicTranslatedStrings;
 
-        public XPathDocument DataDocument { get; }
-        public string ErrorMessage { get; } = string.Empty;
+        public XPathDocument DataDocument { get; private set; }
+        public string ErrorMessage { get; private set; } = string.Empty;
         public bool ErrorAlreadyShown { get; set; }
 
         public LanguageData(string strLanguage)
@@ -2626,6 +2948,129 @@ namespace Chummer
                     ErrorMessage += Environment.NewLine;
                 ErrorMessage += "Could not find the data file " + strLanguage + "_data.xml.";
             }
+        }
+
+        private LanguageData()
+        {
+        }
+
+        public static async Task<LanguageData> CreateAsync(string strLanguage, CancellationToken token = default)
+        {
+            LanguageData objReturn = new LanguageData();
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+            if (!File.Exists(strFilePath))
+                strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + ".xml");
+            if (File.Exists(strFilePath))
+            {
+                try
+                {
+                    XPathDocument objLanguageDocument;
+                    string strExtraMessage = string.Empty;
+                    try
+                    {
+                        objLanguageDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
+                    }
+                    catch (IOException ex)
+                    {
+                        objLanguageDocument = null;
+                        strExtraMessage = ex.ToString();
+                    }
+                    catch (XmlException ex)
+                    {
+                        objLanguageDocument = null;
+                        strExtraMessage = ex.ToString();
+                    }
+
+                    if (objLanguageDocument != null)
+                    {
+                        XPathNavigator objLanguageDocumentNavigator = objLanguageDocument.CreateNavigator();
+                        objReturn.IsRightToLeftScript
+                            = objLanguageDocumentNavigator.SelectSingleNodeAndCacheExpression("/chummer/righttoleft", token)
+                                                          ?.Value == bool.TrueString;
+                        XPathNodeIterator xmlStringList =
+                            objLanguageDocumentNavigator.SelectAndCacheExpression("/chummer/strings/string", token);
+                        if (xmlStringList.Count > 0)
+                        {
+                            foreach (XPathNavigator objNode in xmlStringList)
+                            {
+                                // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
+                                // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
+                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
+                                string strText = objNode.SelectSingleNodeAndCacheExpression("text", token)?.Value;
+                                if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
+                                    objReturn._dicTranslatedStrings[strKey] = strText.NormalizeLineEndings(true);
+                            }
+                        }
+                        else
+                        {
+                            objReturn.ErrorMessage = "Failed to load the strings file " + strLanguage
+                                                                              + ".xml into an XmlDocument: "
+                                                                              + strExtraMessage + '.';
+                        }
+                    }
+                    else
+                    {
+                        objReturn.ErrorMessage = "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: "
+                                                 + strExtraMessage + '.';
+                    }
+                }
+                catch (Exception ex)
+                {
+                    objReturn.ErrorMessage = "Encountered the following the exception while loading " + strLanguage
+                        + ".xml into an XmlDocument: " + ex + '.';
+                }
+            }
+            else
+            {
+                objReturn.ErrorMessage = "Could not find the strings file " + strLanguage + ".xml.";
+            }
+
+            // Check to see if the data translation file for the selected language exists.
+            string strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + "_data.xml");
+            if (!File.Exists(strDataPath))
+                strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + "_data.xml");
+            if (File.Exists(strDataPath))
+            {
+                try
+                {
+                    try
+                    {
+                        objReturn.DataDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strDataPath, token: token).ConfigureAwait(false);
+                    }
+                    catch (IOException ex)
+                    {
+                        objReturn.DataDocument = null;
+                        if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
+                            objReturn.ErrorMessage += Environment.NewLine;
+                        objReturn.ErrorMessage += "Failed to load the data file " + strLanguage
+                                                                        + "_data.xml into an XmlDocument: " + ex + '.';
+                    }
+                    catch (XmlException ex)
+                    {
+                        objReturn.DataDocument = null;
+                        if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
+                            objReturn.ErrorMessage += Environment.NewLine;
+                        objReturn.ErrorMessage += "Failed to load the data file " + strLanguage
+                                                                        + "_data.xml into an XmlDocument: " + ex + '.';
+                    }
+                }
+                catch (Exception ex)
+                {
+                    objReturn.DataDocument = null;
+                    if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
+                        objReturn.ErrorMessage += Environment.NewLine;
+                    objReturn.ErrorMessage += "Encountered the following the exception while loading " + strLanguage
+                        + "_data.xml into an XmlDocument: " + ex + '.';
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
+                    objReturn.ErrorMessage += Environment.NewLine;
+                objReturn.ErrorMessage += "Could not find the data file " + strLanguage + "_data.xml.";
+            }
+
+            return objReturn;
         }
     }
 }

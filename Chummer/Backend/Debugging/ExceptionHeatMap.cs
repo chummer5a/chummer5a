@@ -57,7 +57,7 @@ namespace Chummer.Backend
                 sbdReturn.AppendLine();
                 foreach (KeyValuePair<string, int> exception in _dicMap.Value.OrderBy(i => -i.Value))
                 {
-                    intLength = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), intLength);
+                    intLength = Math.Max(exception.Value.CeilingLog10(), intLength);
                     sbdReturn.Append("\t\t")
                              .Append(exception.Value.ToString(
                                          "D" + intLength.ToString(GlobalSettings.InvariantCultureInfo),

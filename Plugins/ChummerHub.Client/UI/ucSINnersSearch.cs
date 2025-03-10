@@ -114,7 +114,6 @@ namespace ChummerHub.Client.UI
             TextBox tb;
             Button b;
             NumericUpDown nud;
-            ComboBox cb;
             switch (typename)
             {
                 case "System.Boolean":
@@ -180,34 +179,6 @@ namespace ChummerHub.Client.UI
                             UpdateDialog();
                         };
                         flp.Controls.Add(b);
-                        return flp;
-                    }
-                case "Chummer.Backend.Uniques.Tradition":
-                    {
-                        List<Tradition> traditions = Tradition.GetTraditions(MySearchCharacter.MyCharacter).ToList();
-                        cb = new ComboBox
-                        {
-                            DataSource = traditions,
-                            DropDownStyle = ComboBoxStyle.DropDownList,
-                            FlatStyle = FlatStyle.Standard,
-                            DisplayMember = "Name"
-                        };
-                        cb.Disposed += (sender, args) =>
-                        {
-                            foreach (Tradition objTradition in traditions)
-                                objTradition.Dispose();
-                        };
-                        cb.SelectedValueChanged += (sender, e) =>
-                        {
-                            if (_loading)
-                                return;
-                            PropertyInfo info = stag.MyPropertyInfo;
-                            info.SetValue(stag.MyParentTag.MyRuntimePropertyValue, cb.SelectedValue);
-                            stag.TagValue = (cb.SelectedValue as Tradition)?.Name ?? string.Empty;
-                            MySetTags.Add(stag);
-                            UpdateDialog();
-                        };
-                        flp.Controls.Add(cb);
                         return flp;
                     }
             }

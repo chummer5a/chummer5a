@@ -4572,8 +4572,12 @@
       <text>敵</text>
     </string>
     <string>
-      <key>Label_Options_Carryover</key>
-      <text>作成時の持ち越し</text>
+      <key>Label_Options_Carryover_Nuyen</key>
+      <text>最大新円持ち越し</text>
+    </string>
+    <string>
+      <key>Label_Options_Carryover_Karma</key>
+      <text>最大カルマ持ち越し</text>
     </string>
     <string>
       <key>Label_Options_Initiation</key>
@@ -6969,15 +6973,15 @@
     </string>
     <string>
       <key>String_Initiative</key>
-      <text>{0} +{1}d6</text>
+      <text>{0} + {1}d6</text>
     </string>
     <string>
       <key>String_MatrixInitiative</key>
-      <text>{0} + DP +{1}d6</text>
+      <text>{0} + DP + {1}d6</text>
     </string>
     <string>
       <key>String_MatrixInitiativeLong</key>
-      <text>{0} + Data Processing +{1}d6</text>
+      <text>{0} + Data Processing + {1}d6</text>
     </string>
     <string>
       <key>Checkbox_HideOverAvailLimit</key>
@@ -7469,7 +7473,11 @@
     </string>
     <string>
       <key>String_NotSupported</key>
-      <text>"This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results."</text>
+      <text>未対応</text>
+    </string>
+    <string>
+      <key>Message_MetatypeNotSupported</key>
+      <text>This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results.</text>
     </string>
     <string>
       <key>Warning_NoLimitFound</key>
@@ -7598,6 +7606,10 @@
     <string>
       <key>Node_UnequippedModularCyberware</key>
       <text>Unequipped Modular Cyberware</text>
+    </string>
+    <string>
+      <key>Node_UnequippedModularBioware</key>
+      <text>Unequipped Modular Bioware</text>
     </string>
     <string>
       <key>Label_PrototypeTranshuman</key>
@@ -8185,7 +8197,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Tenant</key>
-      <text>Primary Tenant</text>
+      <text>分割家賃</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_LPContribution</key>

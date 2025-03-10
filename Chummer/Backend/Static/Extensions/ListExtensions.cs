@@ -20,14 +20,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Chummer.Annotations;
 
 namespace Chummer
 {
     public static class ListExtensions
     {
-        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default) where T : IComparable
+        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem,
+            Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default) where T : IComparable
         {
             token.ThrowIfCancellationRequested();
             if (lstCollection == null)
@@ -103,7 +106,8 @@ namespace Chummer
             }
         }
 
-        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, IComparer<T> comparer, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
+        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, IComparer<T> comparer,
+            Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (lstCollection == null)
@@ -181,7 +185,8 @@ namespace Chummer
             }
         }
 
-        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, Comparison<T> funcComparison, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
+        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, Comparison<T> funcComparison,
+            Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (lstCollection == null)
@@ -259,7 +264,8 @@ namespace Chummer
             }
         }
 
-        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default) where T : IComparable
+        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd,
+            Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default) where T : IComparable
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
@@ -269,7 +275,8 @@ namespace Chummer
                 AddWithSort(lstCollection, objItem, funcOverrideIfEquals, token);
         }
 
-        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, IComparer<T> comparer, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
+        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd,
+            IComparer<T> comparer, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
@@ -281,7 +288,8 @@ namespace Chummer
                 AddWithSort(lstCollection, objItem, comparer, funcOverrideIfEquals, token);
         }
 
-        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, Comparison<T> funcComparison, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
+        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd,
+            Comparison<T> funcComparison, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
@@ -293,7 +301,8 @@ namespace Chummer
                 AddWithSort(lstCollection, objItem, funcComparison, funcOverrideIfEquals, token);
         }
 
-        public static void RemoveRange<T>(this IList<T> lstCollection, int index, int count, CancellationToken token = default)
+        public static void RemoveRange<T>(this IList<T> lstCollection, int index, int count,
+            CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (count == 0)
@@ -323,7 +332,8 @@ namespace Chummer
             }
         }
 
-        public static void RemoveAll<T>(this IList<T> lstCollection, Predicate<T> predicate, CancellationToken token = default)
+        public static void RemoveAll<T>(this IList<T> lstCollection, Predicate<T> predicate,
+            CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (lstCollection == null)
@@ -350,7 +360,8 @@ namespace Chummer
             }
         }
 
-        public static void InsertRange<T>(this IList<T> lstCollection, int index, [NotNull] IEnumerable<T> collection, CancellationToken token = default)
+        public static void InsertRange<T>(this IList<T> lstCollection, int index, [NotNull] IEnumerable<T> collection,
+            CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (lstCollection == null)
@@ -369,6 +380,234 @@ namespace Chummer
             finally
             {
                 objLocker?.Dispose();
+            }
+        }
+
+        public static Task SortAsync<T>(this IList<T> lstCollection, Func<T, T, Task<int>> comparer,
+            CancellationToken token = default)
+        {
+            return lstCollection.SortAsync(0, lstCollection.Count, comparer, token);
+        }
+
+        public static async Task SortAsync<T>(this IList<T> lstCollection, int index, int length,
+            Func<T, T, Task<int>> comparer, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (length >= 2)
+            {
+                IAsyncDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
+                    ? await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
+                try
+                {
+                    await IntroSortAsync(lstCollection, index, length + index - 1, 2 * lstCollection.Count.FloorLog2(),
+                        comparer, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    if (objLocker != null)
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
+        private static async Task IntroSortAsync<T>(this IList<T> lstCollection, int lo, int hi, int depthLimit,
+            Func<T, T, Task<int>> comparer, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int num1;
+            for (; hi > lo; hi = num1 - 1)
+            {
+                token.ThrowIfCancellationRequested();
+                int num2 = hi - lo + 1;
+                if (num2 <= 16)
+                {
+                    if (num2 == 1)
+                        break;
+                    if (num2 == 2)
+                    {
+                        await SwapIfGreaterAsync(lstCollection, comparer, lo, hi, token).ConfigureAwait(false);
+                        break;
+                    }
+
+                    if (num2 == 3)
+                    {
+                        await SwapIfGreaterAsync(lstCollection, comparer, lo, hi - 1, token).ConfigureAwait(false);
+                        await SwapIfGreaterAsync(lstCollection, comparer, lo, hi, token).ConfigureAwait(false);
+                        await SwapIfGreaterAsync(lstCollection, comparer, hi - 1, hi, token).ConfigureAwait(false);
+                        break;
+                    }
+
+                    await InsertionSortAsync(lstCollection, lo, hi, comparer, token).ConfigureAwait(false);
+                    break;
+                }
+
+                if (depthLimit == 0)
+                {
+                    await HeapsortAsync(lstCollection, lo, hi, comparer, token).ConfigureAwait(false);
+                    break;
+                }
+
+                --depthLimit;
+                num1 = await PickPivotAndPartitionAsync(lstCollection, lo, hi, comparer, token).ConfigureAwait(false);
+                await IntroSortAsync(lstCollection, num1 + 1, hi, depthLimit, comparer, token).ConfigureAwait(false);
+            }
+        }
+
+        private static async Task SwapIfGreaterAsync<T>(this IList<T> lstCollection, Func<T, T, Task<int>> comparer,
+            int a, int b, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (a != b && await comparer(lstCollection[a], lstCollection[b]).ConfigureAwait(false) > 0)
+                (lstCollection[a], lstCollection[b]) = (lstCollection[b], lstCollection[a]);
+        }
+
+        private static Task SwapAsync<T>(this IList<T> lstCollection, int i, int j, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (i != j)
+                (lstCollection[i], lstCollection[j]) = (lstCollection[j], lstCollection[i]);
+            return Task.CompletedTask;
+        }
+
+        private static async Task<int> PickPivotAndPartitionAsync<T>(this IList<T> lstCollection, int lo, int hi,
+            Func<T, T, Task<int>> comparer, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int index = lo + (hi - lo) / 2;
+            await SwapIfGreaterAsync(lstCollection, comparer, lo, index, token).ConfigureAwait(false);
+            await SwapIfGreaterAsync(lstCollection, comparer, lo, hi, token).ConfigureAwait(false);
+            await SwapIfGreaterAsync(lstCollection, comparer, index, hi, token).ConfigureAwait(false);
+            T key = lstCollection[index];
+            await SwapAsync(lstCollection, index, hi - 1, token).ConfigureAwait(false);
+            int i = lo;
+            int j = hi - 1;
+            while (i < j)
+            {
+                do
+                {
+                    ++i;
+                } while (await comparer(lstCollection[i], key).ConfigureAwait(false) < 0);
+
+                do
+                {
+                    --j;
+                } while (await comparer(key, lstCollection[j]).ConfigureAwait(false) < 0);
+
+                if (i < j)
+                    await SwapAsync(lstCollection, i, j, token).ConfigureAwait(false);
+                else
+                    break;
+            }
+
+            await SwapAsync(lstCollection, i, hi - 1, token).ConfigureAwait(false);
+            return i;
+        }
+
+        private static async Task HeapsortAsync<T>(this IList<T> lstCollection, int lo, int hi,
+            Func<T, T, Task<int>> comparer, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int n = hi - lo + 1;
+            for (int i = n / 2; i >= 1; --i)
+                await DownHeapAsync(lstCollection, i, n, lo, comparer, token).ConfigureAwait(false);
+            for (int index = n; index > 1; --index)
+            {
+                await SwapAsync(lstCollection, lo, lo + index - 1, token).ConfigureAwait(false);
+                await DownHeapAsync(lstCollection, 1, index - 1, lo, comparer, token).ConfigureAwait(false);
+            }
+        }
+
+        private static async Task DownHeapAsync<T>(this IList<T> lstCollection, int i, int n, int lo,
+            Func<T, T, Task<int>> comparer, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            T key = lstCollection[lo + i - 1];
+            int num;
+            for (; i <= n / 2; i = num)
+            {
+                token.ThrowIfCancellationRequested();
+                num = 2 * i;
+                if (num < n && await comparer(lstCollection[lo + num - 1], lstCollection[lo + num])
+                        .ConfigureAwait(false) < 0)
+                    ++num;
+                if (await comparer(key, lstCollection[lo + num - 1]).ConfigureAwait(false) < 0)
+                    lstCollection[lo + i - 1] = lstCollection[lo + num - 1];
+                else
+                    break;
+            }
+
+            lstCollection[lo + i - 1] = key;
+        }
+
+        private static async Task InsertionSortAsync<T>(this IList<T> lstCollection, int lo, int hi,
+            Func<T, T, Task<int>> comparer, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            for (int index1 = lo; index1 < hi; ++index1)
+            {
+                token.ThrowIfCancellationRequested();
+                int index2 = index1;
+                T key;
+                for (key = lstCollection[index1 + 1];
+                     index2 >= lo && await comparer(key, lstCollection[index2]).ConfigureAwait(false) < 0;
+                     --index2)
+                {
+                    token.ThrowIfCancellationRequested();
+                    lstCollection[index2 + 1] = lstCollection[index2];
+                }
+
+                lstCollection[index2 + 1] = key;
+            }
+        }
+
+        /// <summary>
+        /// Get a HashCode representing the contents of a collection in a way where the order of the items is irrelevant.
+        /// Uses the parallel option for large enough collections where it could potentially be faster
+        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
+        /// </summary>
+        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetOrderInvariantEnsembleHashCodeSmart<T>(this IList<T> lstItems, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return lstItems.Count > ushort.MaxValue
+                ? lstItems.GetOrderInvariantEnsembleHashCodeParallel(token)
+                : lstItems.GetOrderInvariantEnsembleHashCode(token);
+        }
+
+        /// <summary>
+        /// Get a HashCode representing the contents of a collection in a way where the order of the items is irrelevant
+        /// This is a parallelized version of GetOrderInvariantEnsembleHashCode meant to be used for large collections
+        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
+        /// </summary>
+        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
+        public static int GetOrderInvariantEnsembleHashCodeParallel<T>(this IList<T> lstItems, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstItems == null)
+                return 0;
+            // uint to prevent overflows
+            unchecked
+            {
+                uint result = 0;
+                Parallel.For(0, lstItems.Count, () => 0, (i, state, local) =>
+                {
+                    if (token.IsCancellationRequested)
+                        state.Stop();
+                    return state.IsStopped ? 0 : lstItems[i].GetHashCode();
+                }, localResult => result += (uint)localResult);
+                token.ThrowIfCancellationRequested();
+                return (int)(19 + result * 31);
             }
         }
     }

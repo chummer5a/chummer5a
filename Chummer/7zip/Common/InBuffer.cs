@@ -62,7 +62,7 @@ namespace SevenZip.Buffer
             return !m_StreamWasExhausted;
         }
 
-        public async ValueTask<bool> ReadBlockAsync(CancellationToken token = default)
+        public async Task<bool> ReadBlockAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (m_StreamWasExhausted)
@@ -97,7 +97,7 @@ namespace SevenZip.Buffer
             return m_Buffer[m_Pos++];
         }
 
-        public async ValueTask<Tuple<bool, byte>> ReadByteAsync(CancellationToken token = default)
+        public async Task<Tuple<bool, byte>> ReadByteAsync(CancellationToken token = default)
         {
             if (m_Pos >= m_Limit && !await ReadBlockAsync(token).ConfigureAwait(false))
                 return new Tuple<bool, byte>(false, 0xFF);

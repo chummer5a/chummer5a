@@ -86,64 +86,45 @@ namespace Chummer
         {
             if (exception == null)
                 return string.Empty;
-            Assembly objAssembly = exception.GetType().Assembly;
-            string strAssemblyName = objAssembly.GetName().Name;
-
-            string strReturn = exception.Message;
-
-            if (strAssemblyName is null or "System.Private.CoreLib")
-            {
-                // The Private CoreLib does not support a translation of Exceptions.
-                // If we wanna translate any of those we would need to wrap them in a custom exception.
-                return strReturn;
-            }
-
-            ResourceManager rm = new ResourceManager(strAssemblyName, objAssembly);
-
-            // This will throw a ExecutionEngineException (even though it's supposed to be obsolete and not thrown anymore)
-            // if it tries to get the resource of System.Private.CoreLib
-            // This Exception is uncatchable!
+            Assembly a = exception.GetType().Assembly;
+            ResourceManager rm = new ResourceManager(a.GetName().Name, a);
             ResourceSet rsOriginal = rm.GetResourceSet(Thread.CurrentThread.CurrentUICulture, true, true);
-            if (rsOriginal != null)
+            ResourceSet rsTranslated = rm.GetResourceSet(targetCulture, true, true);
+
+            string result = exception.Message;
+
+            foreach (DictionaryEntry item in rsOriginal)
             {
-                ResourceSet rsTranslated = rm.GetResourceSet(targetCulture, true, true);
+                if (!(item.Value is string message))
+                    continue;
 
-                if (rsTranslated != null)
+                string translated = rsTranslated.GetString(item.Key.ToString(), false);
+
+                if (!message.Contains('{'))
                 {
-                    foreach (DictionaryEntry item in rsOriginal)
-                    {
-                        if (!(item.Value is string message))
-                            continue;
+                    result = result.Replace(message, translated);
+                }
+                else if (!string.IsNullOrEmpty(translated))
+                {
+                    string pattern = Regex.Escape(message);
+                    pattern = s_RgxFirstReplacePattern.Value.Replace(pattern, "(?<group$1>.*)");
 
-                        string strTranslated = rsTranslated.GetString(item.Key.ToString() ?? string.Empty, false);
+                    Regex regex = new Regex(pattern);
 
-                        if (!message.Contains('{'))
-                        {
-                            strReturn = strReturn.Replace(message, strTranslated);
-                        }
-                        else if (!string.IsNullOrEmpty(strTranslated))
-                        {
-                            string strPattern = Regex.Escape(message);
-                            strPattern = s_RgxFirstReplacePattern.Replace(strPattern, "(?<group$1>.*)");
+                    string replacePattern = translated;
+                    replacePattern = s_RgxSecondReplacePattern.Value.Replace(replacePattern, "${group$1}");
+                    replacePattern = replacePattern.Replace("\\$", "$");
 
-                            Regex rgxReplace = new Regex(strPattern);
-
-                            string strReplacePattern = strTranslated;
-                            strReplacePattern = s_RgxSecondReplacePattern.Replace(strReplacePattern, "${group$1}");
-                            strReplacePattern = strReplacePattern.Replace("\\$", "$");
-
-                            strReturn = rgxReplace.Replace(strReturn, strReplacePattern);
-                        }
-                    }
+                    result = regex.Replace(result, replacePattern);
                 }
             }
 
-            return strReturn;
+            return result;
         }
 
-        private static readonly Regex s_RgxFirstReplacePattern = new Regex(@"\\{([0-9]+)\}",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
-        private static readonly Regex s_RgxSecondReplacePattern = new Regex(@"{([0-9]+)}",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Lazy<Regex> s_RgxFirstReplacePattern = new Lazy<Regex>(() => new Regex(@"\\{([0-9]+)\}",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+        private static readonly Lazy<Regex> s_RgxSecondReplacePattern = new Lazy<Regex>(() => new Regex("{([0-9]+)}",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
     }
 }

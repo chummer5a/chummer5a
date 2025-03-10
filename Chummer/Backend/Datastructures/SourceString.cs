@@ -50,7 +50,7 @@ namespace Chummer
             return GetSourceString(strCode, intPage, strLanguage, objCultureInfo, objCharacter);
         }
 
-        public static ValueTask<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage = "",
+        public static Task<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage = "",
                                                                          CultureInfo objCultureInfo = null, Character objCharacter = null, CancellationToken token = default)
         {
             string strCode = strSourceString ?? string.Empty;
@@ -74,7 +74,7 @@ namespace Chummer
             return GetSourceString(strSource, intPage, strLanguage, objCultureInfo, objCharacter);
         }
 
-        public static ValueTask<SourceString> GetSourceStringAsync(string strSource, string strPage, string strLanguage = "",
+        public static Task<SourceString> GetSourceStringAsync(string strSource, string strPage, string strLanguage = "",
                                                                    CultureInfo objCultureInfo = null, Character objCharacter = null, CancellationToken token = default)
         {
             int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
@@ -91,7 +91,7 @@ namespace Chummer
                                     strLanguage, objCultureInfo);
         }
 
-        public static async ValueTask<SourceString> GetSourceStringAsync(string strSource, int intPage, string strLanguage = "",
+        public static async Task<SourceString> GetSourceStringAsync(string strSource, int intPage, string strLanguage = "",
                                                                          CultureInfo objCultureInfo = null, Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strLanguage))

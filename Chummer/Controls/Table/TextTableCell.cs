@@ -18,6 +18,8 @@
  */
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Table
@@ -51,6 +53,17 @@ namespace Chummer.UI.Table
             base.UpdateValue(newValue);
             _lblText.Text = newValue?.ToString() ?? string.Empty;
             MinimumSize = _lblText.Size;
+        }
+
+        protected internal override async Task UpdateValueAsync(object newValue, CancellationToken token = default)
+        {
+            await base.UpdateValueAsync(newValue, token).ConfigureAwait(false);
+            string strText = newValue?.ToString() ?? string.Empty;
+            await _lblText.DoThreadSafeAsync(x =>
+            {
+                x.Text = strText;
+                MinimumSize = x.Size;
+            }, token: token).ConfigureAwait(false);
         }
     }
 }

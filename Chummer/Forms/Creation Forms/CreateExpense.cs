@@ -61,14 +61,14 @@ namespace Chummer
         {
             if (KarmaNuyenExchange && _eMode == ExpenseType.Nuyen && await nudAmount.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false) % _objCharacterSettings.NuyenPerBPWftP != 0)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange").ConfigureAwait(false),
-                                  _objCharacterSettings.NuyenPerBPWftP.ToString(
-                                      _objCharacterSettings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false)),
+                        await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange").ConfigureAwait(false),
+                        _objCharacterSettings.NuyenPerBPWftP.ToString(
+                            _objCharacterSettings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false)),
                     await LanguageManager.GetStringAsync("MessageTitle_KarmaNuyenExchange").ConfigureAwait(false), MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                    MessageBoxIcon.Information).ConfigureAwait(false);
             }
             else
             {
@@ -122,7 +122,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this is a Karma refund.
+        /// Whether this is a Karma refund.
         /// </summary>
         public bool Refund
         {
@@ -131,7 +131,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this is a Karma refund.
+        /// Whether this is a Karma refund.
         /// </summary>
         public bool ForceCareerVisible
         {

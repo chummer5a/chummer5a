@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -109,7 +108,7 @@ namespace Chummer
             if (_left) return;
 
             //Check if the mouse is inside any control
-            if (_lstControls.Any(x => x.ClientRectangle.Contains(x.PointToClient(Control.MousePosition))))
+            if (_lstControls.Exists(x => x.ClientRectangle.Contains(x.PointToClient(Control.MousePosition))))
                 return;
 
             _left = true; //Don't do again flag

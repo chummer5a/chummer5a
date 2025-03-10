@@ -92,7 +92,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Cancel button is enabled.
+        /// Whether the Cancel button is enabled.
         /// </summary>
         public bool AllowCancel
         {

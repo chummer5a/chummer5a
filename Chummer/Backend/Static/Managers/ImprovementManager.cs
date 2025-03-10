@@ -41,10 +41,12 @@ namespace Chummer
         private static Logger Log => s_ObjLogger.Value;
 
         // String that will be used to limit the selection in Pick forms.
-        private static string _strLimitSelection = string.Empty;
-
-        private static string _strSelectedValue = string.Empty;
-        private static string _strForcedValue = string.Empty;
+        private static readonly ConcurrentDictionary<Character, string> s_dicLimitSelections = new ConcurrentDictionary<Character, string>();
+        private static readonly ConcurrentDictionary<Character, string> s_dicSelectedValues = new ConcurrentDictionary<Character, string>();
+        private static readonly ConcurrentDictionary<Character, string> s_dicForcedValues = new ConcurrentDictionary<Character, string>();
+        private static string s_strInvariantLimitSelection;
+        private static string s_strInvariantSelectedValue;
+        private static string s_strInvariantForcedValue;
 
         private static readonly ConcurrentDictionary<Character, List<Improvement>> s_DictionaryTransactions
             = new ConcurrentDictionary<Character, List<Improvement>>();
@@ -155,28 +157,67 @@ namespace Chummer
         /// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specific
         /// CharacterAttribute selection for Qualities like Metagenic Improvement.
         /// </summary>
-        public static string LimitSelection
+        public static string GetLimitSelection(Character objCharacter)
         {
-            get => _strLimitSelection;
-            set => _strLimitSelection = value;
+            if (objCharacter == null)
+                return s_strInvariantLimitSelection;
+            s_dicLimitSelections.TryGetValue(objCharacter, out string strReturn);
+            return strReturn;
+        }
+        /// <summary>
+        /// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specific
+        /// CharacterAttribute selection for Qualities like Metagenic Improvement.
+        /// </summary>
+        public static void SetLimitSelection(string value, Character objCharacter)
+        {
+            if (objCharacter == null)
+                s_strInvariantLimitSelection = value;
+            else
+                s_dicLimitSelections.AddOrUpdate(objCharacter, value, (c, s) => value);
         }
 
         /// <summary>
         /// The string that was entered or selected from any of the dialogue windows that were presented because of this Improvement.
         /// </summary>
-        public static string SelectedValue
+        public static string GetSelectedValue(Character objCharacter)
         {
-            get => _strSelectedValue;
-            set => _strSelectedValue = value;
+            if (objCharacter == null)
+                return s_strInvariantSelectedValue;
+            s_dicSelectedValues.TryGetValue(objCharacter, out string strReturn);
+            return strReturn;
+        }
+
+        /// <summary>
+        /// The string that was entered or selected from any of the dialogue windows that were presented because of this Improvement.
+        /// </summary>
+        public static void SetSelectedValue(string value, Character objCharacter)
+        {
+            if (objCharacter == null)
+                s_strInvariantSelectedValue = value;
+            else
+                s_dicSelectedValues.AddOrUpdate(objCharacter, value, (c, s) => value);
         }
 
         /// <summary>
         /// Force any dialogue windows that open to use this string as their selected value.
         /// </summary>
-        public static string ForcedValue
+        public static string GetForcedValue(Character objCharacter)
         {
-            get => _strForcedValue;
-            set => _strForcedValue = value;
+            if (objCharacter == null)
+                return s_strInvariantForcedValue;
+            s_dicForcedValues.TryGetValue(objCharacter, out string strReturn);
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Force any dialogue windows that open to use this string as their selected value.
+        /// </summary>
+        public static void SetForcedValue(string value, Character objCharacter)
+        {
+            if (objCharacter == null)
+                s_strInvariantForcedValue = value;
+            else
+                s_dicForcedValues.AddOrUpdate(objCharacter, value, (c, s) => value);
         }
 
         public static void ClearCachedValue(Character objCharacter, Improvement.ImprovementType eImprovementType,
@@ -209,7 +250,7 @@ namespace Chummer
             }
             else
             {
-                List<ImprovementDictionaryKey> lstTempOuter = new List<ImprovementDictionaryKey>();
+                List<ImprovementDictionaryKey> lstTempOuter = new List<ImprovementDictionaryKey>(Math.Max(s_DictionaryCachedValues.Count, s_DictionaryCachedAugmentedValues.Count));
                 foreach (ImprovementDictionaryKey objCachedValueKey in s_DictionaryCachedValues.Keys)
                 {
                     token.ThrowIfCancellationRequested();
@@ -260,7 +301,7 @@ namespace Chummer
         public static void ClearCachedValues(Character objCharacter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<ImprovementDictionaryKey> lstToRemove = new List<ImprovementDictionaryKey>();
+            List<ImprovementDictionaryKey> lstToRemove = new List<ImprovementDictionaryKey>(Math.Max(s_DictionaryCachedValues.Count, s_DictionaryCachedAugmentedValues.Count));
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys)
             {
                 token.ThrowIfCancellationRequested();
@@ -300,7 +341,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -328,7 +369,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying <paramref name="strImprovedName"/>.</param>
@@ -353,7 +394,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying <paramref name="strImprovedName"/>.</param>
@@ -378,7 +419,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -447,7 +488,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -474,7 +515,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -501,7 +542,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -529,7 +570,7 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
         /// <param name="lstUsedImprovements">List of the improvements actually used for the value.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -601,7 +642,7 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="eImprovementType">ImprovementType to retrieve the value of.</param>
         /// <param name="dicCachedValuesToUse">The caching dictionary to use. If null, values will not be cached.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -624,7 +665,7 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="eImprovementType">ImprovementType to retrieve the value of.</param>
         /// <param name="dicCachedValuesToUse">The caching dictionary to use. If null, values will not be cached.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -651,7 +692,7 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="eImprovementType">ImprovementType to retrieve the value of.</param>
         /// <param name="dicCachedValuesToUse">The caching dictionary to use. If null, values will not be cached.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -678,8 +719,14 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strImprovedName))
                 strImprovedName = string.Empty;
 
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? objCharacter.LockObject.EnterReadLock(token) : await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = objCharacter.LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // These values are needed to prevent race conditions that could cause Chummer to crash
@@ -854,14 +901,28 @@ namespace Chummer
 
                 try
                 {
-                    List<Improvement> lstImprovementsToConsider
-                        = new List<Improvement>(objCharacter.Improvements.Count);
-                    foreach (Improvement objImprovement in objCharacter.Improvements)
+                    List<Improvement> lstImprovementsToConsider;
+                    if (blnSync)
+                    {
+                        lstImprovementsToConsider = new List<Improvement>(objCharacter.Improvements.Count);
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objCharacter.Improvements.ForEach(ImprovementsLoopCommon, token);
+                    }
+                    else
+                    {
+                        lstImprovementsToConsider =
+                            new List<Improvement>(await objCharacter.Improvements.GetCountAsync(token)
+                                .ConfigureAwait(false));
+                        await objCharacter.Improvements.ForEachAsync(ImprovementsLoopCommon, token)
+                            .ConfigureAwait(false);
+                    }
+
+                    void ImprovementsLoopCommon(Improvement objImprovement)
                     {
                         if (objImprovement.ImproveType != eImprovementType || !objImprovement.Enabled)
-                            continue;
+                            return;
                         if (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition))
-                            continue;
+                            return;
                         // Matrix initiative boosting gear does not help Living Personas
                         if ((eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice
                              || eImprovementType == Improvement.ImprovementType.MatrixInitiative
@@ -869,17 +930,17 @@ namespace Chummer
                             && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear
                             && objCharacter.ActiveCommlink is Gear objCommlink
                             && objCommlink.Name == "Living Persona")
-                            continue;
+                            return;
                         // Ignore items that apply to a Skill's Rating.
                         if (objImprovement.AddToRating != blnAddToRating)
-                            continue;
+                            return;
                         // If an Improved Name has been passed, only retrieve values that have this Improved Name.
                         if (!string.IsNullOrEmpty(strImprovedName))
                         {
                             string strLoopImprovedName = objImprovement.ImprovedName;
                             if (strImprovedName != strLoopImprovedName
                                 && !(blnIncludeNonImproved && string.IsNullOrWhiteSpace(strLoopImprovedName)))
-                                continue;
+                                return;
                         }
 
                         lstImprovementsToConsider.Add(objImprovement);
@@ -1007,7 +1068,7 @@ namespace Chummer
                                 }
                                 else if (setUniqueNames.Contains("precedence1"))
                                 {
-                                    // Retrieve all of the items that are precedence1 and nothing else.
+                                    // Retrieve all the items that are precedence1 and nothing else.
                                     decimal decHighest = 0;
                                     foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
                                     {
@@ -1262,6 +1323,12 @@ namespace Chummer
                     s_SetCurrentlyCalculatingValues.Remove(tupBlankValueToCheck);
                 }
             }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -1313,7 +1380,7 @@ namespace Chummer
         /// <param name="strValue">String value to parse.</param>
         /// <param name="intRating">Integer value to replace "Rating" with.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask<int> ValueToIntAsync(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
+        public static async Task<int> ValueToIntAsync(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strValue))
                 return 0;
@@ -1398,7 +1465,7 @@ namespace Chummer
         /// <param name="strValue">String value to parse.</param>
         /// <param name="intRating">Integer value to replace "Rating" with.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask<decimal> ValueToDecAsync(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
+        public static async Task<decimal> ValueToDecAsync(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strValue))
                 return 0;
@@ -1434,9 +1501,25 @@ namespace Chummer
             return decReturn;
         }
 
-        public static string DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,
-                                           string strFriendlyName, ref bool blnIsKnowledgeSkill)
+        public static Tuple<string, bool> DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,
+            string strFriendlyName, bool blnIsKnowledgeSkill = false)
         {
+            return Utils.SafelyRunSynchronously(() => DoSelectSkillCoreAsync(false, xmlBonusNode, objCharacter,
+                intRating, strFriendlyName,
+                blnIsKnowledgeSkill));
+        }
+
+        public static Task<Tuple<string, bool>> DoSelectSkillAsync(XmlNode xmlBonusNode, Character objCharacter, int intRating,
+            string strFriendlyName, bool blnIsKnowledgeSkill = false, CancellationToken token = default)
+        {
+            return DoSelectSkillCoreAsync(false, xmlBonusNode, objCharacter, intRating, strFriendlyName,
+                blnIsKnowledgeSkill, token);
+        }
+
+        private static async Task<Tuple<string, bool>> DoSelectSkillCoreAsync(bool blnSync, XmlNode xmlBonusNode, Character objCharacter, int intRating,
+                                           string strFriendlyName, bool blnIsKnowledgeSkill, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (xmlBonusNode == null)
                 throw new ArgumentNullException(nameof(xmlBonusNode));
             if (objCharacter == null)
@@ -1449,19 +1532,25 @@ namespace Chummer
                 int intMinimumRating = 0;
                 string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strMinimumRating))
-                    intMinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                    intMinimumRating = blnSync
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        ? ValueToInt(objCharacter, strMinimumRating, intRating)
+                        : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token).ConfigureAwait(false);
                 int intMaximumRating = int.MaxValue;
                 string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
                 string strPrompt = xmlBonusNode.Attributes?["prompt"]?.InnerText ?? string.Empty;
 
                 if (!string.IsNullOrWhiteSpace(strMaximumRating))
-                    intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+                    intMaximumRating = blnSync
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        ? ValueToInt(objCharacter, strMaximumRating, intRating)
+                        : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token).ConfigureAwait(false);
 
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string>
                                                                     setAllowedCategories))
                 {
-                    string strOnlyCategory = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")?.Value;
+                    string strOnlyCategory = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory", token)?.Value;
                     if (!string.IsNullOrEmpty(strOnlyCategory))
                     {
                         setAllowedCategories.AddRange(strOnlyCategory
@@ -1486,7 +1575,7 @@ namespace Chummer
                                                                     out HashSet<string>
                                                                         setForbiddenCategories))
                     {
-                        string strExcludeCategory = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value;
+                        string strExcludeCategory = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory", token)?.Value;
                         if (!string.IsNullOrEmpty(strExcludeCategory))
                         {
                             setForbiddenCategories.AddRange(
@@ -1498,9 +1587,10 @@ namespace Chummer
                                                                         out HashSet<string>
                                                                             setAllowedNames))
                         {
-                            if (!string.IsNullOrEmpty(ForcedValue))
+                            string strForcedValue = GetForcedValue(objCharacter);
+                            if (!string.IsNullOrEmpty(strForcedValue))
                             {
-                                setAllowedNames.Add(ForcedValue);
+                                setAllowedNames.Add(strForcedValue);
                             }
                             else if (!string.IsNullOrEmpty(strPrompt))
                             {
@@ -1508,7 +1598,7 @@ namespace Chummer
                             }
                             else
                             {
-                                string strLimitToSkill = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill")?.Value;
+                                string strLimitToSkill = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill", token)?.Value;
                                 if (!string.IsNullOrEmpty(strLimitToSkill))
                                 {
                                     setAllowedNames.AddRange(
@@ -1522,7 +1612,7 @@ namespace Chummer
                                                                                 setAllowedLinkedAttributes))
                             {
                                 string strLimitToAttribute
-                                    = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute")?.Value;
+                                    = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute", token)?.Value;
                                 if (!string.IsNullOrEmpty(strLimitToAttribute))
                                 {
                                     setAllowedLinkedAttributes.AddRange(
@@ -1537,36 +1627,92 @@ namespace Chummer
                                                out HashSet<string>
                                                    setProcessedSkillNames))
                                     {
-                                        using (objCharacter.LockObject.EnterReadLock())
+                                        IDisposable objLocker = null;
+                                        IAsyncDisposable objLockerAsync = null;
+                                        if (blnSync)
+                                            objLocker = objCharacter.LockObject.EnterReadLock(token);
+                                        else
+                                            objLockerAsync = await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                                        try
                                         {
-                                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection
-                                                         .KnowledgeSkills)
+                                            if (blnSync)
                                             {
-                                                if (setAllowedCategories?.Contains(objKnowledgeSkill.SkillCategory) != false
-                                                    &&
-                                                    setForbiddenCategories?.Contains(objKnowledgeSkill.SkillCategory)
-                                                    != true &&
-                                                    setAllowedNames?.Contains(objKnowledgeSkill.Name) != false &&
-                                                    setAllowedLinkedAttributes?.Contains(objKnowledgeSkill.Attribute)
-                                                    != false)
+                                                foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection
+                                                             .KnowledgeSkills)
                                                 {
-                                                    int intSkillRating = objKnowledgeSkill.Rating;
-                                                    if (intSkillRating >= intMinimumRating && intRating < intMaximumRating)
+                                                    token.ThrowIfCancellationRequested();
+                                                    string strName = objKnowledgeSkill.Name;
+                                                    if (setAllowedCategories?.Contains(objKnowledgeSkill
+                                                            .SkillCategory) !=
+                                                        false
+                                                        &&
+                                                        setForbiddenCategories?.Contains(
+                                                            objKnowledgeSkill.SkillCategory)
+                                                        != true &&
+                                                        setAllowedNames?.Contains(strName) != false &&
+                                                        setAllowedLinkedAttributes?.Contains(blnSync
+                                                            ? objKnowledgeSkill.Attribute
+                                                            : await objKnowledgeSkill.GetAttributeAsync(token).ConfigureAwait(false))
+                                                        != false)
                                                     {
-                                                        lstDropdownItems.Add(
-                                                            new ListItem(objKnowledgeSkill.Name,
-                                                                         objKnowledgeSkill.CurrentDisplayName));
+                                                        int intSkillRating = objKnowledgeSkill.Rating;
+                                                        if (intSkillRating >= intMinimumRating &&
+                                                            intRating < intMaximumRating)
+                                                        {
+                                                            lstDropdownItems.Add(
+                                                                new ListItem(strName,
+                                                                    objKnowledgeSkill.CurrentDisplayName));
+                                                        }
                                                     }
-                                                }
 
-                                                setProcessedSkillNames.Add(objKnowledgeSkill.Name);
+                                                    setProcessedSkillNames.Add(strName);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                await objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(
+                                                    async objKnowledgeSkill =>
+                                                    {
+                                                        string strName = await objKnowledgeSkill.GetNameAsync(token).ConfigureAwait(false);
+                                                        if (setAllowedCategories?.Contains(objKnowledgeSkill
+                                                                .SkillCategory) !=
+                                                            false
+                                                            &&
+                                                            setForbiddenCategories?.Contains(
+                                                                objKnowledgeSkill.SkillCategory)
+                                                            != true &&
+                                                            setAllowedNames?.Contains(strName) !=
+                                                            false &&
+                                                            setAllowedLinkedAttributes?.Contains(
+                                                                await objKnowledgeSkill.GetAttributeAsync(token).ConfigureAwait(false))
+                                                            != false)
+                                                        {
+                                                            int intSkillRating =
+                                                                await objKnowledgeSkill.GetRatingAsync(token).ConfigureAwait(false);
+                                                            if (intSkillRating >= intMinimumRating &&
+                                                                intRating < intMaximumRating)
+                                                            {
+                                                                lstDropdownItems.Add(
+                                                                    new ListItem(strName,
+                                                                        await objKnowledgeSkill
+                                                                            .GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                                                            }
+                                                        }
+
+                                                        setProcessedSkillNames.Add(strName);
+                                                    }, token).ConfigureAwait(false);
                                             }
 
                                             if (!string.IsNullOrEmpty(strPrompt)
                                                 && !setProcessedSkillNames.Contains(strPrompt))
                                             {
                                                 lstDropdownItems.Add(
-                                                    new ListItem(strPrompt, objCharacter.TranslateExtra(strPrompt)));
+                                                    new ListItem(strPrompt,
+                                                        blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? objCharacter.TranslateExtra(strPrompt, token: token)
+                                                            : await objCharacter.TranslateExtraAsync(strPrompt,
+                                                                token: token).ConfigureAwait(false)));
                                                 setProcessedSkillNames.Add(strPrompt);
                                             }
 
@@ -1580,8 +1726,9 @@ namespace Chummer
                                                         sbdFilter.Append('(');
                                                         foreach (string strCategory in setAllowedCategories)
                                                         {
-                                                            sbdFilter.Append("category = ").Append(strCategory.CleanXPath())
-                                                                     .Append(" or ");
+                                                            sbdFilter.Append("category = ")
+                                                                .Append(strCategory.CleanXPath())
+                                                                .Append(" or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1593,8 +1740,9 @@ namespace Chummer
                                                         sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
                                                         foreach (string strCategory in setForbiddenCategories)
                                                         {
-                                                            sbdFilter.Append("category = ").Append(strCategory.CleanXPath())
-                                                                     .Append(" or ");
+                                                            sbdFilter.Append("category = ")
+                                                                .Append(strCategory.CleanXPath())
+                                                                .Append(" or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1607,7 +1755,7 @@ namespace Chummer
                                                         foreach (string strName in setAllowedNames)
                                                         {
                                                             sbdFilter.Append("name = ").Append(strName.CleanXPath())
-                                                                     .Append(" or ");
+                                                                .Append(" or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1620,7 +1768,7 @@ namespace Chummer
                                                         foreach (string strName in setProcessedSkillNames)
                                                         {
                                                             sbdFilter.Append("name = ").Append(strName.CleanXPath())
-                                                                     .Append(" or ");
+                                                                .Append(" or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1633,8 +1781,8 @@ namespace Chummer
                                                         foreach (string strAttribute in setAllowedLinkedAttributes)
                                                         {
                                                             sbdFilter.Append("attribute = ")
-                                                                     .Append(strAttribute.CleanXPath())
-                                                                     .Append(" or ");
+                                                                .Append(strAttribute.CleanXPath())
+                                                                .Append(" or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1644,23 +1792,36 @@ namespace Chummer
                                                     string strFilter = sbdFilter.Length > 0
                                                         ? ") and (" + sbdFilter
                                                         : string.Empty;
-                                                    foreach (XPathNavigator xmlSkill in objCharacter
-                                                                 .LoadDataXPath("skills.xml")
-                                                                 .Select(
-                                                                     "/chummer/knowledgeskills/skill[(not(hide)"
-                                                                     + strFilter + ")]"))
+                                                    foreach (XPathNavigator xmlSkill in (blnSync
+                                                                 ? objCharacter
+                                                                     // ReSharper disable once MethodHasAsyncOverload
+                                                                     .LoadDataXPath("skills.xml", token: token)
+                                                                 : await objCharacter
+                                                                     .LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
+                                                             .Select(
+                                                                 "/chummer/knowledgeskills/skill[(not(hide)"
+                                                                 + strFilter + ")]"))
                                                     {
-                                                        string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                                        string strName = xmlSkill
+                                                            .SelectSingleNodeAndCacheExpression("name", token)?.Value;
                                                         if (!string.IsNullOrEmpty(strName))
                                                             lstDropdownItems.Add(
                                                                 new ListItem(
                                                                     strName,
-                                                                    xmlSkill.SelectSingleNodeAndCacheExpression("translate")
-                                                                            ?.Value
+                                                                    xmlSkill.SelectSingleNodeAndCacheExpression(
+                                                                            "translate", token)
+                                                                        ?.Value
                                                                     ?? strName));
                                                     }
                                                 }
                                             }
+                                        }
+                                        finally
+                                        {
+                                            if (blnSync)
+                                                objLocker.Dispose();
+                                            else
+                                                await objLockerAsync.DisposeAsync().ConfigureAwait(false);
                                         }
                                     }
 
@@ -1673,19 +1834,35 @@ namespace Chummer
                                     {
                                         lstDropdownItems.Sort(CompareListItems.CompareNames);
 
+                                        string strDescription = blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LanguageManager.GetString("Title_SelectSkill", token: token)
+                                            : await LanguageManager.GetStringAsync("Title_SelectSkill", token: token).ConfigureAwait(false);
+                                        bool blnAllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt);
                                         using (ThreadSafeForm<SelectItem> frmPickSkill
-                                               = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
-                                               {
-                                                   Description = LanguageManager.GetString("Title_SelectSkill"),
-                                                   AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
-                                               }))
+                                               = blnSync
+                                                   // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                   ? ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                                                   {
+                                                       Description = strDescription,
+                                                       AllowAutoSelect = blnAllowAutoSelect
+                                                   })
+                                                   : await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
+                                                   {
+                                                       Description = strDescription,
+                                                       AllowAutoSelect = blnAllowAutoSelect
+                                                   }, token).ConfigureAwait(false))
                                         {
                                             if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
                                                 frmPickSkill.MyForm.SetGeneralItemsMode(lstDropdownItems);
                                             else
                                                 frmPickSkill.MyForm.SetDropdownItemsMode(lstDropdownItems);
 
-                                            if (frmPickSkill.ShowDialogSafe(objCharacter) == DialogResult.Cancel)
+                                            if ((blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? frmPickSkill.ShowDialogSafe(objCharacter, token)
+                                                    : await frmPickSkill.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false)) ==
+                                                DialogResult.Cancel)
                                             {
                                                 throw new AbortedException();
                                             }
@@ -1699,196 +1876,282 @@ namespace Chummer
                     }
                 }
             }
-            else if (!string.IsNullOrEmpty(ForcedValue))
+            else
             {
-                (bool blnIsExotic, string strExoticName)
-                    = ExoticSkill.IsExoticSkillNameTuple(objCharacter, ForcedValue);
-                string strFilter;
-                if (blnIsExotic)
+                string strForcedValue = GetForcedValue(objCharacter);
+                if (!string.IsNullOrEmpty(strForcedValue))
                 {
-                    strFilter = "/chummer/skills/skill[name = "
-                                + strExoticName.CleanXPath() + " and exotic = 'True' and ("
-                                + objCharacter.Settings.BookXPath() + ")]";
-                }
-                else
-                {
-                    strFilter = "/chummer/skills/skill[name = "
-                                + ForcedValue.CleanXPath() + " and not(exotic = 'True') and ("
-                                + objCharacter.Settings.BookXPath() + ")]";
-                }
-
-                XPathNavigator xmlSkillNode = objCharacter.LoadDataXPath("skills.xml").SelectSingleNode(strFilter) ?? throw new AbortedException();
-                int intMinimumRating = 0;
-                string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strMinimumRating))
-                    intMinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
-                int intMaximumRating = int.MaxValue;
-                string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strMaximumRating))
-                    intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
-                if (intMinimumRating != 0 || intMaximumRating != int.MaxValue)
-                {
-                    Skill objExistingSkill = objCharacter.SkillsSection.GetActiveSkill(ForcedValue);
-                    if (objExistingSkill == null)
+                    (bool blnIsExotic, string strExoticName)
+                        = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? ExoticSkill.IsExoticSkillNameTuple(objCharacter, strForcedValue, token)
+                            : await ExoticSkill.IsExoticSkillNameTupleAsync(objCharacter, strForcedValue, token)
+                                .ConfigureAwait(false);
+                    string strFilter = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? objCharacter.Settings.BookXPath(token: token)
+                        : await (await objCharacter
+                                .GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token)
+                            .ConfigureAwait(false);
+                    if (blnIsExotic)
                     {
-                        if (intMinimumRating > 0)
-                            throw new AbortedException();
+                        strFilter = "/chummer/skills/skill[name = "
+                                    + strExoticName.CleanXPath() + " and exotic = 'True' and ("
+                                    + strFilter + ")]";
                     }
                     else
                     {
-                        int intCurrentRating = objExistingSkill.TotalBaseRating;
-                        if (intCurrentRating > intMaximumRating || intCurrentRating < intMinimumRating)
-                            throw new AbortedException();
+                        strFilter = "/chummer/skills/skill[name = "
+                                    + strForcedValue.CleanXPath() + " and not(exotic = 'True') and ("
+                                    + strFilter + ")]";
                     }
-                }
 
-                XPathNavigator xmlSkillCategories = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillcategories");
-                if (xmlSkillCategories != null)
-                {
-                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
-                                         ?? string.Empty;
-                    if (string.IsNullOrWhiteSpace(strCategory))
+                    XPathNavigator xmlSkillNode =
+                        (blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.LoadDataXPath("skills.xml", token: token)
+                            : await objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
+                        .SelectSingleNode(strFilter) ??
                         throw new AbortedException();
-                    bool blnAbort = true;
-                    foreach (XPathNavigator xmlCategory in xmlSkillCategories.Select("category"))
+                    int intMinimumRating = 0;
+                    string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                        intMinimumRating = blnSync
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            ? ValueToInt(objCharacter, strMinimumRating, intRating)
+                            : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token)
+                                .ConfigureAwait(false);
+                    int intMaximumRating = int.MaxValue;
+                    string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                        intMaximumRating = blnSync
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            ? ValueToInt(objCharacter, strMaximumRating, intRating)
+                            : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token)
+                                .ConfigureAwait(false);
+                    if (intMinimumRating != 0 || intMaximumRating != int.MaxValue)
                     {
-                        if (xmlCategory.Value == strCategory)
+                        Skill objExistingSkill = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.SkillsSection.GetActiveSkill(strForcedValue, token)
+                            : await (await objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                .GetActiveSkillAsync(strForcedValue, token).ConfigureAwait(false);
+                        if (objExistingSkill == null)
                         {
-                            blnAbort = false;
-                            break;
+                            if (intMinimumRating > 0)
+                                throw new AbortedException();
+                        }
+                        else
+                        {
+                            int intCurrentRating =
+                                blnSync
+                                    ? objExistingSkill.TotalBaseRating
+                                    : await objExistingSkill.GetTotalBaseRatingAsync(token).ConfigureAwait(false);
+                            if (intCurrentRating > intMaximumRating || intCurrentRating < intMinimumRating)
+                                throw new AbortedException();
                         }
                     }
-                    if (blnAbort)
-                        throw new AbortedException();
-                }
 
-                string strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")?.Value;
-                if (!string.IsNullOrEmpty(strTemp))
-                {
-                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
-                                         ?? string.Empty;
-                    if (string.IsNullOrWhiteSpace(strCategory) || !strTemp
-                                                                   .SplitNoAlloc(
-                                                                       ',', StringSplitOptions.RemoveEmptyEntries)
-                                                                   .Contains(strCategory))
-                        throw new AbortedException();
-                }
-
-                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup")?.Value;
-                if (!string.IsNullOrEmpty(strTemp))
-                {
-                    string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value
-                                           ?? string.Empty;
-                    if (string.IsNullOrWhiteSpace(strSkillGroup) || !strTemp
-                                                                     .SplitNoAlloc(
-                                                                         ',', StringSplitOptions.RemoveEmptyEntries)
-                                                                     .Contains(strSkillGroup))
-                        throw new AbortedException();
-                }
-
-                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value;
-                if (!string.IsNullOrEmpty(strTemp))
-                {
-                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
-                                         ?? string.Empty;
-                    if (!string.IsNullOrWhiteSpace(strCategory) && strTemp
-                                                                   .SplitNoAlloc(
-                                                                       ',', StringSplitOptions.RemoveEmptyEntries)
-                                                                   .Contains(strCategory))
-                        throw new AbortedException();
-                }
-
-                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup")?.Value;
-                if (!string.IsNullOrEmpty(strTemp))
-                {
-                    string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value
-                                           ?? string.Empty;
-                    if (!string.IsNullOrWhiteSpace(strSkillGroup) && strTemp
-                                                                     .SplitNoAlloc(
-                                                                         ',', StringSplitOptions.RemoveEmptyEntries)
-                                                                     .Contains(strSkillGroup))
-                        throw new AbortedException();
-                }
-
-                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill")?.Value;
-                if (!string.IsNullOrEmpty(strTemp) && !strTemp
-                                                       .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                       .Contains(ForcedValue))
-                    throw new AbortedException();
-                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill")?.Value;
-                if (!string.IsNullOrEmpty(strTemp) && strTemp
-                                                      .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                      .Contains(ForcedValue))
-                    throw new AbortedException();
-                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute")?.Value;
-                if (!string.IsNullOrEmpty(strTemp))
-                {
-                    string strAttribute = xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute")?.Value
-                                          ?? string.Empty;
-                    if (string.IsNullOrWhiteSpace(strAttribute) || !strTemp
-                                                                    .SplitNoAlloc(
-                                                                        ',', StringSplitOptions.RemoveEmptyEntries)
-                                                                    .Contains(strAttribute))
-                        throw new AbortedException();
-                }
-
-                strSelectedSkill = ForcedValue;
-            }
-            else
-            {
-                // Display the Select Skill window and record which Skill was selected.
-                using (ThreadSafeForm<SelectSkill> frmPickSkill
-                       = ThreadSafeForm<SelectSkill>.Get(() => new SelectSkill(objCharacter, strFriendlyName)
-                       {
-                           Description = !string.IsNullOrEmpty(strFriendlyName)
-                               ? string.Format(GlobalSettings.CultureInfo,
-                                               LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
-                                               strFriendlyName)
-                               : LanguageManager.GetString("String_Improvement_SelectSkill")
-                       }))
-                {
-                    string strMinimumRating = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@minimumrating")?.Value;
-                    if (!string.IsNullOrWhiteSpace(strMinimumRating))
-                        frmPickSkill.MyForm.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
-                    string strMaximumRating = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@maximumrating")?.Value;
-                    if (!string.IsNullOrWhiteSpace(strMaximumRating))
-                        frmPickSkill.MyForm.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
-
-                    XmlNode xmlSkillCategories = xmlBonusNode["skillcategories"];
+                    XPathNavigator xmlSkillCategories =
+                        xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillcategories", token);
                     if (xmlSkillCategories != null)
-                        frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
-                    string strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.OnlyCategory = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.OnlySkillGroup = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.ExcludeCategory = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.ExcludeSkillGroup = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.LimitToSkill = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.ExcludeSkill = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.LinkedAttribute = strTemp;
-
-                    if (frmPickSkill.ShowDialogSafe(objCharacter) == DialogResult.Cancel)
                     {
-                        throw new AbortedException();
+                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category", token)?.Value
+                                             ?? string.Empty;
+                        if (string.IsNullOrWhiteSpace(strCategory))
+                            throw new AbortedException();
+                        bool blnAbort = true;
+                        foreach (XPathNavigator xmlCategory in xmlSkillCategories.Select("category"))
+                        {
+                            if (xmlCategory.Value == strCategory)
+                            {
+                                blnAbort = false;
+                                break;
+                            }
+                        }
+
+                        if (blnAbort)
+                            throw new AbortedException();
                     }
 
-                    strSelectedSkill = frmPickSkill.MyForm.SelectedSkill;
+                    string strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory", token)
+                        ?.Value;
+                    if (!string.IsNullOrEmpty(strTemp))
+                    {
+                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category", token)?.Value
+                                             ?? string.Empty;
+                        if (string.IsNullOrWhiteSpace(strCategory) || !strTemp
+                                .SplitNoAlloc(
+                                    ',', StringSplitOptions.RemoveEmptyEntries)
+                                .Contains(strCategory))
+                            throw new AbortedException();
+                    }
+
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup", token)?.Value;
+                    if (!string.IsNullOrEmpty(strTemp))
+                    {
+                        string strSkillGroup =
+                            xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup", token)?.Value
+                            ?? string.Empty;
+                        if (string.IsNullOrWhiteSpace(strSkillGroup) || !strTemp
+                                .SplitNoAlloc(
+                                    ',', StringSplitOptions.RemoveEmptyEntries)
+                                .Contains(strSkillGroup))
+                            throw new AbortedException();
+                    }
+
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory", token)
+                        ?.Value;
+                    if (!string.IsNullOrEmpty(strTemp))
+                    {
+                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category", token)?.Value
+                                             ?? string.Empty;
+                        if (!string.IsNullOrWhiteSpace(strCategory) && strTemp
+                                .SplitNoAlloc(
+                                    ',', StringSplitOptions.RemoveEmptyEntries)
+                                .Contains(strCategory))
+                            throw new AbortedException();
+                    }
+
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup", token)
+                        ?.Value;
+                    if (!string.IsNullOrEmpty(strTemp))
+                    {
+                        string strSkillGroup =
+                            xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup", token)?.Value
+                            ?? string.Empty;
+                        if (!string.IsNullOrWhiteSpace(strSkillGroup) && strTemp
+                                .SplitNoAlloc(
+                                    ',', StringSplitOptions.RemoveEmptyEntries)
+                                .Contains(strSkillGroup))
+                            throw new AbortedException();
+                    }
+
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill", token)?.Value;
+                    if (!string.IsNullOrEmpty(strTemp) && !strTemp
+                            .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                            .Contains(strForcedValue))
+                        throw new AbortedException();
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill", token)?.Value;
+                    if (!string.IsNullOrEmpty(strTemp) && strTemp
+                            .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                            .Contains(strForcedValue))
+                        throw new AbortedException();
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute", token)
+                        ?.Value;
+                    if (!string.IsNullOrEmpty(strTemp))
+                    {
+                        string strAttribute = xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute", token)?.Value
+                                              ?? string.Empty;
+                        if (string.IsNullOrWhiteSpace(strAttribute) || !strTemp
+                                .SplitNoAlloc(
+                                    ',', StringSplitOptions.RemoveEmptyEntries)
+                                .Contains(strAttribute))
+                            throw new AbortedException();
+                    }
+
+                    strSelectedSkill = strForcedValue;
+                }
+                else
+                {
+                    string strDescription;
+                    if (blnSync)
+                        strDescription = !string.IsNullOrEmpty(strFriendlyName)
+                            ? string.Format(GlobalSettings.CultureInfo,
+                                // ReSharper disable once MethodHasAsyncOverload
+                                LanguageManager.GetString("String_Improvement_SelectSkillNamed", token: token),
+                                strFriendlyName)
+                            // ReSharper disable once MethodHasAsyncOverload
+                            : LanguageManager.GetString("String_Improvement_SelectSkill", token: token);
+                    else
+                        strDescription = !string.IsNullOrEmpty(strFriendlyName)
+                            ? string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager
+                                    .GetStringAsync("String_Improvement_SelectSkillNamed", token: token)
+                                    .ConfigureAwait(false),
+                                strFriendlyName)
+                            : await LanguageManager.GetStringAsync("String_Improvement_SelectSkill", token: token)
+                                .ConfigureAwait(false);
+                    // Display the Select Skill window and record which Skill was selected.
+                    using (ThreadSafeForm<SelectSkill> frmPickSkill
+                           = blnSync
+                               // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                               ? ThreadSafeForm<SelectSkill>.Get(() => new SelectSkill(objCharacter, strFriendlyName)
+                               {
+                                   Description = strDescription
+                               })
+                               : await ThreadSafeForm<SelectSkill>.GetAsync(() =>
+                                   new SelectSkill(objCharacter, strFriendlyName)
+                                   {
+                                       Description = strDescription
+                                   }, token).ConfigureAwait(false))
+                    {
+                        string strMinimumRating = xmlBonusNode
+                            .SelectSingleNodeAndCacheExpressionAsNavigator("@minimumrating", token)?.Value;
+                        if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                            frmPickSkill.MyForm.MinimumRating = blnSync
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                ? ValueToInt(objCharacter, strMinimumRating, intRating)
+                                : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token)
+                                    .ConfigureAwait(false);
+                        string strMaximumRating = xmlBonusNode
+                            .SelectSingleNodeAndCacheExpressionAsNavigator("@maximumrating", token)?.Value;
+                        if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                            frmPickSkill.MyForm.MaximumRating = blnSync
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                ? ValueToInt(objCharacter, strMaximumRating, intRating)
+                                : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token)
+                                    .ConfigureAwait(false);
+
+                        XmlElement xmlSkillCategories = xmlBonusNode["skillcategories"];
+                        if (xmlSkillCategories != null)
+                            frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
+                        string strTemp = xmlBonusNode
+                            .SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory", token)
+                            ?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.OnlyCategory = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup", token)
+                            ?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.OnlySkillGroup = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory", token)
+                            ?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.ExcludeCategory = strTemp;
+                        strTemp = xmlBonusNode
+                            .SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup", token)
+                            ?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.ExcludeSkillGroup = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill", token)
+                            ?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.LimitToSkill = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill", token)
+                            ?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.ExcludeSkill = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute", token)
+                            ?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.LinkedAttribute = strTemp;
+
+                        if ((blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? frmPickSkill.ShowDialogSafe(objCharacter)
+                                : await frmPickSkill.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false)) ==
+                            DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        strSelectedSkill = frmPickSkill.MyForm.SelectedSkill;
+                    }
                 }
             }
 
-            return strSelectedSkill;
+            return new Tuple<string, bool>(strSelectedSkill, blnIsKnowledgeSkill);
         }
 
         #endregion Helper Methods
@@ -1896,7 +2159,7 @@ namespace Chummer
         #region Improvement System
 
         /// <summary>
-        /// Create all of the Improvements for an XML Node.
+        /// Create all the Improvements for an XML Node.
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementSource">Type of object that grants these Improvements.</param>
@@ -1917,7 +2180,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Create all of the Improvements for an XML Node.
+        /// Create all the Improvements for an XML Node.
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementSource">Type of object that grants these Improvements.</param>
@@ -1940,7 +2203,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Create all of the Improvements for an XML Node.
+        /// Create all the Improvements for an XML Node.
         /// Uses flag hack method design outlined here to avoid locking:
         /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
         /// </summary>
@@ -1982,402 +2245,417 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (nodBonus == null)
+                    try
                     {
-                        _strForcedValue = string.Empty;
-                        _strLimitSelection = string.Empty;
-                        return true;
-                    }
+                        if (nodBonus == null)
+                            return true;
 
-                    _strSelectedValue = string.Empty;
+                        SetSelectedValue(string.Empty, objCharacter);
 
-                    sbdTrace.Append("_strForcedValue = ").AppendLine(_strForcedValue);
-                    sbdTrace.Append("_strLimitSelection = ").AppendLine(_strLimitSelection);
+                        string strForcedValue = GetForcedValue(objCharacter);
+                        string strLimitSelection = GetLimitSelection(objCharacter);
+                        sbdTrace.Append("strForcedValue = ").AppendLine(strForcedValue);
+                        sbdTrace.Append("strLimitSelection = ").AppendLine(strLimitSelection);
 
-                    // If no friendly name was provided, use the one from SourceName.
-                    if (string.IsNullOrEmpty(strFriendlyName))
-                        strFriendlyName = strSourceName;
+                        // If no friendly name was provided, use the one from SourceName.
+                        if (string.IsNullOrEmpty(strFriendlyName))
+                            strFriendlyName = strSourceName;
 
-                    if (nodBonus.HasChildNodes)
-                    {
-                        string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
-                        sbdTrace.AppendLine("Has Child Nodes");
-                        if (nodBonus["selecttext"] != null)
+                        if (nodBonus.HasChildNodes)
                         {
-                            sbdTrace.AppendLine("selecttext");
-
-                            try
+                            string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
+                            sbdTrace.AppendLine("Has Child Nodes");
+                            if (nodBonus["selecttext"] != null)
                             {
-                                if (!string.IsNullOrEmpty(_strForcedValue))
+                                sbdTrace.AppendLine("selecttext");
+
+                                try
                                 {
-                                    LimitSelection = _strForcedValue;
-                                }
-                                else if (objCharacter != null)
-                                {
-                                    if (objCharacter.PushText.TryPop(out string strText))
+                                    if (!string.IsNullOrEmpty(strForcedValue))
                                     {
-                                        LimitSelection = strText;
+                                        strLimitSelection = strForcedValue;
                                     }
-                                }
-
-                                sbdTrace.Append("SelectedValue = ").AppendLine(SelectedValue);
-                                sbdTrace.Append("LimitSelection = ").AppendLine(LimitSelection);
-
-                                if (!string.IsNullOrEmpty(LimitSelection))
-                                {
-                                    _strSelectedValue = LimitSelection;
-                                }
-                                else if (nodBonus["selecttext"].Attributes.Count == 0)
-                                {
-                                    string strSelectText = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        ? LanguageManager.GetString("String_Improvement_SelectText", token: token)
-                                        : await LanguageManager
-                                                .GetStringAsync("String_Improvement_SelectText", token: token)
-                                                .ConfigureAwait(false);
-                                    using (ThreadSafeForm<SelectText> frmPickText
-                                           = blnSync
-                                               // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                               ? ThreadSafeForm<SelectText>.Get(() => new SelectText
-                                               {
-                                                   Description = string.Format(GlobalSettings.CultureInfo,
-                                                                               strSelectText,
-                                                                               strFriendlyName)
-                                               })
-                                               : await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                                               {
-                                                   Description = string.Format(GlobalSettings.CultureInfo,
-                                                                               strSelectText,
-                                                                               strFriendlyName)
-                                               }, token).ConfigureAwait(false))
+                                    else if (objCharacter != null)
                                     {
-                                        if ((blnSync
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                ? frmPickText.ShowDialogSafe(objCharacter, token)
-                                                : await frmPickText.ShowDialogSafeAsync(objCharacter, token)
-                                                                   .ConfigureAwait(false))
-                                            == DialogResult.Cancel)
+                                        ConcurrentStack<string> stkPushText = blnSync
+                                            ? objCharacter.PushText
+                                            : await objCharacter.GetPushTextAsync(token).ConfigureAwait(false);
+                                        if (stkPushText.TryPop(out string strText))
                                         {
-                                            if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                Rollback(objCharacter, token);
-                                            else
-                                                await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                                            ForcedValue = string.Empty;
-                                            LimitSelection = string.Empty;
-                                            return false;
+                                            strLimitSelection = strText;
                                         }
-
-                                        _strSelectedValue = frmPickText.MyForm.SelectedValue;
-                                    }
-                                }
-                                else if (objCharacter != null)
-                                {
-                                    string strXPath = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
-                                                          "selecttext/@xpath", token)?.Value
-                                                      ?? string.Empty;
-                                    if (string.IsNullOrEmpty(strXPath))
-                                    {
-                                        if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
-                                            Rollback(objCharacter, token);
-                                        else
-                                            await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                                        ForcedValue = string.Empty;
-                                        LimitSelection = string.Empty;
-                                        return false;
                                     }
 
-                                    string strXmlFile
-                                        = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
-                                              "selecttext/@xml", token)?.Value
-                                          ?? string.Empty;
-                                    XPathNavigator xmlDoc
-                                        = blnSync
-                                            // ReSharper disable once MethodHasAsyncOverload
-                                            ? objCharacter.LoadDataXPath(strXmlFile, token: token)
-                                            : await objCharacter.LoadDataXPathAsync(strXmlFile, token: token)
-                                                                .ConfigureAwait(false);
-                                    using (new FetchSafelyFromPool<List<ListItem>>(
-                                               Utils.ListItemListPool, out List<ListItem> lstItems))
+                                    string strSelectedValue = GetSelectedValue(objCharacter);
+                                    sbdTrace.Append("strSelectedValue = ").AppendLine(strSelectedValue);
+                                    sbdTrace.Append("strLimitSelection = ").AppendLine(strLimitSelection);
+
+                                    if (!string.IsNullOrEmpty(strLimitSelection))
                                     {
-                                        //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
-                                        //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
-                                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                   out HashSet<string> setUsedValues))
-                                        {
-                                            foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
-                                            {
-                                                // First check if we are using a list of language keys
-                                                string strKey = objNode.Name == "key" ? objNode.Value : string.Empty;
-                                                if (string.IsNullOrEmpty(strKey))
-                                                {
-                                                    string strName
-                                                        = (blnSync
-                                                              // ReSharper disable once MethodHasAsyncOverload
-                                                              ? objNode.SelectSingleNodeAndCacheExpression(
-                                                                  "name", token)
-                                                              : await objNode
-                                                                      .SelectSingleNodeAndCacheExpressionAsync(
-                                                                          "name", token: token).ConfigureAwait(false))
-                                                          ?.Value
-                                                          ?? string.Empty;
-                                                    if (string.IsNullOrWhiteSpace(strName))
-                                                    {
-                                                        // Assume that if we're not looking at something that has an XML node,
-                                                        // we're looking at a direct xpath filter or something that has proper names
-                                                        // like the lifemodule storybuilder macros.
-                                                        string strValue = objNode.Value;
-                                                        if (setUsedValues.Add(strValue))
-                                                            lstItems.Add(
-                                                                new ListItem(
-                                                                    strValue,
-                                                                    blnSync
-                                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                                        ? objCharacter.TranslateExtra(
-                                                                            strValue, strPreferFile: strXmlFile,
-                                                                            token: token)
-                                                                        : await objCharacter.TranslateExtraAsync(
-                                                                            strValue, strPreferFile: strXmlFile,
-                                                                            token: token).ConfigureAwait(false)));
-                                                    }
-                                                    else if (setUsedValues.Add(strName))
-                                                    {
-                                                        lstItems.Add(
-                                                            new ListItem(
-                                                                strName,
-                                                                blnSync
-                                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                                    ? objCharacter.TranslateExtra(
-                                                                        strName, strPreferFile: strXmlFile,
-                                                                        token: token)
-                                                                    : await objCharacter.TranslateExtraAsync(
-                                                                            strName, strPreferFile: strXmlFile,
-                                                                            token: token)
-                                                                        .ConfigureAwait(false)));
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    string strValue
-                                                        = blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString(
-                                                                strKey, GlobalSettings.DefaultLanguage, token: token)
-                                                            : await LanguageManager
-                                                                    .GetStringAsync(
-                                                                        strKey, GlobalSettings.DefaultLanguage,
-                                                                        token: token).ConfigureAwait(false);
-                                                    if (setUsedValues.Add(strValue))
-                                                    {
-                                                        lstItems.Add(
-                                                            new ListItem(
-                                                                strValue,
-                                                                blnSync
-                                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                                    ? LanguageManager.GetString(strKey, token: token)
-                                                                    : await LanguageManager
-                                                                            .GetStringAsync(strKey, token: token)
-                                                                            .ConfigureAwait(false)));
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        if (lstItems.Count == 0)
-                                        {
-                                            if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                Rollback(objCharacter, token);
-                                            else
-                                                await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                                            ForcedValue = string.Empty;
-                                            LimitSelection = string.Empty;
-                                            return false;
-                                        }
-
+                                        SetSelectedValue(strLimitSelection, objCharacter);
+                                    }
+                                    else if (nodBonus["selecttext"].Attributes.Count == 0)
+                                    {
                                         string strSelectText = blnSync
                                             // ReSharper disable once MethodHasAsyncOverload
                                             ? LanguageManager.GetString("String_Improvement_SelectText", token: token)
                                             : await LanguageManager
-                                                    .GetStringAsync("String_Improvement_SelectText", token: token)
-                                                    .ConfigureAwait(false);
-
-                                        using (ThreadSafeForm<SelectItem> frmSelect
+                                                .GetStringAsync("String_Improvement_SelectText", token: token)
+                                                .ConfigureAwait(false);
+                                        using (ThreadSafeForm<SelectText> frmPickText
                                                = blnSync
                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                   ? ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                                                   ? ThreadSafeForm<SelectText>.Get(() => new SelectText
                                                    {
                                                        Description = string.Format(GlobalSettings.CultureInfo,
                                                            strSelectText,
                                                            strFriendlyName)
                                                    })
-                                                   : await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
+                                                   : await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
                                                    {
                                                        Description = string.Format(GlobalSettings.CultureInfo,
                                                            strSelectText,
                                                            strFriendlyName)
                                                    }, token).ConfigureAwait(false))
                                         {
-                                            if (Convert.ToBoolean(
-                                                    nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
-                                                        "selecttext/@allowedit", token)?.Value,
-                                                    GlobalSettings.InvariantCultureInfo))
-                                            {
-                                                lstItems.Insert(0, ListItem.Blank);
-                                                frmSelect.MyForm.SetDropdownItemsMode(lstItems);
-                                            }
-                                            else
-                                            {
-                                                frmSelect.MyForm.SetGeneralItemsMode(lstItems);
-                                            }
-
-                                            DialogResult eReturn = blnSync
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                ? frmSelect.ShowDialogSafe(objCharacter, token)
-                                                : await frmSelect.ShowDialogSafeAsync(objCharacter, token)
-                                                                 .ConfigureAwait(false);
-                                            if (eReturn == DialogResult.Cancel)
+                                            if ((blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? frmPickText.ShowDialogSafe(objCharacter, token)
+                                                    : await frmPickText.ShowDialogSafeAsync(objCharacter, token)
+                                                        .ConfigureAwait(false))
+                                                == DialogResult.Cancel)
                                             {
                                                 if (blnSync)
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     Rollback(objCharacter, token);
                                                 else
                                                     await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                                                ForcedValue = string.Empty;
-                                                LimitSelection = string.Empty;
                                                 return false;
                                             }
 
-                                            _strSelectedValue = frmSelect.MyForm.SelectedItem;
+                                            SetSelectedValue(frmPickText.MyForm.SelectedValue, objCharacter);
                                         }
                                     }
+                                    else if (objCharacter != null)
+                                    {
+                                        string strXPath = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                              "selecttext/@xpath", token)?.Value
+                                                          ?? string.Empty;
+                                        if (string.IsNullOrEmpty(strXPath))
+                                        {
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                Rollback(objCharacter, token);
+                                            else
+                                                await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                            return false;
+                                        }
+
+                                        string strXmlFile
+                                            = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                  "selecttext/@xml", token)?.Value
+                                              ?? string.Empty;
+                                        XPathNavigator xmlDoc
+                                            = blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? objCharacter.LoadDataXPath(strXmlFile, token: token)
+                                                : await objCharacter.LoadDataXPathAsync(strXmlFile, token: token)
+                                                    .ConfigureAwait(false);
+                                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                                   Utils.ListItemListPool, out List<ListItem> lstItems))
+                                        {
+                                            //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
+                                            //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
+                                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                       out HashSet<string> setUsedValues))
+                                            {
+                                                foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
+                                                {
+                                                    // First check if we are using a list of language keys
+                                                    string strKey = objNode.Name == "key"
+                                                        ? objNode.Value
+                                                        : string.Empty;
+                                                    if (string.IsNullOrEmpty(strKey))
+                                                    {
+                                                        string strName
+                                                            = objNode.SelectSingleNodeAndCacheExpression(
+                                                                  "name", token)?.Value
+                                                              ?? string.Empty;
+                                                        if (string.IsNullOrWhiteSpace(strName))
+                                                        {
+                                                            // Assume that if we're not looking at something that has an XML node,
+                                                            // we're looking at a direct xpath filter or something that has proper names
+                                                            // like the lifemodule storybuilder macros.
+                                                            string strValue = objNode.Value;
+                                                            if (setUsedValues.Add(strValue))
+                                                                lstItems.Add(
+                                                                    new ListItem(
+                                                                        strValue,
+                                                                        blnSync
+                                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                                            ? objCharacter.TranslateExtra(
+                                                                                strValue, strPreferFile: strXmlFile,
+                                                                                token: token)
+                                                                            : await objCharacter.TranslateExtraAsync(
+                                                                                strValue, strPreferFile: strXmlFile,
+                                                                                token: token).ConfigureAwait(false)));
+                                                        }
+                                                        else if (setUsedValues.Add(strName))
+                                                        {
+                                                            lstItems.Add(
+                                                                new ListItem(
+                                                                    strName,
+                                                                    blnSync
+                                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                                        ? objCharacter.TranslateExtra(
+                                                                            strName, strPreferFile: strXmlFile,
+                                                                            token: token)
+                                                                        : await objCharacter.TranslateExtraAsync(
+                                                                                strName, strPreferFile: strXmlFile,
+                                                                                token: token)
+                                                                            .ConfigureAwait(false)));
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        string strValue
+                                                            = blnSync
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                ? LanguageManager.GetString(
+                                                                    strKey, GlobalSettings.DefaultLanguage,
+                                                                    token: token)
+                                                                : await LanguageManager
+                                                                    .GetStringAsync(
+                                                                        strKey, GlobalSettings.DefaultLanguage,
+                                                                        token: token).ConfigureAwait(false);
+                                                        if (setUsedValues.Add(strValue))
+                                                        {
+                                                            lstItems.Add(
+                                                                new ListItem(
+                                                                    strValue,
+                                                                    blnSync
+                                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                                        ? LanguageManager.GetString(strKey,
+                                                                            token: token)
+                                                                        : await LanguageManager
+                                                                            .GetStringAsync(strKey, token: token)
+                                                                            .ConfigureAwait(false)));
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            if (lstItems.Count == 0)
+                                            {
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    Rollback(objCharacter, token);
+                                                else
+                                                    await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                                return false;
+                                            }
+
+                                            string strSelectText = blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? LanguageManager.GetString("String_Improvement_SelectText",
+                                                    token: token)
+                                                : await LanguageManager
+                                                    .GetStringAsync("String_Improvement_SelectText", token: token)
+                                                    .ConfigureAwait(false);
+
+                                            using (ThreadSafeForm<SelectItem> frmSelect
+                                                   = blnSync
+                                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                       ? ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                                                       {
+                                                           Description = string.Format(GlobalSettings.CultureInfo,
+                                                               strSelectText,
+                                                               strFriendlyName)
+                                                       })
+                                                       : await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
+                                                       {
+                                                           Description = string.Format(GlobalSettings.CultureInfo,
+                                                               strSelectText,
+                                                               strFriendlyName)
+                                                       }, token).ConfigureAwait(false))
+                                            {
+                                                if (Convert.ToBoolean(
+                                                        nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                            "selecttext/@allowedit", token)?.Value,
+                                                        GlobalSettings.InvariantCultureInfo))
+                                                {
+                                                    lstItems.Insert(0, ListItem.Blank);
+                                                    frmSelect.MyForm.SetDropdownItemsMode(lstItems);
+                                                }
+                                                else
+                                                {
+                                                    frmSelect.MyForm.SetGeneralItemsMode(lstItems);
+                                                }
+
+                                                DialogResult eReturn = blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? frmSelect.ShowDialogSafe(objCharacter, token)
+                                                    : await frmSelect.ShowDialogSafeAsync(objCharacter, token)
+                                                        .ConfigureAwait(false);
+                                                if (eReturn == DialogResult.Cancel)
+                                                {
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        Rollback(objCharacter, token);
+                                                    else
+                                                        await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                                    return false;
+                                                }
+
+                                                SetSelectedValue(frmSelect.MyForm.SelectedItem, objCharacter);
+                                            }
+                                        }
+                                    }
+
+                                    strSelectedValue = GetSelectedValue(objCharacter);
+                                    sbdTrace.Append("SelectedValue = ").AppendLine(strSelectedValue);
+                                    sbdTrace.Append("strSourceName = ").AppendLine(strSourceName);
+
+                                    if (blnAddImprovementsToCharacter)
+                                    {
+                                        // Create the Improvement.
+                                        sbdTrace.AppendLine("Calling CreateImprovement");
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            CreateImprovement(objCharacter, strSelectedValue, objImprovementSource,
+                                                strSourceName,
+                                                Improvement.ImprovementType.Text,
+                                                strUnique, token: token);
+                                        else
+                                            await CreateImprovementAsync(objCharacter, strSelectedValue,
+                                                objImprovementSource,
+                                                strSourceName,
+                                                Improvement.ImprovementType.Text,
+                                                strUnique, token: token).ConfigureAwait(false);
+                                    }
                                 }
-
-                                sbdTrace.Append("SelectedValue = ").AppendLine(SelectedValue);
-                                sbdTrace.Append("strSourceName = ").AppendLine(strSourceName);
-
-                                if (blnAddImprovementsToCharacter)
+                                catch
                                 {
-                                    // Create the Improvement.
-                                    sbdTrace.AppendLine("Calling CreateImprovement");
                                     if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        CreateImprovement(objCharacter, _strSelectedValue, objImprovementSource,
-                                                          strSourceName,
-                                                          Improvement.ImprovementType.Text,
-                                                          strUnique, token: token);
+                                        Rollback(objCharacter, CancellationToken.None);
                                     else
-                                        await CreateImprovementAsync(objCharacter, _strSelectedValue,
-                                                                     objImprovementSource,
-                                                                     strSourceName,
-                                                                     Improvement.ImprovementType.Text,
-                                                                     strUnique, token: token).ConfigureAwait(false);
+                                        await RollbackAsync(objCharacter, CancellationToken.None).ConfigureAwait(false);
+                                    throw;
                                 }
                             }
-                            catch
+
+                            // If there is no character object, don't attempt to add any Improvements.
+                            if (objCharacter == null && blnAddImprovementsToCharacter)
                             {
-                                if (blnSync)
+                                sbdTrace.AppendLine("_objCharacter = Null");
+                                return true;
+                            }
+
+                            // Check to see what bonuses the node grants.
+                            if (blnSync)
+                            {
+                                try
+                                {
+                                    foreach (XmlNode bonusNode in nodBonus.ChildNodes)
+                                    {
+                                        if (ProcessBonus(objCharacter, objImprovementSource, ref strSourceName,
+                                                intRating,
+                                                strFriendlyName,
+                                                bonusNode, strUnique, !blnAddImprovementsToCharacter))
+                                            continue;
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        Rollback(objCharacter, token);
+                                        sbdTrace.AppendLine("Bonus processing unsuccessful, returning.");
+                                        return false;
+                                    }
+                                }
+#if DEBUG
+                                catch (Exception e)
+#else
+                                catch
+#endif
+                                {
+                                    Utils.BreakIfDebug();
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    Rollback(objCharacter, CancellationToken.None);
-                                else
-                                    await RollbackAsync(objCharacter, CancellationToken.None).ConfigureAwait(false);
-                                throw;
+                                    Rollback(objCharacter, token);
+                                    throw;
+                                }
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    foreach (XmlNode bonusNode in nodBonus.ChildNodes)
+                                    {
+                                        bool blnSuccess;
+                                        (blnSuccess, strSourceName) = await ProcessBonusAsync(
+                                                objCharacter, objImprovementSource, strSourceName, intRating,
+                                                strFriendlyName,
+                                                bonusNode, strUnique, !blnAddImprovementsToCharacter, token)
+                                            .ConfigureAwait(false);
+                                        if (blnSuccess)
+                                            continue;
+                                        await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                        sbdTrace.AppendLine("Bonus processing unsuccessful, returning.");
+                                        return false;
+                                    }
+                                }
+#if DEBUG
+                                catch (Exception e)
+#else
+                                catch
+#endif
+                                {
+                                    Utils.BreakIfDebug();
+                                    await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
-
                         // If there is no character object, don't attempt to add any Improvements.
-                        if (objCharacter == null && blnAddImprovementsToCharacter)
+                        else if (objCharacter == null && blnAddImprovementsToCharacter)
                         {
                             sbdTrace.AppendLine("_objCharacter = Null");
                             return true;
                         }
 
-                        // Check to see what bonuses the node grants.
-                        if (blnSync)
+                        // If we've made it this far, everything went OK, so commit the Improvements.
+
+                        if (blnAddImprovementsToCharacter)
                         {
-                            try
-                            {
-                                foreach (XmlNode bonusNode in nodBonus.ChildNodes)
-                                {
-                                    if (ProcessBonus(objCharacter, objImprovementSource, ref strSourceName, intRating,
-                                                     strFriendlyName,
-                                                     bonusNode, strUnique, !blnAddImprovementsToCharacter))
-                                        continue;
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    Rollback(objCharacter, token);
-                                    sbdTrace.AppendLine("Bonus processing unsuccessful, returning.");
-                                    return false;
-                                }
-                            }
-                            catch
-                            {
+                            sbdTrace.AppendLine("Committing improvements.");
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                Commit(objCharacter);
+                            else
+                                await CommitAsync(objCharacter, token).ConfigureAwait(false);
+                            sbdTrace.AppendLine("Finished committing improvements");
+                        }
+                        else
+                        {
+                            sbdTrace.AppendLine(
+                                "Calling scheduled Rollback due to blnAddImprovementsToCharacter = false");
+                            if (blnSync)
                                 // ReSharper disable once MethodHasAsyncOverload
                                 Rollback(objCharacter, token);
-                                throw;
-                            }
-                        }
-                        else
-                        {
-                            try
-                            {
-                                foreach (XmlNode bonusNode in nodBonus.ChildNodes)
-                                {
-                                    bool blnSuccess;
-                                    (blnSuccess, strSourceName) = await ProcessBonusAsync(
-                                            objCharacter, objImprovementSource, strSourceName, intRating,
-                                            strFriendlyName,
-                                            bonusNode, strUnique, !blnAddImprovementsToCharacter, token)
-                                        .ConfigureAwait(false);
-                                    if (blnSuccess)
-                                        continue;
-                                    await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                                    sbdTrace.AppendLine("Bonus processing unsuccessful, returning.");
-                                    return false;
-                                }
-                            }
-                            catch
-                            {
+                            else
                                 await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                                throw;
-                            }
+                            sbdTrace.AppendLine("Returned from scheduled Rollback");
+                        }
+
+                        // If the bonus should not bubble up SelectedValues from its improvements, reset it to empty.
+                        if (nodBonus.Attributes?["useselected"]?.InnerText == bool.FalseString)
+                        {
+                            SetSelectedValue(string.Empty, objCharacter);
                         }
                     }
-                    // If there is no character object, don't attempt to add any Improvements.
-                    else if (objCharacter == null && blnAddImprovementsToCharacter)
+                    finally
                     {
-                        sbdTrace.AppendLine("_objCharacter = Null");
-                        return true;
+                        // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
+                        SetForcedValue(string.Empty, objCharacter);
+                        SetLimitSelection(string.Empty, objCharacter);
                     }
-
-                    // If we've made it this far, everything went OK, so commit the Improvements.
-
-                    if (blnAddImprovementsToCharacter)
-                    {
-                        sbdTrace.AppendLine("Committing improvements.");
-                        Commit(objCharacter);
-                        sbdTrace.AppendLine("Finished committing improvements");
-                    }
-                    else
-                    {
-                        sbdTrace.AppendLine("Calling scheduled Rollback due to blnAddImprovementsToCharacter = false");
-                        if (blnSync)
-                            // ReSharper disable once MethodHasAsyncOverload
-                            Rollback(objCharacter, token);
-                        else
-                            await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                        sbdTrace.AppendLine("Returned from scheduled Rollback");
-                    }
-
-                    // If the bonus should not bubble up SelectedValues from its improvements, reset it to empty.
-                    if (nodBonus.Attributes?["useselected"]?.InnerText == bool.FalseString)
-                    {
-                        SelectedValue = string.Empty;
-                    }
-
-                    // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
-                    _strForcedValue = string.Empty;
-                    _strLimitSelection = string.Empty;
                 }
                 //catch (Exception ex)
                 //{
@@ -2414,8 +2692,8 @@ namespace Chummer
             //getting a different parameter injected
 
             AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
-                                                                              strSourceName, strUnique, _strForcedValue,
-                                                                              _strLimitSelection, SelectedValue,
+                                                                              strSourceName, strUnique, GetForcedValue(objCharacter),
+                                                                              GetLimitSelection(objCharacter), GetSelectedValue(objCharacter),
                                                                               strFriendlyName,
                                                                               intRating);
 
@@ -2435,9 +2713,9 @@ namespace Chummer
                 }
 
                 strSourceName = container.SourceName;
-                _strForcedValue = container.ForcedValue;
-                _strLimitSelection = container.LimitSelection;
-                _strSelectedValue = container.SelectedValue;
+                SetForcedValue(container.ForcedValue, objCharacter);
+                SetLimitSelection(container.LimitSelection, objCharacter);
+                SetSelectedValue(container.SelectedValue, objCharacter);
             }
             else if (blnIgnoreMethodNotFound || bonusNode.ChildNodes.Count == 0)
             {
@@ -2453,7 +2731,7 @@ namespace Chummer
             return true;
         }
 
-        private static async ValueTask<Tuple<bool, string>> ProcessBonusAsync(Character objCharacter, Improvement.ImprovementSource objImprovementSource,
+        private static async Task<Tuple<bool, string>> ProcessBonusAsync(Character objCharacter, Improvement.ImprovementSource objImprovementSource,
                                          string strSourceName,
                                          int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique,
                                          bool blnIgnoreMethodNotFound = false, CancellationToken token = default)
@@ -2464,14 +2742,15 @@ namespace Chummer
             //So far it is just a slower Dictionary<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
             //getting a different parameter injected
 
-            AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
-                                                                              strSourceName, strUnique, _strForcedValue,
-                                                                              _strLimitSelection, SelectedValue,
-                                                                              strFriendlyName,
-                                                                              intRating);
+            AddImprovementAsyncCollection container = new AddImprovementAsyncCollection(objCharacter,
+                objImprovementSource,
+                strSourceName, strUnique, GetForcedValue(objCharacter),
+                GetLimitSelection(objCharacter), GetSelectedValue(objCharacter),
+                strFriendlyName,
+                intRating);
 
-            Action<XmlNode> objImprovementMethod
-                = ImprovementMethods.GetMethod(bonusNode.Name.ToUpperInvariant(), container);
+            Func<XmlNode, CancellationToken, Task> objImprovementMethod
+                = ImprovementMethods.GetAsyncMethod(bonusNode.Name.ToUpperInvariant(), container);
             if (objImprovementMethod != null)
             {
                 try
@@ -2480,7 +2759,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        objImprovementMethod.Invoke(bonusNode);
+                        await objImprovementMethod.Invoke(bonusNode, token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -2494,9 +2773,9 @@ namespace Chummer
                 }
 
                 strSourceName = container.SourceName;
-                _strForcedValue = container.ForcedValue;
-                _strLimitSelection = container.LimitSelection;
-                _strSelectedValue = container.SelectedValue;
+                SetForcedValue(container.ForcedValue, objCharacter);
+                SetLimitSelection(container.LimitSelection, objCharacter);
+                SetSelectedValue(container.SelectedValue, objCharacter);
             }
             else if (blnIgnoreMethodNotFound || bonusNode.ChildNodes.Count == 0)
             {
@@ -2710,23 +2989,38 @@ namespace Chummer
                                     switch (strImprovedName)
                                     {
                                         case "Magician":
-                                            objCharacter.MagicianEnabled = true;
+                                            if (blnSync)
+                                                objCharacter.MagicianEnabled = true;
+                                            else
+                                                await objCharacter.SetMagicianEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
                                         case "Adept":
-                                            objCharacter.AdeptEnabled = true;
+                                            if (blnSync)
+                                                objCharacter.AdeptEnabled = true;
+                                            else
+                                                await objCharacter.SetAdeptEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
                                         case "Technomancer":
-                                            objCharacter.TechnomancerEnabled = true;
+                                            if (blnSync)
+                                                objCharacter.TechnomancerEnabled = true;
+                                            else
+                                                await objCharacter.SetTechnomancerEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
                                         case "Advanced Programs":
-                                            objCharacter.AdvancedProgramsEnabled = true;
+                                            if (blnSync)
+                                                objCharacter.AdvancedProgramsEnabled = true;
+                                            else
+                                                await objCharacter.SetAdvancedProgramsEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
                                         case "Critter":
-                                            objCharacter.CritterEnabled = true;
+                                            if (blnSync)
+                                                objCharacter.CritterEnabled = true;
+                                            else
+                                                await objCharacter.SetCritterEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
                                     }
 
@@ -2736,11 +3030,17 @@ namespace Chummer
                                     switch (strImprovedName)
                                     {
                                         case "Cyberware":
-                                            objCharacter.CyberwareDisabled = true;
+                                            if (blnSync)
+                                                objCharacter.CyberwareDisabled = true;
+                                            else
+                                                await objCharacter.SetCyberwareDisabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
                                         case "Initiation":
-                                            objCharacter.InitiationForceDisabled = true;
+                                            if (blnSync)
+                                                objCharacter.InitiationForceDisabled = true;
+                                            else
+                                                await objCharacter.SetInitiationForceDisabledAsync(true, token).ConfigureAwait(false);
                                             break;
                                     }
 
@@ -2752,10 +3052,18 @@ namespace Chummer
                         case Improvement.ImprovementType.PrototypeTranshuman:
                             // Legacy compatibility
                             if (string.IsNullOrEmpty(strImprovedName))
-                                objCharacter.PrototypeTranshuman = 1;
-                            else
+                            {
+                                if (blnSync)
+                                    objCharacter.PrototypeTranshuman = 1;
+                                else
+                                    await objCharacter.SetPrototypeTranshumanAsync(1, token).ConfigureAwait(false);
+                            }
+                            else if (blnSync)
                                 objCharacter.PrototypeTranshuman
                                     += Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
+                            else
+                                await objCharacter.ModifyPrototypeTranshumanAsync(
+                                    Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                             break;
 
                         case Improvement.ImprovementType.AddContact:
@@ -2911,12 +3219,24 @@ namespace Chummer
 
                         case Improvement.ImprovementType.Weapon:
                             Weapon objWeapon
-                                = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                                                          x => x.InternalId == strImprovedName)
-                                  ??
-                                  objCharacter.Vehicles.FindVehicleWeapon(strImprovedName, out _, out _, out _);
+                                = blnSync
+                                    ? objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
+                                          x => x.InternalId == strImprovedName, token)
+                                      ??
+                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName)
+                                    : await objCharacter.Weapons.DeepFirstOrDefaultAsync(x => x.Children,
+                                          x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false)
+                                      ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token)
+                                          .ConfigureAwait(false))
+                                      .Item1;
                             if (objWeapon != null)
-                                objWeapon.Equipped = true;
+                            {
+                                if (blnSync)
+                                    objWeapon.Equipped = true;
+                                else
+                                    await objWeapon.SetEquippedAsync(true, token).ConfigureAwait(false);
+                            }
+
                             break;
 
                         case Improvement.ImprovementType.Spell:
@@ -3120,21 +3440,26 @@ namespace Chummer
                                 ? objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Cyberware.FirstOrDefaultAsync(
                                     o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
-                            if (objCyberware != null)
+                            if (objCyberware != null && objCyberware.SourceID != Cyberware.EssenceHoleGUID &&
+                                objCyberware.SourceID != Cyberware.EssenceAntiHoleGUID)
                             {
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCyberware.ChangeModularEquip(true);
                                 else
                                     await objCyberware.ChangeModularEquipAsync(true, token: token)
-                                                      .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                             }
                         }
                             break;
                     }
                 }
 
-                objImprovementList.ProcessRelevantEvents(token);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objImprovementList.ProcessRelevantEvents(token);
+                else
+                    await objImprovementList.ProcessRelevantEventsAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -3272,7 +3597,7 @@ namespace Chummer
                                     await objCharacter.SkillsSection.KnowsoftSkills.ForEachAsync(
                                         objKnowledgeSkill => objCharacter.SkillsSection.KnowledgeSkills
                                                                          .RemoveAsync(objKnowledgeSkill, token)
-                                                                         .AsTask(), token: token).ConfigureAwait(false);
+                                                                         , token: token).ConfigureAwait(false);
                                 }
                             }
 
@@ -3336,23 +3661,38 @@ namespace Chummer
                                         switch (strImprovedName)
                                         {
                                             case "Magician":
-                                                objCharacter.MagicianEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.MagicianEnabled = false;
+                                                else
+                                                    await objCharacter.SetMagicianEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Adept":
-                                                objCharacter.AdeptEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.AdeptEnabled = false;
+                                                else
+                                                    await objCharacter.SetAdeptEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Technomancer":
-                                                objCharacter.TechnomancerEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.TechnomancerEnabled = false;
+                                                else
+                                                    await objCharacter.SetTechnomancerEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Advanced Programs":
-                                                objCharacter.AdvancedProgramsEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.AdvancedProgramsEnabled = false;
+                                                else
+                                                    await objCharacter.SetAdvancedProgramsEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Critter":
-                                                objCharacter.CritterEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.CritterEnabled = false;
+                                                else
+                                                    await objCharacter.SetCritterEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
                                         }
 
@@ -3362,11 +3702,17 @@ namespace Chummer
                                         switch (strImprovedName)
                                         {
                                             case "Cyberware":
-                                                objCharacter.CyberwareDisabled = false;
+                                                if (blnSync)
+                                                    objCharacter.CyberwareDisabled = false;
+                                                else
+                                                    await objCharacter.SetCyberwareDisabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Initiation":
-                                                objCharacter.InitiationForceDisabled = false;
+                                                if (blnSync)
+                                                    objCharacter.InitiationForceDisabled = false;
+                                                else
+                                                    await objCharacter.SetInitiationForceDisabledAsync(false, token).ConfigureAwait(false);
                                                 break;
                                         }
 
@@ -3381,11 +3727,19 @@ namespace Chummer
                             if (string.IsNullOrEmpty(strImprovedName))
                             {
                                 if (!blnHasDuplicate)
-                                    objCharacter.PrototypeTranshuman = 0;
+                                {
+                                    if (blnSync)
+                                        objCharacter.PrototypeTranshuman = 0;
+                                    else
+                                        await objCharacter.SetPrototypeTranshumanAsync(0, token).ConfigureAwait(false);
+                                }
                             }
-                            else
+                            else if (blnSync)
                                 objCharacter.PrototypeTranshuman
                                     -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
+                            else
+                                await objCharacter.ModifyPrototypeTranshumanAsync(
+                                    -Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
 
                             break;
 
@@ -3545,12 +3899,23 @@ namespace Chummer
 
                         case Improvement.ImprovementType.Weapon:
                             Weapon objWeapon
-                                = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                                                          x => x.InternalId == strImprovedName)
-                                  ??
-                                  objCharacter.Vehicles.FindVehicleWeapon(strImprovedName, out _, out _, out _);
+                                = blnSync
+                                    ? objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
+                                          x => x.InternalId == strImprovedName, token)
+                                      ??
+                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName)
+                                    : await objCharacter.Weapons.DeepFirstOrDefaultAsync(x => x.Children,
+                                          x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false)
+                                      ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token)
+                                          .ConfigureAwait(false))
+                                      .Item1;
                             if (objWeapon != null)
-                                objWeapon.Equipped = false;
+                            {
+                                if (blnSync)
+                                    objWeapon.Equipped = false;
+                                else
+                                    await objWeapon.SetEquippedAsync(false, token).ConfigureAwait(false);
+                            }
                             break;
 
                         case Improvement.ImprovementType.Spell:
@@ -3779,7 +4144,8 @@ namespace Chummer
                                 ? objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Cyberware.FirstOrDefaultAsync(
                                     o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
-                            if (objCyberware != null)
+                            if (objCyberware != null && objCyberware.SourceID != Cyberware.EssenceHoleGUID &&
+                                objCyberware.SourceID != Cyberware.EssenceAntiHoleGUID)
                             {
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -3793,7 +4159,11 @@ namespace Chummer
                     }
                 }
 
-                objImprovementList.ProcessRelevantEvents(token);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objImprovementList.ProcessRelevantEvents(token);
+                else
+                    await objImprovementList.ProcessRelevantEventsAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -3804,7 +4174,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Remove all of the Improvements for an XML Node.
+        /// Remove all the Improvements for an XML Node.
         /// </summary>
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
@@ -3825,7 +4195,7 @@ namespace Chummer
             List<Improvement> objImprovementList;
             using (objCharacter.LockObject.EnterReadLock(token))
             {
-                // A List of Improvements to hold all of the items that will eventually be deleted.
+                // A List of Improvements to hold all the items that will eventually be deleted.
                 objImprovementList = (string.IsNullOrEmpty(strSourceName)
                     ? objCharacter.Improvements.Where(objImprovement =>
                                                           objImprovement.ImproveSource == objImprovementSource)
@@ -3852,13 +4222,192 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Remove all of the Improvements for an XML Node.
+        /// Remove all the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="lstImprovementSources">Types of object that granted these Improvements.</param>
+        /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static decimal RemoveImprovements(Character objCharacter,
+            ICollection<Improvement.ImprovementSource> lstImprovementSources,
+            string strSourceName = "", CancellationToken token = default)
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return 0;
+            }
+
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
+                      + lstImprovementSources + Environment.NewLine + "strSourceName = " + strSourceName);
+            List<Improvement> objImprovementList;
+            using (objCharacter.LockObject.EnterReadLock(token))
+            {
+                // A List of Improvements to hold all the items that will eventually be deleted.
+                objImprovementList = (string.IsNullOrEmpty(strSourceName)
+                    ? objCharacter.Improvements.Where(objImprovement =>
+                        lstImprovementSources.Contains(objImprovement.ImproveSource))
+                    : objCharacter.Improvements.Where(objImprovement =>
+                        lstImprovementSources.Contains(objImprovement.ImproveSource) &&
+                        objImprovement.SourceName == strSourceName)).ToList();
+
+                // Compatibility fix for when blnConcatSelectedValue was around
+                if (strSourceName.IsGuid())
+                {
+                    string strSourceNameSpaced =
+                        strSourceName + LanguageManager.GetString("String_Space", token: token);
+                    string strSourceNameSpacedInvariant = strSourceName + ' ';
+                    objImprovementList.AddRange(objCharacter.Improvements.Where(
+                        objImprovement =>
+                            lstImprovementSources.Contains(objImprovement.ImproveSource) &&
+                            (objImprovement.SourceName.StartsWith(
+                                 strSourceNameSpaced, StringComparison.Ordinal)
+                             || objImprovement.SourceName.StartsWith(
+                                 strSourceNameSpacedInvariant, StringComparison.Ordinal))));
+                }
+            }
+
+            return RemoveImprovements(objCharacter, objImprovementList, token: token);
+        }
+
+        /// <summary>
+        /// Remove all the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
+        /// <param name="lstSourceNames">Names of the items that granted these Improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static decimal RemoveImprovements(Character objCharacter,
+            Improvement.ImprovementSource objImprovementSource,
+            ICollection<string> lstSourceNames, CancellationToken token = default)
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return 0;
+            }
+
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
+                      + objImprovementSource + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
+            List<Improvement> objImprovementList;
+            using (objCharacter.LockObject.EnterReadLock(token))
+            {
+                // A List of Improvements to hold all the items that will eventually be deleted.
+                if (lstSourceNames == null || lstSourceNames.Count == 0)
+                {
+                    objImprovementList = objCharacter.Improvements
+                        .Where(objImprovement => objImprovement.ImproveSource == objImprovementSource).ToList();
+                }
+                else if (lstSourceNames.Any(x => x.IsGuid()))
+                {
+                    // Compatibility fix for when blnConcatSelectedValue was around
+                    HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
+                    foreach (string strSourceName in lstSourceNames)
+                    {
+                        if (!strSourceName.IsGuid())
+                            continue;
+                        setSpacedSourceNames.Add(
+                            strSourceName + LanguageManager.GetString("String_Space", token: token));
+                        setSpacedSourceNames.Add(
+                            strSourceName + ' ');
+                    }
+
+                    objImprovementList = new List<Improvement>();
+                    foreach (Improvement objImprovement in objCharacter.Improvements)
+                    {
+                        if (objImprovement.ImproveSource != objImprovementSource)
+                            continue;
+                        if (lstSourceNames.Contains(objImprovement.SourceName) || setSpacedSourceNames.Any(x =>
+                                objImprovement.SourceName.StartsWith(x, StringComparison.Ordinal)))
+                        {
+                            objImprovementList.Add(objImprovement);
+                        }
+                    }
+                }
+                else
+                {
+                    objImprovementList = objCharacter.Improvements.Where(objImprovement =>
+                        objImprovement.ImproveSource == objImprovementSource &&
+                        lstSourceNames.Contains(objImprovement.SourceName)).ToList();
+                }
+            }
+
+            return RemoveImprovements(objCharacter, objImprovementList, token: token);
+        }
+
+        /// <summary>
+        /// Remove all the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="lstImprovementSources">Types of object that granted these Improvements.</param>
+        /// <param name="lstSourceNames">Names of the items that granted these Improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static decimal RemoveImprovements(Character objCharacter,
+            ICollection<Improvement.ImprovementSource> lstImprovementSources,
+            ICollection<string> lstSourceNames, CancellationToken token = default)
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return 0;
+            }
+
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
+                      + lstImprovementSources + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
+            List<Improvement> objImprovementList;
+            using (objCharacter.LockObject.EnterReadLock(token))
+            {
+                // A List of Improvements to hold all the items that will eventually be deleted.
+                if (lstSourceNames == null || lstSourceNames.Count == 0)
+                {
+                    objImprovementList = objCharacter.Improvements
+                        .Where(objImprovement => lstImprovementSources.Contains(objImprovement.ImproveSource)).ToList();
+                }
+                else if (lstSourceNames.Any(x => x.IsGuid()))
+                {
+                    // Compatibility fix for when blnConcatSelectedValue was around
+                    HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
+                    foreach (string strSourceName in lstSourceNames)
+                    {
+                        if (!strSourceName.IsGuid())
+                            continue;
+                        setSpacedSourceNames.Add(
+                            strSourceName + LanguageManager.GetString("String_Space", token: token));
+                        setSpacedSourceNames.Add(
+                            strSourceName + ' ');
+                    }
+
+                    objImprovementList = new List<Improvement>();
+                    foreach (Improvement objImprovement in objCharacter.Improvements)
+                    {
+                        if (!lstImprovementSources.Contains(objImprovement.ImproveSource))
+                            continue;
+                        if (lstSourceNames.Contains(objImprovement.SourceName) || setSpacedSourceNames.Any(x =>
+                                objImprovement.SourceName.StartsWith(x, StringComparison.Ordinal)))
+                        {
+                            objImprovementList.Add(objImprovement);
+                        }
+                    }
+                }
+                else
+                {
+                    objImprovementList = objCharacter.Improvements.Where(objImprovement =>
+                        lstImprovementSources.Contains(objImprovement.ImproveSource) &&
+                        lstSourceNames.Contains(objImprovement.SourceName)).ToList();
+                }
+            }
+
+            return RemoveImprovements(objCharacter, objImprovementList, token: token);
+        }
+
+        /// <summary>
+        /// Remove all the Improvements for an XML Node.
         /// </summary>
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
         /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask<decimal> RemoveImprovementsAsync(Character objCharacter,
+        public static async Task<decimal> RemoveImprovementsAsync(Character objCharacter,
                                                                        Improvement.ImprovementSource objImprovementSource,
                                                                        string strSourceName = "", CancellationToken token = default)
         {
@@ -3871,37 +4420,250 @@ namespace Chummer
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                      + objImprovementSource + Environment.NewLine + "strSourceName = " + strSourceName);
             List<Improvement> objImprovementList;
-            using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                // A List of Improvements to hold all of the items that will eventually be deleted.
+                // A List of Improvements to hold all the items that will eventually be deleted.
                 objImprovementList = (string.IsNullOrEmpty(strSourceName)
                     ? objCharacter.Improvements.Where(objImprovement =>
-                                                          objImprovement.ImproveSource == objImprovementSource)
+                        objImprovement.ImproveSource == objImprovementSource)
                     : objCharacter.Improvements.Where(objImprovement =>
-                                                          objImprovement.ImproveSource == objImprovementSource
-                                                          && objImprovement.SourceName == strSourceName)).ToList();
+                        objImprovement.ImproveSource == objImprovementSource
+                        && objImprovement.SourceName == strSourceName)).ToList();
 
                 // Compatibility fix for when blnConcatSelectedValue was around
                 if (strSourceName.IsGuid())
                 {
-                    string strSourceNameSpaced = strSourceName + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                    string strSourceNameSpaced = strSourceName +
+                                                 await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                     .ConfigureAwait(false);
                     string strSourceNameSpacedInvariant = strSourceName + ' ';
                     objImprovementList.AddRange(objCharacter.Improvements.Where(
-                                                    objImprovement =>
-                                                        objImprovement.ImproveSource == objImprovementSource &&
-                                                        (objImprovement.SourceName.StartsWith(
-                                                             strSourceNameSpaced, StringComparison.Ordinal)
-                                                         || objImprovement.SourceName.StartsWith(
-                                                             strSourceNameSpacedInvariant, StringComparison.Ordinal))));
+                        objImprovement =>
+                            objImprovement.ImproveSource == objImprovementSource &&
+                            (objImprovement.SourceName.StartsWith(
+                                 strSourceNameSpaced, StringComparison.Ordinal)
+                             || objImprovement.SourceName.StartsWith(
+                                 strSourceNameSpacedInvariant, StringComparison.Ordinal))));
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Remove all of the Improvements for an XML Node.
+        /// Remove all the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="lstImprovementSources">Types of object that granted these Improvements.</param>
+        /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<decimal> RemoveImprovementsAsync(Character objCharacter,
+            ICollection<Improvement.ImprovementSource> lstImprovementSources,
+            string strSourceName = "", CancellationToken token = default)
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return 0;
+            }
+
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
+                      + lstImprovementSources + Environment.NewLine + "strSourceName = " + strSourceName);
+            List<Improvement> objImprovementList;
+            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // A List of Improvements to hold all the items that will eventually be deleted.
+                objImprovementList = await (string.IsNullOrEmpty(strSourceName)
+                    ? objCharacter.Improvements.ToListAsync(objImprovement =>
+                        lstImprovementSources.Contains(objImprovement.ImproveSource), token: token)
+                    : objCharacter.Improvements.ToListAsync(objImprovement =>
+                        lstImprovementSources.Contains(objImprovement.ImproveSource) &&
+                        objImprovement.SourceName == strSourceName, token: token)).ConfigureAwait(false);
+
+                // Compatibility fix for when blnConcatSelectedValue was around
+                if (strSourceName.IsGuid())
+                {
+                    string strSourceNameSpaced = strSourceName +
+                                                 await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                     .ConfigureAwait(false);
+                    string strSourceNameSpacedInvariant = strSourceName + ' ';
+                    objImprovementList.AddRange(objCharacter.Improvements.Where(
+                        objImprovement =>
+                            lstImprovementSources.Contains(objImprovement.ImproveSource) &&
+                            (objImprovement.SourceName.StartsWith(
+                                 strSourceNameSpaced, StringComparison.Ordinal)
+                             || objImprovement.SourceName.StartsWith(
+                                 strSourceNameSpacedInvariant, StringComparison.Ordinal))));
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Remove all the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
+        /// <param name="lstSourceNames">Names of the items that granted these Improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<decimal> RemoveImprovementsAsync(Character objCharacter,
+            Improvement.ImprovementSource objImprovementSource,
+            ICollection<string> lstSourceNames, CancellationToken token = default)
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return 0;
+            }
+
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
+                      + objImprovementSource + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
+            List<Improvement> objImprovementList;
+            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // A List of Improvements to hold all the items that will eventually be deleted.
+                if (lstSourceNames == null || lstSourceNames.Count == 0)
+                {
+                    objImprovementList = await objCharacter.Improvements
+                        .ToListAsync(objImprovement => objImprovement.ImproveSource == objImprovementSource,
+                            token: token).ConfigureAwait(false);
+                }
+                else if (lstSourceNames.Any(x => x.IsGuid()))
+                {
+                    // Compatibility fix for when blnConcatSelectedValue was around
+                    HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
+                    foreach (string strSourceName in lstSourceNames)
+                    {
+                        if (!strSourceName.IsGuid())
+                            continue;
+                        setSpacedSourceNames.Add(
+                            strSourceName + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                .ConfigureAwait(false));
+                        setSpacedSourceNames.Add(
+                            strSourceName + ' ');
+                    }
+
+                    objImprovementList = new List<Improvement>();
+                    await objCharacter.Improvements.ForEachAsync(objImprovement =>
+                    {
+                        if (objImprovement.ImproveSource != objImprovementSource)
+                            return;
+                        if (lstSourceNames.Contains(objImprovement.SourceName) || setSpacedSourceNames.Any(x =>
+                                objImprovement.SourceName.StartsWith(x, StringComparison.Ordinal)))
+                        {
+                            objImprovementList.Add(objImprovement);
+                        }
+                    }, token).ConfigureAwait(false);
+                }
+                else
+                {
+                    objImprovementList = await objCharacter.Improvements.ToListAsync(objImprovement =>
+                        objImprovement.ImproveSource == objImprovementSource &&
+                        lstSourceNames.Contains(objImprovement.SourceName), token: token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Remove all the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="lstImprovementSources">Types of object that granted these Improvements.</param>
+        /// <param name="lstSourceNames">Names of the items that granted these Improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<decimal> RemoveImprovementsAsync(Character objCharacter,
+            ICollection<Improvement.ImprovementSource> lstImprovementSources,
+            ICollection<string> lstSourceNames, CancellationToken token = default)
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return 0;
+            }
+
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
+                      + lstImprovementSources + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
+            List<Improvement> objImprovementList;
+            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // A List of Improvements to hold all the items that will eventually be deleted.
+                if (lstSourceNames == null || lstSourceNames.Count == 0)
+                {
+                    objImprovementList = await objCharacter.Improvements
+                        .ToListAsync(objImprovement => lstImprovementSources.Contains(objImprovement.ImproveSource),
+                            token: token).ConfigureAwait(false);
+                }
+                else if (lstSourceNames.Any(x => x.IsGuid()))
+                {
+                    // Compatibility fix for when blnConcatSelectedValue was around
+                    HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
+                    foreach (string strSourceName in lstSourceNames)
+                    {
+                        if (!strSourceName.IsGuid())
+                            continue;
+                        setSpacedSourceNames.Add(
+                            strSourceName + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                .ConfigureAwait(false));
+                        setSpacedSourceNames.Add(
+                            strSourceName + ' ');
+                    }
+
+                    objImprovementList = new List<Improvement>();
+                    await objCharacter.Improvements.ForEachAsync(objImprovement =>
+                    {
+                        if (!lstImprovementSources.Contains(objImprovement.ImproveSource))
+                            return;
+                        if (lstSourceNames.Contains(objImprovement.SourceName) || setSpacedSourceNames.Any(x =>
+                                objImprovement.SourceName.StartsWith(x, StringComparison.Ordinal)))
+                        {
+                            objImprovementList.Add(objImprovement);
+                        }
+                    }, token).ConfigureAwait(false);
+                }
+                else
+                {
+                    objImprovementList = await objCharacter.Improvements.ToListAsync(objImprovement =>
+                        lstImprovementSources.Contains(objImprovement.ImproveSource) &&
+                        lstSourceNames.Contains(objImprovement.SourceName), token: token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Remove all the Improvements for an XML Node.
         /// </summary>
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementList">List of improvements to delete.</param>
@@ -3917,7 +4679,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Remove all of the Improvements for an XML Node.
+        /// Remove all the Improvements for an XML Node.
         /// </summary>
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementList">List of improvements to delete.</param>
@@ -3933,7 +4695,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Remove all of the Improvements for an XML Node.
+        /// Remove all the Improvements for an XML Node.
         /// Uses flag hack method design outlined here to avoid locking:
         /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
         /// </summary>
@@ -3970,7 +4732,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 // Note: As attractive as it may be to replace objImprovementList with an IEnumerable, we need to iterate through it twice for performance reasons
 
-                // Now that we have all of the applicable Improvements, remove them from the character.
+                // Now that we have all the applicable Improvements, remove them from the character.
                 foreach (Improvement objImprovement in objImprovementList)
                 {
                     // Remove the Improvement.
@@ -4161,7 +4923,7 @@ namespace Chummer
                                     await objCharacter.SkillsSection.KnowsoftSkills.ForEachAsync(
                                         objKnowledgeSkill => objCharacter.SkillsSection.KnowledgeSkills
                                                                          .RemoveAsync(objKnowledgeSkill, token)
-                                                                         .AsTask(), token).ConfigureAwait(false);
+                                                                         , token).ConfigureAwait(false);
                                 }
                             }
 
@@ -4223,10 +4985,8 @@ namespace Chummer
                                         if (objSkill.InternalId == strImprovedName)
                                         {
                                             await Task.WhenAll(
-                                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objSkill, token)
-                                                            .AsTask(),
-                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token)
-                                                            .AsTask()).ConfigureAwait(false);
+                                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objSkill, token),
+                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token)).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -4280,10 +5040,8 @@ namespace Chummer
                                             if (objKnoSkill.InternalId == strImprovedName)
                                             {
                                                 await Task.WhenAll(
-                                                    objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objKnoSkill, token)
-                                                                .AsTask(),
-                                                    objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token)
-                                                                .AsTask()).ConfigureAwait(false);
+                                                    objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objKnoSkill, token),
+                                                    objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token)).ConfigureAwait(false);
                                             }
                                         }
                                     }
@@ -4329,23 +5087,38 @@ namespace Chummer
                                         switch (strImprovedName)
                                         {
                                             case "Magician":
-                                                objCharacter.MagicianEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.MagicianEnabled = false;
+                                                else
+                                                    await objCharacter.SetMagicianEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Adept":
-                                                objCharacter.AdeptEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.AdeptEnabled = false;
+                                                else
+                                                    await objCharacter.SetAdeptEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Technomancer":
-                                                objCharacter.TechnomancerEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.TechnomancerEnabled = false;
+                                                else
+                                                    await objCharacter.SetTechnomancerEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Advanced Programs":
-                                                objCharacter.AdvancedProgramsEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.AdvancedProgramsEnabled = false;
+                                                else
+                                                    await objCharacter.SetAdvancedProgramsEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Critter":
-                                                objCharacter.CritterEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.CritterEnabled = false;
+                                                else
+                                                    await objCharacter.SetCritterEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
                                         }
 
@@ -4355,11 +5128,17 @@ namespace Chummer
                                         switch (strImprovedName)
                                         {
                                             case "Cyberware":
-                                                objCharacter.CyberwareDisabled = false;
+                                                if (blnSync)
+                                                    objCharacter.CyberwareDisabled = false;
+                                                else
+                                                    await objCharacter.SetCyberwareDisabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Initiation":
-                                                objCharacter.InitiationForceDisabled = false;
+                                                if (blnSync)
+                                                    objCharacter.InitiationForceDisabled = false;
+                                                else
+                                                    await objCharacter.SetInitiationForceDisabledAsync(false, token).ConfigureAwait(false);
                                                 break;
                                         }
 
@@ -4374,13 +5153,19 @@ namespace Chummer
                             if (string.IsNullOrEmpty(strImprovedName))
                             {
                                 if (!blnHasDuplicate)
-                                    objCharacter.PrototypeTranshuman = 0;
+                                {
+                                    if (blnSync)
+                                        objCharacter.PrototypeTranshuman = 0;
+                                    else
+                                        await objCharacter.SetPrototypeTranshumanAsync(0, token).ConfigureAwait(false);
+                                }
                             }
-                            else
-                            {
+                            else if (blnSync)
                                 objCharacter.PrototypeTranshuman
                                     -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
-                            }
+                            else
+                                await objCharacter.ModifyPrototypeTranshumanAsync(
+                                    -Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
 
                             break;
 
@@ -4389,16 +5174,24 @@ namespace Chummer
                             if (!blnHasDuplicate && !blnReapplyImprovements)
                             {
                                 foreach (Cyberware objCyberware in blnSync
-                                             ? objCharacter.Cyberware.DeepWhere(
-                                                 x => x.Children, x => x.Grade.Adapsin, token)
-                                             : await objCharacter.Cyberware.DeepWhereAsync(
-                                                 x => x.Children, x => x.Grade.Adapsin, token).ConfigureAwait(false))
+                                             ? objCharacter.Cyberware.GetAllDescendants(
+                                                 x => x.Children, token)
+                                             : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
+                                                 x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                                 {
-                                    string strNewName = objCyberware.Grade.Name.FastEscapeOnceFromEnd("(Adapsin)")
-                                                                    .Trim();
-                                    // Determine which GradeList to use for the Cyberware.
-                                    objCyberware.Grade = objCharacter.GetGrades(objCyberware.SourceType, true, token)
-                                                                     .FirstOrDefault(x => x.Name == strNewName);
+                                    Grade objOldGrade = blnSync ? objCyberware.Grade : await objCyberware.GetGradeAsync(token).ConfigureAwait(false);
+                                    if (objOldGrade.Adapsin)
+                                    {
+                                        string strNewName = objOldGrade.Name.FastEscapeOnceFromEnd("(Adapsin)")
+                                            .Trim();
+                                        // Determine which GradeList to use for the Cyberware.
+                                        Grade objNewGrade = objCharacter.GetGrades(objCyberware.SourceType, true, token)
+                                            .FirstOrDefault(x => x.Name == strNewName);
+                                        if (blnSync)
+                                            objCyberware.Grade = objNewGrade;
+                                        else
+                                            await objCyberware.SetGradeAsync(objNewGrade, token).ConfigureAwait(false);
+                                    }
                                 }
                             }
                         }
@@ -4578,10 +5371,16 @@ namespace Chummer
                         case Improvement.ImprovementType.Weapon:
                         {
                             Weapon objWeapon
-                                = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                                                          x => x.InternalId == strImprovedName)
-                                  ??
-                                  objCharacter.Vehicles.FindVehicleWeapon(strImprovedName);
+                                = blnSync
+                                    ? objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
+                                          x => x.InternalId == strImprovedName, token)
+                                      ??
+                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName)
+                                    : await objCharacter.Weapons.DeepFirstOrDefaultAsync(x => x.Children,
+                                          x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false)
+                                      ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token)
+                                          .ConfigureAwait(false))
+                                      .Item1;
                             if (objWeapon != null)
                             {
                                 if (blnSync)
@@ -4655,7 +5454,7 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     decReturn += objMartialArt.DeleteMartialArt();
                                 else
-                                    decReturn += await objMartialArt.DeleteMartialArtAsync(token).ConfigureAwait(false);
+                                    decReturn += await objMartialArt.DeleteMartialArtAsync(token: token).ConfigureAwait(false);
                             }
 
                             break;
@@ -4666,14 +5465,16 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     objCharacter.SkillsSection.RemoveSkills(
-                                        (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
+                                        (SkillsSection.FilterOption)Enum.Parse(typeof(SkillsSection.FilterOption),
                                             strImprovedName), objImprovement.Target,
                                         !blnReapplyImprovements && objCharacter.Created, token: token);
                                 else
                                     await objCharacter.SkillsSection.RemoveSkillsAsync(
-                                        (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
-                                            strImprovedName), objImprovement.Target,
-                                        !blnReapplyImprovements && objCharacter.Created, token).ConfigureAwait(false);
+                                            (SkillsSection.FilterOption)Enum.Parse(typeof(SkillsSection.FilterOption),
+                                                strImprovedName), objImprovement.Target,
+                                            !blnReapplyImprovements &&
+                                            await objCharacter.GetCreatedAsync(token).ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
@@ -4720,7 +5521,8 @@ namespace Chummer
                                             x => x.InternalId == strUniqueName, token).ConfigureAwait(false)
                                         // Kept for legacy reasons
                                         : await objSkill.Specializations.FirstOrDefaultAsync(
-                                            x => x.Name == strUniqueName, token).ConfigureAwait(false);
+                                            async x => await x.GetNameAsync(token).ConfigureAwait(false) ==
+                                                       strUniqueName, token).ConfigureAwait(false);
                                 if (objSkillSpec != null)
                                 {
                                     if (blnSync)
@@ -4775,50 +5577,152 @@ namespace Chummer
                             {
                                 if (blnSync)
                                 {
+                                    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+                                    if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels)
+                                        objImprovedPower.OnMultiplePropertyChanged(
+                                            nameof(Power.TotalRating), nameof(Power.FreeLevels));
+                                    else
+                                        objImprovedPower.OnMultiplePropertyChanged(
+                                            nameof(Power.TotalRating), nameof(Power.FreePoints));
+
                                     if (objImprovedPower.TotalRating <= 0)
                                     {
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objImprovedPower.DeletePower();
                                     }
                                 }
-                                else if (await objImprovedPower.GetTotalRatingAsync(token).ConfigureAwait(false) <= 0)
-                                {
-                                    await objImprovedPower.DeletePowerAsync(token).ConfigureAwait(false);
-                                }
-
                                 // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-                                if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels)
-                                    objImprovedPower.OnMultiplePropertyChanged(
-                                        nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreeLevels));
                                 else
-                                    objImprovedPower.OnMultiplePropertyChanged(
-                                        nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreePoints));
+                                {
+                                    if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels)
+                                        await objImprovedPower.OnMultiplePropertyChangedAsync(token,
+                                                nameof(Power.TotalRating), nameof(Power.FreeLevels))
+                                            .ConfigureAwait(false);
+                                    else
+                                        await objImprovedPower.OnMultiplePropertyChangedAsync(token,
+                                                nameof(Power.TotalRating), nameof(Power.FreePoints))
+                                            .ConfigureAwait(false);
+
+                                    if (await objImprovedPower.GetTotalRatingAsync(token).ConfigureAwait(false) <= 0)
+                                    {
+                                        await objImprovedPower.DeletePowerAsync(token).ConfigureAwait(false);
+                                    }
+                                }
                             }
 
                             break;
 
                         case Improvement.ImprovementType.FreeWare:
                         {
-                            Cyberware objCyberware = blnSync
-                                ? objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName)
-                                : await objCharacter.Cyberware
-                                                    .FirstOrDefaultAsync(o => o.InternalId == strImprovedName, token)
-                                                    .ConfigureAwait(false);
-                            if (objCyberware != null)
+                            // Specific to AddWare of an essence hole or antihole: because these can be created or destroyed after the improvement has been added, the name that is saved will be the source ID of the hole or antihole instead of the internal id
+                            if (strImprovedName == Cyberware.EssenceHoleGuidString)
                             {
-                                if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    decReturn += objCyberware.TotalCost + objCyberware.DeleteCyberware();
-                                else
-                                    decReturn += await objCyberware.GetTotalCostAsync(token).ConfigureAwait(false) + await objCyberware
-                                        .DeleteCyberwareAsync(token: token).ConfigureAwait(false);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                objCharacter.DecreaseEssenceHole(objImprovement.Rating);
+                            }
+                            else if (strImprovedName == Cyberware.EssenceAntiHoleGuidString)
+                            {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                objCharacter.IncreaseEssenceHole(objImprovement.Rating);
+                            }
+                            else
+                            {
+                                Cyberware objCyberware = blnSync
+                                    ? objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                    : await objCharacter.Cyberware
+                                        .FirstOrDefaultAsync(o => o.InternalId == strImprovedName, token)
+                                        .ConfigureAwait(false);
+                                if (objCyberware != null)
+                                {
+                                    if (blnSync)
+                                    {
+                                        if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            objCharacter.DecreaseEssenceHole(objImprovement.Rating);
+                                        }
+                                        else if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            objCharacter.IncreaseEssenceHole(objImprovement.Rating);
+                                        }
+                                        else
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            decReturn += objCyberware.TotalCost + objCyberware.DeleteCyberware();
+                                        }
+                                    }
+                                    else if (await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false) ==
+                                             Cyberware.EssenceHoleGUID)
+                                    {
+                                        await objCharacter.DecreaseEssenceHoleAsync(objImprovement.Rating,
+                                            token: token).ConfigureAwait(false);
+                                    }
+                                    else if (await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false) ==
+                                             Cyberware.EssenceAntiHoleGUID)
+                                    {
+                                        await objCharacter.IncreaseEssenceHoleAsync(objImprovement.Rating,
+                                            token: token).ConfigureAwait(false);
+                                    }
+                                    else
+                                    {
+                                        decReturn += await objCyberware.GetTotalCostAsync(token).ConfigureAwait(false) +
+                                                     await objCyberware
+                                                         .DeleteCyberwareAsync(token: token).ConfigureAwait(false);
+                                    }
+                                }
+                                // Check for the specific case where we added an essence hole or antihole and it perfectly canceled out an existing antihole or hole, leaving no cyberware to record in the improvement
+                                else if (!string.IsNullOrEmpty(strImprovedName))
+                                {
+                                    XPathNavigator objDataNode =
+                                        (blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? objCharacter.LoadDataXPath("bioware.xml", token: token)
+                                            : await objCharacter.LoadDataXPathAsync("bioware.xml", token: token)
+                                                .ConfigureAwait(false)).TryGetNodeByNameOrId(
+                                            "/chummer/biowares/bioware",
+                                            strImprovedName) ??
+                                        (blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? objCharacter.LoadDataXPath("cyberware.xml", token: token)
+                                            : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token)
+                                                .ConfigureAwait(false)).TryGetNodeByNameOrId(
+                                            "/chummer/cyberwares/cyberware",
+                                            strImprovedName);
+                                    if (objDataNode != null)
+                                    {
+                                        switch (objDataNode.SelectSingleNodeAndCacheExpression("id", token)?.Value)
+                                        {
+                                            case Cyberware.EssenceHoleGuidString when blnSync:
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                objCharacter.DecreaseEssenceHole(objImprovement.Rating);
+                                                break;
+                                            case Cyberware.EssenceHoleGuidString:
+                                                await objCharacter.DecreaseEssenceHoleAsync(objImprovement.Rating,
+                                                    token: token).ConfigureAwait(false);
+                                                break;
+                                            case Cyberware.EssenceAntiHoleGuidString when blnSync:
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                objCharacter.IncreaseEssenceHole(objImprovement.Rating);
+                                                break;
+                                            case Cyberware.EssenceAntiHoleGuidString:
+                                                await objCharacter.IncreaseEssenceHoleAsync(objImprovement.Rating,
+                                                    token: token).ConfigureAwait(false);
+                                                break;
+                                        }
+                                    }
+                                }
                             }
                         }
                             break;
                     }
                 }
 
-                objImprovementList.ProcessRelevantEvents(token);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objImprovementList.ProcessRelevantEvents(token);
+                else
+                    await objImprovementList.ProcessRelevantEventsAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -4848,7 +5752,7 @@ namespace Chummer
         /// <param name="decAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
         /// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
         /// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
-        /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
+        /// <param name="blnAddToRating">Whether the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
         /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
         /// <param name="strCondition">Condition for when the bonus is applied.</param>
         /// <param name="token">Cancellation token to listen to.</param>
@@ -4946,11 +5850,11 @@ namespace Chummer
         /// <param name="decAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
         /// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
         /// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
-        /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
+        /// <param name="blnAddToRating">Whether the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
         /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
         /// <param name="strCondition">Condition for when the bonus is applied.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask<Improvement> CreateImprovementAsync(Character objCharacter, string strImprovedName,
+        public static async Task<Improvement> CreateImprovementAsync(Character objCharacter, string strImprovedName,
                                                                           Improvement.ImprovementSource objImprovementSource,
                                                                           string strSourceName, Improvement.ImprovementType objImprovementType,
                                                                           string strUnique,
@@ -5035,12 +5939,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Clear all of the Improvements from the Transaction List.
+        /// Clear all the Improvements from the Transaction List.
         /// </summary>
         public static void Commit(Character objCharacter)
         {
             Log.Debug("Commit");
-            // Clear all of the Improvements from the Transaction List.
+            // Clear all the Improvements from the Transaction List.
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
             {
                 lstTransactions.ProcessRelevantEvents();
@@ -5050,25 +5954,30 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Rollback all of the Improvements from the Transaction List.
+        /// Clear all the Improvements from the Transaction List.
+        /// </summary>
+        public static async Task CommitAsync(Character objCharacter, CancellationToken token = default)
+        {
+            Log.Debug("Commit");
+            // Clear all the Improvements from the Transaction List.
+            if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
+            {
+                await lstTransactions.ProcessRelevantEventsAsync(token: token).ConfigureAwait(false);
+            }
+
+            Log.Debug("Commit exit");
+        }
+
+        /// <summary>
+        /// Rollback all the Improvements from the Transaction List.
         /// </summary>
         public static void Rollback(Character objCharacter, CancellationToken token = default)
         {
             Log.Debug("Rollback enter");
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
             {
-                using (objCharacter.LockObject.EnterWriteLock(token))
-                {
-                    // Remove all of the Improvements that were added.
-                    foreach (Improvement objTransactingImprovement in lstTransactions)
-                    {
-                        RemoveImprovements(objCharacter, objTransactingImprovement.ImproveSource,
-                                           objTransactingImprovement.SourceName, token);
-                        ClearCachedValue(objCharacter, objTransactingImprovement.ImproveType,
-                                         objTransactingImprovement.ImprovedName, token);
-                    }
-                }
-
+                // Remove all the Improvements that were added.
+                RemoveImprovements(objCharacter, lstTransactions, token: token);
                 lstTransactions.Clear();
             }
 
@@ -5076,31 +5985,15 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Rollback all of the Improvements from the Transaction List.
+        /// Rollback all the Improvements from the Transaction List.
         /// </summary>
-        public static async ValueTask RollbackAsync(Character objCharacter, CancellationToken token = default)
+        public static async Task RollbackAsync(Character objCharacter, CancellationToken token = default)
         {
             Log.Debug("Rollback enter");
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
             {
-                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    // Remove all of the Improvements that were added.
-                    foreach (Improvement objTransactingImprovement in lstTransactions)
-                    {
-                        await RemoveImprovementsAsync(objCharacter, objTransactingImprovement.ImproveSource,
-                                                      objTransactingImprovement.SourceName, token).ConfigureAwait(false);
-                        ClearCachedValue(objCharacter, objTransactingImprovement.ImproveType,
-                            objTransactingImprovement.ImprovedName, token);
-                    }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-
+                // Remove all the Improvements that were added.
+                await RemoveImprovementsAsync(objCharacter, lstTransactions, token: token).ConfigureAwait(false);
                 lstTransactions.Clear();
             }
 
@@ -5122,13 +6015,13 @@ namespace Chummer
             if (objImprovement?.SetupComplete != true)
                 return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
-                    foreach ((INotifyMultiplePropertyChanged objToNotify, string strProperty) in objImprovement
+                    foreach ((INotifyMultiplePropertiesChangedAsync objToNotify, string strProperty) in objImprovement
                                  .GetRelevantPropertyChangers(lstExtraImprovedName: lstExtraImprovedName,
                                                               lstExtraUniqueName: lstExtraUniqueName,
                                                               lstExtraTarget: lstExtraTarget))
@@ -5149,7 +6042,7 @@ namespace Chummer
                         foreach (Improvement.ImprovementType eOverrideType in lstExtraImprovementTypes)
                         {
                             token.ThrowIfCancellationRequested();
-                            foreach ((INotifyMultiplePropertyChanged objToNotify, string strProperty) in objImprovement
+                            foreach ((INotifyMultiplePropertiesChangedAsync objToNotify, string strProperty) in objImprovement
                                          .GetRelevantPropertyChangers(lstExtraImprovedName: lstExtraImprovedName,
                                                                       eOverrideType: eOverrideType,
                                                                       lstExtraUniqueName: lstExtraUniqueName,
@@ -5171,11 +6064,11 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
 
                     // Fire each event once
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpChangedProperties in
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpChangedProperties in
                              dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();
-                        kvpChangedProperties.Key.OnMultiplePropertyChanged(kvpChangedProperties.Value.ToList());
+                        kvpChangedProperties.Key.OnMultiplePropertiesChanged(kvpChangedProperties.Value.ToList());
                     }
                 }
                 finally
@@ -5201,9 +6094,9 @@ namespace Chummer
             if (lstImprovements == null)
                 return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -5211,7 +6104,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in lstImprovements.Where(x => x.SetupComplete))
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach ((INotifyMultiplePropertyChanged objToNotify, string strProperty) in objImprovement
+                        foreach ((INotifyMultiplePropertiesChangedAsync objToNotify, string strProperty) in objImprovement
                                      .GetRelevantPropertyChangers())
                         {
                             token.ThrowIfCancellationRequested();
@@ -5227,11 +6120,150 @@ namespace Chummer
 
                     token.ThrowIfCancellationRequested();
                     // Fire each event once
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpChangedProperties in
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpChangedProperties in
                              dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();
-                        kvpChangedProperties.Key.OnMultiplePropertyChanged(kvpChangedProperties.Value.ToList());
+                        kvpChangedProperties.Key.OnMultiplePropertiesChanged(kvpChangedProperties.Value.ToList());
+                    }
+                }
+                finally
+                {
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fire off all events relevant to an improvement, making sure each event is only fired once.
+        /// </summary>
+        /// <param name="objImprovement">Improvement whose events to fire</param>
+        /// <param name="lstExtraImprovedName">Additional ImprovedName versions to check, if any.</param>
+        /// <param name="lstExtraImprovementTypes">Additional ImprovementType versions to check, if any.</param>
+        /// <param name="lstExtraUniqueName">Additional UniqueName versions to check, if any.</param>
+        /// <param name="lstExtraTarget">Additional Target versions to check, if any.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task ProcessRelevantEventsAsync(this Improvement objImprovement, ICollection<string> lstExtraImprovedName = null, IEnumerable<Improvement.ImprovementType> lstExtraImprovementTypes = null, ICollection<string> lstExtraUniqueName = null, ICollection<string> lstExtraTarget = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objImprovement?.SetupComplete != true)
+                return;
+            // Create a hashset of events to fire to make sure we only ever fire each event once
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+                       Utils.DictionaryForMultiplePropertyChangedPool,
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
+            {
+                try
+                {
+                    foreach ((INotifyMultiplePropertiesChangedAsync objToNotify, string strProperty) in await objImprovement
+                                 .GetRelevantPropertyChangersAsync(lstExtraImprovedName: lstExtraImprovedName,
+                                     lstExtraUniqueName: lstExtraUniqueName,
+                                     lstExtraTarget: lstExtraTarget, token: token).ConfigureAwait(false))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!dicChangedProperties.TryGetValue(objToNotify,
+                                                              out HashSet<string> setLoopPropertiesChanged))
+                        {
+                            setLoopPropertiesChanged = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(objToNotify, setLoopPropertiesChanged);
+                        }
+
+                        setLoopPropertiesChanged.Add(strProperty);
+                    }
+
+                    if (lstExtraImprovementTypes != null)
+                    {
+                        foreach (Improvement.ImprovementType eOverrideType in lstExtraImprovementTypes)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            foreach ((INotifyMultiplePropertiesChangedAsync objToNotify, string strProperty) in await objImprovement
+                                         .GetRelevantPropertyChangersAsync(lstExtraImprovedName: lstExtraImprovedName,
+                                             eOverrideType: eOverrideType,
+                                             lstExtraUniqueName: lstExtraUniqueName,
+                                             lstExtraTarget: lstExtraTarget, token: token).ConfigureAwait(false))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!dicChangedProperties.TryGetValue(objToNotify,
+                                                                      out HashSet<string> setLoopPropertiesChanged))
+                                {
+                                    setLoopPropertiesChanged = Utils.StringHashSetPool.Get();
+                                    dicChangedProperties.Add(objToNotify, setLoopPropertiesChanged);
+                                }
+
+                                setLoopPropertiesChanged.Add(strProperty);
+                            }
+                        }
+                    }
+
+                    token.ThrowIfCancellationRequested();
+
+                    // Fire each event once
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpChangedProperties in
+                             dicChangedProperties)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await kvpChangedProperties.Key.OnMultiplePropertiesChangedAsync(kvpChangedProperties.Value.ToList(), token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fire off all events relevant to an enumerable of improvements, making sure each event is only fired once.
+        /// </summary>
+        /// <param name="lstImprovements">Enumerable of improvements whose events to fire</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task ProcessRelevantEventsAsync(this IEnumerable<Improvement> lstImprovements, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstImprovements == null)
+                return;
+            // Create a hashset of events to fire to make sure we only ever fire each event once
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+                       Utils.DictionaryForMultiplePropertyChangedPool,
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
+            {
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    foreach (Improvement objImprovement in lstImprovements.Where(x => x.SetupComplete))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        foreach ((INotifyMultiplePropertiesChangedAsync objToNotify, string strProperty) in await objImprovement
+                                     .GetRelevantPropertyChangersAsync(token: token).ConfigureAwait(false))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (!dicChangedProperties.TryGetValue(objToNotify,
+                                                                  out HashSet<string> setLoopPropertiesChanged))
+                            {
+                                setLoopPropertiesChanged = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(objToNotify, setLoopPropertiesChanged);
+                            }
+                            setLoopPropertiesChanged.Add(strProperty);
+                        }
+                    }
+
+                    token.ThrowIfCancellationRequested();
+                    // Fire each event once
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpChangedProperties in
+                             dicChangedProperties)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await kvpChangedProperties.Key.OnMultiplePropertiesChangedAsync(kvpChangedProperties.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally

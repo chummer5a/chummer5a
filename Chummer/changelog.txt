@@ -57,6 +57,30 @@ Application Changes:
 - Choices taken for mentor spirit or paragon bonuses are now always displayed under their respective description boxes. Pre-existing characters with issues related to the display of these choices will need to re-apply improvements for their Mentor Spirit or Paragon quality (or whatever granted them the mentor spirit or paragon).
 - Added RequirementsMet support for vehicle mods to validate against character properties. This allows for having a vehicle mod require a character quality, for example. 
 - Weapons and ammo types that cause the fire damage type (e.g. Flame Bracers) can now properly process other sources of damage and damage type modification.
+- Some inconsistent handling of drone armor mods and their effects on other stats when using Rigger 5.0's drone modding rules has been fixed.
+- Removed Capacity check for weapon accessories that allow child gear items. This allows Weapon Commlink to take Commlink accessories, for example.
+- Selling gear now properly specifies the type of gear being sold in the expense entry instead of always claiming it is cyberware gear being sold.
+- After loading a character that required some modifications before they were loaded (e.g., removing orphaned improvements), the program now immediately autosaves them instead of waiting for the next character change to do so.
+- Autosaves are now also triggered by character changes that do not require the program's user interface to be updated (e.g., changing the description of their eye color).
+- Character settings can now also alter the maximum amount of nuyen that a character can carry over from Create mode into Career mode.
+- Fixed custom category spells not presenting as a treenode.
+- Standardized curly brackets notation to all uses of attributes in computable expressions. This means that all data expressions that can be computed with attribute values (e.g. damage codes, cyberware rating limits) can now also use attribute maxima and minima via `{[Abbreviation]Maximum}` and `{[Abbreviation]Minimum}` (replacing [Abbreviation] with the appropriate attribute's three-letter abbreviation), and all such fields now specifically always require attribute abbreviations and codes to be enclosed in curly brackets.
+- Added two new compression settings for compressed saves: Fastest and Ultra. Fastest offers minimal compression and has negligible memory requirements, while Ultra offers near-maximum compression, but at slow speeds and with a large memory footprint of ca. 1 GB (that's in addition to the usual memory requirements of the program).
+- Autosaves are now saved uncompressed to make them as seamless as possible. Autosaving now also automatically times out after a minute, and after three attempts time out in this manner, the program will no longer attempt to autosave the character.
+- The skillgroupdisablechoice bonus node now allows the user to select any of the character's skill groups if it is empty.
+- After selecting an extended Detection spell in the spell selection screen, the program no longer incorrectly claims that all other spells are also extended. Fixes #5126
+- Adept Way discounts now properly only take Magic rating into account and do not factor in Power Point metamagics. Fixes #5145.
+- Attempting to add an incorrectly formatted file as an image to a character no longer causes the program to crash.
+- Fixed AIs not being able to buy programs in career mode. Closes #5146
+- Dealer Connection now works properly for characters saved in a non-English language.
+- The addware bonus node now properly supports adding essence holes and anti-holes.
+- Gear markups now properly apply when adding gear as plugins to cyberware, vehicles, and items inside of vehicles.
+- Fixed inability to rename Vehicles in Career mode.
+- Lifestyle qualities that are restricted to a specific base lifestyle type now work properly.
+- Added dedicated improvement types for removing skill defaulting penalties. They are `removeskillcategorydefaultpenalty`, `removeskillgroupdefaultpenalty`, and `removeskilldefaultpenalty` and remove skill defaulting penalties for the specified skill category, skill group, and skill, respectively. If any of them are left blank, they will remove all skill defaulting penalties.
+- Costs for shared advanced lifestyles, as well as lifestyles in general, now properly follow the order of operations specified in HT pp. 139-140.
+- Associating PDF files with sourcebooks added by custom data is now possible, as is the functionality to automatically open them to a specific page when a source entry is clicked on.
+- Mods can now be properly added or removed from weapon mounts after character creation.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
@@ -77,6 +101,28 @@ Data Changes:
 - Universal Data Cord, Folding Ladder, Solar Panel, Detonating Cord (Low Yield and High Yield), and Safety Fuse items can now be bought with specific dimensions in addition to quantities instead of quantities and dimensions being rolled into one number.
 - 1 kilogram of Pet Food now properly weighs 1 kilogram.
 - Removed Psychmetry metamagic requirement from Sympathetic Linking metamagic.
+- Added a custom dataset for the provisional Shifter errata.
+- Fixed Evo Proletarian not properly getting the Rigger Interface mod.
+- Fixed Spirit Hunter rank 2 and 3 not correctly requiring Astral Combat 6/8 for Adepts. Closes #5093
+- Fixed Wildcard Chimera, It Works If You Work It and Metaviral Attunement qualities not properly requiring Infected qualities. Closes #5104
+- Changed 'unknown' Spell category to 'other' on sheets. Closes #5096
+- Removed power and quality requirements from Psychometry art. Any awakened should now have access to this metamagic provided they have the Art or the relevant optional rule enabled to ignore arts.
+- Fixed the underbarrel grenade launcher not properly using requirements to be available onlty to rifle-sized weapons.
+- Marked the Changeling qualities as not doubling cost in career mode. Closes #5118
+- City Slicker properly gives +1 dice for Survival (Urban) instead of -2.
+- Strike the Darkness can now properly be learned with Alpine Wrestling, German Jujitsu, Esdo, Urban Brawl Parkour, and/or Sternschutz Tactical. Closes #5140
+- Fancy Blocks, Text-Only, and Formatted Text-Only sheets no longer show priority entries for characters made with Point Buy or Life Modules.
+- Incompetent now properly sets all skills in the chosen skill group to Unaware, meaning they can also not be learned until the quality is bought off. Existing characters with the quality will need to re-apply improvements to see the change reflected on their sheets. Fixes #5111.
+- Fixed the W Zone and Bad Neighborhood lifestyle qualities not correctly modifying the Area value.
+- Added missing Imaging Scope to the Parashield Dart Rifle.
+- Removed Aware from discount for Dedicated Spellslinger.
+- Added Adept to discount for Dedicated Spellslinger.
+- Actioneer Business Clothes' integrated holster is now properly a concealable holster.
+- PI-Tac Programs can now be filtered for when buying new gear.
+- Added Shadows in Focus: Butte version of Dug a Hole.
+- Removed the Delnar Skills Remake (Lite) custom dataset because it cannot properly be implemented in Chummer at its current time.
+- Morgan Cutlass' page reference is now properly p. 464.
+- Added missing Transys Graygul cyberdeck whose stats, cost, and availability were buried in an NPC statblock.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
@@ -94,9 +140,28 @@ Changed/New Strings:
 - Label_SelectMentorSpirit_Disadvantage
 - Label_SelectMentorSpirit_Choices
 - String_DamageFire
+- Message_DeleteArmorMod
+- Message_DeleteWeaponAccessory
+- String_ExpensePurchaseVehicleWeaponMount
+- String_ExpenseSoldVehicleWeaponMount
+- Label_Options_Carryover_Nuyen
+- Label_Options_Carryover_Karma
+- Node_UnequippedModularBioware
+- String_MinimumAttribute
+- String_MaximumAttribute
+- String_Fastest_Option
+- String_Ultra_Option
+- Message_File_Incorrect_Format
+- Tip_Power_PPperLevel
+- Tip_Power_Capped
+- Label_SelectAdvancedLifestyle_Tenant
+- String_NotSupported
+- Message_MetatypeNotSupported
+- Message_UndoExpenseNotSupported
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage
+- Label_Options_Carryover
 
 Build 225
 Application Changes:

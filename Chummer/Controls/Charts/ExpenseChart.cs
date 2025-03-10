@@ -55,7 +55,7 @@ namespace Chummer.UI.Charts
             };
             chtCartesian.AxisX.Add(new Axis
             {
-                LabelFormatter = val => new DateTime((long)val).ToString(GlobalSettings.CustomDateTimeFormats
+                LabelFormatter = val => new DateTime((long)val, DateTimeKind.Local).ToString(GlobalSettings.CustomDateTimeFormats
                     ? GlobalSettings.CustomDateFormat
                       + ' ' + GlobalSettings.CustomTimeFormat
                     : GlobalSettings.CultureInfo.DateTimeFormat.ShortDatePattern

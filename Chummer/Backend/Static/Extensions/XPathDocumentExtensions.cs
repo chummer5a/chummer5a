@@ -33,7 +33,7 @@ namespace Chummer
         /// Syntactic sugar for synchronously loading an XPathDocument from a file with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="strFileName">The file to use.</param>
-        /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathDocument LoadStandardFromFile(string strFileName, bool blnSafe = true, CancellationToken token = default)
@@ -62,7 +62,7 @@ namespace Chummer
         /// Syntactic sugar for asynchronously loading an XPathDocument from a file with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="strFileName">The file to use.</param>
-        /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<XPathDocument> LoadStandardFromFileAsync(string strFileName, bool blnSafe = true, CancellationToken token = default)
@@ -93,7 +93,7 @@ namespace Chummer
         /// Syntactic sugar for synchronously loading an XPathDocument from an LZMA-compressed file with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="strFileName">The file to use.</param>
-        /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathDocument LoadStandardFromLzmaCompressedFile(string strFileName, bool blnSafe = true, CancellationToken token = default)
@@ -133,7 +133,7 @@ namespace Chummer
         /// Syntactic sugar for asynchronously loading an XPathDocument from an LZMA-compressed file with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="strFileName">The file to use.</param>
-        /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<XPathDocument> LoadStandardFromLzmaCompressedFileAsync(string strFileName, bool blnSafe = true, CancellationToken token = default)

@@ -29,10 +29,12 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class CreatePACKSKit : Form
+    public partial class CreatePACKSKit : Form, IHasCharacterObject
     {
         [NotNull]
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter;
 
         #region Control Events
 
@@ -50,14 +52,14 @@ namespace Chummer
             string strName = await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strName))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_KitName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_KitName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_KitName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_KitName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
                 return;
             }
 
             string strFileName = await txtFileName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strFileName))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_FileName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_FileName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_FileName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_FileName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
                 return;
             }
 
@@ -77,13 +79,13 @@ namespace Chummer
                 .TryGetNodeByNameOrId("/chummer/packs/pack", strName, "category = \"Custom\"]")
                 != null)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_CreatePACKSKit_DuplicateName")
-                                                       .ConfigureAwait(false), strName),
+                        await LanguageManager.GetStringAsync("Message_CreatePACKSKit_DuplicateName")
+                            .ConfigureAwait(false), strName),
                     await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_DuplicateName")
-                                         .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
                 return;
             }
 
@@ -95,9 +97,9 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.ShowScrollableMessageBox(await LanguageManager
-                                                           .GetStringAsync("Message_Insufficient_Permissions_Warning")
-                                                           .ConfigureAwait(false));
+                    await Program.ShowScrollableMessageBoxAsync(await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning")
+                        .ConfigureAwait(false)).ConfigureAwait(false);
                     return;
                 }
             }
@@ -115,18 +117,21 @@ namespace Chummer
                 }
                 catch (IOException ex)
                 {
-                    Program.ShowScrollableMessageBox(this, ex.ToString());
+                    await Program.ShowScrollableMessageBoxAsync(this, ex.ToString()).ConfigureAwait(false);
                     return;
                 }
                 catch (XmlException ex)
                 {
-                    Program.ShowScrollableMessageBox(this, ex.ToString());
+                    await Program.ShowScrollableMessageBoxAsync(this, ex.ToString()).ConfigureAwait(false);
                     return;
                 }
             }
 
-            using (FileStream objStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync().ConfigureAwait(false);
+            try
             {
+                using (FileStream objStream =
+                       new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
                 using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
                     await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
@@ -146,48 +151,89 @@ namespace Chummer
                     // <pack>
                     await objWriter.WriteStartElementAsync("pack").ConfigureAwait(false);
                     // <name />
-                    await objWriter.WriteElementStringAsync("name", txtName.Text).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name", strName).ConfigureAwait(false);
                     // <category />
                     await objWriter.WriteElementStringAsync("category", "Custom").ConfigureAwait(false);
 
                     // Export Attributes.
                     if (await chkAttributes.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                     {
-                        int intBOD = await _objCharacter.BOD.GetValueAsync().ConfigureAwait(false) - (await _objCharacter.BOD.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
-                        int intAGI = await _objCharacter.AGI.GetValueAsync().ConfigureAwait(false) - (await _objCharacter.AGI.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
-                        int intREA = await _objCharacter.REA.GetValueAsync().ConfigureAwait(false) - (await _objCharacter.REA.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
-                        int intSTR = await _objCharacter.STR.GetValueAsync().ConfigureAwait(false) - (await _objCharacter.STR.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
-                        int intCHA = await _objCharacter.CHA.GetValueAsync().ConfigureAwait(false) - (await _objCharacter.CHA.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
-                        int intINT = await _objCharacter.INT.GetValueAsync().ConfigureAwait(false) - (await _objCharacter.INT.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
-                        int intLOG = await _objCharacter.LOG.GetValueAsync().ConfigureAwait(false) - (await _objCharacter.LOG.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
-                        int intWIL = await _objCharacter.WIL.GetValueAsync().ConfigureAwait(false) - (await _objCharacter.WIL.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
-                        int intEDG = await _objCharacter.EDG.GetValueAsync().ConfigureAwait(false) - (await _objCharacter.EDG.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
-                        int intMAG = await _objCharacter.MAG.GetValueAsync().ConfigureAwait(false) - (await _objCharacter.MAG.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
-                        int intMAGAdept = await _objCharacter.MAGAdept.GetValueAsync().ConfigureAwait(false) - (await _objCharacter.MAGAdept.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
-                        int intDEP = await _objCharacter.DEP.GetValueAsync().ConfigureAwait(false) - (await _objCharacter.DEP.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
-                        int intRES = await _objCharacter.RES.GetValueAsync().ConfigureAwait(false) - (await _objCharacter.RES.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
+                        int intBOD = await _objCharacter.BOD.GetValueAsync().ConfigureAwait(false) -
+                                     (await _objCharacter.BOD.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
+                        int intAGI = await _objCharacter.AGI.GetValueAsync().ConfigureAwait(false) -
+                                     (await _objCharacter.AGI.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
+                        int intREA = await _objCharacter.REA.GetValueAsync().ConfigureAwait(false) -
+                                     (await _objCharacter.REA.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
+                        int intSTR = await _objCharacter.STR.GetValueAsync().ConfigureAwait(false) -
+                                     (await _objCharacter.STR.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
+                        int intCHA = await _objCharacter.CHA.GetValueAsync().ConfigureAwait(false) -
+                                     (await _objCharacter.CHA.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
+                        int intINT = await _objCharacter.INT.GetValueAsync().ConfigureAwait(false) -
+                                     (await _objCharacter.INT.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
+                        int intLOG = await _objCharacter.LOG.GetValueAsync().ConfigureAwait(false) -
+                                     (await _objCharacter.LOG.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
+                        int intWIL = await _objCharacter.WIL.GetValueAsync().ConfigureAwait(false) -
+                                     (await _objCharacter.WIL.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
+                        int intEDG = await _objCharacter.EDG.GetValueAsync().ConfigureAwait(false) -
+                                     (await _objCharacter.EDG.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
+                        int intMAG = await _objCharacter.MAG.GetValueAsync().ConfigureAwait(false) -
+                                     (await _objCharacter.MAG.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
+                        int intMAGAdept = await _objCharacter.MAGAdept.GetValueAsync().ConfigureAwait(false) -
+                                          (await _objCharacter.MAGAdept.GetMetatypeMinimumAsync()
+                                              .ConfigureAwait(false) - 1);
+                        int intDEP = await _objCharacter.DEP.GetValueAsync().ConfigureAwait(false) -
+                                     (await _objCharacter.DEP.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
+                        int intRES = await _objCharacter.RES.GetValueAsync().ConfigureAwait(false) -
+                                     (await _objCharacter.RES.GetMetatypeMinimumAsync().ConfigureAwait(false) - 1);
                         // <attributes>
                         await objWriter.WriteStartElementAsync("attributes").ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("bod", intBOD.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("agi", intAGI.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("rea", intREA.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("str", intSTR.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("cha", intCHA.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("int", intINT.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("log", intLOG.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("wil", intWIL.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("edg", intEDG.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                        if (_objCharacter.MAGEnabled)
+                        await objWriter
+                            .WriteElementStringAsync("bod", intBOD.ToString(GlobalSettings.InvariantCultureInfo))
+                            .ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("agi", intAGI.ToString(GlobalSettings.InvariantCultureInfo))
+                            .ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("rea", intREA.ToString(GlobalSettings.InvariantCultureInfo))
+                            .ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("str", intSTR.ToString(GlobalSettings.InvariantCultureInfo))
+                            .ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("cha", intCHA.ToString(GlobalSettings.InvariantCultureInfo))
+                            .ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("int", intINT.ToString(GlobalSettings.InvariantCultureInfo))
+                            .ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("log", intLOG.ToString(GlobalSettings.InvariantCultureInfo))
+                            .ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("wil", intWIL.ToString(GlobalSettings.InvariantCultureInfo))
+                            .ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("edg", intEDG.ToString(GlobalSettings.InvariantCultureInfo))
+                            .ConfigureAwait(false);
+                        if (await _objCharacter.GetMAGEnabledAsync().ConfigureAwait(false))
                         {
-                            await objWriter.WriteElementStringAsync("mag", intMAG.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                            if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
-                                await objWriter.WriteElementStringAsync("magadept", intMAGAdept.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                            await objWriter
+                                .WriteElementStringAsync("mag", intMAG.ToString(GlobalSettings.InvariantCultureInfo))
+                                .ConfigureAwait(false);
+                            if (await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync()
+                                    .ConfigureAwait(false) &&
+                                await _objCharacter.GetIsMysticAdeptAsync().ConfigureAwait(false))
+                                await objWriter.WriteElementStringAsync("magadept",
+                                    intMAGAdept.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                         }
 
-                        if (_objCharacter.RESEnabled)
-                            await objWriter.WriteElementStringAsync("res", intRES.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                        if (_objCharacter.DEPEnabled)
-                            await objWriter.WriteElementStringAsync("dep", intDEP.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                        if (await _objCharacter.GetRESEnabledAsync().ConfigureAwait(false))
+                            await objWriter
+                                .WriteElementStringAsync("res", intRES.ToString(GlobalSettings.InvariantCultureInfo))
+                                .ConfigureAwait(false);
+                        if (await _objCharacter.GetDEPEnabledAsync().ConfigureAwait(false))
+                            await objWriter
+                                .WriteElementStringAsync("dep", intDEP.ToString(GlobalSettings.InvariantCultureInfo))
+                                .ConfigureAwait(false);
                         // </attributes>
                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                     }
@@ -230,8 +276,8 @@ namespace Chummer
                                     await objWriter.WriteStartElementAsync("quality").ConfigureAwait(false);
                                     if (!string.IsNullOrEmpty(objQuality.Extra))
                                         await objWriter.WriteAttributeStringAsync("select", objQuality.Extra)
-                                                       .ConfigureAwait(false);
-                                    objWriter.WriteValue(objQuality.Name);
+                                            .ConfigureAwait(false);
+                                    objWriter.WriteValue(await objQuality.GetNameAsync().ConfigureAwait(false));
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                     // ReSharper restore AccessToDisposedClosure
                                 }
@@ -254,7 +300,7 @@ namespace Chummer
                                     await objWriter.WriteStartElementAsync("quality").ConfigureAwait(false);
                                     if (!string.IsNullOrEmpty(objQuality.Extra))
                                         await objWriter.WriteAttributeStringAsync("select", objQuality.Extra)
-                                                       .ConfigureAwait(false);
+                                            .ConfigureAwait(false);
                                     objWriter.WriteValue(objQuality.Name);
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                     // ReSharper restore AccessToDisposedClosure
@@ -272,10 +318,12 @@ namespace Chummer
                     // Export Starting Nuyen.
                     if (await chkStartingNuyen.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                     {
-                        decimal decNuyenBP = _objCharacter.NuyenBP;
-                        if (!_objCharacter.EffectiveBuildMethodUsesPriorityTables)
+                        decimal decNuyenBP = await _objCharacter.GetNuyenBPAsync().ConfigureAwait(false);
+                        if (!await _objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync().ConfigureAwait(false))
                             decNuyenBP /= 2.0m;
-                        await objWriter.WriteElementStringAsync("nuyenbp", decNuyenBP.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("nuyenbp",
+                                decNuyenBP.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                     }
 
                     /* TODO: Add support for active and knowledge skills and skill groups
@@ -357,10 +405,10 @@ namespace Chummer
                                 // <techniques>
                                 await objWriter.WriteStartElementAsync("techniques").ConfigureAwait(false);
                                 await objArt.Techniques
-                                            .ForEachAsync(objTechnique =>
-                                                              objWriter.WriteElementStringAsync(
-                                                                  "technique", objTechnique.Name))
-                                            .ConfigureAwait(false);
+                                    .ForEachAsync(objTechnique =>
+                                        objWriter.WriteElementStringAsync(
+                                            "technique", objTechnique.Name))
+                                    .ConfigureAwait(false);
                                 // </techniques>
                                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                             }
@@ -385,11 +433,11 @@ namespace Chummer
                             await objWriter.WriteStartElementAsync("name").ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(objSpell.Extra))
                                 await objWriter.WriteAttributeStringAsync("select", objSpell.Extra)
-                                               .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                             objWriter.WriteValue(objSpell.Name);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync("category", objSpell.Category)
-                                           .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                         }).ConfigureAwait(false);
                         // ReSharper restore AccessToDisposedClosure
@@ -411,7 +459,7 @@ namespace Chummer
                             await objWriter.WriteStartElementAsync("name").ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(objComplexForm.Extra))
                                 await objWriter.WriteAttributeStringAsync("select", objComplexForm.Extra)
-                                               .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                             objWriter.WriteValue(objComplexForm.Name);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -435,14 +483,14 @@ namespace Chummer
                             {
                                 case Improvement.ImprovementSource.Bioware:
                                     blnBioware = true;
-                                    break;
+                                    return blnCyberware;
 
                                 case Improvement.ImprovementSource.Cyberware:
                                     blnCyberware = true;
-                                    break;
+                                    return blnBioware;
                             }
 
-                            return !blnCyberware || !blnBioware;
+                            return true;
                         }).ConfigureAwait(false);
 
                         if (blnCyberware)
@@ -457,47 +505,48 @@ namespace Chummer
                                     // <cyberware>
                                     await objWriter.WriteStartElementAsync("cyberware").ConfigureAwait(false);
                                     await objWriter.WriteElementStringAsync("name", objCyberware.Name)
-                                                   .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                                     int intRating = await objCyberware.GetRatingAsync()
-                                                                      .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                                     if (intRating > 0)
                                         await objWriter
-                                              .WriteElementStringAsync(
-                                                  "rating",
-                                                  intRating.ToString(GlobalSettings.InvariantCultureInfo))
-                                              .ConfigureAwait(false);
-                                    await objWriter.WriteElementStringAsync("grade", objCyberware.Grade.Name)
-                                                   .ConfigureAwait(false);
-                                    if (await objCyberware.Children.GetCountAsync().ConfigureAwait(false) > 0)
+                                            .WriteElementStringAsync(
+                                                "rating",
+                                                intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                                            .ConfigureAwait(false);
+                                    await objWriter.WriteElementStringAsync("grade",
+                                            (await objCyberware.GetGradeAsync().ConfigureAwait(false)).Name)
+                                        .ConfigureAwait(false);
+                                    if (await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).GetCountAsync().ConfigureAwait(false) > 0)
                                     {
                                         // <cyberwares>
                                         await objWriter.WriteStartElementAsync("cyberwares").ConfigureAwait(false);
-                                        await objCyberware.Children.ForEachAsync(async objChildCyberware =>
+                                        await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).ForEachAsync(async objChildCyberware =>
                                         {
                                             if (objChildCyberware.Capacity != "[*]")
                                             {
                                                 // <cyberware/bioware>
                                                 await objWriter
-                                                      .WriteStartElementAsync(
-                                                          objChildCyberware.SourceType
-                                                          == Improvement.ImprovementSource.Cyberware
-                                                              ? "cyberware"
-                                                              : "bioware")
-                                                      .ConfigureAwait(false);
+                                                    .WriteStartElementAsync(
+                                                        objChildCyberware.SourceType
+                                                        == Improvement.ImprovementSource.Cyberware
+                                                            ? "cyberware"
+                                                            : "bioware")
+                                                    .ConfigureAwait(false);
                                                 await objWriter.WriteElementStringAsync("name", objChildCyberware.Name)
-                                                               .ConfigureAwait(false);
+                                                    .ConfigureAwait(false);
                                                 int intChildRating = await objChildCyberware.GetRatingAsync()
                                                     .ConfigureAwait(false);
                                                 if (intChildRating > 0)
                                                     await objWriter
-                                                          .WriteElementStringAsync(
-                                                              "rating",
-                                                              intChildRating.ToString(
-                                                                  GlobalSettings.InvariantCultureInfo))
-                                                          .ConfigureAwait(false);
+                                                        .WriteElementStringAsync(
+                                                            "rating",
+                                                            intChildRating.ToString(
+                                                                GlobalSettings.InvariantCultureInfo))
+                                                        .ConfigureAwait(false);
 
                                                 if (await objChildCyberware.GearChildren.GetCountAsync()
-                                                                           .ConfigureAwait(false) > 0)
+                                                        .ConfigureAwait(false) > 0)
                                                     await WriteGear(objWriter, objChildCyberware.GearChildren)
                                                         .ConfigureAwait(false);
                                                 // </cyberware>
@@ -534,48 +583,49 @@ namespace Chummer
                                     // <bioware>
                                     await objWriter.WriteStartElementAsync("bioware").ConfigureAwait(false);
                                     await objWriter.WriteElementStringAsync("name", objCyberware.Name)
-                                                   .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                                     int intRating = await objCyberware.GetRatingAsync()
-                                                                      .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                                     if (intRating > 0)
                                         await objWriter
-                                              .WriteElementStringAsync(
-                                                  "rating",
-                                                  intRating.ToString(GlobalSettings.InvariantCultureInfo))
-                                              .ConfigureAwait(false);
-                                    await objWriter.WriteElementStringAsync("grade", objCyberware.Grade.Name)
-                                                   .ConfigureAwait(false);
-                                    if (await objCyberware.Children.GetCountAsync().ConfigureAwait(false) > 0)
+                                            .WriteElementStringAsync(
+                                                "rating",
+                                                intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                                            .ConfigureAwait(false);
+                                    await objWriter.WriteElementStringAsync("grade",
+                                            (await objCyberware.GetGradeAsync().ConfigureAwait(false)).Name)
+                                        .ConfigureAwait(false);
+                                    if (await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).GetCountAsync().ConfigureAwait(false) > 0)
                                     {
                                         // <cyberwares>
                                         await objWriter.WriteStartElementAsync("cyberwares").ConfigureAwait(false);
-                                        await objCyberware.Children.ForEachAsync(async objChildCyberware =>
+                                        await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).ForEachAsync(async objChildCyberware =>
                                         {
                                             if (objChildCyberware.Capacity != "[*]")
                                             {
                                                 // <cyberware>
                                                 // <cyberware/bioware>
                                                 await objWriter
-                                                      .WriteStartElementAsync(
-                                                          objChildCyberware.SourceType
-                                                          == Improvement.ImprovementSource.Cyberware
-                                                              ? "cyberware"
-                                                              : "bioware")
-                                                      .ConfigureAwait(false);
+                                                    .WriteStartElementAsync(
+                                                        objChildCyberware.SourceType
+                                                        == Improvement.ImprovementSource.Cyberware
+                                                            ? "cyberware"
+                                                            : "bioware")
+                                                    .ConfigureAwait(false);
                                                 await objWriter.WriteElementStringAsync("name", objChildCyberware.Name)
-                                                               .ConfigureAwait(false);
+                                                    .ConfigureAwait(false);
                                                 int intChildRating = await objChildCyberware.GetRatingAsync()
                                                     .ConfigureAwait(false);
                                                 if (intChildRating > 0)
                                                     await objWriter
-                                                          .WriteElementStringAsync(
-                                                              "rating",
-                                                              intChildRating.ToString(
-                                                                  GlobalSettings.InvariantCultureInfo))
-                                                          .ConfigureAwait(false);
+                                                        .WriteElementStringAsync(
+                                                            "rating",
+                                                            intChildRating.ToString(
+                                                                GlobalSettings.InvariantCultureInfo))
+                                                        .ConfigureAwait(false);
 
                                                 if (await objChildCyberware.GearChildren.GetCountAsync()
-                                                                           .ConfigureAwait(false) > 0)
+                                                        .ConfigureAwait(false) > 0)
                                                     await WriteGear(objWriter, objChildCyberware.GearChildren)
                                                         .ConfigureAwait(false);
                                                 // </cyberware>
@@ -613,35 +663,37 @@ namespace Chummer
                             await objWriter.WriteStartElementAsync("lifestyle").ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync("name", objLifestyle.Name).ConfigureAwait(false);
                             await objWriter
-                                  .WriteElementStringAsync(
-                                      "months", objLifestyle.Increments.ToString(GlobalSettings.InvariantCultureInfo))
-                                  .ConfigureAwait(false);
+                                .WriteElementStringAsync(
+                                    "months",
+                                    (await objLifestyle.GetIncrementsAsync().ConfigureAwait(false)).ToString(
+                                        GlobalSettings.InvariantCultureInfo))
+                                .ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                             {
                                 // This is an Advanced Lifestyle, so write out its properties.
                                 await objWriter
-                                      .WriteElementStringAsync(
-                                          "cost",
-                                          objLifestyle.Cost.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                     GlobalSettings.CultureInfo)).ConfigureAwait(false);
+                                    .WriteElementStringAsync(
+                                        "cost",
+                                        objLifestyle.Cost.ToString(_objCharacter.Settings.NuyenFormat,
+                                            GlobalSettings.CultureInfo)).ConfigureAwait(false);
                                 await objWriter
-                                      .WriteElementStringAsync(
-                                          "dice", objLifestyle.Dice.ToString(GlobalSettings.InvariantCultureInfo))
-                                      .ConfigureAwait(false);
+                                    .WriteElementStringAsync(
+                                        "dice", objLifestyle.Dice.ToString(GlobalSettings.InvariantCultureInfo))
+                                    .ConfigureAwait(false);
                                 await objWriter
-                                      .WriteElementStringAsync("multiplier",
-                                                               objLifestyle.Multiplier.ToString(
-                                                                   _objCharacter.Settings.NuyenFormat,
-                                                                   GlobalSettings.CultureInfo)).ConfigureAwait(false);
+                                    .WriteElementStringAsync("multiplier",
+                                        objLifestyle.Multiplier.ToString(
+                                            _objCharacter.Settings.NuyenFormat,
+                                            GlobalSettings.CultureInfo)).ConfigureAwait(false);
                                 await objWriter.WriteElementStringAsync("baselifestyle", objLifestyle.BaseLifestyle)
-                                               .ConfigureAwait(false);
-                                if (objLifestyle.LifestyleQualities.Count > 0)
+                                    .ConfigureAwait(false);
+                                if (await objLifestyle.LifestyleQualities.GetCountAsync().ConfigureAwait(false) > 0)
                                 {
                                     // <qualities>
                                     await objWriter.WriteStartElementAsync("qualities").ConfigureAwait(false);
                                     foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
                                         await objWriter.WriteElementStringAsync("quality", objQuality.Name)
-                                                       .ConfigureAwait(false);
+                                            .ConfigureAwait(false);
                                     // </qualities>
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                 }
@@ -678,9 +730,9 @@ namespace Chummer
                                     await objWriter.WriteElementStringAsync("name", objMod.Name).ConfigureAwait(false);
                                     if (objMod.Rating > 0)
                                         await objWriter
-                                              .WriteElementStringAsync(
-                                                  "rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                              .ConfigureAwait(false);
+                                            .WriteElementStringAsync(
+                                                "rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                            .ConfigureAwait(false);
                                     // </mod>
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                 }).ConfigureAwait(false);
@@ -689,7 +741,7 @@ namespace Chummer
                                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                             }
 
-                            if (objArmor.GearChildren.Count > 0)
+                            if (await objArmor.GearChildren.GetCountAsync().ConfigureAwait(false) > 0)
                                 await WriteGear(objWriter, objArmor.GearChildren).ConfigureAwait(false);
 
                             // </armor>
@@ -718,7 +770,7 @@ namespace Chummer
                                 await objWriter.WriteElementStringAsync("name", objWeapon.Name).ConfigureAwait(false);
 
                                 // Weapon Accessories.
-                                if (objWeapon.WeaponAccessories.Count > 0)
+                                if (await objWeapon.WeaponAccessories.GetCountAsync().ConfigureAwait(false) > 0)
                                 {
                                     // <accessories>
                                     await objWriter.WriteStartElementAsync("accessories").ConfigureAwait(false);
@@ -730,14 +782,15 @@ namespace Chummer
                                             // <accessory>
                                             await objWriter.WriteStartElementAsync("accessory").ConfigureAwait(false);
                                             await objWriter.WriteElementStringAsync("name", objAccessory.Name)
-                                                           .ConfigureAwait(false);
+                                                .ConfigureAwait(false);
                                             await objWriter.WriteElementStringAsync("mount", objAccessory.Mount)
-                                                           .ConfigureAwait(false);
+                                                .ConfigureAwait(false);
                                             await objWriter
-                                                  .WriteElementStringAsync("extramount", objAccessory.ExtraMount)
-                                                  .ConfigureAwait(false);
+                                                .WriteElementStringAsync("extramount", objAccessory.ExtraMount)
+                                                .ConfigureAwait(false);
 
-                                            if (await objAccessory.GearChildren.GetCountAsync().ConfigureAwait(false) > 0)
+                                            if (await objAccessory.GearChildren.GetCountAsync().ConfigureAwait(false) >
+                                                0)
                                                 await WriteGear(objWriter, objAccessory.GearChildren)
                                                     .ConfigureAwait(false);
 
@@ -753,13 +806,11 @@ namespace Chummer
                                 // Underbarrel Weapon.
                                 if (await objWeapon.UnderbarrelWeapons.GetCountAsync().ConfigureAwait(false) > 0)
                                 {
-                                    await objWeapon.UnderbarrelWeapons.ForEachAsync(async objUnderbarrelWeapon =>
-                                    {
-                                        if (!objUnderbarrelWeapon.IncludedInWeapon)
-                                            await objWriter
-                                                  .WriteElementStringAsync("underbarrel", objUnderbarrelWeapon.Name)
-                                                  .ConfigureAwait(false);
-                                    }).ConfigureAwait(false);
+                                    await objWeapon.UnderbarrelWeapons.ForEachAsync(objUnderbarrelWeapon =>
+                                        !objUnderbarrelWeapon.IncludedInWeapon
+                                            ? objWriter
+                                                .WriteElementStringAsync("underbarrel", objUnderbarrelWeapon.Name)
+                                            : Task.CompletedTask).ConfigureAwait(false);
                                 }
 
                                 // </weapon>
@@ -790,7 +841,7 @@ namespace Chummer
                             // <vehicle>
                             await objWriter.WriteStartElementAsync("vehicle").ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync("name", objVehicle.Name).ConfigureAwait(false);
-                            if (objVehicle.Mods.Count > 0)
+                            if (await objVehicle.Mods.GetCountAsync().ConfigureAwait(false) > 0)
                             {
                                 // <mods>
                                 await objWriter.WriteStartElementAsync("mods").ConfigureAwait(false);
@@ -802,24 +853,25 @@ namespace Chummer
                                         // <mod>
                                         await objWriter.WriteStartElementAsync("mod").ConfigureAwait(false);
                                         await objWriter.WriteElementStringAsync("name", objVehicleMod.Name)
-                                                       .ConfigureAwait(false);
-                                        if (objVehicleMod.Rating > 0)
+                                            .ConfigureAwait(false);
+                                        int intRating = await objVehicleMod.GetRatingAsync().ConfigureAwait(false);
+                                        if (intRating > 0)
                                             await objWriter
-                                                  .WriteElementStringAsync(
-                                                      "rating",
-                                                      objVehicleMod.Rating.ToString(
-                                                          GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                                                .WriteElementStringAsync(
+                                                    "rating",
+                                                    intRating.ToString(
+                                                        GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                                         // </mod>
                                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                                         // See if this is a Weapon Mount with Weapons.
-                                        if (objVehicleMod.Weapons.Count > 0)
+                                        if (await objVehicleMod.Weapons.GetCountAsync().ConfigureAwait(false) > 0)
                                             blnWeapons = true;
                                     }
                                     else
                                     {
                                         // See if this is a Weapon Mount with Weapons.
-                                        if (objVehicleMod.Weapons.Count > 0)
+                                        if (await objVehicleMod.Weapons.GetCountAsync().ConfigureAwait(false) > 0)
                                             blnWeapons = true;
                                     }
                                 }).ConfigureAwait(false);
@@ -833,14 +885,14 @@ namespace Chummer
                             {
                                 // <weapons>
                                 await objWriter.WriteStartElementAsync("weapons").ConfigureAwait(false);
-                                await objVehicle.Mods.ForEachAsync(async objVehicleMod =>
+                                await objVehicle.Mods.ForEachAsync(objVehicleMod =>
                                 {
-                                    await objVehicleMod.Weapons.ForEachAsync(async objWeapon =>
+                                    return objVehicleMod.Weapons.ForEachAsync(async objWeapon =>
                                     {
                                         // <weapon>
                                         await objWriter.WriteStartElementAsync("weapon").ConfigureAwait(false);
                                         await objWriter.WriteElementStringAsync("name", objWeapon.Name)
-                                                       .ConfigureAwait(false);
+                                            .ConfigureAwait(false);
 
                                         // Weapon Accessories.
                                         if (await objWeapon.WeaponAccessories.GetCountAsync().ConfigureAwait(false) > 0)
@@ -854,15 +906,15 @@ namespace Chummer
                                                 {
                                                     // <accessory>
                                                     await objWriter.WriteStartElementAsync("accessory")
-                                                                   .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                                     await objWriter.WriteElementStringAsync("name", objAccessory.Name)
-                                                                   .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                                     await objWriter.WriteElementStringAsync("mount", objAccessory.Mount)
-                                                                   .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                                     await objWriter
-                                                          .WriteElementStringAsync(
-                                                              "extramount", objAccessory.ExtraMount)
-                                                          .ConfigureAwait(false);
+                                                        .WriteElementStringAsync(
+                                                            "extramount", objAccessory.ExtraMount)
+                                                        .ConfigureAwait(false);
                                                     // </accessory>
                                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                                 }
@@ -873,17 +925,19 @@ namespace Chummer
                                         }
 
                                         // Underbarrel Weapon.
-                                        if (await objWeapon.UnderbarrelWeapons.GetCountAsync().ConfigureAwait(false) > 0)
+                                        if (await objWeapon.UnderbarrelWeapons.GetCountAsync().ConfigureAwait(false) >
+                                            0)
                                         {
                                             await objWeapon.UnderbarrelWeapons.ForEachAsync(objUnderbarrelWeapon =>
-                                                objWriter
-                                                    .WriteElementStringAsync(
-                                                        "underbarrel", objUnderbarrelWeapon.Name)).ConfigureAwait(false);
+                                                    objWriter
+                                                        .WriteElementStringAsync(
+                                                            "underbarrel", objUnderbarrelWeapon.Name))
+                                                .ConfigureAwait(false);
                                         }
 
                                         // </weapon>
                                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                                    }).ConfigureAwait(false);
+                                    });
                                 }).ConfigureAwait(false);
 
                                 // </weapons>
@@ -915,14 +969,18 @@ namespace Chummer
                     await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
 
-            Program.ShowScrollableMessageBox(
+            await Program.ShowScrollableMessageBoxAsync(
                 this,
                 string.Format(GlobalSettings.CultureInfo,
-                              await LanguageManager.GetStringAsync("Message_CreatePACKSKit_SuiteCreated")
-                                                   .ConfigureAwait(false), strName),
+                    await LanguageManager.GetStringAsync("Message_CreatePACKSKit_SuiteCreated")
+                        .ConfigureAwait(false), strName),
                 await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_SuiteCreated").ConfigureAwait(false),
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;
@@ -946,7 +1004,7 @@ namespace Chummer
         /// <param name="objWriter">XmlWriter to use.</param>
         /// <param name="lstGear">List of Gear to write.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private static async ValueTask WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear, CancellationToken token = default)
+        private static async Task WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear, CancellationToken token = default)
         {
             // <gears>
             await objWriter.WriteStartElementAsync("gears", token: token).ConfigureAwait(false);
@@ -962,11 +1020,12 @@ namespace Chummer
                 objWriter.WriteValue(objGear.Name);
                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category", objGear.Category, token: token).ConfigureAwait(false);
-                if (objGear.Rating > 0)
-                    await objWriter.WriteElementStringAsync("rating", objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                int intRating = await objGear.GetRatingAsync(token).ConfigureAwait(false);
+                if (intRating > 0)
+                    await objWriter.WriteElementStringAsync("rating", intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 if (objGear.Quantity != 1)
                     await objWriter.WriteElementStringAsync("qty", objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                if (objGear.Children.Count > 0)
+                if (await objGear.Children.GetCountAsync(token).ConfigureAwait(false) > 0)
                     await WriteGear(objWriter, objGear.Children, token).ConfigureAwait(false);
                 // </gear>
                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);

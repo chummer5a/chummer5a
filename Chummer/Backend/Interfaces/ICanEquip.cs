@@ -17,10 +17,14 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Chummer
 {
     internal interface ICanEquip
     {
         bool Equipped { get; set; }
+        Task SetEquippedAsync(bool value, CancellationToken token = default);
     }
 }

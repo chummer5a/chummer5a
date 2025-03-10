@@ -164,6 +164,7 @@ namespace Chummer.UI.Editors
             // 
             // tss1
             // 
+            this.tss1.DefaultColorScheme = true;
             this.tss1.Name = "tss1";
             this.tss1.Size = new System.Drawing.Size(6, 23);
             // 
@@ -220,6 +221,7 @@ namespace Chummer.UI.Editors
             // 
             // tss2
             // 
+            this.tss2.DefaultColorScheme = true;
             this.tss2.Name = "tss2";
             this.tss2.Size = new System.Drawing.Size(6, 23);
             // 
@@ -259,6 +261,7 @@ namespace Chummer.UI.Editors
             // 
             // tss3
             // 
+            this.tss3.DefaultColorScheme = true;
             this.tss3.Name = "tss3";
             this.tss3.Size = new System.Drawing.Size(6, 23);
             // 
@@ -321,6 +324,7 @@ namespace Chummer.UI.Editors
             // 
             // tss4
             // 
+            this.tss4.DefaultColorScheme = true;
             this.tss4.Name = "tss4";
             this.tss4.Size = new System.Drawing.Size(6, 23);
             // 
@@ -406,6 +410,7 @@ namespace Chummer.UI.Editors
             this.rtbContent.TabStop = false;
             this.rtbContent.Text = "";
             this.rtbContent.SelectionChanged += new System.EventHandler(this.UpdateButtons);
+            this.rtbContent.TextChanged += new System.EventHandler(this.rtbContent_TextChanged);
             this.rtbContent.Enter += new System.EventHandler(this.rtbContent_Enter);
             this.rtbContent.KeyDown += new System.Windows.Forms.KeyEventHandler(this.rtbContent_KeyDown);
             this.rtbContent.Leave += new System.EventHandler(this.rtbContent_Leave);

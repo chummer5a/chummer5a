@@ -36,11 +36,9 @@ namespace Chummer
 {
     public static class StringExtensions
     {
-        public static string EmptyGuid { get; } = Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo);
-
         public static bool IsEmptyGuid(this string strInput)
         {
-            return strInput == EmptyGuid;
+            return string.Equals(strInput, Utils.GuidEmptyString, StringComparison.OrdinalIgnoreCase);
         }
 
         public static async Task<string> JoinAsync(string strSeparator, IEnumerable<Task<string>> lstStringTasks,
@@ -53,12 +51,12 @@ namespace Chummer
                 foreach (Task<string> tskString in lstStringTasks)
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdReturn.Append(await tskString.ConfigureAwait(false));
-                    token.ThrowIfCancellationRequested();
                     if (blnAddSeparator)
                         sbdReturn.Append(strSeparator);
                     else
                         blnAddSeparator = true;
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(await tskString.ConfigureAwait(false));
                 }
 
                 return sbdReturn.ToString();
@@ -349,7 +347,6 @@ namespace Chummer
 
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
-            
             if (astrNeedles.All(x => x.Length > intHaystackLength))
                 return -1;
 
@@ -597,12 +594,13 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strInput))
                 yield break;
+            int intInputLength = strInput.Length;
             int intLoopLength;
-            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
             {
                 intLoopLength = strInput.IndexOf(chrSplit, intStart);
                 if (intLoopLength < 0)
-                    intLoopLength = strInput.Length;
+                    intLoopLength = intInputLength;
                 intLoopLength -= intStart;
                 if (intLoopLength != 0)
                     yield return strInput.Substring(intStart, intLoopLength);
@@ -617,9 +615,10 @@ namespace Chummer
         /// <param name="strInput">Input textblock.</param>
         /// <param name="strSplit">String to use for splitting.</param>
         /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
         /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
         public static IEnumerable<string> SplitNoAlloc(this string strInput, string strSplit,
-                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
+            StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strInput))
                 yield break;
@@ -629,12 +628,14 @@ namespace Chummer
                 yield break;
             }
 
+            int intInputLength = strInput.Length;
+            int intSplitLength = strSplit.Length;
             int intLoopLength;
-            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + strSplit.Length)
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
             {
-                intLoopLength = strInput.IndexOf(strSplit, intStart, StringComparison.Ordinal);
+                intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
                 if (intLoopLength < 0)
-                    intLoopLength = strInput.Length;
+                    intLoopLength = intInputLength;
                 intLoopLength -= intStart;
                 if (intLoopLength != 0)
                     yield return strInput.Substring(intStart, intLoopLength);
@@ -897,8 +898,7 @@ namespace Chummer
                                                 && (blnOmitCheck
                                                     || strInput.StartsWith(strToTrim, StringComparison.Ordinal)))
             {
-                int intTrimLength = strToTrim.Length;
-                return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
+                return strInput.Substring(strToTrim.Length);
             }
 
             return strInput;
@@ -946,12 +946,9 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, char chrToTrim)
         {
-            if (!string.IsNullOrEmpty(strInput) && strInput[0] == chrToTrim)
-            {
-                return strInput.Substring(1, strInput.Length - 1);
-            }
-
-            return strInput;
+            return !string.IsNullOrEmpty(strInput) && strInput[0] == chrToTrim
+                ? strInput.Substring(1)
+                : strInput;
         }
 
         /// <summary>
@@ -963,9 +960,9 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, params char[] achrToTrim)
         {
-            if (!string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim))
-                return strInput.Substring(1, strInput.Length - 1);
-            return strInput;
+            return !string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim)
+                ? strInput.Substring(1)
+                : strInput;
         }
 
         /// <summary>
@@ -1562,8 +1559,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
             return blnEscaped
-                ? s_RgxEscapedLineEndingsExpression.Replace(strInput, Environment.NewLine)
-                : s_RgxLineEndingsExpression.Replace(strInput, Environment.NewLine);
+                ? s_RgxEscapedLineEndingsExpression.Value.Replace(strInput, Environment.NewLine)
+                : s_RgxLineEndingsExpression.Value.Replace(strInput, Environment.NewLine);
         }
 
         /// <summary>
@@ -1613,7 +1610,7 @@ namespace Chummer
                                .Replace("&amp;amp;", "&amp;")
                                .Replace("<", "&lt;")
                                .Replace(">", "&gt;");
-            return s_RgxLineEndingsExpression.Replace(strReturn, "<br />");
+            return s_RgxLineEndingsExpression.Value.Replace(strReturn, "<br />");
         }
 
         private static readonly ReadOnlyCollection<char> s_achrPathInvalidPathChars
@@ -1659,14 +1656,14 @@ namespace Chummer
             {
                 if (!s_RtbRtfManipulator.Value.IsHandleCreated)
                 {
-                    Utils.RunOnMainThread(() => s_RtbRtfManipulator.Value.CreateControl(), token);
+                    Utils.RunOnMainThread(() => s_RtbRtfManipulator.Value.CreateControl(), token: token);
                 }
 
                 return s_RtbRtfManipulator.Value.DoThreadSafeFunc(x =>
                 {
                     x.Text = strInput;
                     return x.Rtf;
-                });
+                }, token);
             }
             finally
             {
@@ -1782,7 +1779,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not a string is an RTF document
+        /// Whether a string is an RTF document
         /// </summary>
         /// <param name="strInput">The string to check.</param>
         /// <returns>True if <paramref name="strInput"/> is an RTF document, False otherwise.</returns>
@@ -1794,7 +1791,7 @@ namespace Chummer
             if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                 || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
             {
-                return s_RtfStripperRegex.IsMatch(strInputTrimmed);
+                return s_RtfStripperRegex.Value.IsMatch(strInputTrimmed);
             }
 
             return false;
@@ -1807,7 +1804,7 @@ namespace Chummer
         /// <returns>True if the string contains HTML tags, False otherwise.</returns>
         public static bool ContainsHtmlTags(this string strInput)
         {
-            return !string.IsNullOrEmpty(strInput) && s_RgxHtmlTagExpression.IsMatch(strInput);
+            return !string.IsNullOrEmpty(strInput) && s_RgxHtmlTagExpression.Value.IsMatch(strInput);
         }
 
         /// <summary>
@@ -1822,19 +1819,18 @@ namespace Chummer
                 : GlobalSettings.InvalidUnicodeCharsExpression.Replace(strInput, string.Empty);
         }
 
-        private static readonly Regex s_RgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Lazy<Regex> s_RgxHtmlTagExpression = new Lazy<Regex>(() => new Regex(@"/<\/?[a-z][\s\S]*>/i",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
-        private static readonly Regex s_RgxLineEndingsExpression = new Regex(@"\r\n|\n\r|\n|\r",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Lazy<Regex> s_RgxLineEndingsExpression = new Lazy<Regex>(() => new Regex(@"\r\n|\n\r|\n|\r",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
-        private static readonly Regex s_RgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Lazy<Regex> s_RgxEscapedLineEndingsExpression = new Lazy<Regex>(() => new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         private static readonly DebuggableSemaphoreSlim s_RtbRtfManipulatorLock = new DebuggableSemaphoreSlim();
-
         [SupportedOSPlatform("windows")]
-        private static readonly Lazy<RichTextBox> s_RtbRtfManipulator = new Lazy<RichTextBox>(() => Utils.RunOnMainThread(() => new RichTextBox()));
+        private static readonly Lazy<RichTextBox> s_RtbRtfManipulator = new Lazy<RichTextBox>(() => Utils.RunOnMainThread(() => new RichTextBox(), token: CancellationToken.None));
 
         /// <summary>
         /// Strip RTF Tags from RTF Text.
@@ -1852,7 +1848,7 @@ namespace Chummer
                 return string.Empty;
             }
 
-            Match objMatch = s_RtfStripperRegex.Match(inputRtf);
+            Match objMatch = s_RtfStripperRegex.Value.Match(inputRtf);
 
             if (!objMatch.Success)
             {
@@ -2008,9 +2004,9 @@ namespace Chummer
             }
         }
 
-        private static readonly Regex s_RtfStripperRegex = new Regex(
+        private static readonly Lazy<Regex> s_RtfStripperRegex = new Lazy<Regex>(() => new Regex(
             @"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         private static readonly IReadOnlyCollection<string> s_SetRtfDestinations = new HashSet<string>
         {

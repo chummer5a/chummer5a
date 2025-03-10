@@ -51,8 +51,6 @@ Global
 		Debuggable Release with ChummerHub|x86 = Debuggable Release with ChummerHub|x86
 		Debuggable Release|Any CPU = Debuggable Release|Any CPU
 		Debuggable Release|x86 = Debuggable Release|x86
-		Release with ChummerHub|Any CPU = Release with ChummerHub|Any CPU
-		Release with ChummerHub|x86 = Release with ChummerHub|x86
 		Release|Any CPU = Release|Any CPU
 		Release|x86 = Release|x86
 	EndGlobalSection
@@ -73,10 +71,6 @@ Global
 		{95279469-5A3E-42E6-993C-6A403586C86E}.Debuggable Release|Any CPU.Build.0 = Debuggable Release|Any CPU
 		{95279469-5A3E-42E6-993C-6A403586C86E}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
 		{95279469-5A3E-42E6-993C-6A403586C86E}.Debuggable Release|x86.Build.0 = Debuggable Release|Any CPU
-		{95279469-5A3E-42E6-993C-6A403586C86E}.Release with ChummerHub|Any CPU.ActiveCfg = Release with ChummerHub|Any CPU
-		{95279469-5A3E-42E6-993C-6A403586C86E}.Release with ChummerHub|Any CPU.Build.0 = Release with ChummerHub|Any CPU
-		{95279469-5A3E-42E6-993C-6A403586C86E}.Release with ChummerHub|x86.ActiveCfg = Release with ChummerHub|Any CPU
-		{95279469-5A3E-42E6-993C-6A403586C86E}.Release with ChummerHub|x86.Build.0 = Release with ChummerHub|Any CPU
 		{95279469-5A3E-42E6-993C-6A403586C86E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95279469-5A3E-42E6-993C-6A403586C86E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{95279469-5A3E-42E6-993C-6A403586C86E}.Release|Any CPU.Deploy.0 = Release|Any CPU
@@ -98,10 +92,6 @@ Global
 		{8C904468-F3A3-4034-B2DE-ED532803AD38}.Debuggable Release|Any CPU.Build.0 = Debuggable Release|Any CPU
 		{8C904468-F3A3-4034-B2DE-ED532803AD38}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
 		{8C904468-F3A3-4034-B2DE-ED532803AD38}.Debuggable Release|x86.Build.0 = Debuggable Release|Any CPU
-		{8C904468-F3A3-4034-B2DE-ED532803AD38}.Release with ChummerHub|Any CPU.ActiveCfg = Release with ChummerHub|Any CPU
-		{8C904468-F3A3-4034-B2DE-ED532803AD38}.Release with ChummerHub|Any CPU.Build.0 = Release with ChummerHub|Any CPU
-		{8C904468-F3A3-4034-B2DE-ED532803AD38}.Release with ChummerHub|x86.ActiveCfg = Release with ChummerHub|Any CPU
-		{8C904468-F3A3-4034-B2DE-ED532803AD38}.Release with ChummerHub|x86.Build.0 = Release with ChummerHub|Any CPU
 		{8C904468-F3A3-4034-B2DE-ED532803AD38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C904468-F3A3-4034-B2DE-ED532803AD38}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8C904468-F3A3-4034-B2DE-ED532803AD38}.Release|x86.ActiveCfg = Release|Any CPU
@@ -120,9 +110,6 @@ Global
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Debuggable Release|Any CPU.ActiveCfg = Debuggable Release|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Debuggable Release|x86.Build.0 = Debuggable Release|Any CPU
-		{9951D983-ED70-4F91-A958-8C13F006CB24}.Release with ChummerHub|Any CPU.ActiveCfg = Release with ChummerHub|Any CPU
-		{9951D983-ED70-4F91-A958-8C13F006CB24}.Release with ChummerHub|x86.ActiveCfg = Release with ChummerHub|Any CPU
-		{9951D983-ED70-4F91-A958-8C13F006CB24}.Release with ChummerHub|x86.Build.0 = Release with ChummerHub|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9951D983-ED70-4F91-A958-8C13F006CB24}.Release|x86.ActiveCfg = Release|Any CPU
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debug with ChummerHub|Any CPU.ActiveCfg = Debug|Any CPU
@@ -139,9 +126,6 @@ Global
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debuggable Release|Any CPU.ActiveCfg = Debuggable Release|Any CPU
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Debuggable Release|x86.Build.0 = Debuggable Release|Any CPU
-		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release with ChummerHub|Any CPU.ActiveCfg = Release with ChummerHub|Any CPU
-		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release with ChummerHub|x86.ActiveCfg = Release with ChummerHub|Any CPU
-		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release with ChummerHub|x86.Build.0 = Release with ChummerHub|Any CPU
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97EFDBA5-9A5A-459E-BEC4-BA7647295675}.Release|x86.ActiveCfg = Release|Any CPU
 		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Debug with ChummerHub|Any CPU.ActiveCfg = Debug|Any CPU
@@ -160,10 +144,6 @@ Global
 		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Debuggable Release|Any CPU.Build.0 = Debuggable Release|Any CPU
 		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
 		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Debuggable Release|x86.Build.0 = Debuggable Release|Any CPU
-		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Release with ChummerHub|Any CPU.ActiveCfg = Release with ChummerHub|Any CPU
-		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Release with ChummerHub|Any CPU.Build.0 = Release with ChummerHub|Any CPU
-		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Release with ChummerHub|x86.ActiveCfg = Release with ChummerHub|Any CPU
-		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Release with ChummerHub|x86.Build.0 = Release with ChummerHub|Any CPU
 		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Release|x86.ActiveCfg = Release|Any CPU
@@ -184,10 +164,6 @@ Global
 		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Debuggable Release|Any CPU.Build.0 = Debuggable Release|Any CPU
 		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
 		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Debuggable Release|x86.Build.0 = Debuggable Release|Any CPU
-		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Release with ChummerHub|Any CPU.ActiveCfg = Release with ChummerHub|Any CPU
-		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Release with ChummerHub|Any CPU.Build.0 = Release with ChummerHub|Any CPU
-		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Release with ChummerHub|x86.ActiveCfg = Release with ChummerHub|Any CPU
-		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Release with ChummerHub|x86.Build.0 = Release with ChummerHub|Any CPU
 		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Release|x86.ActiveCfg = Release|Any CPU
@@ -204,10 +180,6 @@ Global
 		{1D8E1DB3-F9DB-4F7D-9575-D88C0814AD9B}.Debuggable Release with ChummerHub|x86.Build.0 = Debuggable Release|Any CPU
 		{1D8E1DB3-F9DB-4F7D-9575-D88C0814AD9B}.Debuggable Release|Any CPU.ActiveCfg = Debuggable Release|Any CPU
 		{1D8E1DB3-F9DB-4F7D-9575-D88C0814AD9B}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
-		{1D8E1DB3-F9DB-4F7D-9575-D88C0814AD9B}.Release with ChummerHub|Any CPU.ActiveCfg = Release with ChummerHub|Any CPU
-		{1D8E1DB3-F9DB-4F7D-9575-D88C0814AD9B}.Release with ChummerHub|Any CPU.Build.0 = Release with ChummerHub|Any CPU
-		{1D8E1DB3-F9DB-4F7D-9575-D88C0814AD9B}.Release with ChummerHub|x86.ActiveCfg = Release with ChummerHub|Any CPU
-		{1D8E1DB3-F9DB-4F7D-9575-D88C0814AD9B}.Release with ChummerHub|x86.Build.0 = Release with ChummerHub|Any CPU
 		{1D8E1DB3-F9DB-4F7D-9575-D88C0814AD9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D8E1DB3-F9DB-4F7D-9575-D88C0814AD9B}.Release|x86.ActiveCfg = Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Debug with ChummerHub|Any CPU.ActiveCfg = Debug|Any CPU
@@ -225,10 +197,6 @@ Global
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Debuggable Release|Any CPU.ActiveCfg = Debuggable Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Debuggable Release|x86.Build.0 = Debuggable Release|Any CPU
-		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release with ChummerHub|Any CPU.ActiveCfg = Release with ChummerHub|Any CPU
-		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release with ChummerHub|Any CPU.Build.0 = Release with ChummerHub|Any CPU
-		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release with ChummerHub|x86.ActiveCfg = Release with ChummerHub|Any CPU
-		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release with ChummerHub|x86.Build.0 = Release with ChummerHub|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release|x86.ActiveCfg = Release|Any CPU
 		{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}.Release|x86.Build.0 = Release|Any CPU
@@ -246,9 +214,6 @@ Global
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debuggable Release|Any CPU.ActiveCfg = Debuggable Release|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debuggable Release|x86.Build.0 = Debuggable Release|Any CPU
-		{EA016472-2F78-43F9-AF2C-809BDF766645}.Release with ChummerHub|Any CPU.ActiveCfg = Release with ChummerHub|Any CPU
-		{EA016472-2F78-43F9-AF2C-809BDF766645}.Release with ChummerHub|x86.ActiveCfg = Release with ChummerHub|Any CPU
-		{EA016472-2F78-43F9-AF2C-809BDF766645}.Release with ChummerHub|x86.Build.0 = Release with ChummerHub|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA016472-2F78-43F9-AF2C-809BDF766645}.Release|x86.ActiveCfg = Release|Any CPU
 		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Debug with ChummerHub|Any CPU.ActiveCfg = Debug|Any CPU
@@ -259,9 +224,6 @@ Global
 		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Debuggable Release with ChummerHub|x86.ActiveCfg = Debuggable Release|Any CPU
 		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Debuggable Release|Any CPU.ActiveCfg = Debuggable Release|Any CPU
 		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
-		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Release with ChummerHub|Any CPU.ActiveCfg = Release with ChummerHub|Any CPU
-		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Release with ChummerHub|x86.ActiveCfg = Release with ChummerHub|Any CPU
-		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Release with ChummerHub|x86.Build.0 = Release with ChummerHub|Any CPU
 		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Release|x86.ActiveCfg = Release|Any CPU
 		{8F9EEA5C-4856-4D5C-A46E-8971CE847880}.Debug with ChummerHub|Any CPU.ActiveCfg = Debug|Any CPU
@@ -272,9 +234,6 @@ Global
 		{8F9EEA5C-4856-4D5C-A46E-8971CE847880}.Debuggable Release with ChummerHub|x86.ActiveCfg = Debuggable Release|Any CPU
 		{8F9EEA5C-4856-4D5C-A46E-8971CE847880}.Debuggable Release|Any CPU.ActiveCfg = Debuggable Release|Any CPU
 		{8F9EEA5C-4856-4D5C-A46E-8971CE847880}.Debuggable Release|x86.ActiveCfg = Debuggable Release|Any CPU
-		{8F9EEA5C-4856-4D5C-A46E-8971CE847880}.Release with ChummerHub|Any CPU.ActiveCfg = Release with ChummerHub|Any CPU
-		{8F9EEA5C-4856-4D5C-A46E-8971CE847880}.Release with ChummerHub|x86.ActiveCfg = Release with ChummerHub|Any CPU
-		{8F9EEA5C-4856-4D5C-A46E-8971CE847880}.Release with ChummerHub|x86.Build.0 = Release with ChummerHub|Any CPU
 		{8F9EEA5C-4856-4D5C-A46E-8971CE847880}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F9EEA5C-4856-4D5C-A46E-8971CE847880}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection

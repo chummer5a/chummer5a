@@ -39,7 +39,11 @@ namespace Chummer
 
         public PrintMultipleCharacters()
         {
-            Disposed += (sender, args) => _objGenericCancellationTokenSource.Dispose();
+            Disposed += (sender, args) =>
+            {
+                _objGenericCancellationTokenSource.Dispose();
+                dlgOpenFile?.Dispose();
+            };
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -385,7 +389,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask CleanUpOldCharacters(CancellationToken token = default)
+        private async Task CleanUpOldCharacters(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!(_aobjCharacters?.Length > 0))
@@ -399,7 +403,7 @@ namespace Chummer
                 foreach (Character objCharacter in _aobjCharacters)
                 {
                     if (!await Program.OpenCharacters.ContainsAsync(objCharacter, token: token).ConfigureAwait(false)
-                        || await Program.OpenCharacters.AnyAsync(x => x.LinkedCharacters.Contains(objCharacter), token).ConfigureAwait(false)
+                        || await Program.OpenCharacters.AnyAsync(async x => (await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token).ConfigureAwait(false)
                         || Program.MainForm.OpenFormsWithCharacters.Any(x => x.CharacterObjects.Contains(objCharacter)))
                         continue;
                     blnAnyChanges = true;

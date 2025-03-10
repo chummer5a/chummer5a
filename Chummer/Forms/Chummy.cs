@@ -30,7 +30,7 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer
 {
-    public partial class Chummy : Form
+    public partial class Chummy : Form, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;

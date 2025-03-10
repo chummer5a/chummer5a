@@ -52,7 +52,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class Lifestyle : IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasCustomName, IHasSourceId, IHasSource, ICanSort, INotifyMultiplePropertyChanged, IHasLockObject, IHasCost
+    public sealed class Lifestyle : IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasCustomName, IHasSourceId, IHasSource, ICanSort, INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCost, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -82,7 +82,7 @@ namespace Chummer.Backend.Equipment
         private int _intBonusLP;
         private int _intLP;
         private bool _blnAllowBonusLP;
-        private bool _blnIsPrimaryTenant;
+        private bool _blnSplitCostWithRoommates;
         private decimal _decCostForSecurity;
         private decimal _decCostForArea;
         private decimal _decCostForComforts;
@@ -154,9 +154,11 @@ namespace Chummer.Backend.Equipment
         {
             // Create the GUID for the new Lifestyle.
             _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
-            LifestyleQualities.CollectionChanged += LifestyleQualitiesCollectionChanged;
-            LifestyleQualities.BeforeClearCollectionChanged += LifestyleQualitiesOnBeforeClearCollectionChanged;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = objCharacter.LockObject;
+            _lstLifestyleQualities = new ThreadSafeObservableCollection<LifestyleQuality>(LockObject);
+            LifestyleQualities.CollectionChangedAsync += LifestyleQualitiesCollectionChanged;
+            LifestyleQualities.BeforeClearCollectionChangedAsync += LifestyleQualitiesOnBeforeClearCollectionChanged;
         }
 
         /// <summary>
@@ -260,6 +262,139 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Create a Lifestyle from an XmlNode and return the TreeNodes for it.
+        /// </summary>
+        /// <param name="objXmlLifestyle">XmlNode to create the object from.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(XmlNode objXmlLifestyle, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!objXmlLifestyle.TryGetField("id", Guid.TryParse, out _guiSourceID))
+                {
+                    Log.Warn(new object[] { "Missing id field for xmlnode", objXmlLifestyle });
+                    Utils.BreakIfDebug();
+                }
+                else
+                {
+                    _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
+
+                objXmlLifestyle.TryGetStringFieldQuickly("name", ref _strBaseLifestyle);
+                objXmlLifestyle.TryGetDecFieldQuickly("cost", ref _decCost);
+                objXmlLifestyle.TryGetInt32FieldQuickly("dice", ref _intDice);
+                objXmlLifestyle.TryGetDecFieldQuickly("multiplier", ref _decMultiplier);
+                objXmlLifestyle.TryGetStringFieldQuickly("source", ref _strSource);
+                objXmlLifestyle.TryGetStringFieldQuickly("page", ref _strPage);
+                objXmlLifestyle.TryGetInt32FieldQuickly("lp", ref _intLP);
+                objXmlLifestyle.TryGetDecFieldQuickly("costforarea", ref _decCostForArea);
+                objXmlLifestyle.TryGetDecFieldQuickly("costforcomforts", ref _decCostForComforts);
+                objXmlLifestyle.TryGetDecFieldQuickly("costforsecurity", ref _decCostForSecurity);
+                objXmlLifestyle.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
+                if (!objXmlLifestyle.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                    objXmlLifestyle.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                {
+                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlLifestyle, _strName,
+                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), _strSource, _strPage,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
+                        token).ConfigureAwait(false);
+                }
+
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objXmlLifestyle.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+                string strTemp = string.Empty;
+                if (objXmlLifestyle.TryGetStringFieldQuickly("increment", ref strTemp))
+                    _eIncrement = ConvertToLifestyleIncrement(strTemp);
+
+                XPathNavigator xmlLifestyleXPathDocument =
+                    await _objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token).ConfigureAwait(false);
+                XPathNavigator xmlLifestyleNode =
+                    xmlLifestyleXPathDocument.SelectSingleNode(
+                        "/chummer/comforts/comfort[name = " + _strBaseLifestyle.CleanXPath() + ']');
+                xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
+
+                // Area.
+                xmlLifestyleNode =
+                    xmlLifestyleXPathDocument.SelectSingleNode(
+                        "/chummer/neighborhoods/neighborhood[name = " + _strBaseLifestyle.CleanXPath() + ']');
+                xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
+
+                // Security.
+                xmlLifestyleNode =
+                    xmlLifestyleXPathDocument.SelectSingleNode(
+                        "/chummer/securities/security[name = " + _strBaseLifestyle.CleanXPath() + ']');
+                xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
+                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                if (await objSettings.BookEnabledAsync("HT", token).ConfigureAwait(false) || await objSettings.GetAllowFreeGridsAsync(token).ConfigureAwait(false))
+                {
+                    using (XmlNodeList lstGridNodes = objXmlLifestyle.SelectNodes("freegrids/freegrid"))
+                    {
+                        if (lstGridNodes == null || lstGridNodes.Count <= 0)
+                            return;
+
+                        foreach (LifestyleQuality objFreeGrid in await LifestyleQualities.ToListAsync(x => x.GetIsFreeGridAsync(token),
+                                     token: token).ConfigureAwait(false))
+                        {
+                            await objFreeGrid.RemoveAsync(false, token).ConfigureAwait(false);
+                        }
+
+                        XmlDocument xmlLifestyleDocument =
+                            await _objCharacter.LoadDataAsync("lifestyles.xml", token: token).ConfigureAwait(false);
+                        foreach (XmlNode xmlNode in lstGridNodes)
+                        {
+                            XmlNode xmlQuality
+                                = xmlLifestyleDocument.TryGetNodeByNameOrId(
+                                    "/chummer/qualities/quality", xmlNode.InnerText);
+                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                            string strPush = xmlNode.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)
+                                ?.Value;
+                            if (!string.IsNullOrWhiteSpace(strPush))
+                            {
+                                (await _objCharacter.GetPushTextAsync(token).ConfigureAwait(false)).Push(strPush);
+                            }
+
+                            await objQuality.CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn,
+                                token: token).ConfigureAwait(false);
+                            await objQuality.SetIsFreeGridAsync(true, token).ConfigureAwait(false);
+                            await _lstLifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+
+                List<LifestyleQuality> lstToRemove = new List<LifestyleQuality>(await _lstLifestyleQualities.GetCountAsync(token).ConfigureAwait(false));
+                await _lstLifestyleQualities.ForEachAsync(async objQuality =>
+                {
+                    if (await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Selected)
+                    {
+                        XPathNavigator xmlQuality = await objQuality.GetNodeXPathAsync(token).ConfigureAwait(false);
+                        if (!await xmlQuality.RequirementsMetAsync(_objCharacter, this, token: token)
+                                .ConfigureAwait(false))
+                        {
+                            lstToRemove.Add(objQuality);
+                        }
+                    }
+                }, token).ConfigureAwait(false);
+                foreach (LifestyleQuality objQuality in lstToRemove)
+                    await objQuality.RemoveAsync(false, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private SourceString _objCachedSourceDetail;
 
         public SourceString SourceDetail
@@ -268,14 +403,35 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterReadLock())
                 {
-                    if (_objCachedSourceDetail == default)
-                        _objCachedSourceDetail = SourceString.GetSourceString(Source,
-                                                                              DisplayPage(GlobalSettings.Language),
-                                                                              GlobalSettings.Language,
-                                                                              GlobalSettings.CultureInfo,
-                                                                              _objCharacter);
-                    return _objCachedSourceDetail;
+                    return _objCachedSourceDetail == default
+                        ? _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                            DisplayPage(GlobalSettings.Language),
+                            GlobalSettings.Language,
+                            GlobalSettings.CultureInfo,
+                            _objCharacter)
+                        : _objCachedSourceDetail;
                 }
+            }
+        }
+
+        public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _objCachedSourceDetail == default
+                    ? _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                        GlobalSettings.Language,
+                        GlobalSettings.CultureInfo,
+                        _objCharacter, token).ConfigureAwait(false)
+                    : _objCachedSourceDetail;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -328,8 +484,8 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("source", _strSource);
                 objWriter.WriteElementString("page", _strPage);
                 objWriter.WriteElementString("trustfund", _blnTrustFund.ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteElementString("primarytenant",
-                                             _blnIsPrimaryTenant.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("splitcostwithroommates",
+                    _blnSplitCostWithRoommates.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("type", _eType.ToString());
                 objWriter.WriteElementString("increment", _eIncrement.ToString());
                 objWriter.WriteElementString("sourceid", SourceIDString);
@@ -458,7 +614,7 @@ namespace Chummer.Backend.Equipment
                 if (_strBaseLifestyle == "Middle")
                     _strBaseLifestyle = "Medium";
                 // Legacy sweep for issues with Advanced Lifestyle selector not properly resetting values upon changes to the Base Lifestyle
-                if (_objCharacter.LastSavedVersion <= new Version(5, 212, 73)
+                if (_objCharacter.LastSavedVersion <= new ValueVersion(5, 212, 73)
                     && _strBaseLifestyle != "Street"
                     && (_decCostForArea != 0 || _decCostForComforts != 0 || _decCostForSecurity != 0))
                 {
@@ -511,13 +667,12 @@ namespace Chummer.Backend.Equipment
 
                 objNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objNode.TryGetBoolFieldQuickly("trustfund", ref _blnTrustFund);
-                if (objNode["primarytenant"] == null)
+                if (!objNode.TryGetBoolFieldQuickly("splitcostwithroommates", ref _blnSplitCostWithRoommates))
                 {
-                    _blnIsPrimaryTenant = _intRoommates == 0;
-                }
-                else
-                {
-                    objNode.TryGetBoolFieldQuickly("primarytenant", ref _blnIsPrimaryTenant);
+                    if (objNode.TryGetBoolFieldQuickly("primarytenant", ref _blnSplitCostWithRoommates))
+                        _blnSplitCostWithRoommates = !_blnSplitCostWithRoommates;
+                    else
+                        _blnSplitCostWithRoommates = _intRoommates > 0;
                 }
 
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -585,7 +740,7 @@ namespace Chummer.Backend.Equipment
             using (LockObject.EnterWriteLock())
             {
                 //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
-                if (_objCharacter.LastSavedVersion > new Version(5, 197, 0) ||
+                if (_objCharacter.LastSavedVersion > new ValueVersion(5, 197, 0) ||
                     xmlLifestyleNode["costforarea"] != null) return;
                 XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
                 XPathNavigator objLifestyleQualityNode
@@ -657,11 +812,11 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -673,54 +828,52 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name", CustomName, token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("city", City, token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("district", District, token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("borough", Borough, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("city", await GetCityAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("district", await GetDistrictAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("borough", await GetBoroughAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
-                            "cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                            "cost", (await GetCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture),
                             token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("totalmonthlycost",
                             (await GetTotalMonthlyCostAsync(token).ConfigureAwait(false))
                             .ToString(
-                                _objCharacter.Settings.NuyenFormat, objCulture), token)
+                                strNuyenFormat, objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("totalcost",
                             (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
-                                _objCharacter.Settings.NuyenFormat, objCulture),
+                                strNuyenFormat, objCulture),
                             token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("dice", Dice.ToString(objCulture), token)
+                    await objWriter.WriteElementStringAsync("dice", (await GetDiceAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("multiplier",
-                            Multiplier.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                            (await GetMultiplierAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture),
                             token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("months", Increments.ToString(objCulture), token)
+                    await objWriter.WriteElementStringAsync("months", (await GetIncrementsAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("purchased", Purchased.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("purchased", (await GetPurchasedAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("type", StyleType.ToString(), token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("increment", IncrementType.ToString(), token)
+                    await objWriter.WriteElementStringAsync("type", (await GetStyleTypeAsync(token).ConfigureAwait(false)).ToString(), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("increment", (await GetIncrementTypeAsync(token).ConfigureAwait(false)).ToString(), token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("bonuslp", BonusLP.ToString(objCulture), token)
+                    await objWriter.WriteElementStringAsync("bonuslp", (await GetBonusLPAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                         .ConfigureAwait(false);
-                    string strBaseLifestyle = string.Empty;
+                    string strBaseLifestyle = await GetBaseLifestyleAsync(token).ConfigureAwait(false);
 
                     // Retrieve the Advanced Lifestyle information if applicable.
-                    if (!string.IsNullOrEmpty(BaseLifestyle))
+                    if (!string.IsNullOrEmpty(strBaseLifestyle))
                     {
                         XPathNavigator objXmlAspect = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                         if (objXmlAspect != null)
                         {
                             strBaseLifestyle
-                                = (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("translate", token)
-                                      .ConfigureAwait(false))?.Value
-                                  ?? (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                      .ConfigureAwait(false))?.Value ?? strBaseLifestyle;
+                                = objXmlAspect.SelectSingleNodeAndCacheExpression("translate", token)?.Value
+                                  ?? objXmlAspect.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? strBaseLifestyle;
                         }
                     }
 
@@ -745,11 +898,7 @@ namespace Chummer.Backend.Equipment
                     try
                     {
                         // Retrieve the Qualities for the Advanced Lifestyle if applicable.
-                        foreach (LifestyleQuality objQuality in LifestyleQualities)
-                        {
-                            await objQuality.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await LifestyleQualities.ForEachAsync(objQuality => objQuality.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -800,6 +949,12 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_guiSourceID == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_guiSourceID == value)
@@ -807,8 +962,8 @@ namespace Chummer.Backend.Equipment
                     using (LockObject.EnterWriteLock())
                     {
                         _guiSourceID = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -838,6 +993,42 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// A custom name for the Lifestyle assigned by the player.
+        /// </summary>
+        public async Task<string> GetNameAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// A custom name for the Lifestyle assigned by the player.
+        /// </summary>
+        public async Task SetNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strName, value) != value)
+                    await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string CustomName
         {
             get => Name;
@@ -863,20 +1054,22 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             // Get the translated name if applicable.
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return BaseLifestyle;
 
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                return objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
-                    ?.Value ?? BaseLifestyle
-                    : BaseLifestyle;
+                return objNode?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? BaseLifestyle;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -899,9 +1092,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
@@ -912,15 +1106,19 @@ namespace Chummer.Backend.Equipment
 
                 return strReturn;
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// Sourcebook.
@@ -986,19 +1184,21 @@ namespace Chummer.Backend.Equipment
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                string s = objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
-                                    .ConfigureAwait(false))?.Value ?? Page
-                    : Page;
-                return !string.IsNullOrWhiteSpace(s) ? s : Page;
+                string strReturn = objNode?.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page;
+                return !string.IsNullOrWhiteSpace(strReturn) ? strReturn : Page;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1014,6 +1214,12 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_decCost == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decCost == value)
@@ -1021,9 +1227,69 @@ namespace Chummer.Backend.Equipment
                     using (LockObject.EnterWriteLock())
                     {
                         _decCost = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Free Lifestyle points from Traveler lifestyle.
+        /// </summary>
+        public async Task<decimal> GetCostAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decCost;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Cost
+        /// </summary>
+        public async Task SetCostAsync(decimal value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decCost == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            token.ThrowIfCancellationRequested();
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decCost == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decCost = value;
+                    await OnPropertyChangedAsync(nameof(Cost), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1048,6 +1314,43 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Number of dice the character rolls to determine their starting Nuyen.
+        /// </summary>
+        public async Task<int> GetDiceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intDice;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Number of dice the character rolls to determine their starting Nuyen.
+        /// </summary>
+        public async Task SetDiceAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intDice, value) != value)
+                    await OnPropertyChangedAsync(nameof(Dice), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Number the character multiplies the dice roll with to determine their starting Nuyen.
         /// </summary>
         public decimal Multiplier
@@ -1059,6 +1362,12 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_decMultiplier == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decMultiplier == value)
@@ -1066,9 +1375,69 @@ namespace Chummer.Backend.Equipment
                     using (LockObject.EnterWriteLock())
                     {
                         _decMultiplier = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Number the character multiplies the dice roll with to determine their starting Nuyen.
+        /// </summary>
+        public async Task<decimal> GetMultiplierAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decMultiplier;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Number the character multiplies the dice roll with to determine their starting Nuyen.
+        /// </summary>
+        public async Task SetMultiplierAsync(decimal value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decMultiplier == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decMultiplier == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decMultiplier = value;
+                    await OnPropertyChangedAsync(nameof(Multiplier), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1093,7 +1462,65 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Lifestyle has been Purchased and no longer rented.
+        /// Months/Weeks/Days purchased.
+        /// </summary>
+        public async Task<int> GetIncrementsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intIncrements;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Months/Weeks/Days purchased.
+        /// </summary>
+        public async Task SetIncrementsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intIncrements, value) != value)
+                    await OnPropertyChangedAsync(nameof(Increments), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Months/Weeks/Days purchased.
+        /// </summary>
+        public async Task ModifyIncrementsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Interlocked.Add(ref _intIncrements, value);
+                await OnPropertyChangedAsync(nameof(Increments), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether the Lifestyle has been Purchased and no longer rented.
         /// </summary>
         public bool Purchased
         {
@@ -1101,6 +1528,24 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterReadLock())
                     return Increments >= IncrementsRequiredForPermanent;
+            }
+        }
+
+        /// <summary>
+        /// Whether the Lifestyle has been Purchased and no longer rented.
+        /// </summary>
+        public async Task<bool> GetPurchasedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetIncrementsAsync(token).ConfigureAwait(false) >= await GetIncrementsRequiredForPermanentAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1117,6 +1562,20 @@ namespace Chummer.Backend.Equipment
                     default:
                         return 100;
                 }
+            }
+        }
+
+        public async Task<int> GetIncrementsRequiredForPermanentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            switch (await GetIncrementTypeAsync(token).ConfigureAwait(false))
+            {
+                case LifestyleIncrement.Day:
+                    return 3044; // 30.436875 days per month on average * 100 months, rounded up
+                case LifestyleIncrement.Week:
+                    return 435; // 4.348125 weeks per month on average * 100 months, rounded up
+                default:
+                    return 100;
             }
         }
 
@@ -1140,25 +1599,28 @@ namespace Chummer.Backend.Equipment
                     using (LockObject.EnterWriteLock())
                     {
                         // This needs a handler for translations, will fix later.
+                        LifestyleQuality objNotAHomeQuality = LifestyleQualities.FirstOrDefault(
+                                                                  x => x.Name == "Not a Home"
+                                                                       && x.OriginSource == QualitySource.BuiltIn)
+                                                              ?? LifestyleQualities.FirstOrDefault(x =>
+                                                                  x.Name == "Not a Home");
                         if (value == "Bolt Hole")
                         {
-                            if (LifestyleQualities.All(x => x.Name != "Not a Home"))
+                            if (objNotAHomeQuality == null)
                             {
                                 XmlNode xmlQuality
                                     = xmlLifestyleDocument.SelectSingleNode(
                                         "/chummer/qualities/quality[name = \"Not a Home\"]");
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                                 objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
-
                                 LifestyleQualities.Add(objQuality);
                             }
+                            else if (objNotAHomeQuality.OriginSource != QualitySource.BuiltIn)
+                                objNotAHomeQuality.OriginSource = QualitySource.BuiltIn;
                         }
-                        else
+                        else if (objNotAHomeQuality?.OriginSource == QualitySource.BuiltIn)
                         {
-                            foreach (LifestyleQuality objNotAHomeQuality in LifestyleQualities
-                                         .Where(x => x.Name == "Not a Home"
-                                                     || x.Name == "Dug a Hole").ToList())
-                                objNotAHomeQuality.Remove(false);
+                            objNotAHomeQuality.OriginSource = QualitySource.Selected;
                         }
 
                         XmlNode xmlLifestyle
@@ -1194,9 +1656,141 @@ namespace Chummer.Backend.Equipment
                                 nameof(SecurityMaximum), nameof(LifestyleQualities));
                             return;
                         }
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Base Lifestyle.
+        /// </summary>
+        public async Task<string> GetBaseLifestyleAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strBaseLifestyle;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Base Lifestyle.
+        /// </summary>
+        public async Task SetBaseLifestyleAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strBaseLifestyle == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            token.ThrowIfCancellationRequested();
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strBaseLifestyle, value) == value)
+                    return;
+                XmlDocument xmlLifestyleDocument = await _objCharacter.LoadDataAsync("lifestyles.xml", token: token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    // This needs a handler for translations, will fix later.
+                    LifestyleQuality objNotAHomeQuality = await LifestyleQualities.FirstOrDefaultAsync(
+                                                              async x =>
+                                                                  await x.GetNameAsync(token).ConfigureAwait(false) ==
+                                                                  "Not a Home" &&
+                                                                  await x.GetOriginSourceAsync(token)
+                                                                      .ConfigureAwait(false) == QualitySource.BuiltIn,
+                                                              token: token).ConfigureAwait(false)
+                                                          ?? await LifestyleQualities.FirstOrDefaultAsync(
+                                                              async x => await x.GetNameAsync(token)
+                                                                  .ConfigureAwait(false) == "Not a Home",
+                                                              token: token).ConfigureAwait(false);
+                    if (value == "Bolt Hole")
+                    {
+                        if (objNotAHomeQuality == null)
+                        {
+                            XmlNode xmlQuality
+                                = xmlLifestyleDocument.SelectSingleNode(
+                                    "/chummer/qualities/quality[name = \"Not a Home\"]");
+                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                            await objQuality
+                                .CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn, token: token)
+                                .ConfigureAwait(false);
+                            await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                        }
+                        else if (await objNotAHomeQuality.GetOriginSourceAsync(token).ConfigureAwait(false) !=
+                                 QualitySource.BuiltIn)
+                        {
+                            await objNotAHomeQuality.SetOriginSourceAsync(QualitySource.BuiltIn, token)
+                                .ConfigureAwait(false);
+                        }
+                    }
+                    else if (objNotAHomeQuality != null
+                             && await objNotAHomeQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.BuiltIn)
+                    {
+                        await objNotAHomeQuality.SetOriginSourceAsync(QualitySource.Selected, token).ConfigureAwait(false);
+                    }
+
+                    XmlNode xmlLifestyle
+                        = xmlLifestyleDocument.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", value);
+                    if (xmlLifestyle != null)
+                    {
+                        _strBaseLifestyle = string.Empty;
+                        _decCost = 0;
+                        _intDice = 0;
+                        _decMultiplier = 0;
+                        _strSource = string.Empty;
+                        _strPage = string.Empty;
+                        _intLP = 0;
+                        _decCostForArea = 0;
+                        _decCostForComforts = 0;
+                        _decCostForSecurity = 0;
+                        _blnAllowBonusLP = false;
+                        _eIncrement = LifestyleIncrement.Month;
+                        _intBaseComforts = 0;
+                        _intComfortsMaximum = 0;
+                        _intBaseArea = 0;
+                        _intAreaMaximum = 0;
+                        _intBaseSecurity = 0;
+                        _intSecurityMaximum = 0;
+                        await CreateAsync(xmlLifestyle, token).ConfigureAwait(false);
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(BaseLifestyle), nameof(Cost), nameof(Dice),
+                            nameof(Multiplier), nameof(SourceID), nameof(Source),
+                            nameof(Page), nameof(LP), nameof(CostForArea),
+                            nameof(CostForComforts), nameof(CostForSecurity),
+                            nameof(AllowBonusLP), nameof(IncrementType),
+                            nameof(BaseComforts), nameof(ComfortsMaximum),
+                            nameof(BaseArea), nameof(AreaMaximum), nameof(BaseSecurity),
+                            nameof(SecurityMaximum), nameof(LifestyleQualities)).ConfigureAwait(false);
+                        return;
+                    }
+
+                    await OnPropertyChangedAsync(nameof(BaseLifestyle), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1220,17 +1814,34 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (LockObject.EnterReadLock())
-                    return LP - Comforts - Area - Security + Roommates + BonusLP - LifestyleQualities.Sum(x => x.LP);
+                    return LP - Comforts - Area - Security +
+                           // HT 140: Bonus LP cannot exceed 2x base LP
+                           Math.Min(Roommates + BonusLP - LifestyleQualities.Sum(x => x.LPCost < 0, x => x.LPCost),
+                               2*LP) -
+                           LifestyleQualities.Sum(x => x.LPCost > 0, x => x.LPCost);
             }
         }
 
-        public async ValueTask<int> GetTotalLPAsync(CancellationToken token = default)
+        public async Task<int> GetTotalLPAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                return LP - Comforts - Area - Security + Roommates + BonusLP
-                       - await LifestyleQualities.SumAsync(x => x.LP, token: token).ConfigureAwait(false);
+                return LP - await GetComfortsAsync(token).ConfigureAwait(false)
+                          - await GetAreaAsync(token).ConfigureAwait(false)
+                          - await GetSecurityAsync(token).ConfigureAwait(false)
+                       // HT 140: Bonus LP cannot exceed 2x base LP
+                       + Math.Min(await GetRoommatesAsync(token).ConfigureAwait(false) +
+                                  await GetBonusLPAsync(token).ConfigureAwait(false) -
+                                  await LifestyleQualities
+                                      .SumAsync(x => x.LPCost < 0, x => x.GetLPCostAsync(token), token)
+                                      .ConfigureAwait(false), 2*LP) -
+                       await LifestyleQualities.SumAsync(x => x.LPCost > 0, x => x.GetLPCostAsync(token), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1254,6 +1865,42 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Free Lifestyle points from Traveler lifestyle.
+        /// </summary>
+        public async Task<int> GetBonusLPAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intBonusLP;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Free Lifestyle points from Traveler lifestyle.
+        /// </summary>
+        public async Task SetBonusLPAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intBonusLP, value) != value)
+                    await OnPropertyChangedAsync(nameof(BonusLP), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool AllowBonusLP
         {
             get
@@ -1261,25 +1908,78 @@ namespace Chummer.Backend.Equipment
                 using (LockObject.EnterReadLock())
                     return _blnAllowBonusLP;
             }
-        }
-
-        /// <summary>
-        /// Advance Lifestyle Comforts.
-        /// </summary>
-        public int Comforts
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return _intComforts;
-            }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnAllowBonusLP == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _intComforts, value) != value)
+                    if (_blnAllowBonusLP == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAllowBonusLP = value;
                         OnPropertyChanged();
+                    }
                 }
+            }
+        }
+
+        public async Task<bool> GetAllowBonusLPAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnAllowBonusLP;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetAllowBonusLPAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnAllowBonusLP == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            token.ThrowIfCancellationRequested();
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnAllowBonusLP == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnAllowBonusLP = value;
+                    await OnPropertyChangedAsync(nameof(AllowBonusLP), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1344,6 +2044,63 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Advance Lifestyle Comforts.
+        /// </summary>
+        public int Comforts
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _intComforts;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (Interlocked.Exchange(ref _intComforts, value) != value)
+                        OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Advance Lifestyle Comforts.
+        /// </summary>
+        public async Task<int> GetComfortsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intComforts;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Advance Lifestyle Comforts.
+        /// </summary>
+        public async Task SetComfortsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intComforts, value) != value)
+                    await OnPropertyChangedAsync(nameof(Comforts), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Advance Lifestyle Neighborhood.
         /// </summary>
         public int Area
@@ -1364,12 +2121,40 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Area as accessible by numericupdown bindings.
+        /// Advance Lifestyle Neighborhood.
         /// </summary>
-        public decimal BindableArea
+        public async Task<int> GetAreaAsync(CancellationToken token = default)
         {
-            get => Area;
-            set => Area = (int)value;
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intArea;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Advance Lifestyle Neighborhood.
+        /// </summary>
+        public async Task SetAreaAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intArea, value) != value)
+                    await OnPropertyChangedAsync(nameof(Area), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -1393,21 +2178,40 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Security as accessible by numericupdown bindings.
+        /// Advance Lifestyle Security.
         /// </summary>
-        public decimal BindableSecurity
+        public async Task<int> GetSecurityAsync(CancellationToken token = default)
         {
-            get => Security;
-            set => Security = (int)value;
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intSecurity;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
-        /// Comforts as accessible by numericupdown bindings.
+        /// Advance Lifestyle Security.
         /// </summary>
-        public decimal BindableComforts
+        public async Task SetSecurityAsync(int value, CancellationToken token = default)
         {
-            get => Comforts;
-            set => Comforts = (int)value;
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intSecurity, value) != value)
+                    await OnPropertyChangedAsync(nameof(Security), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public int AreaMaximum
@@ -1474,15 +2278,20 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<int> GetTotalComfortsMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetTotalComfortsMaximumAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return ComfortsMaximum
                        + await LifestyleQualities
                                .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.ComfortsMaximum, token)
                                .ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1499,15 +2308,20 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<int> GetTotalSecurityMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetTotalSecurityMaximumAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return SecurityMaximum
                        + await LifestyleQualities
                                .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.SecurityMaximum, token)
                                .ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1524,9 +2338,10 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<int> GetTotalAreaMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetTotalAreaMaximumAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return AreaMaximum
@@ -1534,9 +2349,13 @@ namespace Chummer.Backend.Equipment
                                .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.AreaMaximum, token)
                                .ConfigureAwait(false);
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        private readonly ThreadSafeObservableCollection<LifestyleQuality> _lstLifestyleQualities = new ThreadSafeObservableCollection<LifestyleQuality>();
+        private readonly ThreadSafeObservableCollection<LifestyleQuality> _lstLifestyleQualities;
 
         /// <summary>
         /// Advanced Lifestyle Qualities.
@@ -1582,6 +2401,12 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
@@ -1589,8 +2414,8 @@ namespace Chummer.Backend.Equipment
                     using (LockObject.EnterWriteLock())
                     {
                         _colNotes = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -1616,6 +2441,43 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Type of the Lifestyle.
+        /// </summary>
+        public async Task<LifestyleType> GetStyleTypeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _eType;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Type of the Lifestyle.
+        /// </summary>
+        public async Task SetStyleTypeAsync(LifestyleType value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (InterlockedExtensions.Exchange(ref _eType, value) != value)
+                    await OnPropertyChangedAsync(nameof(StyleType), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Interval of payments required for the Lifestyle.
         /// </summary>
         public LifestyleIncrement IncrementType
@@ -1632,6 +2494,43 @@ namespace Chummer.Backend.Equipment
                     if (InterlockedExtensions.Exchange(ref _eIncrement, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Interval of payments required for the Lifestyle.
+        /// </summary>
+        public async Task<LifestyleIncrement> GetIncrementTypeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _eIncrement;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Interval of payments required for the Lifestyle.
+        /// </summary>
+        public async Task SetIncrementTypeAsync(LifestyleIncrement value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (InterlockedExtensions.Exchange(ref _eIncrement, value) != value)
+                    await OnPropertyChangedAsync(nameof(IncrementType), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1656,6 +2555,43 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Number of Roommates this Lifestyle is shared with.
+        /// </summary>
+        public async Task<int> GetRoommatesAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intRoommates;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Number of Roommates this Lifestyle is shared with.
+        /// </summary>
+        public async Task SetRoommatesAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intRoommates, value) != value)
+                    await OnPropertyChangedAsync(nameof(Roommates), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Percentage of the total cost the character pays per month.
         /// </summary>
         public decimal Percentage
@@ -1667,6 +2603,12 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_decPercentage == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decPercentage == value)
@@ -1674,9 +2616,63 @@ namespace Chummer.Backend.Equipment
                     using (LockObject.EnterWriteLock())
                     {
                         _decPercentage = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
+            }
+        }
+
+        public async Task<decimal> GetPercentageAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decPercentage;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetPercentageAsync(decimal value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decPercentage == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            token.ThrowIfCancellationRequested();
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decPercentage == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decPercentage = value;
+                    await OnPropertyChangedAsync(nameof(Percentage), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1692,6 +2688,12 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnTrustFund == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnTrustFund == value)
@@ -1699,13 +2701,79 @@ namespace Chummer.Backend.Equipment
                     using (LockObject.EnterWriteLock())
                     {
                         _blnTrustFund = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
 
+        /// <summary>
+        /// Whether the lifestyle is currently covered by the Trust Fund Quality.
+        /// </summary>
+        public async Task<bool> GetTrustFundAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnTrustFund && await GetIsTrustFundEligibleAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether the lifestyle is currently covered by the Trust Fund Quality.
+        /// </summary>
+        public async Task SetTrustFundAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnTrustFund == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            token.ThrowIfCancellationRequested();
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnTrustFund == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnTrustFund = value;
+                    await OnPropertyChangedAsync(nameof(TrustFund), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool IsTrustFundEligible => StaticIsTrustFundEligible(_objCharacter, BaseLifestyle);
+
+        public async Task<bool> GetIsTrustFundEligibleAsync(CancellationToken token = default)
+        {
+            return await StaticIsTrustFundEligibleAsync(_objCharacter,
+                await GetBaseLifestyleAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+        }
 
         public static bool StaticIsTrustFundEligible(Character objCharacter, string strBaseLifestyle)
         {
@@ -1724,28 +2792,112 @@ namespace Chummer.Backend.Equipment
             return false;
         }
 
+        public static async Task<bool> StaticIsTrustFundEligibleAsync(Character objCharacter, string strBaseLifestyle, CancellationToken token = default)
+        {
+            switch (await objCharacter.GetTrustFundAsync(token).ConfigureAwait(false))
+            {
+                case 1:
+                case 4:
+                    return strBaseLifestyle == "Medium";
+
+                case 2:
+                    return strBaseLifestyle == "Low";
+
+                case 3:
+                    return strBaseLifestyle == "High";
+            }
+            return false;
+        }
+
         /// <summary>
-        /// Whether the character is the primary tenant for the Lifestyle.
+        /// Whether the character shares the costs of the Lifestyle with their roommates.
         /// </summary>
-        public bool PrimaryTenant
+        public bool SplitCostWithRoommates
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return _blnIsPrimaryTenant || Roommates == 0 || TrustFund;
+                    return _blnSplitCostWithRoommates && Roommates > 0 && !TrustFund;
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnSplitCostWithRoommates == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (_blnIsPrimaryTenant == value)
+                    if (_blnSplitCostWithRoommates == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _blnIsPrimaryTenant = value;
+                        _blnSplitCostWithRoommates = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether the character shares the costs of the Lifestyle with their roommates.
+        /// </summary>
+        public async Task<bool> GetSplitCostWithRoommatesAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnSplitCostWithRoommates && await GetRoommatesAsync(token).ConfigureAwait(false) > 0 &&
+                       !await GetTrustFundAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether the character shares the costs of the Lifestyle with their roommates.
+        /// </summary>
+        public async Task SetSplitCostWithRoommatesAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnSplitCostWithRoommates == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            token.ThrowIfCancellationRequested();
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnSplitCostWithRoommates == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnSplitCostWithRoommates = value;
+                    await OnPropertyChangedAsync(nameof(SplitCostWithRoommates), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1761,6 +2913,12 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_decCostForArea == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decCostForArea == value)
@@ -1768,8 +2926,8 @@ namespace Chummer.Backend.Equipment
                     using (LockObject.EnterWriteLock())
                     {
                         _decCostForArea = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -1786,6 +2944,12 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_decCostForComforts == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decCostForComforts == value)
@@ -1793,8 +2957,8 @@ namespace Chummer.Backend.Equipment
                     using (LockObject.EnterWriteLock())
                     {
                         _decCostForComforts = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -1811,6 +2975,12 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_decCostForSecurity == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_decCostForSecurity == value)
@@ -1818,8 +2988,8 @@ namespace Chummer.Backend.Equipment
                     using (LockObject.EnterWriteLock())
                     {
                         _decCostForSecurity = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -1849,15 +3019,22 @@ namespace Chummer.Backend.Equipment
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                XmlNode objDoc = blnSync
+                XmlDocument objDoc = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("lifestyles.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync("lifestyles.xml", strLanguage, token: token).ConfigureAwait(false);
@@ -1871,6 +3048,12 @@ namespace Chummer.Backend.Equipment
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
             }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private XPathNavigator _objCachedMyXPathNode;
@@ -1878,8 +3061,15 @@ namespace Chummer.Backend.Equipment
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
@@ -1900,6 +3090,12 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;
+            }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1932,22 +3128,32 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetCityAsync(CancellationToken token = default)
+        public async Task<string> GetCityAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return _strCity;
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public async ValueTask SetCityAsync(string value, CancellationToken token = default)
+        public async Task SetCityAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strCity, value) != value)
-                    OnPropertyChanged(nameof(City));
+                    await OnPropertyChangedAsync(nameof(City), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1968,22 +3174,32 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetDistrictAsync(CancellationToken token = default)
+        public async Task<string> GetDistrictAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return _strDistrict;
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public async ValueTask SetDistrictAsync(string value, CancellationToken token = default)
+        public async Task SetDistrictAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strDistrict, value) != value)
-                    OnPropertyChanged(nameof(District));
+                    await OnPropertyChangedAsync(nameof(District), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2004,22 +3220,32 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetBoroughAsync(CancellationToken token = default)
+        public async Task<string> GetBoroughAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return _strBorough;
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public async ValueTask SetBoroughAsync(string value, CancellationToken token = default)
+        public async Task SetBoroughAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _strBorough, value) != value)
-                    OnPropertyChanged(nameof(Borough));
+                    await OnPropertyChangedAsync(nameof(Borough), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2042,63 +3268,17 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Lifestyle, counting all purchased months.
         /// </summary>
-        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetTotalMonthlyCostAsync(token).ConfigureAwait(false) * Increments;
+                return await GetTotalMonthlyCostAsync(token).ConfigureAwait(false) * await GetIncrementsAsync(token).ConfigureAwait(false);
             }
-        }
-
-        public decimal CostMultiplier
-        {
-            get
+            finally
             {
-                using (LockObject.EnterReadLock())
-                {
-                    decimal d = (Roommates + Area + Comforts + Security) * 10;
-                    d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost, false,
-                                                    BaseLifestyle, true, true);
-                    if (StyleType == LifestyleType.Standard)
-                    {
-                        d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost);
-                        d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost,
-                                                        false, BaseLifestyle);
-                    }
-
-                    d += LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Multiplier);
-                    d += 100M;
-                    return Math.Max(d / 100, 0);
-                }
-            }
-        }
-
-        public async ValueTask<decimal> GetCostMultiplierAsync(CancellationToken token = default)
-        {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                decimal d = (Roommates + Area + Comforts + Security) * 10;
-                d += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.LifestyleCost,
-                                                           false,
-                                                           BaseLifestyle, true, true, token).ConfigureAwait(false);
-                if (StyleType == LifestyleType.Standard)
-                {
-                    d += await ImprovementManager
-                               .ValueOfAsync(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost,
-                                             token: token)
-                               .ConfigureAwait(false);
-                    d += await ImprovementManager.ValueOfAsync(_objCharacter,
-                                                               Improvement.ImprovementType.BasicLifestyleCost, false,
-                                                               BaseLifestyle, token: token).ConfigureAwait(false);
-                }
-
-                d += await LifestyleQualities
-                           .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Multiplier, token: token)
-                           .ConfigureAwait(false);
-                d += 100M;
-                return Math.Max(d / 100, 0);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2121,14 +3301,20 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Area of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public async ValueTask<int> GetTotalAreaAsync(CancellationToken token = default)
+        public async Task<int> GetTotalAreaAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                return BaseArea + Area
-                                + await LifestyleQualities.SumAsync(x => x.OriginSource != QualitySource.BuiltIn,
-                                                                    lq => lq.Area, token: token).ConfigureAwait(false);
+                return BaseArea + await GetAreaAsync(token).ConfigureAwait(false)
+                                + await LifestyleQualities.SumAsync(
+                                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
+                                    lq => lq.Area, token: token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2151,15 +3337,21 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Comforts of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public async ValueTask<int> GetTotalComfortsAsync(CancellationToken token = default)
+        public async Task<int> GetTotalComfortsAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                return BaseComforts + Comforts
-                                    + await LifestyleQualities.SumAsync(x => x.OriginSource != QualitySource.BuiltIn,
-                                                                        lq => lq.Comforts, token: token)
-                                                              .ConfigureAwait(false);
+                return BaseComforts + await GetComfortsAsync(token).ConfigureAwait(false)
+                                    + await LifestyleQualities.SumAsync(
+                                            async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
+                                            lq => lq.Comforts, token: token)
+                                        .ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2182,15 +3374,21 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Security of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public async ValueTask<int> GetTotalSecurityAsync(CancellationToken token = default)
+        public async Task<int> GetTotalSecurityAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                return BaseSecurity + Security
-                                    + await LifestyleQualities.SumAsync(x => x.OriginSource != QualitySource.BuiltIn,
-                                                                        lq => lq.Security, token: token)
-                                                              .ConfigureAwait(false);
+                return BaseSecurity + await GetSecurityAsync(token).ConfigureAwait(false)
+                                    + await LifestyleQualities.SumAsync(
+                                            async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
+                                            lq => lq.Security, token: token)
+                                        .ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2208,15 +3406,21 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<decimal> GetAreaDeltaAsync(CancellationToken token = default)
+        public async Task<decimal> GetAreaDeltaAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return Math.Max(
                     await GetTotalAreaMaximumAsync(token).ConfigureAwait(false) - (BaseArea + await LifestyleQualities
-                        .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Area, token: token)
+                        .SumAsync(async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
+                            lq => lq.Area, token: token)
                         .ConfigureAwait(false)), 0);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2229,21 +3433,27 @@ namespace Chummer.Backend.Equipment
                     return Math.Max(
                         TotalComfortsMaximum - (BaseComforts
                                                 + LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn,
-                                                                         lq => lq.Comforts)), 0);
+                                                    lq => lq.Comforts)), 0);
                 }
             }
         }
 
-        public async ValueTask<decimal> GetComfortsDeltaAsync(CancellationToken token = default)
+        public async Task<decimal> GetComfortsDeltaAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return Math.Max(
                     await GetTotalComfortsMaximumAsync(token).ConfigureAwait(false) - (BaseComforts
                         + await LifestyleQualities
-                                .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Comforts, token: token)
-                                .ConfigureAwait(false)), 0);
+                            .SumAsync(async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
+                                lq => lq.Comforts, token: token)
+                            .ConfigureAwait(false)), 0);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2256,21 +3466,27 @@ namespace Chummer.Backend.Equipment
                     return Math.Max(
                         TotalSecurityMaximum - (BaseSecurity
                                                 + LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn,
-                                                                         lq => lq.Security)), 0);
+                                                    lq => lq.Security)), 0);
                 }
             }
         }
 
-        public async ValueTask<decimal> GetSecurityDeltaAsync(CancellationToken token = default)
+        public async Task<decimal> GetSecurityDeltaAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return Math.Max(
                     await GetTotalSecurityMaximumAsync(token).ConfigureAwait(false) - (BaseSecurity
                         + await LifestyleQualities
-                                .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Security, token: token)
-                                .ConfigureAwait(false)), 0);
+                            .SumAsync(async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
+                                lq => lq.Security, token: token)
+                            .ConfigureAwait(false)), 0);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2288,9 +3504,10 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetFormattedAreaAsync(CancellationToken token = default)
+        public async Task<string> GetFormattedAreaAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return string.Format(
@@ -2298,6 +3515,10 @@ namespace Chummer.Backend.Equipment
                     await LanguageManager.GetStringAsync("Label_SelectAdvancedLifestyle_Base", token: token)
                                          .ConfigureAwait(false), BaseArea.ToString(GlobalSettings.CultureInfo),
                     (await GetTotalAreaMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2315,9 +3536,10 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetFormattedComfortsAsync(CancellationToken token = default)
+        public async Task<string> GetFormattedComfortsAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return string.Format(
@@ -2326,6 +3548,10 @@ namespace Chummer.Backend.Equipment
                                          .ConfigureAwait(false), BaseComforts.ToString(GlobalSettings.CultureInfo),
                     (await GetTotalComfortsMaximumAsync(token).ConfigureAwait(false)).ToString(
                         GlobalSettings.CultureInfo));
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2343,9 +3569,10 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetFormattedSecurityAsync(CancellationToken token = default)
+        public async Task<string> GetFormattedSecurityAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return string.Format(
@@ -2355,60 +3582,138 @@ namespace Chummer.Backend.Equipment
                     (await GetTotalSecurityMaximumAsync(token).ConfigureAwait(false)).ToString(
                         GlobalSettings.CultureInfo));
             }
-        }
-
-        /// <summary>
-        /// Base cost of the Lifestyle itself, including all multipliers from Improvements, qualities and upgraded attributes.
-        /// </summary>
-        public decimal BaseCost
-        {
-            get
+            finally
             {
-                using (LockObject.EnterReadLock())
-                    return Cost * (CostMultiplier + BaseCostMultiplier);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         /// <summary>
-        /// Base cost of the Lifestyle itself, including all multipliers from Improvements, qualities and upgraded attributes.
+        /// Cost of the Lifestyle itself that is to be split among roommates if there are any. Does not include outing, service, and contract costs or character-based lifestyle cost adjustments.
         /// </summary>
-        public async ValueTask<decimal> GetBaseCostAsync(CancellationToken token = default)
-        {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                return Cost * (await GetCostMultiplierAsync(token).ConfigureAwait(false)
-                               + await GetBaseCostMultiplierAsync(token).ConfigureAwait(false));
-            }
-        }
-
-        /// <summary>
-        /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
-        /// </summary>
-        public decimal BaseCostMultiplier
+        public decimal CostPreSplit
         {
             get
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.BaseMultiplier)
-                           / 100.0m;
+                    // Follow steps on HT 139 before split.
+                    // Base cost
+                    decimal decCost = Cost;
+
+                    // Base cost multiplier
+                    decimal decMultiplier = LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.BaseMultiplier);
+                    if (decMultiplier != 0)
+                        decCost *= 1.0m + decMultiplier / 100.0m;
+
+                    // Add in costs from lifestyle categories.
+                    decMultiplier = Area + Comforts + Security;
+                    if (decMultiplier != 0)
+                        decCost *= 1.0m + 0.1m * decMultiplier;
+                    decCost += Area * CostForArea + Comforts * CostForComforts + Security * CostForSecurity;
+
+                    // Add costs from Entertainment Assets.
+                    decMultiplier =
+                        LifestyleQualities.Sum(
+                            x => x.OriginSource != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
+                                 x.Category.Contains("Asset"),
+                            lq => lq.Multiplier);
+                    if (decMultiplier != 0)
+                        decCost *= 1.0m + decMultiplier / 100.0m;
+                    // Flat costs added after multipliers, as per HT 139
+                    decCost += LifestyleQualities.Sum(
+                        x => x.OriginSource != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
+                             x.Category.Contains("Asset"),
+                        lq => lq.Cost);
+
+                    // Add costs from qualities that are not Entertainment Assets (or Contracts)
+                    decMultiplier =
+                        LifestyleQualities.Sum(
+                            x => x.OriginSource != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
+                            lq => lq.Multiplier);
+                    if (decMultiplier != 0)
+                        decCost *= 1.0m + decMultiplier / 100.0m;
+                    // Flat costs added after multipliers, as per HT 139
+                    decCost += LifestyleQualities.Sum(
+                        x => x.OriginSource != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
+                        lq => lq.Cost);
+
+                    // Shared lifestyle adjustment
+                    if (Roommates > 0)
+                        decCost *= 1.0m + 0.1m * Roommates;
+
+                    //Qualities may have reduced the cost below zero. No spooky mansion payouts here, so clamp it to zero or higher.
+                    return Math.Max(decCost, 0);
                 }
             }
         }
 
         /// <summary>
-        /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
+        /// Cost of the Lifestyle itself that is to be split among roommates if there are any. Does not include outing, service, and contract costs or character-based lifestyle cost adjustments.
         /// </summary>
-        public async ValueTask<decimal> GetBaseCostMultiplierAsync(CancellationToken token = default)
+        public async Task<decimal> GetCostPreSplitAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                return await LifestyleQualities
-                             .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.BaseMultiplier,
-                                       token: token)
-                             .ConfigureAwait(false) / 100.0m;
+                // Follow steps on HT 139 before split.
+                // Base cost
+                decimal decCost = await GetCostAsync(token).ConfigureAwait(false);
+
+                // Base cost multiplier
+                decimal decMultiplier = await LifestyleQualities.SumAsync(async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn, lq => lq.GetBaseMultiplierAsync(token), token).ConfigureAwait(false) / 100.0m;
+                if (decMultiplier != 0)
+                    decCost *= 1.0m + decMultiplier;
+
+                // Add in costs from lifestyle categories.
+                int intArea = await GetAreaAsync(token).ConfigureAwait(false);
+                int intComforts = await GetComfortsAsync(token).ConfigureAwait(false);
+                int intSecurity = await GetSecurityAsync(token).ConfigureAwait(false);
+                decMultiplier = (intArea + intComforts + intSecurity) * 0.1m;
+                if (decMultiplier != 0)
+                    decCost *= 1.0m + decMultiplier;
+                decCost += intArea * CostForArea + intComforts * CostForComforts + intSecurity * CostForSecurity;
+
+                // Add costs from Entertainment Assets.
+                decMultiplier =
+                    await LifestyleQualities.SumAsync(
+                        async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
+                                   x.Category.Contains("Asset"),
+                        lq => lq.GetMultiplierAsync(token), token).ConfigureAwait(false)
+                    / 100.0m;
+                if (decMultiplier != 0)
+                    decCost *= 1.0m + decMultiplier;
+                // Flat costs added after multipliers, as per HT 139
+                decCost += await LifestyleQualities.SumAsync(
+                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
+                               x.Category.Contains("Asset"),
+                    lq => lq.GetCostAsync(token), token).ConfigureAwait(false);
+
+                // Add costs from qualities that are not Entertainment Assets (or Contracts)
+                decMultiplier =
+                    await LifestyleQualities.SumAsync(
+                        async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
+                        lq => lq.GetMultiplierAsync(token), token).ConfigureAwait(false)
+                    / 100.0m;
+                if (decMultiplier != 0)
+                    decCost *= 1.0m + decMultiplier;
+                // Flat costs added after multipliers, as per HT 139
+                decCost += await LifestyleQualities.SumAsync(
+                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
+                    lq => lq.GetCostAsync(token), token).ConfigureAwait(false);
+
+                // Shared lifestyle adjustment
+                int intRoommates = await GetRoommatesAsync(token).ConfigureAwait(false);
+                if (intRoommates > 0)
+                    decCost *= 1.0m + 0.1m * intRoommates;
+
+                //Qualities may have reduced the cost below zero. No spooky mansion payouts here, so clamp it to zero or higher.
+                return Math.Max(decCost, 0);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2425,37 +3730,83 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!TrustFund)
                     {
-                        decReturn += BaseCost;
+                        decReturn += CostPreSplit;
+
+                        // Follow HT 139 from Split step onwards
+                        if (SplitCostWithRoommates)
+                        {
+                            decReturn /= Roommates + 1.0m;
+                        }
                     }
 
-                    decReturn += Area * CostForArea;
-                    decReturn += Comforts * CostForComforts;
-                    decReturn += Security * CostForSecurity;
-
-                    decimal decExtraAssetCost = 0;
-                    decimal decContractCost = 0;
-                    foreach (LifestyleQuality objQuality in LifestyleQualities.Where(
-                                 x => x.OriginSource != QualitySource.BuiltIn))
+                    // Factor in character-based lifestyle cost adjustments (metatype, dependents, augmentations, etc.)
+                    List<Improvement> lstImprovements = ImprovementManager.GetCachedImprovementListForValueOf(
+                        _objCharacter,
+                        Improvement.ImprovementType.LifestyleCost,
+                        strImprovedName: BaseLifestyle, blnIncludeNonImproved: true);
+                    if (StyleType == LifestyleType.Standard)
                     {
-                        //Add the flat cost from Qualities.
+                        lstImprovements.AddRange(ImprovementManager.GetCachedImprovementListForValueOf(
+                            _objCharacter,
+                            Improvement.ImprovementType.BasicLifestyleCost,
+                            strImprovedName: BaseLifestyle, blnIncludeNonImproved: true));
+                    }
+                    // Dependents and metatype adjustments are handled separately
+                    List<Quality> lstDependentsQualities =
+                        _objCharacter.Qualities.Where(x => x.Name.Contains("Dependent")).ToList();
+                    decimal decDependents = 0;
+                    decimal decMetatype = 0;
+                    decimal decOther = 0;
+                    foreach (Improvement objImprovement in lstImprovements)
+                    {
+                        if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
+                            lstDependentsQualities.Any(x => x.InternalId == objImprovement.SourceName))
+                            decDependents += objImprovement.Value;
+                        else if (objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage
+                                 || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                 || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
+                            decMetatype += objImprovement.Value;
+                        else
+                            decOther += objImprovement.Value;
+                    }
+                    // Dependents first
+                    if (decDependents != 0)
+                        decReturn *= 1.0m + decDependents / 100.0m;
+                    // Metatype next
+                    if (decMetatype != 0)
+                        decReturn *= 1.0m + decMetatype / 100.0m;
+                    // Finally, everything else
+                    if (decOther != 0)
+                        decReturn *= 1.0m + decOther / 100.0m;
+
+                    // Add in Outings and Services costs
+                    decimal decContractCost = 0;
+                    decimal decOutingsAndServicesCost = 0;
+                    decimal decMultiplier = 0;
+                    decimal decBaseMultiplier = 0;
+                    foreach (LifestyleQuality objQuality in LifestyleQualities)
+                    {
+                        if (objQuality.OriginSource == QualitySource.BuiltIn)
+                            continue;
                         if (objQuality.Type == QualityType.Contracts)
                             decContractCost += objQuality.Cost;
-                        else
-                            decExtraAssetCost += objQuality.Cost;
+                        else if (objQuality.Type == QualityType.Entertainment && !objQuality.Category.Contains("Asset"))
+                        {
+                            decOutingsAndServicesCost += objQuality.Cost;
+                            decMultiplier += objQuality.Multiplier;
+                            decBaseMultiplier += objQuality.BaseMultiplier;
+                        }
                     }
+                    if (decMultiplier != 0)
+                        decReturn *= 1.0m + decMultiplier / 100.0m;
+                    decReturn += decOutingsAndServicesCost;
+                    if (decBaseMultiplier != 0)
+                        decReturn += Cost * (1.0m + decBaseMultiplier / 100.0m);
 
-                    decReturn += decExtraAssetCost;
-
-                    //Qualities may have reduced the cost below zero. No spooky mansion payouts here, so clamp it to zero or higher.
-                    decReturn = Math.Max(decReturn, 0);
-
-                    if (!PrimaryTenant)
-                    {
-                        decReturn /= Roommates + 1.0m;
-                    }
-
+                    // Apply final percentage modifier
                     decReturn *= Percentage / 100;
 
+                    // Add contract costs, which are technically not a part of the lifestyle and are just used as a more automated way to deal with recurring costs
                     switch (IncrementType)
                     {
                         case LifestyleIncrement.Day:
@@ -2477,47 +3828,97 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total monthly cost of the Lifestyle.
         /// </summary>
-        public async ValueTask<decimal> GetTotalMonthlyCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalMonthlyCostAsync(CancellationToken token = default)
         {
             decimal decReturn = 0;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                if (!TrustFund)
+                if (!await GetTrustFundAsync(token).ConfigureAwait(false))
                 {
-                    decReturn += await GetBaseCostAsync(token).ConfigureAwait(false);
-                }
+                    decReturn += await GetCostPreSplitAsync(token).ConfigureAwait(false);
 
-                decReturn += Area * CostForArea;
-                decReturn += Comforts * CostForComforts;
-                decReturn += Security * CostForSecurity;
-
-                decimal decExtraAssetCost = 0;
-                decimal decContractCost = await LifestyleQualities.SumAsync(objQuality =>
-                {
-                    if (objQuality.OriginSource != QualitySource.BuiltIn)
+                    // Follow HT 139 from Split step onwards
+                    if (await GetSplitCostWithRoommatesAsync(token).ConfigureAwait(false))
                     {
-                        //Add the flat cost from Qualities.
-                        if (objQuality.Type == QualityType.Contracts)
-                            return objQuality.Cost;
-                        decExtraAssetCost += objQuality.Cost;
+                        decReturn /= await GetRoommatesAsync(token).ConfigureAwait(false) + 1.0m;
                     }
-
-                    return 0;
-                }, token: token).ConfigureAwait(false);
-
-                decReturn += decExtraAssetCost;
-
-                //Qualities may have reduced the cost below zero. No spooky mansion payouts here, so clamp it to zero or higher.
-                decReturn = Math.Max(decReturn, 0);
-
-                if (!PrimaryTenant)
-                {
-                    decReturn /= Roommates + 1.0m;
                 }
 
-                decReturn *= Percentage / 100;
+                string strBaseLifestyle = await GetBaseLifestyleAsync(token).ConfigureAwait(false);
+                // Factor in character-based lifestyle cost adjustments (metatype, dependents, augmentations, etc.)
+                List<Improvement> lstImprovements = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                    _objCharacter,
+                    Improvement.ImprovementType.LifestyleCost,
+                    strImprovedName: strBaseLifestyle, blnIncludeNonImproved: true, token: token).ConfigureAwait(false);
+                if (StyleType == LifestyleType.Standard)
+                {
+                    lstImprovements.AddRange(await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                        _objCharacter,
+                        Improvement.ImprovementType.BasicLifestyleCost,
+                        strImprovedName: strBaseLifestyle, blnIncludeNonImproved: true, token: token).ConfigureAwait(false));
+                }
+                // Dependents and metatype adjustments are handled separately
+                List<Quality> lstDependentsQualities =
+                    await _objCharacter.Qualities.ToListAsync(
+                        async x => (await x.GetNameAsync(token).ConfigureAwait(false)).Contains("Dependent"), token).ConfigureAwait(false);
+                decimal decDependents = 0;
+                decimal decMetatype = 0;
+                decimal decOther = 0;
+                foreach (Improvement objImprovement in lstImprovements)
+                {
+                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
+                        lstDependentsQualities.Any(x => x.InternalId == objImprovement.SourceName))
+                        decDependents += objImprovement.Value;
+                    else if (objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage
+                             || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                             || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
+                        decMetatype += objImprovement.Value;
+                    else
+                        decOther += objImprovement.Value;
+                }
+                // Dependents first
+                if (decDependents != 0)
+                    decReturn *= 1.0m + decDependents / 100.0m;
+                // Metatype next
+                if (decMetatype != 0)
+                    decReturn *= 1.0m + decMetatype / 100.0m;
+                // Finally, everything else
+                if (decOther != 0)
+                    decReturn *= 1.0m + decOther / 100.0m;
 
+                // Add in Outings and Services costs
+                decimal decContractCost = 0;
+                decimal decMultiplier = 0;
+                decimal decBaseMultiplier = 0;
+                decimal decOutingsAndServicesCost = await LifestyleQualities.SumAsync(
+                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn, async x =>
+                    {
+                        switch (x.Type)
+                        {
+                            case QualityType.Contracts:
+                                decContractCost += await x.GetCostAsync(token).ConfigureAwait(false);
+                                break;
+                            case QualityType.Entertainment when !x.Category.Contains("Asset"):
+                            {
+                                decMultiplier += await x.GetMultiplierAsync(token).ConfigureAwait(false);
+                                decBaseMultiplier += await x.GetBaseMultiplierAsync(token).ConfigureAwait(false);
+                                return await x.GetCostAsync(token).ConfigureAwait(false);
+                            }
+                        }
+                        return 0;
+                    }, token).ConfigureAwait(false);
+                if (decMultiplier != 0)
+                    decReturn *= 1.0m + decMultiplier / 100.0m;
+                decReturn += decOutingsAndServicesCost;
+                if (decBaseMultiplier != 0)
+                    decReturn += Cost * (1.0m + decBaseMultiplier / 100.0m);
+
+                // Apply final percentage modifier
+                decReturn *= await GetPercentageAsync(token).ConfigureAwait(false) / 100;
+
+                // Add contract costs, which are technically not a part of the lifestyle and are just used as a more automated way to deal with recurring costs
                 switch (IncrementType)
                 {
                     case LifestyleIncrement.Day:
@@ -2530,6 +3931,10 @@ namespace Chummer.Backend.Equipment
                 }
 
                 decReturn += decContractCost;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return decReturn;
@@ -2547,14 +3952,20 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask<string> GetDisplayTotalMonthlyCostAsync(CancellationToken token = default)
+        public async Task<string> GetDisplayTotalMonthlyCostAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return (await GetTotalMonthlyCostAsync(token).ConfigureAwait(false)).ToString(
-                           _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                           await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
+                           GlobalSettings.CultureInfo)
                        + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2598,54 +4009,71 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Purchases an additional month of the selected lifestyle.
         /// </summary>
-        public void IncrementMonths()
+        public async Task BuyExtraMonth(CancellationToken token = default)
         {
-            using (LockObject.EnterUpgradeableReadLock())
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 // Create the Expense Log Entry.
-                decimal decAmount = TotalMonthlyCost;
-                if (decAmount > _objCharacter.Nuyen)
+                decimal decAmount = await GetTotalMonthlyCostAsync(token).ConfigureAwait(false);
+                if (decAmount > await _objCharacter.GetNuyenAsync(token).ConfigureAwait(false))
                 {
-                    Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen"),
-                                                     LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
-                                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    await Program.ShowScrollableMessageBoxAsync(
+                        await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                     return;
                 }
 
-                using (LockObject.EnterWriteLock())
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
+                    token.ThrowIfCancellationRequested();
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decAmount * -1,
-                        LanguageManager.GetString("String_ExpenseLifestyle") + ' ' + CurrentDisplayNameShort,
+                        await LanguageManager.GetStringAsync("String_ExpenseLifestyle", token: token).ConfigureAwait(false) + ' ' +
+                        CurrentDisplayNameShort,
                         ExpenseType.Nuyen, DateTime.Now);
-                    _objCharacter.ExpenseEntries.AddWithSort(objExpense);
-                    _objCharacter.Nuyen -= decAmount;
+                    _objCharacter.ExpenseEntries.AddWithSort(objExpense, token: token);
+                    await _objCharacter.ModifyNuyenAsync(-decAmount, token).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateNuyen(NuyenExpenseType.IncreaseLifestyle, InternalId);
                     objExpense.Undo = objUndo;
 
-                    Interlocked.Increment(ref _intIncrements);
+                    await ModifyIncrementsAsync(1, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
-        }
-
-        private void LifestyleQualitiesOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            foreach (LifestyleQuality objQuality in e.OldItems)
+            finally
             {
-                objQuality.Dispose();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
-        private void LifestyleQualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task LifestyleQualitiesOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            foreach (LifestyleQuality objQuality in e.OldItems)
+            {
+                await objQuality.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        private async Task LifestyleQualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
                     foreach (LifestyleQuality objQuality in e.OldItems)
                     {
-                        objQuality.Dispose();
+                        await objQuality.DisposeAsync().ConfigureAwait(false);
                     }
                     break;
 
@@ -2654,14 +4082,14 @@ namespace Chummer.Backend.Equipment
                     foreach (LifestyleQuality objQuality in e.OldItems)
                     {
                         if (!setNewLifestyleQualities.Contains(objQuality))
-                            objQuality.Dispose();
+                            await objQuality.DisposeAsync().ConfigureAwait(false);
                     }
                     break;
 
                 case NotifyCollectionChangedAction.Move:
                     return;
             }
-            OnPropertyChanged(nameof(LifestyleQualities));
+            await OnPropertyChangedAsync(nameof(LifestyleQualities), token).ConfigureAwait(false);
         }
 
         #region UI Methods
@@ -2754,46 +4182,39 @@ namespace Chummer.Backend.Equipment
                                 new DependencyGraphNode<string, Lifestyle>(nameof(BaseLifestyle))
                             )
                         ),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(BaseCost), x => x.TrustFund,
+                        new DependencyGraphNode<string, Lifestyle>(nameof(CostPreSplit), x => !x.TrustFund, async (x, t) => !await x.GetTrustFundAsync(t).ConfigureAwait(false),
                             new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund))
                         ),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(CostForArea)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(CostForComforts)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Security)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(CostForSecurity)),
                         new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(PrimaryTenant),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(StyleType)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(SplitCostWithRoommates), x => !x.TrustFund, async (x, t) => !await x.GetTrustFundAsync(t).ConfigureAwait(false),
                             new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
                             new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund))
                         ),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Roommates), x => !x.PrimaryTenant,
-                            new DependencyGraphNode<string, Lifestyle>(nameof(PrimaryTenant))
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Roommates), x => x.SplitCostWithRoommates, async (x, t) => await x.GetSplitCostWithRoommatesAsync(t).ConfigureAwait(false),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(SplitCostWithRoommates))
                         ),
                         new DependencyGraphNode<string, Lifestyle>(nameof(IncrementType)),
                         new DependencyGraphNode<string, Lifestyle>(nameof(Percentage))
                     )
                 ),
-                new DependencyGraphNode<string, Lifestyle>(nameof(BaseCost),
+                new DependencyGraphNode<string, Lifestyle>(nameof(CostPreSplit),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Cost)),
-                    new DependencyGraphNode<string, Lifestyle>(nameof(CostMultiplier),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Security)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(StyleType)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities))
-                    ),
-                    new DependencyGraphNode<string, Lifestyle>(nameof(BaseCostMultiplier),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities))
-                    )
+                    new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Security)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(CostForArea)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(CostForComforts)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(CostForSecurity))
                 ),
                 new DependencyGraphNode<string, Lifestyle>(nameof(TotalCost),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Increments)),
                     new DependencyGraphNode<string, Lifestyle>(nameof(TotalMonthlyCost))
                 ),
                 new DependencyGraphNode<string, Lifestyle>(nameof(TotalLP),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(LP)),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Security)),
@@ -2834,13 +4255,38 @@ namespace Chummer.Backend.Equipment
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
+        }
+
+        public event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
+
+        private readonly ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler> _setMultiplePropertiesChangedAsync =
+            new ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler>();
+
+        public event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync
+        {
+            add => _setMultiplePropertiesChangedAsync.TryAdd(value);
+            remove => _setMultiplePropertiesChangedAsync.Remove(value);
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
             this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
+        public Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
+        }
+
+        public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
@@ -2871,7 +4317,64 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    if (PropertyChanged != null)
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setMultiplePropertiesChangedAsync.Count);
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
+                        }
+
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            });
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        Utils.RunOnMainThread(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        });
+                    }
+
+                    if (_setPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                                lstFuncs.Add(() => objEvent.Invoke(this, objArg));
+                        }
+
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                        if (PropertyChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else if (PropertyChanged != null)
                     {
                         Utils.RunOnMainThread(() =>
                         {
@@ -2894,6 +4397,140 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                HashSet<string> setNamesOfChangedProperties = null;
+                try
+                {
+                    foreach (string strPropertyName in lstPropertyNames)
+                    {
+                        if (setNamesOfChangedProperties == null)
+                            setNamesOfChangedProperties
+                                = await s_LifestyleDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
+                        else
+                        {
+                            foreach (string strLoopChangedProperty in await s_LifestyleDependencyGraph
+                                         .GetWithAllDependentsEnumerableAsync(this, strPropertyName, token).ConfigureAwait(false))
+                                setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        }
+                    }
+
+                    if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                        return;
+
+                    if (setNamesOfChangedProperties.Contains(nameof(BaseLifestyle)))
+                    {
+                        await LifestyleQualities.ForEachAsync(x =>
+                                x.OnPropertyChanged(nameof(LifestyleQuality.CanBeFreeByLifestyle)), token)
+                            .ConfigureAwait(false);
+                    }
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            }, token: token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        }, token: token).ConfigureAwait(false);
+                    }
+
+                    if (_setPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
+                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                            {
+                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                                if (++i < Utils.MaxParallelBatchSize)
+                                    continue;
+                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                lstTasks.Clear();
+                                i = 0;
+                            }
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                        if (PropertyChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (PropertyChanged != null)
+                    {
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            if (PropertyChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                {
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    if (setNamesOfChangedProperties != null)
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool Remove(bool blnConfirmDelete = true)
         {
             using (LockObject.EnterUpgradeableReadLock())
@@ -2905,6 +4542,10 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_objCharacter.Lifestyles.Contains(this) && !_objCharacter.Lifestyles.Remove(this))
                         return false;
+                    List<string> lstIds = new List<string>(LifestyleQualities.Count);
+                    LifestyleQualities.ForEach(x => lstIds.Add(x.InternalId));
+                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality,
+                        lstIds);
                 }
             }
 
@@ -2912,22 +4553,36 @@ namespace Chummer.Backend.Equipment
             return true;
         }
 
-        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(
                         await LanguageManager.GetStringAsync("Message_DeleteLifestyle", token: token)
-                                             .ConfigureAwait(false), token).ConfigureAwait(false))
+                            .ConfigureAwait(false), token).ConfigureAwait(false))
                     return false;
-                using (await _objCharacter.Lifestyles.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker2 = await _objCharacter.Lifestyles.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     if (await _objCharacter.Lifestyles.ContainsAsync(this, token).ConfigureAwait(false)
                         && !await _objCharacter.Lifestyles.RemoveAsync(this, token).ConfigureAwait(false))
                         return false;
+
+                    List<string> lstIds = new List<string>(await LifestyleQualities.GetCountAsync(token).ConfigureAwait(false));
+                    await LifestyleQualities.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
+                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality, lstIds, token).ConfigureAwait(false);
                 }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             await DisposeAsync().ConfigureAwait(false);
@@ -2946,12 +4601,17 @@ namespace Chummer.Backend.Equipment
 
         public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                     _objCachedSourceDetail = default;
-                await SourceDetail.SetControlAsync(sourceControl, token).ConfigureAwait(false);
+                await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2960,14 +4620,11 @@ namespace Chummer.Backend.Equipment
         {
             using (LockObject.EnterWriteLock())
             {
-                foreach (LifestyleQuality objQuality in LifestyleQualities)
-                    objQuality.Dispose();
-                LifestyleQualities.CollectionChanged -= LifestyleQualitiesCollectionChanged;
-                LifestyleQualities.BeforeClearCollectionChanged -= LifestyleQualitiesOnBeforeClearCollectionChanged;
-                LifestyleQualities.Dispose();
+                _lstLifestyleQualities.EnumerateWithSideEffects().ForEach(x => x.Dispose());
+                _lstLifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
+                _lstLifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
+                _lstLifestyleQualities.Dispose();
             }
-
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -2976,21 +4633,20 @@ namespace Chummer.Backend.Equipment
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                foreach (LifestyleQuality objQuality in LifestyleQualities)
-                    await objQuality.DisposeAsync().ConfigureAwait(false);
-                LifestyleQualities.CollectionChanged -= LifestyleQualitiesCollectionChanged;
-                LifestyleQualities.BeforeClearCollectionChanged -= LifestyleQualitiesOnBeforeClearCollectionChanged;
-                await LifestyleQualities.DisposeAsync().ConfigureAwait(false);
+                await _lstLifestyleQualities.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                _lstLifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
+                _lstLifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
+                await _lstLifestyleQualities.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking required
     }
 }

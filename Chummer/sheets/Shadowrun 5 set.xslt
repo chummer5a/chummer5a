@@ -1735,6 +1735,10 @@
               <xsl:if test="gears/gear">
                 (<xsl:for-each select="gears/gear">
                   <xsl:sort select="name" />
+                  <xsl:if test="qty != 1">
+                    <xsl:value-of select="qty" />
+                    <xsl:text>x </xsl:text>
+                  </xsl:if>
                   <xsl:value-of select="name" />
                   <xsl:if test="rating != 0">
                     <xsl:text> </xsl:text>
@@ -1767,6 +1771,10 @@
           <td colspan="100%" class="indent">
             <xsl:for-each select="gears/gear">
               <xsl:sort select="name" />
+              <xsl:if test="qty != 1">
+                <xsl:value-of select="qty" />
+                <xsl:text>x </xsl:text>
+              </xsl:if>
               <xsl:value-of select="name" />
               <xsl:if test="rating != 0">
                 <xsl:text> </xsl:text>
@@ -1916,8 +1924,14 @@
             </xsl:call-template>
             <xsl:for-each select="gears/gear">
               <xsl:sort select="name" />
+              <xsl:if test="qty != 1">
+                <xsl:value-of select="qty" />
+                <xsl:text>x </xsl:text>
+              </xsl:if>
               <xsl:value-of select="name" />
               <xsl:if test="rating != 0">
+                <xsl:text> </xsl:text>
+                <xsl:value-of select="$lang.Rating" />
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="rating" />
               </xsl:if>
@@ -2253,8 +2267,14 @@
                     </xsl:call-template>
                     <xsl:for-each select="gears/gear">
                       <xsl:sort select="name" />
+                      <xsl:if test="qty != 1">
+                        <xsl:value-of select="qty" />
+                        <xsl:text>x </xsl:text>
+                      </xsl:if>
                       <xsl:value-of select="name" />
                       <xsl:if test="rating != 0">
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="$lang.Rating" />
                         <xsl:text> </xsl:text>
                         <xsl:value-of select="rating" />
                       </xsl:if>
@@ -2279,6 +2299,10 @@
           <tr><td colspan="100%" class="indent">
             <xsl:for-each select="gears/gear">
               <xsl:sort select="name" />
+              <xsl:if test="qty != 1">
+                <xsl:value-of select="qty" />
+                <xsl:text>x </xsl:text>
+              </xsl:if>
               <xsl:value-of select="name" />
               <xsl:if test="rating != 0">
                 <xsl:text> </xsl:text>
@@ -3031,6 +3055,19 @@
           </td>
         </tr>
       </xsl:if>
+
+      <xsl:if test="notes != '' and $ProduceNotes">
+        <tr>
+          <xsl:if test="position() mod 2 != 1">
+            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
+          </xsl:if>
+          <td colspan="100%" class="notesrow2">
+            <xsl:call-template name="PreserveLineBreaks">
+              <xsl:with-param name="text" select="notes"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+      </xsl:if>
     </xsl:for-each>
   </xsl:template>
 
@@ -3040,6 +3077,10 @@
       <xsl:param name="xtra" select="'A'" />
     <xsl:for-each select="children/gear">
       <xsl:sort select="name" />
+      <xsl:if test="qty != 1">
+        <xsl:value-of select="qty" />
+        <xsl:text>x </xsl:text>
+      </xsl:if>
       <xsl:value-of select="name" />
       <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname" />"</xsl:if>
       <xsl:if test="extra != '' and $xtra = 'B'">

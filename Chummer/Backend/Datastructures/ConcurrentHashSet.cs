@@ -260,7 +260,7 @@ namespace Chummer
         {
             if (arrayIndex + DicInternal.Count > array.Length)
                 throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-            foreach (KeyValuePair<T, bool> kvpLoop in DicInternal.ToArray())
+            foreach (KeyValuePair<T, bool> kvpLoop in DicInternal)
             {
                 array[arrayIndex] = kvpLoop.Key;
                 ++arrayIndex;
@@ -278,7 +278,7 @@ namespace Chummer
         {
             if (index + DicInternal.Count > array.Length)
                 throw new ArgumentOutOfRangeException(nameof(index));
-            foreach (KeyValuePair<T, bool> kvpLoop in DicInternal.ToArray())
+            foreach (KeyValuePair<T, bool> kvpLoop in DicInternal)
             {
                 array.SetValue(kvpLoop.Key, index);
                 ++index;

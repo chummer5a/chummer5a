@@ -48,10 +48,10 @@ namespace Chummer
 
         public SelectArt(Character objCharacter, Mode objWindowMode)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
 
             // Load the Metamagic information.
             switch (objWindowMode)
@@ -122,8 +122,8 @@ namespace Chummer
                 return;
             }
 
-            string strSource = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-            string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+            string strSource = objXmlMetamagic.SelectSingleNodeAndCacheExpression("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+            string strPage = objXmlMetamagic.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                                                                              GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
             await objSource.SetControlAsync(lblSource).ConfigureAwait(false);
@@ -170,11 +170,11 @@ namespace Chummer
         /// <summary>
         /// Build the list of Arts.
         /// </summary>
-        private async ValueTask BuildList(CancellationToken token = default)
+        private async Task BuildList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
-            
+
             string strFilter = _strXPathFilter;
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
@@ -186,13 +186,13 @@ namespace Chummer
                 foreach (XPathNavigator objXmlMetamagic in
                          _objXmlDocument.Select(_strBaseXPath + '[' + strFilter + ']'))
                 {
-                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
+                    string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (!string.IsNullOrEmpty(strId)
                         && (!blnLimitList || await objXmlMetamagic.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false)))
                     {
-                        lstArts.Add(new ListItem((await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value,
-                                                 (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
-                                                 ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                        lstArts.Add(new ListItem(objXmlMetamagic.SelectSingleNodeAndCacheExpression("id", token: token)?.Value,
+                                                 objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                                 ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                                  ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                     }
                 }
@@ -225,7 +225,7 @@ namespace Chummer
 
                 if (objXmlMetamagic != null)
                 {
-                    if (!objXmlMetamagic.RequirementsMet(_objCharacter, null, _strLocalName))
+                    if (!objXmlMetamagic.RequirementsMet(_objCharacter, strLocalName: _strLocalName))
                         return;
 
                     _strSelectedItem = strSelectedItem;

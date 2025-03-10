@@ -190,12 +190,17 @@ namespace Chummer
             if (intIterationsNeeded * sizeof(int) == buffer.Length)
                 return;
 
-            byte[] achrLastBytes = BitConverter.GetBytes(Next());
-            int intLeadingI = (intIterationsNeeded - 1) * sizeof(int);
-            int intFinalI = buffer.Length - intLeadingI;
-            for (int i = 0; i < intFinalI; ++i)
+            unsafe
             {
-                buffer[intLeadingI + i] = achrLastBytes[i];
+                fixed (byte* pchrLastBytes = BitConverter.GetBytes(Next()))
+                {
+                    int intLeadingI = (intIterationsNeeded - 1) * sizeof(int);
+                    int intFinalI = buffer.Length - intLeadingI;
+                    for (int i = 0; i < intFinalI; ++i)
+                    {
+                        buffer[intLeadingI + i] = *(pchrLastBytes + i);
+                    }
+                }
             }
         }
 
@@ -211,12 +216,18 @@ namespace Chummer
             if (intIterationsNeeded * sizeof(int) == buffer.Length)
                 return;
 
-            byte[] achrLastBytes = BitConverter.GetBytes(await NextAsync(token).ConfigureAwait(false));
-            int intLeadingI = (intIterationsNeeded - 1) * sizeof(int);
-            int intFinalI = buffer.Length - intLeadingI;
-            for (int i = 0; i < intFinalI; ++i)
+            int intNext = await NextAsync(token).ConfigureAwait(false);
+            unsafe
             {
-                buffer[intLeadingI + i] = achrLastBytes[i];
+                fixed (byte* pchrLastBytes = BitConverter.GetBytes(intNext))
+                {
+                    int intLeadingI = (intIterationsNeeded - 1) * sizeof(int);
+                    int intFinalI = buffer.Length - intLeadingI;
+                    for (int i = 0; i < intFinalI; ++i)
+                    {
+                        buffer[intLeadingI + i] = *(pchrLastBytes + i);
+                    }
+                }
             }
         }
 

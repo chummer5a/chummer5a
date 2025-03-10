@@ -61,11 +61,21 @@ namespace Codaxy.WkHtmlToPdf
         }
     }
 
-    public class PdfOutput
+    public readonly struct PdfOutput
     {
-        public string OutputFilePath { get; set; }
-        public Stream OutputStream { get; set; }
-        public Action<PdfDocument, byte[]> OutputCallback { get; set; }
+        public string OutputFilePath { get; }
+        public Stream OutputStream { get; }
+        public Action<PdfDocument, byte[]> OutputCallback { get; }
+        public Func<PdfDocument, byte[], CancellationToken, Task> OutputCallbackAsync { get; }
+
+        public PdfOutput(string strOutputFilePath, Stream objOutputStream = null,
+            Action<PdfDocument, byte[]> funcOutputCallback = null, Func<PdfDocument, byte[], CancellationToken, Task> funcOutputCallbackAsync = null)
+        {
+            OutputFilePath = strOutputFilePath;
+            OutputStream = objOutputStream;
+            OutputCallback = funcOutputCallback;
+            OutputCallbackAsync = funcOutputCallbackAsync;
+        }
     }
 
     public class PdfDocument
@@ -89,20 +99,28 @@ namespace Codaxy.WkHtmlToPdf
         public string FooterFontName { get; set; }
     }
 
-    public class PdfConvertEnvironment
+    public readonly struct PdfConvertEnvironment
     {
-        public string TempFolderPath { get; set; } = Utils.GetTempPath();
-        public string WkHtmlToPdfPath { get; set; }
-        public int Timeout { get; set; } = 60000;
-        public bool Debug { get; set; }
+        public string WkHtmlToPdfPath { get; }
+        public string TempFolderPath { get; }
+        public int Timeout { get; }
+        public bool Debug { get; }
+
+        public PdfConvertEnvironment(string strWkHtmlToPdfPath, string strTempFolderPath = "", int intTimeout = 60000,
+            bool blnDebug = false)
+        {
+            WkHtmlToPdfPath = strWkHtmlToPdfPath;
+            TempFolderPath = string.IsNullOrWhiteSpace(strTempFolderPath) || !Directory.Exists(strTempFolderPath) ? Utils.GetTempPath() : strTempFolderPath;
+            Timeout = intTimeout;
+            Debug = blnDebug;
+        }
     }
 
     public static class PdfConvert
     {
-        private static PdfConvertEnvironment _e;
+        private static readonly PdfConvertEnvironment _e = new PdfConvertEnvironment(GetWkhtmlToPdfExeLocation());
 
-        public static PdfConvertEnvironment Environment => _e ?? (_e = new PdfConvertEnvironment
-            {WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation()});
+        public static PdfConvertEnvironment Environment => _e;
 
         private static string GetWkhtmlToPdfExeLocation()
         {
@@ -136,7 +154,7 @@ namespace Codaxy.WkHtmlToPdf
 
         public static void ConvertHtmlToPdf(PdfDocument document, PdfOutput output, CancellationToken token = default)
         {
-            ConvertHtmlToPdf(document, null, output, token);
+            ConvertHtmlToPdf(document, Environment, output, token);
         }
 
         public static void ConvertHtmlToPdf(PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput,
@@ -156,23 +174,15 @@ namespace Codaxy.WkHtmlToPdf
                                                             PdfConvertEnvironment environment, PdfOutput woutput,
                                                             CancellationToken token = default)
         {
-            if (environment == null)
-                environment = Environment;
-
             if (document.Html != null)
                 document.Url = "-";
 
-            string outputPdfFilePath;
-            bool delete;
-            if (woutput.OutputFilePath != null)
-            {
-                outputPdfFilePath = woutput.OutputFilePath;
-                delete = false;
-            }
-            else
+            string outputPdfFilePath = woutput.OutputFilePath;
+            bool blnTemporaryFile = false;
+            if (string.IsNullOrWhiteSpace(outputPdfFilePath))
             {
                 outputPdfFilePath = Path.Combine(environment.TempFolderPath, Guid.NewGuid() + ".pdf");
-                delete = true;
+                blnTemporaryFile = true;
             }
 
             if (!File.Exists(environment.WkHtmlToPdfPath))
@@ -437,15 +447,31 @@ namespace Codaxy.WkHtmlToPdf
                     }
                 }
 
-                if (woutput.OutputCallback != null)
+                if (blnSync)
                 {
-                    byte[] pdfFileBytes = File.ReadAllBytes(outputPdfFilePath);
-                    woutput.OutputCallback(document, pdfFileBytes);
+                    if (woutput.OutputCallback != null || woutput.OutputCallbackAsync != null)
+                    {
+                        byte[] pdfFileBytes = File.ReadAllBytes(outputPdfFilePath);
+                        woutput.OutputCallback?.Invoke(document, pdfFileBytes);
+                        if (woutput.OutputCallbackAsync != null)
+                        {
+                            Utils.SafelyRunSynchronously(() => woutput.OutputCallbackAsync(document, pdfFileBytes, token), token);
+                        }
+                    }
+                }
+                else if (woutput.OutputCallback != null || woutput.OutputCallbackAsync != null)
+                {
+                    byte[] pdfFileBytes = await FileExtensions.ReadAllBytesAsync(outputPdfFilePath, token).ConfigureAwait(false);
+                    woutput.OutputCallback?.Invoke(document, pdfFileBytes);
+                    if (woutput.OutputCallbackAsync != null)
+                    {
+                        await woutput.OutputCallbackAsync(document, pdfFileBytes, token).ConfigureAwait(false);
+                    }
                 }
             }
             finally
             {
-                if (delete)
+                if (blnTemporaryFile)
                 {
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
@@ -459,7 +485,12 @@ namespace Codaxy.WkHtmlToPdf
 
         internal static void ConvertHtmlToPdf(string url, string outputFilePath)
         {
-            ConvertHtmlToPdf(new PdfDocument {Url = url}, new PdfOutput {OutputFilePath = outputFilePath});
+            ConvertHtmlToPdf(new PdfDocument { Url = url }, new PdfOutput(outputFilePath));
+        }
+
+        internal static Task ConvertHtmlToPdfAsync(string url, string outputFilePath, CancellationToken token = default)
+        {
+            return ConvertHtmlToPdfAsync(new PdfDocument { Url = url }, Environment, new PdfOutput(outputFilePath), token);
         }
     }
 

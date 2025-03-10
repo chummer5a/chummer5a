@@ -27,7 +27,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class CreateNaturalWeapon : Form
+    public partial class CreateNaturalWeapon : Form, IHasCharacterObject
     {
         private readonly XPathNavigator _objXmlPowersDocument;
         private readonly XPathNavigator _objXmlSkillsDocument;
@@ -35,11 +35,13 @@ namespace Chummer
         private readonly Character _objCharacter;
         private Weapon _objWeapon;
 
+        public Character CharacterObject => _objCharacter;
+
         #region Control Events
 
         public CreateNaturalWeapon(Character objCharacter)
         {
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objXmlPowersDocument = _objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _objXmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNodeAndCacheExpression("/chummer");
 
@@ -121,7 +123,7 @@ namespace Chummer
             nudReach.Left = lblReach.Left + intWidth + 6;
         }
 
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             // Assemble the DV from the fields.
             string strDamage = await cboDVBase.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);

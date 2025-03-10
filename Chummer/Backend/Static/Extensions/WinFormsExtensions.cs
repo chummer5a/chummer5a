@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using NLog;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer
 {
@@ -55,7 +56,7 @@ namespace Chummer
             if (frmForm.IsDisposed)
                 throw new ObjectDisposedException(nameof(frmForm));
             if (!Utils.IsUnitTest)
-                return Utils.RunOnMainThread(() => frmForm.ShowDialog(owner), token);
+                return Utils.RunOnMainThread(() => frmForm.ShowDialog(owner), token: token);
 
             // Unit tests cannot use ShowDialog because that will stall them out
             bool blnDoClose = false;
@@ -65,7 +66,7 @@ namespace Chummer
                 x.Shown += FormOnShown;
                 x.ShowInTaskbar = false;
                 x.Show(owner);
-            });
+            }, token);
             while (!blnDoClose)
             {
                 token.ThrowIfCancellationRequested();
@@ -76,7 +77,7 @@ namespace Chummer
             {
                 x.Close();
                 return x.DialogResult;
-            });
+            }, token);
         }
 
         /// <summary>
@@ -121,8 +122,8 @@ namespace Chummer
 
                     void FormOnShown(object sender, EventArgs args)
                     {
-                        frmForm.DoThreadSafe(x => x.Close());
-                        objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult));
+                        frmForm.DoThreadSafe(x => x.Close(), token);
+                        objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult, token));
                     }
                 }
 
@@ -163,7 +164,13 @@ namespace Chummer
                 return Task.FromException<DialogResult>(new ObjectDisposedException(nameof(frmForm)));
             if (!frmForm.IsHandleCreated)
             {
-                IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
+                Utils.RunOnMainThread(() =>
+                {
+                    if (!frmForm.IsHandleCreated)
+                    {
+                        IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
+                    }
+                }, token: token);
             }
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
@@ -196,7 +203,13 @@ namespace Chummer
                 return Task.FromException<DialogResult>(new ObjectDisposedException(nameof(frmForm)));
             if (!frmForm.IsHandleCreated)
             {
-                IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
+                Utils.RunOnMainThread(() =>
+                {
+                    if (!frmForm.IsHandleCreated)
+                    {
+                        IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
+                    }
+                }, token: token);
             }
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
@@ -208,8 +221,8 @@ namespace Chummer
                 frmInner.Show(owner);
                 void FormOnShown(object sender, EventArgs args)
                 {
-                    frmForm.DoThreadSafe(x => x.Close());
-                    objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult));
+                    frmForm.DoThreadSafe(x => x.Close(), token);
+                    objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult, token));
                     objCancelRegistration.Dispose();
                 }
             }
@@ -241,10 +254,12 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static void DoThreadSafe<T>(this T objControl, Action funcToRun) where T : Control
+        public static void DoThreadSafe<T>(this T objControl, Action funcToRun, CancellationToken token = default) where T : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return;
             try
@@ -252,7 +267,7 @@ namespace Chummer
                 if (objControl == null)
                     funcToRun.Invoke();
                 else
-                    Utils.RunOnMainThread(funcToRun);
+                    Utils.RunOnMainThread(funcToRun, token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -287,10 +302,12 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static void DoThreadSafe<T>(this T objControl, Action<T> funcToRun) where T : Control
+        public static void DoThreadSafe<T>(this T objControl, Action<T> funcToRun, CancellationToken token = default) where T : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return;
             try
@@ -298,7 +315,7 @@ namespace Chummer
                 if (objControl == null)
                     funcToRun.Invoke(null);
                 else
-                    Utils.RunOnMainThread(() => funcToRun(objControl));
+                    Utils.RunOnMainThread(() => funcToRun(objControl), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -346,7 +363,7 @@ namespace Chummer
                 if (objControl == null)
                     funcToRun.Invoke(token);
                 else
-                    Utils.RunOnMainThread(() => funcToRun(token), token);
+                    Utils.RunOnMainThread(() => funcToRun(token), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -394,7 +411,7 @@ namespace Chummer
                 if (objControl == null)
                     funcToRun.Invoke(null, token);
                 else
-                    Utils.RunOnMainThread(() => funcToRun(objControl, token), token);
+                    Utils.RunOnMainThread(() => funcToRun(objControl, token), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -623,15 +640,17 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T2> funcToRun) where T1 : Control
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return default;
             try
             {
-                return objControl == null ? funcToRun.Invoke() : Utils.RunOnMainThread(funcToRun);
+                return objControl == null ? funcToRun.Invoke() : Utils.RunOnMainThread(funcToRun, token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -668,15 +687,17 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T1, T2> funcToRun) where T1 : Control
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T1, T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return default;
             try
             {
-                return objControl == null ? funcToRun.Invoke(null) : Utils.RunOnMainThread(() => funcToRun(objControl));
+                return objControl == null ? funcToRun.Invoke(null) : Utils.RunOnMainThread(() => funcToRun(objControl), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -725,7 +746,7 @@ namespace Chummer
             {
                 return objControl == null
                     ? funcToRun.Invoke(token)
-                    : Utils.RunOnMainThread(() => funcToRun(token), token);
+                    : Utils.RunOnMainThread(() => funcToRun(token), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -774,7 +795,7 @@ namespace Chummer
             {
                 return objControl == null
                     ? funcToRun.Invoke(null, token)
-                    : Utils.RunOnMainThread(() => funcToRun(objControl, token), token);
+                    : Utils.RunOnMainThread(() => funcToRun(objControl, token), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1014,8 +1035,10 @@ namespace Chummer
         /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
-        public static void DoOneWayDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static void DoOneWayDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objControl == null)
                 return;
             Utils.RunOnMainThread(() =>
@@ -1027,7 +1050,7 @@ namespace Chummer
 
                 objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false,
                                             DataSourceUpdateMode.Never);
-            });
+            }, token: token);
         }
 
         /// <summary>
@@ -1067,63 +1090,48 @@ namespace Chummer
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/>.</param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/> through the <paramref name="funcControlSetter"/> setter.</param>
         /// <param name="funcAsyncDataGetter">Asynchronous getter function of <paramref name="strDataMember"/>.</param>
-        /// <param name="objGetterToken">Cancellation to use in any asynchronous getting or updating of </param>
         /// <param name="token">Cancellation token to listen to for this assignment.</param>
         public static void RegisterOneWayAsyncDataBinding<T1, T2, T3>(
             this T1 objControl, Action<T1, T3> funcControlSetter, T2 objDataSource, string strDataMember,
-            Func<T2, Task<T3>> funcAsyncDataGetter, CancellationToken objGetterToken = default,
-            CancellationToken token = default)
-            where T1 : Control where T2 : INotifyPropertyChanged
+            Func<T2, Task<T3>> funcAsyncDataGetter, CancellationToken token = default)
+            where T1 : Control where T2 : INotifyPropertyChangedAsync
         {
             if (objControl == null)
                 return;
-            Utils.RunOnMainThread(() =>
+            if (!objControl.IsHandleCreated)
             {
-                if (!objControl.IsHandleCreated)
+                Utils.RunOnMainThread(() =>
                 {
-                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
-                }
-            }, token);
+                    if (!objControl.IsHandleCreated)
+                    {
+                        IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                    }
+                }, token: token);
+            }
+
             T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
-            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), objGetterToken);
-            IHasLockObject objHasLock = objDataSource as IHasLockObject;
-            if (objHasLock != null)
+            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
+            objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
+            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) =>
             {
                 try
                 {
-                    using (objHasLock.LockObject.EnterWriteLock(token))
-                        objDataSource.PropertyChanged += OnPropertyChangedAsync;
+                    objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
                 }
                 catch (ObjectDisposedException)
                 {
-                    // swallow this
+                    //swallow this
                 }
-            }
-            else
-                objDataSource.PropertyChanged += OnPropertyChangedAsync;
-            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) =>
+            }, token: token);
+            return;
+
+            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
-                if (objHasLock != null)
-                {
-                    try
-                    {
-                        using (objHasLock.LockObject.EnterWriteLock())
-                            objDataSource.PropertyChanged -= OnPropertyChangedAsync;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        // swallow this
-                    }
-                }
-                else
-                    objDataSource.PropertyChanged -= OnPropertyChangedAsync;
-            }, token);
-            async void OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e)
-            {
-                if (e.PropertyName == strDataMember && !objGetterToken.IsCancellationRequested)
+                innerToken.ThrowIfCancellationRequested();
+                if (e.PropertyName == strDataMember)
                 {
                     T3 objInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
-                    await objControl.DoThreadSafeAsync(y => funcControlSetter.Invoke(y, objInnerData), token: objGetterToken).ConfigureAwait(false);
+                    await objControl.DoThreadSafeAsync(y => funcControlSetter.Invoke(y, objInnerData), token: innerToken).ConfigureAwait(false);
                 }
             }
         }
@@ -1140,71 +1148,530 @@ namespace Chummer
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/>.</param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/> through the <paramref name="funcControlSetter"/> setter.</param>
         /// <param name="funcAsyncDataGetter">Asynchronous getter function of <paramref name="strDataMember"/>.</param>
-        /// <param name="objGetterToken">Cancellation to use in any asynchronous getting or updating of </param>
         /// <param name="token">Cancellation token to listen to for this assignment.</param>
-        public static async ValueTask RegisterOneWayAsyncDataBindingAsync<T1, T2, T3>(
+        public static async Task RegisterOneWayAsyncDataBindingAsync<T1, T2, T3>(
             this T1 objControl, Action<T1, T3> funcControlSetter, T2 objDataSource, string strDataMember,
-            Func<T2, Task<T3>> funcAsyncDataGetter, CancellationToken objGetterToken = default,
-            CancellationToken token = default)
-            where T1 : Control where T2 : INotifyPropertyChanged
+            Func<T2, Task<T3>> funcAsyncDataGetter, CancellationToken token = default)
+            where T1 : Control where T2 : INotifyPropertyChangedAsync
         {
             if (objControl == null)
                 return;
-            await Utils.RunOnMainThreadAsync(() =>
+            if (!objControl.IsHandleCreated)
             {
-                if (!objControl.IsHandleCreated)
+                await Utils.RunOnMainThreadAsync(() =>
                 {
-                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
-                }
-            }, token).ConfigureAwait(false);
+                    if (!objControl.IsHandleCreated)
+                    {
+                        IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                    }
+                }, token).ConfigureAwait(false);
+            }
+
             T3 objData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
-            await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), objGetterToken).ConfigureAwait(false);
-            IHasLockObject objHasLock = objDataSource as IHasLockObject;
-            if (objHasLock != null)
+            await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), token)
+                .ConfigureAwait(false);
+            objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
+            await Utils.RunOnMainThreadAsync(
+                () => objControl.Disposed += (o, args) =>
+                {
+                    try
+                    {
+                        objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                },
+                token).ConfigureAwait(false);
+            return;
+
+            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            {
+                innerToken.ThrowIfCancellationRequested();
+                if (e.PropertyName == strDataMember)
+                {
+                    T3 objInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
+                    await objControl
+                        .DoThreadSafeAsync(y => funcControlSetter.Invoke(y, objInnerData), token: innerToken)
+                        .ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Bind a control's property to a data property with an async getter and an async setter. Similar to a two-way databinding, but the processing is done
+        /// with async tasks, thus bypassing potential synchronous locking issues.
+        /// </summary>
+        /// <typeparam name="T1">Control type of <paramref name="objControl"/>.</typeparam>
+        /// <typeparam name="T2">Source for the data property.</typeparam>
+        /// <typeparam name="T3">Type of the data property that will be bound to the control</typeparam>
+        /// <param name="objControl">Control to bind.</param>
+        /// <param name="funcControlGetter">Getter function to use to get the appropriate property of <paramref name="objControl"/>.</param>
+        /// <param name="funcControlSetter">Setter function to use to set the appropriate property of <paramref name="objControl"/>.</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/>.</param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/> through the <paramref name="funcControlSetter"/> setter.</param>
+        /// <param name="funcControlEventHandlerAdder">A function by which the changer that updates the backing data value is registered to the appropriate control event handler.</param>
+        /// <param name="funcAsyncDataGetter">Asynchronous getter function of <paramref name="strDataMember"/>.</param>
+        /// <param name="funcAsyncDataSetter">Asynchronous setter function of <paramref name="strDataMember"/>.</param>
+        /// <param name="dataSetterToken">Cancellation token to forward to the data setter.</param>
+        /// <param name="token">Cancellation token to listen to for this assignment.</param>
+        public static void RegisterAsyncDataBinding<T1, T2, T3>(
+            this T1 objControl, Func<T1, T3> funcControlGetter, Action<T1, T3> funcControlSetter, T2 objDataSource,
+            string strDataMember, Action<T1, EventHandler> funcControlEventHandlerAdder,
+            Func<T2, Task<T3>> funcAsyncDataGetter, Func<T2, T3, Task> funcAsyncDataSetter,
+            CancellationToken dataSetterToken = default, CancellationToken token = default)
+            where T1 : Control where T2 : INotifyPropertyChangedAsync
+        {
+            if (objControl == null)
+                return;
+            if (!objControl.IsHandleCreated)
+            {
+                Utils.RunOnMainThread(() =>
+                {
+                    if (!objControl.IsHandleCreated)
+                    {
+                        IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                    }
+                }, token: token);
+            }
+
+            T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
+            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
+
+            int intSkipControlSetter = 0;
+            int intSkipDataSetter = 0;
+            objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
+            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) =>
             {
                 try
                 {
-                    IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+            }, token: token);
+
+            funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
+            return;
+
+            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            {
+                innerToken.ThrowIfCancellationRequested();
+                if (e.PropertyName == strDataMember && intSkipControlSetter == 0)
+                {
+                    T3 objInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
+                    Interlocked.Increment(ref intSkipDataSetter);
                     try
                     {
-                        token.ThrowIfCancellationRequested();
-                        objDataSource.PropertyChanged += OnPropertyChangedAsync;
+                        await objControl
+                            .DoThreadSafeAsync(y => funcControlSetter.Invoke(y, objInnerData), token: innerToken)
+                            .ConfigureAwait(false);
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        Interlocked.Decrement(ref intSkipDataSetter);
                     }
+                }
+            }
+
+            async void FuncControlEventHandler(object sender, EventArgs e)
+            {
+                if (intSkipDataSetter > 0)
+                    return;
+                try
+                {
+                    T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
+                        .ConfigureAwait(false);
+                    T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
+                    if (Equals(objInnerData, objOldInnerData))
+                        return;
+                    Interlocked.Increment(ref intSkipControlSetter);
+                    try
+                    {
+                        await funcAsyncDataSetter.Invoke(objDataSource, objInnerData).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref intSkipControlSetter);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // swallow this
+                }
+            }
+        }
+
+        /// <summary>
+        /// Bind a control's property to a data property with an async getter and an async setter. Similar to a two-way databinding, but the processing is done
+        /// with async tasks, thus bypassing potential synchronous locking issues.
+        /// </summary>
+        /// <typeparam name="T1">Control type of <paramref name="objControl"/>.</typeparam>
+        /// <typeparam name="T2">Source for the data property.</typeparam>
+        /// <typeparam name="T3">Type of the data property that will be bound to the control</typeparam>
+        /// <param name="objControl">Control to bind.</param>
+        /// <param name="funcControlGetter">Getter function to use to get the appropriate property of <paramref name="objControl"/>.</param>
+        /// <param name="funcControlSetter">Setter function to use to set the appropriate property of <paramref name="objControl"/>.</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/>.</param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/> through the <paramref name="funcControlSetter"/> setter.</param>
+        /// <param name="funcControlEventHandlerAdder">A function by which the changer that updates the backing data value is registered to the appropriate control event handler.</param>
+        /// <param name="funcAsyncDataGetter">Asynchronous getter function of <paramref name="strDataMember"/>.</param>
+        /// <param name="funcAsyncDataSetter">Asynchronous setter function of <paramref name="strDataMember"/>.</param>
+        /// <param name="dataSetterToken">Cancellation token to forward to the data setter.</param>
+        /// <param name="token">Cancellation token to listen to for this assignment.</param>
+        public static async Task RegisterAsyncDataBindingAsync<T1, T2, T3>(
+            this T1 objControl, Func<T1, T3> funcControlGetter, Action<T1, T3> funcControlSetter, T2 objDataSource,
+            string strDataMember, Action<T1, EventHandler> funcControlEventHandlerAdder,
+            Func<T2, Task<T3>> funcAsyncDataGetter, Func<T2, T3, Task> funcAsyncDataSetter,
+            CancellationToken dataSetterToken = default, CancellationToken token = default)
+            where T1 : Control where T2 : INotifyPropertyChangedAsync
+        {
+            if (objControl == null)
+                return;
+            if (!objControl.IsHandleCreated)
+            {
+                await Utils.RunOnMainThreadAsync(() =>
+                {
+                    if (!objControl.IsHandleCreated)
+                    {
+                        IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                    }
+                }, token).ConfigureAwait(false);
+            }
+
+            T3 objData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
+            await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), token)
+                .ConfigureAwait(false);
+
+            int intSkipControlSetter = 0;
+            int intSkipDataSetter = 0;
+            objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
+            await Utils.RunOnMainThreadAsync(
+                () => objControl.Disposed += (o, args) =>
+                {
+                    try
+                    {
+                        objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                },
+                token).ConfigureAwait(false);
+
+            await objControl
+                .DoThreadSafeAsync(x => funcControlEventHandlerAdder.Invoke(x, FuncControlEventHandler), token)
+                .ConfigureAwait(false);
+            return;
+
+            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            {
+                innerToken.ThrowIfCancellationRequested();
+                if (e.PropertyName == strDataMember && intSkipControlSetter == 0)
+                {
+                    T3 objInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
+                    Interlocked.Increment(ref intSkipDataSetter);
+                    try
+                    {
+                        await objControl
+                            .DoThreadSafeAsync(y => funcControlSetter.Invoke(y, objInnerData), token: innerToken)
+                            .ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref intSkipDataSetter);
+                    }
+                }
+            }
+
+            async void FuncControlEventHandler(object sender, EventArgs e)
+            {
+                if (intSkipDataSetter > 0)
+                    return;
+                try
+                {
+                    T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
+                        .ConfigureAwait(false);
+                    T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
+                    if (Equals(objInnerData, objOldInnerData))
+                        return;
+                    Interlocked.Increment(ref intSkipControlSetter);
+                    try
+                    {
+                        await funcAsyncDataSetter.Invoke(objDataSource, objInnerData).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref intSkipControlSetter);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // swallow this
+                }
+            }
+        }
+
+        /// <summary>
+        /// Bind a control's property to a data property with an async getter and a delayed async setter. Similar to a two-way databinding, but the processing is done
+        /// with async tasks, thus bypassing potential synchronous locking issues. The delay makes sure we don't hammer the setter if we process a lot of changes in a row (useful for text fields).
+        /// </summary>
+        /// <typeparam name="T1">Control type of <paramref name="objControl"/>.</typeparam>
+        /// <typeparam name="T2">Source for the data property.</typeparam>
+        /// <typeparam name="T3">Type of the data property that will be bound to the control</typeparam>
+        /// <param name="objControl">Control to bind.</param>
+        /// <param name="funcControlGetter">Getter function to use to get the appropriate property of <paramref name="objControl"/>.</param>
+        /// <param name="funcControlSetter">Setter function to use to set the appropriate property of <paramref name="objControl"/>.</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/>.</param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/> through the <paramref name="funcControlSetter"/> setter.</param>
+        /// <param name="funcControlEventHandlerAdder">A function by which the changer that updates the backing data value is registered to the appropriate control event handler.</param>
+        /// <param name="funcAsyncDataGetter">Asynchronous getter function of <paramref name="strDataMember"/>.</param>
+        /// <param name="funcAsyncDataSetter">Asynchronous setter function of <paramref name="strDataMember"/>.</param>
+        /// <param name="intDelay">Delay (in milliseconds) to wait before trying to use the data setter.</param>
+        /// <param name="dataSetterToken">Cancellation token to forward to the data setter.</param>
+        /// <param name="token">Cancellation token to listen to for this assignment.</param>
+        public static void RegisterAsyncDataBindingWithDelay<T1, T2, T3>(
+            this T1 objControl, Func<T1, T3> funcControlGetter, Action<T1, T3> funcControlSetter, T2 objDataSource,
+            string strDataMember, Action<T1, EventHandler> funcControlEventHandlerAdder,
+            Func<T2, Task<T3>> funcAsyncDataGetter, Func<T2, T3, Task> funcAsyncDataSetter, int intDelay = 1000,
+            CancellationToken dataSetterToken = default, CancellationToken token = default)
+            where T1 : Control where T2 : INotifyPropertyChangedAsync
+        {
+            if (objControl == null)
+                return;
+            if (!objControl.IsHandleCreated)
+            {
+                Utils.RunOnMainThread(() =>
+                {
+                    if (!objControl.IsHandleCreated)
+                    {
+                        IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                    }
+                }, token: token);
+            }
+
+            T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
+            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
+
+            int intSkipControlSetter = 0;
+            int intSkipDataSetter = 0;
+            objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
+            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) =>
+            {
+                try
+                {
+                    objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+            }, token: token);
+
+            Timer tmrDelay = new Timer { Interval = intDelay };
+            tmrDelay.Tick += TmrDelayOnTick;
+            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) => tmrDelay.Dispose(), token: token);
+            funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
+            return;
+
+            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e,
+                CancellationToken innerToken = default)
+            {
+                innerToken.ThrowIfCancellationRequested();
+                if (e.PropertyName == strDataMember && intSkipControlSetter == 0)
+                {
+                    T3 objInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
+                    Interlocked.Increment(ref intSkipDataSetter);
+                    try
+                    {
+                        await objControl
+                            .DoThreadSafeAsync(y => funcControlSetter.Invoke(y, objInnerData), token: innerToken)
+                            .ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref intSkipDataSetter);
+                    }
+                }
+            }
+
+            async void TmrDelayOnTick(object sender, EventArgs e)
+            {
+                if (intSkipDataSetter > 0)
+                    return;
+                tmrDelay.Stop();
+                try
+                {
+                    T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
+                        .ConfigureAwait(false);
+                    T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
+                    if (Equals(objInnerData, objOldInnerData))
+                        return;
+                    Interlocked.Increment(ref intSkipControlSetter);
+                    try
+                    {
+                        await funcAsyncDataSetter.Invoke(objDataSource, objInnerData).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref intSkipControlSetter);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // swallow this
+                }
+            }
+
+            void FuncControlEventHandler(object sender, EventArgs e)
+            {
+                try
+                {
+                    if (tmrDelay.Enabled)
+                        tmrDelay.Stop();
+                    if (intSkipDataSetter > 0)
+                        return;
+                    tmrDelay.Start();
                 }
                 catch (ObjectDisposedException)
                 {
                     // swallow this
                 }
             }
-            else
-                objDataSource.PropertyChanged += OnPropertyChangedAsync;
+        }
+
+        /// <summary>
+        /// Bind a control's property to a data property with an async getter and a delayed async setter. Similar to a two-way databinding, but the processing is done
+        /// with async tasks, thus bypassing potential synchronous locking issues. The delay makes sure we don't hammer the setter if we process a lot of changes in a row (useful for text fields).
+        /// </summary>
+        /// <typeparam name="T1">Control type of <paramref name="objControl"/>.</typeparam>
+        /// <typeparam name="T2">Source for the data property.</typeparam>
+        /// <typeparam name="T3">Type of the data property that will be bound to the control</typeparam>
+        /// <param name="objControl">Control to bind.</param>
+        /// <param name="funcControlGetter">Getter function to use to get the appropriate property of <paramref name="objControl"/>.</param>
+        /// <param name="funcControlSetter">Setter function to use to set the appropriate property of <paramref name="objControl"/>.</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/>.</param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/> through the <paramref name="funcControlSetter"/> setter.</param>
+        /// <param name="funcControlEventHandlerAdder">A function by which the changer that updates the backing data value is registered to the appropriate control event handler.</param>
+        /// <param name="funcAsyncDataGetter">Asynchronous getter function of <paramref name="strDataMember"/>.</param>
+        /// <param name="funcAsyncDataSetter">Asynchronous setter function of <paramref name="strDataMember"/>.</param>
+        /// <param name="intDelay">Delay (in milliseconds) to wait before trying to use the data setter.</param>
+        /// <param name="dataSetterToken">Cancellation token to forward to the data setter.</param>
+        /// <param name="token">Cancellation token to listen to for this assignment.</param>
+        public static async Task RegisterAsyncDataBindingWithDelayAsync<T1, T2, T3>(
+            this T1 objControl, Func<T1, T3> funcControlGetter, Action<T1, T3> funcControlSetter, T2 objDataSource,
+            string strDataMember, Action<T1, EventHandler> funcControlEventHandlerAdder,
+            Func<T2, Task<T3>> funcAsyncDataGetter, Func<T2, T3, Task> funcAsyncDataSetter, int intDelay = 1000,
+            CancellationToken dataSetterToken = default, CancellationToken token = default)
+            where T1 : Control where T2 : INotifyPropertyChangedAsync
+        {
+            if (objControl == null)
+                return;
+            if (!objControl.IsHandleCreated)
+            {
+                await Utils.RunOnMainThreadAsync(() =>
+                {
+                    if (!objControl.IsHandleCreated)
+                    {
+                        IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                    }
+                }, token: token).ConfigureAwait(false);
+            }
+
+            T3 objData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
+            await objControl.DoThreadSafeAsync((x, y) => funcControlSetter.Invoke(x, objData), token)
+                .ConfigureAwait(false);
+
+            int intSkipControlSetter = 0;
+            int intSkipDataSetter = 0;
+            objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
             await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) =>
             {
-                if (objHasLock != null)
+                try
                 {
-                    try
-                    {
-                        using (objHasLock.LockObject.EnterWriteLock())
-                            objDataSource.PropertyChanged -= OnPropertyChangedAsync;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        // swallow this
-                    }
+                    objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
                 }
-                else
-                    objDataSource.PropertyChanged -= OnPropertyChangedAsync;
-            }, token).ConfigureAwait(false);
-            async void OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e)
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+            }, token: token).ConfigureAwait(false);
+
+            Timer tmrDelay = new Timer { Interval = intDelay };
+            tmrDelay.Tick += TmrDelayOnTick;
+            await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) => tmrDelay.Dispose(), token: token)
+                .ConfigureAwait(false);
+            await objControl
+                .DoThreadSafeAsync(x => funcControlEventHandlerAdder.Invoke(x, FuncControlEventHandler), token)
+                .ConfigureAwait(false);
+            return;
+
+            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e,
+                CancellationToken innerToken = default)
             {
-                if (e.PropertyName == strDataMember && !objGetterToken.IsCancellationRequested)
+                innerToken.ThrowIfCancellationRequested();
+                if (e.PropertyName == strDataMember && intSkipControlSetter == 0)
                 {
                     T3 objInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
-                    await objControl.DoThreadSafeAsync(y => funcControlSetter.Invoke(y, objInnerData), token: objGetterToken).ConfigureAwait(false);
+                    Interlocked.Increment(ref intSkipDataSetter);
+                    try
+                    {
+                        await objControl
+                            .DoThreadSafeAsync(y => funcControlSetter.Invoke(y, objInnerData), token: innerToken)
+                            .ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref intSkipDataSetter);
+                    }
+                }
+            }
+
+            async void TmrDelayOnTick(object sender, EventArgs e)
+            {
+                if (intSkipDataSetter > 0)
+                    return;
+                tmrDelay.Stop();
+                try
+                {
+                    T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
+                        .ConfigureAwait(false);
+                    T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
+                    if (Equals(objInnerData, objOldInnerData))
+                        return;
+                    Interlocked.Increment(ref intSkipControlSetter);
+                    try
+                    {
+                        await funcAsyncDataSetter.Invoke(objDataSource, objInnerData).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref intSkipControlSetter);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // swallow this
+                }
+            }
+
+            void FuncControlEventHandler(object sender, EventArgs e)
+            {
+                try
+                {
+                    if (tmrDelay.Enabled)
+                        tmrDelay.Stop();
+                    if (intSkipDataSetter > 0)
+                        return;
+                    tmrDelay.Start();
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
                 }
             }
         }
@@ -1231,7 +1698,7 @@ namespace Chummer
 
                 objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false,
                                             DataSourceUpdateMode.OnPropertyChanged);
-            }, token);
+            }, token: token);
         }
 
         /// <summary>
@@ -1266,8 +1733,10 @@ namespace Chummer
         /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
-        public static void DoOneWayNegatableDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static void DoOneWayNegatableDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objControl == null)
                 return;
             Utils.RunOnMainThread(() =>
@@ -1279,7 +1748,7 @@ namespace Chummer
 
                 objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, false,
                                                                  DataSourceUpdateMode.Never));
-            });
+            }, token: token);
         }
 
         /// <summary>
@@ -1314,8 +1783,10 @@ namespace Chummer
         /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
-        public static void DoNegatableDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static void DoNegatableDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objControl == null)
                 return;
             Utils.RunOnMainThread(() =>
@@ -1327,7 +1798,7 @@ namespace Chummer
 
                 objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, false,
                                                                  DataSourceUpdateMode.OnPropertyChanged));
-            });
+            }, token: token);
         }
 
         /// <summary>
@@ -1388,17 +1859,17 @@ namespace Chummer
 
         public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            lsbThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
+            lsbThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token), token);
         }
 
         public static void PopulateWithListItems(this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
+            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token), token);
         }
 
         public static void PopulateWithListItems(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
+            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token), token);
         }
 
         public static Task PopulateWithListItemsAsync([NotNull] this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
@@ -1451,7 +1922,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (lsbThis.DataSource != null)
                     {
-                        // Assign new binding context because to avoid weirdness when switching DataSource
+                        // Assign new binding context to avoid weirdness when switching DataSource
                         lsbThis.BindingContext = new BindingContext();
                     }
                     else
@@ -1466,12 +1937,11 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    s_dicListItemListAssignments.AddOrUpdate(lsbThis, lstItemsToSet, (x, y) =>
+                    lsbThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(lsbThis, lstItemsToSet, (x, y) =>
                     {
                         Utils.ListItemListPool.Return(ref y);
                         return lstItemsToSet;
                     });
-                    lsbThis.DataSource = lstItemsToSet;
                 }
                 finally
                 {
@@ -1520,7 +1990,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (cboThis.DataSource != null)
                     {
-                        // Assign new binding context because to avoid weirdness when switching DataSource
+                        // Assign new binding context to avoid weirdness when switching DataSource
                         cboThis.BindingContext = new BindingContext();
                     }
                     else
@@ -1535,12 +2005,11 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
                     {
                         Utils.ListItemListPool.Return(ref y);
                         return lstItemsToSet;
                     });
-                    cboThis.DataSource = lstItemsToSet;
                 }
                 finally
                 {
@@ -1589,7 +2058,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (cboThis.DataSource != null)
                     {
-                        // Assign new binding context because to avoid weirdness when switching DataSource
+                        // Assign new binding context to avoid weirdness when switching DataSource
                         cboThis.BindingContext = new BindingContext();
                     }
                     else
@@ -1604,12 +2073,11 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
                     {
                         Utils.ListItemListPool.Return(ref y);
                         return lstItemsToSet;
                     });
-                    cboThis.DataSource = lstItemsToSet;
                 }
                 finally
                 {
@@ -1782,7 +2250,7 @@ namespace Chummer
         /// ICanSorts in the tree
         /// </summary>
         /// <param name="treView">The tree to sort</param>
-        /// <param name="blnRetainTopLevelOrder">Whether or not to retain the order of the top level nodes.</param>
+        /// <param name="blnRetainTopLevelOrder">Whether to retain the order of the top level nodes.</param>
         public static void SortCustomOrder(this TreeView treView, bool blnRetainTopLevelOrder = false)
         {
             if (treView == null)
@@ -1909,7 +2377,9 @@ namespace Chummer
             if (treTree == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
             foreach (TreeNode objNode in treTree.Nodes)
             {
-                if (objNode?.Tag is IHasInternalId node && node.InternalId == strGuid || objNode?.Tag?.ToString() == strGuid)
+                if (objNode?.Tag is IHasInternalId node &&
+                    string.Equals(node.InternalId, strGuid, StringComparison.OrdinalIgnoreCase) ||
+                    objNode?.Tag?.ToString() == strGuid)
                     return objNode;
 
                 if (!blnDeep) continue;
@@ -1917,6 +2387,7 @@ namespace Chummer
                 if (objFound != null)
                     return objFound;
             }
+
             return null;
         }
 
@@ -1932,7 +2403,7 @@ namespace Chummer
             {
                 foreach (TreeNode objNode in treTree.Nodes)
                 {
-                    if (objNode.Tag == objTag)
+                    if (ReferenceEquals(objNode.Tag, objTag))
                         return objNode;
 
                     if (blnDeep)
@@ -2006,7 +2477,8 @@ namespace Chummer
                 foreach (string strLine in astrLines)
                 {
                     Size objTextSize = TextRenderer.MeasureText(strLine, txtTextBox.Font);
-                    intNumDisplayedLines += Math.Max(((decimal)objTextSize.Width / txtTextBox.Width).StandardRound(), 1);
+                    // Extra 2.5% because of weird potential misjudgement issues
+                    intNumDisplayedLines += Math.Max((objTextSize.Width * 1.025m / txtTextBox.Width).StandardRound(), 1);
                     intMaxLineHeight = Math.Max(intMaxLineHeight, objTextSize.Height);
                 }
             }
@@ -2014,7 +2486,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Automatically (un)set vertical scrollbars for a TextBox based on whether or not it needs them.
+        /// Automatically (un)set vertical scrollbars for a TextBox based on whether it needs them.
         /// </summary>
         /// <param name="txtTextBox">Control to analyze and potentially (un)set scrollbars</param>
         public static void AutoSetScrollbars(this TextBox txtTextBox)

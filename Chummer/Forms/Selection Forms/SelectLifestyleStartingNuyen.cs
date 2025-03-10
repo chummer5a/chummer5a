@@ -36,7 +36,7 @@ namespace Chummer
 
         public SelectLifestyleStartingNuyen(Character objCharacter)
         {
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -70,7 +70,7 @@ namespace Chummer
             await RefreshResultLabel().ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshResultLabel(CancellationToken token = default)
+        private async Task RefreshResultLabel(CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -95,7 +95,7 @@ namespace Chummer
             await RefreshBaseLifestyle().ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshBaseLifestyle(CancellationToken token = default)
+        private async Task RefreshBaseLifestyle(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (_blnIsSelectLifestyleRefreshing)
@@ -122,7 +122,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask RefreshSelectLifestyle(CancellationToken token = default)
+        private async Task RefreshSelectLifestyle(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
@@ -186,20 +186,21 @@ namespace Chummer
             }
         }
 
-        private async ValueTask RefreshCalculation(CancellationToken token = default)
+        private async Task RefreshCalculation(CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
+                int intDice = SelectedLifestyle?.Dice ?? 0;
                 await nudDiceResult.DoThreadSafeAsync(x =>
                 {
                     x.SuspendLayout();
                     try
                     {
-                        x.MinimumAsInt =
+                        x.Minimum =
                             int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
-                        x.MaximumAsInt = SelectedLifestyle?.Dice * 6 ?? 0;
-                        x.MinimumAsInt = SelectedLifestyle?.Dice ?? 0;
+                        x.Maximum = intDice * 6;
+                        x.Minimum = intDice;
                     }
                     finally
                     {
@@ -229,7 +230,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoRoll(CancellationToken token = default)
+        private async Task DoRoll(CancellationToken token = default)
         {
             int intResult = 0;
             for (int i = 0; i < SelectedLifestyle.Dice; ++i)

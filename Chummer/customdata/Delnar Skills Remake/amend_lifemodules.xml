@@ -96,7 +96,7 @@
           <name>Command</name>
           <condition>Leadership</condition>
         </specificskill>
-        <specificskill xpathfilter="name = 'Negotiation'">
+        <specificskill xpathfilter="name = 'Negotiation' or name = 'Con'">
           <name>Persuade</name>
         </specificskill>
         <specificskill xpathfilter="name = 'Ritual Spellcasting'">
@@ -178,7 +178,7 @@
             <specificskill xpathfilter="name = 'Leadership'">
               <name>Command</name>
             </specificskill>
-            <specificskill xpathfilter="name = 'Negotiation'">
+            <specificskill xpathfilter="name = 'Negotiation' or name = 'Con'">
               <name>Persuade</name>
             </specificskill>
             <specificskill xpathfilter="name = 'Ritual Spellcasting'">

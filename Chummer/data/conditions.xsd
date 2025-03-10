@@ -86,6 +86,15 @@
           </xs:simpleContent>
         </xs:complexType>
       </xs:element>
+      <xs:element name="characterquality" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="extra" type="xs:string" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="cyberware" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>
@@ -141,6 +150,15 @@
       </xs:element>
       <xs:element name="inherited" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="initiategrade" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="lifestylequality" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="extra" type="xs:string" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="magenabled" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="martialart" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="martialtechnique" type="xs:string" minOccurs="0" maxOccurs="1" />

@@ -29,7 +29,7 @@ using Microsoft.VisualStudio.Threading;
 
 namespace Chummer
 {
-    public partial class SelectLifeModule : Form
+    public partial class SelectLifeModule : Form, IHasCharacterObject
     {
         public bool AddAgain { get; private set; }
         private readonly Character _objCharacter;
@@ -39,14 +39,16 @@ namespace Chummer
         private string _strSelectedId;
         private Regex _rgxSearchExpression;
 
+        public Character CharacterObject => _objCharacter;
+
         private string _strWorkStage;
 
         public SelectLifeModule(Character objCharacter, int intStage)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
             _intStage = intStage;
             _xmlLifeModulesDocumentChummerNode
                 = _objCharacter.LoadDataXPath("lifemodules.xml").SelectSingleNode("/chummer");
@@ -69,7 +71,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask BuildTree(string stageString, CancellationToken token = default)
+        private async Task BuildTree(string stageString, CancellationToken token = default)
         {
             TreeNode[] aobjNodes = await BuildList(_xmlLifeModulesDocumentChummerNode.Select("modules/module" + stageString), token).ConfigureAwait(false);
             await treModules.DoThreadSafeAsync(x =>
@@ -79,13 +81,12 @@ namespace Chummer
             }, token: token).ConfigureAwait(false);
         }
 
-        private async ValueTask<TreeNode[]> BuildList(XPathNodeIterator lstXmlNodes, CancellationToken token = default)
+        private async Task<TreeNode[]> BuildList(XPathNodeIterator lstXmlNodes, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<TreeNode> lstTreeNodes = new List<TreeNode>();
             bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-            AsyncLazy<string> strBookPath = new AsyncLazy<string>(
-                async () => await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false), Utils.JoinableTaskFactory);
+            AsyncLazy<string> strBookPath = new AsyncLazy<string>(() => _objCharacter.Settings.BookXPathAsync(token: token), Utils.JoinableTaskFactory);
             foreach (XPathNavigator xmlNode in lstXmlNodes)
             {
                 token.ThrowIfCancellationRequested();
@@ -111,11 +112,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (_rgxSearchExpression != null)
                     {
-                        if (_rgxSearchExpression.IsMatch(treNode.Text))
-                        {
-                            lstTreeNodes.Add(treNode);
-                        }
-                        else if (treNode.Nodes.Count != 0)
+                        if (_rgxSearchExpression.IsMatch(treNode.Text) || treNode.Nodes.Count != 0)
                         {
                             lstTreeNodes.Add(treNode);
                         }
@@ -276,14 +273,11 @@ namespace Chummer
         private async void cboStage_SelectionChangeCommitted(object sender, EventArgs e)
         {
             string strSelected = await cboStage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false) ?? string.Empty;
-            if (strSelected == "0")
-            {
-                _strWorkStage = string.Empty;
-            }
-            else
-            {
-                _strWorkStage = _xmlLifeModulesDocumentChummerNode.SelectSingleNodeAndCacheExpression("stages/stage[@order = " + strSelected.CleanXPath() + ']')?.Value ?? string.Empty;
-            }
+            _strWorkStage = strSelected == "0"
+                ? string.Empty
+                : _xmlLifeModulesDocumentChummerNode
+                    .SelectSingleNodeAndCacheExpression("stages/stage[@order = " + strSelected.CleanXPath() + ']')
+                    ?.Value ?? string.Empty;
             await BuildTree(await GetSelectString().ConfigureAwait(false)).ConfigureAwait(false);
         }
 
@@ -312,7 +306,7 @@ namespace Chummer
             await BuildTree(await GetSelectString().ConfigureAwait(false)).ConfigureAwait(false);
         }
 
-        private async ValueTask<string> GetSelectString(CancellationToken token = default)
+        private async Task<string> GetSelectString(CancellationToken token = default)
         {
             string strReturn = "[(" + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false);
 

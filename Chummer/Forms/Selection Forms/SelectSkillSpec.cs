@@ -35,10 +35,10 @@ namespace Chummer
 
         #region Control Events
 
-        public SelectSpec(Skill skill)
+        public SelectSpec(Skill objSkill)
         {
-            _objSkill = skill ?? throw new ArgumentNullException(nameof(skill));
-            _objCharacter = skill.CharacterObject;
+            _objSkill = objSkill ?? throw new ArgumentNullException(nameof(objSkill));
+            _objCharacter = objSkill.CharacterObject;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -84,7 +84,7 @@ namespace Chummer
                     {
                         string strInnerText = objXmlSpecialization.Value;
                         lstItems.Add(new ListItem(strInnerText,
-                                                  (await objXmlSpecialization.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))
+                                                  objXmlSpecialization.SelectSingleNodeAndCacheExpression("@translate")
                                                                       ?.Value ?? strInnerText));
                     }
                 }
@@ -117,15 +117,13 @@ namespace Chummer
                                              .BookXPathAsync().ConfigureAwait(false)
                                      + ")]"))
                         {
-                            string strName = (await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsync("name")
-                                                                .ConfigureAwait(false))?.Value;
+                            string strName = objXmlWeapon.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                             {
                                 lstWeaponItems.Add(new ListItem(
                                                        strName,
-                                                       (await objXmlWeapon
-                                                              .SelectSingleNodeAndCacheExpressionAsync("translate")
-                                                              .ConfigureAwait(false))?.Value
+                                                       objXmlWeapon
+                                                           .SelectSingleNodeAndCacheExpression("translate")?.Value
                                                        ?? strName));
                             }
                         }
@@ -195,9 +193,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Form should be accepted if there is only one item left in the list.
+        /// Whether the Form should be accepted if there is only one item left in the list.
         /// </summary>
-        public bool AllowAutoSelect { get; set; } = true;
+        public bool AllowAutoSelect { get; } = true;
 
         /// <summary>
         /// Type of skill that we're selecting. Used to differentiate knowledge skills.
@@ -205,7 +203,7 @@ namespace Chummer
         public string Mode { get; set; }
 
         /// <summary>
-        /// Whether or not to force the .
+        /// Whether to force the .
         /// </summary>
         public bool BuyWithKarma
         {

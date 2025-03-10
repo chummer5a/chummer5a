@@ -30,7 +30,7 @@ namespace Chummer
     {
         // used when the user has filled out the information
         private readonly InitiativeUserControl parentControl;
-        
+
         private Character _character;
 
         public AddToken(InitiativeUserControl init)
@@ -72,7 +72,7 @@ namespace Chummer
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="token"></param>
-        private async ValueTask LoadCharacter(string fileName, CancellationToken token = default)
+        private async Task LoadCharacter(string fileName, CancellationToken token = default)
         {
             if (File.Exists(fileName) && (fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)))
             {

@@ -35,7 +35,7 @@ namespace Chummer
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
-        /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LoadStandard(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true)
         {
@@ -51,7 +51,7 @@ namespace Chummer
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
-        /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task LoadStandardAsync(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true, CancellationToken token = default)
@@ -82,7 +82,7 @@ namespace Chummer
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
-        /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LoadStandardFromLzmaCompressed(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true)
         {
@@ -106,7 +106,7 @@ namespace Chummer
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
-        /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task LoadStandardFromLzmaCompressedAsync(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true, CancellationToken token = default)

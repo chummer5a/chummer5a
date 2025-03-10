@@ -29,7 +29,7 @@ using NLog;
 
 namespace Chummer
 {
-    public partial class CreateCustomDrug : Form
+    public partial class CreateCustomDrug : Form, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -42,6 +42,8 @@ namespace Chummer
         private double _dblCostMultiplier;
         private int _intAddictionThreshold;
 
+        public Character CharacterObject => _objCharacter;
+
         public CreateCustomDrug(Character objCharacter)
         {
             Disposed += (sender, args) =>
@@ -50,8 +52,8 @@ namespace Chummer
                     Interlocked.Exchange(ref _objDrug, null)?.Dispose();
                 Utils.ListItemListPool.Return(ref _lstGrade);
             };
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objDrug = new Drug(objCharacter);
-            _objCharacter = objCharacter;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -130,7 +132,7 @@ namespace Chummer
             await cboGrade.PopulateWithListItemsAsync(_lstGrade, token: token).ConfigureAwait(false);
         }
 
-        private async ValueTask UpdateCustomDrugStats(CancellationToken token = default)
+        private async Task UpdateCustomDrugStats(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             Drug objNewDrug = new Drug(_objCharacter)
@@ -144,7 +146,7 @@ namespace Chummer
                     ? await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
                     : string.Empty;
                 if (!string.IsNullOrEmpty(strSelectedGrade))
-                    objNewDrug.Grade = Grade.ConvertToCyberwareGrade(strSelectedGrade, Improvement.ImprovementSource.Drug, _objCharacter);
+                    objNewDrug.Grade = await Grade.ConvertToCyberwareGradeAsync(strSelectedGrade, Improvement.ImprovementSource.Drug, _objCharacter, token).ConfigureAwait(false);
             }
 
             foreach (DrugNodeData objNodeData in _lstSelectedDrugComponents)
@@ -159,19 +161,19 @@ namespace Chummer
                 await objOldDrug.DisposeAsync().ConfigureAwait(false);
         }
 
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Make sure the suite and file name fields are populated.
             if (string.IsNullOrEmpty(txtDrugName.Text))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_Name", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Name", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_CustomDrug_Name", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Name", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                 return;
             }
 
             if (await _objDrug.Components.CountAsync(o => o.Category == "Foundation", token).ConfigureAwait(false) != 1)
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_MissingFoundation", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Foundation", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_CustomDrug_MissingFoundation", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Foundation", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                 return;
             }
 
@@ -183,7 +185,7 @@ namespace Chummer
             }, token).ConfigureAwait(false);
         }
 
-        private async ValueTask AddSelectedComponent(CancellationToken token = default)
+        private async Task AddSelectedComponent(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!(await treAvailableComponents.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) is DrugNodeData objNodeData) || objNodeData.Level == -1)
@@ -203,16 +205,16 @@ namespace Chummer
             if (_lstSelectedDrugComponents.Count(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name) >=
                 objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
-                Program.ShowScrollableMessageBox(this,
+                await Program.ShowScrollableMessageBoxAsync(this,
                     string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DuplicateDrugComponentWarning", token: token).ConfigureAwait(false),
-                        objNodeData.DrugComponent.Limit));
+                        objNodeData.DrugComponent.Limit), token: token).ConfigureAwait(false);
                 return;
             }
 
             //drug can have only one foundation
-            if (objNodeData.DrugComponent.Category == "Foundation" && _lstSelectedDrugComponents.Any(c => c.DrugComponent.Category == "Foundation"))
+            if (objNodeData.DrugComponent.Category == "Foundation" && _lstSelectedDrugComponents.Exists(c => c.DrugComponent.Category == "Foundation"))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_DuplicateDrugFoundationWarning", token: token).ConfigureAwait(false));
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_DuplicateDrugFoundationWarning", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 return;
             }
 
@@ -241,7 +243,7 @@ namespace Chummer
                                                 await objNodeData.DrugComponent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strColonString +
                                                 strSpaceString + objItem.Key +
                                                 decBlockAttrValue.ToString("+#.#;-#.#;", GlobalSettings.CultureInfo);
-                            Program.ShowScrollableMessageBox(this, strMessage);
+                            await Program.ShowScrollableMessageBoxAsync(this, strMessage, token: token).ConfigureAwait(false);
                             return;
                         }
                     }

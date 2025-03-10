@@ -17,16 +17,20 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System;
-
 #if DEBUG
-
-using System.Diagnostics;
-
+// Uncomment this define to control whether stacktraces should be saved every time a read lock is acquired (helpful for debugging cases where a non-read lock is attempted to be acquired inside a read lock)
+//#define READERLOCKSTACKTRACEDEBUG
+// Uncomment this define to control whether stacktraces should be saved to the AsyncLocal every time it is explicitly written to (helpful to try to track down where disposed helpers are staying as part of the local)
+//#define ASYNCLOCALWRITEDEBUG
+// Uncomment this define if you are having a weird deadlock or crash that you cannot diagnose, which can often be caused by an improperly set or unset AsyncLocal earlier in the code
+//#define DEBUGBREAKONIMPROPERLOCALUNSET
 #endif
 
+using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
 
 namespace Chummer
 {
@@ -42,22 +46,234 @@ namespace Chummer
     /// </summary>
     public sealed class AsyncFriendlyReaderWriterLock : IAsyncDisposable, IDisposable
     {
-        // Because readers are always recursive and it's fine that way, we only need to deploy complicated stuff on the writer side
-        private readonly DebuggableSemaphoreSlim _objReaderSemaphore = new DebuggableSemaphoreSlim();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         // In order to properly allow async lock to be recursive but still make them work properly as locks, we need to set up something
         // that is a bit like a singly-linked list, but as a tree graph. Each lock creates a disposable release object of some kind, and only disposing it frees the lock.
         // Because .NET Framework doesn't have dictionary optimizations for dealing with multiple AsyncLocals stored per context, we need scrape together something similar.
-        // Therefore, we store a nested tuple where the first element is the number of active local readers and the second element is the tuple containing our writer lock semaphores
+        // Therefore, we store a tuple where the first element is the current helper to be used and the next two elements are the topmost held upgradeable reader and writer helpers.
         // TODO: Revert this cursed bodge once we migrate to a version of .NET that has these AsyncLocal optimizations
-        private readonly AsyncLocal<Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>>
-            _objAsyncLocalCurrentsContainer = new AsyncLocal<Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>>();
+#if ASYNCLOCALWRITEDEBUG
+        private readonly AsyncLocal<
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>>
+            _objAsyncLocalCurrentsContainer =
+                new AsyncLocal<Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper,
+                    string>>(ValueChangedHandler);
 
-        private readonly LinkedSemaphoreSlim _objTopLevelWriterSemaphore = new LinkedSemaphoreSlim(null);
+        private static void ValueChangedHandler(AsyncLocalValueChangedArgs<Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>> objArgs)
+        {
+            // We should never be setting the local to a value where the current helper is disposed, because disposal will always happen after a new value is set
+            if (!objArgs.ThreadContextChanged && objArgs.CurrentValue != null && objArgs.CurrentValue.Item1?.IsDisposed == true)
+                Utils.BreakIfDebug();
+        }
+#else
+        private readonly AsyncLocal<
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>>
+            _objAsyncLocalCurrentsContainer =
+                new AsyncLocal<Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>>();
+#endif
+#if READERLOCKSTACKTRACEDEBUG
+        private readonly AsyncLocal<string> _objIsInReadLockContainer = new AsyncLocal<string>();
+#else
+        private readonly AsyncLocal<bool> _objIsInReadLockContainer = new AsyncLocal<bool>();
+#endif
 
-        private int _intCountActiveHiPrioReaders;
-        private int _intCountActiveReaders;
+        private readonly LinkedAsyncRWLockHelper _objTopLevelHelper = new LinkedAsyncRWLockHelper(null, false);
+
+        private AsyncFriendlyReaderWriterLock _objParentLock;
+        private bool _blnLockReadOnlyForParent;
+
         private int _intDisposedStatus;
+
+        public AsyncFriendlyReaderWriterLock(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
+        {
+            if (objParentLock?.IsDisposed == false)
+            {
+                _objParentLock = objParentLock;
+                _blnLockReadOnlyForParent = blnLockReadOnlyForParent;
+            }
+        }
+
+        public void SetParent(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _objTopLevelHelper.TakeSingleWriteLock(token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _objParentLock = objParentLock;
+                _blnLockReadOnlyForParent = blnLockReadOnlyForParent;
+            }
+            finally
+            {
+                _objTopLevelHelper.ReleaseSingleWriteLock();
+            }
+        }
+
+        public async Task SetParentAsync(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await _objTopLevelHelper.TakeSingleWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _objParentLock = objParentLock;
+                _blnLockReadOnlyForParent = blnLockReadOnlyForParent;
+            }
+            finally
+            {
+                _objTopLevelHelper.ReleaseSingleWriteLock();
+            }
+        }
+
+#if READERLOCKSTACKTRACEDEBUG
+        public bool IsInNonUpgradeableReadLock => !string.IsNullOrEmpty(_objIsInReadLockContainer.Value);
+#else
+        public bool IsInNonUpgradeableReadLock => _objIsInReadLockContainer.Value;
+#endif
+
+        public bool IsInUpgradeableReadLock => _objAsyncLocalCurrentsContainer.Value?.Item2 != null;
+
+        public bool IsInReadLock => IsInNonUpgradeableReadLock || IsInUpgradeableReadLock;
+
+        public bool IsInWriteLock => _objAsyncLocalCurrentsContainer.Value?.Item3 != null;
+
+        public bool IsInPotentialWriteLock
+        {
+            get
+            {
+                if (IsInNonUpgradeableReadLock)
+                    return false;
+#if ASYNCLOCALWRITEDEBUG
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+#else
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>
+#endif
+                    objAsyncLocals =
+                        _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                {
+                    return objAsyncLocals.Item2 != null || objAsyncLocals.Item3 != null;
+                }
+                return false;
+            }
+        }
+
+        private LinkedAsyncRWLockHelper GetReadLockHelper(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            LinkedAsyncRWLockHelper objCurrentHelper = _objTopLevelHelper;
+#if ASYNCLOCALWRITEDEBUG
+            Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+#else
+            Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>
+#endif
+                objAsyncLocals =
+                    _objAsyncLocalCurrentsContainer.Value;
+            if (objAsyncLocals != null)
+                objCurrentHelper = objAsyncLocals.Item1;
+            return objCurrentHelper;
+        }
+
+        private Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper,
+                    LinkedAsyncRWLockHelper> GetHelpers(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            LinkedAsyncRWLockHelper objCurrentHelper = _objTopLevelHelper;
+            LinkedAsyncRWLockHelper objTopMostHeldUReader = null;
+            LinkedAsyncRWLockHelper objTopMostHeldWriter = null;
+            LinkedAsyncRWLockHelper objNextHelper;
+#if ASYNCLOCALWRITEDEBUG
+            string strLastWriteStacktrace = string.Empty;
+#endif
+            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
+            int intLoopCount = 0;
+            while (true)
+            {
+                token.ThrowIfCancellationRequested();
+                if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
+                {
+                    // Emergency exit for odd cases where, for some reason, AsyncLocal assignment does not happen (in the right place?) when a locker release is disposed
+                    // Let's just get the first ancestor lock that is not disposed. If this causes problems, it's because of the above-mentioned comment around AsyncLocal assignment
+#if DEBUGBREAKONIMPROPERLOCALUNSET
+                    // If you are breaking here because of a mysterious crash or deadlock you cannot find the source of, check for the following:
+                    // - Synchronous upgradeable read or write locks acquired inside a scope where some locks are acquired asynchronously. These won't always cause issues, but often will. Remember that using a foreach on a locking collection will acquire a lock synchronously (normally a non-upgradeable read lock, upgradeable read lock if already inside an upgradeable read lock or write lock).
+                    // - Disposal/unsetting of a locker (to release a lock) that is not in the same scope where it was set/created. Being forced to dispose lockers in the same scope is not ideal, but necessary to make sure the AsyncLocals that power this entire system update themselves properly.
+                    // - Forgetting to dispose/unset a locker that has been set. If it is an asynchronous locker, it needs to have a try-finally disposal immediately after it is set, even if (and especially if) the next line is cancellation token check, otherwise AsyncLocals won't update themselves properly even after a cancellation.
+                    Utils.BreakIfDebug();
+#elif DEBUG
+                    Log.Warn("Ran into an improperly set AsyncLocal that needs to be reset, location: " + Environment.NewLine + EnhancedStackTrace.Current());
+#endif
+                    while (objCurrentHelper != null && objCurrentHelper.IsDisposed)
+                        objCurrentHelper = objCurrentHelper.ParentLinkedHelper;
+                    // Held helpers need to actually be held at the moment, otherwise we have a problem
+                    while (objTopMostHeldUReader != null && (objTopMostHeldUReader.IsDisposed
+                                                             || objTopMostHeldUReader.ActiveUpgradeableReaderSemaphore
+                                                                 .CurrentCount != 0))
+                        objTopMostHeldUReader = objTopMostHeldUReader.ParentLinkedHelper;
+                    while (objTopMostHeldWriter != null && (objTopMostHeldWriter.IsDisposed
+                                                            || objTopMostHeldWriter.ActiveUpgradeableReaderSemaphore
+                                                                .CurrentCount != 0
+                                                            || objTopMostHeldWriter.ActiveWriterSemaphore
+                                                                .CurrentCount != 0))
+                        objTopMostHeldWriter = objTopMostHeldWriter.ParentLinkedHelper;
+
+#if ASYNCLOCALWRITEDEBUG
+                    string strStackTrace;
+#endif
+                    _objAsyncLocalCurrentsContainer.Value =
+#if ASYNCLOCALWRITEDEBUG
+                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, strStackTrace = EnhancedStackTrace.Current().ToString());
+                    strLastWriteStacktrace = strStackTrace;
+#else
+                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter);
+#endif
+                }
+                else
+                {
+#if ASYNCLOCALWRITEDEBUG
+                    Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+#else
+                    Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>
+#endif
+                        objAsyncLocals = _objAsyncLocalCurrentsContainer.Value;
+                    if (objAsyncLocals != null)
+                    {
+#if ASYNCLOCALWRITEDEBUG
+                        (objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, strLastWriteStacktrace)
+#else
+                        (objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter)
+#endif
+                            = objAsyncLocals;
+                    }
+                    else
+                    {
+                        objCurrentHelper = _objTopLevelHelper;
+                        objTopMostHeldUReader = null;
+                        objTopMostHeldWriter = null;
+                    }
+                }
+
+                if (objCurrentHelper?.IsDisposed != false)
+                    continue;
+                try
+                {
+                    // Setting the helper here makes sure we prevent the current helper from being disposed in-between
+                    objNextHelper = new LinkedAsyncRWLockHelper(objCurrentHelper);
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Current helper got disposed in-between, so swallow this
+                    continue;
+                }
+
+                break;
+            }
+            return new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper,
+                LinkedAsyncRWLockHelper>(objCurrentHelper, objNextHelper, objTopMostHeldUReader,
+                objTopMostHeldWriter);
+        }
 
         /// <summary>
         /// Try to synchronously obtain a lock for writing.
@@ -65,123 +281,77 @@ namespace Chummer
         /// </summary>
         public IDisposable EnterWriteLock(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
-
-            token.ThrowIfCancellationRequested();
-            int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-            {
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-                if (intCountLocalReaders == int.MinValue)
-                    throw new InvalidOperationException(
-                        "Write lock was attempted to be acquired inside a non-upgradeable read lock.");
-            }
-
-            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
-            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
-            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
-            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
-            while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
-                objNextSemaphore = Utils.SemaphorePool.Get();
-            LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
-
-            _objAsyncLocalCurrentsContainer.Value =
-                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
-                    0, objNextLinkedSemaphore, objCurrentLinkedSemaphore);
-            SafeWriterSemaphoreRelease objRelease =
-                new SafeWriterSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
-
-            // While we are attempting to acquire the write lock, act as if all previous upgradeable readers have been turned into writers
-            ChangeNumActiveReaders(-intCountLocalReaders, token: token);
-            try
-            {
-                objCurrentLinkedSemaphore.SafeWaitAll(token, objTopMostHeldWriterSemaphore);
-            }
-            catch
-            {
-                ChangeNumActiveReaders(intCountLocalReaders, false, CancellationToken.None);
-                throw;
-            }
-
-            try
-            {
-                // Wait for existing reader locks to finish and exit
-                // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                while (_intCountActiveHiPrioReaders > 0)
-                    Utils.SafeSleep(token);
-                if (intCountLocalReaders == 0)
-                {
-                    _objReaderSemaphore.SafeWait(token);
-                    _objReaderSemaphore.Release();
-                }
-                else
-                {
-                    // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                    while (_intCountActiveReaders > 0)
-                        Utils.SafeSleep(token);
-#if DEBUG
-                    if (_intCountActiveReaders < 0)
-                        Utils.BreakIfDebug();
+#if READERLOCKSTACKTRACEDEBUG
+            string strReadLockStacktrace = _objIsInReadLockContainer.Value;
+            bool blnIsInReadLock = !string.IsNullOrEmpty(strReadLockStacktrace);
+#else
+            bool blnIsInReadLock = _objIsInReadLockContainer.Value;
 #endif
+            if (blnIsInReadLock)
+                throw new InvalidOperationException(
+                    "Attempted to take a write lock while inside of a non-upgradeable read lock.");
+
+            (LinkedAsyncRWLockHelper objCurrentHelper, LinkedAsyncRWLockHelper objNextHelper,
+                    LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter) =
+                GetHelpers(token: token);
+            try
+            {
+                objCurrentHelper.TakeWriteLock(objTopMostHeldWriter, token);
+                try
+                {
+                    _objAsyncLocalCurrentsContainer.Value =
+#if ASYNCLOCALWRITEDEBUG
+                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                            objNextHelper, objTopMostHeldUReader, objCurrentHelper, EnhancedStackTrace.Current().ToString());
+#else
+                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
+                            objNextHelper, objTopMostHeldUReader, objCurrentHelper);
+#endif
+                    try
+                    {
+                        if (_objParentLock == null)
+                            return new SafeWriterSemaphoreRelease(objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter, this);
+                        IDisposable objParentRelease = _blnLockReadOnlyForParent
+                            ? _objParentLock.EnterReadLock(token)
+                            : _objParentLock.EnterUpgradeableReadLock(token);
+                        try
+                        {
+                            return new SafeWriterSemaphoreRelease(objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter, this,
+                                objParentRelease: objParentRelease);
+                        }
+                        catch
+                        {
+                            objParentRelease.Dispose();
+                            throw;
+                        }
+                    }
+                    catch
+                    {
+                        _objAsyncLocalCurrentsContainer.Value =
+#if ASYNCLOCALWRITEDEBUG
+                            new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                                objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, EnhancedStackTrace.Current().ToString());
+#else
+                            new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
+                                objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter);
+#endif
+                        throw;
+                    }
+                }
+                catch
+                {
+                    objCurrentHelper.ReleaseWriteLock(objTopMostHeldUReader, objTopMostHeldWriter);
+                    throw;
                 }
             }
             catch
             {
-                objRelease.Dispose();
+                objNextHelper.Dispose();
                 throw;
             }
-
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Try to asynchronously obtain a lock for writing.
-        /// The returned SafeSemaphoreWriterRelease must be stored for when the write lock is to be released.
-        /// </summary>
-        public Task<IAsyncDisposable> EnterWriteLockAsync()
-        {
-            if (_intDisposedStatus != 0)
-                return Task.FromException<IAsyncDisposable>(
-                    new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
-            int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-            {
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-                if (intCountLocalReaders == int.MinValue)
-                    return Task.FromException<IAsyncDisposable>(
-                        new InvalidOperationException(
-                            "Write lock was attempted to be acquired inside a non-upgradeable read lock."));
-            }
-
-            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
-            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
-            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
-            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
-            while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
-                objNextSemaphore = Utils.SemaphorePool.Get();
-            LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
-            _objAsyncLocalCurrentsContainer.Value =
-                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
-                    0, objNextLinkedSemaphore, objCurrentLinkedSemaphore);
-            SafeWriterSemaphoreRelease objRelease =
-                new SafeWriterSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
-            return TakeWriteLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease,
-                intCountLocalReaders);
         }
 
         /// <summary>
@@ -189,118 +359,120 @@ namespace Chummer
         /// The returned SafeSemaphoreWriterRelease must be stored for when the write lock is to be released.
         /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
         /// </summary>
-        public Task<IAsyncDisposable> EnterWriteLockAsync(CancellationToken token)
+        public Task<IAsyncDisposable> EnterWriteLockAsync(CancellationToken token = default)
         {
+            // This method is set up to return a Task because we need to make sure to manipulate AsyncLocals before the async engine is initialized
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<IAsyncDisposable>(token);
             if (_intDisposedStatus != 0)
                 return Task.FromException<IAsyncDisposable>(
                     new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
-            if (token.IsCancellationRequested)
-                return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
-            int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
+
+#if READERLOCKSTACKTRACEDEBUG
+            string strReadLockStacktrace = _objIsInReadLockContainer.Value;
+            bool blnIsInReadLock = !string.IsNullOrEmpty(strReadLockStacktrace);
+#else
+            bool blnIsInReadLock = _objIsInReadLockContainer.Value;
+#endif
+            if (blnIsInReadLock)
             {
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-                if (intCountLocalReaders == int.MinValue)
-                    return Task.FromException<IAsyncDisposable>(
-                        new InvalidOperationException(
-                            "Write lock was attempted to be acquired inside a non-upgradeable read lock."));
+                return Task.FromException<IAsyncDisposable>(
+#if READERLOCKSTACKTRACEDEBUG
+                    new InvalidOperationException(
+                        "Attempted to take a write lock while inside of a non-upgradeable read lock. Read lock stacktrace:" +
+                        Environment.NewLine + strReadLockStacktrace));
+#else
+                    new InvalidOperationException(
+                        "Attempted to take a write lock while inside of a non-upgradeable read lock."));
+#endif
             }
 
-            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
-            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
-            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
-            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
-            while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
-                objNextSemaphore = Utils.SemaphorePool.Get();
-            LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
+            LinkedAsyncRWLockHelper objCurrentHelper;
+            LinkedAsyncRWLockHelper objNextHelper;
+            LinkedAsyncRWLockHelper objTopMostHeldUReader;
+            LinkedAsyncRWLockHelper objTopMostHeldWriter;
+            try
+            {
+                (objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter) =
+                    GetHelpers(token);
+            }
+            catch (OperationCanceledException e)
+            {
+                return Task.FromCanceled<IAsyncDisposable>(e.CancellationToken);
+            }
+            catch (Exception e)
+            {
+                Utils.BreakIfDebug();
+                return Task.FromException<IAsyncDisposable>(e);
+            }
+
             _objAsyncLocalCurrentsContainer.Value =
-                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
-                    0, objNextLinkedSemaphore, objCurrentLinkedSemaphore);
-            SafeWriterSemaphoreRelease objRelease =
-                new SafeWriterSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
-            return TakeWriteLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease,
-                intCountLocalReaders, token);
-        }
-
-        private async Task<IAsyncDisposable> TakeWriteLockCoreAsync(LinkedSemaphoreSlim objCurrentSemaphore,
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore, SafeWriterSemaphoreRelease objRelease,
-            int intCountLocalReaders)
-        {
-            try
-            {
-                // While we are attempting to acquire the write lock, act as if all previous upgradeable readers have been turned into writers
-                await ChangeNumActiveReadersAsync(-intCountLocalReaders, false).ConfigureAwait(false);
-                await objCurrentSemaphore.WaitAllAsync(objTopMostHeldWriterSemaphore).ConfigureAwait(false);
-                // Wait for existing reader locks to finish and exit
-                // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                while (_intCountActiveHiPrioReaders > 0)
-                    await Utils.SafeSleepAsync().ConfigureAwait(false);
-                if (intCountLocalReaders == 0)
-                {
-                    await _objReaderSemaphore.WaitAsync().ConfigureAwait(false);
-                    _objReaderSemaphore.Release();
-                }
-                else
-                {
-                    // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                    while (_intCountActiveReaders > 0)
-                        await Utils.SafeSleepAsync().ConfigureAwait(false);
-#if DEBUG
-                    if (_intCountActiveReaders < 0)
-                        Utils.BreakIfDebug();
+#if ASYNCLOCALWRITEDEBUG
+                new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                    objNextHelper, objTopMostHeldUReader, objCurrentHelper, EnhancedStackTrace.Current().ToString());
+#else
+                new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
+                    objNextHelper, objTopMostHeldUReader, objCurrentHelper);
 #endif
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this because it must be handled as a disposal in the original ExecutionContext
-            }
 
-            return objRelease;
-        }
-
-        private async Task<IAsyncDisposable> TakeWriteLockCoreAsync(LinkedSemaphoreSlim objCurrentSemaphore,
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore, SafeWriterSemaphoreRelease objRelease,
-            int intCountLocalReaders, CancellationToken token)
-        {
-            try
+            if (_objParentLock != null)
             {
-                // While we are attempting to acquire the write lock, act as if all previous upgradeable readers have been turned into writers
-                await ChangeNumActiveReadersAsync(-intCountLocalReaders, false, token).ConfigureAwait(false);
-                await objCurrentSemaphore.WaitAllAsync(token, objTopMostHeldWriterSemaphore).ConfigureAwait(false);
-                // Wait for existing reader locks to finish and exit
-                // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                while (_intCountActiveHiPrioReaders > 0)
-                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-                if (intCountLocalReaders == 0)
+                // Needs to be like this (using async inner function) to make sure AsyncLocals for parents are set in proper location
+                Task<IAsyncDisposable> tskParent = _blnLockReadOnlyForParent
+                    ? _objParentLock.EnterReadLockAsync(token)
+                    : _objParentLock.EnterUpgradeableReadLockAsync(token);
+                return InnerAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter,
+                    tskParent, token);
+                async Task<IAsyncDisposable> InnerAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
+                    LinkedAsyncRWLockHelper objInnerNextHelper,
+                    LinkedAsyncRWLockHelper objInnerTopMostHeldUReader,
+                    LinkedAsyncRWLockHelper objInnerTopMostHeldWriter,
+                    Task<IAsyncDisposable> tskInnerParent,
+                    CancellationToken innerToken = default)
                 {
-                    await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
-                    _objReaderSemaphore.Release();
-                }
-                else
-                {
-                    // It's OK that this isn't (inter)locked because we should already handle race condition issues by having acquired the writer lock
-                    while (_intCountActiveReaders > 0)
-                        await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objParentRelease = null;
+                    try
+                    {
+                        objParentRelease = await tskInnerParent.ConfigureAwait(false);
+                    }
 #if DEBUG
-                    if (_intCountActiveReaders < 0)
-                        Utils.BreakIfDebug();
+                    catch (Exception e)
+#else
+                    catch
 #endif
+                    {
+                        // swallow all exceptions because we need to be able to properly unset AsyncLocals when we release
+                        Utils.BreakIfDebug();
+                    }
+                    return await TakeWriteLockCoreAsync(
+                        objInnerCurrentHelper, objInnerNextHelper, objInnerTopMostHeldUReader,
+                        objInnerTopMostHeldWriter, objParentRelease, innerToken).ConfigureAwait(false);
                 }
             }
-            catch (OperationCanceledException)
-            {
-                //swallow this because it must be handled as a disposal in the original ExecutionContext
-            }
 
-            return objRelease;
+            return TakeWriteLockCoreAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter,
+                innerToken: token);
+
+            async Task<IAsyncDisposable> TakeWriteLockCoreAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
+                LinkedAsyncRWLockHelper objInnerNextHelper,
+                LinkedAsyncRWLockHelper objInnerTopMostHeldUReader, LinkedAsyncRWLockHelper objInnerTopMostHeldWriter,
+                IAsyncDisposable objParentReleaseAsync = null, CancellationToken innerToken = default)
+            {
+                try
+                {
+                    await objInnerCurrentHelper.TakeWriteLockAsync(objInnerTopMostHeldWriter, innerToken)
+                        .ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this because unsetting the AsyncLocal must be handled as a disposal in the original ExecutionContext
+                    return new SafeWriterSemaphoreRelease(objInnerNextHelper, objInnerTopMostHeldUReader,
+                        objInnerTopMostHeldWriter, this, true, objParentReleaseAsync: objParentReleaseAsync);
+                }
+
+                return new SafeWriterSemaphoreRelease(objInnerNextHelper, objInnerTopMostHeldUReader,
+                    objInnerTopMostHeldWriter, this, objParentReleaseAsync: objParentReleaseAsync);
+            }
         }
 
         /// <summary>
@@ -308,220 +480,197 @@ namespace Chummer
         /// </summary>
         public IDisposable EnterUpgradeableReadLock(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intDisposedStatus != 0)
-            {
-#if DEBUG
-                Debug.WriteLine(
-                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
+#if READERLOCKSTACKTRACEDEBUG
+            string strReadLockStacktrace = _objIsInReadLockContainer.Value;
+            bool blnIsInReadLock = !string.IsNullOrEmpty(strReadLockStacktrace);
+#else
+            bool blnIsInReadLock = _objIsInReadLockContainer.Value;
 #endif
-                return null;
-            }
+            if (blnIsInReadLock)
+                throw new InvalidOperationException(
+                    "Attempted to take an upgradeable read lock while inside of a non-upgradeable read lock.");
 
-            token.ThrowIfCancellationRequested();
-            int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-            {
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-                if (intCountLocalReaders == int.MinValue)
-                    throw new InvalidOperationException(
-                        "Upgradeable read lock was attempted to be acquired inside a non-upgradeable read lock.");
-            }
+            (LinkedAsyncRWLockHelper objCurrentHelper, LinkedAsyncRWLockHelper objNextHelper,
+                    LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter) =
+                GetHelpers(token: token);
 
-            token.ThrowIfCancellationRequested();
-            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
-            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
-            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
-            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
-            while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
-                objNextSemaphore = Utils.SemaphorePool.Get();
-            LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
-            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            if (_objTopLevelWriterSemaphore.MySemaphore.CurrentCount == 0)
-            {
-                ChangeNumActiveReaders(1, token: token);
-                _objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(intCountLocalReaders + 1,
-                        objNextLinkedSemaphore, objTopMostHeldWriterSemaphore);
-                return new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
-            }
-
-            // Temporarily acquiring a write lock just to mess with the read locks is a bottleneck, so don't do any such setting unless we need it
-            objCurrentLinkedSemaphore.SafeWaitAll(token, objTopMostHeldWriterSemaphore);
             try
             {
-                ChangeNumActiveReaders(1, token: token);
-                _objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(intCountLocalReaders + 1,
-                        objNextLinkedSemaphore, objTopMostHeldWriterSemaphore);
-            }
-            finally
-            {
-                objCurrentLinkedSemaphore.ReleaseAll(objTopMostHeldWriterSemaphore);
-            }
-
-            return new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                objTopMostHeldWriterSemaphore, this);
-        }
-
-        /// <summary>
-        /// Try to asynchronously obtain a lock for reading (that can be upgraded to a write lock) and return a disposable that exits the read lock when disposed.
-        /// </summary>
-        public Task<IDisposable> EnterUpgradeableReadLockAsync()
-        {
-            if (_intDisposedStatus != 0)
-            {
-#if DEBUG
-                Debug.WriteLine(
-                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                objCurrentHelper.TakeUpgradeableReadLock(token);
+                try
+                {
+                    _objAsyncLocalCurrentsContainer.Value =
+#if ASYNCLOCALWRITEDEBUG
+                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                            objNextHelper, objCurrentHelper, objTopMostHeldWriter, EnhancedStackTrace.Current().ToString());
+#else
+                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
+                            objNextHelper, objCurrentHelper, objTopMostHeldWriter);
 #endif
-                return Task.FromResult<IDisposable>(null);
+                    try
+                    {
+                        if (_objParentLock == null)
+                            return new SafeUpgradeableReaderSemaphoreRelease(objNextHelper, objTopMostHeldUReader,
+                                objTopMostHeldWriter, this);
+                        IDisposable objParentRelease = _blnLockReadOnlyForParent
+                            ? _objParentLock.EnterReadLock(token)
+                            : _objParentLock.EnterUpgradeableReadLock(token);
+                        try
+                        {
+                            return new SafeUpgradeableReaderSemaphoreRelease(objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter,
+                                this, objParentRelease: objParentRelease);
+                        }
+                        catch
+                        {
+                            objParentRelease.Dispose();
+                            throw;
+                        }
+                    }
+                    catch
+                    {
+                        _objAsyncLocalCurrentsContainer.Value =
+#if ASYNCLOCALWRITEDEBUG
+                            new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                                objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, EnhancedStackTrace.Current().ToString());
+#else
+                            new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
+                                objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter);
+#endif
+                        throw;
+                    }
+                }
+                catch
+                {
+                    objCurrentHelper.ReleaseUpgradeableReadLock();
+                    throw;
+                }
             }
-
-            // Because of shenanigens around AsyncLocal, we need to set the local readers count in this method instead of any of the async ones
-            int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
+            catch
             {
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-                if (intCountLocalReaders == int.MinValue)
-                    return Task.FromException<IDisposable>(
-                        new InvalidOperationException(
-                            "Upgradeable read lock was attempted to be acquired inside a non-upgradeable read lock."));
+                objNextHelper.Dispose();
+                throw;
             }
-
-            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
-            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
-            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
-            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
-            while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
-                objNextSemaphore = Utils.SemaphorePool.Get();
-            LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
-            _objAsyncLocalCurrentsContainer.Value =
-                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(intCountLocalReaders + 1,
-                    objNextLinkedSemaphore, objTopMostHeldWriterSemaphore);
-            SafeUpgradeableReaderSemaphoreRelease objRelease =
-                new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
-            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            return _objTopLevelWriterSemaphore.MySemaphore.CurrentCount == 0
-                ? TakeUpgradeableReadLockCoreLightAsync(objRelease)
-                : TakeUpgradeableReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore,
-                    objRelease);
         }
 
         /// <summary>
         /// Try to asynchronously obtain a lock for reading (that can be upgraded to a write lock) and return a disposable that exits the read lock when disposed.
         /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
         /// </summary>
-        public Task<IDisposable> EnterUpgradeableReadLockAsync(CancellationToken token)
+        public Task<IAsyncDisposable> EnterUpgradeableReadLockAsync(CancellationToken token = default)
         {
-            if (_intDisposedStatus != 0)
-            {
-#if DEBUG
-                Debug.WriteLine(
-                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
-#endif
-                return Task.FromResult<IDisposable>(null);
-            }
-
             if (token.IsCancellationRequested)
-                return Task.FromException<IDisposable>(new OperationCanceledException(token));
-            // Because of shenanigens around AsyncLocal, we need to set the local readers count in this method instead of any of the async ones
-            // To undo this change in case the request is canceled, we will register a callback that will only be disposed at the end of the async methods
-            int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
+                return Task.FromCanceled<IAsyncDisposable>(token);
+            if (_intDisposedStatus != 0)
+                return Task.FromException<IAsyncDisposable>(
+                    new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
+
+#if READERLOCKSTACKTRACEDEBUG
+            string strReadLockStacktrace = _objIsInReadLockContainer.Value;
+            bool blnIsInReadLock = !string.IsNullOrEmpty(strReadLockStacktrace);
+#else
+            bool blnIsInReadLock = _objIsInReadLockContainer.Value;
+#endif
+            if (blnIsInReadLock)
             {
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-                if (intCountLocalReaders == int.MinValue)
-                    return Task.FromException<IDisposable>(
-                        new InvalidOperationException(
-                            "Upgradeable read lock was attempted to be acquired inside a non-upgradeable read lock."));
+                return Task.FromException<IAsyncDisposable>(
+#if READERLOCKSTACKTRACEDEBUG
+                    new InvalidOperationException(
+                        "Attempted to take an upgradeable read lock while inside of a non-upgradeable read lock. Read lock stacktrace:" +
+                        Environment.NewLine + strReadLockStacktrace));
+#else
+                    new InvalidOperationException(
+                        "Attempted to take an upgradeable read lock while inside of a non-upgradeable read lock."));
+#endif
             }
 
-            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
-            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
-            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
-            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
-            while (objNextSemaphore == objCurrentLinkedSemaphore.MySemaphore ||
-                   objNextSemaphore == objCurrentLinkedSemaphore.ParentLinkedSemaphore?.MySemaphore)
-                objNextSemaphore = Utils.SemaphorePool.Get();
-            LinkedSemaphoreSlim objNextLinkedSemaphore = new LinkedSemaphoreSlim(objCurrentLinkedSemaphore, objNextSemaphore, true);
-            _objAsyncLocalCurrentsContainer.Value =
-                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(intCountLocalReaders + 1,
-                    objNextLinkedSemaphore, objTopMostHeldWriterSemaphore);
-            SafeUpgradeableReaderSemaphoreRelease objRelease =
-                new SafeUpgradeableReaderSemaphoreRelease(intCountLocalReaders, objNextLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
-            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            return _objTopLevelWriterSemaphore.MySemaphore.CurrentCount == 0
-                ? TakeUpgradeableReadLockCoreLightAsync(objRelease, token)
-                : TakeUpgradeableReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease,
-                    token);
-        }
-
-        /// <summary>
-        /// Heavier read lock entrant, used if a write lock is already being held somewhere
-        /// </summary>
-        private async Task<IDisposable> TakeUpgradeableReadLockCoreAsync(LinkedSemaphoreSlim objCurrentSemaphore,
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore, SafeUpgradeableReaderSemaphoreRelease objRelease,
-            CancellationToken token = default)
-        {
+            LinkedAsyncRWLockHelper objCurrentHelper;
+            LinkedAsyncRWLockHelper objNextHelper;
+            LinkedAsyncRWLockHelper objTopMostHeldUReader;
+            LinkedAsyncRWLockHelper objTopMostHeldWriter;
             try
             {
-                await objCurrentSemaphore.WaitAllAsync(token, objTopMostHeldWriterSemaphore).ConfigureAwait(false);
+                (objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter) =
+                    GetHelpers(token);
+            }
+            catch (OperationCanceledException e)
+            {
+                return Task.FromCanceled<IAsyncDisposable>(e.CancellationToken);
+            }
+            catch (Exception e)
+            {
+                Utils.BreakIfDebug();
+                return Task.FromException<IAsyncDisposable>(e);
+            }
+
+            _objAsyncLocalCurrentsContainer.Value =
+#if ASYNCLOCALWRITEDEBUG
+                new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                    objNextHelper, objCurrentHelper, objTopMostHeldWriter, EnhancedStackTrace.Current().ToString());
+#else
+                new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
+                    objNextHelper, objCurrentHelper, objTopMostHeldWriter);
+#endif
+
+            if (_objParentLock != null)
+            {
+                // Needs to be like this (using async inner function) to make sure AsyncLocals for parents are set in proper location
+                Task<IAsyncDisposable> tskParent = _blnLockReadOnlyForParent
+                    ? _objParentLock.EnterReadLockAsync(token)
+                    : _objParentLock.EnterUpgradeableReadLockAsync(token);
+                return InnerAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter,
+                    tskParent, token);
+                async Task<IAsyncDisposable> InnerAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
+                    LinkedAsyncRWLockHelper objInnerNextHelper,
+                    LinkedAsyncRWLockHelper objInnerTopMostHeldUReader,
+                    LinkedAsyncRWLockHelper objInnerTopMostHeldWriter,
+                    Task<IAsyncDisposable> tskInnerParent,
+                    CancellationToken innerToken = default)
+                {
+                    IAsyncDisposable objParentRelease = null;
+                    try
+                    {
+                        objParentRelease = await tskInnerParent.ConfigureAwait(false);
+                    }
+#if DEBUG
+                    catch (Exception e)
+#else
+                    catch
+#endif
+                    {
+                        // swallow all exceptions because we need to be able to properly unset AsyncLocals when we release
+                        Utils.BreakIfDebug();
+                    }
+                    return await TakeUpgradeableReadLockCoreAsync(
+                        objInnerCurrentHelper, objInnerNextHelper, objInnerTopMostHeldUReader,
+                        objInnerTopMostHeldWriter, objParentRelease, innerToken).ConfigureAwait(false);
+                }
+            }
+
+            return TakeUpgradeableReadLockCoreAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader,
+                objTopMostHeldWriter, innerToken: token);
+
+            async Task<IAsyncDisposable> TakeUpgradeableReadLockCoreAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
+                LinkedAsyncRWLockHelper objInnerNextHelper,
+                LinkedAsyncRWLockHelper objInnerTopMostHeldUReader, LinkedAsyncRWLockHelper objInnerTopMostHeldWriter,
+                IAsyncDisposable objParentReleaseAsync = null, CancellationToken innerToken = default)
+            {
                 try
                 {
-                    await ChangeNumActiveReadersAsync(1, false, token).ConfigureAwait(false);
+                    await objInnerCurrentHelper.TakeUpgradeableReadLockAsync(innerToken).ConfigureAwait(false);
                 }
-                finally
+                catch (OperationCanceledException)
                 {
-                    objCurrentSemaphore.ReleaseAll(objTopMostHeldWriterSemaphore);
+                    //swallow this because unsetting the AsyncLocal must be handled as a disposal in the original ExecutionContext
+                    return new SafeUpgradeableReaderSemaphoreRelease(objInnerNextHelper, objInnerTopMostHeldUReader,
+                        objInnerTopMostHeldWriter, this, true, objParentReleaseAsync: objParentReleaseAsync);
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this because it must be handled as a disposal in the original ExecutionContext
-            }
 
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Lighter read lock entrant, used if no write locks are being held and we just want to worry about the read lock
-        /// </summary>
-        private async Task<IDisposable> TakeUpgradeableReadLockCoreLightAsync(
-            SafeUpgradeableReaderSemaphoreRelease objRelease, CancellationToken token = default)
-        {
-            try
-            {
-                await ChangeNumActiveReadersAsync(1, false, token).ConfigureAwait(false);
+                return new SafeUpgradeableReaderSemaphoreRelease(objInnerNextHelper, objInnerTopMostHeldUReader,
+                    objInnerTopMostHeldWriter, this, objParentReleaseAsync: objParentReleaseAsync);
             }
-            catch (OperationCanceledException)
-            {
-                //swallow this because it must be handled as a disposal in the original ExecutionContext
-            }
-
-            return objRelease;
         }
 
         /// <summary>
@@ -529,602 +678,281 @@ namespace Chummer
         /// </summary>
         public IDisposable EnterReadLock(CancellationToken token = default)
         {
-            if (_intDisposedStatus != 0)
-            {
-#if DEBUG
-                Debug.WriteLine(
-                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
-#endif
-                return null;
-            }
-
-            token.ThrowIfCancellationRequested();
-            if (_intCountActiveHiPrioReaders > 0 && _objTopLevelWriterSemaphore.MySemaphore.CurrentCount == 0)
-            {
-                ChangeNumActiveReaders(1, token: token);
-                return new SafeFastReaderSemaphoreRelease(this);
-            }
-
-            int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-
-            // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
-            if (_objTopLevelWriterSemaphore.MySemaphore.CurrentCount != 0 || intCountLocalReaders == int.MinValue)
-            {
-                ChangeNumActiveReaders(1, token: token);
-                _objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
-                        objCurrentLinkedSemaphore,
-                        objTopMostHeldWriterSemaphore);
-                return new SafeReaderSemaphoreRelease(intCountLocalReaders, objCurrentLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
-            }
-
-            token.ThrowIfCancellationRequested();
-
-            // Temporarily acquiring a write lock just to mess with the read locks is a bottleneck, so don't do any such setting unless we need it
-            objCurrentLinkedSemaphore.SafeWaitAll(token, objTopMostHeldWriterSemaphore);
-            try
-            {
-                ChangeNumActiveReaders(1, token: token);
-                _objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
-                        objCurrentLinkedSemaphore,
-                        objTopMostHeldWriterSemaphore);
-                return new SafeReaderSemaphoreRelease(intCountLocalReaders, objCurrentLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
-            }
-            finally
-            {
-                objCurrentLinkedSemaphore.ReleaseAll(objTopMostHeldWriterSemaphore);
-            }
+            return EnterReadLock(false, token);
         }
 
         /// <summary>
-        /// Try to asynchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
+        /// Try to synchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
+        /// This version will set the lock's parent to an upgradeable read lock instead of a non-upgradeable one
         /// </summary>
-        public Task<IDisposable> EnterReadLockAsync()
+        public IDisposable EnterReadLockWithUpgradeableParent(CancellationToken token = default)
+        {
+            return EnterReadLock(true, token);
+        }
+
+        /// <summary>
+        /// Try to synchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
+        /// This version will set the lock's parent to an upgradeable read lock instead of a non-upgradeable one if the lock's parent is in a write lock or potential write lock.
+        /// </summary>
+        public IDisposable EnterReadLockWithMatchingParentLock(CancellationToken token = default)
+        {
+            return EnterReadLock(_objParentLock?.IsInPotentialWriteLock == true, token);
+        }
+
+        private IDisposable EnterReadLock(bool blnParentLockIsUpgradeable, CancellationToken token = default)
         {
             if (_intDisposedStatus != 0)
             {
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
-                return Task.FromResult<IDisposable>(null);
+                return new DisposedReaderDummySemaphoreRelease(this);
             }
 
-            if (_intCountActiveHiPrioReaders > 0 && _objTopLevelWriterSemaphore.MySemaphore.CurrentCount == 0)
+            token.ThrowIfCancellationRequested();
+
+#if READERLOCKSTACKTRACEDEBUG
+            string strReadLockStacktrace = _objIsInReadLockContainer.Value;
+            bool blnIsInReadLock = !string.IsNullOrEmpty(strReadLockStacktrace);
+#else
+            bool blnIsInReadLock = _objIsInReadLockContainer.Value;
+#endif
+
+            LinkedAsyncRWLockHelper objCurrentHelper = GetReadLockHelper(token);
+
+            if (objCurrentHelper.IsDisposed)
             {
-                return TakeFastReadLockCoreLightAsync(new SafeFastReaderSemaphoreRelease(this));
+#if DEBUG
+                Debug.WriteLine(
+                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
+#endif
+
+                if (!blnIsInReadLock)
+                {
+#if READERLOCKSTACKTRACEDEBUG
+                    _objIsInReadLockContainer.Value = EnhancedStackTrace.Current().ToString();
+#else
+                    _objIsInReadLockContainer.Value = true;
+#endif
+                }
+
+                try
+                {
+                    if (_objParentLock == null)
+                        return new SafeReaderSemaphoreRelease(objCurrentHelper, blnIsInReadLock, this, true);
+                    IDisposable objParentRelease2 = !_blnLockReadOnlyForParent && blnParentLockIsUpgradeable
+                        ? _objParentLock.EnterUpgradeableReadLock(token)
+                        : _objParentLock.EnterReadLock(token);
+                    try
+                    {
+                        return new SafeReaderSemaphoreRelease(objCurrentHelper, blnIsInReadLock, this, objCurrentHelper.IsDisposed, objParentRelease2);
+                    }
+                    catch
+                    {
+                        objParentRelease2.Dispose();
+                        throw;
+                    }
+                }
+                catch
+                {
+                    if (!blnIsInReadLock)
+                    {
+#if READERLOCKSTACKTRACEDEBUG
+                        _objIsInReadLockContainer.Value = string.Empty;
+#else
+                        _objIsInReadLockContainer.Value = false;
+#endif
+                    }
+                    throw;
+                }
             }
 
-            int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-            _objAsyncLocalCurrentsContainer.Value =
-                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
-                    objCurrentLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore);
-            SafeReaderSemaphoreRelease objRelease = new SafeReaderSemaphoreRelease(intCountLocalReaders,
-                objCurrentLinkedSemaphore,
-                objTopMostHeldWriterSemaphore, this);
-            return _objTopLevelWriterSemaphore.MySemaphore.CurrentCount != 0 || intCountLocalReaders == int.MinValue
-                ? TakeReadLockCoreLightAsync(objRelease)
-                : TakeReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease);
+            objCurrentHelper.TakeReadLock(blnIsInReadLock, token);
+
+            try
+            {
+                if (!blnIsInReadLock)
+                {
+#if READERLOCKSTACKTRACEDEBUG
+                    _objIsInReadLockContainer.Value = EnhancedStackTrace.Current().ToString();
+#else
+                    _objIsInReadLockContainer.Value = true;
+#endif
+                }
+
+                try
+                {
+                    if (_objParentLock == null)
+                        return new SafeReaderSemaphoreRelease(objCurrentHelper, blnIsInReadLock, this, objCurrentHelper.IsDisposed);
+                    IDisposable objParentRelease = !_blnLockReadOnlyForParent && blnParentLockIsUpgradeable
+                        ? _objParentLock.EnterUpgradeableReadLock(token)
+                        : _objParentLock.EnterReadLock(token);
+                    try
+                    {
+                        return new SafeReaderSemaphoreRelease(objCurrentHelper, blnIsInReadLock, this, objCurrentHelper.IsDisposed, objParentRelease);
+                    }
+                    catch
+                    {
+                        objParentRelease.Dispose();
+                        throw;
+                    }
+                }
+                catch
+                {
+                    if (!blnIsInReadLock)
+                    {
+#if READERLOCKSTACKTRACEDEBUG
+                        _objIsInReadLockContainer.Value = string.Empty;
+#else
+                        _objIsInReadLockContainer.Value = false;
+#endif
+                    }
+                    throw;
+                }
+            }
+            catch
+            {
+                objCurrentHelper.ReleaseReadLock();
+                throw;
+            }
         }
 
         /// <summary>
         /// Try to asynchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
         /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
         /// </summary>
-        public Task<IDisposable> EnterReadLockAsync(CancellationToken token)
+        public Task<IAsyncDisposable> EnterReadLockAsync(CancellationToken token = default)
         {
-            if (_intDisposedStatus != 0)
-            {
-#if DEBUG
-                Debug.WriteLine(
-                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
-#endif
-                return Task.FromResult<IDisposable>(null);
-            }
-
-            if (token.IsCancellationRequested)
-                return Task.FromException<IDisposable>(new OperationCanceledException(token));
-            if (_intCountActiveHiPrioReaders > 0)
-            {
-                return TakeFastReadLockCoreLightAsync(new SafeFastReaderSemaphoreRelease(this), token);
-            }
-
-            int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-            _objAsyncLocalCurrentsContainer.Value =
-                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
-                    objCurrentLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore);
-            SafeReaderSemaphoreRelease objRelease = new SafeReaderSemaphoreRelease(intCountLocalReaders,
-                objCurrentLinkedSemaphore,
-                objTopMostHeldWriterSemaphore, this);
-            return _objTopLevelWriterSemaphore.MySemaphore.CurrentCount != 0 || intCountLocalReaders == int.MinValue
-                ? TakeReadLockCoreLightAsync(objRelease, token)
-                : TakeReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease, token);
+            return EnterReadLockAsync(false, token);
         }
 
         /// <summary>
-        /// Heavier read lock entrant, used if a write lock is already being held somewhere
-        /// </summary>
-        private async Task<IDisposable> TakeReadLockCoreAsync(LinkedSemaphoreSlim objCurrentLinkedSemaphore,
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore, SafeReaderSemaphoreRelease objRelease)
-        {
-            await objCurrentLinkedSemaphore.WaitAllAsync(objTopMostHeldWriterSemaphore).ConfigureAwait(false);
-            try
-            {
-                await ChangeNumActiveReadersAsync(1).ConfigureAwait(false);
-            }
-            finally
-            {
-                objCurrentLinkedSemaphore.ReleaseAll(objTopMostHeldWriterSemaphore);
-            }
-
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Heavier read lock entrant, used if a write lock is already being held somewhere
-        /// </summary>
-        private async Task<IDisposable> TakeReadLockCoreAsync(LinkedSemaphoreSlim objCurrentLinkedSemaphore,
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore, SafeReaderSemaphoreRelease objRelease,
-            CancellationToken token)
-        {
-            try
-            {
-                await objCurrentLinkedSemaphore.WaitAllAsync(token, objTopMostHeldWriterSemaphore)
-                    .ConfigureAwait(false);
-                try
-                {
-                    await ChangeNumActiveReadersAsync(1, false, token: token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    objCurrentLinkedSemaphore.ReleaseAll(objTopMostHeldWriterSemaphore);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this because it must be handled as a disposal in the original ExecutionContext
-            }
-
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Lighter read lock entrant, used if no write locks are being held and we just want to worry about the read lock
-        /// </summary>
-        private async Task<IDisposable> TakeReadLockCoreLightAsync(SafeReaderSemaphoreRelease objRelease)
-        {
-            await ChangeNumActiveReadersAsync(1).ConfigureAwait(false);
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Lighter read lock entrant, used if no write locks are being held and we just want to worry about the read lock
-        /// </summary>
-        private async Task<IDisposable> TakeReadLockCoreLightAsync(SafeReaderSemaphoreRelease objRelease,
-            CancellationToken token)
-        {
-            try
-            {
-                await ChangeNumActiveReadersAsync(1, false, token).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this because it must be handled as a disposal in the original ExecutionContext
-            }
-
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Even lighter read lock entrant, used if we have already obtained at least one high-priority lock, allowing us to not interact with AsyncLocals at all
-        /// </summary>
-        private async Task<IDisposable> TakeFastReadLockCoreLightAsync(SafeFastReaderSemaphoreRelease objRelease)
-        {
-            await ChangeNumActiveReadersAsync(1).ConfigureAwait(false);
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Even lighter read lock entrant, used if we have already obtained at least one high-priority lock, allowing us to not interact with AsyncLocals at all
-        /// </summary>
-        private async Task<IDisposable> TakeFastReadLockCoreLightAsync(SafeFastReaderSemaphoreRelease objRelease,
-            CancellationToken token)
-        {
-            try
-            {
-                await ChangeNumActiveReadersAsync(1, false, token).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this because it must be handled as a disposal in the original ExecutionContext
-            }
-
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Try to synchronously obtain a high-priority lock for reading and only reading and return a disposable that exits the read lock when disposed.
-        /// Useful if we know we are going to try to acquire a read lock a whole bunch of times and don't want to deal with AsyncLocal's overhead each time.
-        /// </summary>
-        public IDisposable EnterHiPrioReadLock(CancellationToken token = default)
-        {
-            if (_intDisposedStatus != 0)
-            {
-#if DEBUG
-                Debug.WriteLine(
-                    "Entering a high-priority read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
-#endif
-                return null;
-            }
-
-            token.ThrowIfCancellationRequested();
-
-            int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-
-            token.ThrowIfCancellationRequested();
-
-            // Because we are a high-priority reader, we *must* temporarily acquire a write lock
-            objCurrentLinkedSemaphore.SafeWaitAll(token, objTopMostHeldWriterSemaphore);
-            try
-            {
-                ChangeNumActiveHiPrioReaders(1);
-                _objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
-                        objCurrentLinkedSemaphore,
-                        objTopMostHeldWriterSemaphore);
-                return new SafeHiPrioReaderSemaphoreRelease(intCountLocalReaders, objCurrentLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore, this);
-            }
-            finally
-            {
-                objCurrentLinkedSemaphore.ReleaseAll(objTopMostHeldWriterSemaphore);
-            }
-        }
-
-        /// <summary>
-        /// Try to asynchronously obtain a high-priority lock for reading and only reading and return a disposable that exits the read lock when disposed.
-        /// Useful if we know we are going to try to acquire a read lock a whole bunch of times and don't want to deal with AsyncLocal's overhead each time.
-        /// </summary>
-        public Task<IAsyncDisposable> EnterHiPrioReadLockAsync()
-        {
-            if (_intDisposedStatus != 0)
-            {
-#if DEBUG
-                Debug.WriteLine(
-                    "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
-#endif
-                return Task.FromResult<IAsyncDisposable>(null);
-            }
-
-            int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-            _objAsyncLocalCurrentsContainer.Value =
-                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
-                    objCurrentLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore);
-            SafeHiPrioReaderSemaphoreRelease objRelease = new SafeHiPrioReaderSemaphoreRelease(intCountLocalReaders,
-                objCurrentLinkedSemaphore,
-                objTopMostHeldWriterSemaphore, this);
-            return TakeHiPrioReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease);
-        }
-
-        /// <summary>
-        /// Try to asynchronously obtain a high-priority lock for reading and only reading and return a disposable that exits the read lock when disposed.
-        /// Useful if we know we are going to try to acquire a read lock a whole bunch of times and don't want to deal with AsyncLocal's overhead each time.
+        /// Try to asynchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
         /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
+        /// This version will set the lock's parent to an upgradeable read lock instead of a non-upgradeable one
         /// </summary>
-        public Task<IAsyncDisposable> EnterHiPrioReadLockAsync(CancellationToken token)
+        public Task<IAsyncDisposable> EnterReadLockWithUpgradeableParentAsync(CancellationToken token = default)
+        {
+            return EnterReadLockAsync(true, token);
+        }
+
+        /// <summary>
+        /// Try to asynchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
+        /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
+        /// This version will set the lock's parent to an upgradeable read lock instead of a non-upgradeable one if the lock's parent is in a write lock or potential write lock.
+        /// </summary>
+        public Task<IAsyncDisposable> EnterReadLockWithMatchingParentLockAsync(CancellationToken token = default)
+        {
+            return EnterReadLockAsync(_objParentLock?.IsInPotentialWriteLock == true, token);
+        }
+
+        private Task<IAsyncDisposable> EnterReadLockAsync(bool blnParentLockIsUpgradeable, CancellationToken token = default)
         {
             if (_intDisposedStatus != 0)
             {
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
-                return Task.FromResult<IAsyncDisposable>(null);
+                return Task.FromResult<IAsyncDisposable>(new DisposedReaderDummySemaphoreRelease(this));
             }
 
             if (token.IsCancellationRequested)
-                return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
+                return Task.FromCanceled<IAsyncDisposable>(token);
 
-            int intCountLocalReaders = 0;
-            LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objTopLevelWriterSemaphore;
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore = null;
-            Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim> objAsyncLocals =
-                _objAsyncLocalCurrentsContainer.Value;
-            if (objAsyncLocals != null)
-                (intCountLocalReaders, objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore) = objAsyncLocals;
-            _objAsyncLocalCurrentsContainer.Value =
-                new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(int.MinValue,
-                    objCurrentLinkedSemaphore,
-                    objTopMostHeldWriterSemaphore);
-            SafeHiPrioReaderSemaphoreRelease objRelease = new SafeHiPrioReaderSemaphoreRelease(intCountLocalReaders,
-                objCurrentLinkedSemaphore,
-                objTopMostHeldWriterSemaphore, this);
-            return TakeHiPrioReadLockCoreAsync(objCurrentLinkedSemaphore, objTopMostHeldWriterSemaphore, objRelease, token);
-        }
+#if READERLOCKSTACKTRACEDEBUG
+            string strReadLockStacktrace = _objIsInReadLockContainer.Value;
+            bool blnIsInReadLock = !string.IsNullOrEmpty(strReadLockStacktrace);
+#else
+            bool blnIsInReadLock = _objIsInReadLockContainer.Value;
+#endif
 
-        /// <summary>
-        /// Heavier read lock entrant, used if a write lock is already being held somewhere
-        /// </summary>
-        private async Task<IAsyncDisposable> TakeHiPrioReadLockCoreAsync(LinkedSemaphoreSlim objCurrentLinkedSemaphore,
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore, SafeHiPrioReaderSemaphoreRelease objRelease)
-        {
-            await objCurrentLinkedSemaphore.WaitAllAsync(objTopMostHeldWriterSemaphore).ConfigureAwait(false);
+            LinkedAsyncRWLockHelper objCurrentHelper;
             try
             {
-                ChangeNumActiveHiPrioReaders(1);
+                objCurrentHelper = GetReadLockHelper(token);
             }
-            finally
+            catch (OperationCanceledException e)
             {
-                objCurrentLinkedSemaphore.ReleaseAll(objTopMostHeldWriterSemaphore);
+                return Task.FromCanceled<IAsyncDisposable>(e.CancellationToken);
+            }
+            catch (Exception e)
+            {
+                Utils.BreakIfDebug();
+                return Task.FromException<IAsyncDisposable>(e);
             }
 
-            return objRelease;
-        }
-
-        /// <summary>
-        /// Heavier read lock entrant, used if a write lock is already being held somewhere
-        /// </summary>
-        private async Task<IAsyncDisposable> TakeHiPrioReadLockCoreAsync(LinkedSemaphoreSlim objCurrentLinkedSemaphore,
-            LinkedSemaphoreSlim objTopMostHeldWriterSemaphore, SafeHiPrioReaderSemaphoreRelease objRelease,
-            CancellationToken token)
-        {
-            try
+            if (!blnIsInReadLock)
             {
-                await objCurrentLinkedSemaphore.WaitAllAsync(token, objTopMostHeldWriterSemaphore)
-                    .ConfigureAwait(false);
+#if READERLOCKSTACKTRACEDEBUG
+                _objIsInReadLockContainer.Value = EnhancedStackTrace.Current().ToString();
+#else
+                _objIsInReadLockContainer.Value = true;
+#endif
+            }
+
+            if (_objParentLock != null)
+            {
+                // Needs to be like this (using async inner function) to make sure AsyncLocals for parents are set in proper location
+                Task<IAsyncDisposable> tskParent = !_blnLockReadOnlyForParent && blnParentLockIsUpgradeable
+                    ? _objParentLock.EnterUpgradeableReadLockAsync(token)
+                    : _objParentLock.EnterReadLockAsync(token);
+                return InnerAsync(objCurrentHelper, blnIsInReadLock,
+                    tskParent, token);
+                async Task<IAsyncDisposable> InnerAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
+                    bool blnInnerIsInReadLock, Task<IAsyncDisposable> tskInnerParent,
+                    CancellationToken innerToken = default)
+                {
+                    IAsyncDisposable objParentRelease = null;
+                    try
+                    {
+                        objParentRelease = await tskInnerParent.ConfigureAwait(false);
+                    }
+#if DEBUG
+                    catch (Exception e)
+#else
+                    catch
+#endif
+                    {
+                        // swallow all exceptions because we need to be able to properly unset AsyncLocals when we release
+                        Utils.BreakIfDebug();
+                    }
+                    return await TakeReadLockCoreAsync(
+                        objInnerCurrentHelper, blnInnerIsInReadLock, objParentRelease, innerToken).ConfigureAwait(false);
+                }
+            }
+
+            return TakeReadLockCoreAsync(objCurrentHelper, blnIsInReadLock, innerToken: token);
+
+            async Task<IAsyncDisposable> TakeReadLockCoreAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
+                bool blnInnerIsInReadLock, IAsyncDisposable objParentRelease = null, CancellationToken innerToken = default)
+            {
+                if (_intDisposedStatus != 0 || objInnerCurrentHelper.IsDisposed)
+                {
+#if DEBUG
+                    Debug.WriteLine(
+                        "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
+                    Debug.WriteLine(EnhancedStackTrace.Current().ToString());
+#endif
+                    return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, blnInnerIsInReadLock, this, true, objParentReleaseAsync: objParentRelease);
+                }
+
                 try
                 {
-                    ChangeNumActiveHiPrioReaders(1);
+                    await objInnerCurrentHelper.TakeReadLockAsync(blnInnerIsInReadLock, innerToken)
+                        .ConfigureAwait(false);
                 }
-                finally
+                catch (OperationCanceledException)
                 {
-                    objCurrentLinkedSemaphore.ReleaseAll(objTopMostHeldWriterSemaphore);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this because it must be handled as a disposal in the original ExecutionContext
-            }
-
-            return objRelease;
-        }
-
-        private void ChangeNumActiveReaders(int intDiff, bool blnUndoOnCancel = true, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-
-            if (_intDisposedStatus > 1)
-            {
-                if (intDiff <= 0)
-                {
-#if DEBUG
-                    Debug.WriteLine(
-                        "Decreasing the number of active readers in a reader-writer lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                    Debug.WriteLine(Environment.StackTrace);
-#endif
-                    return;
+                    //swallow this because unsetting the AsyncLocal must be handled as a disposal in the original ExecutionContext
+                    return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, blnInnerIsInReadLock, this, true, objParentReleaseAsync: objParentRelease);
                 }
 
-                throw new ObjectDisposedException(ToString());
-            }
-
-            if (intDiff == 0)
-                return;
-
-            switch (intDiff)
-            {
-                case -1:
-                    if (Interlocked.Decrement(ref _intCountActiveReaders) == 0)
-                        _objReaderSemaphore.Release();
-                    break;
-                case 1:
-                    if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
-                    {
-                        try
-                        {
-                            _objReaderSemaphore.SafeWait(token);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            if (blnUndoOnCancel)
-                                Interlocked.Decrement(ref _intCountActiveReaders);
-                            throw;
-                        }
-                        catch
-                        {
-                            Interlocked.Decrement(ref _intCountActiveReaders);
-                            throw;
-                        }
-                    }
-
-                    break;
-                default:
-                    int intNewValue = Interlocked.Add(ref _intCountActiveReaders, intDiff);
-                    if (intNewValue == intDiff)
-                    {
-                        try
-                        {
-                            _objReaderSemaphore.SafeWait(token);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            if (blnUndoOnCancel)
-                                Interlocked.Add(ref _intCountActiveReaders, -intDiff);
-                            throw;
-                        }
-                        catch
-                        {
-                            Interlocked.Add(ref _intCountActiveReaders, -intDiff);
-                            throw;
-                        }
-                    }
-                    else if (intNewValue == 0)
-                        _objReaderSemaphore.Release();
-
-                    break;
-            }
-        }
-
-        private Task ChangeNumActiveReadersAsync(int intDiff, bool blnUndoOnCancel = true,
-            CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-
-            if (_intDisposedStatus > 1)
-            {
-                if (intDiff <= 0)
-                {
-#if DEBUG
-                    Debug.WriteLine(
-                        "Decreasing the number of active readers in a reader-writer lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                    Debug.WriteLine(Environment.StackTrace);
-#endif
-                    return Task.CompletedTask;
-                }
-
-                return Task.FromException(new ObjectDisposedException(ToString()));
-            }
-
-            if (intDiff == 0)
-                return Task.CompletedTask;
-
-            switch (intDiff)
-            {
-                case -1:
-                    if (Interlocked.Decrement(ref _intCountActiveReaders) == 0)
-                        _objReaderSemaphore.Release();
-                    return Task.CompletedTask;
-                case 1:
-                    if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
-                        return WaitReaderSemaphore1();
-
-                    async Task WaitReaderSemaphore1()
-                    {
-                        try
-                        {
-                            await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            if (blnUndoOnCancel)
-                                Interlocked.Decrement(ref _intCountActiveReaders);
-                            throw;
-                        }
-                        catch
-                        {
-                            Interlocked.Decrement(ref _intCountActiveReaders);
-                            throw;
-                        }
-                    }
-
-                    return Task.CompletedTask;
-                default:
-                    int intNewValue = Interlocked.Add(ref _intCountActiveReaders, intDiff);
-                    if (intNewValue == intDiff)
-                    {
-                        return WaitReaderSemaphore2();
-
-                        async Task WaitReaderSemaphore2()
-                        {
-                            try
-                            {
-                                await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
-                            }
-                            catch (OperationCanceledException)
-                            {
-                                if (blnUndoOnCancel)
-                                    Interlocked.Add(ref _intCountActiveReaders, -intDiff);
-                                throw;
-                            }
-                            catch
-                            {
-                                Interlocked.Add(ref _intCountActiveReaders, -intDiff);
-                                throw;
-                            }
-                        }
-                    }
-
-                    if (intNewValue == 0)
-                        _objReaderSemaphore.Release();
-
-                    return Task.CompletedTask;
-            }
-        }
-
-        private void ChangeNumActiveHiPrioReaders(int intDiff)
-        {
-            if (_intDisposedStatus > 1)
-            {
-                if (intDiff <= 0)
-                {
-#if DEBUG
-                    Debug.WriteLine(
-                        "Decreasing the number of active readers in a reader-writer lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                    Debug.WriteLine(Environment.StackTrace);
-#endif
-                    return;
-                }
-
-                throw new ObjectDisposedException(ToString());
-            }
-
-            if (intDiff == 0)
-                return;
-
-            switch (intDiff)
-            {
-                case -1:
-                    Interlocked.Decrement(ref _intCountActiveHiPrioReaders);
-                    break;
-                case 1:
-                    Interlocked.Increment(ref _intCountActiveHiPrioReaders);
-                    break;
-                default:
-                    Interlocked.Add(ref _intCountActiveHiPrioReaders, intDiff);
-                    break;
+                return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, blnInnerIsInReadLock, this, objInnerCurrentHelper.IsDisposed, objParentReleaseAsync: objParentRelease);
             }
         }
 
@@ -1141,14 +969,7 @@ namespace Chummer
 
             try
             {
-                // Ensure the locks aren't held. If they are, wait for them to be released
-                // before completing the dispose.
-                _objTopLevelWriterSemaphore.MySemaphore.SafeWait();
-                _objReaderSemaphore.SafeWait();
-                _objReaderSemaphore.Release();
-                _objReaderSemaphore.Dispose();
-                _objTopLevelWriterSemaphore.MySemaphore.Release();
-                _objTopLevelWriterSemaphore.Dispose();
+                _objTopLevelHelper.Dispose();
             }
             finally
             {
@@ -1164,14 +985,7 @@ namespace Chummer
 
             try
             {
-                // Ensure the locks aren't held. If they are, wait for them to be released
-                // before completing the dispose.
-                await _objTopLevelWriterSemaphore.MySemaphore.WaitAsync().ConfigureAwait(false);
-                await _objReaderSemaphore.WaitAsync().ConfigureAwait(false);
-                _objReaderSemaphore.Release();
-                _objReaderSemaphore.Dispose();
-                _objTopLevelWriterSemaphore.MySemaphore.Release();
-                await _objTopLevelWriterSemaphore.DisposeAsync().ConfigureAwait(false);
+                await _objTopLevelHelper.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {
@@ -1179,399 +993,616 @@ namespace Chummer
             }
         }
 
-        private readonly struct SafeFastReaderSemaphoreRelease : IDisposable, IAsyncDisposable
+        private readonly struct DisposedReaderDummySemaphoreRelease : IDisposable, IAsyncDisposable
         {
             private readonly AsyncFriendlyReaderWriterLock _objReaderWriterLock;
 
-            public SafeFastReaderSemaphoreRelease(AsyncFriendlyReaderWriterLock objReaderWriterLock)
+            public DisposedReaderDummySemaphoreRelease(AsyncFriendlyReaderWriterLock objReaderWriterLock)
             {
+                if (objReaderWriterLock != null && objReaderWriterLock._intDisposedStatus == 0)
+                    throw new InvalidOperationException("Cannot assign dummy release to a non-disposed lock");
                 _objReaderWriterLock = objReaderWriterLock;
             }
 
             public void Dispose()
             {
-                _objReaderWriterLock.ChangeNumActiveReaders(-1);
-            }
-
-            public async ValueTask DisposeAsync()
-            {
-                await _objReaderWriterLock.ChangeNumActiveReadersAsync(-1).ConfigureAwait(false);
-            }
-        }
-
-        private readonly struct SafeHiPrioReaderSemaphoreRelease : IDisposable, IAsyncDisposable
-        {
-            private readonly int _intOldCountLocalReaders;
-            private readonly LinkedSemaphoreSlim _objNextLinkedSemaphore;
-            private readonly LinkedSemaphoreSlim _objPreviousTopMostHeldWriterSemaphore;
-            private readonly AsyncFriendlyReaderWriterLock _objReaderWriterLock;
-
-            public SafeHiPrioReaderSemaphoreRelease(int intOldCountLocalReaders, LinkedSemaphoreSlim objNextLinkedSemaphore,
-                LinkedSemaphoreSlim objPreviousTopMostHeldWriterSemaphore,
-                AsyncFriendlyReaderWriterLock objReaderWriterLock)
-            {
-                if (objNextLinkedSemaphore == null)
-                    throw new ArgumentNullException(nameof(objNextLinkedSemaphore));
-                LinkedSemaphoreSlim objCurrentLinkedSemaphore = objNextLinkedSemaphore.ParentLinkedSemaphore;
-                if (objCurrentLinkedSemaphore != null)
-                {
-                    if (objCurrentLinkedSemaphore.MySemaphore == objNextLinkedSemaphore.MySemaphore)
-                        throw new InvalidOperationException(
-                            "Current and next semaphores are identical, this should not happen.");
-                    LinkedSemaphoreSlim objLastLinkedSemaphore = objCurrentLinkedSemaphore.ParentLinkedSemaphore;
-                    if (objLastLinkedSemaphore != null)
-                    {
-                        if (objLastLinkedSemaphore.MySemaphore == objCurrentLinkedSemaphore.MySemaphore)
-                            throw new InvalidOperationException(
-                                "Last and current semaphores are identical, this should not happen.");
-                        if (objLastLinkedSemaphore.MySemaphore == objNextLinkedSemaphore.MySemaphore)
-                            throw new InvalidOperationException(
-                                "Last and next semaphores are identical, this should not happen.");
-                    }
-                }
-
-                _intOldCountLocalReaders = intOldCountLocalReaders;
-                _objNextLinkedSemaphore = objNextLinkedSemaphore;
-                _objPreviousTopMostHeldWriterSemaphore = objPreviousTopMostHeldWriterSemaphore;
-                _objReaderWriterLock = objReaderWriterLock;
-            }
-
-            public void Dispose()
-            {
-                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(_intOldCountLocalReaders,
-                        _objNextLinkedSemaphore, _objPreviousTopMostHeldWriterSemaphore);
-
-                if (_intOldCountLocalReaders != int.MinValue)
-                {
-                    // Wait for all other readers to exit before exiting ourselves
-                    while (_intOldCountLocalReaders < _objReaderWriterLock._intCountActiveReaders)
-                        Utils.SafeSleep();
-                }
-
-                _objReaderWriterLock.ChangeNumActiveHiPrioReaders(-1);
+                if (_objReaderWriterLock != null && _objReaderWriterLock._intDisposedStatus == 0)
+                    throw new InvalidOperationException("Cannot assign dummy release to a non-disposed lock");
             }
 
             public ValueTask DisposeAsync()
             {
-                // Update _objReaderWriterLock._objAsyncLocalCurrentsContainer in the calling ExecutionContext
-                // and defer any awaits to DisposeCoreAsync(). If this isn't done, the update will happen in a
-                // copy of the ExecutionContext and the caller won't see the changes.
-                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(_intOldCountLocalReaders,
-                        _objNextLinkedSemaphore, _objPreviousTopMostHeldWriterSemaphore);
-
-                return DisposeCoreAsync();
-            }
-
-            private async ValueTask DisposeCoreAsync()
-            {
-                if (_intOldCountLocalReaders != int.MinValue)
-                {
-                    // Wait for all other readers to exit before exiting ourselves
-                    while (_intOldCountLocalReaders < _objReaderWriterLock._intCountActiveReaders)
-                        await Utils.SafeSleepAsync().ConfigureAwait(false);
-                }
-
-                _objReaderWriterLock.ChangeNumActiveHiPrioReaders(-1);
+                if (_objReaderWriterLock != null && _objReaderWriterLock._intDisposedStatus == 0)
+                    throw new InvalidOperationException("Cannot assign dummy release to a non-disposed lock");
+                return default;
             }
         }
 
         private readonly struct SafeReaderSemaphoreRelease : IDisposable, IAsyncDisposable
         {
-            private readonly int _intOldCountLocalReaders;
-            private readonly LinkedSemaphoreSlim _objNextLinkedSemaphore;
-            private readonly LinkedSemaphoreSlim _objPreviousTopMostHeldWriterSemaphore;
+            private readonly LinkedAsyncRWLockHelper _objCurrentHelper;
+            private readonly bool _blnOldIsInReadLock;
             private readonly AsyncFriendlyReaderWriterLock _objReaderWriterLock;
+            private readonly bool _blnSkipUnlockOnDispose;
+            private readonly IDisposable _objParentRelease;
+            private readonly IAsyncDisposable _objParentReleaseAsync;
 
-            public SafeReaderSemaphoreRelease(int intOldCountLocalReaders, LinkedSemaphoreSlim objNextLinkedSemaphore,
-                LinkedSemaphoreSlim objPreviousTopMostHeldWriterSemaphore,
-                AsyncFriendlyReaderWriterLock objReaderWriterLock)
+            public SafeReaderSemaphoreRelease(LinkedAsyncRWLockHelper objCurrentHelper,
+                bool blnIsInReadLock, AsyncFriendlyReaderWriterLock objReaderWriterLock,
+                bool blnSkipUnlockOnDispose = false, IDisposable objParentRelease = null, IAsyncDisposable objParentReleaseAsync = null)
             {
-                if (objNextLinkedSemaphore == null)
-                    throw new ArgumentNullException(nameof(objNextLinkedSemaphore));
-                LinkedSemaphoreSlim objCurrentLinkedSemaphore = objNextLinkedSemaphore.ParentLinkedSemaphore;
-                if (objCurrentLinkedSemaphore != null)
-                {
-                    if (objCurrentLinkedSemaphore.MySemaphore == objNextLinkedSemaphore.MySemaphore)
-                        throw new InvalidOperationException(
-                            "Current and next semaphores are identical, this should not happen.");
-                    LinkedSemaphoreSlim objLastLinkedSemaphore = objCurrentLinkedSemaphore.ParentLinkedSemaphore;
-                    if (objLastLinkedSemaphore != null)
-                    {
-                        if (objLastLinkedSemaphore.MySemaphore == objCurrentLinkedSemaphore.MySemaphore)
-                            throw new InvalidOperationException(
-                                "Last and current semaphores are identical, this should not happen.");
-                        if (objLastLinkedSemaphore.MySemaphore == objNextLinkedSemaphore.MySemaphore)
-                            throw new InvalidOperationException(
-                                "Last and next semaphores are identical, this should not happen.");
-                    }
-                }
+                if (objCurrentHelper == null)
+                    throw new ArgumentNullException(nameof(objCurrentHelper));
+#if DEBUG
+                LinkedAsyncRWLockHelper objLastHelper = objCurrentHelper.ParentLinkedHelper;
+                if (objLastHelper != null && objLastHelper == objCurrentHelper)
+                    throw new InvalidOperationException(
+                        "Last and current helpers are identical, this should not happen.");
+#endif
 
-                _intOldCountLocalReaders = intOldCountLocalReaders;
-                _objNextLinkedSemaphore = objNextLinkedSemaphore;
-                _objPreviousTopMostHeldWriterSemaphore = objPreviousTopMostHeldWriterSemaphore;
+                _objCurrentHelper = objCurrentHelper;
+                _blnOldIsInReadLock = blnIsInReadLock;
                 _objReaderWriterLock = objReaderWriterLock;
+                _blnSkipUnlockOnDispose = blnSkipUnlockOnDispose;
+                _objParentRelease = objParentRelease;
+                _objParentReleaseAsync = objParentReleaseAsync;
             }
 
             public void Dispose()
             {
-                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(_intOldCountLocalReaders,
-                        _objNextLinkedSemaphore, _objPreviousTopMostHeldWriterSemaphore);
+                _objParentRelease?.Dispose();
+                switch (_objParentReleaseAsync)
+                {
+                    case SafeWriterSemaphoreRelease objCastReleaseWriter:
+                        objCastReleaseWriter.DisposeAsyncPre();
+                        break;
+                    case SafeUpgradeableReaderSemaphoreRelease objCastReleaseUReader:
+                        objCastReleaseUReader.DisposeAsyncPre();
+                        break;
+                    case SafeReaderSemaphoreRelease objCastReleaseReader:
+                        objCastReleaseReader.DisposeAsyncPre();
+                        break;
+                }
 
-                _objReaderWriterLock.ChangeNumActiveReaders(-1);
+                if (_objReaderWriterLock._intDisposedStatus > 1)
+                    return;
+
+                switch (_objParentReleaseAsync)
+                {
+                    case SafeWriterSemaphoreRelease objCastReleaseWriter:
+                        Utils.SafelyRunSynchronously(() => objCastReleaseWriter.DisposeCoreAsync().AsTask());
+                        break;
+                    case SafeUpgradeableReaderSemaphoreRelease objCastReleaseUReader:
+                        Utils.SafelyRunSynchronously(() => objCastReleaseUReader.DisposeCoreAsync().AsTask());
+                        break;
+                    case SafeReaderSemaphoreRelease objCastReleaseReader:
+                        Utils.SafelyRunSynchronously(() => objCastReleaseReader.DisposeCoreAsync().AsTask());
+                        break;
+                }
+
+                if (!_blnOldIsInReadLock)
+                {
+#if READERLOCKSTACKTRACEDEBUG
+                    _objReaderWriterLock._objIsInReadLockContainer.Value = string.Empty;
+#else
+                    _objReaderWriterLock._objIsInReadLockContainer.Value = false;
+#endif
+                }
+
+                if (!_blnSkipUnlockOnDispose)
+                    _objCurrentHelper.ReleaseReadLock();
             }
 
             public ValueTask DisposeAsync()
             {
+                DisposeAsyncPre();
+                return _objParentReleaseAsync == null
+                       && (_objReaderWriterLock._intDisposedStatus > 1 || _blnSkipUnlockOnDispose)
+                    ? default
+                    : DisposeCoreAsync();
+            }
+
+            public void DisposeAsyncPre()
+            {
                 // Update _objReaderWriterLock._objAsyncLocalCurrentsContainer in the calling ExecutionContext
                 // and defer any awaits to DisposeCoreAsync(). If this isn't done, the update will happen in a
                 // copy of the ExecutionContext and the caller won't see the changes.
-                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(_intOldCountLocalReaders,
-                        _objNextLinkedSemaphore, _objPreviousTopMostHeldWriterSemaphore);
+                _objParentRelease?.Dispose();
+                switch (_objParentReleaseAsync)
+                {
+                    case SafeWriterSemaphoreRelease objCastReleaseWriter:
+                        objCastReleaseWriter.DisposeAsyncPre();
+                        break;
+                    case SafeUpgradeableReaderSemaphoreRelease objCastReleaseUReader:
+                        objCastReleaseUReader.DisposeAsyncPre();
+                        break;
+                    case SafeReaderSemaphoreRelease objCastReleaseReader:
+                        objCastReleaseReader.DisposeAsyncPre();
+                        break;
+                }
 
-                return DisposeCoreAsync();
+                if (_objReaderWriterLock._intDisposedStatus > 1 || _blnOldIsInReadLock)
+                    return;
+#if READERLOCKSTACKTRACEDEBUG
+                _objReaderWriterLock._objIsInReadLockContainer.Value = string.Empty;
+#else
+                _objReaderWriterLock._objIsInReadLockContainer.Value = false;
+#endif
             }
 
-            private async ValueTask DisposeCoreAsync()
+            public async ValueTask DisposeCoreAsync()
             {
-                await _objReaderWriterLock.ChangeNumActiveReadersAsync(-1).ConfigureAwait(false);
+                switch (_objParentReleaseAsync)
+                {
+                    case SafeWriterSemaphoreRelease objCastReleaseWriter:
+                        await objCastReleaseWriter.DisposeCoreAsync().ConfigureAwait(false);
+                        break;
+                    case SafeUpgradeableReaderSemaphoreRelease objCastReleaseUReader:
+                        await objCastReleaseUReader.DisposeCoreAsync().ConfigureAwait(false);
+                        break;
+                    case SafeReaderSemaphoreRelease objCastReleaseReader:
+                        await objCastReleaseReader.DisposeCoreAsync().ConfigureAwait(false);
+                        break;
+                }
+                if (_objReaderWriterLock._intDisposedStatus > 1)
+                    return;
+                if (!_blnSkipUnlockOnDispose)
+                    await _objCurrentHelper.ReleaseReadLockAsync().ConfigureAwait(false);
             }
         }
 
         private readonly struct SafeUpgradeableReaderSemaphoreRelease : IDisposable, IAsyncDisposable
         {
-            private readonly int _intOldCountLocalReaders;
-            private readonly LinkedSemaphoreSlim _objNextLinkedSemaphore;
-            private readonly LinkedSemaphoreSlim _objPreviousTopMostHeldWriterSemaphore;
+            private readonly LinkedAsyncRWLockHelper _objNextHelper;
+            private readonly LinkedAsyncRWLockHelper _objPreviousTopMostHeldUReader;
+            private readonly LinkedAsyncRWLockHelper _objPreviousTopMostHeldWriter;
             private readonly AsyncFriendlyReaderWriterLock _objReaderWriterLock;
+            private readonly bool _blnSkipUnlockOnDispose;
+            private readonly IDisposable _objParentRelease;
+            private readonly IAsyncDisposable _objParentReleaseAsync;
 
-            public SafeUpgradeableReaderSemaphoreRelease(int intOldCountLocalReaders,
-                LinkedSemaphoreSlim objNextLinkedSemaphore,
-                LinkedSemaphoreSlim objPreviousTopMostHeldWriterSemaphore,
-                AsyncFriendlyReaderWriterLock objReaderWriterLock)
+            public SafeUpgradeableReaderSemaphoreRelease(LinkedAsyncRWLockHelper objNextHelper,
+                LinkedAsyncRWLockHelper objPreviousTopMostHeldUReader,
+                LinkedAsyncRWLockHelper objPreviousTopMostHeldWriter, AsyncFriendlyReaderWriterLock objReaderWriterLock,
+                bool blnSkipUnlockOnDispose = false, IDisposable objParentRelease = null, IAsyncDisposable objParentReleaseAsync = null)
             {
-                if (objNextLinkedSemaphore == null)
-                    throw new ArgumentNullException(nameof(objNextLinkedSemaphore));
-                LinkedSemaphoreSlim objCurrentLinkedSemaphore = objNextLinkedSemaphore.ParentLinkedSemaphore;
-                if (objCurrentLinkedSemaphore != null)
+                if (objNextHelper == null)
+                    throw new ArgumentNullException(nameof(objNextHelper));
+#if DEBUG
+                LinkedAsyncRWLockHelper objCurrentHelper = objNextHelper.ParentLinkedHelper;
+                if (objCurrentHelper != null)
                 {
-                    if (objCurrentLinkedSemaphore.MySemaphore == objNextLinkedSemaphore.MySemaphore)
+                    if (objCurrentHelper == objNextHelper)
                         throw new InvalidOperationException(
-                            "Current and next semaphores are identical, this should not happen.");
-                    LinkedSemaphoreSlim objLastLinkedSemaphore = objCurrentLinkedSemaphore.ParentLinkedSemaphore;
-                    if (objLastLinkedSemaphore != null)
+                            "Current and next helpers are identical, this should not happen.");
+                    LinkedAsyncRWLockHelper objLastHelper = objCurrentHelper.ParentLinkedHelper;
+                    if (objLastHelper != null)
                     {
-                        if (objLastLinkedSemaphore.MySemaphore == objCurrentLinkedSemaphore.MySemaphore)
+                        if (objLastHelper == objCurrentHelper)
                             throw new InvalidOperationException(
-                                "Last and current semaphores are identical, this should not happen.");
-                        if (objLastLinkedSemaphore.MySemaphore == objNextLinkedSemaphore.MySemaphore)
+                                "Last and current helpers are identical, this should not happen.");
+                        if (objLastHelper == objNextHelper)
                             throw new InvalidOperationException(
-                                "Last and next semaphores are identical, this should not happen.");
+                                "Last and next helpers are identical, this should not happen.");
                     }
                 }
+#endif
 
-                _intOldCountLocalReaders = intOldCountLocalReaders;
-                _objNextLinkedSemaphore = objNextLinkedSemaphore;
-                _objPreviousTopMostHeldWriterSemaphore = objPreviousTopMostHeldWriterSemaphore;
+                _objNextHelper = objNextHelper;
+                _objPreviousTopMostHeldUReader = objPreviousTopMostHeldUReader;
+                _objPreviousTopMostHeldWriter = objPreviousTopMostHeldWriter;
                 _objReaderWriterLock = objReaderWriterLock;
+                _blnSkipUnlockOnDispose = blnSkipUnlockOnDispose;
+                _objParentRelease = objParentRelease;
+                _objParentReleaseAsync = objParentReleaseAsync;
             }
 
-            public void Dispose()
-            {
-                if (_objReaderWriterLock._intDisposedStatus > 1)
-                {
-#if DEBUG
-                    Debug.WriteLine(
-                        "Exiting a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                    Debug.WriteLine(Environment.StackTrace);
-#endif
-                    return;
-                }
-
-#if DEBUG
-                (_, LinkedSemaphoreSlim objNextLinkedSemaphore, _) =
-                    _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
-                if (_objNextLinkedSemaphore != objNextLinkedSemaphore)
-                {
-                    if (objNextLinkedSemaphore == null)
-                        throw new InvalidOperationException(
-                            "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
-                            + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
-                            + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
-                    if (objNextLinkedSemaphore == _objNextLinkedSemaphore.ParentLinkedSemaphore)
-                        throw new InvalidOperationException(
-                            "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
-                    throw new InvalidOperationException(
-                        "_objNextLinkedSemaphore was expected to be the current semaphore.");
-                }
-#endif
-
-                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
-                        _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentLinkedSemaphore,
-                        _objPreviousTopMostHeldWriterSemaphore);
-                _objReaderWriterLock.ChangeNumActiveReaders(-1);
-                _objNextLinkedSemaphore.Dispose();
-            }
-
+            /// <inheritdoc />
             public ValueTask DisposeAsync()
             {
-                if (_objReaderWriterLock._intDisposedStatus > 1)
-                {
-#if DEBUG
-                    Debug.WriteLine(
-                        "Exiting a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                    Debug.WriteLine(Environment.StackTrace);
-#endif
-                    return new ValueTask(Task.CompletedTask);
-                }
+                DisposeAsyncPre();
 
-#if DEBUG
-                (_, LinkedSemaphoreSlim objNextLinkedSemaphore, _) =
-                    _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
-                if (_objNextLinkedSemaphore != objNextLinkedSemaphore)
-                {
-                    if (objNextLinkedSemaphore == null)
-                        throw new InvalidOperationException(
-                            "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
-                            + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
-                            + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
-                    if (objNextLinkedSemaphore == _objNextLinkedSemaphore.ParentLinkedSemaphore)
-                        throw new InvalidOperationException(
-                            "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
-                    throw new InvalidOperationException(
-                        "_objNextLinkedSemaphore was expected to be the current semaphore.");
-                }
-#endif
+                return _blnSkipUnlockOnDispose && _objParentReleaseAsync == null
+                    ? _objNextHelper.DisposeAsync()
+                    : DisposeCoreAsync();
+            }
+
+            public void DisposeAsyncPre()
+            {
+                if (_objReaderWriterLock._intDisposedStatus > 1)
+                    throw new ObjectDisposedException(nameof(_objReaderWriterLock));
 
                 // Update _objReaderWriterLock._objAsyncLocalCurrentsContainer in the calling ExecutionContext
                 // and defer any awaits to DisposeCoreAsync(). If this isn't done, the update will happen in a
                 // copy of the ExecutionContext and the caller won't see the changes.
+                _objParentRelease?.Dispose();
+                switch (_objParentReleaseAsync)
+                {
+                    case SafeWriterSemaphoreRelease objCastReleaseWriter:
+                        objCastReleaseWriter.DisposeAsyncPre();
+                        break;
+                    case SafeUpgradeableReaderSemaphoreRelease objCastReleaseUReader:
+                        objCastReleaseUReader.DisposeAsyncPre();
+                        break;
+                    case SafeReaderSemaphoreRelease objCastReleaseReader:
+                        objCastReleaseReader.DisposeAsyncPre();
+                        break;
+                }
+
+#if ASYNCLOCALWRITEDEBUG
+#if DEBUG
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+                    objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper)
+                {
+                    Utils.BreakIfDebug();
+                }
+#endif
                 _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
-                        _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentLinkedSemaphore,
-                        _objPreviousTopMostHeldWriterSemaphore);
-                return DisposeCoreAsync();
+                    new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                        _objNextHelper.ParentLinkedHelper, _objPreviousTopMostHeldUReader, _objPreviousTopMostHeldWriter, EnhancedStackTrace.Current().ToString());
+#else
+#if DEBUG
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>
+                    objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper)
+                {
+                    Utils.BreakIfDebug();
+                }
+#endif
+                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
+                        _objNextHelper.ParentLinkedHelper, _objPreviousTopMostHeldUReader, _objPreviousTopMostHeldWriter);
+#endif
             }
 
-            private async ValueTask DisposeCoreAsync()
+            public async ValueTask DisposeCoreAsync()
             {
-                await _objReaderWriterLock.ChangeNumActiveReadersAsync(-1).ConfigureAwait(false);
-                await _objNextLinkedSemaphore.DisposeAsync().ConfigureAwait(false);
+                switch (_objParentReleaseAsync)
+                {
+                    case SafeWriterSemaphoreRelease objCastReleaseWriter:
+                        await objCastReleaseWriter.DisposeCoreAsync().ConfigureAwait(false);
+                        break;
+                    case SafeUpgradeableReaderSemaphoreRelease objCastReleaseUReader:
+                        await objCastReleaseUReader.DisposeCoreAsync().ConfigureAwait(false);
+                        break;
+                    case SafeReaderSemaphoreRelease objCastReleaseReader:
+                        await objCastReleaseReader.DisposeCoreAsync().ConfigureAwait(false);
+                        break;
+                }
+
+#if DEBUG
+#if ASYNCLOCALWRITEDEBUG
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+#else
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>
+#endif
+                    objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper.ParentLinkedHelper)
+                {
+                    Utils.BreakIfDebug();
+                }
+#endif
+
+                if (_blnSkipUnlockOnDispose)
+                {
+                    await _objNextHelper.DisposeAsync().ConfigureAwait(false);
+                    return;
+                }
+
+                LinkedAsyncRWLockHelper objCurrentHelper = _objNextHelper.ParentLinkedHelper;
+                bool blnDoUnlock;
+                try
+                {
+                    blnDoUnlock = objCurrentHelper != null && objCurrentHelper.ActiveUpgradeableReaderSemaphore.CurrentCount == 0;
+                }
+                catch
+                {
+                    await _objNextHelper.DisposeAsync().ConfigureAwait(false);
+                    return;
+                }
+
+                try
+                {
+                    if (blnDoUnlock)
+                    {
+                        try
+                        {
+                            await _objNextHelper.TakeSingleWriteLockAsync().ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            objCurrentHelper.ReleaseUpgradeableReadLock();
+                            throw;
+                        }
+
+                        try
+                        {
+                            objCurrentHelper.ReleaseUpgradeableReadLock();
+                        }
+                        finally
+                        {
+                            _objNextHelper.ReleaseSingleWriteLock();
+                        }
+                    }
+                }
+                finally
+                {
+                    await _objNextHelper.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+                if (_objReaderWriterLock._intDisposedStatus > 1)
+                    throw new ObjectDisposedException(nameof(_objReaderWriterLock));
+                _objParentRelease?.Dispose();
+                switch (_objParentReleaseAsync)
+                {
+                    case SafeWriterSemaphoreRelease objCastReleaseWriter:
+                        objCastReleaseWriter.DisposeAsyncPre();
+                        Utils.SafelyRunSynchronously(() => objCastReleaseWriter.DisposeCoreAsync().AsTask());
+                        break;
+                    case SafeUpgradeableReaderSemaphoreRelease objCastReleaseUReader:
+                        objCastReleaseUReader.DisposeAsyncPre();
+                        Utils.SafelyRunSynchronously(() => objCastReleaseUReader.DisposeCoreAsync().AsTask());
+                        break;
+                    case SafeReaderSemaphoreRelease objCastReleaseReader:
+                        objCastReleaseReader.DisposeAsyncPre();
+                        Utils.SafelyRunSynchronously(() => objCastReleaseReader.DisposeCoreAsync().AsTask());
+                        break;
+                }
+
+                LinkedAsyncRWLockHelper objCurrentHelper = _objNextHelper.ParentLinkedHelper;
+#if ASYNCLOCALWRITEDEBUG
+#if DEBUG
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+                    objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper)
+                {
+                    Utils.BreakIfDebug();
+                }
+#endif
+                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                        objCurrentHelper, _objPreviousTopMostHeldUReader, _objPreviousTopMostHeldWriter, EnhancedStackTrace.Current().ToString());
+#else
+#if DEBUG
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>
+                    objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper)
+                {
+                    Utils.BreakIfDebug();
+                }
+#endif
+                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
+                        objCurrentHelper, _objPreviousTopMostHeldUReader, _objPreviousTopMostHeldWriter);
+#endif
+
+                bool blnDoUnlock;
+                try
+                {
+                    blnDoUnlock = !_blnSkipUnlockOnDispose &&
+                                  objCurrentHelper.ActiveUpgradeableReaderSemaphore.CurrentCount == 0;
+                }
+                catch
+                {
+                    _objNextHelper.Dispose();
+                    return;
+                }
+
+                try
+                {
+                    if (blnDoUnlock)
+                    {
+                        try
+                        {
+                            _objNextHelper.TakeSingleWriteLock();
+                        }
+                        catch
+                        {
+                            objCurrentHelper.ReleaseUpgradeableReadLock();
+                            throw;
+                        }
+
+                        try
+                        {
+                            objCurrentHelper.ReleaseUpgradeableReadLock();
+                        }
+                        finally
+                        {
+                            _objNextHelper.ReleaseSingleWriteLock();
+                        }
+                    }
+                }
+                finally
+                {
+                    _objNextHelper.Dispose();
+                }
             }
         }
 
         private readonly struct SafeWriterSemaphoreRelease : IDisposable, IAsyncDisposable
         {
-            private readonly int _intOldCountLocalReaders;
-            private readonly LinkedSemaphoreSlim _objNextLinkedSemaphore;
-            private readonly LinkedSemaphoreSlim _objPreviousTopMostHeldWriterSemaphore;
+            private readonly LinkedAsyncRWLockHelper _objNextHelper;
+            private readonly LinkedAsyncRWLockHelper _objPreviousTopMostHeldUReader;
+            private readonly LinkedAsyncRWLockHelper _objPreviousTopMostHeldWriter;
             private readonly AsyncFriendlyReaderWriterLock _objReaderWriterLock;
+            private readonly bool _blnSkipUnlockOnDispose;
+            private readonly IDisposable _objParentRelease;
+            private readonly IAsyncDisposable _objParentReleaseAsync;
 
-            public SafeWriterSemaphoreRelease(int intOldCountLocalReaders, LinkedSemaphoreSlim objNextLinkedSemaphore,
-                LinkedSemaphoreSlim objPreviousTopMostHeldWriterSemaphore,
-                AsyncFriendlyReaderWriterLock objReaderWriterLock)
+            public SafeWriterSemaphoreRelease(LinkedAsyncRWLockHelper objNextHelper,
+                LinkedAsyncRWLockHelper objPreviousTopMostHeldUReader,
+                LinkedAsyncRWLockHelper objPreviousTopMostHeldWriter, AsyncFriendlyReaderWriterLock objReaderWriterLock,
+                bool blnSkipUnlockOnDispose = false, IDisposable objParentRelease = null, IAsyncDisposable objParentReleaseAsync = null)
             {
-                if (objNextLinkedSemaphore == null)
-                    throw new ArgumentNullException(nameof(objNextLinkedSemaphore));
-                LinkedSemaphoreSlim objCurrentLinkedSemaphore = objNextLinkedSemaphore.ParentLinkedSemaphore;
-                if (objCurrentLinkedSemaphore != null)
+                if (objNextHelper == null)
+                    throw new ArgumentNullException(nameof(objNextHelper));
+#if DEBUG
+                LinkedAsyncRWLockHelper objCurrentHelper = objNextHelper.ParentLinkedHelper;
+                if (objCurrentHelper != null)
                 {
-                    if (objCurrentLinkedSemaphore.MySemaphore == objNextLinkedSemaphore.MySemaphore)
+                    if (objCurrentHelper == objNextHelper)
                         throw new InvalidOperationException(
-                            "Current and next semaphores are identical, this should not happen.");
-                    LinkedSemaphoreSlim objLastLinkedSemaphore = objCurrentLinkedSemaphore.ParentLinkedSemaphore;
-                    if (objLastLinkedSemaphore != null)
+                            "Current and next helpers are identical, this should not happen.");
+                    LinkedAsyncRWLockHelper objLastHelper = objCurrentHelper.ParentLinkedHelper;
+                    if (objLastHelper != null)
                     {
-                        if (objLastLinkedSemaphore.MySemaphore == objCurrentLinkedSemaphore.MySemaphore)
+                        if (objLastHelper == objCurrentHelper)
                             throw new InvalidOperationException(
-                                "Last and current semaphores are identical, this should not happen.");
-                        if (objLastLinkedSemaphore.MySemaphore == objNextLinkedSemaphore.MySemaphore)
+                                "Last and current helpers are identical, this should not happen.");
+                        if (objLastHelper == objNextHelper)
                             throw new InvalidOperationException(
-                                "Last and next semaphores are identical, this should not happen.");
+                                "Last and next helpers are identical, this should not happen.");
                     }
                 }
+#endif
 
-                _intOldCountLocalReaders = intOldCountLocalReaders;
-                _objNextLinkedSemaphore = objNextLinkedSemaphore;
-                _objPreviousTopMostHeldWriterSemaphore = objPreviousTopMostHeldWriterSemaphore;
+                _objNextHelper = objNextHelper;
+                _objPreviousTopMostHeldUReader = objPreviousTopMostHeldUReader;
+                _objPreviousTopMostHeldWriter = objPreviousTopMostHeldWriter;
                 _objReaderWriterLock = objReaderWriterLock;
+                _blnSkipUnlockOnDispose = blnSkipUnlockOnDispose;
+                _objParentRelease = objParentRelease;
+                _objParentReleaseAsync = objParentReleaseAsync;
             }
 
             /// <inheritdoc />
             public ValueTask DisposeAsync()
             {
+                DisposeAsyncPre();
+
+                return _blnSkipUnlockOnDispose && _objParentReleaseAsync == null
+                    ? _objNextHelper.DisposeAsync()
+                    : DisposeCoreAsync();
+            }
+
+            public void DisposeAsyncPre()
+            {
                 if (_objReaderWriterLock._intDisposedStatus > 1)
                     throw new ObjectDisposedException(nameof(_objReaderWriterLock));
-#if DEBUG
-                (int intCountLocalReaders, LinkedSemaphoreSlim objNextLinkedSemaphore,
-                        _) =
-                    _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
-                if (intCountLocalReaders != 0)
-                {
-                    throw new InvalidOperationException(
-                        "intCountLocalReaders was expected to be zero but isn't, a reader lock is still active within the call stack.");
-                }
-
-                if (_objNextLinkedSemaphore != objNextLinkedSemaphore)
-                {
-                    if (objNextLinkedSemaphore == null)
-                        throw new InvalidOperationException(
-                            "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
-                            + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
-                            + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
-                    if (objNextLinkedSemaphore == _objNextLinkedSemaphore.ParentLinkedSemaphore)
-                        throw new InvalidOperationException(
-                            "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
-                    throw new InvalidOperationException(
-                        "_objNextLinkedSemaphore was expected to be the current semaphore.");
-                }
-#endif
-
                 // Update _objReaderWriterLock._objAsyncLocalCurrentsContainer in the calling ExecutionContext
                 // and defer any awaits to DisposeCoreAsync(). If this isn't done, the update will happen in a
                 // copy of the ExecutionContext and the caller won't see the changes.
-                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
-                        _intOldCountLocalReaders, _objNextLinkedSemaphore.ParentLinkedSemaphore,
-                        _objPreviousTopMostHeldWriterSemaphore);
-
-                return DisposeCoreAsync(_intOldCountLocalReaders);
-            }
-
-            private async ValueTask DisposeCoreAsync(int intCountLocalReaders)
-            {
-                // Wait for all other readers to exit before exiting ourselves
-                while (_objReaderWriterLock._intCountActiveReaders > 0 && _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
-                    await Utils.SafeSleepAsync().ConfigureAwait(false);
-                await _objReaderWriterLock.ChangeNumActiveReadersAsync(intCountLocalReaders).ConfigureAwait(false);
-                LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objNextLinkedSemaphore.ParentLinkedSemaphore;
-                if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
+                _objParentRelease?.Dispose();
+                switch (_objParentReleaseAsync)
                 {
-                    try
-                    {
-                        await _objNextLinkedSemaphore.MySemaphore.WaitAsync().ConfigureAwait(false);
-                    }
-                    catch
-                    {
-                        objCurrentLinkedSemaphore.ReleaseAll(_objPreviousTopMostHeldWriterSemaphore);
-                        throw;
-                    }
-
-                    try
-                    {
-                        objCurrentLinkedSemaphore.ReleaseAll(_objPreviousTopMostHeldWriterSemaphore);
-                    }
-                    finally
-                    {
-                        _objNextLinkedSemaphore.MySemaphore.Release();
-                    }
+                    case SafeWriterSemaphoreRelease objCastReleaseWriter:
+                        objCastReleaseWriter.DisposeAsyncPre();
+                        break;
+                    case SafeUpgradeableReaderSemaphoreRelease objCastReleaseUReader:
+                        objCastReleaseUReader.DisposeAsyncPre();
+                        break;
+                    case SafeReaderSemaphoreRelease objCastReleaseReader:
+                        objCastReleaseReader.DisposeAsyncPre();
+                        break;
                 }
 
-                await _objNextLinkedSemaphore.DisposeAsync().ConfigureAwait(false);
+#if ASYNCLOCALWRITEDEBUG
+#if DEBUG
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+                    objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper)
+                {
+                    Utils.BreakIfDebug();
+                }
+#endif
+                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                        _objNextHelper.ParentLinkedHelper, _objPreviousTopMostHeldUReader, _objPreviousTopMostHeldWriter, EnhancedStackTrace.Current().ToString());
+#else
+#if DEBUG
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>
+                    objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper)
+                {
+                    Utils.BreakIfDebug();
+                }
+#endif
+                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
+                        _objNextHelper.ParentLinkedHelper, _objPreviousTopMostHeldUReader, _objPreviousTopMostHeldWriter);
+#endif
+            }
+
+            public async ValueTask DisposeCoreAsync()
+            {
+                switch (_objParentReleaseAsync)
+                {
+                    case SafeWriterSemaphoreRelease objCastReleaseWriter:
+                        await objCastReleaseWriter.DisposeCoreAsync().ConfigureAwait(false);
+                        break;
+                    case SafeUpgradeableReaderSemaphoreRelease objCastReleaseUReader:
+                        await objCastReleaseUReader.DisposeCoreAsync().ConfigureAwait(false);
+                        break;
+                    case SafeReaderSemaphoreRelease objCastReleaseReader:
+                        await objCastReleaseReader.DisposeCoreAsync().ConfigureAwait(false);
+                        break;
+                }
+
+#if DEBUG
+#if ASYNCLOCALWRITEDEBUG
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+#else
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>
+#endif
+                    objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper.ParentLinkedHelper)
+                {
+                    Utils.BreakIfDebug();
+                }
+#endif
+
+                if (_blnSkipUnlockOnDispose)
+                {
+                    await _objNextHelper.DisposeAsync().ConfigureAwait(false);
+                    return;
+                }
+                LinkedAsyncRWLockHelper objCurrentHelper = _objNextHelper.ParentLinkedHelper;
+                bool blnDoUnlock;
+                try
+                {
+                    blnDoUnlock = objCurrentHelper != null && objCurrentHelper.ActiveWriterSemaphore.CurrentCount == 0;
+                }
+                catch
+                {
+                    await _objNextHelper.DisposeAsync().ConfigureAwait(false);
+                    return;
+                }
+
+                try
+                {
+                    if (blnDoUnlock)
+                    {
+                        try
+                        {
+                            await _objNextHelper.TakeSingleWriteLockAsync().ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
+                                _objPreviousTopMostHeldWriter);
+                            throw;
+                        }
+
+                        try
+                        {
+                            objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
+                                _objPreviousTopMostHeldWriter);
+                        }
+                        finally
+                        {
+                            _objNextHelper.ReleaseSingleWriteLock();
+                        }
+                    }
+                }
+                finally
+                {
+                    await _objNextHelper.DisposeAsync().ConfigureAwait(false);
+                }
             }
 
             /// <inheritdoc />
@@ -1579,64 +1610,91 @@ namespace Chummer
             {
                 if (_objReaderWriterLock._intDisposedStatus > 1)
                     throw new ObjectDisposedException(nameof(_objReaderWriterLock));
-#if DEBUG
-                (int intCountLocalReaders, LinkedSemaphoreSlim objNextLinkedSemaphore,
-                        _) =
-                    _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
-                if (intCountLocalReaders != 0)
+                _objParentRelease?.Dispose();
+                switch (_objParentReleaseAsync)
                 {
-                    throw new InvalidOperationException(
-                        "intCountLocalReaders was expected to be zero but isn't, a reader lock is still active within the call stack.");
+                    case SafeWriterSemaphoreRelease objCastReleaseWriter:
+                        objCastReleaseWriter.DisposeAsyncPre();
+                        Utils.SafelyRunSynchronously(() => objCastReleaseWriter.DisposeCoreAsync().AsTask());
+                        break;
+                    case SafeUpgradeableReaderSemaphoreRelease objCastReleaseUReader:
+                        objCastReleaseUReader.DisposeAsyncPre();
+                        Utils.SafelyRunSynchronously(() => objCastReleaseUReader.DisposeCoreAsync().AsTask());
+                        break;
+                    case SafeReaderSemaphoreRelease objCastReleaseReader:
+                        objCastReleaseReader.DisposeAsyncPre();
+                        Utils.SafelyRunSynchronously(() => objCastReleaseReader.DisposeCoreAsync().AsTask());
+                        break;
                 }
 
-                if (_objNextLinkedSemaphore != objNextLinkedSemaphore)
+                LinkedAsyncRWLockHelper objCurrentHelper = _objNextHelper.ParentLinkedHelper;
+#if ASYNCLOCALWRITEDEBUG
+#if DEBUG
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+                    objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper)
                 {
-                    if (objNextLinkedSemaphore == null)
-                        throw new InvalidOperationException(
-                            "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
-                            + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
-                            + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
-                    if (objNextLinkedSemaphore == _objNextLinkedSemaphore.ParentLinkedSemaphore)
-                        throw new InvalidOperationException(
-                            "_objNextLinkedSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
-                    throw new InvalidOperationException(
-                        "_objNextLinkedSemaphore was expected to be the current semaphore.");
+                    Utils.BreakIfDebug();
                 }
 #endif
-
-                LinkedSemaphoreSlim objCurrentLinkedSemaphore = _objNextLinkedSemaphore.ParentLinkedSemaphore;
                 _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
-                    new Tuple<int, LinkedSemaphoreSlim, LinkedSemaphoreSlim>(
-                        _intOldCountLocalReaders, objCurrentLinkedSemaphore,
-                        _objPreviousTopMostHeldWriterSemaphore);
-                // Wait for all other readers to exit before exiting ourselves
-                while (_objReaderWriterLock._intCountActiveReaders > 0 && _objReaderWriterLock._intCountActiveHiPrioReaders > 0)
-                    Utils.SafeSleep();
-                _objReaderWriterLock.ChangeNumActiveReaders(_intOldCountLocalReaders);
-
-                if (objCurrentLinkedSemaphore.MySemaphore.CurrentCount == 0)
+                    new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                        objCurrentHelper, _objPreviousTopMostHeldUReader, _objPreviousTopMostHeldWriter, EnhancedStackTrace.Current().ToString());
+#else
+#if DEBUG
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>
+                    objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper)
                 {
-                    try
-                    {
-                        _objNextLinkedSemaphore.MySemaphore.SafeWait();
-                    }
-                    catch
-                    {
-                        objCurrentLinkedSemaphore.ReleaseAll(_objPreviousTopMostHeldWriterSemaphore);
-                        throw;
-                    }
+                    Utils.BreakIfDebug();
+                }
+#endif
+                _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
+                        objCurrentHelper, _objPreviousTopMostHeldUReader, _objPreviousTopMostHeldWriter);
+#endif
 
-                    try
-                    {
-                        objCurrentLinkedSemaphore.ReleaseAll(_objPreviousTopMostHeldWriterSemaphore);
-                    }
-                    finally
-                    {
-                        _objNextLinkedSemaphore.MySemaphore.Release();
-                    }
+                bool blnDoUnlock;
+                try
+                {
+                    blnDoUnlock = !_blnSkipUnlockOnDispose && objCurrentHelper.ActiveWriterSemaphore.CurrentCount == 0;
+                }
+                catch
+                {
+                    _objNextHelper.Dispose();
+                    return;
                 }
 
-                _objNextLinkedSemaphore.Dispose();
+                try
+                {
+                    if (blnDoUnlock)
+                    {
+                        try
+                        {
+                            _objNextHelper.TakeSingleWriteLock();
+                        }
+                        catch
+                        {
+                            objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
+                                _objPreviousTopMostHeldWriter);
+                            throw;
+                        }
+
+                        try
+                        {
+                            objCurrentHelper.ReleaseWriteLock(_objPreviousTopMostHeldUReader,
+                                _objPreviousTopMostHeldWriter);
+                        }
+                        finally
+                        {
+                            _objNextHelper.ReleaseSingleWriteLock();
+                        }
+                    }
+                }
+                finally
+                {
+                    _objNextHelper.Dispose();
+                }
             }
         }
     }

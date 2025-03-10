@@ -110,7 +110,7 @@ namespace Chummer
             this.lblINILabel = new System.Windows.Forms.Label();
             this.lblCMStunLabel = new System.Windows.Forms.Label();
             this.lblCMPhysicalLabel = new System.Windows.Forms.Label();
-            this.lblKarma = new System.Windows.Forms.Label();
+            this.lblAttributesKarma = new System.Windows.Forms.Label();
             this.lblSpellDefenseIndirectDodgeLabel = new System.Windows.Forms.Label();
             this.lblSpellDefenseIndirectSoakLabel = new System.Windows.Forms.Label();
             this.lblSpellDefenseDirectSoakManaLabel = new System.Windows.Forms.Label();
@@ -165,7 +165,7 @@ namespace Chummer
             this.tsWeaponAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsWeaponName = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsWeaponNotes = new Chummer.DpiFriendlyToolStripMenuItem();
-            this.lmtControl = new Chummer.UI.Shared.LimitTabUserControl();
+            this.lmtControl = new Chummer.UI.Shared.LimitTabUserControl(GenericToken);
             this.cmsGearButton = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearButtonAddAccessory = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsGearButtonReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -1900,17 +1900,17 @@ namespace Chummer
             this.lblCMPhysicalLabel.Tag = "Label_OtherPhysicalCM";
             this.lblCMPhysicalLabel.Text = "Physical Condition Track:";
             // 
-            // lblKarma
+            // lblAttributesKarma
             // 
-            this.lblKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblKarma.AutoSize = true;
-            this.lblKarma.Location = new System.Drawing.Point(157, 39);
-            this.lblKarma.Name = "lblKarma";
-            this.lblKarma.Size = new System.Drawing.Size(37, 13);
-            this.lblKarma.TabIndex = 92;
-            this.lblKarma.Tag = "String_Karma";
-            this.lblKarma.Text = "Karma";
-            this.lblKarma.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.lblAttributesKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAttributesKarma.AutoSize = true;
+            this.lblAttributesKarma.Location = new System.Drawing.Point(157, 39);
+            this.lblAttributesKarma.Name = "lblAttributesKarma";
+            this.lblAttributesKarma.Size = new System.Drawing.Size(37, 13);
+            this.lblAttributesKarma.TabIndex = 92;
+            this.lblAttributesKarma.Tag = "String_Karma";
+            this.lblAttributesKarma.Text = "Karma";
+            this.lblAttributesKarma.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // lblSpellDefenseIndirectDodgeLabel
             // 
@@ -4226,8 +4226,8 @@ namespace Chummer
             this.tsVehicleLocationAddVehicle.ImageDpi96 = global::Chummer.Properties.Resources.car_add_16;
             this.tsVehicleLocationAddVehicle.Name = "tsVehicleLocationAddVehicle";
             this.tsVehicleLocationAddVehicle.Size = new System.Drawing.Size(166, 22);
-            this.tsVehicleLocationAddVehicle.Tag = "Menu_AddVehicle";
-            this.tsVehicleLocationAddVehicle.Text = "Add &Vehicle";
+            this.tsVehicleLocationAddVehicle.Tag = "Button_AddVehicle";
+            this.tsVehicleLocationAddVehicle.Text = "&Add Vehicle";
             this.tsVehicleLocationAddVehicle.Click += new System.EventHandler(this.tsVehicleLocationAddVehicle_Click);
             // 
             // tsVehicleRenameLocation
@@ -4661,18 +4661,16 @@ namespace Chummer
             this.tlpAlias.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpAlias.ColumnCount = 6;
             this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpAlias.Controls.Add(this.lblAttributesMetatype, 5, 1);
             this.tlpAlias.Controls.Add(this.lblAlias, 0, 0);
             this.tlpAlias.Controls.Add(this.lblAttributesAug, 4, 1);
             this.tlpAlias.Controls.Add(this.txtAlias, 1, 0);
-            this.tlpAlias.Controls.Add(this.lblKarma, 3, 1);
+            this.tlpAlias.Controls.Add(this.lblAttributesKarma, 3, 1);
             this.tlpAlias.Controls.Add(this.lblAttributes, 0, 1);
             this.tlpAlias.Controls.Add(this.lblAttributesBase, 2, 1);
             this.tlpAlias.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -4997,7 +4995,7 @@ namespace Chummer
             this.treMartialArts.Size = new System.Drawing.Size(304, 590);
             this.treMartialArts.TabIndex = 2;
             this.treMartialArts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMartialArts_AfterSelect);
-            this.treMartialArts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMartialArts_KeyDown);
+            this.treMartialArts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treMartialArts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // tlpMartialArtsButtons
@@ -5189,7 +5187,7 @@ namespace Chummer
             this.treSpells.Size = new System.Drawing.Size(304, 385);
             this.treSpells.TabIndex = 70;
             this.treSpells.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treSpells_AfterSelect);
-            this.treSpells.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treSpells_KeyDown);
+            this.treSpells.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treSpells.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpMagician
@@ -6084,7 +6082,7 @@ namespace Chummer
             this.treComplexForms.Size = new System.Drawing.Size(304, 385);
             this.treComplexForms.TabIndex = 71;
             this.treComplexForms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treComplexForms_AfterSelect);
-            this.treComplexForms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treComplexForms_KeyDown);
+            this.treComplexForms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treComplexForms.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpTechnomancer
@@ -6624,7 +6622,7 @@ namespace Chummer
             this.treAIPrograms.Size = new System.Drawing.Size(304, 590);
             this.treAIPrograms.TabIndex = 71;
             this.treAIPrograms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treAIPrograms_AfterSelect);
-            this.treAIPrograms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treAIPrograms_KeyDown);
+            this.treAIPrograms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             // 
             // tlpAdvancedProgramsButtons
             // 
@@ -6794,7 +6792,7 @@ namespace Chummer
             this.treCritterPowers.Size = new System.Drawing.Size(304, 590);
             this.treCritterPowers.TabIndex = 0;
             this.treCritterPowers.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCritterPowers_AfterSelect);
-            this.treCritterPowers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCritterPowers_KeyDown);
+            this.treCritterPowers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treCritterPowers.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // tlpCritterButtons
@@ -7158,7 +7156,7 @@ namespace Chummer
             this.treMetamagic.Size = new System.Drawing.Size(304, 590);
             this.treMetamagic.TabIndex = 96;
             this.treMetamagic.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMetamagic_AfterSelect);
-            this.treMetamagic.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMetamagic_KeyDown);
+            this.treMetamagic.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treMetamagic.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // tlpInitiationButtons
@@ -7209,6 +7207,7 @@ namespace Chummer
             this.tsMetamagicReapplyImprovements});
             this.cmsMetamagic.Name = "cmsMetamagic";
             this.cmsMetamagic.Size = new System.Drawing.Size(204, 158);
+            this.cmsMetamagic.Opening += new System.ComponentModel.CancelEventHandler(this.InitiationContextMenu_Opening);
             // 
             // tsMetamagicAddArt
             // 
@@ -7605,7 +7604,7 @@ namespace Chummer
             this.treCyberware.Size = new System.Drawing.Size(304, 590);
             this.treCyberware.TabIndex = 28;
             this.treCyberware.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCyberware_AfterSelect);
-            this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCyberware_KeyDown);
+            this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treCyberware.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpCyberware
@@ -8520,8 +8519,11 @@ namespace Chummer
             this.treGear.Size = new System.Drawing.Size(302, 564);
             this.treGear.TabIndex = 49;
             this.treGear.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treGear_AfterSelect);
-            this.treGear.DragOver += new System.Windows.Forms.DragEventHandler(this.treGear_DragOver);
-            this.treGear.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treGear_KeyDown);
+            this.treGear.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
+            this.treGear.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            this.treGear.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
+            this.treGear.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            this.treGear.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treGear.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpGear
@@ -9269,8 +9271,11 @@ namespace Chummer
             this.treArmor.Size = new System.Drawing.Size(302, 564);
             this.treArmor.TabIndex = 69;
             this.treArmor.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treArmor_AfterSelect);
-            this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.treArmor_DragOver);
-            this.treArmor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treArmor_KeyDown);
+            this.treArmor.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
+            this.treArmor.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
+            this.treArmor.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            this.treArmor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treArmor.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpArmor
@@ -9981,8 +9986,11 @@ namespace Chummer
             this.treWeapons.Size = new System.Drawing.Size(302, 564);
             this.treWeapons.TabIndex = 29;
             this.treWeapons.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treWeapons_AfterSelect);
-            this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.treWeapons_DragOver);
-            this.treWeapons.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treWeapons_KeyDown);
+            this.treWeapons.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
+            this.treWeapons.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
+            this.treWeapons.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            this.treWeapons.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treWeapons.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpWeapons
@@ -11552,9 +11560,8 @@ namespace Chummer
             this.treLifestyles.Size = new System.Drawing.Size(302, 564);
             this.treLifestyles.TabIndex = 80;
             this.treLifestyles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyles_AfterSelect);
-            this.treLifestyles.DragOver += new System.Windows.Forms.DragEventHandler(this.treLifestyles_DragOver);
             this.treLifestyles.DoubleClick += new System.EventHandler(this.treLifestyles_DoubleClick);
-            this.treLifestyles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLifestyles_KeyDown);
+            this.treLifestyles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treLifestyles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpLifestyleDetails
@@ -13482,8 +13489,11 @@ namespace Chummer
             this.treVehicles.Size = new System.Drawing.Size(304, 590);
             this.treVehicles.TabIndex = 30;
             this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
-            this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragOver);
-            this.treVehicles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treVehicles_KeyDown);
+            this.treVehicles.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
+            this.treVehicles.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
+            this.treVehicles.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            this.treVehicles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treVehicles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // tlpVehiclesButtons
@@ -16744,7 +16754,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSpiritHealth;
         private ElasticComboBox cboSpiritDetection;
         private System.Windows.Forms.Label lblSpiritDetection;
-        private System.Windows.Forms.Label lblKarma;
+        private System.Windows.Forms.Label lblAttributesKarma;
         private System.Windows.Forms.TabControl tabPeople;
         private System.Windows.Forms.TabPage tabContacts;
         private SplitButton cmdAddContact;

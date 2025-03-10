@@ -52,10 +52,10 @@ namespace Chummer
         {
             _objMyToken = objMyToken;
             InitializeComponent();
+            Disposed += (sender, args) => dlgColor?.Dispose();
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);
             txtNotes.Text = _strNotes = strOldNotes.NormalizeLineEndings();
-
             btnColorSelect.Enabled = _strNotes.Length > 0;
 
             _colNotes = colNotes;

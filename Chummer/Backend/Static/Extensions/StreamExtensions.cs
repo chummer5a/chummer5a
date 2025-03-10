@@ -172,61 +172,68 @@ namespace Chummer
                 fixed (char* ptr = s_Base64Table)
                 {
                     inData.Position = offset;
-                    byte[] achrBuffer = new byte[3];
-                    while (inData.Position < num2)
+                    byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(3);
+                    try
                     {
-                        token.ThrowIfCancellationRequested();
-                        _ = inData.Read(achrBuffer, 0, 3);
-
-                        if (insertLineBreaks)
+                        while (inData.Position < num2)
                         {
-                            if (num4 == 76)
+                            token.ThrowIfCancellationRequested();
+                            _ = inData.Read(achrBuffer, 0, 3);
+
+                            if (insertLineBreaks)
                             {
-                                sbdChars.Append("\r\n");
-                                num3 += 2;
-                                num4 = 0;
+                                if (num4 == 76)
+                                {
+                                    sbdChars.Append("\r\n");
+                                    num3 += 2;
+                                    num4 = 0;
+                                }
+
+                                num4 += 4;
                             }
 
-                            num4 += 4;
-                        }
-
-                        sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
+                            sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
                                 .Append(ptr[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
                                 .Append(ptr[((achrBuffer[1] & 0xF) << 2) | ((achrBuffer[2] & 0xC0) >> 6)])
                                 .Append(ptr[achrBuffer[2] & 0x3F]);
-                        num3 += 4;
-                    }
+                            num3 += 4;
+                        }
 
-                    token.ThrowIfCancellationRequested();
+                        token.ThrowIfCancellationRequested();
 
-                    if (insertLineBreaks && num != 0 && num4 == 76)
-                    {
-                        sbdChars.Append("\r\n");
-                        num3 += 2;
-                    }
-
-                    switch (num)
-                    {
-                        case 2:
+                        if (insertLineBreaks && num != 0 && num4 == 76)
                         {
-                            _ = inData.Read(achrBuffer, 0, 2);
-                            sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
+                            sbdChars.Append("\r\n");
+                            num3 += 2;
+                        }
+
+                        switch (num)
+                        {
+                            case 2:
+                            {
+                                _ = inData.Read(achrBuffer, 0, 2);
+                                sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
                                     .Append(ptr[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
                                     .Append(ptr[(achrBuffer[1] & 0xF) << 2])
                                     .Append(ptr[64]);
-                            num3 += 4;
-                            break;
-                        }
-                        case 1:
-                        {
-                            _ = inData.Read(achrBuffer, 0, 1);
-                            sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
+                                num3 += 4;
+                                break;
+                            }
+                            case 1:
+                            {
+                                _ = inData.Read(achrBuffer, 0, 1);
+                                sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
                                     .Append(ptr[(achrBuffer[0] & 3) << 4])
                                     .Append(ptr[64])
                                     .Append(ptr[64]);
-                            num3 += 4;
-                            break;
+                                num3 += 4;
+                                break;
+                            }
                         }
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(achrBuffer);
                     }
                 }
 
@@ -299,16 +306,18 @@ namespace Chummer
                 return (int)num;
             }
 
-            async ValueTask<int> ConvertToBase64ArrayAsync(StringBuilder sbdChars, Stream inData, int offset, int length,
-                                            bool insertLineBreaks)
+            async ValueTask<int> ConvertToBase64ArrayAsync(StringBuilder sbdChars, Stream inData, int offset,
+                int length,
+                bool insertLineBreaks)
             {
                 int num = length % 3;
                 int num2 = offset + (length - num);
                 int num3 = 0;
                 int num4 = 0;
+                inData.Position = offset;
+                byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(3);
+                try
                 {
-                    inData.Position = offset;
-                    byte[] achrBuffer = new byte[3];
                     while (inData.Position < num2)
                     {
                         token.ThrowIfCancellationRequested();
@@ -327,9 +336,9 @@ namespace Chummer
                         }
 
                         sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
-                                .Append(s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
-                                .Append(s_Base64Table[((achrBuffer[1] & 0xF) << 2) | ((achrBuffer[2] & 0xC0) >> 6)])
-                                .Append(s_Base64Table[achrBuffer[2] & 0x3F]);
+                            .Append(s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
+                            .Append(s_Base64Table[((achrBuffer[1] & 0xF) << 2) | ((achrBuffer[2] & 0xC0) >> 6)])
+                            .Append(s_Base64Table[achrBuffer[2] & 0x3F]);
                         num3 += 4;
                     }
 
@@ -344,26 +353,30 @@ namespace Chummer
                     switch (num)
                     {
                         case 2:
-                            {
-                                _ = await inData.ReadAsync(achrBuffer, 0, 2, token).ConfigureAwait(false);
-                                sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
-                                        .Append(s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
-                                        .Append(s_Base64Table[(achrBuffer[1] & 0xF) << 2])
-                                        .Append(s_Base64Table[64]);
-                                num3 += 4;
-                                break;
-                            }
+                        {
+                            _ = await inData.ReadAsync(achrBuffer, 0, 2, token).ConfigureAwait(false);
+                            sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
+                                .Append(s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
+                                .Append(s_Base64Table[(achrBuffer[1] & 0xF) << 2])
+                                .Append(s_Base64Table[64]);
+                            num3 += 4;
+                            break;
+                        }
                         case 1:
-                            {
-                                _ = await inData.ReadAsync(achrBuffer, 0, 1, token).ConfigureAwait(false);
-                                sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
-                                        .Append(s_Base64Table[(achrBuffer[0] & 3) << 4])
-                                        .Append(s_Base64Table[64])
-                                        .Append(s_Base64Table[64]);
-                                num3 += 4;
-                                break;
-                            }
+                        {
+                            _ = await inData.ReadAsync(achrBuffer, 0, 1, token).ConfigureAwait(false);
+                            sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
+                                .Append(s_Base64Table[(achrBuffer[0] & 3) << 4])
+                                .Append(s_Base64Table[64])
+                                .Append(s_Base64Table[64]);
+                            num3 += 4;
+                            break;
+                        }
                     }
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(achrBuffer);
                 }
 
                 return num3;

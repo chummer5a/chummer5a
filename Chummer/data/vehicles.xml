@@ -1357,7 +1357,7 @@
     </vehicle>
     <vehicle>
       <id>4b64e3b8-bc1f-4dea-8d53-d90cf35f4315</id>
-      <name>Airstream Traveller Chinook</name>
+      <name>Airstream Traveler Chinook</name>
       <page>59</page>
       <source>R5</source>
       <accel>1</accel>
@@ -1387,7 +1387,7 @@
     </vehicle>
     <vehicle>
       <id>cb970581-0a0d-47a3-b334-9d3feea05b7d</id>
-      <name>Airstream Traveller Preserve</name>
+      <name>Airstream Traveler Preserve</name>
       <page>59</page>
       <source>R5</source>
       <accel>1</accel>
@@ -1417,7 +1417,7 @@
     </vehicle>
     <vehicle>
       <id>732a042d-631c-485a-b8c4-ce010de0b8af</id>
-      <name>Airstream Traveller Outback</name>
+      <name>Airstream Traveler Outback</name>
       <page>59</page>
       <source>R5</source>
       <accel>1</accel>
@@ -3778,11 +3778,9 @@
       </gears>
       <mods>
         <name>Drone Arm</name>
-      </mods>
-      <modslots>1</modslots>
-      <mods>
         <name>Rigger Interface</name>
       </mods>
+      <modslots>1</modslots>
     </vehicle>
     <vehicle>
       <id>6b0c07b2-6e3d-4174-a748-859fd46c090c</id>
@@ -5951,7 +5949,7 @@
     <vehicle>
       <id>bffc0ba9-ab14-4226-bb4e-c2db70528a06</id>
       <name>Morgan Cutlass (Patrol Boat)</name>
-      <page>454</page>
+      <page>464</page>
       <source>SR5</source>
       <accel>2</accel>
       <armor>10</armor>
@@ -8572,7 +8570,7 @@
       <armor>12</armor>
       <avail>12</avail>
       <body>12</body>
-      <category>Rotorcraft</category>
+      <category>LTAV</category>
       <cost>82000</cost>
       <handling>4</handling>
       <pilot>4</pilot>

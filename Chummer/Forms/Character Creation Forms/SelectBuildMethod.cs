@@ -27,7 +27,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public sealed partial class SelectBuildMethod : Form
+    public sealed partial class SelectBuildMethod : Form, IHasCharacterObject
     {
         private readonly Character _objCharacter;
         private readonly CharacterBuildMethod _eStartingBuildMethod;
@@ -38,6 +38,8 @@ namespace Chummer
         private CancellationTokenSource _objRepopulateCharacterSettingsCancellationTokenSource;
         private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
+
+        public Character CharacterObject => _objCharacter;
 
         #region Control Events
 
@@ -75,21 +77,44 @@ namespace Chummer
                 if (!(await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken).ConfigureAwait(false) is CharacterSettings objSelectedGameplayOption))
                     return;
                 CharacterBuildMethod eSelectedBuildMethod = objSelectedGameplayOption.BuildMethod;
-                if (_blnForExistingCharacter && !_objCharacter.Created && _objCharacter.Settings.BuildMethod == _objCharacter.EffectiveBuildMethod && eSelectedBuildMethod != _eStartingBuildMethod)
+                if (_blnForExistingCharacter
+                    && !await _objCharacter.GetCreatedAsync(_objGenericToken).ConfigureAwait(false)
+                    && await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetBuildMethodAsync(
+                        _objGenericToken).ConfigureAwait(false) == await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false)
+                    && eSelectedBuildMethod != _eStartingBuildMethod)
                 {
-                    if (Program.ShowScrollableMessageBox(this,
-                                                         string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_SelectBP_SwitchBuildMethods", token: _objGenericToken).ConfigureAwait(false),
-                                                                       await LanguageManager.GetStringAsync("String_" + eSelectedBuildMethod, token: _objGenericToken).ConfigureAwait(false), await LanguageManager.GetStringAsync("String_" + _eStartingBuildMethod, token: _objGenericToken).ConfigureAwait(false)).WordWrap(),
-                                                         await LanguageManager.GetStringAsync("MessageTitle_SelectBP_SwitchBuildMethods", token: _objGenericToken).ConfigureAwait(false), MessageBoxButtons.YesNo,
-                                                         MessageBoxIcon.Warning) != DialogResult.Yes)
+                    if (await Program.ShowScrollableMessageBoxAsync(this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager
+                                    .GetStringAsync("Message_SelectBP_SwitchBuildMethods", token: _objGenericToken)
+                                    .ConfigureAwait(false),
+                                await LanguageManager
+                                    .GetStringAsync("String_" + eSelectedBuildMethod, token: _objGenericToken)
+                                    .ConfigureAwait(false),
+                                await LanguageManager
+                                    .GetStringAsync("String_" + _eStartingBuildMethod, token: _objGenericToken)
+                                    .ConfigureAwait(false)).WordWrap(),
+                            await LanguageManager
+                                .GetStringAsync("MessageTitle_SelectBP_SwitchBuildMethods", token: _objGenericToken)
+                                .ConfigureAwait(false), MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Warning, token: _objGenericToken).ConfigureAwait(false) != DialogResult.Yes)
                         return;
-                    string strOldCharacterSettingsKey = await _objCharacter.GetSettingsKeyAsync(_objGenericToken).ConfigureAwait(false);
-                    await _objCharacter.SetSettingsKeyAsync((await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false))
-                        .FirstOrDefault(x => ReferenceEquals(x.Value, objSelectedGameplayOption)).Key, _objGenericToken).ConfigureAwait(false);
+                    string strOldCharacterSettingsKey =
+                        await _objCharacter.GetSettingsKeyAsync(_objGenericToken).ConfigureAwait(false);
+                    await _objCharacter.SetSettingsKeyAsync(
+                            (await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken)
+                                .ConfigureAwait(false))
+                            .FirstOrDefault(x => ReferenceEquals(x.Value, objSelectedGameplayOption)).Key,
+                            _objGenericToken)
+                        .ConfigureAwait(false);
                     // If the character is loading, make sure we only switch build methods after we've loaded, otherwise we might cause all sorts of nastiness
                     if (_objCharacter.IsLoading)
-                        await _objCharacter.EnqueuePostLoadAsyncMethodAsync(x => _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod, strOldCharacterSettingsKey, x), _objGenericToken).ConfigureAwait(false);
-                    else if (!await _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod, strOldCharacterSettingsKey, _objGenericToken).ConfigureAwait(false))
+                        await _objCharacter
+                            .EnqueuePostLoadAsyncMethodAsync(
+                                x => _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod,
+                                    strOldCharacterSettingsKey, x), _objGenericToken).ConfigureAwait(false);
+                    else if (!await _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod,
+                                 strOldCharacterSettingsKey, _objGenericToken).ConfigureAwait(false))
                         return;
                 }
                 else
@@ -99,7 +124,11 @@ namespace Chummer
                             x => ReferenceEquals(
                                 x.Value, objSelectedGameplayOption)).Key, _objGenericToken).ConfigureAwait(false);
                 }
-                _objCharacter.IgnoreRules = await chkIgnoreRules.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false);
+
+                await _objCharacter
+                    .SetIgnoreRulesAsync(
+                        await chkIgnoreRules.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken)
+                            .ConfigureAwait(false), _objGenericToken).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(x =>
                 {
                     x.DialogResult = DialogResult.OK;
@@ -225,7 +254,7 @@ namespace Chummer
             _objGenericCancellationTokenSource.Cancel(false);
         }
 
-        private async ValueTask RepopulateCharacterSettings(CharacterSettings objSelected = null,
+        private async Task RepopulateCharacterSettings(CharacterSettings objSelected = null,
                                                             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -329,7 +358,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask ProcessCharacterSettingIndexChanged(CancellationToken token = default)
+        private async Task ProcessCharacterSettingIndexChanged(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
@@ -404,16 +433,13 @@ namespace Chummer
                             x.Text = strNone;
                     }, token).ConfigureAwait(false);
 
-                    List<string> lstCustomData = new List<string>();
-                    foreach (CustomDataDirectoryInfo objLoopInfo in objSelectedGameplayOption
-                                 .EnabledCustomDataDirectoryInfos)
-                        lstCustomData.Add(objLoopInfo.DisplayName);
-                    lstCustomData.Sort();
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCustomDataDirectories))
+                               out StringBuilder sbdCustomDataDirectories))
                     {
-                        foreach (string strName in lstCustomData)
-                            sbdCustomDataDirectories.AppendLine(strName);
+                        foreach (CustomDataDirectoryInfo objLoopInfo in await objSelectedGameplayOption
+                                     .GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false))
+                            sbdCustomDataDirectories.AppendLine(await objLoopInfo.GetDisplayNameAsync(token)
+                                .ConfigureAwait(false));
 
                         await lblCustomData.DoThreadSafeAsync(x =>
                         {

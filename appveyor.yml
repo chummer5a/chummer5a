@@ -8,12 +8,14 @@ configuration: Release
 platform: Any CPU
 init:
 - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-assembly_info:
+dotnet_csproj:
   patch: true
-  file: '**\AssemblyInfo.*'
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
   assembly_version: '{version}'
-  assembly_file_version: '{version}'
-  assembly_informational_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
 environment:
   SolutionDir: C:\projects\chummer\
 install:
@@ -64,13 +66,13 @@ before_build:
         & 'C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
         Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]
         Write-Host "Environment Variable: $env:OldMinorVersion"
-        $Assemblyfile = "C:\projects\chummer\Chummer\Properties\AssemblyInfo.cs"
-        $regex = new-object System.Text.RegularExpressions.Regex ('(AssemblyVersion(Attribute)?\s*\(\s*\")(.*)(\"\s*\))',  [System.Text.RegularExpressions.RegexOptions]::MultiLine)
-        $content = [IO.File]::ReadAllText($assemblyFile)
+        $csProjFile = "C:\projects\chummer\Chummer\Chummer.csproj"
+        $regex = new-object System.Text.RegularExpressions.Regex ('(?<=<AssemblyVersion>).*(?=<\/AssemblyVersion>)', [System.Text.RegularExpressions.RegexOptions]::MultiLine)
+        $content = [IO.File]::ReadAllText($csProjFile)
         $version = $null
         $match = $regex.Match($content)
         if($match.Success) {
-        $version = $match.groups[3].value
+        $version = $match.value
         }
         $Major = $version.Split('.')[0]
         $Minor = $version.Split('.')[1]

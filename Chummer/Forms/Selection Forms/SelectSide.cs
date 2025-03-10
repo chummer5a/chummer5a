@@ -51,7 +51,6 @@ namespace Chummer
                 lstSides.Add(new ListItem("Left", await LanguageManager.GetStringAsync("String_Improvement_SideLeft").ConfigureAwait(false)));
                 lstSides.Add(new ListItem("Right", await LanguageManager.GetStringAsync("String_Improvement_SideRight").ConfigureAwait(false)));
                 lstSides.Sort(CompareListItems.CompareNames);
-                
                 await cboSide.PopulateWithListItemsAsync(lstSides).ConfigureAwait(false);
             }
 

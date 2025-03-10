@@ -82,7 +82,7 @@ namespace Chummer
         /// <param name="imgToConvert">Image whose thumbnail is to be generated.</param>
         /// <param name="intThumbWidth">Width of the thumbnail.</param>
         /// <param name="intThumbHeight">Height of the thumbnail.</param>
-        /// <param name="blnKeepAspectRatio">Whether or not to make sure we retain the aspect ratio of the old image.</param>
+        /// <param name="blnKeepAspectRatio">Whether to make sure we retain the aspect ratio of the old image.</param>
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -126,7 +126,7 @@ namespace Chummer
         /// <param name="imgToConvert">Image whose thumbnail is to be generated.</param>
         /// <param name="intThumbWidth">Width of the thumbnail.</param>
         /// <param name="intThumbHeight">Height of the thumbnail.</param>
-        /// <param name="blnKeepAspectRatio">Whether or not to make sure we retain the aspect ratio of the old image.</param>
+        /// <param name="blnKeepAspectRatio">Whether to make sure we retain the aspect ratio of the old image.</param>
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
@@ -253,7 +253,7 @@ namespace Chummer
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
             };
             token.ThrowIfCancellationRequested();
-            
+
             return await Task.Run(() =>
             {
                 try
@@ -332,7 +332,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Image from the Base64 string.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<Image> ToImageAsync(this string strBase64String, CancellationToken token = default)
+        public static async Task<Image> ToImageAsync(this string strBase64String, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return string.IsNullOrEmpty(strBase64String)
@@ -363,7 +363,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Image from the Base64 string.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<Bitmap> ToImageAsync(this string strBase64String, PixelFormat eFormat, CancellationToken token = default)
+        public static async Task<Bitmap> ToImageAsync(this string strBase64String, PixelFormat eFormat, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strBase64String))

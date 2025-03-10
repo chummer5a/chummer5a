@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Buffers;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,9 +43,12 @@ namespace Chummer
 
         public enum ChummerCompressionPreset
         {
+            None,
+            Fastest,
             Fast,
             Balanced,
-            Thorough
+            Thorough,
+            Ultra
         }
 
         public static void CompressToLzmaFile(this Stream objInStream, FileStream objOutStream,
@@ -91,6 +95,13 @@ namespace Chummer
             // ReSharper disable RedundantArgumentDefaultValue
             switch (eChummerCompressionPreset)
             {
+                case ChummerCompressionPreset.None:
+                    return;
+
+                case ChummerCompressionPreset.Fastest:
+                    CompressToLzmaFile(objInStream, objOutStream, 8, 32, Encoder.EMatchFinderType.BT2, funcOnProgress);
+                    break;
+
                 case ChummerCompressionPreset.Fast:
                     CompressToLzmaFile(objInStream, objOutStream, 22, 32, Encoder.EMatchFinderType.BT2, funcOnProgress);
                     break;
@@ -103,6 +114,10 @@ namespace Chummer
                     CompressToLzmaFile(objInStream, objOutStream, 26, 128, Encoder.EMatchFinderType.BT4, funcOnProgress);
                     break;
 
+                case ChummerCompressionPreset.Ultra:
+                    CompressToLzmaFile(objInStream, objOutStream, 27, 255, Encoder.EMatchFinderType.BT4, funcOnProgress);
+                    break;
+
                 default:
                     goto case ChummerCompressionPreset.Balanced;
             }
@@ -111,11 +126,11 @@ namespace Chummer
 
         public static void CompressToLzmaFile(this Stream objInStream, FileStream objOutStream,
                                               int intCompressionLevel = Encoder.kDefaultDictionaryLogSize,
-                                              int numFastBytes = (int)Encoder.kNumFastBytesDefault,
+                                              int numFastBytes = Encoder.kNumFastBytesDefault,
                                               Encoder.EMatchFinderType mf = Encoder.EMatchFinderType.BT4,
                                               Action<long, long> funcOnProgress = null)
         {
-            if (intCompressionLevel < 0 || intCompressionLevel > 30)
+            if (intCompressionLevel < 0 || intCompressionLevel > 27)
                 throw new ArgumentOutOfRangeException(nameof(intCompressionLevel));
             if (numFastBytes < 5 || numFastBytes > 255)
                 throw new ArgumentOutOfRangeException(nameof(numFastBytes));
@@ -207,6 +222,13 @@ namespace Chummer
             // ReSharper disable RedundantArgumentDefaultValue
             switch (eChummerCompressionPreset)
             {
+                case ChummerCompressionPreset.None:
+                    return token.IsCancellationRequested ? Task.FromCanceled(token) : Task.CompletedTask;
+
+                case ChummerCompressionPreset.Fastest:
+                    return CompressToLzmaFileAsync(objInStream, objOutStream, 8, 32, Encoder.EMatchFinderType.BT2, funcOnProgress,
+                        token);
+
                 case ChummerCompressionPreset.Fast:
                     return CompressToLzmaFileAsync(objInStream, objOutStream, 22, 32, Encoder.EMatchFinderType.BT2, funcOnProgress,
                                                    token);
@@ -219,6 +241,10 @@ namespace Chummer
                     return CompressToLzmaFileAsync(objInStream, objOutStream, 26, 128, Encoder.EMatchFinderType.BT4, funcOnProgress,
                                                    token);
 
+                case ChummerCompressionPreset.Ultra:
+                    return CompressToLzmaFileAsync(objInStream, objOutStream, 27, 255, Encoder.EMatchFinderType.BT4, funcOnProgress,
+                        token);
+
                 default:
                     goto case ChummerCompressionPreset.Balanced;
             }
@@ -227,12 +253,12 @@ namespace Chummer
 
         public static async Task CompressToLzmaFileAsync(this Stream objInStream, FileStream objOutStream,
                                                    int intCompressionLevel = Encoder.kDefaultDictionaryLogSize,
-                                                   int numFastBytes = (int)Encoder.kNumFastBytesDefault,
+                                                   int numFastBytes = Encoder.kNumFastBytesDefault,
                                                    Encoder.EMatchFinderType mf = Encoder.EMatchFinderType.BT4,
                                                    Func<long, long, CancellationToken, Task> funcOnProgress = null,
                                                    CancellationToken token = default)
         {
-            if (intCompressionLevel < 0 || intCompressionLevel > 30)
+            if (intCompressionLevel < 0 || intCompressionLevel > 27)
                 throw new ArgumentOutOfRangeException(nameof(intCompressionLevel));
             if (numFastBytes < 5 || numFastBytes > 255)
                 throw new ArgumentOutOfRangeException(nameof(numFastBytes));
@@ -286,14 +312,28 @@ namespace Chummer
         public static void DecompressLzmaFile(this FileStream objInStream, Stream objOutStream, Action<long, long> funcOnProgress = null)
         {
             Decoder decoder = s_LzyDecoder.Value;
-
-            byte[] properties = new byte[5];
-            if (objInStream.Read(properties, 0, 5) != 5)
-                throw new ArgumentException("input .lzma is too short");
-            decoder.SetDecoderProperties(properties);
-            byte[] achrBuffer = new byte[8];
-            _ = objInStream.Read(achrBuffer, 0, 8);
-            long outSize = BitConverter.ToInt64(achrBuffer, 0);
+            byte[] properties = ArrayPool<byte>.Shared.Rent(5);
+            try
+            {
+                if (objInStream.Read(properties, 0, 5) != 5)
+                    throw new ArgumentException("input .lzma is too short");
+                decoder.SetDecoderProperties(properties);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(properties);
+            }
+            long outSize;
+            byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(8);
+            try
+            {
+                _ = objInStream.Read(achrBuffer, 0, 8);
+                outSize = BitConverter.ToInt64(achrBuffer, 0);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(achrBuffer);
+            }
             long compressedSize = objInStream.Length - objInStream.Position;
             ICodeProgress funcProgress = funcOnProgress != null ? new DelegateCodeProgress(funcOnProgress) : null;
             decoder.Code(objInStream, objOutStream, compressedSize, outSize, funcProgress);
@@ -305,13 +345,28 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             Decoder decoder = s_LzyDecoder.Value;
             token.ThrowIfCancellationRequested();
-            byte[] properties = new byte[5];
-            if (await objInStream.ReadAsync(properties, 0, 5, token).ConfigureAwait(false) != 5)
-                throw new ArgumentException("input .lzma is too short");
-            decoder.SetDecoderProperties(properties);
-            byte[] achrBuffer = new byte[8];
-            _ = await objInStream.ReadAsync(achrBuffer, 0, 8, token).ConfigureAwait(false);
-            long outSize = BitConverter.ToInt64(achrBuffer, 0);
+            byte[] properties = ArrayPool<byte>.Shared.Rent(5);
+            try
+            {
+                if (await objInStream.ReadAsync(properties, 0, 5, token).ConfigureAwait(false) != 5)
+                    throw new ArgumentException("input .lzma is too short");
+                decoder.SetDecoderProperties(properties);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(properties);
+            }
+            long outSize;
+            byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(8);
+            try
+            {
+                _ = await objInStream.ReadAsync(achrBuffer, 0, 8, token).ConfigureAwait(false);
+                outSize = BitConverter.ToInt64(achrBuffer, 0);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(achrBuffer);
+            }
             token.ThrowIfCancellationRequested();
             long compressedSize = objInStream.Length - objInStream.Position;
             token.ThrowIfCancellationRequested();

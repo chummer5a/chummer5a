@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections;
+using System.Globalization;
 
 namespace SevenZip.CommandLineParser
 {
@@ -90,11 +91,12 @@ namespace SevenZip.CommandLineParser
                 int maxLen = kNoLen;
                 for (int switchIndex = 0; switchIndex < _switches.Length; switchIndex++)
                 {
-                    int switchLen = switchForms[switchIndex].IDString.Length;
+                    SwitchForm objLoopForm = switchForms[switchIndex];
+                    int switchLen = objLoopForm.IDString.Length;
                     if (switchLen <= maxLen || pos + switchLen > len)
                         continue;
-                    if (string.Compare(switchForms[switchIndex].IDString, 0,
-                            srcString, pos, switchLen, true) == 0)
+                    if (string.Compare(objLoopForm.IDString, 0,
+                            srcString, pos, switchLen, true, CultureInfo.InvariantCulture) == 0)
                     {
                         matchedSwitchIndex = switchIndex;
                         maxLen = switchLen;
@@ -128,12 +130,12 @@ namespace SevenZip.CommandLineParser
                         {
                             if (tailSize < switchForm.MinLen)
                                 throw new Exception("switch is not full");
-                            string charSet = switchForm.PostCharSet;
                             const int kEmptyCharValue = -1;
                             if (tailSize == 0)
                                 matchedSwitch.PostCharIndex = kEmptyCharValue;
                             else
                             {
+                                string charSet = switchForm.PostCharSet;
                                 int index = charSet.IndexOf(srcString[pos]);
                                 if (index < 0)
                                     matchedSwitch.PostCharIndex = kEmptyCharValue;
@@ -196,10 +198,11 @@ namespace SevenZip.CommandLineParser
         {
             for (int i = 0; i < commandForms.Length; i++)
             {
-                string id = commandForms[i].IDString;
-                if (commandForms[i].PostStringMode)
+                CommandForm objCommandForm = commandForms[i];
+                string id = objCommandForm.IDString;
+                if (objCommandForm.PostStringMode)
                 {
-                    if (commandString.IndexOf(id, StringComparison.Ordinal) == 0)
+                    if (commandString.StartsWith(id, StringComparison.Ordinal))
                     {
                         postString = commandString.Substring(id.Length);
                         return i;

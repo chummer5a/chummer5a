@@ -31,7 +31,7 @@ namespace Chummer
 {
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayNameShort(GlobalSettings.DefaultLanguage)}")]
-    public sealed class MentorSpirit : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource, IHasNotes, IHasLockObject
+    public sealed class MentorSpirit : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource, IHasNotes, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -47,7 +47,7 @@ namespace Chummer
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
-        private XmlNode _nodBonus;
+        private XmlElement _nodBonus;
         private XmlNode _nodChoice1;
         private XmlNode _nodChoice2;
         private Improvement.ImprovementType _eMentorType;
@@ -55,8 +55,10 @@ namespace Chummer
         private readonly Character _objCharacter;
         private bool _blnMentorMask;
 
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
+
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
 
         #region Constructor
 
@@ -64,7 +66,8 @@ namespace Chummer
         {
             // Create the GUID for the new Mentor Spirit.
             _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = objCharacter.LockObject;
             if (xmlNodeMentor != null)
             {
                 string strName = xmlNodeMentor["name"]?.InnerText;
@@ -87,10 +90,12 @@ namespace Chummer
         /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
         /// <param name="strChoice1">Name/Text for Choice 1.</param>
         /// <param name="strChoice2">Name/Text for Choice 2.</param>
-        public void Create(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, string strForceValue = "", string strChoice1 = "", string strChoice2 = "")
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Create(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, string strForceValue = "", string strChoice1 = "", string strChoice2 = "", CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 _eMentorType = eMentorType;
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
@@ -115,7 +120,7 @@ namespace Chummer
                 if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
                 {
                     Notes = CommonFunctions.GetBookNotes(xmlMentor, Name, strDisplayName, Source, Page,
-                                                             DisplayPage(GlobalSettings.Language), _objCharacter);
+                                                             DisplayPage(GlobalSettings.Language), _objCharacter, token);
                 }
 
                 // Cache the English list of advantages gained through the Mentor Spirit.
@@ -125,28 +130,27 @@ namespace Chummer
                 _nodBonus = xmlMentor["bonus"];
                 if (_nodBonus != null)
                 {
-                    string strOldForce = ImprovementManager.ForcedValue;
-                    string strOldSelected = ImprovementManager.SelectedValue;
+                    string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                    string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                     try
                     {
-                        ImprovementManager.ForcedValue = strForceValue;
-                        ImprovementManager.SelectedValue = string.Empty;
+                        ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
                         if (!ImprovementManager.CreateImprovements(_objCharacter,
                                 Improvement.ImprovementSource.MentorSpirit,
                                 _guiID.ToString(
                                     "D", GlobalSettings.InvariantCultureInfo), _nodBonus,
-                                1, strDisplayName))
+                                1, strDisplayName, token: token))
                         {
                             _guiID = Guid.Empty;
                             return;
                         }
 
-                        _strExtra = ImprovementManager.SelectedValue;
+                        _strExtra = ImprovementManager.GetSelectedValue(_objCharacter);
                     }
                     finally
                     {
-                        ImprovementManager.ForcedValue = strOldForce;
-                        ImprovementManager.SelectedValue = strOldSelected;
+                        ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                        ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                     }
 
                     if (string.IsNullOrWhiteSpace(_strExtra))
@@ -165,36 +169,35 @@ namespace Chummer
                         + "]/bonus");
                     if (_nodChoice1 != null)
                     {
-                        string strOldForce = ImprovementManager.ForcedValue;
-                        string strOldSelected = ImprovementManager.SelectedValue;
+                        string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                        string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                         try
                         {
-                            ImprovementManager.ForcedValue = string.Empty;
-                            ImprovementManager.SelectedValue = string.Empty;
+                            ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
                             if (!ImprovementManager.CreateImprovements(_objCharacter,
                                     Improvement.ImprovementSource.MentorSpirit,
                                     _guiID.ToString(
                                         "D", GlobalSettings.InvariantCultureInfo),
-                                    _nodChoice1, 1, strDisplayName))
+                                    _nodChoice1, 1, strDisplayName, token: token))
                             {
                                 _guiID = Guid.Empty;
                                 return;
                             }
 
-                            _strExtraChoice1 = ImprovementManager.SelectedValue;
+                            _strExtraChoice1 = ImprovementManager.GetSelectedValue(_objCharacter);
                         }
                         finally
                         {
-                            ImprovementManager.ForcedValue = strOldForce;
-                            ImprovementManager.SelectedValue = strOldSelected;
+                            ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                            ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                         }
 
                         if (string.IsNullOrWhiteSpace(_strExtraChoice1))
-                            _strExtraChoice1 = strChoice1;
+                            _strExtraChoice1 = string.IsNullOrEmpty(strForceValue) ? strChoice1 : strForceValue;
                     }
                     else
                     {
-                        _strExtraChoice1 = strChoice1;
+                        _strExtraChoice1 = string.IsNullOrEmpty(strForceValue) ? strChoice1 : strForceValue;
                     }
                 }
                 else
@@ -209,36 +212,35 @@ namespace Chummer
                         + "]/bonus");
                     if (_nodChoice2 != null)
                     {
-                        string strOldForce = ImprovementManager.ForcedValue;
-                        string strOldSelected = ImprovementManager.SelectedValue;
+                        string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                        string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                         try
                         {
-                            ImprovementManager.ForcedValue = string.Empty;
-                            ImprovementManager.SelectedValue = string.Empty;
+                            ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
                             if (!ImprovementManager.CreateImprovements(_objCharacter,
                                     Improvement.ImprovementSource.MentorSpirit,
                                     _guiID.ToString(
                                         "D", GlobalSettings.InvariantCultureInfo),
-                                    _nodChoice2, 1, strDisplayName))
+                                    _nodChoice2, 1, strDisplayName, token: token))
                             {
                                 _guiID = Guid.Empty;
                                 return;
                             }
 
-                            _strExtraChoice2 = ImprovementManager.SelectedValue;
+                            _strExtraChoice2 = ImprovementManager.GetSelectedValue(_objCharacter);
                         }
                         finally
                         {
-                            ImprovementManager.ForcedValue = strOldForce;
-                            ImprovementManager.SelectedValue = strOldSelected;
+                            ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                            ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                         }
 
                         if (string.IsNullOrWhiteSpace(_strExtraChoice2))
-                            _strExtraChoice2 = strChoice2;
+                            _strExtraChoice2 = string.IsNullOrEmpty(strForceValue) ? strChoice2 : strForceValue;
                     }
                     else
                     {
-                        _strExtraChoice2 = strChoice2;
+                        _strExtraChoice2 = string.IsNullOrEmpty(strForceValue) ? strChoice2 : strForceValue;
                     }
                 }
                 else
@@ -260,6 +262,192 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Create a Mentor Spirit from an XmlNode.
+        /// </summary>
+        /// <param name="xmlMentor">XmlNode to create the object from.</param>
+        /// <param name="eMentorType">Whether this is a Mentor or a Paragon.</param>
+        /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
+        /// <param name="strChoice1">Name/Text for Choice 1.</param>
+        /// <param name="strChoice2">Name/Text for Choice 2.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, string strForceValue = "", string strChoice1 = "", string strChoice2 = "", CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _eMentorType = eMentorType;
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+                if (!xmlMentor.TryGetField("id", Guid.TryParse, out _guiSourceID))
+                {
+                    Log.Warn(new object[] { "Missing id field for xmlnode", xmlMentor });
+                    Utils.BreakIfDebug();
+                }
+
+                xmlMentor.TryGetStringFieldQuickly("name", ref _strName);
+                xmlMentor.TryGetStringFieldQuickly("source", ref _strSource);
+                xmlMentor.TryGetStringFieldQuickly("page", ref _strPage);
+
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                xmlMentor.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+                if (!xmlMentor.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                    xmlMentor.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                string strDisplayName = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                {
+                    Notes = await CommonFunctions.GetBookNotesAsync(xmlMentor, await GetNameAsync(token).ConfigureAwait(false), strDisplayName, Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+                }
+
+                // Cache the English list of advantages gained through the Mentor Spirit.
+                xmlMentor.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage);
+                xmlMentor.TryGetMultiLineStringFieldQuickly("disadvantage", ref _strDisadvantage);
+
+                _nodBonus = xmlMentor["bonus"];
+                if (_nodBonus != null)
+                {
+                    string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                    string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    try
+                    {
+                        ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
+                        if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                Improvement.ImprovementSource.MentorSpirit,
+                                _guiID.ToString(
+                                    "D", GlobalSettings.InvariantCultureInfo), _nodBonus,
+                                1, strDisplayName, token: token).ConfigureAwait(false))
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+
+                        _strExtra = ImprovementManager.GetSelectedValue(_objCharacter);
+                    }
+                    finally
+                    {
+                        ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                        ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
+                    }
+
+                    if (string.IsNullOrWhiteSpace(_strExtra))
+                        _strExtra = strForceValue;
+                }
+                else if (!string.IsNullOrWhiteSpace(strForceValue))
+                {
+                    _strExtra = strForceValue;
+                }
+                else
+                    _strExtra = string.Empty;
+
+                if (!string.IsNullOrEmpty(strChoice1))
+                {
+                    _nodChoice1 = xmlMentor.SelectSingleNode("choices/choice[name = " + strChoice1.CleanXPath()
+                        + "]/bonus");
+                    if (_nodChoice1 != null)
+                    {
+                        string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                        string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        try
+                        {
+                            ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
+                            if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                    Improvement.ImprovementSource.MentorSpirit,
+                                    _guiID.ToString(
+                                        "D", GlobalSettings.InvariantCultureInfo),
+                                    _nodChoice1, 1, strDisplayName, token: token).ConfigureAwait(false))
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
+
+                            _strExtraChoice1 = ImprovementManager.GetSelectedValue(_objCharacter);
+                        }
+                        finally
+                        {
+                            ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                            ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
+                        }
+
+                        if (string.IsNullOrWhiteSpace(_strExtraChoice1))
+                            _strExtraChoice1 = string.IsNullOrEmpty(strForceValue) ? strChoice1 : strForceValue;
+                    }
+                    else
+                    {
+                        _strExtraChoice1 = string.IsNullOrEmpty(strForceValue) ? strChoice1 : strForceValue;
+                    }
+                }
+                else
+                {
+                    _nodChoice1 = null;
+                    _strExtraChoice1 = string.Empty;
+                }
+
+                if (!string.IsNullOrEmpty(strChoice2))
+                {
+                    _nodChoice2 = xmlMentor.SelectSingleNode("choices/choice[name = " + strChoice2.CleanXPath()
+                        + "]/bonus");
+                    if (_nodChoice2 != null)
+                    {
+                        string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                        string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        try
+                        {
+                            ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
+                            if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                    Improvement.ImprovementSource.MentorSpirit,
+                                    _guiID.ToString(
+                                        "D", GlobalSettings.InvariantCultureInfo),
+                                    _nodChoice2, 1, strDisplayName, token: token).ConfigureAwait(false))
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
+
+                            _strExtraChoice2 = ImprovementManager.GetSelectedValue(_objCharacter);
+                        }
+                        finally
+                        {
+                            ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                            ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
+                        }
+
+                        if (string.IsNullOrWhiteSpace(_strExtraChoice2))
+                            _strExtraChoice2 = string.IsNullOrEmpty(strForceValue) ? strChoice2 : strForceValue;
+                    }
+                    else
+                    {
+                        _strExtraChoice2 = string.IsNullOrEmpty(strForceValue) ? strChoice2 : strForceValue;
+                    }
+                }
+                else
+                {
+                    _nodChoice2 = null;
+                    _strExtraChoice2 = string.Empty;
+                }
+
+                /*
+                if (string.IsNullOrEmpty(_strNotes))
+                {
+                    _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
+                    if (string.IsNullOrEmpty(_strNotes))
+                    {
+                        _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
+                    }
+                }
+                */
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private SourceString _objCachedSourceDetail;
 
         public SourceString SourceDetail
@@ -268,14 +456,35 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    if (_objCachedSourceDetail == default)
-                        _objCachedSourceDetail = SourceString.GetSourceString(Source,
-                                                                              DisplayPage(GlobalSettings.Language),
-                                                                              GlobalSettings.Language,
-                                                                              GlobalSettings.CultureInfo,
-                                                                              _objCharacter);
-                    return _objCachedSourceDetail;
+                    return _objCachedSourceDetail == default
+                        ? _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                            DisplayPage(GlobalSettings.Language),
+                            GlobalSettings.Language,
+                            GlobalSettings.CultureInfo,
+                            _objCharacter)
+                        : _objCachedSourceDetail;
                 }
+            }
+        }
+
+        public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _objCachedSourceDetail == default
+                    ? _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                        GlobalSettings.Language,
+                        GlobalSettings.CultureInfo,
+                        _objCharacter, token).ConfigureAwait(false)
+                    : _objCachedSourceDetail;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -319,7 +528,7 @@ namespace Chummer
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
 
-                if (SourceID != Guid.Empty && !string.IsNullOrEmpty(SourceIDString))
+                if (SourceID != Guid.Empty)
                 {
                     objWriter.WriteElementString("id", SourceIDString);
                 }
@@ -370,7 +579,7 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("extrachoice2", ref _strExtraChoice2);
                 objNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
-                if (_objCharacter.LastSavedVersion <= new Version(5, 217, 31))
+                if (_objCharacter.LastSavedVersion <= new ValueVersion(5, 217, 31))
                 {
                     // Cache advantages from data file because localized version used to be cached directly.
                     XPathNavigator node = objMyNode.Value;
@@ -411,11 +620,11 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -432,7 +641,7 @@ namespace Chummer
                             token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("mentortype", _eMentorType.ToString(), token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name_english", await GetNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("advantage",
                             await DisplayAdvantageAsync(strLanguageToPrint, token)
@@ -448,17 +657,17 @@ namespace Chummer
                     await objWriter
                         .WriteElementStringAsync(
                             "extra",
-                            await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
+                            await _objCharacter.TranslateExtraAsync(await GetExtraAsync(token).ConfigureAwait(false), strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "extrachoice1",
-                            await _objCharacter.TranslateExtraAsync(ExtraChoice1, strLanguageToPrint, token: token)
+                            await _objCharacter.TranslateExtraAsync(await GetExtraChoice1Async(token).ConfigureAwait(false), strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "extrachoice2",
-                            await _objCharacter.TranslateExtraAsync(ExtraChoice2, strLanguageToPrint, token: token)
+                            await _objCharacter.TranslateExtraAsync(await GetExtraChoice2Async(token).ConfigureAwait(false), strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
@@ -525,32 +734,98 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                {
-                    if (string.IsNullOrEmpty(_strName) && _objCharacter.MentorSpirits.Count > 0
-                                                       && _objCharacter.MentorSpirits[0] == this)
-                    {
-                        _strName = _objCharacter.MentorSpirits[0].Name;
-                    }
-
                     return _strName;
-                }
             }
             set
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _strName, value) != value)
+                    if (Interlocked.Exchange(ref _strName, value) == value)
+                        return;
+                    if (SourceID == Guid.Empty)
                     {
-                        if (SourceID == Guid.Empty)
+                        using (LockObject.EnterWriteLock())
                         {
                             _objCachedMyXmlNode = null;
                             _objCachedMyXPathNode = null;
                         }
+                    }
 
+                    using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                    {
                         if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
-                            _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayName));
+                            _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Name of the Mentor Spirit or Paragon.
+        /// </summary>
+        public async Task<string> GetNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Name of the Mentor Spirit or Paragon.
+        /// </summary>
+        public async Task SetNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strName, value) == value)
+                    return;
+                if (SourceID == Guid.Empty)
+                {
+                    token.ThrowIfCancellationRequested();
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker3 = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token)
+                    .ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await _objCharacter.MentorSpirits.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                        await _objCharacter.MentorSpirits.GetValueAtAsync(0, token).ConfigureAwait(false) == this)
+                        await _objCharacter
+                            .OnPropertyChangedAsync(nameof(Character.FirstMentorSpiritDisplayInformation), token)
+                            .ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker3.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -598,20 +873,21 @@ namespace Chummer
         /// <summary>
         /// Choices related to the mentor as it should be displayed in the UI.
         /// </summary>
-        public async ValueTask<string> DisplayExtrasAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayExtrasAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 string strReturn;
                 string strReturn1 = await LanguageManager
-                    .TranslateExtraAsync(Extra, strLanguage, _objCharacter, token: token)
+                    .TranslateExtraAsync(await GetExtraAsync(token).ConfigureAwait(false), strLanguage, _objCharacter, token: token)
                     .ConfigureAwait(false);
                 string strReturn2 = await LanguageManager
-                    .TranslateExtraAsync(ExtraChoice1, strLanguage, _objCharacter, token: token)
+                    .TranslateExtraAsync(await GetExtraChoice1Async(token).ConfigureAwait(false), strLanguage, _objCharacter, token: token)
                     .ConfigureAwait(false);
                 string strReturn3 = await LanguageManager
-                    .TranslateExtraAsync(ExtraChoice2, strLanguage, _objCharacter, token: token)
+                    .TranslateExtraAsync(await GetExtraChoice2Async(token).ConfigureAwait(false), strLanguage, _objCharacter, token: token)
                     .ConfigureAwait(false);
 
                 if (!string.IsNullOrWhiteSpace(strReturn1))
@@ -641,6 +917,10 @@ namespace Chummer
 
                 return strReturn;
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -657,10 +937,69 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _strExtra, value) != value && _objCharacter.MentorSpirits.Count > 0
-                                                                            && _objCharacter.MentorSpirits[0] == this)
-                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                    if (Interlocked.Exchange(ref _strExtra, value) != value)
+                    {
+                        using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                        {
+                            if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                                _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                        }
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Extra string related to improvements selected for the Mentor Spirit or Paragon.
+        /// </summary>
+        public async Task<string> GetExtraAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strExtra;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Extra string related to improvements selected for the Mentor Spirit or Paragon.
+        /// </summary>
+        public async Task SetExtraAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strExtra, value) == value)
+                    return;
+
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker3 = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token)
+                    .ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await _objCharacter.MentorSpirits.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                        await _objCharacter.MentorSpirits.GetValueAtAsync(0, token).ConfigureAwait(false) == this)
+                        await _objCharacter
+                            .OnPropertyChangedAsync(nameof(Character.FirstMentorSpiritDisplayInformation), token)
+                            .ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker3.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -678,10 +1017,69 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _strExtraChoice1, value) != value && _objCharacter.MentorSpirits.Count > 0
-                                                                            && _objCharacter.MentorSpirits[0] == this)
-                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                    if (Interlocked.Exchange(ref _strExtraChoice1, value) != value)
+                    {
+                        using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                        {
+                            if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                                _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                        }
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Extra string related to the improvements selected for the first choice of the Mentor Spirit or Paragon.
+        /// </summary>
+        public async Task<string> GetExtraChoice1Async(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strExtraChoice1;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Extra string related to the improvements selected for the first choice of the Mentor Spirit or Paragon.
+        /// </summary>
+        public async Task SetExtraChoice1Async(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strExtraChoice1, value) == value)
+                    return;
+
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker3 = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token)
+                    .ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await _objCharacter.MentorSpirits.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                        await _objCharacter.MentorSpirits.GetValueAtAsync(0, token).ConfigureAwait(false) == this)
+                        await _objCharacter
+                            .OnPropertyChangedAsync(nameof(Character.FirstMentorSpiritDisplayInformation), token)
+                            .ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker3.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -699,10 +1097,69 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _strExtraChoice2, value) != value && _objCharacter.MentorSpirits.Count > 0
-                                                                            && _objCharacter.MentorSpirits[0] == this)
-                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                    if (Interlocked.Exchange(ref _strExtraChoice2, value) != value)
+                    {
+                        using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                        {
+                            if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                                _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                        }
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Extra string related to the improvements selected for the second choice of the Mentor Spirit or Paragon.
+        /// </summary>
+        public async Task<string> GetExtraChoice2Async(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strExtraChoice2;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Extra string related to the improvements selected for the second choice of the Mentor Spirit or Paragon.
+        /// </summary>
+        public async Task SetExtraChoice2Async(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strExtraChoice2, value) == value)
+                    return;
+
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker3 = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token)
+                    .ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await _objCharacter.MentorSpirits.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                        await _objCharacter.MentorSpirits.GetValueAtAsync(0, token).ConfigureAwait(false) == this)
+                        await _objCharacter
+                            .OnPropertyChangedAsync(nameof(Character.FirstMentorSpiritDisplayInformation), token)
+                            .ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker3.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -758,9 +1215,10 @@ namespace Chummer
         /// <summary>
         /// Advantage of the mentor as it should be displayed in the UI.
         /// </summary>
-        public async ValueTask<string> DisplayAdvantageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayAdvantageAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 string strReturn = Advantage;
@@ -773,6 +1231,10 @@ namespace Chummer
                 }
 
                 return strReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -811,9 +1273,10 @@ namespace Chummer
         /// <summary>
         /// Disadvantage of the mentor as it should be displayed in the UI.
         /// </summary>
-        public async ValueTask<string> DisplayDisadvantageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayDisadvantageAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 string strReturn = Disadvantage;
@@ -826,6 +1289,10 @@ namespace Chummer
                 }
 
                 return strReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -844,19 +1311,21 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                return Name;
+                return await GetNameAsync(token).ConfigureAwait(false);
 
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                return objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                    .ConfigureAwait(false))?.Value ?? Name
-                    : Name;
+                return objNode?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? await GetNameAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -864,12 +1333,12 @@ namespace Chummer
 
         public string CurrentDisplayName => CurrentDisplayNameShort;
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default)
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default)
         {
             return DisplayNameShortAsync(GlobalSettings.Language, token);
         }
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
         {
             return GetCurrentDisplayNameShortAsync(token);
         }
@@ -932,19 +1401,21 @@ namespace Chummer
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                string s = objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
-                                    .ConfigureAwait(false))?.Value ?? Page
-                    : Page;
-                return !string.IsNullOrWhiteSpace(s) ? s : Page;
+                string strReturn = objNode?.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page;
+                return !string.IsNullOrWhiteSpace(strReturn) ? strReturn : Page;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1003,15 +1474,22 @@ namespace Chummer
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                XmlNode objDoc = blnSync
+                XmlDocument objDoc = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData(_eMentorType == Improvement.ImprovementType.MentorSpirit
                                                  ? "mentors.xml"
@@ -1024,13 +1502,19 @@ namespace Chummer
                     objReturn = objDoc.TryGetNodeById("/chummer/mentors/mentor", SourceID);
                 if (objReturn == null)
                 {
-                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/mentors/mentor", Name);
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/mentors/mentor", blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false));
                     objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
+            }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1039,8 +1523,15 @@ namespace Chummer
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
@@ -1060,12 +1551,18 @@ namespace Chummer
                     objReturn = objDoc.TryGetNodeById("/chummer/mentors/mentor", SourceID);
                 if (objReturn == null)
                 {
-                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/mentors/mentor", Name);
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/mentors/mentor", blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false));
                     objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;
+            }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1087,23 +1584,24 @@ namespace Chummer
             SourceDetail.SetControl(sourceControl);
         }
 
-        public Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
+        public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
         {
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
-            return SourceDetail.SetControlAsync(sourceControl, token);
+            await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            LockObject.Dispose();
+            // No disposal necessary because our LockObject is our character owner's LockObject
         }
 
         /// <inheritdoc />
         public ValueTask DisposeAsync()
         {
-            return LockObject.DisposeAsync();
+            // No disposal necessary because our LockObject is our character owner's LockObject
+            return default;
         }
     }
 }

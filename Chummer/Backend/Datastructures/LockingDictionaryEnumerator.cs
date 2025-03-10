@@ -24,36 +24,63 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public sealed class LockingDictionaryEnumerator : IDictionaryEnumerator, IDisposable
+    public sealed class LockingDictionaryEnumerator : IDictionaryEnumerator, IDisposable, IAsyncDisposable
     {
         private readonly IDisposable _objMyRelease;
+        private readonly IAsyncDisposable _objMyReleaseAsync;
 
         private IDictionaryEnumerator _objInternalEnumerator;
 
-        public static LockingDictionaryEnumerator Get(IHasLockObject objMyParent)
+        public static LockingDictionaryEnumerator Get(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            IDisposable objMyRelease = objMyParent.LockObject.EnterReadLock();
+            IDisposable objMyRelease = objMyParent.LockObject.IsInPotentialWriteLock
+                ? objMyParent.LockObject.EnterUpgradeableReadLock(token)
+                : objMyParent.LockObject.EnterReadLockWithMatchingParentLock(token);
             return new LockingDictionaryEnumerator(objMyRelease);
         }
 
-        public static async ValueTask<LockingDictionaryEnumerator> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
+        public static Task<LockingDictionaryEnumerator> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            IDisposable objMyRelease = await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            // Needs to be like this (using async inner function) to make sure AsyncLocals are set in proper location
+            Task<IAsyncDisposable> tskMyRelease = objMyParent.LockObject.IsInPotentialWriteLock
+                ? objMyParent.LockObject.EnterUpgradeableReadLockAsync(token)
+                : objMyParent.LockObject.EnterReadLockWithMatchingParentLockAsync(token);
+            return Inner(tskMyRelease);
+
+            async Task<LockingDictionaryEnumerator> Inner(Task<IAsyncDisposable> tskInnerMyRelease)
             {
-                token.ThrowIfCancellationRequested();
+                // Can't dispose our disposable here (on cancellation) because it would mess up AsyncLocal assignments (since we are technically in a different async context here)
+                return new LockingDictionaryEnumerator(await tskInnerMyRelease.ConfigureAwait(false));
             }
-            catch
-            {
-                objMyRelease.Dispose();
-                throw;
-            }
+        }
+
+        public static LockingDictionaryEnumerator GetWithSideEffects(IHasLockObject objMyParent, CancellationToken token = default)
+        {
+            IDisposable objMyRelease = objMyParent.LockObject.EnterReadLockWithUpgradeableParent(token);
             return new LockingDictionaryEnumerator(objMyRelease);
+        }
+
+        public static Task<LockingDictionaryEnumerator> GetWithSideEffectsAsync(IHasLockObject objMyParent, CancellationToken token = default)
+        {
+            // Needs to be like this (using async inner function) to make sure AsyncLocals are set in proper location
+            Task<IAsyncDisposable> tskMyRelease = objMyParent.LockObject.EnterReadLockWithUpgradeableParentAsync(token);
+            return Inner(tskMyRelease);
+
+            async Task<LockingDictionaryEnumerator> Inner(Task<IAsyncDisposable> tskInnerMyRelease)
+            {
+                // Can't dispose our disposable here (on cancellation) because it would mess up AsyncLocal assignments (since we are technically in a different async context here)
+                return new LockingDictionaryEnumerator(await tskInnerMyRelease.ConfigureAwait(false));
+            }
         }
 
         private LockingDictionaryEnumerator(IDisposable objMyRelease)
         {
             _objMyRelease = objMyRelease;
+        }
+
+        private LockingDictionaryEnumerator(IAsyncDisposable objMyReleaseAsync)
+        {
+            _objMyReleaseAsync = objMyReleaseAsync;
         }
 
         public void SetEnumerator(IDictionaryEnumerator objInternalEnumerator)
@@ -66,7 +93,27 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            _objMyRelease.Dispose();
+#if DEBUG
+            if (_objMyReleaseAsync != null)
+            {
+                // Tried to synchronously dispose an enumerator that was created asynchronously, sign of bad code.
+                Utils.BreakIfDebug();
+            }
+#endif
+            _objMyRelease?.Dispose();
+            if (_objMyReleaseAsync != null)
+            {
+                // We need to create the task first before awaiting it because the actual assignment of AsyncLocals must happen in the right place (outside of the safe-awaiter function)
+                Task tskDispose = _objMyReleaseAsync.DisposeAsync().AsTask();
+                Utils.SafelyRunSynchronously(() => tskDispose);
+            }
+        }
+
+        /// <inheritdoc />
+        public ValueTask DisposeAsync()
+        {
+            _objMyRelease?.Dispose();
+            return _objMyReleaseAsync?.DisposeAsync() ?? default;
         }
 
         /// <inheritdoc />

@@ -151,7 +151,7 @@ namespace Chummer
         {
             if (parser != null)
             {
-                XmlNode xmlField = node?[field];
+                XmlElement xmlField = node?[field];
                 if (xmlField != null)
                 {
                     return parser(xmlField.InnerText, out read);
@@ -470,21 +470,15 @@ namespace Chummer
         {
             if (node == null || string.IsNullOrEmpty(strPath))
                 return null;
+            string strSuffix = string.IsNullOrEmpty(strExtraXPath) ? "]" : " and (" + strExtraXPath + ")]";
             string strId = guidId.ToString("D", GlobalSettings.InvariantCultureInfo);
-            return node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath()
-                                         + (string.IsNullOrEmpty(strExtraXPath)
-                                             ? "]"
-                                             : " and (" + strExtraXPath + ")]"))
+            return node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath() + strSuffix)
                    // Split into two separate queries because the case-insensitive search here can be expensive if we're doing it a lot
-                   ?? node.SelectSingleNode(strPath + "[translate(id, 'abcdef', 'ABCDEF') = "
-                                                    + strId.ToUpperInvariant().CleanXPath()
-                                                    + (string.IsNullOrEmpty(strExtraXPath)
-                                                        ? "]"
-                                                        : " and (" + strExtraXPath + ")]"));
+                   ?? node.SelectSingleNode(strPath + "[translate(id, 'abcdef', 'ABCDEF') = " + strId.ToUpperInvariant().CleanXPath() + strSuffix);
         }
 
         /// <summary>
-        /// Determine whether or not an XmlNode with the specified name exists within an XmlNode.
+        /// Determine whether an XmlNode with the specified name exists within an XmlNode.
         /// </summary>
         /// <param name="xmlNode">XmlNode to examine.</param>
         /// <param name="strName">Name of the XmlNode to look for.</param>

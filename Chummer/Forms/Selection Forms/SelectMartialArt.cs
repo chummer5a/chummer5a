@@ -43,10 +43,10 @@ namespace Chummer
 
         public SelectMartialArt(Character objCharacter)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
 
             // Load the Martial Arts information.
             XPathNavigator xmlBaseMartialArtsDocumentNode = _objCharacter.LoadDataXPath("martialarts.xml");
@@ -63,8 +63,7 @@ namespace Chummer
                     = _xmlBaseMartialArtsNode.TryGetNodeByNameOrId("martialart", _strForcedValue);
                 if (xmlForcedMartialArtNode != null)
                 {
-                    string strSelectedId = (await xmlForcedMartialArtNode.SelectSingleNodeAndCacheExpressionAsync("id")
-                                                                         .ConfigureAwait(false))?.Value;
+                    string strSelectedId = xmlForcedMartialArtNode.SelectSingleNodeAndCacheExpression("id")?.Value;
                     if (!string.IsNullOrEmpty(strSelectedId))
                     {
                         _strSelectedMartialArt = strSelectedId;
@@ -124,7 +123,7 @@ namespace Chummer
                                      "techniques/technique"))
                         {
                             string strLoopTechniqueName
-                                = (await xmlMartialArtsTechnique.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value
+                                = xmlMartialArtsTechnique.SelectSingleNodeAndCacheExpression("name")?.Value
                                   ?? string.Empty;
                             if (!string.IsNullOrEmpty(strLoopTechniqueName))
                             {
@@ -139,7 +138,7 @@ namespace Chummer
                                     sbdTechniques.Append(
                                         !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                         StringComparison.OrdinalIgnoreCase)
-                                            ? (await xmlTechniqueNode.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
+                                            ? xmlTechniqueNode.SelectSingleNodeAndCacheExpression("translate")?.Value
                                               ?? strLoopTechniqueName
                                             : strLoopTechniqueName);
                                 }
@@ -152,8 +151,8 @@ namespace Chummer
                     await lblIncludedTechniques.DoThreadSafeAsync(x => x.Text = strTechniques).ConfigureAwait(false);
                     await gpbIncludedTechniques.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTechniques)).ConfigureAwait(false);
 
-                    string strSource = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                    string strPage = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                    string strSource = objXmlArt.SelectSingleNodeAndCacheExpression("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                    string strPage = objXmlArt.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlArt.SelectSingleNodeAndCacheExpression("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
                     await objSourceString.SetControlAsync(lblSource).ConfigureAwait(false);
                     string strSourceText = objSourceString.ToString();
@@ -189,7 +188,7 @@ namespace Chummer
         #region Properties
 
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Whether the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain => _blnAddAgain;
 
@@ -237,7 +236,7 @@ namespace Chummer
         /// <summary>
         /// Populate the Martial Arts list.
         /// </summary>
-        private async ValueTask RefreshArtList(CancellationToken token = default)
+        private async Task RefreshArtList(CancellationToken token = default)
         {
             string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ')';
             if (ShowQualities)
@@ -249,18 +248,18 @@ namespace Chummer
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
 
             XPathNodeIterator objArtList = _xmlBaseMartialArtsNode.Select("martialart[" + strFilter + ']');
-            
+
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMartialArt))
             {
                 foreach (XPathNavigator objXmlArt in objArtList)
                 {
-                    string strId = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
+                    string strId = objXmlArt.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (!string.IsNullOrEmpty(strId) && await objXmlArt.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                     {
                         lstMartialArt.Add(new ListItem(
                                               strId,
-                                              (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
-                                              ?? (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                                              objXmlArt.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                              ?? objXmlArt.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                               ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                     }
                 }

@@ -43,7 +43,7 @@ namespace Chummer
         private sealed class XmlReference : IHasLockObject
         {
             /// <summary>
-            /// Whether or not the XML content has been successfully checked for duplicate guids.
+            /// Whether the XML content has been successfully checked for duplicate guids.
             /// </summary>
             public bool GetDuplicatesChecked(CancellationToken token = default)
             {
@@ -58,23 +58,33 @@ namespace Chummer
             }
 
             /// <summary>
-            /// Whether or not the XML content has been successfully checked for duplicate guids.
+            /// Whether the XML content has been successfully checked for duplicate guids.
             /// </summary>
-            public async ValueTask<bool> GetDuplicatesCheckedAsync(CancellationToken token = default)
+            public async Task<bool> GetDuplicatesCheckedAsync(CancellationToken token = default)
             {
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     return _intDuplicatesChecked > 0;
                 }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
 
-            public async ValueTask SetDuplicatesCheckedAsync(bool blnNewValue, CancellationToken token = default)
+            public async Task SetDuplicatesCheckedAsync(bool blnNewValue, CancellationToken token = default)
             {
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     Interlocked.Exchange(ref _intDuplicatesChecked, blnNewValue.ToInt32());
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -83,19 +93,27 @@ namespace Chummer
             private int _intDuplicatesChecked = Utils.IsUnitTest.ToInt32();
             private int _intInitialLoadComplete;
 
+            public bool InitialLoadComplete => _intInitialLoadComplete != 0;
+
             /// <summary>
             /// XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
             /// </summary>
             public XmlDocument GetXmlContent(CancellationToken token = default)
             {
+                return GetXmlContent(Utils.SleepEmergencyReleaseMaxTicks, token);
+            }
+
+            /// <summary>
+            /// XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
+            /// </summary>
+            public XmlDocument GetXmlContent(int intMaxInitialLoadTicks, CancellationToken token = default)
+            {
                 token.ThrowIfCancellationRequested();
-                while (true)
+                int i = 0;
+                while (_intInitialLoadComplete == 0)
                 {
-                    int intLoadComplete;
-                    using (LockObject.EnterReadLock(token))
-                        intLoadComplete = _intInitialLoadComplete;
-                    if (intLoadComplete > 0)
-                        break;
+                    if (++i >= intMaxInitialLoadTicks)
+                        return null;
                     Utils.SafeSleep(token);
                 }
                 using (LockObject.EnterReadLock(token))
@@ -105,26 +123,33 @@ namespace Chummer
             /// <summary>
             /// XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
             /// </summary>
-            public async ValueTask<XmlDocument> GetXmlContentAsync(CancellationToken token = default)
+            public Task<XmlDocument> GetXmlContentAsync(CancellationToken token = default)
+            {
+                return GetXmlContentAsync(Utils.SleepEmergencyReleaseMaxTicks, token);
+            }
+
+            /// <summary>
+            /// XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
+            /// </summary>
+            public async Task<XmlDocument> GetXmlContentAsync(int intMaxInitialLoadTicks, CancellationToken token = default)
             {
                 token.ThrowIfCancellationRequested();
-                while (true)
+                int i = 0;
+                while (_intInitialLoadComplete == 0)
                 {
-                    int intLoadComplete;
-                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-                    {
-                        token.ThrowIfCancellationRequested();
-                        intLoadComplete = _intInitialLoadComplete;
-                    }
-
-                    if (intLoadComplete > 0)
-                        break;
+                    if (++i >= intMaxInitialLoadTicks)
+                        return null;
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     return _xmlContent;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -133,26 +158,43 @@ namespace Chummer
             /// </summary>
             public void SetXmlContent(XmlDocument objContent, CancellationToken token = default)
             {
+                token.ThrowIfCancellationRequested();
                 using (LockObject.EnterUpgradeableReadLock(token))
                 {
-                    if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
+                    if (ReferenceEquals(_xmlContent, objContent))
                         return;
                     using (LockObject.EnterWriteLock(token))
                     {
-                        if (objContent != null)
+                        XmlDocument objOldContent = Interlocked.Exchange(ref _xmlContent, objContent);
+                        if (ReferenceEquals(objOldContent, objContent))
+                            return;
+                        XPathDocument objOldXPathDocument = _objXPathContent;
+                        int intOldLoadComplete = Interlocked.Exchange(ref _intInitialLoadComplete, 0);
+                        try
                         {
                             Interlocked.Increment(ref _intInitialLoadComplete);
-                            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                            if (objContent != null)
                             {
-                                objContent.Save(objStream);
-                                objStream.Position = 0;
-                                using (XmlReader objXmlReader
-                                       = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
-                                    Interlocked.Exchange(ref _objXPathContent, new XPathDocument(objXmlReader));
+                                using (RecyclableMemoryStream objStream =
+                                       new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                                {
+                                    objContent.Save(objStream);
+                                    objStream.Position = 0;
+                                    using (XmlReader objXmlReader = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
+                                        _objXPathContent = new XPathDocument(objXmlReader);
+                                }
                             }
+                            else
+                                _objXPathContent = null;
                         }
-                        else
-                            Interlocked.Exchange(ref _objXPathContent, null);
+                        catch
+                        {
+                            if (intOldLoadComplete != 0)
+                                Interlocked.CompareExchange(ref _intInitialLoadComplete, intOldLoadComplete, 0);
+                            if (Interlocked.CompareExchange(ref _xmlContent, objOldContent, objContent) == objContent)
+                                _objXPathContent = objOldXPathDocument;
+                            throw;
+                        }
                     }
                 }
             }
@@ -160,35 +202,60 @@ namespace Chummer
             /// <summary>
             /// Set the XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
             /// </summary>
-            public async ValueTask SetXmlContentAsync(XmlDocument objContent, CancellationToken token = default)
+            public async Task SetXmlContentAsync(XmlDocument objContent, CancellationToken token = default)
             {
-                using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker =
+                    await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
+                    if (ReferenceEquals(_xmlContent, objContent))
                         return;
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (objContent != null)
+                        XmlDocument objOldContent = Interlocked.Exchange(ref _xmlContent, objContent);
+                        if (ReferenceEquals(objOldContent, objContent))
+                            return;
+                        XPathDocument objOldXPathDocument = _objXPathContent;
+                        int intOldLoadComplete = Interlocked.Exchange(ref _intInitialLoadComplete, 0);
+                        try
                         {
                             Interlocked.Increment(ref _intInitialLoadComplete);
-                            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                            if (objContent != null)
                             {
-                                objContent.Save(objStream);
-                                objStream.Position = 0;
-                                using (XmlReader objXmlReader = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
-                                    Interlocked.Exchange(ref _objXPathContent, new XPathDocument(objXmlReader));
+                                using (RecyclableMemoryStream objStream =
+                                       new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                                {
+                                    objContent.Save(objStream);
+                                    objStream.Position = 0;
+                                    using (XmlReader objXmlReader =
+                                           XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
+                                        Interlocked.Exchange(ref _objXPathContent, new XPathDocument(objXmlReader));
+                                }
                             }
+                            else
+                                Interlocked.Exchange(ref _objXPathContent, null);
                         }
-                        else
-                            Interlocked.Exchange(ref _objXPathContent, null);
+                        catch
+                        {
+                            if (intOldLoadComplete != 0)
+                                Interlocked.CompareExchange(ref _intInitialLoadComplete, intOldLoadComplete, 0);
+                            if (Interlocked.CompareExchange(ref _xmlContent, objOldContent, objContent) == objContent)
+                                _objXPathContent = objOldXPathDocument;
+                            throw;
+                        }
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -198,15 +265,24 @@ namespace Chummer
             /// </summary>
             public XPathDocument GetXPathContent(CancellationToken token = default)
             {
-                while (true)
+                return GetXPathContent(Utils.SleepEmergencyReleaseMaxTicks, token);
+            }
+
+            /// <summary>
+            /// XmlContent, but in a form that is much faster to navigate
+            /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
+            /// </summary>
+            public XPathDocument GetXPathContent(int intMaxInitialLoadTicks, CancellationToken token = default)
+            {
+                token.ThrowIfCancellationRequested();
+                int i = 0;
+                while (_intInitialLoadComplete == 0)
                 {
-                    int intLoadComplete;
-                    using (LockObject.EnterReadLock(token))
-                        intLoadComplete = _intInitialLoadComplete;
-                    if (intLoadComplete > 0)
-                        break;
+                    if (++i >= intMaxInitialLoadTicks)
+                        return null;
                     Utils.SafeSleep(token);
                 }
+
                 using (LockObject.EnterReadLock(token))
                     return _objXPathContent;
             }
@@ -215,25 +291,34 @@ namespace Chummer
             /// XmlContent, but in a form that is much faster to navigate
             /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
             /// </summary>
-            public async ValueTask<XPathDocument> GetXPathContentAsync(CancellationToken token = default)
+            public Task<XPathDocument> GetXPathContentAsync(CancellationToken token = default)
             {
-                while (true)
-                {
-                    int intLoadComplete;
-                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-                    {
-                        token.ThrowIfCancellationRequested();
-                        intLoadComplete = _intInitialLoadComplete;
-                    }
+                return GetXPathContentAsync(Utils.SleepEmergencyReleaseMaxTicks, token);
+            }
 
-                    if (intLoadComplete > 0)
-                        break;
+            /// <summary>
+            /// XmlContent, but in a form that is much faster to navigate
+            /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
+            /// </summary>
+            public async Task<XPathDocument> GetXPathContentAsync(int intMaxInitialLoadTicks, CancellationToken token = default)
+            {
+                token.ThrowIfCancellationRequested();
+                int i = 0;
+                while (_intInitialLoadComplete == 0)
+                {
+                    if (++i >= intMaxInitialLoadTicks)
+                        return null;
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     return _objXPathContent;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -294,7 +379,7 @@ namespace Chummer
                 foreach (XmlReference objReference in s_DicXmlDocuments.Values)
                 {
                     token.ThrowIfCancellationRequested();
-                    objReference.Dispose();
+                    objReference?.Dispose();
                 }
                 token.ThrowIfCancellationRequested();
                 s_DicXmlDocuments.Clear();
@@ -330,7 +415,7 @@ namespace Chummer
             }
         }
 
-        public static async ValueTask RebuildDataDirectoryInfoAsync(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories, CancellationToken token = default)
+        public static async Task RebuildDataDirectoryInfoAsync(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -339,7 +424,8 @@ namespace Chummer
                 foreach (XmlReference objReference in s_DicXmlDocuments.Values)
                 {
                     token.ThrowIfCancellationRequested();
-                    await objReference.DisposeAsync().ConfigureAwait(false);
+                    if (objReference != null)
+                        await objReference.DisposeAsync().ConfigureAwait(false);
                 }
                 token.ThrowIfCancellationRequested();
                 s_DicXmlDocuments.Clear();
@@ -424,118 +510,145 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             strFileName = Path.GetFileName(strFileName);
-            // Wait to make sure our data directories are loaded before proceeding
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? s_objDataDirectoriesLock.EnterUpgradeableReadLock(token) : await s_objDataDirectoriesLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                if (string.IsNullOrEmpty(strLanguage))
-                    strLanguage = GlobalSettings.Language;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
 
-                string strPath;
-                if (Utils.BasicDataFileNames.Contains(strFileName))
-                    strPath = Path.Combine(Utils.GetDataFolderPath, strFileName);
-                else
+            string strPath;
+            if (Utils.BasicDataFileNames.Contains(strFileName))
+                strPath = Path.Combine(Utils.GetDataFolderPath, strFileName);
+            else
+            {
+                strPath = FetchBaseFileFromCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token);
+                if (string.IsNullOrEmpty(strPath))
                 {
-                    strPath = FetchBaseFileFromCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token);
-                    if (string.IsNullOrEmpty(strPath))
-                    {
-                        // We don't actually have such a file
-                        Utils.BreakIfDebug();
-                        return new XmlDocument { XmlResolver = null }.CreateNavigator();
-                    }
+                    // We don't actually have such a file
+                    Utils.BreakIfDebug();
+                    return new XmlDocument { XmlResolver = null }.CreateNavigator();
+                }
+            }
+            string[] astrRelevantCustomDataPaths = Array.Empty<string>();
+            if (lstEnabledCustomDataPaths != null)
+            {
+                bool blnDoComplex = false;
+                token.ThrowIfCancellationRequested();
+                IDisposable objLocker = null;
+                IAsyncDisposable objLockerAsync = null;
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker = s_objDataDirectoriesLock.EnterReadLock(token);
+                else
+                    objLockerAsync = await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setDirectoriesPossible))
+                        astrRelevantCustomDataPaths = lstEnabledCustomDataPaths
+                            .Where(x => setDirectoriesPossible.Contains(x)).ToArray();
+                    else
+                        blnDoComplex = true;
+                }
+                finally
+                {
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objLocker.Dispose();
+                    else
+                        await objLockerAsync.DisposeAsync().ConfigureAwait(false);
                 }
 
-                string[] astrRelevantCustomDataPaths;
-                if (lstEnabledCustomDataPaths == null)
-                    astrRelevantCustomDataPaths = Array.Empty<string>();
-                else if (s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setDirectoriesPossible))
-                    astrRelevantCustomDataPaths = lstEnabledCustomDataPaths
-                                                  .Where(x => setDirectoriesPossible.Contains(x)).ToArray();
-                else
+                if (blnDoComplex)
                 {
-                    astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token)
-                        .ToArray();
-                    if (astrRelevantCustomDataPaths.Length > 0 && !Utils.IsDesignerMode
-                                                               && !Utils.IsRunningInVisualStudio)
+                    // Wait to make sure our data directories are loaded before proceeding
+                    objLocker = null;
+                    objLockerAsync = null;
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objLocker = s_objDataDirectoriesLock.EnterUpgradeableReadLock(token);
+                    else
+                        objLockerAsync = await s_objDataDirectoriesLock.EnterUpgradeableReadLockAsync(token)
+                            .ConfigureAwait(false);
+                    try
                     {
-                        IDisposable objLocker = null;
-                        IAsyncDisposable objLockerAsync = null;
-                        if (blnSync)
-                            // ReSharper disable once MethodHasAsyncOverload
-                            objLocker = s_objDataDirectoriesLock.EnterWriteLock(token);
+                        token.ThrowIfCancellationRequested();
+                        if (s_DicPathsWithCustomFiles.TryGetValue(strFileName,
+                                out HashSet<string> setDirectoriesPossible))
+                            astrRelevantCustomDataPaths = lstEnabledCustomDataPaths
+                                .Where(x => setDirectoriesPossible.Contains(x)).ToArray();
                         else
-                            objLockerAsync = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                        try
+                            astrRelevantCustomDataPaths =
+                                CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token)
+                                    .ToArray();
+                        if (astrRelevantCustomDataPaths.Length > 0 && !Utils.IsDesignerMode
+                                                                   && !Utils.IsRunningInVisualStudio)
                         {
-                            token.ThrowIfCancellationRequested();
-                            if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
-                            {
-                                setLoop = new HashSet<string>();
-                                s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
-                            }
-
-                            setLoop.AddRange(astrRelevantCustomDataPaths);
-                        }
-                        finally
-                        {
+                            IDisposable objLocker2 = null;
+                            IAsyncDisposable objLockerAsync2 = null;
                             if (blnSync)
                                 // ReSharper disable once MethodHasAsyncOverload
-                                objLocker.Dispose();
+                                objLocker2 = s_objDataDirectoriesLock.EnterWriteLock(token);
                             else
-                                await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+                                objLockerAsync2 = await s_objDataDirectoriesLock.EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName,
+                                        out HashSet<string> setLoop))
+                                {
+                                    setLoop = new HashSet<string>();
+                                    s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
+                                }
+
+                                setLoop.AddRange(astrRelevantCustomDataPaths);
+                            }
+                            finally
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objLocker2.Dispose();
+                                else
+                                    await objLockerAsync2.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                     }
-                }
-
-                bool blnHasCustomData = astrRelevantCustomDataPaths.Length > 0;
-                List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) { strLanguage, strPath };
-                lstKey.AddRange(astrRelevantCustomDataPaths);
-                KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
-
-                // Look to see if this XmlDocument is already loaded.
-                XmlDocument xmlDocumentOfReturn = null;
-                if (blnLoadFile
-                    || (blnHasCustomData && (strFileName == "packs.xml" ||
-                                             (GlobalSettings.LiveCustomData &&
-                                              strFileName != "improvements.xml")))
-                    || !s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
-                {
-                    // The file was not found in the reference list, so it must be loaded.
-                    bool blnLoadSuccess;
-                    if (blnSync)
+                    finally
                     {
-                        // ReSharper disable once MethodHasAsyncOverload
-                        xmlDocumentOfReturn = Load(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token);
-                        blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
-                    }
-                    else
-                    {
-                        xmlDocumentOfReturn
-                            = await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
-                        // Need this conditional so that we actually await the line above before we check to see if the load was successful or not
-                        // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-                        if (xmlDocumentOfReturn != null)
-                        {
-                            blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
-                        }
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverload
+                            objLocker.Dispose();
                         else
-                        {
-                            xmlReferenceOfReturn = null;
-                            blnLoadSuccess = false;
-                        }
-                    }
-
-                    if (!blnLoadSuccess)
-                    {
-                        Utils.BreakIfDebug();
-                        return null;
+                            await objLockerAsync.DisposeAsync().ConfigureAwait(false);
                     }
                 }
+            }
+
+            bool blnHasCustomData = astrRelevantCustomDataPaths.Length > 0;
+            List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) { strLanguage, strPath };
+            lstKey.AddRange(astrRelevantCustomDataPaths);
+            KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
+
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker3 = null;
+            IAsyncDisposable objLockerAsync3 = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker3 = s_objDataDirectoriesLock.EnterReadLock(token);
+            else
+                objLockerAsync3 = await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
 
                 // Live custom data will cause the reference's document to not be the same as the actual one we need, so we'll need to remake the document returned by the Load
-                if (blnHasCustomData && (strFileName == "packs.xml" || (GlobalSettings.LiveCustomData && strFileName != "improvements.xml")) && xmlDocumentOfReturn != null)
+                if (blnHasCustomData && (strFileName == "packs.xml" || (GlobalSettings.LiveCustomData && strFileName != "improvements.xml")))
                 {
+                    XmlDocument xmlDocumentOfReturn = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? Load(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile,
+                            token)
+                        : await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token)
+                            .ConfigureAwait(false);
+
                     token.ThrowIfCancellationRequested();
                     using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
@@ -547,12 +660,61 @@ namespace Chummer
                     }
                 }
 
-                XPathDocument objTemp = blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? xmlReferenceOfReturn.GetXPathContent(token)
-                    : await xmlReferenceOfReturn.GetXPathContentAsync(token).ConfigureAwait(false);
+                // Look to see if this XmlDocument is already loaded.
+                int intOuterCount = 0;
+                XmlReference xmlReferenceOfReturn = null;
+                XPathDocument objReturnDoc = null;
+                while (objReturnDoc == null)
+                {
+                    if (intOuterCount > Utils.WaitEmergencyReleaseMaxTicks)
+                    {
+                        Utils.BreakIfDebug();
+                        return null;
+                    }
+                    int intInnerCount = 0;
+                    bool blnLoadSuccess = !blnLoadFile &&
+                                          s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn) &&
+                                          xmlReferenceOfReturn != null;
+                    while (!blnLoadSuccess)
+                    {
+                        if (++intInnerCount > Utils.SleepEmergencyReleaseMaxTicks)
+                        {
+                            Utils.BreakIfDebug();
+                            return null;
+                        }
 
-                return objTemp.CreateNavigator();
+                        // The file was not found in the reference list, so it must be loaded.
+                        if (blnSync)
+                        {
+                            // ReSharper disable once MethodHasAsyncOverload
+                            Load(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token);
+                        }
+                        else
+                        {
+                            await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token)
+                                .ConfigureAwait(false);
+                        }
+
+                        blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn) &&
+                                         xmlReferenceOfReturn != null;
+                    }
+
+                    objReturnDoc = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? xmlReferenceOfReturn.GetXPathContent(30, token)
+                        : await xmlReferenceOfReturn.GetXPathContentAsync(30, token).ConfigureAwait(false);
+                    intOuterCount += intInnerCount;
+                }
+
+                return objReturnDoc.CreateNavigator();
+            }
+            finally
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker3.Dispose();
+                else
+                    await objLockerAsync3.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -593,21 +755,28 @@ namespace Chummer
         /// <param name="strFileName">Name of the XML file to load.</param>
         /// <param name="lstEnabledCustomDataPaths">List of enabled custom data directory paths in their load order</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>
-        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        /// <param name="blnForceLoadFile">Whether to force reloading content even if the file already exists.</param>
         /// <param name="token">CancellationToken to use.</param>
-        private static async Task<XmlDocument> LoadCoreAsync(bool blnSync, string strFileName, IReadOnlyCollection<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
+        private static async Task<XmlDocument> LoadCoreAsync(bool blnSync, string strFileName, IReadOnlyCollection<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnForceLoadFile = false, CancellationToken token = default)
         {
             bool blnFileFound = false;
             string strPath = string.Empty;
             strFileName = Path.GetFileName(strFileName);
             // Wait to make sure our data directories are loaded before proceeding
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? s_objDataDirectoriesLock.EnterUpgradeableReadLock(token) : await s_objDataDirectoriesLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = s_objDataDirectoriesLock.EnterReadLock(token);
+            else
+                objLockerAsync = await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 foreach (string strDirectory in s_SetDataDirectories)
                 {
-                    if (strDirectory.StartsWith(Utils.GetPacksFolderPath) && strFileName != "packs.xml")
+                    if (strDirectory.StartsWith(Utils.GetPacksFolderPath, StringComparison.OrdinalIgnoreCase) && strFileName != "packs.xml")
                         continue;
                     strPath = Path.Combine(strDirectory, strFileName);
                     if (File.Exists(strPath))
@@ -644,20 +813,22 @@ namespace Chummer
                 // Create a new document that everything will be merged into.
                 XmlDocument xmlScratchpad = new XmlDocument { XmlResolver = null };
                 // Look to see if this XmlDocument is already loaded.
-                Lazy<XmlReference> xmlNewReference = new Lazy<XmlReference>(() => new XmlReference()); // Needs to be a Lazy so that we don't unnecessary construct one.
+                Lazy<XmlReference> xmlNewReference = new Lazy<XmlReference>(() => new XmlReference()); // Needs to be a Lazy so that we don't unnecessarily construct one.
+                // ReSharper disable once AccessToDisposedClosure
                 XmlReference xmlReferenceOfReturn = null;
                 try
                 {
-                    xmlReferenceOfReturn = s_DicXmlDocuments.GetOrAdd(objDataKey, x =>
+                    do
                     {
-                        blnLoadFile = true;
-                        // ReSharper disable once AccessToDisposedClosure
-                        return xmlNewReference.Value;
-                    });
+                        xmlReferenceOfReturn = s_DicXmlDocuments.GetOrAdd(objDataKey, x => xmlNewReference.Value);
+                        if (xmlReferenceOfReturn == null)
+                            s_DicXmlDocuments.TryUpdate(objDataKey, xmlNewReference.Value, null);
+                    } while (xmlReferenceOfReturn == null);
                 }
                 finally
                 {
-                    if (xmlNewReference.IsValueCreated && !ReferenceEquals(xmlNewReference.Value, xmlReferenceOfReturn))
+                    if (xmlNewReference.IsValueCreated &&
+                        !ReferenceEquals(xmlNewReference.Value, xmlReferenceOfReturn))
                     {
                         // A reference was created and added while we were attempting to create one here, so dispose our reference
                         if (blnSync)
@@ -668,140 +839,221 @@ namespace Chummer
                     }
                 }
 
-                if (blnLoadFile)
+                if (blnForceLoadFile || !xmlReferenceOfReturn.InitialLoadComplete)
                 {
-                    IDisposable objLocker = null;
-                    IAsyncDisposable objLockerAsync = null;
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
-                        objLocker = xmlReferenceOfReturn.LockObject.EnterWriteLock(token);
-                    else
-                        objLockerAsync = await xmlReferenceOfReturn.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        token.ThrowIfCancellationRequested();
-                        if (blnHasCustomData)
+                        IDisposable objLocker2 = null;
+                        IAsyncDisposable objLockerAsync2 = null;
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverload
+                            objLocker2 = xmlReferenceOfReturn.LockObject.EnterUpgradeableReadLock(token);
+                        else
+                            objLockerAsync2 = await xmlReferenceOfReturn.LockObject.EnterUpgradeableReadLockAsync(token)
+                                .ConfigureAwait(false);
+                        try
                         {
-                            // If we have any custom data, make sure the base data is already loaded so we can easily just copy it over
-                            XmlDocument xmlBaseDocument = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? Load(strFileName, null, strLanguage, token: token)
-                                : await LoadAsync(strFileName, null, strLanguage, token: token).ConfigureAwait(false);
-                            xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
-                        }
-                        else if (!strLanguage.Equals(GlobalSettings.DefaultLanguage,
-                                                     StringComparison.OrdinalIgnoreCase))
-                        {
-                            // When loading in non-English data, just clone the English stuff instead of recreating it to hopefully save on time
-                            XmlDocument xmlBaseDocument = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? Load(strFileName, null, GlobalSettings.DefaultLanguage, token: token)
-                                : await LoadAsync(strFileName, null, GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false);
-                            xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
-                        }
-
-                        if (xmlReturn
-                            == null) // Not an else in case something goes wrong in safe cast in the line above
-                        {
-                            xmlReturn = new XmlDocument { XmlResolver = null };
-                            // write the root chummer node.
-                            xmlReturn.AppendChild(xmlReturn.CreateElement("chummer"));
-                            XmlElement xmlReturnDocElement = xmlReturn.DocumentElement;
-                            // Load the base file and retrieve all of the child nodes.
-                            try
+                            token.ThrowIfCancellationRequested();
+                            if (blnForceLoadFile || !xmlReferenceOfReturn.InitialLoadComplete)
                             {
+                                IDisposable objLocker3 = null;
+                                IAsyncDisposable objLockerAsync3 = null;
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    xmlScratchpad.LoadStandard(strPath);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objLocker3 = xmlReferenceOfReturn.LockObject.EnterWriteLock(token);
                                 else
-                                    await xmlScratchpad.LoadStandardAsync(strPath, token: token).ConfigureAwait(false);
-
-                                if (xmlReturnDocElement != null)
+                                    objLockerAsync3 = await xmlReferenceOfReturn.LockObject.EnterWriteLockAsync(token)
+                                        .ConfigureAwait(false);
+                                try
                                 {
-                                    using (XmlNodeList xmlNodeList = xmlScratchpad.SelectNodes("/chummer/*"))
+                                    token.ThrowIfCancellationRequested();
+                                    if (blnForceLoadFile || !xmlReferenceOfReturn.InitialLoadComplete)
                                     {
-                                        if (xmlNodeList?.Count > 0)
+                                        if (blnHasCustomData)
                                         {
-                                            foreach (XmlNode objNode in xmlNodeList)
+                                            // If we have any custom data, make sure the base data is already loaded so we can easily just copy it over
+                                            XmlDocument xmlBaseDocument = blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? Load(strFileName, null, strLanguage, token: token)
+                                                : await LoadAsync(strFileName, null, strLanguage, token: token)
+                                                    .ConfigureAwait(false);
+                                            xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
+                                        }
+                                        else if (!strLanguage.Equals(GlobalSettings.DefaultLanguage,
+                                                     StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            // When loading in non-English data, just clone the English stuff instead of recreating it to hopefully save on time
+                                            XmlDocument xmlBaseDocument = blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? Load(strFileName, null, GlobalSettings.DefaultLanguage, token: token)
+                                                : await LoadAsync(strFileName, null, GlobalSettings.DefaultLanguage,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                                            xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
+                                        }
+
+                                        if (xmlReturn
+                                            ==
+                                            null) // Not an else in case something goes wrong in safe cast in the line above
+                                        {
+                                            xmlReturn = new XmlDocument { XmlResolver = null };
+                                            // write the root chummer node.
+                                            xmlReturn.AppendChild(xmlReturn.CreateElement("chummer"));
+                                            XmlElement xmlReturnDocElement = xmlReturn.DocumentElement;
+                                            // Load the base file and retrieve all of the child nodes.
+                                            try
                                             {
-                                                // Append the entire child node to the new document.
-                                                xmlReturnDocElement.AppendChild(xmlReturn.ImportNode(objNode, true));
+                                                token.ThrowIfCancellationRequested();
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    xmlScratchpad.LoadStandard(strPath);
+                                                else
+                                                    await xmlScratchpad.LoadStandardAsync(strPath, token: token)
+                                                        .ConfigureAwait(false);
+
+                                                if (xmlReturnDocElement != null)
+                                                {
+                                                    using (XmlNodeList xmlNodeList =
+                                                           xmlScratchpad.SelectNodes("/chummer/*"))
+                                                    {
+                                                        if (xmlNodeList?.Count > 0)
+                                                        {
+                                                            foreach (XmlNode objNode in xmlNodeList)
+                                                            {
+                                                                // Append the entire child node to the new document.
+                                                                xmlReturnDocElement.AppendChild(
+                                                                    xmlReturn.ImportNode(objNode, true));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            catch (IOException e)
+                                            {
+                                                Log.Info(e);
+                                                Utils.BreakIfDebug();
+                                            }
+                                            catch (XmlException e)
+                                            {
+                                                Log.Warn(e);
+                                                Utils.BreakIfDebug();
                                             }
                                         }
+
+                                        // Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
+                                        if (blnHasCustomData)
+                                        {
+                                            foreach (string strLoopPath in astrRelevantCustomDataPaths)
+                                            {
+                                                DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strLoopPath,
+                                                    strFileName,
+                                                    token: token);
+                                            }
+                                        }
+
+                                        // Load the translation file for the current base data file if the selected language is not en-us.
+                                        if (!strLanguage.Equals(GlobalSettings.DefaultLanguage,
+                                                StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            // Everything is stored in the selected language file to make translations easier, keep all of the language-specific information together, and not require users to download 27 individual files.
+                                            // The structure is similar to the base data file, but the root node is instead a child /chummer node with a file attribute to indicate the XML file it translates.
+                                            XPathDocument objDataDoc = blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? LanguageManager.GetDataDocument(strLanguage, token)
+                                                : await LanguageManager.GetDataDocumentAsync(strLanguage, token)
+                                                    .ConfigureAwait(false);
+                                            if (objDataDoc != null)
+                                            {
+                                                XmlNode xmlBaseChummerNode = xmlReturn.SelectSingleNode("/chummer");
+                                                foreach (XPathNavigator objType in objDataDoc.CreateNavigator()
+                                                             .Select("/chummer/chummer[@file = "
+                                                                     + strFileName.CleanXPath() + "]/*"))
+                                                {
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        AppendTranslations(xmlReturn, objType, xmlBaseChummerNode,
+                                                            token);
+                                                    else
+                                                        await AppendTranslationsAsync(xmlReturn, objType,
+                                                                xmlBaseChummerNode,
+                                                                token)
+                                                            .ConfigureAwait(false);
+                                                }
+                                            }
+                                        }
+
+                                        // Cache the merged document and its relevant information
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            xmlReferenceOfReturn.SetXmlContent(xmlReturn, token);
+                                        else
+                                            await xmlReferenceOfReturn.SetXmlContentAsync(xmlReturn, token)
+                                                .ConfigureAwait(false);
+
+                                        // Make sure we do not override the cached document with our live data
+                                        if (blnHasCustomData &&
+                                            (GlobalSettings.LiveCustomData || strFileName == "packs.xml"))
+                                            xmlReturn = xmlReturn.Clone() as XmlDocument;
+                                    }
+                                    else
+                                    {
+                                        XmlDocument objTemp = blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? xmlReferenceOfReturn.GetXmlContent(token)
+                                            : await xmlReferenceOfReturn.GetXmlContentAsync(token)
+                                                .ConfigureAwait(false);
+                                        // Make sure we do not override the cached document with our live data
+                                        if (blnHasCustomData &&
+                                            (GlobalSettings.LiveCustomData || strFileName == "packs.xml"))
+                                            xmlReturn = objTemp.Clone() as XmlDocument;
+                                        else
+                                            xmlReturn = objTemp;
                                     }
                                 }
-                            }
-                            catch (IOException e)
-                            {
-                                Log.Info(e);
-                                Utils.BreakIfDebug();
-                            }
-                            catch (XmlException e)
-                            {
-                                Log.Warn(e);
-                                Utils.BreakIfDebug();
-                            }
-                        }
-
-                        // Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
-                        if (blnHasCustomData)
-                        {
-                            foreach (string strLoopPath in astrRelevantCustomDataPaths)
-                            {
-                                DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strLoopPath, strFileName, token: token);
-                            }
-                        }
-
-                        // Load the translation file for the current base data file if the selected language is not en-us.
-                        if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                        {
-                            // Everything is stored in the selected language file to make translations easier, keep all of the language-specific information together, and not require users to download 27 individual files.
-                            // The structure is similar to the base data file, but the root node is instead a child /chummer node with a file attribute to indicate the XML file it translates.
-                            XPathDocument objDataDoc = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? LanguageManager.GetDataDocument(strLanguage, token)
-                                : await LanguageManager.GetDataDocumentAsync(strLanguage, token).ConfigureAwait(false);
-                            if (objDataDoc != null)
-                            {
-                                XmlNode xmlBaseChummerNode = xmlReturn.SelectSingleNode("/chummer");
-                                foreach (XPathNavigator objType in objDataDoc.CreateNavigator()
-                                                                             .Select("/chummer/chummer[@file = "
-                                                                                 + strFileName.CleanXPath() + "]/*"))
+                                finally
                                 {
                                     if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        AppendTranslations(xmlReturn, objType, xmlBaseChummerNode, token);
+                                        objLocker3.Dispose();
                                     else
-                                        await AppendTranslationsAsync(xmlReturn, objType, xmlBaseChummerNode, token).ConfigureAwait(false);
+                                        await objLockerAsync3.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
+                            else
+                            {
+                                XmlDocument objTemp = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? xmlReferenceOfReturn.GetXmlContent(token)
+                                    : await xmlReferenceOfReturn.GetXmlContentAsync(token).ConfigureAwait(false);
+                                // Make sure we do not override the cached document with our live data
+                                if (blnHasCustomData && (GlobalSettings.LiveCustomData || strFileName == "packs.xml"))
+                                    xmlReturn = objTemp.Clone() as XmlDocument;
+                                else
+                                    xmlReturn = objTemp;
+                            }
+                        }
+                        finally
+                        {
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objLocker2.Dispose();
+                            else
+                                await objLockerAsync2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    catch
+                    {
+                        if (!xmlReferenceOfReturn.InitialLoadComplete && s_DicXmlDocuments.TryUpdate(objDataKey, null, xmlReferenceOfReturn))
+                        {
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                xmlReferenceOfReturn.Dispose();
+                            else
+                                await xmlReferenceOfReturn.DisposeAsync().ConfigureAwait(false);
                         }
 
-                        // Cache the merged document and its relevant information
-                        if (blnSync)
-                            // ReSharper disable once MethodHasAsyncOverload
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            xmlReferenceOfReturn.SetXmlContent(xmlReturn, token);
-                        else
-                            await xmlReferenceOfReturn.SetXmlContentAsync(xmlReturn, token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        if (blnSync)
-                            // ReSharper disable once MethodHasAsyncOverload
-                            objLocker.Dispose();
-                        else
-                            await objLockerAsync.DisposeAsync().ConfigureAwait(false);
-                    }
-
-                    // Make sure we do not override the cached document with our live data
-                    if (blnHasCustomData && (GlobalSettings.LiveCustomData || strFileName == "packs.xml"))
-                    {
-                        XmlDocument objTemp = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlReferenceOfReturn.GetXmlContent(token)
-                            : await xmlReferenceOfReturn.GetXmlContentAsync(token).ConfigureAwait(false);
-                        xmlReturn = objTemp.Clone() as XmlDocument;
+                        throw;
                     }
                 }
                 else
@@ -861,6 +1113,14 @@ namespace Chummer
                 }
 
                 return xmlReturn;
+            }
+            finally
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1071,7 +1331,7 @@ namespace Chummer
             }
         }
 
-        private static async ValueTask AppendTranslationsAsync(XmlDocument xmlDataDocument, XPathNavigator xmlTranslationListParentNode, XmlNode xmlDataParentNode, CancellationToken token = default)
+        private static async Task AppendTranslationsAsync(XmlDocument xmlDataDocument, XPathNavigator xmlTranslationListParentNode, XmlNode xmlDataParentNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             foreach (XPathNavigator objChild in xmlTranslationListParentNode.SelectAndCacheExpression("*", token))
@@ -1079,14 +1339,14 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 XmlNode xmlItem = null;
                 string strXPathPrefix = xmlTranslationListParentNode.Name + '/' + objChild.Name;
-                string strChildName = (await objChild.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value;
+                string strChildName = objChild.SelectSingleNodeAndCacheExpression("id", token)?.Value;
                 if (!string.IsNullOrEmpty(strChildName))
                 {
                     xmlItem = xmlDataParentNode.TryGetNodeByNameOrId(strXPathPrefix, strChildName);
                 }
                 if (xmlItem == null)
                 {
-                    strChildName = (await objChild.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value.Replace("&amp;", "&");
+                    strChildName = objChild.SelectSingleNodeAndCacheExpression("name", token)?.Value.Replace("&amp;", "&");
                     if (!string.IsNullOrEmpty(strChildName))
                     {
                         xmlItem = xmlDataParentNode.TryGetNodeByNameOrId(strXPathPrefix, strChildName);
@@ -1095,39 +1355,39 @@ namespace Chummer
                 // If this is a translatable item, find the proper node and add/update this information.
                 if (xmlItem != null)
                 {
-                    XPathNavigator xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false);
+                    XPathNavigator xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("translate", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altpage", token).ConfigureAwait(false);
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altpage", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altcode", token).ConfigureAwait(false);
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altcode", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altnotes", token).ConfigureAwait(false);
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altnotes", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altadvantage", token).ConfigureAwait(false);
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altadvantage", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altdisadvantage", token).ConfigureAwait(false);
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altdisadvantage", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altnameonpage", token).ConfigureAwait(false);
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altnameonpage", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("alttexts", token).ConfigureAwait(false);
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("alttexts", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    string strTranslate = (await objChild.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.InnerXml;
+                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXml;
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
@@ -1135,27 +1395,27 @@ namespace Chummer
                     }
 
                     // Sub-children to also process with the translation
-                    XPathNavigator xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("specs", token).ConfigureAwait(false);
+                    XPathNavigator xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("specs", token);
                     if (xmlSubItemsNode != null)
                     {
                         await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
                     }
-                    xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("metavariants", token).ConfigureAwait(false);
+                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("metavariants", token);
                     if (xmlSubItemsNode != null)
                     {
                         await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
                     }
-                    xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("choices", token).ConfigureAwait(false);
+                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("choices", token);
                     if (xmlSubItemsNode != null)
                     {
                         await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
                     }
-                    xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("talents", token).ConfigureAwait(false);
+                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("talents", token);
                     if (xmlSubItemsNode != null)
                     {
                         await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
                     }
-                    xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("versions", token).ConfigureAwait(false);
+                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("versions", token);
                     if (xmlSubItemsNode != null)
                     {
                         await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
@@ -1163,7 +1423,7 @@ namespace Chummer
                 }
                 else
                 {
-                    string strTranslate = (await objChild.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.InnerXml;
+                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXml;
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
@@ -1218,7 +1478,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (!Directory.Exists(strLoopPath))
                     continue;
-                if (strLoopPath.StartsWith(Utils.GetPacksFolderPath) && strFileName != "packs.xml")
+                if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, StringComparison.OrdinalIgnoreCase) && strFileName != "packs.xml")
                     continue;
                 foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
                                                                         SearchOption.AllDirectories))
@@ -1259,8 +1519,23 @@ namespace Chummer
                     continue;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     xmlFile.LoadStandard(strFile);
                 }
+#if DEBUG
+                catch (IOException e)
+                {
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+                    continue;
+                }
+                catch (XmlException e)
+                {
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+                    continue;
+                }
+#else
                 catch (IOException)
                 {
                     continue;
@@ -1269,6 +1544,7 @@ namespace Chummer
                 {
                     continue;
                 }
+#endif
                 token.ThrowIfCancellationRequested();
 
                 using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
@@ -1284,7 +1560,7 @@ namespace Chummer
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdFilter))
                                 {
-                                    XmlNode xmlIdNode = objType["id"];
+                                    XmlElement xmlIdNode = objType["id"];
                                     if (xmlIdNode != null)
                                         sbdFilter.Append("id = ")
                                                  .Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
@@ -1340,8 +1616,23 @@ namespace Chummer
                     continue;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     xmlFile.LoadStandard(strFile);
                 }
+#if DEBUG
+                catch (IOException e)
+                {
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+                    continue;
+                }
+                catch (XmlException e)
+                {
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+                    continue;
+                }
+#else
                 catch (IOException)
                 {
                     continue;
@@ -1350,6 +1641,7 @@ namespace Chummer
                 {
                     continue;
                 }
+#endif
                 token.ThrowIfCancellationRequested();
 
                 using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
@@ -1368,12 +1660,12 @@ namespace Chummer
                                 if (objParentNode == null)
                                     continue;
                                 string strFilter = string.Empty;
-                                XmlNode xmlIdNode = objChild["id"];
+                                XmlElement xmlIdNode = objChild["id"];
                                 if (xmlIdNode != null)
                                     strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
                                 else
                                 {
-                                    XmlNode xmlNameNode = objChild["name"];
+                                    XmlElement xmlNameNode = objChild["name"];
                                     if (xmlNameNode != null)
                                     {
                                         strFilter += (string.IsNullOrEmpty(strFilter)
@@ -1422,7 +1714,7 @@ namespace Chummer
                                 objNode.RemoveChild(objRemoveNode);
                             }
 
-                            XmlNode xmlExistingNode = objDocElement[objNode.Name];
+                            XmlElement xmlExistingNode = objDocElement[objNode.Name];
                             if (xmlExistingNode != null
                                 && xmlExistingNode.Attributes?.Count == objNode.Attributes?.Count)
                             {
@@ -1477,8 +1769,23 @@ namespace Chummer
                     continue;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     xmlFile.LoadStandard(strFile);
                 }
+#if DEBUG
+                catch (IOException e)
+                {
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+                    continue;
+                }
+                catch (XmlException e)
+                {
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+                    continue;
+                }
+#else
                 catch (IOException)
                 {
                     continue;
@@ -1487,6 +1794,7 @@ namespace Chummer
                 {
                     continue;
                 }
+#endif
                 token.ThrowIfCancellationRequested();
 
                 using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
@@ -1548,7 +1856,7 @@ namespace Chummer
                     else
                     {
                         // Fetch the old node based on identifiers present in the amending node (id or name)
-                        XmlNode objAmendingNodeId = xmlAmendingNode["id"];
+                        XmlElement objAmendingNodeId = xmlAmendingNode["id"];
                         if (objAmendingNodeId != null)
                         {
                             sbdFilter.Append("id = ")
@@ -1675,7 +1983,11 @@ namespace Chummer
                     case "regexreplace":
                         // Operation only supported if a pattern is actually defined
                         if (string.IsNullOrWhiteSpace(strRegexPattern))
+                        {
+                            strOperation = "replace";
                             goto case "replace";
+                        }
+
                         // Test to make sure RegEx pattern is properly formatted before actual amend code starts
                         // Exit out early if it is not properly formatted
                         try
@@ -2182,7 +2494,7 @@ namespace Chummer
                                          + "]/sheet[not(hide)]", token: token))
                         {
                             token.ThrowIfCancellationRequested();
-                            string strSheetFileName = (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("filename", token: token).ConfigureAwait(false))?.Value;
+                            string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename", token: token)?.Value;
                             if (string.IsNullOrEmpty(strSheetFileName))
                                 continue;
                             if (!blnDoList)
@@ -2196,7 +2508,7 @@ namespace Chummer
                                                                   StringComparison.OrdinalIgnoreCase)
                                                   ? Path.Combine(strLanguage, strSheetFileName)
                                                   : strSheetFileName,
-                                              (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                                              xmlSheet.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                               ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                         }
                     }
@@ -2212,7 +2524,7 @@ namespace Chummer
                     foreach (XPathNavigator xmlSheet in xmlIterator)
                     {
                         token.ThrowIfCancellationRequested();
-                        string strSheetFileName = (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("filename", token: token).ConfigureAwait(false))?.Value;
+                        string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename", token: token)?.Value;
                         if (string.IsNullOrEmpty(strSheetFileName))
                             continue;
                         if (!blnDoList)
@@ -2226,7 +2538,7 @@ namespace Chummer
                                                               StringComparison.OrdinalIgnoreCase)
                                               ? Path.Combine(strLanguage, strSheetFileName)
                                               : strSheetFileName,
-                                          (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                                          xmlSheet.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                           ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                     }
                 }
@@ -2245,7 +2557,7 @@ namespace Chummer
         /// <param name="strLanguage">Language to check.</param>
         /// <param name="lstBooks">List of books.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask Verify(string strLanguage, ICollection<string> lstBooks,
+        public static async Task Verify(string strLanguage, ICollection<string> lstBooks,
                                              CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -2256,16 +2568,17 @@ namespace Chummer
 
             try
             {
+                token.ThrowIfCancellationRequested();
                 objLanguageDoc = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
             }
             catch (IOException ex)
             {
-                Program.ShowScrollableMessageBox(ex.ToString());
+                await Program.ShowScrollableMessageBoxAsync(ex.ToString(), token: token).ConfigureAwait(false);
                 return;
             }
             catch (XmlException ex)
             {
-                Program.ShowScrollableMessageBox(ex.ToString());
+                await Program.ShowScrollableMessageBoxAsync(ex.ToString(), token: token).ConfigureAwait(false);
                 return;
             }
 
@@ -2315,7 +2628,7 @@ namespace Chummer
                             // Load the current English file.
                             XPathNavigator objEnglishDoc = await LoadXPathAsync(strFileName, token: token).ConfigureAwait(false);
                             XPathNavigator objEnglishRoot
-                                = await objEnglishDoc.SelectSingleNodeAndCacheExpressionAsync("/chummer", token: token).ConfigureAwait(false);
+                                = objEnglishDoc.SelectSingleNodeAndCacheExpression("/chummer", token: token);
 
                             foreach (XPathNavigator objType in objEnglishRoot.SelectChildren(XPathNodeType.Element))
                             {
@@ -2326,10 +2639,10 @@ namespace Chummer
                                 {
                                     token.ThrowIfCancellationRequested();
                                     // If the Node has a source element, check it and see if it's in the list of books that were specified.
-                                    // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
+                                    // This is done since not all the books are available in every language or the user may only wish to verify the content of certain books.
                                     bool blnContinue = true;
                                     XPathNavigator xmlSource
-                                        = await objChild.SelectSingleNodeAndCacheExpressionAsync("source", token: token).ConfigureAwait(false);
+                                        = objChild.SelectSingleNodeAndCacheExpression("source", token: token);
                                     if (xmlSource != null)
                                     {
                                         blnContinue = lstBooks.Contains(xmlSource.Value);
@@ -2352,7 +2665,7 @@ namespace Chummer
                                         XPathNavigator xmlTranslatedType
                                             = objLanguageRoot.SelectSingleNode(strTypeName);
                                         XPathNavigator xmlName
-                                            = await objChild.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false);
+                                            = objChild.SelectSingleNodeAndCacheExpression("name", token: token);
                                         // Look for a matching entry in the Language file.
                                         if (xmlName != null)
                                         {
@@ -2370,16 +2683,16 @@ namespace Chummer
 
                                                 if (objChild.HasChildren)
                                                 {
-                                                    if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                            "translate", token: token).ConfigureAwait(false) != null)
+                                                    if (xmlNode.SelectSingleNodeAndCacheExpression(
+                                                            "translate", token: token) != null)
                                                         blnTranslate = true;
 
                                                     // Do not mark page as missing if the original does not have it.
-                                                    if (await objChild.SelectSingleNodeAndCacheExpressionAsync("page", token: token).ConfigureAwait(false)
+                                                    if (objChild.SelectSingleNodeAndCacheExpression("page", token: token)
                                                         != null)
                                                     {
-                                                        if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                                "altpage", token: token).ConfigureAwait(false) != null)
+                                                        if (xmlNode.SelectSingleNodeAndCacheExpression(
+                                                                "altpage", token: token) != null)
                                                             blnAltPage = true;
                                                     }
                                                     else
@@ -2390,11 +2703,11 @@ namespace Chummer
                                                         || strFile.EndsWith(
                                                             "paragons.xml", StringComparison.OrdinalIgnoreCase))
                                                     {
-                                                        if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                                "altadvantage", token: token).ConfigureAwait(false) != null)
+                                                        if (xmlNode.SelectSingleNodeAndCacheExpression(
+                                                                "altadvantage", token: token) != null)
                                                             blnAdvantage = true;
-                                                        if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                                "altdisadvantage", token: token).ConfigureAwait(false) != null)
+                                                        if (xmlNode.SelectSingleNodeAndCacheExpression(
+                                                                "altdisadvantage", token: token) != null)
                                                             blnDisadvantage = true;
                                                     }
                                                     else
@@ -2406,8 +2719,8 @@ namespace Chummer
                                                 else
                                                 {
                                                     blnAltPage = true;
-                                                    if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                            "@translate", token: token).ConfigureAwait(false) != null)
+                                                    if (xmlNode.SelectSingleNodeAndCacheExpression(
+                                                            "@translate", token: token) != null)
                                                         blnTranslate = true;
                                                 }
 
@@ -2459,16 +2772,16 @@ namespace Chummer
                                             if (strFileName == "metatypes.xml")
                                             {
                                                 XPathNavigator xmlMetavariants
-                                                    = await objChild.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "metavariants", token: token).ConfigureAwait(false);
+                                                    = objChild.SelectSingleNodeAndCacheExpression(
+                                                        "metavariants", token: token);
                                                 if (xmlMetavariants != null)
                                                 {
                                                     foreach (XPathNavigator objMetavariant in xmlMetavariants
                                                                  .SelectAndCacheExpression("metavariant", token: token))
                                                     {
                                                         string strMetavariantName
-                                                            = (await objMetavariant
-                                                                .SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false)).Value;
+                                                            = objMetavariant
+                                                                .SelectSingleNodeAndCacheExpression("name", token: token).Value;
                                                         XPathNavigator objTranslate =
                                                             objLanguageRoot.SelectSingleNode(
                                                                 "metatypes/metatype[name = "
@@ -2478,13 +2791,13 @@ namespace Chummer
                                                         if (objTranslate != null)
                                                         {
                                                             bool blnTranslate
-                                                                = await objTranslate
-                                                                    .SelectSingleNodeAndCacheExpressionAsync(
-                                                                        "translate", token: token).ConfigureAwait(false) != null;
+                                                                = objTranslate
+                                                                    .SelectSingleNodeAndCacheExpression(
+                                                                        "translate", token: token) != null;
                                                             bool blnAltPage
-                                                                = await objTranslate
-                                                                      .SelectSingleNodeAndCacheExpressionAsync(
-                                                                          "altpage", token: token).ConfigureAwait(false)
+                                                                = objTranslate
+                                                                      .SelectSingleNodeAndCacheExpression(
+                                                                          "altpage", token: token)
                                                                   != null;
 
                                                             // Item exists, so make sure it has its translate attribute populated.
@@ -2542,7 +2855,7 @@ namespace Chummer
                                         else if (strFile.EndsWith("tips.xml", StringComparison.OrdinalIgnoreCase))
                                         {
                                             XPathNavigator xmlText
-                                                = await objChild.SelectSingleNodeAndCacheExpressionAsync("text", token: token).ConfigureAwait(false);
+                                                = objChild.SelectSingleNodeAndCacheExpression("text", token: token);
                                             // Look for a matching entry in the Language file.
                                             if (xmlText != null)
                                             {
@@ -2555,10 +2868,10 @@ namespace Chummer
                                                 {
                                                     // A match was found, so see what elements, if any, are missing.
                                                     bool blnTranslate
-                                                        = await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                              "translate", token: token).ConfigureAwait(false) != null
-                                                          || (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                              "@translated", token: token).ConfigureAwait(false))?.Value == bool.TrueString;
+                                                        = xmlNode.SelectSingleNodeAndCacheExpression(
+                                                              "translate", token: token) != null
+                                                          || xmlNode.SelectSingleNodeAndCacheExpression(
+                                                              "@translated", token: token)?.Value == bool.TrueString;
 
                                                     // At least one piece of data was missing so write out the result node.
                                                     if (!blnTranslate)
@@ -2612,8 +2925,8 @@ namespace Chummer
                                                 if (objNode != null)
                                                 {
                                                     // Make sure the translate attribute is populated.
-                                                    if (await objNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                            "@translate", token: token).ConfigureAwait(false) == null)
+                                                    if (objNode.SelectSingleNodeAndCacheExpression(
+                                                            "@translate", token: token) == null)
                                                     {
                                                         if (!blnTypeWritten)
                                                         {
@@ -2664,7 +2977,7 @@ namespace Chummer
                                 {
                                     token.ThrowIfCancellationRequested();
                                     string strChildNameElement
-                                        = (await objChild.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value;
+                                        = objChild.SelectSingleNodeAndCacheExpression("name", token: token)?.Value;
                                     // Look for a matching entry in the English file.
                                     if (!string.IsNullOrEmpty(strChildNameElement))
                                     {
@@ -2700,6 +3013,6 @@ namespace Chummer
             }
         }
 
-        #endregion Methods
+#endregion Methods
     }
 }

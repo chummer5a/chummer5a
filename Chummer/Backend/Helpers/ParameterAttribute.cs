@@ -37,8 +37,8 @@ namespace Chummer
     {
         //Keep a single regex to not create one for each class.
         //This might not be thread save if winforms ever gets multithreaded
-        private static readonly Regex s_RgxFixedExtract = new Regex(@"FixedValues\(([^)]*)\)",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Lazy<Regex> s_RgxFixedExtract = new Lazy<Regex>(() => new Regex(@"FixedValues\(([^)]*)\)",
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         private readonly Gear _objGear;
         private readonly string _strAttribute;
@@ -55,13 +55,13 @@ namespace Chummer
             if (_strAttribute.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
                 //Regex to extract anything between ( ) in Param
-                Match m = s_RgxFixedExtract.Match(_strAttribute);
+                Match m = s_RgxFixedExtract.Value.Match(_strAttribute);
                 string strValues = m.Groups[1].Value;
 
                 //Regex to extract anything in between [ ]
                 //Not sure why i don't just split by , and remove it during
                 //next phase
-                MatchCollection m2 = s_RgxSquareBrackets.Matches(strValues);
+                MatchCollection m2 = s_RgxSquareBrackets.Value.Matches(strValues);
 
                 //double junk; //Not used, tryparse needs out
 
@@ -75,8 +75,8 @@ namespace Chummer
             }
         }
 
-        private static readonly Regex s_RgxSquareBrackets = new Regex(@"\[([^\]]*)\]",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Lazy<Regex> s_RgxSquareBrackets = new Lazy<Regex>(() => new Regex(@"\[([^\]]*)\]",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         public Gear Gear => _objGear;
 
@@ -89,13 +89,14 @@ namespace Chummer
                 if (_dblFixedValues == null)
                     return 0;
 
-                if (_objGear.Rating < 0)
+                int intRating = _objGear.Rating;
+                if (intRating < 0)
                 {
                     //In case of underflow return lowest
-                    return _dblFixedValues[_objGear.Rating];
+                    return _dblFixedValues[intRating];
                 }
 
-                if (_objGear.Rating >= _dblFixedValues.Length)
+                if (intRating >= _dblFixedValues.Length)
                 {
                     //Return highest if overflow
                     return _dblFixedValues[_dblFixedValues.Length - 1];
@@ -105,8 +106,7 @@ namespace Chummer
                 //preferred. This is an elseif
                 if (true)
                 {
-                    return _dblFixedValues[_objGear.Rating];
-                    /**/
+                    return _dblFixedValues[intRating];
                 }
             }
         }

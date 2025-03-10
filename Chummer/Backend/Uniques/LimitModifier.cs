@@ -41,7 +41,7 @@ namespace Chummer
     /// A Skill Limit Modifier.
     /// </summary>
     [DebuggerDisplay("{" + nameof(DisplayName) + "}")]
-    public class LimitModifier : IHasInternalId, IHasName, ICanRemove
+    public class LimitModifier : IHasInternalId, IHasName, ICanRemove, IHasCharacterObject
     {
         private Guid _guiID;
         private bool _blnCanDelete = true;
@@ -51,6 +51,8 @@ namespace Chummer
         private string _strCondition = string.Empty;
         private int _intBonus;
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -123,7 +125,7 @@ namespace Chummer
         /// <param name="objCulture">Culture in which to print</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -252,7 +254,7 @@ namespace Chummer
             return _strCachedDisplayCondition;
         }
 
-        public async ValueTask<string> DisplayConditionAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayConditionAsync(string strLanguage, CancellationToken token = default)
         {
             // If we've already cached a value for this, just return it.
             // (Ghetto fix cache culture tag and compare to current?)
@@ -285,7 +287,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this limit can be modified and/or deleted
+        /// Whether this limit can be modified and/or deleted
         /// </summary>
         public bool CanDelete => _blnCanDelete;
 
@@ -306,7 +308,7 @@ namespace Chummer
         /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
@@ -324,7 +326,7 @@ namespace Chummer
             return strReturn;
         }
 
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             string strBonus;
             if (_intBonus > 0)
@@ -389,6 +391,25 @@ namespace Chummer
             Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_CannotDeleteLimitModifier"),
                                              LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier"),
                                              MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return false;
+        }
+
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (await _objCharacter.LimitModifiers.ContainsAsync(this, token).ConfigureAwait(false) && blnConfirmDelete)
+            {
+                return await CommonFunctions.ConfirmDeleteAsync(
+                           await LanguageManager.GetStringAsync("Message_DeleteLimitModifier", token: token).ConfigureAwait(false), token).ConfigureAwait(false)
+                       && await _objCharacter.LimitModifiers.RemoveAsync(this, token).ConfigureAwait(false);
+            }
+
+            // No character-created limits found, which means it comes from an improvement.
+            // TODO: ImprovementSource exists for a reason.
+            await Program.ShowScrollableMessageBoxAsync(
+                await LanguageManager.GetStringAsync("Message_CannotDeleteLimitModifier", token: token).ConfigureAwait(false),
+                await LanguageManager.GetStringAsync("MessageTitle_CannotDeleteLimitModifier", token: token).ConfigureAwait(false),
+                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
             return false;
         }
     }

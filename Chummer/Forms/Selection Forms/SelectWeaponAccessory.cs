@@ -51,16 +51,14 @@ namespace Chummer
 
         public SelectWeaponAccessory(Character objCharacter)
         {
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
             Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
-            _objCharacter = objCharacter;
             // Load the Weapon information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseChummerNode));
@@ -95,7 +93,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of available weapon accessories.
         /// </summary>
-        private async ValueTask RefreshList(CancellationToken token = default)
+        private async Task RefreshList(CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAccessories))
             {
@@ -126,10 +124,11 @@ namespace Chummer
                 bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 decimal decBaseCostMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
+                decimal decNuyen = blnFreeItem || !blnShowOnlyAffordItems ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select(
                              "accessories/accessory" + strFilter))
                 {
-                    string strId = (await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
+                    string strId = objXmlAccessory.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
                     if (!await _objParentWeapon.CheckAccessoryRequirementsAsync(objXmlAccessory, token).ConfigureAwait(false))
@@ -141,12 +140,12 @@ namespace Chummer
                     if (!blnHideOverAvailLimit || await objXmlAccessory.CheckAvailRestrictionAsync(_objCharacter, token: token).ConfigureAwait(false)
                         && (blnFreeItem || !blnShowOnlyAffordItems
                                         || await objXmlAccessory.CheckNuyenRestrictionAsync(
-                                            _objCharacter.Nuyen, decCostMultiplier, token: token).ConfigureAwait(false)))
+                                            decNuyen, decCostMultiplier, token: token).ConfigureAwait(false)))
                     {
                         lstAccessories.Add(new ListItem(
                                                strId,
-                                               (await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
-                                               ?? (await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                                               objXmlAccessory.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                               ?? objXmlAccessory.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                                ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                     }
                     else
@@ -248,7 +247,7 @@ namespace Chummer
         #region Properties
 
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Whether the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain => _blnAddAgain;
 
@@ -268,55 +267,58 @@ namespace Chummer
         public int SelectedRating => _intSelectedRating;
 
         /// <summary>
-        /// GUID of the current weapon for which the accessory is being selected
+        /// The current weapon for which the accessory is being selected
         /// </summary>
-        public Weapon ParentWeapon
+        public async Task SetWeapon(Weapon objWeapon, CancellationToken token = default)
         {
-            set
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.Exchange(ref _objParentWeapon, objWeapon) == objWeapon)
+                return;
+            _lstAllowedMounts.Clear();
+            if (objWeapon != null)
             {
-                if (Interlocked.Exchange(ref _objParentWeapon, value) == value)
-                    return;
-                _lstAllowedMounts.Clear();
-                if (value != null)
+                XPathNavigator xmlThisWeaponDataNode
+                    = _xmlBaseChummerNode.TryGetNodeById("weapons/weapon", objWeapon.SourceID);
+                if (xmlThisWeaponDataNode != null)
                 {
-                    XPathNavigator xmlThisWeaponDataNode
-                        = _xmlBaseChummerNode.TryGetNodeById("weapons/weapon", value.SourceID);
-                    if (xmlThisWeaponDataNode != null)
+                    foreach (XPathNavigator objXmlMount in xmlThisWeaponDataNode.Select("accessorymounts/mount"))
                     {
-                        foreach (XPathNavigator objXmlMount in xmlThisWeaponDataNode.Select("accessorymounts/mount"))
+                        string strLoopMount = objXmlMount.Value;
+                        // Run through the Weapon's current Accessories and filter out any used up Mount points.
+                        if (!await _objParentWeapon.WeaponAccessories.AnyAsync(objMod =>
+                                objMod.Mount == strLoopMount
+                                || objMod.ExtraMount == strLoopMount, token: token).ConfigureAwait(false))
                         {
-                            string strLoopMount = objXmlMount.Value;
-                            // Run through the Weapon's current Accessories and filter out any used up Mount points.
-                            if (!_objParentWeapon.WeaponAccessories.Any(objMod =>
-                                                                            objMod.Mount == strLoopMount
-                                                                            || objMod.ExtraMount == strLoopMount))
-                            {
-                                _lstAllowedMounts.Add(strLoopMount);
-                            }
+                            _lstAllowedMounts.Add(strLoopMount);
                         }
                     }
+                }
 
-                    //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
-                    if (_objCharacter.BlackMarketDiscount)
-                    {
-                        string strCategory = value.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
-                        _blnIsParentWeaponBlackMarketAllowed = !string.IsNullOrEmpty(strCategory) && _setBlackMarketMaps.Contains(strCategory);
-                    }
-                }
-                else
+                //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
+                if (await _objCharacter.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                 {
-                    _blnIsParentWeaponBlackMarketAllowed = false;
+                    XPathNavigator xmlWeaponNode = await objWeapon.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                    string strCategory =
+                        xmlWeaponNode != null
+                            ? xmlWeaponNode.SelectSingleNodeAndCacheExpression("category", token)?.Value ?? string.Empty
+                            : string.Empty;
+                    _blnIsParentWeaponBlackMarketAllowed = !string.IsNullOrEmpty(strCategory) &&
+                                                           _setBlackMarketMaps.Contains(strCategory);
                 }
+            }
+            else
+            {
+                _blnIsParentWeaponBlackMarketAllowed = false;
             }
         }
 
         /// <summary>
-        /// Whether or not the item should be added for free.
+        /// Whether the item should be added for free.
         /// </summary>
         public bool FreeCost => chkFreeItem.Checked;
 
         /// <summary>
-        /// Whether or not the selected Vehicle is used.
+        /// Whether the selected Vehicle is used.
         /// </summary>
         public bool BlackMarketDiscount => _blnBlackMarketDiscount;
 
@@ -353,7 +355,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask UpdateGearInfo(bool blnUpdateMountComboBoxes = true, CancellationToken token = default)
+        private async Task UpdateGearInfo(bool blnUpdateMountComboBoxes = true, CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -375,7 +377,7 @@ namespace Chummer
                 return;
             }
 
-            string strRC = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("rc", token).ConfigureAwait(false))?.Value;
+            string strRC = xmlAccessory.SelectSingleNodeAndCacheExpression("rc", token)?.Value;
             if (!string.IsNullOrEmpty(strRC))
             {
                 await lblRCLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
@@ -391,7 +393,7 @@ namespace Chummer
                 await lblRCLabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
             }
 
-            if (int.TryParse((await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("rating", token).ConfigureAwait(false))?.Value, out int intMaxRating) && intMaxRating > 0)
+            if (int.TryParse(xmlAccessory.SelectSingleNodeAndCacheExpression("rating", token)?.Value, out int intMaxRating) && intMaxRating > 0)
             {
                 await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaxRating, token: token).ConfigureAwait(false);
                 if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token)
@@ -419,15 +421,16 @@ namespace Chummer
                     decimal decCostMultiplier
                         = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false)
                         / 100.0m;
-                    if (_setBlackMarketMaps.Contains((await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value))
+                    if (_setBlackMarketMaps.Contains(xmlAccessory.SelectSingleNodeAndCacheExpression("category", token)?.Value))
                         decCostMultiplier *= 0.9m;
                     int intMinimum = await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: token)
                                                     .ConfigureAwait(false);
                     int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token)
                                                     .ConfigureAwait(false);
+                    decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                     while (intMaximum > intMinimum && !await xmlAccessory
                                                              .CheckNuyenRestrictionAsync(
-                                                                 _objCharacter.Nuyen, decCostMultiplier, intMaximum,
+                                                                 decNuyen, decCostMultiplier, intMaximum,
                                                                  token).ConfigureAwait(false))
                     {
                         --intMaximum;
@@ -457,7 +460,7 @@ namespace Chummer
 
             if (blnUpdateMountComboBoxes)
             {
-                string strDataMounts = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("mount", token).ConfigureAwait(false))?.Value;
+                string strDataMounts = xmlAccessory.SelectSingleNodeAndCacheExpression("mount", token)?.Value;
                 List<string> lstMounts = new List<string>(1);
                 if (!string.IsNullOrEmpty(strDataMounts))
                 {
@@ -492,7 +495,7 @@ namespace Chummer
                 await lblMountLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
 
                 List<string> lstExtraMounts = new List<string>(1);
-                string strExtraMount = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("extramount", token).ConfigureAwait(false))?.Value;
+                string strExtraMount = xmlAccessory.SelectSingleNodeAndCacheExpression("extramount", token)?.Value;
                 if (!string.IsNullOrEmpty(strExtraMount))
                 {
                     lstExtraMounts.AddRange(strExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
@@ -535,7 +538,7 @@ namespace Chummer
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvail
-                = await new AvailabilityValue(intRating, (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value)
+                = await new AvailabilityValue(intRating, xmlAccessory.SelectSingleNodeAndCacheExpression("avail", token)?.Value)
                     .ToStringAsync(token).ConfigureAwait(false);
             await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
             await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token)
@@ -657,7 +660,7 @@ namespace Chummer
                 await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
             }
 
-            XPathNavigator xmlAccessoryRatingLabel = await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("ratinglabel", token).ConfigureAwait(false);
+            XPathNavigator xmlAccessoryRatingLabel = xmlAccessory.SelectSingleNodeAndCacheExpression("ratinglabel", token);
             string strRatingLabel = xmlAccessoryRatingLabel != null
                 ? string.Format(GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("Label_RatingFormat", token: token)
@@ -689,12 +692,11 @@ namespace Chummer
                 }
             }, token: token).ConfigureAwait(false);
 
-            string strSource = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("source", token).ConfigureAwait(false))?.Value
+            string strSource = xmlAccessory.SelectSingleNodeAndCacheExpression("source", token)?.Value
                                ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)
                                                        .ConfigureAwait(false);
             string strPage
-                = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
-                                     .ConfigureAwait(false))?.Value ?? (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("page", token).ConfigureAwait(false))?.Value
+                = xmlAccessory.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? xmlAccessory.SelectSingleNodeAndCacheExpression("page", token)?.Value
                 ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
             SourceString objSourceString = await SourceString
                                                  .GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,

@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Attributes;
 
 namespace Chummer
 {
@@ -33,7 +34,7 @@ namespace Chummer
     /// An Initiation Grade.
     /// </summary>
     [DebuggerDisplay("{" + nameof(Grade) + "}")]
-    public class InitiationGrade : IHasInternalId, IComparable, ICanRemove
+    public class InitiationGrade : IHasInternalId, IComparable, ICanRemove, IHasCharacterObject
     {
         private Guid _guiID;
         private bool _blnGroup;
@@ -45,6 +46,8 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
 
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, and Load Methods
 
@@ -59,10 +62,10 @@ namespace Chummer
         /// Create an Initiation Grade from an XmlNode.
         /// </summary>
         /// <param name="intGrade">Grade number.</param>
-        /// <param name="blnTechnomancer">Whether or not the character is a Technomancer.</param>
-        /// <param name="blnGroup">Whether or not a Group was used.</param>
-        /// <param name="blnOrdeal">Whether or not an Ordeal was used.</param>
-        /// <param name="blnSchooling">Whether or not Schooling was used.</param>
+        /// <param name="blnTechnomancer">Whether the character is a Technomancer.</param>
+        /// <param name="blnGroup">Whether a Group was used.</param>
+        /// <param name="blnOrdeal">Whether an Ordeal was used.</param>
+        /// <param name="blnSchooling">Whether Schooling was used.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(int intGrade, bool blnTechnomancer, bool blnGroup, bool blnOrdeal, bool blnSchooling, CancellationToken token = default)
         {
@@ -76,33 +79,137 @@ namespace Chummer
             //KC 90: a Cyberadept who has Submerged may restore Resonance that has been lost to cyberware (and only cyberware) by an amount equal to half their Submersion Grade(rounded up).
             //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance, and cut the submersion grade in half.
             //Whichever value is lower becomes the value of the improvement.
-            if (intGrade > 0 && blnTechnomancer && _objCharacter.RESEnabled && !_objCharacter.Settings.SpecialKarmaCostBasedOnShownValue
-                && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.CyberadeptDaemon, token: token).Count > 0)
+            if (intGrade > 0 && blnTechnomancer)
             {
-                decimal decNonCyberwareEssence = _objCharacter.BiowareEssence + _objCharacter.EssenceHole;
-                int intResonanceRecovered = Math.Min(intGrade.DivAwayFromZero(2), (int)(
-                    Math.Ceiling(decNonCyberwareEssence) == Math.Floor(decNonCyberwareEssence)
-                        ? Math.Ceiling(_objCharacter.CyberwareEssence)
-                        : Math.Floor(_objCharacter.CyberwareEssence)));
-                // Cannot increase RES to be more than what it would be without any Essence loss.
-                intResonanceRecovered = _objCharacter.Settings.ESSLossReducesMaximumOnly
-                    ? Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade - _objCharacter.RES.TotalMaximum)
-                    // +1 compared to normal because this Grade's effect has not been processed yet.
-                    : Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade + 1 - _objCharacter.RES.Value);
+                token.ThrowIfCancellationRequested();
+                using (_objCharacter.LockObject.EnterUpgradeableReadLock(token))
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (_objCharacter.RESEnabled && !_objCharacter.Settings.SpecialKarmaCostBasedOnShownValue
+                                                 && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                                     Improvement.ImprovementType.CyberadeptDaemon, token: token).Count >
+                                                 0)
+                    {
+                        decimal decNonCyberwareEssence = _objCharacter.BiowareEssence + _objCharacter.EssenceHole;
+                        int intResonanceRecovered = Math.Min(intGrade.DivAwayFromZero(2), (int)(
+                            Math.Ceiling(decNonCyberwareEssence) == Math.Floor(decNonCyberwareEssence)
+                                ? Math.Ceiling(_objCharacter.CyberwareEssence)
+                                : Math.Floor(_objCharacter.CyberwareEssence)));
+                        // Cannot increase RES to be more than what it would be without any Essence loss.
+                        intResonanceRecovered = _objCharacter.Settings.ESSLossReducesMaximumOnly
+                            ? Math.Min(intResonanceRecovered,
+                                _objCharacter.RES.MaximumNoEssenceLoss() - intGrade - _objCharacter.RES.TotalMaximum)
+                            // +1 compared to normal because this Grade's effect has not been processed yet.
+                            : Math.Min(intResonanceRecovered,
+                                _objCharacter.RES.MaximumNoEssenceLoss() - intGrade + 1 - _objCharacter.RES.Value);
+                        token.ThrowIfCancellationRequested();
+                        using (_objCharacter.LockObject.EnterWriteLock(token))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            try
+                            {
+                                ImprovementManager.CreateImprovement(_objCharacter, "RESBase",
+                                    Improvement.ImprovementSource.CyberadeptDaemon,
+                                    InternalId, Improvement.ImprovementType.Attribute,
+                                    string.Empty, 0, intResonanceRecovered, 0, 1, 1, token: token);
+                            }
+                            catch
+                            {
+                                ImprovementManager.Rollback(_objCharacter, CancellationToken.None);
+                                throw;
+                            }
+
+                            ImprovementManager.Commit(_objCharacter);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Create an Initiation Grade from an XmlNode.
+        /// </summary>
+        /// <param name="intGrade">Grade number.</param>
+        /// <param name="blnTechnomancer">Whether the character is a Technomancer.</param>
+        /// <param name="blnGroup">Whether a Group was used.</param>
+        /// <param name="blnOrdeal">Whether an Ordeal was used.</param>
+        /// <param name="blnSchooling">Whether Schooling was used.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(int intGrade, bool blnTechnomancer, bool blnGroup, bool blnOrdeal, bool blnSchooling, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _intGrade = intGrade;
+            _blnTechnomancer = blnTechnomancer;
+            _blnGroup = blnGroup;
+            _blnOrdeal = blnOrdeal;
+            _blnSchooling = blnSchooling;
+            //TODO: I'm not happy with this.
+            //KC 90: a Cyberadept who has Submerged may restore Resonance that has been lost to cyberware (and only cyberware) by an amount equal to half their Submersion Grade(rounded up).
+            //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance, and cut the submersion grade in half.
+            //Whichever value is lower becomes the value of the improvement.
+            if (intGrade > 0 && blnTechnomancer)
+            {
+                IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    ImprovementManager.CreateImprovement(_objCharacter, "RESBase",
-                                                         Improvement.ImprovementSource.CyberadeptDaemon,
-                                                         InternalId, Improvement.ImprovementType.Attribute,
-                                                         string.Empty, 0, intResonanceRecovered, 0, 1, 1, token: token);
-                }
-                catch
-                {
-                    ImprovementManager.Rollback(_objCharacter, CancellationToken.None);
-                    throw;
-                }
+                    token.ThrowIfCancellationRequested();
+                    if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false) && !_objCharacter.Settings
+                                                                          .SpecialKarmaCostBasedOnShownValue
+                                                                      && (await ImprovementManager
+                                                                          .GetCachedImprovementListForValueOfAsync(
+                                                                              _objCharacter,
+                                                                              Improvement.ImprovementType
+                                                                                  .CyberadeptDaemon, token: token).ConfigureAwait(false))
+                                                                      .Count > 0)
+                    {
+                        decimal decNonCyberwareEssence = await _objCharacter.GetBiowareEssenceAsync(token).ConfigureAwait(false) +
+                                                         await _objCharacter.GetEssenceHoleAsync(token).ConfigureAwait(false);
+                        int intResonanceRecovered = Math.Min(intGrade.DivAwayFromZero(2), (int)(
+                            Math.Ceiling(decNonCyberwareEssence) == Math.Floor(decNonCyberwareEssence)
+                                ? Math.Ceiling(await _objCharacter.GetCyberwareEssenceAsync(token).ConfigureAwait(false))
+                                : Math.Floor(await _objCharacter.GetCyberwareEssenceAsync(token).ConfigureAwait(false))));
+                        // Cannot increase RES to be more than what it would be without any Essence loss.
+                        CharacterAttrib objRes = await _objCharacter.GetAttributeAsync("RES", token: token).ConfigureAwait(false);
+                        intResonanceRecovered = await _objCharacter.Settings.GetESSLossReducesMaximumOnlyAsync(token).ConfigureAwait(false)
+                            ? Math.Min(intResonanceRecovered,
+                                await objRes.MaximumNoEssenceLossAsync(token: token).ConfigureAwait(false) - intGrade -
+                                await objRes.GetTotalMaximumAsync(token).ConfigureAwait(false))
+                            // +1 compared to normal because this Grade's effect has not been processed yet.
+                            : Math.Min(intResonanceRecovered,
+                                await objRes.MaximumNoEssenceLossAsync(token: token).ConfigureAwait(false) - intGrade + 1 -
+                                await objRes.GetValueAsync(token).ConfigureAwait(false));
+                        token.ThrowIfCancellationRequested();
+                        IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            try
+                            {
+                                await ImprovementManager.CreateImprovementAsync(_objCharacter, "RESBase",
+                                        Improvement.ImprovementSource.CyberadeptDaemon,
+                                        InternalId, Improvement.ImprovementType.Attribute,
+                                        string.Empty, 0, intResonanceRecovered, 0, 1, 1, token: token)
+                                    .ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await ImprovementManager.RollbackAsync(_objCharacter, CancellationToken.None)
+                                    .ConfigureAwait(false);
+                                throw;
+                            }
 
-                ImprovementManager.Commit(_objCharacter);
+                            await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -154,7 +261,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -197,7 +304,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not a Group was used.
+        /// Whether a Group was used.
         /// </summary>
         public bool Group
         {
@@ -206,7 +313,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not an Ordeal was used.
+        /// Whether an Ordeal was used.
         /// </summary>
         public bool Ordeal
         {
@@ -215,7 +322,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Schooling was used.
+        /// Whether Schooling was used.
         /// </summary>
         public bool Schooling
         {
@@ -224,7 +331,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Initiation Grade is for a Technomancer.
+        /// Whether the Initiation Grade is for a Technomancer.
         /// </summary>
         public bool Technomancer
         {
@@ -371,175 +478,219 @@ namespace Chummer
 
         public bool Remove(bool blnConfirmDelete, bool blnPerformGradeCheck)
         {
-            // Stop if this isn't the highest grade
-            if (_objCharacter.MAGEnabled)
+            using (_objCharacter.LockObject.EnterUpgradeableReadLock())
             {
-                if (Grade != _objCharacter.InitiateGrade && blnPerformGradeCheck)
+                // Stop if this isn't the highest grade
+                if (_objCharacter.MAGEnabled)
                 {
-                    Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
-                                                     LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
-                                                     MessageBoxIcon.Error);
-                    return false;
-                }
+                    if (Grade != _objCharacter.InitiateGrade && blnPerformGradeCheck)
+                    {
+                        Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
+                            LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return false;
+                    }
 
-                if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade")))
-                    return false;
-            }
-            else if (_objCharacter.RESEnabled)
-            {
-                if (Grade != _objCharacter.SubmersionGrade && blnPerformGradeCheck)
+                    if (blnConfirmDelete &&
+                        !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade")))
+                        return false;
+                }
+                else if (_objCharacter.RESEnabled)
                 {
-                    Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
-                                                     LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
-                                                     MessageBoxIcon.Error);
-                    return false;
+                    if (Grade != _objCharacter.SubmersionGrade && blnPerformGradeCheck)
+                    {
+                        Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
+                            LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return false;
+                    }
+
+                    if (blnConfirmDelete &&
+                        !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade")))
+                        return false;
+
+                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon,
+                        InternalId);
                 }
-
-                if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade")))
+                else
                     return false;
 
-                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon, InternalId);
-            }
-            else
-                return false;
+                using (_objCharacter.LockObject.EnterWriteLock())
+                {
+                    _objCharacter.InitiationGrades.Remove(this);
+                    // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
+                    // Arts
+                    for (int i = _objCharacter.Arts.Count - 1; i > 0; --i)
+                    {
+                        Art objLoop = _objCharacter.Arts[i];
+                        if (objLoop.Grade == Grade)
+                            objLoop.Remove(false);
+                    }
 
-            _objCharacter.InitiationGrades.Remove(this);
-            // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
-            // Arts
-            for (int i = _objCharacter.Arts.Count - 1; i > 0; --i)
-            {
-                Art objLoop = _objCharacter.Arts[i];
-                if (objLoop.Grade == Grade)
-                    objLoop.Remove(false);
+                    // Metamagics
+                    for (int i = _objCharacter.Metamagics.Count - 1; i > 0; --i)
+                    {
+                        Metamagic objLoop = _objCharacter.Metamagics[i];
+                        if (objLoop.Grade == Grade)
+                            objLoop.Remove(false);
+                    }
+
+                    // Enhancements
+                    for (int i = _objCharacter.Enhancements.Count - 1; i > 0; --i)
+                    {
+                        Enhancement objLoop = _objCharacter.Enhancements[i];
+                        if (objLoop.Grade == Grade)
+                            objLoop.Remove(false);
+                    }
+
+                    // Spells
+                    for (int i = _objCharacter.Spells.Count - 1; i > 0; --i)
+                    {
+                        Spell objLoop = _objCharacter.Spells[i];
+                        if (objLoop.Grade == Grade)
+                            objLoop.Remove(false);
+                    }
+
+                    // Complex Forms
+                    for (int i = _objCharacter.ComplexForms.Count - 1; i > 0; --i)
+                    {
+                        ComplexForm objLoop = _objCharacter.ComplexForms[i];
+                        if (objLoop.Grade == Grade)
+                            objLoop.Remove(false);
+                    }
+                }
             }
-            // Metamagics
-            for (int i = _objCharacter.Metamagics.Count - 1; i > 0; --i)
-            {
-                Metamagic objLoop = _objCharacter.Metamagics[i];
-                if (objLoop.Grade == Grade)
-                    objLoop.Remove(false);
-            }
-            // Enhancements
-            for (int i = _objCharacter.Enhancements.Count - 1; i > 0; --i)
-            {
-                Enhancement objLoop = _objCharacter.Enhancements[i];
-                if (objLoop.Grade == Grade)
-                    objLoop.Remove(false);
-            }
-            // Spells
-            for (int i = _objCharacter.Spells.Count - 1; i > 0; --i)
-            {
-                Spell objLoop = _objCharacter.Spells[i];
-                if (objLoop.Grade == Grade)
-                    objLoop.Remove(false);
-            }
-            // Complex Forms
-            for (int i = _objCharacter.ComplexForms.Count - 1; i > 0; --i)
-            {
-                ComplexForm objLoop = _objCharacter.ComplexForms[i];
-                if (objLoop.Grade == Grade)
-                    objLoop.Remove(false);
-            }
+
             return true;
         }
 
-        public ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        public Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
             return RemoveAsync(blnConfirmDelete, true, token);
         }
 
-        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete, bool blnPerformGradeCheck,
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete, bool blnPerformGradeCheck,
                                                  CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            // Stop if this isn't the highest grade
-            if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if (Grade != await _objCharacter.GetInitiateGradeAsync(token).ConfigureAwait(false)
-                    && blnPerformGradeCheck)
+                token.ThrowIfCancellationRequested();
+                // Stop if this isn't the highest grade
+                if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
                 {
-                    Program.ShowScrollableMessageBox(
-                        await LanguageManager.GetStringAsync("Message_DeleteGrade", token: token).ConfigureAwait(false),
-                        await LanguageManager.GetStringAsync("MessageTitle_DeleteGrade", token: token)
-                                             .ConfigureAwait(false), MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                    return false;
-                }
+                    if (Grade != await _objCharacter.GetInitiateGradeAsync(token).ConfigureAwait(false)
+                        && blnPerformGradeCheck)
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(
+                            await LanguageManager.GetStringAsync("Message_DeleteGrade", token: token)
+                                .ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_DeleteGrade", token: token)
+                                .ConfigureAwait(false), MessageBoxButtons.OK,
+                            MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                        return false;
+                    }
 
-                if (blnConfirmDelete && !await CommonFunctions
-                                               .ConfirmDeleteAsync(
-                                                   await LanguageManager
-                                                         .GetStringAsync("Message_DeleteInitiateGrade", token: token)
-                                                         .ConfigureAwait(false), token).ConfigureAwait(false))
-                    return false;
-            }
-            else if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
-            {
-                if (Grade != await _objCharacter.GetSubmersionGradeAsync(token).ConfigureAwait(false)
-                    && blnPerformGradeCheck)
+                    if (blnConfirmDelete && !await CommonFunctions
+                            .ConfirmDeleteAsync(
+                                await LanguageManager
+                                    .GetStringAsync("Message_DeleteInitiateGrade", token: token)
+                                    .ConfigureAwait(false), token).ConfigureAwait(false))
+                        return false;
+                }
+                else if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
                 {
-                    Program.ShowScrollableMessageBox(
-                        await LanguageManager.GetStringAsync("Message_DeleteGrade", token: token).ConfigureAwait(false),
-                        await LanguageManager.GetStringAsync("MessageTitle_DeleteGrade", token: token)
-                                             .ConfigureAwait(false), MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                    return false;
+                    if (Grade != await _objCharacter.GetSubmersionGradeAsync(token).ConfigureAwait(false)
+                        && blnPerformGradeCheck)
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(
+                            await LanguageManager.GetStringAsync("Message_DeleteGrade", token: token)
+                                .ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_DeleteGrade", token: token)
+                                .ConfigureAwait(false), MessageBoxButtons.OK,
+                            MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                        return false;
+                    }
+
+                    if (blnConfirmDelete && !await CommonFunctions
+                            .ConfirmDeleteAsync(
+                                await LanguageManager
+                                    .GetStringAsync("Message_DeleteSubmersionGrade", token: token)
+                                    .ConfigureAwait(false), token).ConfigureAwait(false))
+                        return false;
+
+                    await ImprovementManager
+                        .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon,
+                            InternalId, token).ConfigureAwait(false);
                 }
-
-                if (blnConfirmDelete && !await CommonFunctions
-                                               .ConfirmDeleteAsync(
-                                                   await LanguageManager
-                                                         .GetStringAsync("Message_DeleteSubmersionGrade", token: token)
-                                                         .ConfigureAwait(false), token).ConfigureAwait(false))
+                else
                     return false;
 
-                await ImprovementManager
-                      .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon,
-                                               InternalId, token).ConfigureAwait(false);
-            }
-            else
-                return false;
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    await _objCharacter.InitiationGrades.RemoveAsync(this, token).ConfigureAwait(false);
+                    // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
+                    // Arts
+                    for (int i = await _objCharacter.Arts.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+                    {
+                        Art objLoop = await _objCharacter.Arts.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objLoop.Grade == Grade)
+                            await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+                    }
 
-            await _objCharacter.InitiationGrades.RemoveAsync(this, token).ConfigureAwait(false);
-            // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
-            // Arts
-            for (int i = await _objCharacter.Arts.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
-            {
-                Art objLoop = await _objCharacter.Arts.GetValueAtAsync(i, token).ConfigureAwait(false);
-                if (objLoop.Grade == Grade)
-                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
-            }
+                    // Metamagics
+                    for (int i = await _objCharacter.Metamagics.GetCountAsync(token).ConfigureAwait(false) - 1;
+                         i > 0;
+                         --i)
+                    {
+                        Metamagic objLoop =
+                            await _objCharacter.Metamagics.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objLoop.Grade == Grade)
+                            await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+                    }
 
-            // Metamagics
-            for (int i = await _objCharacter.Metamagics.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
-            {
-                Metamagic objLoop = await _objCharacter.Metamagics.GetValueAtAsync(i, token).ConfigureAwait(false);
-                if (objLoop.Grade == Grade)
-                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
-            }
+                    // Enhancements
+                    for (int i = await _objCharacter.Enhancements.GetCountAsync(token).ConfigureAwait(false) - 1;
+                         i > 0;
+                         --i)
+                    {
+                        Enhancement objLoop =
+                            await _objCharacter.Enhancements.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objLoop.Grade == Grade)
+                            await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+                    }
 
-            // Enhancements
-            for (int i = await _objCharacter.Enhancements.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
-            {
-                Enhancement objLoop = await _objCharacter.Enhancements.GetValueAtAsync(i, token).ConfigureAwait(false);
-                if (objLoop.Grade == Grade)
-                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
-            }
+                    // Spells
+                    for (int i = await _objCharacter.Spells.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+                    {
+                        Spell objLoop = await _objCharacter.Spells.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objLoop.Grade == Grade)
+                            await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+                    }
 
-            // Spells
-            for (int i = await _objCharacter.Spells.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
-            {
-                Spell objLoop = await _objCharacter.Spells.GetValueAtAsync(i, token).ConfigureAwait(false);
-                if (objLoop.Grade == Grade)
-                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+                    // Complex Forms
+                    for (int i = await _objCharacter.ComplexForms.GetCountAsync(token).ConfigureAwait(false) - 1;
+                         i > 0;
+                         --i)
+                    {
+                        ComplexForm objLoop =
+                            await _objCharacter.ComplexForms.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objLoop.Grade == Grade)
+                            await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
-
-            // Complex Forms
-            for (int i = await _objCharacter.ComplexForms.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+            finally
             {
-                ComplexForm objLoop = await _objCharacter.ComplexForms.GetValueAtAsync(i, token).ConfigureAwait(false);
-                if (objLoop.Grade == Grade)
-                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return true;

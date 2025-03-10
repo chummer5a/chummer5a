@@ -45,7 +45,7 @@ namespace Chummer.Backend.Uniques
     /// A Tradition
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    public sealed class Tradition : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource, INotifyMultiplePropertyChanged, IHasLockObject
+    public sealed class Tradition : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource, INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;
         private Guid _guiSourceID;
@@ -67,18 +67,17 @@ namespace Chummer.Backend.Uniques
 
         private readonly Character _objCharacter;
 
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
+
         #region Constructor, Create, Save, Load, and Print Methods
 
         public Tradition(Character objCharacter)
         {
             // Create the GUID for the new piece of Cyberware.
             _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
-            if (objCharacter != null)
-            {
-                using (objCharacter.LockObject.EnterWriteLock())
-                    objCharacter.PropertyChanged += RefreshDrainExpression;
-            }
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = objCharacter.LockObject;
+            objCharacter.MultiplePropertiesChangedAsync += RefreshDrainExpression;
         }
 
         public override string ToString()
@@ -97,16 +96,7 @@ namespace Chummer.Backend.Uniques
                 {
                     try
                     {
-                        IAsyncDisposable objLocker2
-                            = await _objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                        try
-                        {
-                            _objCharacter.PropertyChanged -= RefreshDrainExpression;
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
+                        _objCharacter.MultiplePropertiesChangedAsync -= RefreshDrainExpression;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -118,8 +108,6 @@ namespace Chummer.Backend.Uniques
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -131,8 +119,7 @@ namespace Chummer.Backend.Uniques
                 {
                     try
                     {
-                        using (_objCharacter.LockObject.EnterWriteLock())
-                            _objCharacter.PropertyChanged -= RefreshDrainExpression;
+                        _objCharacter.MultiplePropertiesChangedAsync -= RefreshDrainExpression;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -140,8 +127,6 @@ namespace Chummer.Backend.Uniques
                     }
                 }
             }
-
-            LockObject.Dispose();
         }
 
         public void ResetTradition()
@@ -163,7 +148,7 @@ namespace Chummer.Backend.Uniques
             }
         }
 
-        public async ValueTask ResetTraditionAsync(CancellationToken token = default)
+        public async Task ResetTraditionAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -178,7 +163,7 @@ namespace Chummer.Backend.Uniques
                 Extra = string.Empty;
                 Source = string.Empty;
                 _strPage = string.Empty;
-                DrainExpression = string.Empty;
+                await SetDrainExpressionAsync(string.Empty, token).ConfigureAwait(false);
                 SpiritForm = "Materialization";
                 _lstAvailableSpirits.Clear();
                 Type = TraditionType.None;
@@ -194,7 +179,7 @@ namespace Chummer.Backend.Uniques
         /// Create a Tradition from an XmlNode.
         /// </summary>
         /// <param name="xmlTraditionNode">XmlNode to create the object from.</param>
-        /// <param name="blnIsTechnomancerTradition">Whether or not this tradition is for a technomancer.</param>
+        /// <param name="blnIsTechnomancerTradition">Whether this tradition is for a technomancer.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         public bool Create(XmlNode xmlTraditionNode, bool blnIsTechnomancerTradition = false, string strForcedValue = "")
         {
@@ -219,35 +204,122 @@ namespace Chummer.Backend.Uniques
                 _nodBonus = xmlTraditionNode["bonus"];
                 if (_nodBonus != null)
                 {
-                    string strOldFocedValue = ImprovementManager.ForcedValue;
-                    string strOldSelectedValue = ImprovementManager.SelectedValue;
-                    ImprovementManager.ForcedValue = strForcedValue;
-                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Tradition,
-                                                               InternalId, _nodBonus,
-                                                               strFriendlyName: CurrentDisplayNameShort))
+                    string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                    string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    try
                     {
-                        ImprovementManager.ForcedValue = strOldFocedValue;
-                        return false;
-                    }
+                        ImprovementManager.SetForcedValue(strForcedValue, _objCharacter);
+                        if (!ImprovementManager.CreateImprovements(_objCharacter,
+                                Improvement.ImprovementSource.Tradition,
+                                InternalId, _nodBonus,
+                                strFriendlyName: CurrentDisplayNameShort))
+                        {
+                            return false;
+                        }
 
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue))
+                        {
+                            _strExtra = strSelectedValue;
+                        }
+                    }
+                    finally
                     {
-                        _strExtra = ImprovementManager.SelectedValue;
+                        ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                        ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                     }
-
-                    ImprovementManager.ForcedValue = strOldFocedValue;
-                    ImprovementManager.SelectedValue = strOldSelectedValue;
                 }
 
                 if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
                 {
                     Notes = CommonFunctions.GetBookNotes(xmlTraditionNode, Name, CurrentDisplayName, Source, Page,
-                                                         DisplayPage(GlobalSettings.Language), _objCharacter);
+                        DisplayPage(GlobalSettings.Language), _objCharacter);
                 }
 
-                RebuildSpiritList();
-                this.OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page));
+                RebuildSpiritList(false);
+                this.OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page), nameof(Bonus),
+                    nameof(AvailableSpirits), nameof(SpiritCombat), nameof(SpiritDetection), nameof(SpiritHealth),
+                    nameof(SpiritIllusion), nameof(SpiritManipulation));
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// Create a Tradition from an XmlNode.
+        /// </summary>
+        /// <param name="xmlTraditionNode">XmlNode to create the object from.</param>
+        /// <param name="blnIsTechnomancerTradition">Whether this tradition is for a technomancer.</param>
+        /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<bool> CreateAsync(XmlNode xmlTraditionNode, bool blnIsTechnomancerTradition = false, string strForcedValue = "", CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                await ResetTraditionAsync(token).ConfigureAwait(false);
+                Type = blnIsTechnomancerTradition ? TraditionType.RES : TraditionType.MAG;
+                if (xmlTraditionNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+                {
+                    _xmlCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
+
+                xmlTraditionNode.TryGetStringFieldQuickly("name", ref _strName);
+                xmlTraditionNode.TryGetStringFieldQuickly("source", ref _strSource);
+                xmlTraditionNode.TryGetStringFieldQuickly("page", ref _strPage);
+                string strTemp = string.Empty;
+                if (xmlTraditionNode.TryGetStringFieldQuickly("drain", ref strTemp))
+                    await SetDrainExpressionAsync(strTemp, token).ConfigureAwait(false);
+                if (xmlTraditionNode.TryGetStringFieldQuickly("spiritform", ref strTemp))
+                    SpiritForm = strTemp;
+                _nodBonus = xmlTraditionNode["bonus"];
+                if (_nodBonus != null)
+                {
+                    string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                    string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    try
+                    {
+                        ImprovementManager.SetForcedValue(strForcedValue, _objCharacter);
+                        if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                Improvement.ImprovementSource.Tradition,
+                                InternalId, _nodBonus,
+                                strFriendlyName: await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                token: token).ConfigureAwait(false))
+                        {
+                            return false;
+                        }
+
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue))
+                        {
+                            _strExtra = strSelectedValue;
+                        }
+                    }
+                    finally
+                    {
+                        ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                        ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
+                    }
+                }
+
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                {
+                    Notes = await CommonFunctions.GetBookNotesAsync(xmlTraditionNode, Name,
+                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+                }
+
+                await RebuildSpiritListAsync(false, token).ConfigureAwait(false);
+                await this.OnMultiplePropertyChangedAsync(token, nameof(Name), nameof(Extra), nameof(Source),
+                    nameof(Page), nameof(Bonus), nameof(AvailableSpirits), nameof(SpiritCombat), nameof(SpiritDetection),
+                    nameof(SpiritHealth), nameof(SpiritIllusion), nameof(SpiritManipulation)).ConfigureAwait(false);
+                return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -301,6 +373,67 @@ namespace Chummer.Backend.Uniques
                                                    nameof(SpiritDetection), nameof(SpiritHealth),
                                                    nameof(SpiritIllusion), nameof(SpiritManipulation));
                 }
+            }
+        }
+
+        public async Task RebuildSpiritListAsync(bool blnDoOnPropertyChanged = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _lstAvailableSpirits.Clear();
+                _strSpiritCombat = string.Empty;
+                _strSpiritDetection = string.Empty;
+                _strSpiritHealth = string.Empty;
+                _strSpiritIllusion = string.Empty;
+                _strSpiritManipulation = string.Empty;
+                if (Type != TraditionType.None)
+                {
+                    XPathNavigator xmlSpiritListNode
+                        = (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNodeAndCacheExpression("spirits", token);
+                    if (xmlSpiritListNode != null)
+                    {
+                        foreach (XPathNavigator xmlSpiritNode in xmlSpiritListNode.SelectAndCacheExpression("spirit",
+                                     token))
+                        {
+                            _lstAvailableSpirits.Add(xmlSpiritNode.Value);
+                        }
+
+                        XPathNavigator xmlCombatSpiritNode
+                            = xmlSpiritListNode.SelectSingleNodeAndCacheExpression("spiritcombat", token);
+                        if (xmlCombatSpiritNode != null)
+                            _strSpiritCombat = xmlCombatSpiritNode.Value;
+                        XPathNavigator xmlDetectionSpiritNode
+                            = xmlSpiritListNode.SelectSingleNodeAndCacheExpression("spiritdetection", token);
+                        if (xmlDetectionSpiritNode != null)
+                            _strSpiritDetection = xmlDetectionSpiritNode.Value;
+                        XPathNavigator xmlHealthSpiritNode
+                            = xmlSpiritListNode.SelectSingleNodeAndCacheExpression("spirithealth", token);
+                        if (xmlHealthSpiritNode != null)
+                            _strSpiritHealth = xmlHealthSpiritNode.Value;
+                        XPathNavigator xmlIllusionSpiritNode
+                            = xmlSpiritListNode.SelectSingleNodeAndCacheExpression("spiritillusion", token);
+                        if (xmlIllusionSpiritNode != null)
+                            _strSpiritIllusion = xmlIllusionSpiritNode.Value;
+                        XPathNavigator xmlManipulationSpiritNode
+                            = xmlSpiritListNode.SelectSingleNodeAndCacheExpression("spiritmanipulation", token);
+                        if (xmlManipulationSpiritNode != null)
+                            _strSpiritManipulation = xmlManipulationSpiritNode.Value;
+                    }
+                }
+
+                if (blnDoOnPropertyChanged)
+                {
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(AvailableSpirits), nameof(SpiritCombat),
+                        nameof(SpiritDetection), nameof(SpiritHealth),
+                        nameof(SpiritIllusion), nameof(SpiritManipulation)).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -380,7 +513,7 @@ namespace Chummer.Backend.Uniques
                 if (!xmlNode.TryGetStringFieldQuickly("drain", ref _strDrainExpression))
                     objMyNode.Value?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
                 // Legacy catch for if a drain expression is not empty but has no attributes associated with it.
-                if (_objCharacter.LastSavedVersion < new Version(5, 214, 77) &&
+                if (_objCharacter.LastSavedVersion < new ValueVersion(5, 214, 77) &&
                     !string.IsNullOrEmpty(_strDrainExpression) && !_strDrainExpression.Contains('{') &&
                     AttributeSection.AttributeStrings.Any(x => _strDrainExpression.Contains(x)))
                 {
@@ -458,6 +591,56 @@ namespace Chummer.Backend.Uniques
             }
         }
 
+        /// <summary>
+        /// Load the Tradition from the XmlNode using old data saved before traditions had their own class.
+        /// </summary>
+        /// <param name="xpathCharacterNode">XPathNavigator of the Character from which to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task LegacyLoadAsync(XPathNavigator xpathCharacterNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                bool blnDoDrainSweep;
+                if (_eTraditionType == TraditionType.RES)
+                {
+                    xpathCharacterNode.TryGetStringFieldQuickly("stream", ref _strName);
+                    blnDoDrainSweep
+                        = xpathCharacterNode.TryGetStringFieldQuickly("streamfading", ref _strDrainExpression);
+                }
+                else
+                {
+                    if (await GetIsCustomTraditionAsync(token).ConfigureAwait(false))
+                    {
+                        xpathCharacterNode.TryGetStringFieldQuickly("traditionname", ref _strName);
+                        xpathCharacterNode.TryGetStringFieldQuickly("spiritcombat", ref _strSpiritCombat);
+                        xpathCharacterNode.TryGetStringFieldQuickly("spiritdetection", ref _strSpiritDetection);
+                        xpathCharacterNode.TryGetStringFieldQuickly("spirithealth", ref _strSpiritHealth);
+                        xpathCharacterNode.TryGetStringFieldQuickly("spiritillusion", ref _strSpiritIllusion);
+                        xpathCharacterNode.TryGetStringFieldQuickly("spiritmanipulation", ref _strSpiritManipulation);
+                    }
+                    else
+                        xpathCharacterNode.TryGetStringFieldQuickly("tradition", ref _strName);
+
+                    blnDoDrainSweep
+                        = xpathCharacterNode.TryGetStringFieldQuickly("traditiondrain", ref _strDrainExpression);
+                }
+
+                if (blnDoDrainSweep)
+                {
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
+                        _strDrainExpression = _strDrainExpression.Replace(strAttribute, '{' + strAttribute + '}');
+                    _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public void LoadFromHeroLab(XPathNavigator xmlHeroLabNode)
         {
             if (xmlHeroLabNode == null)
@@ -472,7 +655,7 @@ namespace Chummer.Backend.Uniques
                     : null;
                 if (xmlTraditionDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                 {
-                    _guiSourceID = new Guid(CustomMagicalTraditionGuid);
+                    _guiSourceID = CustomMagicalTraditionGUID;
                     xmlTraditionDataNode = this.GetNode();
                 }
 
@@ -496,11 +679,11 @@ namespace Chummer.Backend.Uniques
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -603,7 +786,27 @@ namespace Chummer.Backend.Uniques
             get
             {
                 using (LockObject.EnterReadLock())
-                    return _guiSourceID;
+                    return Type == TraditionType.None ? Guid.Empty : _guiSourceID;
+            }
+        }
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public async Task<Guid> GetSourceIDAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
+                    ? Guid.Empty
+                    : _guiSourceID;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -615,9 +818,25 @@ namespace Chummer.Backend.Uniques
             get
             {
                 using (LockObject.EnterReadLock())
-                    return Type == TraditionType.None
-                        ? string.Empty
-                        : _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+                    return SourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+            }
+        }
+
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public async Task<string> GetSourceIDStringAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return (await GetSourceIDAsync(token).ConfigureAwait(false)).ToString("D", GlobalSettings.InvariantCultureInfo);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -641,14 +860,35 @@ namespace Chummer.Backend.Uniques
             {
                 using (LockObject.EnterReadLock())
                 {
-                    if (_objCachedSourceDetail == default)
-                        _objCachedSourceDetail = SourceString.GetSourceString(Source,
-                                                                              DisplayPage(GlobalSettings.Language),
-                                                                              GlobalSettings.Language,
-                                                                              GlobalSettings.CultureInfo,
-                                                                              _objCharacter);
-                    return _objCachedSourceDetail;
+                    return _objCachedSourceDetail == default
+                        ? _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                            DisplayPage(GlobalSettings.Language),
+                            GlobalSettings.Language,
+                            GlobalSettings.CultureInfo,
+                            _objCharacter)
+                        : _objCachedSourceDetail;
                 }
+            }
+        }
+
+        public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _objCachedSourceDetail == default
+                    ? _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                        GlobalSettings.Language,
+                        GlobalSettings.CultureInfo,
+                        _objCharacter, token).ConfigureAwait(false)
+                    : _objCachedSourceDetail;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -693,27 +933,68 @@ namespace Chummer.Backend.Uniques
                     {
                         _xmlCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// ImprovementSource Type.
+        /// </summary>
+        public async Task<TraditionType> GetTypeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _eTraditionType;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         /// <summary>
         /// The GUID of the Custom entry in the Magical Tradition file
         /// </summary>
-        public const string CustomMagicalTraditionGuid = "616ba093-306c-45fc-8f41-0b98c8cccb46";
+        public const string CustomMagicalTraditionGuidString = "616ba093-306c-45fc-8f41-0b98c8cccb46";
 
         /// <summary>
-        /// Whether or not a Tradition is a custom one (i.e. it has a custom name and custom spirit settings)
+        /// The GUID of the Custom entry in the Magical Tradition file
+        /// </summary>
+        public static Guid CustomMagicalTraditionGUID { get; } = new Guid(CustomMagicalTraditionGuidString);
+
+        /// <summary>
+        /// Whether a Tradition is a custom one (i.e. it has a custom name and custom spirit settings)
         /// </summary>
         public bool IsCustomTradition
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return string.Equals(SourceIDString, CustomMagicalTraditionGuid, StringComparison.OrdinalIgnoreCase);
+                    return SourceID.Equals(CustomMagicalTraditionGUID);
                 // TODO: If Custom Technomancer Tradition added to streams.xml, check for that GUID as well
+            }
+        }
+
+        /// <summary>
+        /// Whether a Tradition is a custom one (i.e. it has a custom name and custom spirit settings)
+        /// </summary>
+        public async Task<bool> GetIsCustomTraditionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetSourceIDAsync(token).ConfigureAwait(false) == CustomMagicalTraditionGUID;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -723,6 +1004,21 @@ namespace Chummer.Backend.Uniques
             {
                 using (LockObject.EnterReadLock())
                     return IsCustomTradition || string.IsNullOrEmpty(_strDrainExpression);
+            }
+        }
+
+        public async Task<bool> GetCanChooseDrainAttributeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetIsCustomTraditionAsync(token).ConfigureAwait(false) || string.IsNullOrEmpty(_strDrainExpression);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -744,6 +1040,42 @@ namespace Chummer.Backend.Uniques
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Tradition name.
+        /// </summary>
+        public async Task<string> GetNameAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Tradition name.
+        /// </summary>
+        public async Task SetNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strName, value) != value)
+                    await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -791,9 +1123,10 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (IsCustomTradition)
@@ -834,6 +1167,10 @@ namespace Chummer.Backend.Uniques
                     ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name
                     : Name;
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -856,9 +1193,10 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
@@ -871,15 +1209,19 @@ namespace Chummer.Backend.Uniques
 
                 return strReturn;
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// What type of forms do spirits of these traditions come in? Defaults to Materialization.
@@ -973,22 +1315,91 @@ namespace Chummer.Backend.Uniques
                             {
                                 if (!value.Contains(strAttribute))
                                 {
-                                    CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                                    using (objAttrib.LockObject.EnterWriteLock())
-                                        objAttrib.PropertyChanged -= RefreshDrainValue;
+                                    _objCharacter.AttributeSection.DeregisterAsyncPropertyChangedForActiveAttribute(strAttribute,
+                                        RefreshDrainValue);
                                 }
                             }
                             else if (value.Contains(strAttribute))
                             {
-                                CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                                using (objAttrib.LockObject.EnterWriteLock())
-                                    objAttrib.PropertyChanged += RefreshDrainValue;
+                                _objCharacter.AttributeSection.RegisterAsyncPropertyChangedForActiveAttribute(strAttribute,
+                                    RefreshDrainValue);
                             }
                         }
+                    }
 
-                        OnPropertyChanged();
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Magician's Tradition Drain Attributes.
+        /// </summary>
+        public async Task<string> GetDrainExpressionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await _objCharacter.GetAdeptEnabledAsync(token).ConfigureAwait(false) &&
+                    !await _objCharacter.GetMagicianEnabledAsync(token).ConfigureAwait(false))
+                {
+                    return "{BOD} + {WIL}";
+                }
+
+                return _strDrainExpression;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Magician's Tradition Drain Attributes.
+        /// </summary>
+        public async Task SetDrainExpressionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strOldExpression = Interlocked.Exchange(ref _strDrainExpression, value);
+                if (strOldExpression == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
+                    {
+                        if (strOldExpression.Contains(strAttribute))
+                        {
+                            if (!value.Contains(strAttribute))
+                            {
+                                _objCharacter.AttributeSection.DeregisterAsyncPropertyChangedForActiveAttribute(strAttribute,
+                                    RefreshDrainValue);
+                            }
+                        }
+                        else if (value.Contains(strAttribute))
+                        {
+                            _objCharacter.AttributeSection.RegisterAsyncPropertyChangedForActiveAttribute(strAttribute,
+                                RefreshDrainValue);
+                        }
                     }
                 }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(DrainExpression), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -996,6 +1407,12 @@ namespace Chummer.Backend.Uniques
         /// Magician's Tradition Drain Attributes for display purposes.
         /// </summary>
         public string DisplayDrainExpression => DisplayDrainExpressionMethod(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        /// <summary>
+        /// Magician's Tradition Drain Attributes for display purposes.
+        /// </summary>
+        public Task<string> GetDisplayDrainExpressionAsync(CancellationToken token = default) =>
+            DisplayDrainExpressionMethodAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Magician's Tradition Drain Attributes for display purposes.
@@ -1008,9 +1425,11 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Magician's Tradition Drain Attributes for display purposes.
         /// </summary>
-        public ValueTask<string> DisplayDrainExpressionMethodAsync(CultureInfo objCultureInfo, string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayDrainExpressionMethodAsync(CultureInfo objCultureInfo, string strLanguage, CancellationToken token = default)
         {
-            return _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltipAsync(DrainExpression, objCultureInfo, strLanguage, false, token: token);
+            return await _objCharacter.AttributeSection
+                .ProcessAttributesInXPathForTooltipAsync(await GetDrainExpressionAsync(token).ConfigureAwait(false),
+                    objCultureInfo, strLanguage, false, token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1042,15 +1461,60 @@ namespace Chummer.Backend.Uniques
                     }
 
                     // Add any Improvements for Drain Resistance.
-                    if (Type == TraditionType.RES)
-                        decDrain += ImprovementManager.ValueOf(_objCharacter,
-                                                               Improvement.ImprovementType.FadingResistance);
-                    else
-                        decDrain += ImprovementManager.ValueOf(_objCharacter,
-                                                               Improvement.ImprovementType.DrainResistance);
+                    decDrain += ImprovementManager.ValueOf(_objCharacter,
+                        Type == TraditionType.RES
+                            ? Improvement.ImprovementType.FadingResistance
+                            : Improvement.ImprovementType.DrainResistance);
 
                     return decDrain.StandardRound();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Magician's total amount of dice for resisting drain.
+        /// </summary>
+        public async Task<int> GetDrainValueAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                TraditionType eType = await GetTypeAsync(token).ConfigureAwait(false);
+                if (eType == TraditionType.None)
+                    return 0;
+                string strDrainAttributes = await GetDrainExpressionAsync(token).ConfigureAwait(false);
+                string strDrain;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                           out StringBuilder sbdDrain))
+                {
+                    sbdDrain.Append(strDrainAttributes);
+                    await _objCharacter.AttributeSection
+                        .ProcessAttributesInXPathAsync(sbdDrain, strDrainAttributes, token: token)
+                        .ConfigureAwait(false);
+                    strDrain = sbdDrain.ToString();
+                }
+
+                if (!decimal.TryParse(strDrain, out decimal decDrain))
+                {
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions
+                        .EvaluateInvariantXPathAsync(strDrain, token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        decDrain = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                }
+
+                // Add any Improvements for Drain Resistance.
+                decDrain += await ImprovementManager.ValueOfAsync(_objCharacter,
+                    eType == TraditionType.RES
+                        ? Improvement.ImprovementType.FadingResistance
+                        : Improvement.ImprovementType.DrainResistance, token: token).ConfigureAwait(false);
+
+                return decDrain.StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1091,16 +1555,79 @@ namespace Chummer.Backend.Uniques
             }
         }
 
-        public void RefreshDrainExpression(object sender, PropertyChangedEventArgs e)
+        public async Task<string> GetDrainValueToolTipAsync(CancellationToken token = default)
         {
-            if (Type == TraditionType.MAG && (e?.PropertyName == nameof(Character.AdeptEnabled) || e?.PropertyName == nameof(Character.MagicianEnabled)))
-                OnPropertyChanged(nameof(DrainExpression));
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                TraditionType eType = await GetTypeAsync(token).ConfigureAwait(false);
+                if (eType == TraditionType.None)
+                    return string.Empty;
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                    .ConfigureAwait(false);
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                           out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(DrainExpression);
+                    // Update the Fading CharacterAttribute Value.
+                    await _objCharacter.AttributeSection
+                        .ProcessAttributesInXPathForTooltipAsync(sbdToolTip, DrainExpression, token: token)
+                        .ConfigureAwait(false);
+
+                    List<Improvement> lstUsedImprovements
+                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                            _objCharacter,
+                            eType == TraditionType.RES
+                                ? Improvement.ImprovementType.FadingResistance
+                                : Improvement.ImprovementType.DrainResistance, token: token).ConfigureAwait(false);
+                    foreach (Improvement objLoopImprovement in lstUsedImprovements)
+                    {
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                            .Append(await _objCharacter.GetObjectNameAsync(objLoopImprovement, token: token)
+                                .ConfigureAwait(false)).Append(strSpace)
+                            .Append('(')
+                            .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                            .Append(')');
+                    }
+
+                    return sbdToolTip.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public void RefreshDrainValue(object sender, PropertyChangedEventArgs e)
+        public async Task RefreshDrainExpression(object sender, MultiplePropertiesChangedEventArgs e,
+            CancellationToken token = default)
         {
-            if (Type != TraditionType.None && e?.PropertyName == nameof(CharacterAttrib.TotalValue))
-                OnPropertyChanged(nameof(DrainValue));
+            token.ThrowIfCancellationRequested();
+            if ((e.PropertyNames.Contains(nameof(Character.AdeptEnabled)) ||
+                 e.PropertyNames.Contains(nameof(Character.MagicianEnabled)))
+                && await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.MAG)
+                await OnPropertyChangedAsync(nameof(DrainExpression), token).ConfigureAwait(false);
+        }
+
+        public async Task RefreshDrainValue(object sender, MultiplePropertiesChangedEventArgs e,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None
+                && (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)) &&
+                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Unaug}"))
+                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalBase)) &&
+                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Base}"))
+                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMinimum)) &&
+                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Minimum}"))
+                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMaximum)) &&
+                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Maximum}"))))
+            {
+                await OnPropertyChangedAsync(nameof(DrainValue), token).ConfigureAwait(false);
+            }
         }
 
         public IReadOnlyList<string> AvailableSpirits => _lstAvailableSpirits;
@@ -1122,6 +1649,46 @@ namespace Chummer.Backend.Uniques
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritCombat, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Magician's Combat Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task<string> GetSpiritCombatAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
+                    ? string.Empty
+                    : _strSpiritCombat;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Magician's Combat Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task SetSpiritCombatAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None &&
+                    Interlocked.Exchange(ref _strSpiritCombat, value) != value)
+                    await OnPropertyChangedAsync(nameof(SpiritCombat), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1186,6 +1753,46 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Magician's Detection Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task<string> GetSpiritDetectionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
+                    ? string.Empty
+                    : _strSpiritDetection;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Magician's Detection Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task SetSpiritDetectionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None &&
+                    Interlocked.Exchange(ref _strSpiritDetection, value) != value)
+                    await OnPropertyChangedAsync(nameof(SpiritDetection), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Method to get Magician's Detection Spirit (for Custom Traditions) in a language.
         /// </summary>
         public string DisplaySpiritDetectionMethod(string strLanguage)
@@ -1241,6 +1848,46 @@ namespace Chummer.Backend.Uniques
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritHealth, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Magician's Health Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task<string> GetSpiritHealthAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
+                    ? string.Empty
+                    : _strSpiritHealth;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Magician's Health Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task SetSpiritHealthAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None &&
+                    Interlocked.Exchange(ref _strSpiritHealth, value) != value)
+                    await OnPropertyChangedAsync(nameof(SpiritHealth), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1304,6 +1951,46 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Magician's Illusion Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task<string> GetSpiritIllusionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
+                    ? string.Empty
+                    : _strSpiritIllusion;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Magician's Illusion Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task SetSpiritIllusionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None &&
+                    Interlocked.Exchange(ref _strSpiritIllusion, value) != value)
+                    await OnPropertyChangedAsync(nameof(SpiritIllusion), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Method to get Magician's Illusion Spirit (for Custom Traditions) in a language.
         /// </summary>
         public string DisplaySpiritIllusionMethod(string strLanguage)
@@ -1359,6 +2046,46 @@ namespace Chummer.Backend.Uniques
                     if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritManipulation, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Magician's Manipulation Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task<string> GetSpiritManipulationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
+                    ? string.Empty
+                    : _strSpiritManipulation;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Magician's Manipulation Spirit (for Custom Traditions) in English.
+        /// </summary>
+        public async Task SetSpiritManipulationAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None &&
+                    Interlocked.Exchange(ref _strSpiritManipulation, value) != value)
+                    await OnPropertyChangedAsync(nameof(SpiritManipulation), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1490,28 +2217,36 @@ namespace Chummer.Backend.Uniques
         /// <returns></returns>
         public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Page;
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                string s = objNode != null
-                    ? objNode.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page
-                    : Page;
-                return !string.IsNullOrWhiteSpace(s) ? s : Page;
+                string strReturn = objNode?.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page;
+                return !string.IsNullOrWhiteSpace(strReturn) ? strReturn : Page;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         private XmlNode _xmlCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (Type == TraditionType.None)
@@ -1520,30 +2255,28 @@ namespace Chummer.Backend.Uniques
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                XmlDocument objDoc = null;
-                switch (Type)
-                {
-                    case TraditionType.MAG:
-                        objDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? _objCharacter.LoadData("traditions.xml", strLanguage, token: token)
-                            : await _objCharacter.LoadDataAsync("traditions.xml", strLanguage, token: token)
-                                                 .ConfigureAwait(false);
-                        break;
+                XmlDocument objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData(Type == TraditionType.RES ? "streams.xml" : "traditions.xml", strLanguage,
+                        token: token)
+                    : await _objCharacter.LoadDataAsync(
+                            await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.RES
+                                ? "streams.xml"
+                                : "traditions.xml",
+                            strLanguage, token: token)
+                        .ConfigureAwait(false);
 
-                    case TraditionType.RES:
-                        objDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? _objCharacter.LoadData("traditions.xml", strLanguage, token: token)
-                            : await _objCharacter.LoadDataAsync("streams.xml", strLanguage, token: token)
-                                                 .ConfigureAwait(false);
-                        break;
-                }
-
-                objReturn = objDoc?.TryGetNodeById("/chummer/traditions/tradition", SourceID);
+                objReturn = objDoc?.TryGetNodeById("/chummer/traditions/tradition",
+                    blnSync ? SourceID : await GetSourceIDAsync(token).ConfigureAwait(false));
                 _xmlCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
+            }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1552,38 +2285,43 @@ namespace Chummer.Backend.Uniques
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                XPathNavigator objDoc = null;
-                switch (Type)
-                {
-                    case TraditionType.MAG:
-                        objDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? _objCharacter.LoadDataXPath("traditions.xml", strLanguage, token: token)
-                            : await _objCharacter.LoadDataXPathAsync("traditions.xml", strLanguage, token: token)
-                                                 .ConfigureAwait(false);
-                        break;
+                XPathNavigator objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath(Type == TraditionType.RES ? "streams.xml" : "traditions.xml", strLanguage,
+                        token: token)
+                    : await _objCharacter.LoadDataXPathAsync(
+                            await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.RES
+                                ? "streams.xml"
+                                : "traditions.xml",
+                            strLanguage, token: token)
+                        .ConfigureAwait(false);
 
-                    case TraditionType.RES:
-                        objDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? _objCharacter.LoadDataXPath("streams.xml", strLanguage, token: token)
-                            : await _objCharacter.LoadDataXPathAsync("streams.xml", strLanguage, token: token)
-                                                 .ConfigureAwait(false);
-                        break;
-                }
-
-                objReturn = objDoc?.TryGetNodeById("/chummer/traditions/tradition", SourceID);
+                objReturn = objDoc?.TryGetNodeById("/chummer/traditions/tradition",
+                    blnSync ? SourceID : await GetSourceIDAsync(token).ConfigureAwait(false));
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;
+            }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1636,22 +2374,6 @@ namespace Chummer.Backend.Uniques
                 )
             );
 
-        public static IEnumerable<Tradition> GetTraditions(Character character)
-        {
-            using (XmlNodeList xmlTraditions = character.LoadData("traditions.xml").SelectNodes("/chummer/traditions/tradition[" + character.Settings.BookXPath() + ']'))
-            {
-                if (xmlTraditions?.Count > 0)
-                {
-                    foreach (XmlNode node in xmlTraditions)
-                    {
-                        Tradition tradition = new Tradition(character);
-                        tradition.Create(node);
-                        yield return tradition;
-                    }
-                }
-            }
-        }
-
         #endregion static
 
         public void SetSourceDetail(Control sourceControl)
@@ -1666,13 +2388,40 @@ namespace Chummer.Backend.Uniques
 
         public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                     _objCachedSourceDetail = default;
-                await SourceDetail.SetControlAsync(sourceControl, token).ConfigureAwait(false);
+                await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
+        }
+
+        public event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
+
+        private readonly ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler> _setMultiplePropertiesChangedAsync =
+            new ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler>();
+
+        public event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync
+        {
+            add => _setMultiplePropertiesChangedAsync.TryAdd(value);
+            remove => _setMultiplePropertiesChangedAsync.Remove(value);
         }
 
         [NotifyPropertyChangedInvocator]
@@ -1681,7 +2430,12 @@ namespace Chummer.Backend.Uniques
             this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
+        public Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
+        }
+
+        public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
@@ -1704,7 +2458,64 @@ namespace Chummer.Backend.Uniques
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    if (PropertyChanged != null)
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setMultiplePropertiesChangedAsync.Count);
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
+                        }
+
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            });
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        Utils.RunOnMainThread(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        });
+                    }
+
+                    if (_setPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                                lstFuncs.Add(() => objEvent.Invoke(this, objArg));
+                        }
+
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                        if (PropertyChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else if (PropertyChanged != null)
                     {
                         Utils.RunOnMainThread(() =>
                         {
@@ -1729,7 +2540,141 @@ namespace Chummer.Backend.Uniques
             }
         }
 
+        public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                HashSet<string> setNamesOfChangedProperties = null;
+                try
+                {
+                    foreach (string strPropertyName in lstPropertyNames)
+                    {
+                        if (setNamesOfChangedProperties == null)
+                            setNamesOfChangedProperties
+                                = await s_AttributeDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
+                        else
+                        {
+                            foreach (string strLoopChangedProperty in await s_AttributeDependencyGraph
+                                         .GetWithAllDependentsEnumerableAsync(this, strPropertyName, token).ConfigureAwait(false))
+                                setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        }
+                    }
+
+                    if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                        return;
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            }, token: token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        }, token: token).ConfigureAwait(false);
+                    }
+
+                    if (_setPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
+                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Task> lstTasks =
+                            new List<Task>(Math.Min(lstArgsList.Count * _setPropertyChangedAsync.Count,
+                                Utils.MaxParallelBatchSize));
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                            {
+                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                                if (++i < Utils.MaxParallelBatchSize)
+                                    continue;
+                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                lstTasks.Clear();
+                                i = 0;
+                            }
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                        if (PropertyChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (PropertyChanged != null)
+                    {
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            if (PropertyChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    if (setNamesOfChangedProperties != null)
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
+                }
+
+                if (_objCharacter != null)
+                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.MagicTradition), token)
+                        .ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

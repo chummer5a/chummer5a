@@ -29,7 +29,7 @@ namespace Chummer.Backend.Skills
     /// <summary>
     /// Type of Specialization
     /// </summary>
-    public sealed class SkillSpecialization : IHasName, IHasXmlDataNode, IHasLockObject
+    public sealed class SkillSpecialization : IHasName, IHasXmlDataNode, IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;
         private int _intNameLoaded;
@@ -40,11 +40,14 @@ namespace Chummer.Backend.Skills
         private readonly bool _blnExpertise;
         private readonly Character _objCharacter;
 
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
+
         #region Constructor, Create, Save, Load, and Print Methods
 
         public SkillSpecialization(Character objCharacter, string strName, bool blnFree = false, bool blnExpertise = false)
         {
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = objCharacter.LockObject;
             _strName = strName; // Shouldn't create tasks in constructors because of potential unexpected behavior
             _guiID = Guid.NewGuid();
             _blnFree = blnFree;
@@ -98,11 +101,11 @@ namespace Chummer.Backend.Skills
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -117,10 +120,10 @@ namespace Chummer.Backend.Skills
                             "name", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("free", (await GetFreeAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("expertise", (await GetExpertiseAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("specbonus",
@@ -170,19 +173,21 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Skill Specialization's name.
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                return Name;
+                return await GetNameAsync(token).ConfigureAwait(false);
 
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                return objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))
-                    ?.Value ?? Name
-                    : Name;
+                return objNode?.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? await GetNameAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -191,7 +196,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
@@ -206,7 +211,7 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterUpgradeableReadLock())
+                using (LockObject.EnterWriteLock())
                     _objParent = value;
             }
         }
@@ -214,12 +219,17 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The Skill to which this specialization belongs
         /// </summary>
-        public async ValueTask<Skill> GetParentAsync(CancellationToken token = default)
+        public async Task<Skill> GetParentAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return _objParent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -228,8 +238,15 @@ namespace Chummer.Backend.Skills
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
@@ -243,10 +260,18 @@ namespace Chummer.Backend.Skills
                             // ReSharper disable once MethodHasAsyncOverload
                             ? Parent.GetNode(strLanguage, token: token)
                             : await Parent.GetNodeAsync(strLanguage, token: token).ConfigureAwait(false))
-                        ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+                        ?.SelectSingleNode("specs/spec[. = " +
+                                           (blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false))
+                                           .CleanXPath() + ']');
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
+            }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -256,8 +281,15 @@ namespace Chummer.Backend.Skills
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
@@ -271,10 +303,18 @@ namespace Chummer.Backend.Skills
                             // ReSharper disable once MethodHasAsyncOverload
                             ? Parent.GetNodeXPath(strLanguage, token: token)
                             : await Parent.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))
-                        ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+                        ?.SelectSingleNode("specs/spec[. = " +
+                                           (blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false))
+                                           .CleanXPath() + ']');
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;
+            }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -295,7 +335,6 @@ namespace Chummer.Backend.Skills
                             if (intOld == 0)
                             {
                                 CancellationTokenSource objNewSource = new CancellationTokenSource();
-                                CancellationToken objToken = objNewSource.Token;
                                 CancellationTokenSource objOldSource
                                     = Interlocked.CompareExchange(ref _objNameLoaderCancellationTokenSource,
                                                                   objNewSource,
@@ -303,6 +342,7 @@ namespace Chummer.Backend.Skills
                                 // Cancellation token source is only null if it's our first time running
                                 if (objOldSource == null && Interlocked.CompareExchange(ref _intNameLoaded, 2, 0) == 0)
                                 {
+                                    CancellationToken objToken = objNewSource.Token;
                                     Task<string> tskNewTask
                                         = Task.Run(
                                             () => _objCharacter.ReverseTranslateExtraAsync(
@@ -336,6 +376,12 @@ namespace Chummer.Backend.Skills
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (Name == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Name == value)
@@ -358,12 +404,138 @@ namespace Chummer.Backend.Skills
                                                                            value, GlobalSettings.Language, "skills.xml",
                                                                            objToken), objToken));
                         if (tskOld != null)
-                            Utils.SafelyRunSynchronously(() => tskOld);
+                            _strName = Utils.SafelyRunSynchronously(() => tskOld);
                         Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Skill Specialization's name.
+        /// </summary>
+        public async Task<string> GetNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intNameLoaded <= 1)
+                {
+                    int intOld = Interlocked.CompareExchange(ref _intNameLoaded, 2, 1);
+                    while (intOld < 3) // Need this in case we reset name while in the process of fetching it
+                    {
+                        if (intOld == 0)
+                        {
+                            CancellationTokenSource objNewSource = new CancellationTokenSource();
+                            CancellationTokenSource objOldSource
+                                = Interlocked.CompareExchange(ref _objNameLoaderCancellationTokenSource,
+                                                              objNewSource,
+                                                              null);
+                            // Cancellation token source is only null if it's our first time running
+                            if (objOldSource == null && Interlocked.CompareExchange(ref _intNameLoaded, 2, 0) == 0)
+                            {
+                                CancellationToken objToken = objNewSource.Token;
+                                Task<string> tskNewTask
+                                    = Task.Run(
+                                        () => _objCharacter.ReverseTranslateExtraAsync(
+                                            _strName, GlobalSettings.Language, "skills.xml", objToken), objToken);
+                                Task<string> tskOld
+                                    = Interlocked.CompareExchange(ref _tskNameLoader, tskNewTask, null);
+                                if (tskOld != null)
+                                {
+                                    // This should never happen, throw an exception immediately
+                                    Utils.BreakIfDebug();
+                                    throw new InvalidOperationException();
+                                }
+
+                                _strName = await _tskNameLoader.ConfigureAwait(false);
+                                intOld = Interlocked.CompareExchange(ref _intNameLoaded, 3, 2);
+                            }
+                            else
+                                objNewSource.Dispose();
+                        }
+
+                        while (intOld == 0 || intOld == 2)
+                        {
+                            await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+                            intOld = Interlocked.CompareExchange(ref _intNameLoaded, 2, 1);
+                        }
+                    }
+                }
+
+                return _strName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetName(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetNameAsync(token).ConfigureAwait(false) == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetNameAsync(token).ConfigureAwait(false) == value)
+                    return;
+                CancellationTokenSource objNewSource = new CancellationTokenSource();
+                CancellationToken objToken = objNewSource.Token;
+                using (token.Register(() =>
+                       {
+                           objNewSource.Cancel(false);
+                           objNewSource.Dispose();
+                       }))
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _intNameLoaded = 0;
+                        CancellationTokenSource objOldSource
+                            = Interlocked.Exchange(ref _objNameLoaderCancellationTokenSource, objNewSource);
+                        if (objOldSource != null)
+                        {
+                            objOldSource.Cancel(false);
+                            objOldSource.Dispose();
+                        }
+
+                        Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, Task.Run(
+                            () => _objCharacter.ReverseTranslateExtraAsync(
+                                value, GlobalSettings.Language, "skills.xml",
+                                objToken), objToken));
+                        if (tskOld != null)
+                            await tskOld.ConfigureAwait(false);
+                        Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -380,6 +552,24 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
+        /// Is this a forced specialization (true) or player entered (false)
+        /// </summary>
+        public async Task<bool> GetFreeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnFree;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Does this specialization give an extra bonus on top of the normal bonus that specializations give (used by SASS' Inspired and by 6e)
         /// </summary>
         public bool Expertise
@@ -388,6 +578,24 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterReadLock())
                     return _blnExpertise;
+            }
+        }
+
+        /// <summary>
+        /// Does this specialization give an extra bonus on top of the normal bonus that specializations give (used by SASS' Inspired and by 6e)
+        /// </summary>
+        public async Task<bool> GetExpertiseAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnExpertise;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -407,15 +615,15 @@ namespace Chummer.Backend.Skills
                                                             Parent.DictionaryKey)
                         .Count == 0)
                     {
-                        if (Expertise)
-                            intReturn += _objCharacter.Settings.ExpertiseBonus;
-                        else
-                            intReturn += _objCharacter.Settings.SpecializationBonus;
+                        intReturn += Expertise
+                            ? _objCharacter.Settings.ExpertiseBonus
+                            : _objCharacter.Settings.SpecializationBonus;
                     }
 
                     decimal decBonus = 0;
+                    string strName = Name;
                     foreach (Improvement objImprovement in Parent.RelevantImprovements(
-                                 x => x.Condition == Name && !x.AddToRating, blnIncludeConditionals: true))
+                                 x => x.Condition == strName && !x.AddToRating, blnIncludeConditionals: true))
                     {
                         switch (objImprovement.ImproveType)
                         {
@@ -424,7 +632,7 @@ namespace Chummer.Backend.Skills
                             case Improvement.ImprovementType.SkillCategory:
                             case Improvement.ImprovementType.SkillGroup:
                             case Improvement.ImprovementType.SkillGroupBase:
-                                decBonus += objImprovement.Rating;
+                                decBonus += objImprovement.Value;
                                 break;
                         }
                     }
@@ -437,9 +645,10 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The bonus this specialization gives to relevant dicepools
         /// </summary>
-        public async ValueTask<int> GetSpecializationBonusAsync(CancellationToken token = default)
+        public async Task<int> GetSpecializationBonusAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 int intReturn = 0;
@@ -452,15 +661,16 @@ namespace Chummer.Backend.Skills
                            .ConfigureAwait(false))
                     .Count == 0)
                 {
-                    if (Expertise)
-                        intReturn += _objCharacter.Settings.ExpertiseBonus;
-                    else
-                        intReturn += _objCharacter.Settings.SpecializationBonus;
+                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                    intReturn += await GetExpertiseAsync(token).ConfigureAwait(false)
+                        ? objSettings.ExpertiseBonus
+                        : objSettings.SpecializationBonus;
                 }
 
                 decimal decBonus = 0;
+                string strName = await GetNameAsync(token).ConfigureAwait(false);
                 foreach (Improvement objImprovement in await Parent.RelevantImprovementsAsync(
-                                                                       x => x.Condition == Name && !x.AddToRating,
+                                                                       x => x.Condition == strName && !x.AddToRating,
                                                                        blnIncludeConditionals: true, token: token)
                                                                    .ConfigureAwait(false))
                 {
@@ -471,12 +681,16 @@ namespace Chummer.Backend.Skills
                         case Improvement.ImprovementType.SkillCategory:
                         case Improvement.ImprovementType.SkillGroup:
                         case Improvement.ImprovementType.SkillGroupBase:
-                            decBonus += objImprovement.Rating;
+                            decBonus += objImprovement.Value;
                             break;
                     }
                 }
 
                 return intReturn + decBonus.StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -499,7 +713,6 @@ namespace Chummer.Backend.Skills
                 if (tskOld != null)
                     Utils.SafelyRunSynchronously(() => tskOld, CancellationToken.None);
             }
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -524,11 +737,9 @@ namespace Chummer.Backend.Skills
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

@@ -63,6 +63,10 @@
       <text>Chummer5 cannot access the following file:\n{0}\n\nPlease make sure that the file exists and that Chummer5 has permission to read from the location.</text>
     </string>
     <string>
+      <key>Message_File_Incorrect_Format</key>
+      <text>Chummer5 encountered an error when attempting to process the following file:\n{0}\n\nPlease make sure that the file is of the correct format for what the program requires.</text>
+    </string>
+    <string>
       <key>Message_Files_Cannot_Be_Removed</key>
       <text>Chummer5 could not remove the below files during update as they were inaccessible:</text>
     </string>
@@ -1048,15 +1052,15 @@
     </string>
     <string>
       <key>String_Initiative</key>
-      <text>{0} +{1}d6</text>
+      <text>{0} + {1}d6</text>
     </string>
     <string>
       <key>String_MatrixInitiative</key>
-      <text>{0} + DP +{1}d6</text>
+      <text>{0} + DP + {1}d6</text>
     </string>
     <string>
       <key>String_MatrixInitiativeLong</key>
-      <text>{0} + Data Processing +{1}d6</text>
+      <text>{0} + Data Processing + {1}d6</text>
     </string>
     <string>
       <key>Checkbox_HideOverAvailLimit</key>
@@ -1157,6 +1161,14 @@
     <string>
       <key>String_BaseAttribute</key>
       <text>Base {0}</text>
+    </string>
+    <string>
+      <key>String_MinimumAttribute</key>
+      <text>Minimum {0}</text>
+    </string>
+    <string>
+      <key>String_MaximumAttribute</key>
+      <text>Maximum {0}</text>
     </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
@@ -2164,11 +2176,15 @@
     </string>
     <string>
       <key>Message_DeleteArmor</key>
-      <text>Are you sure you want to delete this Armor/Plugin?</text>
+      <text>Are you sure you want to delete this Armor?</text>
     </string>
     <string>
       <key>Message_DeleteArmorLocation</key>
       <text>Are you sure you want to delete this Armor Bundle? All of the Armor in this bundle will be moved to the Selected Armor container.</text>
+    </string>
+    <string>
+      <key>Message_DeleteArmorMod</key>
+      <text>Are you sure you want to delete this Armor Modification?</text>
     </string>
     <string>
       <key>Message_DeleteWeapon</key>
@@ -2177,6 +2193,10 @@
     <string>
       <key>Message_DeleteWeaponLocation</key>
       <text>Are you sure you want to delete this Weapon location? All of the Weapons in this location will be moved to the Selected Weapons container.</text>
+    </string>
+    <string>
+      <key>Message_DeleteWeaponAccessory</key>
+      <text>Are you sure you want to delete this Weapon Accessory/Modification?</text>
     </string>
     <string>
       <key>Message_DeleteWeaponMount</key>
@@ -3724,6 +3744,14 @@
       <text>Sold Vehicle Cyberware Plugin</text>
     </string>
     <string>
+      <key>String_ExpensePurchaseVehicleWeaponMount</key>
+      <text>Purchased Vehicle Weapon Mount</text>
+    </string>
+    <string>
+      <key>String_ExpenseSoldVehicleWeaponMount</key>
+      <text>Sold Vehicle Weapon Mount</text>
+    </string>
+    <string>
       <key>String_ExpensePurchaseCritterPower</key>
       <text>Purchased Critter Power</text>
     </string>
@@ -4353,7 +4381,11 @@
     </string>
     <string>
       <key>String_NotSupported</key>
-      <text>"This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results."</text>
+      <text>Not Supported</text>
+    </string>
+    <string>
+      <key>Message_MetatypeNotSupported</key>
+      <text>This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results.</text>
     </string>
     <string>
       <key>Warning_NoLimitFound</key>
@@ -5170,6 +5202,10 @@
       <text>Unequipped Modular Cyberware</text>
     </string>
     <string>
+      <key>Node_UnequippedModularBioware</key>
+      <text>Unequipped Modular Bioware</text>
+    </string>
+    <string>
       <key>Label_EssenceConsumption</key>
       <text>Essence Consumption</text>
     </string>
@@ -5798,6 +5834,10 @@
     <string>
       <key>Checkbox_ShowChart</key>
       <text>Show Chart</text>
+    </string>
+    <string>
+      <key>Message_UndoExpenseNotSupported</key>
+      <text>Undoing this type of expense is not currently supported. Please adjust the corresponding item(s) manually.</text>
     </string>
     <!-- End Region-->
     <!-- Region Calendar Tab -->
@@ -6669,6 +6709,14 @@
     <string>
       <key>Tip_Power_DoublePoints</key>
       <text>The Power Point cost for this Power has been increased because it has caused the Attribute to exceed your Metatype Maximum value by {0}. This cost increase only applies to the {0} points that have exceeded the Metatype Maximum.</text>
+    </string>
+    <string>
+      <key>Tip_Power_PPperLevel</key>
+      <text>Power Points per Level</text>
+    </string>
+    <string>
+      <key>Tip_Power_Capped</key>
+      <text>[{0}] Capped to {1}</text>
     </string>
     <!-- End Region-->
     <!-- Region Skills -->
@@ -7563,8 +7611,12 @@
       <text>Enemies</text>
     </string>
     <string>
-      <key>Label_Options_Carryover</key>
-      <text>Carryover for New Character</text>
+      <key>Label_Options_Carryover_Nuyen</key>
+      <text>Max Nuyen Carry-Over</text>
+    </string>
+    <string>
+      <key>Label_Options_Carryover_Karma</key>
+      <text>Max Karma Carry-Over</text>
     </string>
     <string>
       <key>Label_Options_Initiation</key>
@@ -8135,6 +8187,10 @@
       <text>Lossy (JPG, Manual)</text>
     </string>
     <string>
+      <key>String_Fastest_Option</key>
+      <text>Fastest</text>
+    </string>
+    <string>
       <key>String_Fast_Option</key>
       <text>Fast</text>
     </string>
@@ -8145,6 +8201,10 @@
     <string>
       <key>String_Thorough_Option</key>
       <text>Thorough</text>
+    </string>
+    <string>
+      <key>String_Ultra_Option</key>
+      <text>Ultra</text>
     </string>
     <!-- End Region-->
     <!-- Region Character Options -->
@@ -8440,7 +8500,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Tenant</key>
-      <text>Primary Tenant</text>
+      <text>Split Costs</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_LPContribution</key>

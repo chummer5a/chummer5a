@@ -340,7 +340,7 @@ namespace CrashHandler
             {
                 parts = JsonSerializer.CreateDefault().Deserialize<Dictionary<string, object>>(objJsonReader);
             }
-            
+
             if (parts?.TryGetValue("_intProcessId", out object objPid) == true && objPid is int pid)
             {
                 dicFiles = parts["_dicCapturedFiles"] as Dictionary<string, string>;

@@ -48,6 +48,7 @@ namespace Chummer
                 {
                     objImage.Dispose();
                 }
+                dlgOpenFile?.Dispose();
             };
             InitializeComponent();
             tabCharacterText.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
@@ -96,10 +97,10 @@ namespace Chummer
         {
             if (!File.Exists(strFile))
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), strFile));
+                        await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), strFile), token: token).ConfigureAwait(false);
                 return null;
             }
 
@@ -178,30 +179,30 @@ namespace Chummer
             }
             catch (IOException)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
-                                                       .ConfigureAwait(false),
-                                  strFile));
+                        await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
+                            .ConfigureAwait(false),
+                        strFile), token: token).ConfigureAwait(false);
                 return null;
             }
             catch (NotSupportedException)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
-                                                       .ConfigureAwait(false),
-                                  strFile));
+                        await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
+                            .ConfigureAwait(false),
+                        strFile), token: token).ConfigureAwait(false);
                 return null;
             }
             catch (UnauthorizedAccessException)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
-                                         .ConfigureAwait(false));
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
                 return null;
             }
 
@@ -354,15 +355,13 @@ namespace Chummer
                     {
                         XPathNodeIterator xmlJournalEntries
                             = xmlBaseCharacterNode.SelectAndCacheExpression("journals/journal", token: token);
-                        if (xmlJournalEntries?.Count > 1)
-                        {
-                            objCache.Created = true;
-                        }
-                        else if (xmlJournalEntries?.Count == 1 && xmlJournalEntries.Current != null
-                                                               && xmlJournalEntries.Current
-                                                                   .SelectSingleNodeAndCacheExpression(
-                                                                       "@name", token)?.Value
-                                                               != "Title")
+                        if (xmlJournalEntries?.Count > 1
+                            || (xmlJournalEntries?.Count == 1 &&
+                                xmlJournalEntries.Current != null
+                                && xmlJournalEntries.Current
+                                    .SelectSingleNodeAndCacheExpression(
+                                        "@name", token)?.Value
+                                != "Title"))
                         {
                             objCache.Created = true;
                         }

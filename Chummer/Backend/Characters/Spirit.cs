@@ -35,6 +35,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -51,7 +52,7 @@ namespace Chummer
     /// A Magician's Spirit or Technomancer's Sprite.
     /// </summary>
     [DebuggerDisplay("{Name}, \"{CritterName}\"")]
-    public sealed class Spirit : IHasInternalId, IHasName, IHasXmlDataNode, IHasMugshots, INotifyMultiplePropertyChanged, IHasNotes, IHasLockObject
+    public sealed class Spirit : IHasInternalId, IHasName, IHasXmlDataNode, IHasMugshots, INotifyMultiplePropertiesChangedAsync, IHasNotes, IHasLockObject, IHasCharacterObject
     {
         private Guid _guiId;
         private string _strName = string.Empty;
@@ -66,7 +67,7 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
         private Character _objLinkedCharacter;
 
-        private readonly ThreadSafeList<Image> _lstMugshots = new ThreadSafeList<Image>(3);
+        private readonly ThreadSafeList<Image> _lstMugshots;
         private int _intMainMugshotIndex = -1;
 
         #region Helper Methods
@@ -97,7 +98,9 @@ namespace Chummer
         {
             // Create the GUID for the new Spirit.
             _guiId = Guid.NewGuid();
-            CharacterObject = objCharacter;
+            CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = objCharacter.LockObject;
+            _lstMugshots = new ThreadSafeList<Image>(3, LockObject);
         }
 
         /// <summary>
@@ -134,7 +137,7 @@ namespace Chummer
             {
                 // ReSharper disable MethodHasAsyncOverload
                 // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                using (LockObject.EnterHiPrioReadLock(token))
+                using (LockObject.EnterReadLock(token))
                 using (objWriter.StartElement("spirit"))
                 {
                     objWriter.WriteElementString(
@@ -162,7 +165,7 @@ namespace Chummer
             }
             else
             {
-                IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -323,11 +326,11 @@ namespace Chummer
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -348,22 +351,22 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name", strName, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name_english", Name, token: token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("crittername", CritterName, token: token)
+                    await objWriter.WriteElementStringAsync("crittername", await GetCritterNameAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("fettered", Fettered.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("fettered", (await GetFetteredAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("bound", (await GetBoundAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("services", ServicesOwed.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("services", (await GetServicesOwedAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("force", (await GetForceAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("ratinglabel",
                             await LanguageManager
-                                .GetStringAsync(RatingLabel, strLanguageToPrint, token: token)
+                                .GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                     if (objXmlCritterNode != null)
@@ -383,9 +386,9 @@ namespace Chummer
                                 if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))
                                 {
                                     (bool blnIsSuccess, object objProcess)
-                                        = CommonFunctions.EvaluateInvariantXPath(
+                                        = await CommonFunctions.EvaluateInvariantXPathAsync(
                                             strInner.Replace(
-                                                "F", _intForce.ToString(GlobalSettings.InvariantCultureInfo)), token);
+                                                "F", _intForce.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
                                     int intValue
                                         = Math.Max(blnIsSuccess ? ((double)objProcess).StandardRound() : _intForce, 1);
                                     await objWriter
@@ -407,19 +410,17 @@ namespace Chummer
                             //Dump skills, (optional)powers if present to output
 
                             XPathNavigator xmlSpiritPowersBaseChummerNode
-                                = await (await _objLinkedCharacter
+                                = (await _objLinkedCharacter
                                         .LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint, token: token)
                                         .ConfigureAwait(false))
-                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer", token: token)
-                                    .ConfigureAwait(false);
+                                    .SelectSingleNodeAndCacheExpression("/chummer", token: token);
                             XPathNavigator xmlCritterPowersBaseChummerNode
-                                = await (await _objLinkedCharacter
+                                = (await _objLinkedCharacter
                                         .LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint,
                                             token: token).ConfigureAwait(false))
-                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer", token: token)
-                                    .ConfigureAwait(false);
+                                    .SelectSingleNodeAndCacheExpression("/chummer", token: token);
 
-                            XmlNode xmlPowersNode = objXmlCritterNode["powers"];
+                            XmlElement xmlPowersNode = objXmlCritterNode["powers"];
                             if (xmlPowersNode != null)
                             {
                                 // <powers>
@@ -568,9 +569,9 @@ namespace Chummer
                     }
 
                     await objWriter
-                        .WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("bound", (await GetBoundAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("type", EntityType.ToString(), token: token)
+                    await objWriter.WriteElementStringAsync("type", (await GetEntityTypeAsync(token).ConfigureAwait(false)).ToString(), token: token)
                         .ConfigureAwait(false);
 
                     if (GlobalSettings.PrintNotes)
@@ -589,9 +590,10 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PrintPowerInfo(XmlWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "", CancellationToken token = default)
+        private async Task PrintPowerInfo(XmlWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "", CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -658,8 +660,7 @@ namespace Chummer
                                               + "]/@translate")?.Value
                                       ?? strEnglishCategory;
 
-                        switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("type", token: token)
-                                    .ConfigureAwait(false))?.Value)
+                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("type", token: token)?.Value)
                         {
                             case "M":
                                 strDisplayType = await LanguageManager
@@ -674,8 +675,7 @@ namespace Chummer
                                 break;
                         }
 
-                        switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("action", token: token)
-                                    .ConfigureAwait(false))?.Value)
+                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("action", token: token)?.Value)
                         {
                             case "Auto":
                                 strDisplayAction = await LanguageManager
@@ -713,8 +713,7 @@ namespace Chummer
                                 break;
                         }
 
-                        switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("duration", token: token)
-                                    .ConfigureAwait(false))?.Value)
+                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("duration", token: token)?.Value)
                         {
                             case "Instant":
                                 strDisplayDuration
@@ -840,6 +839,10 @@ namespace Chummer
                     }
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         #endregion Constructor, Save, Load, and Print Methods
@@ -865,12 +868,67 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
+                    if (_strName == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _strName, value) == value)
+                            return;
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Name of the Spirit's Metatype.
+        /// </summary>
+        public async Task<string> GetNameAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Name of the Spirit's Metatype.
+        /// </summary>
+        public async Task SetNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strName == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
                     if (Interlocked.Exchange(ref _strName, value) == value)
                         return;
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
-                    OnPropertyChanged();
+                    await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
                 }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -897,14 +955,39 @@ namespace Chummer
         /// <summary>
         /// Name of the Spirit.
         /// </summary>
-        public async ValueTask<string> GetCritterNameAsync(CancellationToken token = default)
+        public async Task<string> GetCritterNameAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                return LinkedCharacter != null
-                    ? await LinkedCharacter.GetCharacterNameAsync(token).ConfigureAwait(false)
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                return objLinkedCharacter != null
+                    ? await objLinkedCharacter.GetCharacterNameAsync(token).ConfigureAwait(false)
                     : _strCritterName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Name of the Spirit.
+        /// </summary>
+        public async Task SetCritterNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strCritterName, value) != value)
+                    await OnPropertyChangedAsync(nameof(CritterName), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -922,16 +1005,21 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
+        public async Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 string strReturn = await GetCritterNameAsync(token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strReturn))
                     strReturn = await LanguageManager.TranslateExtraAsync(
-                        Name, strPreferFile: "critters.xml", token: token).ConfigureAwait(false);
+                        await GetNameAsync(token).ConfigureAwait(false), strPreferFile: "critters.xml", token: token).ConfigureAwait(false);
                 return strReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -953,6 +1041,22 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetRatingLabelAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            switch (await GetEntityTypeAsync(token).ConfigureAwait(false))
+            {
+                case SpiritType.Spirit:
+                    return "String_Force";
+
+                case SpiritType.Sprite:
+                    return "String_Level";
+
+                default:
+                    return "String_Rating";
+            }
+        }
+
         /// <summary>
         /// Number of Services the Spirit owes.
         /// </summary>
@@ -965,6 +1069,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_intServicesOwed == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_intServicesOwed == value)
@@ -1019,6 +1129,106 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Number of Services the Spirit owes.
+        /// </summary>
+        public async Task<int> GetServicesOwedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intServicesOwed;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Number of Services the Spirit owes.
+        /// </summary>
+        public async Task SetServicesOwedAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intServicesOwed == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intServicesOwed == value)
+                    return;
+                SpiritType eType = await GetEntityTypeAsync(token).ConfigureAwait(false);
+                if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                {
+                    if (value > 0 && _intServicesOwed <= 0 && !await GetBoundAsync(token).ConfigureAwait(false) &&
+                        !await GetFetteredAsync(token).ConfigureAwait(false) && await CharacterObject.Spirits.AnyAsync(
+                            async x =>
+                                !ReferenceEquals(x, this)
+                                && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eType
+                                && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
+                                && !await x.GetBoundAsync(token).ConfigureAwait(false)
+                                && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                    {
+                        // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                        Program.ShowScrollableMessageBox(
+                            await LanguageManager.GetStringAsync(eType == SpiritType.Sprite
+                                ? "Message_UnregisteredSpriteLimit"
+                                : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync(eType == SpiritType.Sprite
+                                ? "MessageTitle_UnregisteredSpriteLimit"
+                                : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+                else if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                {
+                    // Retrieve the character's Summoning Skill Rating.
+                    Skill objSkill = await (await CharacterObject.GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .GetActiveSkillAsync(
+                            eType == SpiritType.Spirit
+                                ? "Summoning"
+                                : "Compiling", token).ConfigureAwait(false);
+                    int intSkillValue =
+                        objSkill != null ? await objSkill.GetRatingAsync(token).ConfigureAwait(false) : 0;
+
+                    if (value > intSkillValue)
+                    {
+                        Program.ShowScrollableMessageBox(
+                            await LanguageManager.GetStringAsync(eType == SpiritType.Spirit
+                                ? "Message_SpiritServices"
+                                : "Message_SpriteServices", token: token).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync(eType == SpiritType.Spirit
+                                ? "MessageTitle_SpiritServices"
+                                : "MessageTitle_SpriteServices", token: token).ConfigureAwait(false), MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        value = intSkillValue;
+                    }
+                }
+
+                if (Interlocked.Exchange(ref _intServicesOwed, value) != value)
+                    await OnPropertyChangedAsync(nameof(ServicesOwed), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// The Spirit's Force.
         /// </summary>
         public int Force
@@ -1050,7 +1260,59 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Spirit is Bound.
+        /// The Spirit's Force.
+        /// </summary>
+        public async Task<int> GetForceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intForce;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// The Spirit's Force.
+        /// </summary>
+        public async Task SetForceAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                switch (await GetEntityTypeAsync(token).ConfigureAwait(false))
+                {
+                    case SpiritType.Spirit:
+                        int intMaxForce = await CharacterObject.GetMaxSpiritForceAsync(token).ConfigureAwait(false);
+                        if (value > intMaxForce)
+                            value = intMaxForce;
+                        break;
+
+                    case SpiritType.Sprite:
+                        int intMaxLevel = await CharacterObject.GetMaxSpriteLevelAsync(token).ConfigureAwait(false);
+                        if (value > intMaxLevel)
+                            value = intMaxLevel;
+                        break;
+                }
+
+                if (Interlocked.Exchange(ref _intForce, value) != value)
+                    await OnPropertyChangedAsync(nameof(Force), token: token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether the Spirit is Bound.
         /// </summary>
         public bool Bound
         {
@@ -1061,6 +1323,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnBound == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnBound == value)
@@ -1093,6 +1361,85 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether the Spirit is Bound.
+        /// </summary>
+        public async Task<bool> GetBoundAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnBound;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether the Spirit is Bound.
+        /// </summary>
+        public async Task SetBoundAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                if (_blnBound == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnBound == value)
+                    return;
+                SpiritType eType = await GetEntityTypeAsync(token).ConfigureAwait(false);
+                if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !value && await GetServicesOwedAsync(token).ConfigureAwait(false) > 0 && !await GetFetteredAsync(token).ConfigureAwait(false)
+                    && await CharacterObject.Spirits.AnyAsync(async x =>
+                        !ReferenceEquals(x, this)
+                        && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eType
+                        && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
+                        && !await x.GetBoundAsync(token).ConfigureAwait(false)
+                        && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                {
+                    // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync(eType == SpiritType.Sprite
+                            ? "Message_UnregisteredSpriteLimit"
+                            : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync(eType == SpiritType.Sprite
+                            ? "MessageTitle_UnregisteredSpriteLimit"
+                            : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnBound = value;
+                    await OnPropertyChangedAsync(nameof(Bound), token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// The Spirit's type, either Spirit or Sprite.
         /// </summary>
         public SpiritType EntityType
@@ -1106,12 +1453,68 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
+                    if (_eEntityType == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (InterlockedExtensions.Exchange(ref _eEntityType, value) == value)
+                            return;
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// The Spirit's type, either Spirit or Sprite.
+        /// </summary>
+        public async Task<SpiritType> GetEntityTypeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _eEntityType;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// The Spirit's type, either Spirit or Sprite.
+        /// </summary>
+        public async Task SetEntityTypeAsync(SpiritType value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_eEntityType == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
                     if (InterlockedExtensions.Exchange(ref _eEntityType, value) == value)
                         return;
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
-                    OnPropertyChanged();
+                    await OnPropertyChangedAsync(nameof(EntityType), token).ConfigureAwait(false);
                 }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1129,11 +1532,66 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
+                    if (_strFileName == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _strFileName, value) == value)
+                            return;
+                        RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Name of the save file for this Spirit/Sprite.
+        /// </summary>
+        public async Task<string> GetFileNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strFileName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Name of the save file for this Spirit/Sprite.
+        /// </summary>
+        public async Task SetFileNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strFileName == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
                     if (Interlocked.Exchange(ref _strFileName, value) == value)
                         return;
-                    RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
-                    OnPropertyChanged();
+                    await RefreshLinkedCharacterAsync(!string.IsNullOrEmpty(value), token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(FileName), token).ConfigureAwait(false);
                 }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1151,11 +1609,66 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
+                    if (_strRelativeName == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _strRelativeName, value) == value)
+                            return;
+                        RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Relative path to the save file.
+        /// </summary>
+        public async Task<string> GetRelativeFileNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strRelativeName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Relative path to the save file.
+        /// </summary>
+        public async Task SetRelativeFileNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strRelativeName == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
                     if (Interlocked.Exchange(ref _strRelativeName, value) == value)
                         return;
-                    RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
-                    OnPropertyChanged();
+                    await RefreshLinkedCharacterAsync(!string.IsNullOrEmpty(value), token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(FileName), token).ConfigureAwait(false);
                 }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1191,6 +1704,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
@@ -1214,11 +1733,38 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                 {
                     if (_intCachedAllowFettering < 0)
-                        _intCachedAllowFettering = (EntityType == SpiritType.Spirit
-                                                    || EntityType == SpiritType.Sprite
+                    {
+                        SpiritType eMyType = EntityType;
+                        _intCachedAllowFettering = (eMyType == SpiritType.Spirit
+                                                    || eMyType == SpiritType.Sprite
                                                     && CharacterObject.AllowSpriteFettering).ToInt32();
+                    }
+
                     return _intCachedAllowFettering > 0;
                 }
+            }
+        }
+
+        public async Task<bool> GetAllowFetteringAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedAllowFettering < 0)
+                {
+                    SpiritType eMyType = await GetEntityTypeAsync(token).ConfigureAwait(false);
+                    _intCachedAllowFettering = (eMyType == SpiritType.Spirit
+                                                || eMyType == SpiritType.Sprite
+                                                && await CharacterObject.GetAllowSpriteFetteringAsync(token).ConfigureAwait(false)).ToInt32();
+                }
+
+                return _intCachedAllowFettering > 0;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1237,9 +1783,41 @@ namespace Chummer
                     return _blnFettered && _intCachedAllowFettering > 0;
                 }
             }
-
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnFettered == value)
+                        return;
+                    if (value)
+                    {
+                        //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
+                        if (!CharacterObject.AllowSpriteFettering && EntityType == SpiritType.Sprite)
+                            return;
+
+                        //Only one Fettered spirit is permitted.
+                        if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered))
+                            return;
+                    }
+                    else if (CharacterObject.Created && !Bound && ServicesOwed > 0 && CharacterObject.Spirits.Any(
+                                 x =>
+                                     !ReferenceEquals(x, this) && x.EntityType == EntityType && x.ServicesOwed > 0
+                                     && !x.Bound &&
+                                     !x.Fettered))
+                    {
+                        // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                        Program.ShowScrollableMessageBox(
+                            LanguageManager.GetString(EntityType == SpiritType.Sprite
+                                ? "Message_UnregisteredSpriteLimit"
+                                : "Message_UnboundSpiritLimit"),
+                            LanguageManager.GetString(EntityType == SpiritType.Sprite
+                                ? "MessageTitle_UnregisteredSpriteLimit"
+                                : "MessageTitle_UnboundSpiritLimit"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_blnFettered == value)
@@ -1334,10 +1912,203 @@ namespace Chummer
                             ImprovementManager.RemoveImprovements(CharacterObject,
                                 Improvement.ImprovementSource.SpiritFettering);
                         }
-
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether the sprite/spirit has unlimited services due to Fettering.
+        /// See KC 91 and SG 192 for sprites and spirits, respectively.
+        /// </summary>
+        public async Task<bool> GetFetteredAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedAllowFettering < 0)
+                    _intCachedAllowFettering = (await CharacterObject.GetAllowSpriteFetteringAsync(token).ConfigureAwait(false)).ToInt32();
+                return _blnFettered && _intCachedAllowFettering > 0;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether the sprite/spirit has unlimited services due to Fettering.
+        /// See KC 91 and SG 192 for sprites and spirits, respectively.
+        /// </summary>
+        public async Task SetFetteredAsync(bool value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                if (_blnFettered == value)
+                    return;
+                SpiritType eEntityType = await GetEntityTypeAsync(token).ConfigureAwait(false);
+                if (value)
+                {
+                    //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
+                    if (!await CharacterObject.GetAllowSpriteFetteringAsync(token).ConfigureAwait(false) &&
+                        eEntityType == SpiritType.Sprite)
+                        return;
+
+                    //Only one Fettered spirit is permitted.
+                    if (await CharacterObject.Spirits
+                            .AnyAsync(objSpirit => objSpirit.GetFetteredAsync(token), token: token)
+                            .ConfigureAwait(false))
+                        return;
+                }
+                else if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) &&
+                         !await GetBoundAsync(token).ConfigureAwait(false) &&
+                         await GetServicesOwedAsync(token).ConfigureAwait(false) > 0 && await CharacterObject.Spirits
+                             .AnyAsync(
+                                 async x =>
+                                     !ReferenceEquals(x, this)
+                                     && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType
+                                     && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
+                                     && !await x.GetBoundAsync(token).ConfigureAwait(false)
+                                     && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token)
+                             .ConfigureAwait(false))
+                {
+                    // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
+                            ? "Message_UnregisteredSpriteLimit"
+                            : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
+                            ? "MessageTitle_UnregisteredSpriteLimit"
+                            : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnFettered == value)
+                    return;
+                int intFetteringCost = 0;
+                SpiritType eEntityType = await GetEntityTypeAsync(token).ConfigureAwait(false);
+                if (value)
+                {
+                    //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
+                    if (!await CharacterObject.GetAllowSpriteFetteringAsync(token).ConfigureAwait(false) &&
+                        eEntityType == SpiritType.Sprite)
+                        return;
+
+                    //Only one Fettered spirit is permitted.
+                    if (await CharacterObject.Spirits.AnyAsync(objSpirit => objSpirit.GetFetteredAsync(token), token: token)
+                            .ConfigureAwait(false))
+                        return;
+                    if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                    {
+                        // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
+                        intFetteringCost = eEntityType == SpiritType.Spirit
+                            ? await GetForceAsync(token).ConfigureAwait(false) *
+                              await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
+                                  .GetKarmaSpiritFetteringAsync(token).ConfigureAwait(false)
+                            : await GetForceAsync(token).ConfigureAwait(false);
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend", token: token).ConfigureAwait(false),
+                                Name,
+                                intFetteringCost.ToString(GlobalSettings.CultureInfo)), token).ConfigureAwait(false))
+                        {
+                            return;
+                        }
+                    }
+                }
+                else if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !await GetBoundAsync(token).ConfigureAwait(false) &&
+                         await GetServicesOwedAsync(token).ConfigureAwait(false) > 0 && await CharacterObject.Spirits.AnyAsync(
+                             async x =>
+                                 !ReferenceEquals(x, this)
+                                 && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType
+                                 && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
+                                 && !await x.GetBoundAsync(token).ConfigureAwait(false)
+                                 && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                {
+                    // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
+                            ? "Message_UnregisteredSpriteLimit"
+                            : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
+                            ? "MessageTitle_UnregisteredSpriteLimit"
+                            : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _blnFettered = value;
+                    if (value)
+                    {
+                        if (await GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit)
+                        {
+                            try
+                            {
+                                await ImprovementManager.CreateImprovementAsync(CharacterObject, "MAG",
+                                    Improvement.ImprovementSource.SpiritFettering,
+                                    string.Empty,
+                                    Improvement.ImprovementType.Attribute,
+                                    string.Empty, 0,
+                                    1, 0, 0, -1, token: token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await ImprovementManager.RollbackAsync(CharacterObject, CancellationToken.None)
+                                    .ConfigureAwait(false);
+                                throw;
+                            }
+
+                            await ImprovementManager.CommitAsync(CharacterObject, token).ConfigureAwait(false);
+                        }
+
+                        if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                        {
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(intFetteringCost * -1,
+                                await LanguageManager.GetStringAsync("String_ExpenseFetteredSpirit", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + Name,
+                                ExpenseType.Karma, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                .ConfigureAwait(false);
+                            await CharacterObject.ModifyKarmaAsync(-intFetteringCost, token).ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+                    }
+                    else
+                    {
+                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
+                            Improvement.ImprovementSource.SpiritFettering, token: token).ConfigureAwait(false);
+                    }
+                    await OnPropertyChangedAsync(nameof(Fettered), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1354,6 +2125,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_objColor == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_objColor == value)
@@ -1371,13 +2148,38 @@ namespace Chummer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
+        }
+
+        public event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
+
+        private readonly ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler> _setMultiplePropertiesChangedAsync =
+            new ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler>();
+
+        public event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync
+        {
+            add => _setMultiplePropertiesChangedAsync.TryAdd(value);
+            remove => _setMultiplePropertiesChangedAsync.Remove(value);
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
             this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
+        public Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
+        }
+
+        public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
@@ -1400,7 +2202,64 @@ namespace Chummer
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    if (PropertyChanged != null)
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setMultiplePropertiesChangedAsync.Count);
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
+                        }
+
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            });
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        Utils.RunOnMainThread(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        });
+                    }
+
+                    if (_setPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                                lstFuncs.Add(() => objEvent.Invoke(this, objArg));
+                        }
+
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                        if (PropertyChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else if (PropertyChanged != null)
                     {
                         Utils.RunOnMainThread(() =>
                         {
@@ -1423,6 +2282,133 @@ namespace Chummer
             }
         }
 
+        public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                HashSet<string> setNamesOfChangedProperties = null;
+                try
+                {
+                    foreach (string strPropertyName in lstPropertyNames)
+                    {
+                        if (setNamesOfChangedProperties == null)
+                            setNamesOfChangedProperties
+                                = await s_SpiritDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
+                        else
+                        {
+                            foreach (string strLoopChangedProperty in
+                                     await s_SpiritDependencyGraph.GetWithAllDependentsEnumerableAsync(this, strPropertyName, token).ConfigureAwait(false))
+                                setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        }
+                    }
+
+                    if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                        return;
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            }, token: token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        }, token: token).ConfigureAwait(false);
+                    }
+
+                    if (_setPropertyChangedAsync.Count > 0)
+                    {
+                        List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
+                            .Select(x => new PropertyChangedEventArgs(x)).ToList();
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
+                        {
+                            foreach (PropertyChangedEventArgs objArg in lstArgsList)
+                            {
+                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
+                                if (++i < Utils.MaxParallelBatchSize)
+                                    continue;
+                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                lstTasks.Clear();
+                                i = 0;
+                            }
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                        if (PropertyChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                if (PropertyChanged != null)
+                                {
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                                    {
+                                        PropertyChanged.Invoke(this, objArgs);
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (PropertyChanged != null)
+                    {
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            if (PropertyChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                {
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    if (setNamesOfChangedProperties != null)
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private static readonly PropertyDependencyGraph<Spirit> s_SpiritDependencyGraph =
             new PropertyDependencyGraph<Spirit>(
                 new DependencyGraphNode<string, Spirit>(nameof(NoLinkedCharacter),
@@ -1432,7 +2418,7 @@ namespace Chummer
                     new DependencyGraphNode<string, Spirit>(nameof(CritterName),
                         new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
                     ),
-                    new DependencyGraphNode<string, Spirit>(nameof(Name), x => string.IsNullOrEmpty(x.CritterName))
+                    new DependencyGraphNode<string, Spirit>(nameof(Name), x => string.IsNullOrEmpty(x.CritterName), async (x, t) => string.IsNullOrEmpty(await x.GetCritterNameAsync(t).ConfigureAwait(false)))
                 ),
                 new DependencyGraphNode<string, Spirit>(nameof(MainMugshot),
                     new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter)),
@@ -1449,8 +2435,15 @@ namespace Chummer
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
@@ -1460,14 +2453,22 @@ namespace Chummer
                 objReturn = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? CharacterObject.LoadData(EntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml",
-                                                   strLanguage, token: token)
+                            strLanguage, token: token)
                         : await CharacterObject.LoadDataAsync(
-                            EntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage,
+                            await GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit
+                                ? "traditions.xml"
+                                : "streams.xml", strLanguage,
                             token: token).ConfigureAwait(false))
                     .TryGetNodeByNameOrId("/chummer/spirits/spirit", Name);
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
+            }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1476,8 +2477,15 @@ namespace Chummer
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
@@ -1490,12 +2498,18 @@ namespace Chummer
                             EntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml",
                             strLanguage, token: token)
                         : await CharacterObject.LoadDataXPathAsync(
-                            EntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage,
+                            await GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage,
                             token: token).ConfigureAwait(false))
                     .TryGetNodeByNameOrId("/chummer/spirits/spirit", Name);
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;
+            }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1508,6 +2522,20 @@ namespace Chummer
             }
         }
 
+        public async Task<Character> GetLinkedCharacterAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _objLinkedCharacter;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool NoLinkedCharacter
         {
             get
@@ -1517,11 +2545,26 @@ namespace Chummer
             }
         }
 
+        public async Task<bool> GetNoLinkedCharacterAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _objLinkedCharacter == null;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public void RefreshLinkedCharacter(bool blnShowError = false, CancellationToken token = default)
         {
             using (LockObject.EnterUpgradeableReadLock(token))
             {
                 Character objOldLinkedCharacter = _objLinkedCharacter;
+                bool blnDoPropertyChanged = false;
                 using (LockObject.EnterWriteLock(token))
                 {
                     CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
@@ -1572,10 +2615,21 @@ namespace Chummer
 
                     if (_objLinkedCharacter != objOldLinkedCharacter)
                     {
+                        blnDoPropertyChanged = true;
                         if (objOldLinkedCharacter != null)
                         {
-                            using (objOldLinkedCharacter.LockObject.EnterWriteLock(token))
-                                objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
+                            if (!objOldLinkedCharacter.IsDisposed)
+                            {
+                                try
+                                {
+                                    objOldLinkedCharacter.MultiplePropertiesChangedAsync -= LinkedCharacterOnPropertyChanged;
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
+                            }
+
                             if (Program.OpenCharacters.Contains(objOldLinkedCharacter))
                             {
                                 if (Program.OpenCharacters.All(x => !x.LinkedCharacters.Contains(objOldLinkedCharacter), token)
@@ -1589,7 +2643,7 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            using (_objLinkedCharacter.LockObject.EnterUpgradeableReadLock(token))
+                            using (_objLinkedCharacter.LockObject.EnterReadLock(token))
                             {
                                 if (string.IsNullOrEmpty(_strCritterName))
                                 {
@@ -1599,38 +2653,44 @@ namespace Chummer
                                         _strCritterName = strCritterName;
                                 }
 
-                                using (_objLinkedCharacter.LockObject.EnterWriteLock(token))
-                                    _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
+                                _objLinkedCharacter.MultiplePropertiesChangedAsync += LinkedCharacterOnPropertyChanged;
                             }
                         }
-
-                        OnPropertyChanged(nameof(LinkedCharacter));
                     }
                 }
+
+                if (blnDoPropertyChanged)
+                    OnPropertyChanged(nameof(LinkedCharacter));
             }
         }
 
         public async Task RefreshLinkedCharacterAsync(bool blnShowError = false, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 Character objOldLinkedCharacter = _objLinkedCharacter;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                bool blnDoPropertyChanged = false;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
+                    ConcurrentHashSet<Character> lstLinkedCharacters =
+                        await CharacterObject.GetLinkedCharactersAsync(token).ConfigureAwait(false);
+                    lstLinkedCharacters.Remove(_objLinkedCharacter);
                     bool blnError = false;
                     bool blnUseRelative = false;
 
                     // Make sure the file still exists before attempting to load it.
-                    if (!File.Exists(FileName))
+                    string strFileName = await GetFileNameAsync(token).ConfigureAwait(false);
+                    if (!File.Exists(strFileName))
                     {
+                        string strRelativeFileName = await GetRelativeFileNameAsync(token).ConfigureAwait(false);
                         // If the file doesn't exist, use the relative path if one is available.
-                        if (string.IsNullOrEmpty(RelativeFileName))
+                        if (string.IsNullOrEmpty(strRelativeFileName))
                             blnError = true;
-                        else if (!File.Exists(Path.GetFullPath(RelativeFileName)))
+                        else if (!File.Exists(Path.GetFullPath(strRelativeFileName)))
                             blnError = true;
                         else
                             blnUseRelative = true;
@@ -1639,56 +2699,57 @@ namespace Chummer
                         {
                             Program.ShowScrollableMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
-                                              await LanguageManager.GetStringAsync("Message_FileNotFound", token: token).ConfigureAwait(false),
-                                              FileName),
-                                await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false), MessageBoxButtons.OK,
+                                    await LanguageManager.GetStringAsync("Message_FileNotFound", token: token)
+                                        .ConfigureAwait(false),
+                                    strFileName),
+                                await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
+                                    .ConfigureAwait(false), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                         }
                     }
 
                     if (!blnError)
                     {
-                        string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
+                        string strFile = blnUseRelative ? Path.GetFullPath(await GetRelativeFileNameAsync(token).ConfigureAwait(false)) : strFileName;
                         if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                             || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                         {
-                            if ((_objLinkedCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile, token: token).ConfigureAwait(false)) == null)
+                            if ((_objLinkedCharacter = await Program.OpenCharacters
+                                    .FirstOrDefaultAsync(x => x.FileName == strFile, token: token)
+                                    .ConfigureAwait(false)) == null)
                             {
                                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                                       = await Program.CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections, token).ConfigureAwait(false))
+                                       = await Program
+                                           .CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections, token)
+                                           .ConfigureAwait(false))
                                     _objLinkedCharacter
                                         = await Program.LoadCharacterAsync(strFile, string.Empty, false, false,
-                                                                           frmLoadingBar.MyForm, token).ConfigureAwait(false);
+                                            frmLoadingBar.MyForm, token).ConfigureAwait(false);
                             }
 
                             if (_objLinkedCharacter != null)
-                                CharacterObject.LinkedCharacters.TryAdd(_objLinkedCharacter);
+                                lstLinkedCharacters.TryAdd(_objLinkedCharacter);
                         }
                     }
 
                     if (_objLinkedCharacter != objOldLinkedCharacter)
                     {
+                        blnDoPropertyChanged = true;
                         if (objOldLinkedCharacter != null)
                         {
-                            IAsyncDisposable objLocker2 = await objOldLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                            try
-                            {
-                                token.ThrowIfCancellationRequested();
-                                objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
-                            }
-                            finally
-                            {
-                                await objLocker2.DisposeAsync().ConfigureAwait(false);
-                            }
+                            objOldLinkedCharacter.MultiplePropertiesChangedAsync -= LinkedCharacterOnPropertyChanged;
 
-                            if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token).ConfigureAwait(false))
+                            if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token)
+                                    .ConfigureAwait(false))
                             {
-                                if (await Program.OpenCharacters.AllAsync(x => x == _objLinkedCharacter
-                                                                              || !x.LinkedCharacters.Contains(
-                                                                                  objOldLinkedCharacter), token: token).ConfigureAwait(false)
+                                if (await Program.OpenCharacters.AllAsync(async x => x == _objLinkedCharacter
+                                                                               || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(
+                                                                                   objOldLinkedCharacter), token: token)
+                                        .ConfigureAwait(false)
                                     && Program.MainForm.OpenFormsWithCharacters.All(
                                         x => !x.CharacterObjects.Contains(objOldLinkedCharacter)))
-                                    await Program.OpenCharacters.RemoveAsync(objOldLinkedCharacter, token).ConfigureAwait(false);
+                                    await Program.OpenCharacters.RemoveAsync(objOldLinkedCharacter, token)
+                                        .ConfigureAwait(false);
                             }
                             else
                                 await objOldLinkedCharacter.DisposeAsync().ConfigureAwait(false);
@@ -1696,65 +2757,75 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            using (await _objLinkedCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                            IAsyncDisposable objLocker3 = await _objLinkedCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                            try
                             {
                                 token.ThrowIfCancellationRequested();
                                 if (string.IsNullOrEmpty(_strCritterName))
                                 {
-                                    string strCritterName = await _objLinkedCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
+                                    string strCritterName = await _objLinkedCharacter.GetCharacterNameAsync(token)
+                                        .ConfigureAwait(false);
                                     if (strCritterName !=
-                                        await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token).ConfigureAwait(false))
+                                        await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token)
+                                            .ConfigureAwait(false))
                                         _strCritterName = strCritterName;
                                 }
 
-                                IAsyncDisposable objLocker2 = await _objLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                IAsyncDisposable objLocker4 = await _objLinkedCharacter.LockObject
+                                    .EnterWriteLockAsync(token).ConfigureAwait(false);
                                 try
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
+                                    _objLinkedCharacter.MultiplePropertiesChangedAsync += LinkedCharacterOnPropertyChanged;
                                 }
                                 finally
                                 {
-                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                    await objLocker4.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
+                            finally
+                            {
+                                await objLocker3.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
-
-                        OnPropertyChanged(nameof(LinkedCharacter));
                     }
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+
+                if (blnDoPropertyChanged)
+                    await OnPropertyChangedAsync(nameof(LinkedCharacter), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
-        private void LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private Task LinkedCharacterOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
-            switch (e.PropertyName)
+            token.ThrowIfCancellationRequested();
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(Character.CharacterName)))
+                lstProperties.Add(nameof(CritterName));
+            if (e.PropertyNames.Contains(nameof(Character.Mugshots)))
+                lstProperties.Add(nameof(Mugshots));
+            if (e.PropertyNames.Contains(nameof(Character.MainMugshot)))
+                lstProperties.Add(nameof(MainMugshot));
+            if (e.PropertyNames.Contains(nameof(Character.MainMugshotIndex)))
+                lstProperties.Add(nameof(MainMugshotIndex));
+            if (e.PropertyNames.Contains(nameof(Character.AllowSpriteFettering)))
             {
-                case nameof(Character.Name):
-                    OnPropertyChanged(nameof(CritterName));
-                    break;
-
-                case nameof(Character.Mugshots):
-                    OnPropertyChanged(nameof(Mugshots));
-                    break;
-
-                case nameof(Character.MainMugshot):
-                    OnPropertyChanged(nameof(MainMugshot));
-                    break;
-
-                case nameof(Character.MainMugshotIndex):
-                    OnPropertyChanged(nameof(MainMugshotIndex));
-                    break;
-
-                case nameof(Character.AllowSpriteFettering):
-                    _intCachedAllowFettering = int.MinValue;
-                    this.OnMultiplePropertyChanged(nameof(AllowFettering), nameof(Fettered));
-                    break;
+                _intCachedAllowFettering = int.MinValue;
+                lstProperties.Add(nameof(AllowFettering));
+                lstProperties.Add(nameof(Fettered));
             }
+
+            return lstProperties.Count > 0
+                ? OnMultiplePropertiesChangedAsync(lstProperties, token)
+                : Task.CompletedTask;
         }
 
         #endregion Properties
@@ -1791,18 +2862,18 @@ namespace Chummer
             }
             set
             {
+                if (value == null)
+                {
+                    MainMugshotIndex = -1;
+                    return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (LinkedCharacter != null)
                         LinkedCharacter.MainMugshot = value;
                     else
                     {
-                        if (value == null)
-                        {
-                            MainMugshotIndex = -1;
-                            return;
-                        }
-
                         int intNewMainMugshotIndex = Mugshots.IndexOf(value);
                         if (intNewMainMugshotIndex != -1)
                         {
@@ -1822,6 +2893,90 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's main portrait encoded using Base64.
+        /// </summary>
+        public async Task<Image> GetMainMugshotAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    return await objLinkedCharacter.GetMainMugshotAsync(token).ConfigureAwait(false);
+                int intIndex = await GetMainMugshotIndexAsync(token).ConfigureAwait(false);
+                if (intIndex >= await Mugshots.GetCountAsync(token).ConfigureAwait(false) || intIndex < 0)
+                    return null;
+
+                return await Mugshots.GetValueAtAsync(intIndex, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's main portrait encoded using Base64.
+        /// </summary>
+        public async Task SetMainMugshotAsync(Image value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (value == null)
+            {
+                await SetMainMugshotIndexAsync(-1, token).ConfigureAwait(false);
+                return;
+            }
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                {
+                    await objLinkedCharacter.SetMainMugshotAsync(value, token).ConfigureAwait(false);
+                }
+                else
+                {
+                    int intNewMainMugshotIndex = await Mugshots.IndexOfAsync(value, token).ConfigureAwait(false);
+                    if (intNewMainMugshotIndex != -1)
+                    {
+                        await SetMainMugshotIndexAsync(intNewMainMugshotIndex, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            IAsyncDisposable objLocker3 =
+                                await Mugshots.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                await Mugshots.AddAsync(value, token).ConfigureAwait(false);
+                                await SetMainMugshotIndexAsync(await Mugshots.IndexOfAsync(value, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objLocker3.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Index of Character's main portrait. -1 if set to none.
         /// </summary>
         public int MainMugshotIndex
@@ -1833,19 +2988,102 @@ namespace Chummer
             }
             set
             {
+                if (value < -1)
+                    value = -1;
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (LinkedCharacter != null)
                         LinkedCharacter.MainMugshotIndex = value;
                     else
                     {
-                        if (value < -1 || value >= Mugshots.Count)
+                        if (value >= Mugshots.Count)
                             value = -1;
 
                         if (Interlocked.Exchange(ref _intMainMugshotIndex, value) != value)
                             OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Index of Character's main portrait. -1 if set to none.
+        /// </summary>
+        public async Task<int> GetMainMugshotIndexAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    return await objLinkedCharacter.GetMainMugshotIndexAsync(token).ConfigureAwait(false);
+                return _intMainMugshotIndex;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Index of Character's main portrait. -1 if set to none.
+        /// </summary>
+        public async Task SetMainMugshotIndexAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (value < -1)
+                value = -1;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    await objLinkedCharacter.SetMainMugshotIndexAsync(value, token).ConfigureAwait(false);
+                else
+                {
+                    if (value >= await Mugshots.GetCountAsync(token).ConfigureAwait(false))
+                        value = -1;
+                    if (Interlocked.Exchange(ref _intMainMugshotIndex, value) != value)
+                        await OnPropertyChangedAsync(nameof(MainMugshotIndex), token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Index of Character's main portrait. -1 if set to none.
+        /// </summary>
+        public async Task ModifyMainMugshotIndexAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    await objLinkedCharacter.ModifyMainMugshotIndexAsync(value, token).ConfigureAwait(false);
+                else
+                {
+                    int intOldValue = _intMainMugshotIndex;
+                    int intNewValue = Interlocked.Add(ref _intMainMugshotIndex, value);
+                    if (intNewValue < -1 || intNewValue >= await Mugshots.GetCountAsync(token).ConfigureAwait(false))
+                        intNewValue = -1;
+                    if (intOldValue != intNewValue)
+                        await OnPropertyChangedAsync(nameof(MainMugshotIndex), token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1888,31 +3126,36 @@ namespace Chummer
             }
             else
             {
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     await objWriter.WriteElementStringAsync("mainmugshotindex",
-                                                            MainMugshotIndex.ToString(
-                                                                GlobalSettings.InvariantCultureInfo), token: token)
-                                   .ConfigureAwait(false);
+                            (await GetMainMugshotIndexAsync(token).ConfigureAwait(false)).ToString(
+                                GlobalSettings.InvariantCultureInfo), token: token)
+                        .ConfigureAwait(false);
                     // <mugshots>
                     XmlElementWriteHelper objBaseElement
                         = await objWriter.StartElementAsync("mugshots", token: token).ConfigureAwait(false);
                     try
                     {
-                        foreach (Image imgMugshot in Mugshots)
+                        await Mugshots.ForEachAsync(async imgMugshot =>
                         {
                             await objWriter.WriteElementStringAsync(
                                 "mugshot",
                                 await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token)
-                                                    .ConfigureAwait(false), token: token).ConfigureAwait(false);
-                        }
+                                    .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
                     }
                     finally
                     {
                         // </mugshots>
                         await objBaseElement.DisposeAsync().ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -1973,7 +3216,7 @@ namespace Chummer
                     {
                         int iLocal = i;
                         atskMugshotImages[i]
-                            = Task.Run(() => lstMugshotsBase64[iLocal].ToImageAsync(PixelFormat.Format32bppPArgb, token).AsTask(), token);
+                            = Task.Run(() => lstMugshotsBase64[iLocal].ToImageAsync(PixelFormat.Format32bppPArgb, token), token);
                     }
                     await _lstMugshots.AddRangeAsync(await Task.WhenAll(atskMugshotImages).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
@@ -1988,16 +3231,18 @@ namespace Chummer
             }
         }
 
-        public async ValueTask PrintMugshots(XmlWriter objWriter, CancellationToken token = default)
+        public async Task PrintMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
-                    await LinkedCharacter.PrintMugshots(objWriter, token).ConfigureAwait(false);
-                else if (Mugshots.Count > 0)
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    await objLinkedCharacter.PrintMugshots(objWriter, token).ConfigureAwait(false);
+                else if (await Mugshots.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
                     // If you give it an extension of jpg, gif, or png, it expects the file to be in that format and won't render the image unless it was originally that type.
@@ -2018,19 +3263,9 @@ namespace Chummer
                         }
                     }
 
-                    Guid guiImage = Guid.NewGuid();
-                    Image imgMainMugshot = MainMugshot;
+                    Image imgMainMugshot = await GetMainMugshotAsync(token).ConfigureAwait(false);
                     if (imgMainMugshot != null)
                     {
-                        string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
-                                                             guiImage.ToString("N", GlobalSettings.InvariantCultureInfo)
-                                                             + ".jpg");
-                        imgMainMugshot.Save(imgMugshotPath);
-                        // <mainmugshotpath />
-                        await objWriter.WriteElementStringAsync("mainmugshotpath",
-                                                                "file://" + imgMugshotPath.Replace(
-                                                                    Path.DirectorySeparatorChar, '/'), token: token)
-                                       .ConfigureAwait(false);
                         // <mainmugshotbase64 />
                         await objWriter
                               .WriteElementStringAsync("mainmugshotbase64",
@@ -2041,7 +3276,7 @@ namespace Chummer
 
                     // <hasothermugshots>
                     await objWriter.WriteElementStringAsync("hasothermugshots",
-                                                            (imgMainMugshot == null || Mugshots.Count > 1).ToString(
+                                                            (imgMainMugshot == null || await Mugshots.GetCountAsync(token).ConfigureAwait(false) > 1).ToString(
                                                                 GlobalSettings.InvariantCultureInfo), token: token)
                                    .ConfigureAwait(false);
                     // <othermugshots>
@@ -2049,11 +3284,11 @@ namespace Chummer
                         = await objWriter.StartElementAsync("othermugshots", token: token).ConfigureAwait(false);
                     try
                     {
-                        for (int i = 0; i < Mugshots.Count; ++i)
+                        for (int i = 0; i < await Mugshots.GetCountAsync(token).ConfigureAwait(false); ++i)
                         {
-                            if (i == MainMugshotIndex)
+                            if (i == await GetMainMugshotIndexAsync(token).ConfigureAwait(false))
                                 continue;
-                            Image imgMugshot = Mugshots[i];
+                            Image imgMugshot = await Mugshots.GetValueAtAsync(i, token).ConfigureAwait(false);
                             // <mugshot>
                             XmlElementWriteHelper objMugshotElement
                                 = await objWriter.StartElementAsync("mugshot", token: token).ConfigureAwait(false);
@@ -2064,17 +3299,6 @@ namespace Chummer
                                                                await imgMugshot.ToBase64StringAsJpegAsync(token: token)
                                                                                .ConfigureAwait(false), token: token)
                                       .ConfigureAwait(false);
-
-                                string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
-                                                                     guiImage.ToString(
-                                                                         "N", GlobalSettings.InvariantCultureInfo) +
-                                                                     i.ToString(GlobalSettings.InvariantCultureInfo)
-                                                                     + ".jpg");
-                                imgMugshot.Save(imgMugshotPath);
-                                await objWriter.WriteElementStringAsync("temppath",
-                                                                        "file://" + imgMugshotPath.Replace(
-                                                                            Path.DirectorySeparatorChar, '/'),
-                                                                        token: token).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -2089,6 +3313,10 @@ namespace Chummer
                         await objOtherMugshotsElement.DisposeAsync().ConfigureAwait(false);
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2108,7 +3336,6 @@ namespace Chummer
                     imgMugshot.Dispose();
                 _lstMugshots.Dispose();
             }
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -2119,8 +3346,8 @@ namespace Chummer
             {
                 if (_objLinkedCharacter != null && !Utils.IsUnitTest
                                                 && await Program.OpenCharacters.AllAsync(
-                                                                    x => x == _objLinkedCharacter
-                                                                         || !x.LinkedCharacters.Contains(
+                                                                    async x => x == _objLinkedCharacter
+                                                                         || !(await x.GetLinkedCharactersAsync().ConfigureAwait(false)).Contains(
                                                                              _objLinkedCharacter))
                                                                 .ConfigureAwait(false)
                                                 && Program.MainForm.OpenFormsWithCharacters.All(
@@ -2133,13 +3360,11 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         #endregion IHasMugshots
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

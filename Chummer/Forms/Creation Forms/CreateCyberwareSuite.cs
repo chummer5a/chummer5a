@@ -21,33 +21,30 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public sealed partial class CreateCyberwareSuite : Form
+    public sealed partial class CreateCyberwareSuite : Form, IHasCharacterObject
     {
         private readonly Character _objCharacter;
         private readonly Improvement.ImprovementSource _eSource;
         private readonly string _strType;
 
+        public Character CharacterObject => _objCharacter;
+
         #region Control Events
 
         public CreateCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             _eSource = eSource;
+            if (_eSource == Improvement.ImprovementSource.Bioware)
+                Tag = "Title_CreateBiowareSuite";
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
-
-            if (_eSource == Improvement.ImprovementSource.Cyberware)
-                _strType = "cyberware";
-            else
-            {
-                _strType = "bioware";
-                Text = LanguageManager.GetString("Title_CreateBiowareSuite");
-            }
-
+            _strType = _eSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
             txtFileName.Text = "custom_" + _strType + ".xml";
         }
 
@@ -57,22 +54,22 @@ namespace Chummer
             string strName = await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strName))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareSuite_SuiteName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_SuiteName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_CyberwareSuite_SuiteName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_SuiteName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
                 return;
             }
 
             string strFileName = await txtFileName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strFileName))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareSuite_FileName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_FileName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_CyberwareSuite_FileName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_FileName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
                 return;
             }
 
             // Make sure the file name starts with custom and ends with _cyberware.xml.
             if (!strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !strFileName.EndsWith('_' + _strType + ".xml", StringComparison.OrdinalIgnoreCase))
             {
-                Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_InvalidFileName").ConfigureAwait(false), _strType),
-                    await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_InvalidFileName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_InvalidFileName").ConfigureAwait(false), _strType),
+                    await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_InvalidFileName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
                 return;
             }
 
@@ -80,8 +77,8 @@ namespace Chummer
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
             if ((await _objCharacter.LoadDataXPathAsync(_strType + ".xml").ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/suites/suite", strName) != null)
             {
-                Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_DuplicateName").ConfigureAwait(false), strName),
-                    await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_DuplicateName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_DuplicateName").ConfigureAwait(false), strName),
+                    await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_DuplicateName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
                 return;
             }
 
@@ -99,12 +96,12 @@ namespace Chummer
                 }
                 catch (IOException ex)
                 {
-                    Program.ShowScrollableMessageBox(this, ex.ToString());
+                    await Program.ShowScrollableMessageBoxAsync(this, ex.ToString()).ConfigureAwait(false);
                     return;
                 }
                 catch (XmlException ex)
                 {
-                    Program.ShowScrollableMessageBox(this, ex.ToString());
+                    await Program.ShowScrollableMessageBoxAsync(this, ex.ToString()).ConfigureAwait(false);
                     return;
                 }
             }
@@ -142,9 +139,10 @@ namespace Chummer
                     }
 
                     // Determine the Grade of Cyberware.
+                    Cyberware objFirstWare = await _objCharacter.Cyberware.FirstOrDefaultAsync(x => x.SourceType == _eSource)
+                        .ConfigureAwait(false);
                     string strGrade
-                        = (await _objCharacter.Cyberware.FirstOrDefaultAsync(x => x.SourceType == _eSource)
-                                              .ConfigureAwait(false))?.Grade.Name ?? string.Empty;
+                        = objFirstWare != null ? (await objFirstWare.GetGradeAsync().ConfigureAwait(false)).Name : string.Empty;
 
                     // <suite>
                     await objWriter.WriteStartElementAsync("suite").ConfigureAwait(false);
@@ -167,17 +165,18 @@ namespace Chummer
                         // ReSharper disable AccessToDisposedClosure
                         await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("name", objCyberware.Name).ConfigureAwait(false);
-                        if (objCyberware.Rating > 0)
+                        int intRating = await objCyberware.GetRatingAsync().ConfigureAwait(false);
+                        if (intRating > 0)
                             await objWriter
                                   .WriteElementStringAsync(
-                                      "rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                      "rating", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                                   .ConfigureAwait(false);
                         // Write out child items.
-                        if (await objCyberware.Children.GetCountAsync().ConfigureAwait(false) > 0)
+                        if (await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).GetCountAsync().ConfigureAwait(false) > 0)
                         {
                             // <cyberwares>
                             await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
-                            await objCyberware.Children.ForEachAsync(async objChild =>
+                            await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).ForEachAsync(async objChild =>
                             {
                                 // Do not include items that come with the base item by default.
                                 if (objChild.Capacity != "[*]")
@@ -185,11 +184,12 @@ namespace Chummer
                                     await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
                                     await objWriter.WriteElementStringAsync("name", objChild.Name)
                                                    .ConfigureAwait(false);
-                                    if (objChild.Rating > 0)
+                                    int intChildRating = await objChild.GetRatingAsync().ConfigureAwait(false);
+                                    if (intChildRating > 0)
                                         await objWriter
                                               .WriteElementStringAsync(
                                                   "rating",
-                                                  objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                                  intChildRating.ToString(GlobalSettings.InvariantCultureInfo))
                                               .ConfigureAwait(false);
                                     // </cyberware>
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -216,8 +216,8 @@ namespace Chummer
                 }
             }
 
-            Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_SuiteCreated").ConfigureAwait(false), strName),
-                await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_SuiteCreated").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_SuiteCreated").ConfigureAwait(false), strName),
+                await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_SuiteCreated").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;

@@ -6103,6 +6103,11 @@
         <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
+      <accessories>
+        <accessory>
+          <name>Imaging Scope</name>
+        </accessory>
+      </accessories>
       <range>Sporting Rifles</range>
       <sizecategory>Sporting Rifles</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
@@ -7170,27 +7175,29 @@
       <ammocategory>Grenade Launchers</ammocategory>
       <range>Grenade Launchers</range>
       <required>
-        <OR>
-          <category>Assault Rifles</category>
-          <category>Sniper Rifles</category>
-          <category>Sporting Rifles</category>
-          <useskill>Longarms</useskill>
-          <useskill>Heavy Weapons</useskill>
-          <AND>
-            <useskill NOT="" operation="exists" />
-            <OR>
-              <category>Shotguns</category>
-              <category>Sporting Rifles</category>
-              <category>Sniper Rifles</category>
-              <category>Light Machine Guns</category>
-              <category>Medium Machine Guns</category>
-              <category>Heavy Machine Guns</category>
-              <category>Assault Cannons</category>
-              <category>Grenade Launchers</category>
-              <category>Missile Launchers</category>
-            </OR>
-          </AND>
-        </OR>
+        <weapondetails>
+          <OR>
+            <AND>
+              <OR>
+                <category>Shotguns</category>
+                <category>Sporting Rifles</category>
+                <category>Sniper Rifles</category>
+                <category>Light Machine Guns</category>
+                <category>Medium Machine Guns</category>
+                <category>Heavy Machine Guns</category>
+                <category>Assault Cannons</category>
+                <category>Grenade Launchers</category>
+                <category>Missile Launchers</category>
+              </OR>
+              <useskill NOT="" operation="exists" />
+            </AND>
+            <category>Assault Rifles</category>
+            <category>Sniper Rifles</category>
+            <category>Sporting Rifles</category>
+            <useskill>Longarms</useskill>
+            <useskill>Heavy Weapons</useskill>
+          </OR>
+        </weapondetails>
       </required>
       <useskill>Heavy Weapons</useskill>
       <useskillspec>Grenade Launchers</useskillspec>
@@ -7646,7 +7653,7 @@
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
-      <damage>(MAG*2)P</damage>
+      <damage>({MAG}*2)P</damage>
       <ap>-{MAG}*0.5</ap>
       <mode>0</mode>
       <rc>0</rc>
@@ -16251,7 +16258,13 @@
       <rating>0</rating>
       <required>
         <weapondetails>
-          <conceal operation="lessthanequals">0</conceal>
+          <OR>
+           <conceal operation="lessthanequals">0</conceal>
+           <category>Tasers</category>
+           <category>Holdouts</category>
+           <category>Light Pistols</category>
+           <category>Heavy Pistols</category>
+          </OR>
         </weapondetails>
       </required>
     </accessory>
@@ -16375,7 +16388,13 @@
       <rating>0</rating>
       <required>
         <weapondetails>
-          <conceal operation="lessthanequals">0</conceal>
+          <OR>
+           <conceal operation="lessthanequals">0</conceal>
+           <category>Tasers</category>
+           <category>Holdouts</category>
+           <category>Light Pistols</category>
+           <category>Heavy Pistols</category>
+          </OR>
         </weapondetails>
       </required>
     </accessory>
@@ -16586,10 +16605,29 @@
       </required>
       <forbidden>
         <weapondetails>
-          <name>HK Urban Fighter</name>
+          <OR>
+           <name>HK Urban Fighter</name>
+           <name>Hammerli Gemini</name>
+          </OR>
         </weapondetails>
       </forbidden>
     </accessory>
+    <accessory>
+      <id>20f3fdc1-6652-4619-a606-1a3d7bad1296</id>
+      <name>Hammerli Gemini Spare Clip</name>
+      <mount />
+      <avail>4</avail>
+      <cost>10</cost>
+      <source>SL</source>
+      <page>31</page>
+      <ammoslots>1</ammoslots>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <name>Hammerli Gemini</name>
+        </weapondetails>
+      </required>
+    </accessory>    
     <accessory>
       <id>6763996b-0458-46ee-a6a5-f50255ace664</id>
       <name>Belt-Feed, 100-round</name>
@@ -16954,7 +16992,13 @@
       </forbidden>
       <required>
         <weapondetails>
-          <conceal operation="lessthanequals">0</conceal>
+          <OR>
+           <conceal operation="lessthanequals">0</conceal>
+           <category>Tasers</category>
+           <category>Holdouts</category>
+           <category>Light Pistols</category>
+           <category>Heavy Pistols</category>
+          </OR>
         </weapondetails>
       </required>
     </accessory>
@@ -18636,7 +18680,7 @@
       <rating>0</rating>
       <required>
         <weapondetails>
-          <conceal operation="greaterthanorequals">4</conceal>
+          <conceal operation="greaterthanequals">4</conceal>
         </weapondetails>
       </required>
     </accessory>

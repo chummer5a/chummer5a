@@ -60,24 +60,24 @@ namespace Chummer
         public SelectPACKSKit(Character objCharacter)
         {
             Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
             // Load the PACKS information.
-            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("packs.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _xmlGearsBaseGearsNode = _objCharacter.LoadDataXPath("gear.xml").SelectSingleNodeAndCacheExpression("/chummer/gears");
-            _xmlWeaponsBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _xmlArmorBaseChummerNode = _objCharacter.LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _xmlQualitiesBaseQualitiesNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNodeAndCacheExpression("/chummer/qualities");
-            _xmlSkillsBaseChummerNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _xmlSpellsBaseSpellsNode = _objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer/spells");
-            _xmlComplexFormsBaseChummerNode = _objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _xmlVehiclesBaseChummerNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _xmlBiowareBaseChummerNode = _objCharacter.LoadDataXPath("bioware.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _xmlCyberwareBaseChummerNode = _objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _xmlPowersBasePowersNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNodeAndCacheExpression("/chummer/powers");
-            _xmlMartialArtsBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlBaseChummerNode = objCharacter.LoadDataXPath("packs.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlGearsBaseGearsNode = objCharacter.LoadDataXPath("gear.xml").SelectSingleNodeAndCacheExpression("/chummer/gears");
+            _xmlWeaponsBaseChummerNode = objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlArmorBaseChummerNode = objCharacter.LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlQualitiesBaseQualitiesNode = objCharacter.LoadDataXPath("qualities.xml").SelectSingleNodeAndCacheExpression("/chummer/qualities");
+            _xmlSkillsBaseChummerNode = objCharacter.LoadDataXPath("skills.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlSpellsBaseSpellsNode = objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer/spells");
+            _xmlComplexFormsBaseChummerNode = objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlVehiclesBaseChummerNode = objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlBiowareBaseChummerNode = objCharacter.LoadDataXPath("bioware.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlCyberwareBaseChummerNode = objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlPowersBasePowersNode = objCharacter.LoadDataXPath("powers.xml").SelectSingleNodeAndCacheExpression("/chummer/powers");
+            _xmlMartialArtsBaseChummerNode = objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNodeAndCacheExpression("/chummer");
         }
 
         private async void SelectPACKSKit_Load(object sender, EventArgs e)
@@ -111,7 +111,7 @@ namespace Chummer
             await RefreshCategories().ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshCategories(CancellationToken token = default)
+        private async Task RefreshCategories(CancellationToken token = default)
         {
             // Update the list of Kits based on the selected Category.
 
@@ -142,11 +142,11 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlPack in xmlPacksKits)
                 {
-                    string strName = (await objXmlPack.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value;
+                    string strName = objXmlPack.SelectSingleNodeAndCacheExpression("name", token: token)?.Value;
                     // Separator "<" is a hack because XML does not like it when the '<' character is used in element contents, so we can safely assume that it will never show up.
                     lstKit.Add(new ListItem(
-                                   strName + '<' + (await objXmlPack.SelectSingleNodeAndCacheExpressionAsync("category", token: token).ConfigureAwait(false))?.Value,
-                                   (await objXmlPack.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
+                                   strName + '<' + objXmlPack.SelectSingleNodeAndCacheExpression("category", token: token)?.Value,
+                                   objXmlPack.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strName));
                 }
 
                 lstKit.Sort(CompareListItems.CompareNames);
@@ -331,8 +331,8 @@ namespace Chummer
                     case "selectmartialart":
                         {
                             objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_SelectMartialArt").ConfigureAwait(false);
-                            int intRating = (await objXmlItem.SelectSingleNodeAndCacheExpressionAsync("@rating").ConfigureAwait(false))?.ValueAsInt ?? 1;
-                            string strSelect = (await objXmlItem.SelectSingleNodeAndCacheExpressionAsync("@select").ConfigureAwait(false))?.Value
+                            int intRating = objXmlItem.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 1;
+                            string strSelect = objXmlItem.SelectSingleNodeAndCacheExpression("@select")?.Value
                                                ?? await LanguageManager.GetStringAsync(
                                                    "String_SelectPACKSKit_SelectMartialArt").ConfigureAwait(false);
                             TreeNode objMartialArt = new TreeNode
@@ -842,8 +842,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
 
-            if (Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DeletePACKSKit").ConfigureAwait(false), strSelectedKit),
-                                                 await LanguageManager.GetStringAsync("MessageTitle_Delete").ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
+            if (await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DeletePACKSKit").ConfigureAwait(false), strSelectedKit),
+                    await LanguageManager.GetStringAsync("MessageTitle_Delete").ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2).ConfigureAwait(false) == DialogResult.No)
                 return;
 
             // Delete the selected custom PACKS Kit.
@@ -911,7 +911,7 @@ namespace Chummer
             }
 
             // Reload the PACKS files since they have changed.
-            _xmlBaseChummerNode = await (await _objCharacter.LoadDataXPathAsync("packs.xml").ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsync("/chummer").ConfigureAwait(false);
+            _xmlBaseChummerNode = (await _objCharacter.LoadDataXPathAsync("packs.xml").ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer");
             await RefreshCategories().ConfigureAwait(false);
         }
 
@@ -920,7 +920,7 @@ namespace Chummer
         #region Properties
 
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Whether the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain => _blnAddAgain;
 
@@ -953,7 +953,7 @@ namespace Chummer
             Close();
         }
 
-        private async ValueTask WriteGear(XPathNavigator objXmlGear, TreeNode objParent)
+        private async Task WriteGear(XPathNavigator objXmlGear, TreeNode objParent)
         {
             XPathNavigator xmlNameNode = objXmlGear.SelectSingleNodeAndCacheExpression("name");
             string strName = xmlNameNode?.Value ?? string.Empty;

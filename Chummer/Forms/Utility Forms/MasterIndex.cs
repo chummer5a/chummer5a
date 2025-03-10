@@ -21,7 +21,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,7 +45,7 @@ namespace Chummer
         private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
 
-        private static async ValueTask<CharacterSettings> GetInitialSetting(CancellationToken token = default)
+        private static async Task<CharacterSettings> GetInitialSetting(CancellationToken token = default)
         {
             IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
             if (dicCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting, out CharacterSettings objReturn))
@@ -126,8 +125,6 @@ namespace Chummer
                 _objGenericFormClosingCancellationTokenSource.Dispose();
 
                 _objLoadContentLocker.Dispose();
-                foreach (ListItem objExistingItem in _lstItems)
-                    ((MasterIndexEntry) objExistingItem.Value).Dispose();
                 Utils.ListItemListPool.Return(ref _lstFileNamesWithItems);
                 Utils.ListItemListPool.Return(ref _lstItems);
             };
@@ -136,7 +133,7 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private async ValueTask PopulateCharacterSettings(CancellationToken token = default)
+        private async Task PopulateCharacterSettings(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
@@ -156,7 +153,7 @@ namespace Chummer
                 {
                     IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
                         = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
-                    foreach (var objSetting in dicCharacterSettings.Values)
+                    foreach (CharacterSettings objSetting in dicCharacterSettings.Values)
                     {
                         lstCharacterSettings.Add(
                             new ListItem(objSetting,
@@ -266,16 +263,7 @@ namespace Chummer
 
                     if (objSettings != null)
                     {
-                        IAsyncDisposable objLocker = await objSettings.LockObject.EnterWriteLockAsync(_objGenericToken).ConfigureAwait(false);
-                        try
-                        {
-                            _objGenericToken.ThrowIfCancellationRequested();
-                            objSettings.PropertyChanged += OnSelectedSettingChanged;
-                        }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
+                        objSettings.MultiplePropertiesChangedAsync += OnSelectedSettingChanged;
                     }
                 }
                 finally
@@ -295,26 +283,11 @@ namespace Chummer
 
         private async void MasterIndex_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_objSelectedSetting != null)
-            {
-                try
-                {
-                    IAsyncDisposable objLocker = await _objSelectedSetting.LockObject.EnterWriteLockAsync(_objGenericToken).ConfigureAwait(false);
-                    try
-                    {
-                        _objGenericToken.ThrowIfCancellationRequested();
-                        _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    return;
-                }
-            }
+            if (_objGenericToken.IsCancellationRequested)
+                return;
+            CharacterSettings objSettings = Interlocked.Exchange(ref _objSelectedSetting, null);
+            if (objSettings != null)
+                objSettings.MultiplePropertiesChangedAsync -= OnSelectedSettingChanged;
             CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateCharacterSettingsCancellationTokenSource, null);
             if (objOldCancellationTokenSource?.IsCancellationRequested == false)
             {
@@ -366,17 +339,17 @@ namespace Chummer
             _objGenericFormClosingCancellationTokenSource.Cancel(false);
         }
 
-        private async void OnSelectedSettingChanged(object sender, PropertyChangedEventArgs e)
+        private async Task OnSelectedSettingChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
-            if (e.PropertyName == nameof(CharacterSettings.Books)
-                || e.PropertyName == nameof(CharacterSettings.EnabledCustomDataDirectoryPaths))
+            if (e.PropertyNames.Contains(nameof(CharacterSettings.Books))
+                || e.PropertyNames.Contains(nameof(CharacterSettings.EnabledCustomDataDirectoryPaths)))
             {
                 try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                     try
                     {
-                        await LoadContent(_objGenericToken).ConfigureAwait(false);
+                        await LoadContent(token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -439,30 +412,12 @@ namespace Chummer
                         {
                             if (objPreviousSettings != null)
                             {
-                                IAsyncDisposable objLocker = await objPreviousSettings.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    objPreviousSettings.PropertyChanged -= OnSelectedSettingChanged;
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
+                                objPreviousSettings.MultiplePropertiesChangedAsync -= OnSelectedSettingChanged;
                             }
 
                             if (objSettings != null)
                             {
-                                IAsyncDisposable objLocker = await objSettings.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    objSettings.PropertyChanged += OnSelectedSettingChanged;
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
+                                objSettings.MultiplePropertiesChangedAsync += OnSelectedSettingChanged;
                             }
 
                             await LoadContent(token).ConfigureAwait(false);
@@ -504,12 +459,6 @@ namespace Chummer
                         try
                         {
                             _dicCachedNotes.Clear();
-                            foreach (object objUncastedExistingEntry in _lstItems.Select(x => x.Value))
-                            {
-                                if (objUncastedExistingEntry is MasterIndexEntry objExistingEntry)
-                                    objExistingEntry.Dispose();
-                            }
-
                             _lstItems.Clear();
                             _lstFileNamesWithItems.Clear();
                             if (_objSelectedSetting == null)
@@ -522,7 +471,7 @@ namespace Chummer
                                 if (_objSelectedSetting != null)
                                 {
                                     foreach (XPathNavigator xmlBookNode in (await XmlManager.LoadXPathAsync(
-                                                     "books.xml", _objSelectedSetting.EnabledCustomDataDirectoryPaths,
+                                                     "books.xml", await _objSelectedSetting.GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
                                                      token: token).ConfigureAwait(false))
                                                  .SelectAndCacheExpression(
                                                      "/chummer/books/book/code", token: token))
@@ -530,7 +479,7 @@ namespace Chummer
                                         setValidCodes.Add(xmlBookNode.Value);
                                     }
 
-                                    setValidCodes.IntersectWith(_objSelectedSetting.Books);
+                                    setValidCodes.IntersectWith(await _objSelectedSetting.GetBooksAsync(token).ConfigureAwait(false));
                                 }
 
                                 strSourceFilter = setValidCodes.Count > 0
@@ -554,17 +503,17 @@ namespace Chummer
                                         // Preload all data first to prevent weird locking issues with the rest of the program
                                         await Task.WhenAll(_astrFileNames.Select(
                                                                x => Task.Run(
-                                                                   () => XmlManager.LoadXPathAsync(
+                                                                   async () => await XmlManager.LoadXPathAsync(
                                                                        x,
-                                                                       _objSelectedSetting
-                                                                           .EnabledCustomDataDirectoryPaths,
-                                                                       token: token), token))).ConfigureAwait(false);
+                                                                       await _objSelectedSetting
+                                                                           .GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
+                                                                       token: token).ConfigureAwait(false), token))).ConfigureAwait(false);
                                         await Task.WhenAll(_astrFileNames.Select(strFileName => Task.Run(async () =>
                                         {
                                             XPathNavigator xmlBaseNode
                                                 = await XmlManager.LoadXPathAsync(strFileName,
-                                                    _objSelectedSetting
-                                                        .EnabledCustomDataDirectoryPaths,
+                                                    await _objSelectedSetting
+                                                        .GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
                                                     token: token).ConfigureAwait(false);
                                             xmlBaseNode
                                                 = xmlBaseNode.SelectSingleNodeAndCacheExpression(
@@ -668,7 +617,6 @@ namespace Chummer
                                                     if (objExistingItem.Value is MasterIndexEntry objLoopEntry)
                                                     {
                                                         objLoopEntry.FileNames.UnionWith(objEntry.FileNames);
-                                                        objEntry.Dispose();
                                                     }
                                                     else
                                                     {
@@ -988,15 +936,15 @@ namespace Chummer
             }
         }
 
-        private sealed class MasterIndexEntry : IDisposable
+        private sealed class MasterIndexEntry
         {
-            private HashSet<string> _setFileNames;
-
             public MasterIndexEntry(string strDisplayName, string strFileName, SourceString objSource, SourceString objDisplaySource, string strEnglishNameOnPage, string strTranslatedNameOnPage)
             {
                 DisplayName = strDisplayName;
-                _setFileNames = Utils.StringHashSetPool.Get();
-                _setFileNames.Add(strFileName);
+                FileNames = new HashSet<string>
+                {
+                    strFileName
+                };
                 Source = objSource;
                 DisplaySource = objDisplaySource;
                 EnglishNameOnPage = strEnglishNameOnPage;
@@ -1005,18 +953,12 @@ namespace Chummer
 
             internal string DisplayName { get; }
 
-            internal HashSet<string> FileNames => _setFileNames;
+            internal HashSet<string> FileNames { get; }
 
             internal SourceString Source { get; }
             internal SourceString DisplaySource { get; }
             internal string EnglishNameOnPage { get; }
             internal string TranslatedNameOnPage { get; }
-
-            /// <inheritdoc />
-            public void Dispose()
-            {
-                Utils.StringHashSetPool.Return(ref _setFileNames);
-            }
         }
 
         private async void cmdEditCharacterSetting_Click(object sender, EventArgs e)
@@ -1044,7 +986,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask ForceRepopulateCharacterSettings(CancellationToken token = default)
+        public async Task ForceRepopulateCharacterSettings(CancellationToken token = default)
         {
             _objGenericToken.ThrowIfCancellationRequested();
             token.ThrowIfCancellationRequested();

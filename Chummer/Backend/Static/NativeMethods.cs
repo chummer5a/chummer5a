@@ -916,7 +916,7 @@ namespace Chummer
         {
             SHSTOCKICONINFO sii = new SHSTOCKICONINFO
             {
-                cbSize = (uint)Marshal.SizeOf(typeof(SHSTOCKICONINFO))
+                cbSize = (uint)Marshal.SizeOf<SHSTOCKICONINFO>()
             };
             Marshal.ThrowExceptionForHR(SHGetStockIconInfo(eIconId, SHGSI.SHGSI_ICON, ref sii));
             try

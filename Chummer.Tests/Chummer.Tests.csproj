@@ -1,24 +1,39 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
     <Optimize>false</Optimize>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.InteropServices.ComVisible">
+      <_Parameter1>False</_Parameter1>
+      <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.InteropServices.Guid">
+      <_Parameter1>8c20e7fa-9c93-42a9-a969-c3f5bdf093ea</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
     <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <Configurations>Debug;Release;Debuggable Release;Release with ChummerHub</Configurations>
-    <AnalysisLevel>latest-minimum</AnalysisLevel>
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <Nullable>disable</Nullable>
+	<Configurations>Debug;Release;Debuggable Release</Configurations>
+	<AnalysisLevel>latest-minimum</AnalysisLevel>
+	<NeutralLanguage>en-US</NeutralLanguage>
+    <EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AssemblyVersion>5.225.0.0</AssemblyVersion>
+    <FileVersion>5.225.0.0</FileVersion>
+    <InformationalVersion>5.225.0.0</InformationalVersion>
+    <ApplicationVersion>5.225.0.0</ApplicationVersion>
+    <VersionPrefix>5.225.0.0</VersionPrefix>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with ChummerHub|AnyCPU'">
-    <Optimize>True</Optimize>
-  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -138,25 +153,31 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)\Chummer\Chummer.csproj" />
+    <ProjectReference Include="$(SolutionDir)Chummer\Chummer.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.7.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.4" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.7.30" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30" />
-    <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.6.11" />
-    <PackageReference Include="MSTest" Version="3.1.1" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
-    <PackageReference Include="XMLUnit.Core" Version="2.9.2" />
-    <PackageReference Include="xunit" Version="2.6.1" />
-    <PackageReference Include="xunit.analyzers" Version="1.4.0" />
-    <PackageReference Include="xunit.core" Version="2.6.1" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-    <PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.12.19">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="MSTest" Version="3.6.4" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.6.4" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.6.4" />
+    <PackageReference Include="XMLUnit.Core" Version="2.10.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.analyzers" Version="1.19.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="xunit.core" Version="2.9.3" />
   </ItemGroup>
 </Project>

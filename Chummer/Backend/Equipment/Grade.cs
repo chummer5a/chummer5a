@@ -30,7 +30,7 @@ namespace Chummer.Backend.Equipment
     /// Grade of Cyberware or Bioware.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Grade : IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode
+    public class Grade : IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode, IHasCharacterObject
     {
         private readonly Character _objCharacter;
         private Guid _guiSourceID = Guid.Empty;
@@ -163,6 +163,18 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Convert a string to a Grade.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        /// <param name="objSource">Source representing whether this is a cyberware, drug or bioware grade.</param>
+        /// <param name="objCharacter">Character from which to fetch a grade list</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task<Grade> ConvertToCyberwareGradeAsync(string strValue, Improvement.ImprovementSource objSource, Character objCharacter, CancellationToken token = default)
+        {
+            return objCharacter.GetGradeByNameAsync(objSource, strValue, true, token);
+        }
+
+        /// <summary>
         /// Gets the name of the data file to use that corresponds to a particular Improvement Source denoting the type of object being used.
         /// </summary>
         /// <param name="eSource">Type of object being looked at that has grades. Should be either drug, bioware, or cyberware.</param>
@@ -189,6 +201,8 @@ namespace Chummer.Backend.Equipment
         #endregion Helper Methods
 
         #region Properties
+
+        public Character CharacterObject => _objCharacter;
 
         /// <summary>
         /// Internal identifier which will be used to identify this grade.
@@ -228,20 +242,18 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the Grade as it should be displayed in lists.
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            return objNode != null
-                ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name
-                : Name;
+            return objNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name;
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// The Grade's Essence cost multiplier.
@@ -269,12 +281,12 @@ namespace Chummer.Backend.Equipment
         public string Source => _strSource;
 
         /// <summary>
-        /// Whether or not the Grade is for Adapsin.
+        /// Whether the Grade is for Adapsin.
         /// </summary>
         public bool Adapsin => _strName.Contains("(Adapsin)");
 
         /// <summary>
-        /// Whether or not the Grade is for the Burnout's Way.
+        /// Whether the Grade is for the Burnout's Way.
         /// </summary>
         public bool Burnout => _strName.Contains("Burnout's Way");
 

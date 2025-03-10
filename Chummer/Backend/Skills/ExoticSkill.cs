@@ -29,7 +29,7 @@ namespace Chummer.Backend.Skills
     {
         private string _strSpecific;
 
-        public ExoticSkill(Character character, XmlNode node) : base(character, node)
+        public ExoticSkill(Character character, XmlNode node, bool blnDoSkillGroup = true) : base(character, node, blnDoSkillGroup)
         {
         }
 
@@ -63,13 +63,13 @@ namespace Chummer.Backend.Skills
             return new Tuple<bool, string>(false, string.Empty);
         }
 
-        public static async ValueTask<bool> IsExoticSkillNameAsync(Character objCharacter, string strSkillName,
+        public static async Task<bool> IsExoticSkillNameAsync(Character objCharacter, string strSkillName,
                                                                    CancellationToken token = default)
         {
             return (await IsExoticSkillNameTupleAsync(objCharacter, strSkillName, token).ConfigureAwait(false)).Item1;
         }
 
-        public static async ValueTask<Tuple<bool, string>> IsExoticSkillNameTupleAsync(Character objCharacter, string strSkillName,
+        public static async Task<Tuple<bool, string>> IsExoticSkillNameTupleAsync(Character objCharacter, string strSkillName,
                                                                    CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -90,6 +90,33 @@ namespace Chummer.Backend.Skills
 
         public override bool IsExoticSkill => true;
 
+        public override string DictionaryKey
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    return _strDictionaryKey = _strDictionaryKey ?? Name + " (" + Specific + ')';
+                }
+            }
+        }
+
+        public override async Task<string> GetDictionaryKeyAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strDictionaryKey = _strDictionaryKey
+                                           ?? await GetNameAsync(token).ConfigureAwait(false) + " (" +
+                                           await GetSpecificAsync(token).ConfigureAwait(false) + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public override bool AllowDelete
         {
             get
@@ -99,15 +126,20 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public override async ValueTask<bool> GetAllowDeleteAsync(CancellationToken token = default)
+        public override async Task<bool> GetAllowDeleteAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                        && await GetFreeBaseAsync(token).ConfigureAwait(false)
                        + await GetFreeKarmaAsync(token).ConfigureAwait(false)
                        + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false) <= 0;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -144,24 +176,34 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public async ValueTask<string> GetSpecificAsync(CancellationToken token = default)
+        public async Task<string> GetSpecificAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return _strSpecific;
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public async ValueTask SetSpecificAsync(string value, CancellationToken token = default)
+        public async Task SetSpecificAsync(string value, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _strSpecific, value) == value)
                     return;
-                OnPropertyChanged(nameof(Specific));
+                await OnPropertyChangedAsync(nameof(Specific), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -175,9 +217,10 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public async ValueTask<string> DisplaySpecificAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplaySpecificAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
@@ -185,18 +228,22 @@ namespace Chummer.Backend.Skills
                     : await CharacterObject.TranslateExtraAsync(Specific, strLanguage, token: token)
                         .ConfigureAwait(false);
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public string CurrentDisplaySpecific => DisplaySpecific(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplaySpecificAsync(CancellationToken token = default) => DisplaySpecificAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplaySpecificAsync(CancellationToken token = default) => DisplaySpecificAsync(GlobalSettings.Language, token);
 
         public override string DisplaySpecialization(string strLanguage)
         {
             return DisplaySpecific(strLanguage);
         }
 
-        public override ValueTask<string> DisplaySpecializationAsync(string strLanguage, CancellationToken token = default)
+        public override Task<string> DisplaySpecializationAsync(string strLanguage, CancellationToken token = default)
         {
             return DisplaySpecificAsync(strLanguage, token);
         }

@@ -6,8 +6,24 @@
     <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <Configurations>Debug;Release;Debuggable Release;Release with ChummerHub</Configurations>
+	<Configurations>Debug;Release;Debuggable Release</Configurations>
+    <EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AssemblyVersion>5.225.0.0</AssemblyVersion>
+    <FileVersion>5.225.0.0</FileVersion>
+    <InformationalVersion>5.225.0.0</InformationalVersion>
+    <ApplicationVersion>5.225.0.0</ApplicationVersion>
+    <VersionPrefix>5.225.0.0</VersionPrefix>
   </PropertyGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.InteropServices.ComVisible">
+      <_Parameter1>False</_Parameter1>
+      <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.InteropServices.Guid">
+      <_Parameter1>fc739da5-71e2-438d-9893-2be55a5ee549</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
   <PropertyGroup>
     <StartupObject>Translator.Program</StartupObject>
   </PropertyGroup>
@@ -29,11 +45,6 @@
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <ApplicationVersion>5.225.0.0</ApplicationVersion>
-    <AssemblyVersion>5.225.0.0</AssemblyVersion>
-    <FileVersion>5.225.0.0</FileVersion>
-    <Version>5.225.0.0</Version>
-    <Nullable>disable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
@@ -44,19 +55,18 @@
     <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with ChummerHub|AnyCPU'">
-    <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
-    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
-    <Optimize>True</Optimize>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
     <OutputPath>$(SolutionDir)Chummer\bin\$(Configuration)\</OutputPath>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="Properties\AssemblyInfo.cs">
-      <AutoGen>false</AutoGen>
-      <DesignTimeSharedInput>false</DesignTimeSharedInput>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Update="Properties\Settings.cs">
       <AutoGen>false</AutoGen>
@@ -71,15 +81,29 @@
     <Content Include="translator.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)\Chummer\Chummer.csproj" />
+    <ProjectReference Include="$(SolutionDir)Chummer\Chummer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.4" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.12.19">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

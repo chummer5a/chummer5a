@@ -51,7 +51,7 @@ namespace Chummer
             }
         }
 
-        public static string AssemblyVersion => Utils.CurrentChummerVersion.ToString();
+        public static string AssemblyVersion => Utils.CurrentChummerVersion.ToString(3);
 
         public static string AssemblyDescription
         {

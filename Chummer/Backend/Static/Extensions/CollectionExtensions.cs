@@ -19,6 +19,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace Chummer
 {
@@ -32,6 +34,24 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstToAdd));
             foreach (T objItem in lstToAdd)
                 lstCollection.Add(objItem);
+        }
+
+        /// <summary>
+        /// Get a HashCode representing the contents of a collection in a way where the order of the items is irrelevant.
+        /// Uses the parallel option for large enough collections where it could potentially be faster
+        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
+        /// </summary>
+        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetOrderInvariantEnsembleHashCodeSmart<T>(this IReadOnlyCollection<T> lstItems, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return lstItems.Count > ushort.MaxValue
+                ? lstItems.GetOrderInvariantEnsembleHashCodeParallel(token)
+                : lstItems.GetOrderInvariantEnsembleHashCode(token);
         }
     }
 }

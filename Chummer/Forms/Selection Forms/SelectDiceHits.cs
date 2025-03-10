@@ -40,16 +40,17 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
-                string strText = await LanguageManager.GetStringAsync("String_DiceHits_HitsOn").ConfigureAwait(false) + strSpace
-                    + Dice.ToString(GlobalSettings.CultureInfo)
+                int intDice = Dice;
+                string strText = await LanguageManager.GetStringAsync("String_DiceHits_HitsOn").ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
+                    + intDice.ToString(GlobalSettings.CultureInfo)
                     + await LanguageManager.GetStringAsync("String_D6").ConfigureAwait(false)
-                    + await LanguageManager.GetStringAsync("String_Colon").ConfigureAwait(false) + strSpace;
+                    + await LanguageManager.GetStringAsync("String_Colon").ConfigureAwait(false);
                 await lblDice.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
                 await nudDiceResult.DoThreadSafeAsync(x =>
                 {
-                    x.Maximum = Dice * 6;
-                    x.Minimum = 6;
+                    x.Maximum = intDice * 6;
+                    x.Minimum = intDice;
                 }).ConfigureAwait(false);
                 await DoRoll().ConfigureAwait(false);
             }
@@ -84,7 +85,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoRoll(CancellationToken token = default)
+        private async Task DoRoll(CancellationToken token = default)
         {
             int intResult = 0;
             for (int i = 0; i < Dice; ++i)
@@ -111,19 +112,53 @@ namespace Chummer
             {
                 if (Interlocked.Exchange(ref _intDice, value) == value)
                     return;
+                string strText = LanguageManager.GetString("String_DiceHits_HitsOn")
+                    + LanguageManager.GetString("String_Space")
+                    + value.ToString(GlobalSettings.CultureInfo)
+                    + LanguageManager.GetString("String_D6")
+                    + LanguageManager.GetString("String_Colon");
+                lblDice.DoThreadSafe(x => x.Text = strText);
                 nudDiceResult.SuspendLayout();
                 try
                 {
-                    nudDiceResult.MinimumAsInt
+                    nudDiceResult.Minimum
                         = int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
-                    nudDiceResult.MaximumAsInt = value * 6;
-                    nudDiceResult.MinimumAsInt = value;
+                    nudDiceResult.Maximum = value * 6;
+                    nudDiceResult.Minimum = value;
                 }
                 finally
                 {
                     nudDiceResult.ResumeLayout();
                 }
             }
+        }
+
+        public async Task SetDiceAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.Exchange(ref _intDice, value) == value)
+                return;
+            string strText = await LanguageManager.GetStringAsync("String_DiceHits_HitsOn", token: token).ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                    + value.ToString(GlobalSettings.CultureInfo)
+                    + await LanguageManager.GetStringAsync("String_D6", token: token).ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false);
+            await lblDice.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+            await nudDiceResult.DoThreadSafeAsync(x =>
+            {
+                x.SuspendLayout();
+                try
+                {
+                    x.Minimum
+                        = int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
+                    x.Maximum = value * 6;
+                    x.Minimum = value;
+                }
+                finally
+                {
+                    x.ResumeLayout();
+                }
+            }, token).ConfigureAwait(false);
         }
 
         /// <summary>

@@ -5257,8 +5257,12 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Énnemis</text>
     </string>
     <string>
-      <key>Label_Options_Carryover</key>
-      <text>Karma transféré à la carrière</text>
+      <key>Label_Options_Carryover_Nuyen</key>
+      <text>Max Nuyen transféré</text>
+    </string>
+    <string>
+      <key>Label_Options_Carryover_Karma</key>
+      <text>Max Karma transféré</text>
     </string>
     <string>
       <key>Label_Options_Initiation</key>
@@ -8328,7 +8332,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>String_NotSupported</key>
-      <text>"Cette combinaison race / métavariante est incomplète et sera complétée dans une prochaine version. Tenter de créer un personnage avec cette combinaison peut avoir des résultats inattendus."</text>
+      <text>Non pris en charge</text>
+    </string>
+    <string>
+      <key>Message_MetatypeNotSupported</key>
+      <text>Cette combinaison race / métavariante est incomplète et sera complétée dans une prochaine version. Tenter de créer un personnage avec cette combinaison peut avoir des résultats inattendus.</text>
     </string>
     <string>
       <key>String_Metatype</key>
@@ -8393,6 +8401,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>Node_UnequippedModularCyberware</key>
       <text>Cyberware modulable déséquipé</text>
+    </string>
+    <string>
+      <key>Node_UnequippedModularBioware</key>
+      <text>Bioware modulable déséquipé</text>
     </string>
     <string>
       <key>Label_PrototypeTranshuman</key>
@@ -8720,7 +8732,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Tenant</key>
-      <text>Actionnaire principal</text>
+      <text>Loyer partagé</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_LPContribution</key>

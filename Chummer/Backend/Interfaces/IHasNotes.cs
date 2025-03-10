@@ -38,7 +38,7 @@ namespace Chummer
         /// <summary>
         /// Writes notes to an IHasNotes object, returns True if notes were changed and False otherwise.
         /// </summary>
-        public static async ValueTask<bool> WriteNotes(this IHasNotes objNotes, TreeNode treNode, CancellationToken token = default)
+        public static async Task<bool> WriteNotes(this IHasNotes objNotes, TreeNode treNode, CancellationToken token = default)
         {
             if (objNotes == null || treNode == null)
                 return false;

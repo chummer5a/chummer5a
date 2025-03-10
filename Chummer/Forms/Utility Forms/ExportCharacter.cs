@@ -26,7 +26,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.Versioning;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -74,6 +73,7 @@ namespace Chummer
                 _objGenericFormClosingCancellationTokenSource.Dispose();
                 _objXmlGeneratorCancellationTokenSource?.Dispose();
                 _objCharacterXmlGeneratorCancellationTokenSource?.Dispose();
+                dlgSaveFile?.Dispose();
             };
             _objCharacter = objCharacter;
             Program.MainForm.OpenCharacterExportForms?.Add(this);
@@ -82,7 +82,6 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        [SupportedOSPlatform("windows")]
         private async void ExportCharacter_Load(object sender, EventArgs e)
         {
             try
@@ -92,25 +91,25 @@ namespace Chummer
                 try
                 {
                     _objGenericToken.ThrowIfCancellationRequested();
-                    _objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
-                    _objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
+                    _objCharacter.MultiplePropertiesChangedAsync += ObjCharacterOnPropertyChanged;
+                    _objCharacter.SettingsPropertyChangedAsync += ObjCharacterOnSettingsPropertyChanged;
                     // TODO: Make these also work for any children collection changes
-                    _objCharacter.Cyberware.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Armor.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Weapons.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Gear.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Contacts.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.ExpenseEntries.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.MentorSpirits.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Powers.ListChanged += OnCharacterListChanged;
-                    _objCharacter.Qualities.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.MartialArts.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Metamagics.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.Spells.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.ComplexForms.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.CritterPowers.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.SustainedCollection.CollectionChanged += OnCharacterCollectionChanged;
-                    _objCharacter.InitiationGrades.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.Cyberware.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Armor.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Weapons.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Gear.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Contacts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.ExpenseEntries.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.MentorSpirits.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Powers.ListChangedAsync += OnCharacterListChanged;
+                    _objCharacter.Qualities.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.MartialArts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Metamagics.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.Spells.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.ComplexForms.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.CritterPowers.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.SustainedCollection.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    _objCharacter.InitiationGrades.CollectionChangedAsync += OnCharacterCollectionChanged;
                 }
                 finally
                 {
@@ -167,13 +166,13 @@ namespace Chummer
             }
         }
 
-        private async void ObjCharacterOnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task ObjCharacterOnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 if (e.PropertyName == nameof(CharacterSettings.Name))
-                    await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
-                await DoXsltUpdate(_objGenericToken).ConfigureAwait(false);
+                    await UpdateWindowTitleAsync(token).ConfigureAwait(false);
+                await DoXsltUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -181,13 +180,14 @@ namespace Chummer
             }
         }
 
-        private async void ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task ObjCharacterOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                if (e.PropertyName == nameof(Character.CharacterName) || e.PropertyName == nameof(Character.Created))
-                    await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
-                await DoXsltUpdate(_objGenericToken).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(Character.CharacterName)) || e.PropertyNames.Contains(nameof(Character.Created)))
+                    await UpdateWindowTitleAsync(token).ConfigureAwait(false);
+                await DoXsltUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -195,7 +195,7 @@ namespace Chummer
             }
         }
 
-        private async void OnCharacterListChanged(object sender, ListChangedEventArgs e)
+        private async Task OnCharacterListChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
         {
             if (e.ListChangedType == ListChangedType.ItemMoved
                 || e.ListChangedType == ListChangedType.PropertyDescriptorAdded
@@ -204,7 +204,7 @@ namespace Chummer
                 return;
             try
             {
-                await DoXsltUpdate(_objGenericToken).ConfigureAwait(false);
+                await DoXsltUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -212,13 +212,13 @@ namespace Chummer
             }
         }
 
-        private async void OnCharacterCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OnCharacterCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
             try
             {
-                await DoXsltUpdate(_objGenericToken).ConfigureAwait(false);
+                await DoXsltUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -247,24 +247,24 @@ namespace Chummer
                                                                  .ConfigureAwait(false);
             try
             {
-                _objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
-                _objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
-                _objCharacter.Cyberware.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Armor.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Weapons.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Gear.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Contacts.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.ExpenseEntries.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.MentorSpirits.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Powers.ListChanged -= OnCharacterListChanged;
-                _objCharacter.Qualities.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.MartialArts.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Metamagics.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.Spells.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.ComplexForms.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.CritterPowers.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.SustainedCollection.CollectionChanged -= OnCharacterCollectionChanged;
-                _objCharacter.InitiationGrades.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.MultiplePropertiesChangedAsync -= ObjCharacterOnPropertyChanged;
+                _objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
+                _objCharacter.Cyberware.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Armor.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Weapons.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Gear.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Contacts.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.ExpenseEntries.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.MentorSpirits.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Powers.ListChangedAsync -= OnCharacterListChanged;
+                _objCharacter.Qualities.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.MartialArts.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Metamagics.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.Spells.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.ComplexForms.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.CritterPowers.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.SustainedCollection.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                _objCharacter.InitiationGrades.CollectionChangedAsync -= OnCharacterCollectionChanged;
             }
             finally
             {
@@ -329,7 +329,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoExport(CancellationToken token = default)
+        private async Task DoExport(CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(_strXslt))
                 return;
@@ -593,7 +593,7 @@ namespace Chummer
                 await txtText.DoThreadSafeAsync(x => x.Text = strGeneratingData, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 XmlDocument objNewDocument;
-                await using (token.Register(() => _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false)))
+                using (token.Register(() => _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false)))
                 {
                     objNewDocument = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
                                                                            _objCharacterXmlGeneratorCancellationTokenSource
@@ -626,7 +626,7 @@ namespace Chummer
 
         #region XML
 
-        private async ValueTask ExportNormal(string destination = null, CancellationToken token = default)
+        private async Task ExportNormal(string destination = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strSaveFile = destination;
@@ -635,8 +635,8 @@ namespace Chummer
                 // Look for the file extension information.
                 string strExtension = "xml";
                 string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", _strXslt + ".xsl");
-                await using (FileStream objFileStream
-                             = new FileStream(exportSheetPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (FileStream objFileStream
+                       = new FileStream(exportSheetPath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     token.ThrowIfCancellationRequested();
                     using (StreamReader objFile = new StreamReader(objFileStream, Encoding.UTF8, true))
@@ -679,11 +679,11 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
-            await File.WriteAllTextAsync(strSaveFile, // Change this to a proper path.
+            File.WriteAllText(strSaveFile, // Change this to a proper path.
                 _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> strBoxText)
-                    ? strBoxText.Item1
-                    : txtText.Text,
-                Encoding.UTF8, token).ConfigureAwait(false);
+                                  ? strBoxText.Item1
+                                  : txtText.Text,
+                              Encoding.UTF8);
         }
 
         private async Task GenerateXml(CancellationToken token = default)
@@ -755,11 +755,11 @@ namespace Chummer
 
                     string strText = await Task.Run(async () =>
                     {
-                        await using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                        using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                         {
-                            await using (XmlWriter objWriter = objSettings != null
-                                             ? XmlWriter.Create(objStream, objSettings)
-                                             : Utils.GetXslTransformXmlWriter(objStream))
+                            using (XmlWriter objWriter = objSettings != null
+                                       ? XmlWriter.Create(objStream, objSettings)
+                                       : Utils.GetXslTransformXmlWriter(objStream))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objXslTransform.Transform(_objCharacterXml, objWriter);
@@ -832,36 +832,36 @@ namespace Chummer
             }
         }
 
-        private async ValueTask SetTextToWorkerResult(string strText, CancellationToken token = default)
+        private Task SetTextToWorkerResult(string strText, CancellationToken token = default)
         {
             string strDisplayText = strText;
             // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
-            strDisplayText = s_RgxMainMugshotReplaceExpression.Replace(strDisplayText, "<mainmugshotbase64>[...]</mainmugshotbase64>");
-            strDisplayText = s_RgxStringBase64ReplaceExpression.Replace(strDisplayText, "<stringbase64>[...]</stringbase64>");
-            strDisplayText = s_RgxBase64ReplaceExpression.Replace(strDisplayText, "base64\": \"[...]\",");
+            strDisplayText = s_RgxMainMugshotReplaceExpression.Value.Replace(strDisplayText, "<mainmugshotbase64>[...]</mainmugshotbase64>");
+            strDisplayText = s_RgxStringBase64ReplaceExpression.Value.Replace(strDisplayText, "<stringbase64>[...]</stringbase64>");
+            strDisplayText = s_RgxBase64ReplaceExpression.Value.Replace(strDisplayText, "base64\": \"[...]\",");
             _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt),
                 new Tuple<string, string>(strText, strDisplayText),
                 (a, b) => new Tuple<string, string>(strText, strDisplayText));
-            await txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token).ConfigureAwait(false);
+            return txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token);
         }
 
-        private static readonly Regex s_RgxMainMugshotReplaceExpression = new Regex(
+        private static readonly Lazy<Regex> s_RgxMainMugshotReplaceExpression = new Lazy<Regex>(() => new Regex(
             "<mainmugshotbase64>[^\\s\\S]*</mainmugshotbase64>",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
-        private static readonly Regex s_RgxStringBase64ReplaceExpression = new Regex(
+        private static readonly Lazy<Regex> s_RgxStringBase64ReplaceExpression = new Lazy<Regex>(() => new Regex(
             "<stringbase64>[^\\s\\S]*</stringbase64>",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
-        private static readonly Regex s_RgxBase64ReplaceExpression = new Regex(
+        private static readonly Lazy<Regex> s_RgxBase64ReplaceExpression = new Lazy<Regex>(() => new Regex(
             "base64\": \"[^\\\"]*\",",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         #endregion XML
 
         #region JSON
 
-        private async ValueTask ExportJson(string destination = null, CancellationToken token = default)
+        private async Task ExportJson(string destination = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strSaveFile = destination;
@@ -886,7 +886,7 @@ namespace Chummer
                     out Tuple<string, string> strBoxText)
                     ? strBoxText.Item1
                     : await txtText.DoThreadSafeFuncAsync(x => x.Text, token: token)
-                        .ConfigureAwait(false), Encoding.UTF8).ConfigureAwait(false);
+                        .ConfigureAwait(false), Encoding.UTF8, token).ConfigureAwait(false);
         }
 
         #endregion JSON

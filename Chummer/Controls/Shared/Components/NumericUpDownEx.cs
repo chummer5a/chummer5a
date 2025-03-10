@@ -499,9 +499,12 @@ namespace Chummer
 
         protected override void OnValueChanged(EventArgs e)
         {
-            lock (_objIntValueLock) // Lock ensures synchronicity
-                _intValue = Math.Min(Math.Max(Value, int.MinValue), int.MaxValue).ToInt32();
-            base.OnValueChanged(e);
+            using (CursorWait.New(this))
+            {
+                lock (_objIntValueLock) // Lock ensures synchronicity
+                    _intValue = Math.Min(Math.Max(Value, int.MinValue), int.MaxValue).ToInt32();
+                base.OnValueChanged(e);
+            }
         }
 
         /// <summary>

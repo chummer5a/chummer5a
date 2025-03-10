@@ -4,14 +4,25 @@
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
-    <Configurations>Debug;Release;Debuggable Release;Release with ChummerHub</Configurations>
-    <EnableNETAnalyzers>True</EnableNETAnalyzers>
-    <AnalysisLevel>latest-minimum</AnalysisLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Nullable>disable</Nullable>
+	<Configurations>Debug;Release;Debuggable Release</Configurations>
+	<EnableNETAnalyzers>True</EnableNETAnalyzers>
+	<AnalysisLevel>latest-minimum</AnalysisLevel>
+	<PlatformTarget>AnyCPU</PlatformTarget>
+	<NeutralLanguage>en-US</NeutralLanguage>
+    <EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.InteropServices.ComVisible">
+      <_Parameter1>False</_Parameter1>
+      <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.InteropServices.Guid">
+      <_Parameter1>cc9fd36d-6035-4f9b-b4a7-b3421c9c5302</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
-    <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
     <Optimize>false</Optimize>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
@@ -19,24 +30,92 @@
     <Optimize>True</Optimize>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)\Chummer\Chummer.csproj" />
+    <ProjectReference Include="$(SolutionDir)Chummer\Chummer.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.10" />
-    <PackageReference Include="BenchmarkDotNet.Annotations" Version="0.13.10" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+    <PackageReference Include="BenchmarkDotNet.Annotations" Version="0.14.0" />
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Gee.External.Capstone" Version="2.3.0" />
-    <PackageReference Include="Iced" Version="1.20.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.7.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.4" />
-    <PackageReference Include="Microsoft.Diagnostics.NETCore.Client" Version="0.2.452401" />
-    <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="3.0.442202" />
-    <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.1.6" />
+    <PackageReference Include="Iced" Version="1.21.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.12.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Diagnostics.NETCore.Client" Version="0.2.553101" />
+    <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="3.1.512801" />
+    <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.1.18" />
     <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
-    <PackageReference Include="Perfolizer" Version="0.2.1" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-    <PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+    <PackageReference Include="Perfolizer" Version="0.4.0" />
+    <PackageReference Include="System.AppContext" Version="4.3.0" />
+    <PackageReference Include="System.Buffers" Version="4.6.0" />
+    <PackageReference Include="System.CodeDom" Version="9.0.1" />
+    <PackageReference Include="System.Collections" Version="4.3.0" />
+    <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="9.0.1" />
+    <PackageReference Include="System.Console" Version="4.3.1" />
+    <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.1" />
+    <PackageReference Include="System.Diagnostics.FileVersionInfo" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.StackTrace" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.Tools" Version="4.3.0" />
+    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
+    <PackageReference Include="System.Globalization" Version="4.3.0" />
+    <PackageReference Include="System.IO" Version="4.3.0" />
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
+    <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Linq" Version="4.3.0" />
+    <PackageReference Include="System.Linq.Expressions" Version="4.3.0" />
+    <PackageReference Include="System.Management" Version="9.0.1" />
+    <PackageReference Include="System.Memory" Version="4.6.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.6.0" />
+    <PackageReference Include="System.Reflection" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Metadata" Version="9.0.1" />
+    <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.0" />
+    <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
+    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
+    <PackageReference Include="System.Security.AccessControl" Version="6.0.1" />
+    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
+    <PackageReference Include="System.Security.Cryptography.Encoding" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
+    <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.1" />
+    <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
+    <PackageReference Include="System.Threading" Version="4.3.0" />
+    <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.0" />
+    <PackageReference Include="System.Threading.Tasks.Parallel" Version="4.3.0" />
+    <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="System.Xml.ReaderWriter" Version="4.3.1" />
+    <PackageReference Include="System.Xml.XDocument" Version="4.3.0" />
+    <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
+    <PackageReference Include="System.Xml.XPath" Version="4.3.0" />
+    <PackageReference Include="System.Xml.XPath.XDocument" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

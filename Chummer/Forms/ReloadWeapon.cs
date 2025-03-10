@@ -53,7 +53,8 @@ namespace Chummer
                 {
                     string strName = await objGear.GetCurrentDisplayNameShortAsync().ConfigureAwait(false) + " x"
                         + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo);
-                    if (objGear.Rating > 0)
+                    int intRating = await objGear.GetRatingAsync().ConfigureAwait(false);
+                    if (intRating > 0)
                     {
                         strName += strSpace + '('
                                             + string.Format(
@@ -62,7 +63,7 @@ namespace Chummer
                                                                      .ConfigureAwait(false),
                                                 await LanguageManager.GetStringAsync(objGear.RatingLabel)
                                                                      .ConfigureAwait(false)) + strSpace
-                                            + objGear.Rating.ToString(GlobalSettings.CultureInfo) + ')';
+                                            + intRating.ToString(GlobalSettings.CultureInfo) + ')';
                     }
 
                     if (objGear.Parent is Gear objParent)
@@ -79,7 +80,7 @@ namespace Chummer
                         strName += strSpace + '(' + await objGear.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false) + ')';
 
                     // Retrieve the plugin information if it has any.
-                    if (objGear.Children.Count > 0)
+                    if (await objGear.Children.GetCountAsync().ConfigureAwait(false) > 0)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdPlugins))

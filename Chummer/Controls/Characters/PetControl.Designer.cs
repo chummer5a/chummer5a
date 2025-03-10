@@ -54,7 +54,6 @@ namespace Chummer
             this.txtContactName.Name = "txtContactName";
             this.txtContactName.Size = new System.Drawing.Size(271, 20);
             this.txtContactName.TabIndex = 11;
-            this.txtContactName.TextChanged += new System.EventHandler(this.txtContactName_TextChanged);
             // 
             // cmsContact
             // 

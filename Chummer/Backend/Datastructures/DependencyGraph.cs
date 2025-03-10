@@ -19,6 +19,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -69,6 +71,37 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Returns a collection containing the current key's object and all objects that depend on the current key.
+        /// Slower but idiot-proof compared to GetWithAllDependentsUnsafe().
+        /// </summary>
+        /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
+        /// <param name="objKey">Fetch the node associated with this object.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public virtual async Task<HashSet<T>> GetWithAllDependentsAsync(T2 objParentInstance, T objKey, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            HashSet<T> objReturn = new HashSet<T>();
+            if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode))
+            {
+                if (objReturn.Add(objLoopNode.MyObject))
+                {
+                    foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
+                    {
+                        Func<T2, CancellationToken, Task<bool>> objCondition = objNode.DependencyConditionAsync;
+                        if (objCondition == null || await objCondition(objParentInstance, token).ConfigureAwait(false))
+                        {
+                            await CollectDependentsAsync(objParentInstance, objNode.Node.MyObject, objReturn, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+            }
+            else
+                objReturn.Add(objKey);
+
+            return objReturn;
+        }
+
+        /// <summary>
         /// Collects the current key's object and all objects that depend on the current key into an ever-growing HashSet.
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
@@ -82,6 +115,30 @@ namespace Chummer
                 foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
                 {
                     if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)
+                    {
+                        CollectDependents(objParentInstance, objNode.Node.MyObject, objReturn);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Collects the current key's object and all objects that depend on the current key into an ever-growing HashSet.
+        /// </summary>
+        /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
+        /// <param name="objKey">Fetch the node associated with this object.</param>
+        /// <param name="objReturn">Collection containing all keys that depend on <paramref name="objKey"/> in some way. It's a HashSet to prevent infinite loops in case of cycles</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        protected async Task CollectDependentsAsync(T2 objParentInstance, T objKey, ICollection<T> objReturn, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode) && !objReturn.Contains(objLoopNode.MyObject))
+            {
+                objReturn.Add(objLoopNode.MyObject);
+                foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
+                {
+                    Func<T2, CancellationToken, Task<bool>> objCondition = objNode.DependencyConditionAsync;
+                    if (objCondition == null || await objCondition(objParentInstance, token).ConfigureAwait(false))
                     {
                         CollectDependents(objParentInstance, objNode.Node.MyObject, objReturn);
                     }
@@ -147,8 +204,8 @@ namespace Chummer
                     if (blnTempLoopValueInitializing)
                         objLoopValue.Initializing = true;
                     DependencyGraphNode<T, T2> objDownStreamNodeCopy = TryAddCopyToDictionary(objDownStreamNode.Node);
-                    objExistingValue.DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNodeCopy, objDownStreamNode.DependencyCondition));
-                    objDownStreamNodeCopy.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objExistingValue, objDownStreamNode.DependencyCondition));
+                    objExistingValue.DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNodeCopy, objDownStreamNode.DependencyCondition, objDownStreamNode.DependencyConditionAsync));
+                    objDownStreamNodeCopy.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objExistingValue, objDownStreamNode.DependencyCondition, objDownStreamNode.DependencyConditionAsync));
                     if (blnTempLoopValueInitializing)
                         objLoopValue.Initializing = false;
                 }
@@ -163,8 +220,8 @@ namespace Chummer
                     if (blnTempLoopValueInitializing)
                         objLoopValue.Initializing = true;
                     DependencyGraphNode<T, T2> objUpStreamNodeCopy = TryAddCopyToDictionary(objUpStreamNode.Node);
-                    objExistingValue.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objUpStreamNodeCopy, objUpStreamNode.DependencyCondition));
-                    objUpStreamNodeCopy.DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objExistingValue, objUpStreamNode.DependencyCondition));
+                    objExistingValue.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objUpStreamNodeCopy, objUpStreamNode.DependencyCondition, objUpStreamNode.DependencyConditionAsync));
+                    objUpStreamNodeCopy.DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objExistingValue, objUpStreamNode.DependencyCondition, objUpStreamNode.DependencyConditionAsync));
                     if (blnTempLoopValueInitializing)
                         objLoopValue.Initializing = false;
                 }

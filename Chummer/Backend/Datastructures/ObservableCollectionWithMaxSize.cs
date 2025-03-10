@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -75,6 +76,32 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+        protected override async Task OnCollectionChangedAsync(NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            if (_intSkipCollectionChanged > 0)
+                return;
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                if (Interlocked.Increment(ref _intSkipCollectionChanged) > 1) // Just in case
+                {
+                    Interlocked.Decrement(ref _intSkipCollectionChanged);
+                    return;
+                }
+                try
+                {
+                    // Remove all entries greater than the allowed size
+                    while (await GetCountAsync(token).ConfigureAwait(false) > _intMaxSize)
+                        await RemoveItemAsync(await GetCountAsync(token).ConfigureAwait(false) - 1, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intSkipCollectionChanged);
+                }
+            }
+            await base.OnCollectionChangedAsync(e, token).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
             if (index >= _intMaxSize)
@@ -82,6 +109,16 @@ namespace Chummer
             base.InsertItem(index, item);
             while (Count > _intMaxSize)
                 RemoveAt(Count - 1);
+        }
+
+        /// <inheritdoc />
+        public override async Task InsertItemAsync(int index, T item, CancellationToken token = default)
+        {
+            if (index >= _intMaxSize)
+                return;
+            await base.InsertItemAsync(index, item, token).ConfigureAwait(false);
+            while (await GetCountAsync(token).ConfigureAwait(false) > _intMaxSize)
+                await RemoveItemAsync(await GetCountAsync(token).ConfigureAwait(false) - 1, token).ConfigureAwait(false);
         }
     }
 }

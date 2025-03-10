@@ -85,7 +85,8 @@ namespace Chummer
         AddCyberwareGear,
         AddWeaponGear,
         ImproveInitiateGrade,
-        AddVehicleWeaponMountMod
+        AddVehicleWeaponMountMod,
+        ModifyVehicleWeaponMount
     }
 
     /// <summary>
@@ -232,7 +233,7 @@ namespace Chummer
     /// Expense Log Entry.
     /// </summary>
     [DebuggerDisplay("{Date.ToString()}: {Amount.ToString()}")]
-    public sealed class ExpenseLogEntry : IHasInternalId, IComparable, IEquatable<ExpenseLogEntry>, IComparable<ExpenseLogEntry>
+    public sealed class ExpenseLogEntry : IHasInternalId, IComparable, IEquatable<ExpenseLogEntry>, IComparable<ExpenseLogEntry>, IHasCharacterObject
     {
         private Guid _guiID;
         private readonly Character _objCharacter;
@@ -242,6 +243,8 @@ namespace Chummer
         private ExpenseType _eExpenseType;
         private bool _blnRefund;
         private bool _blnForceCareerVisible;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Helper Methods
 
@@ -278,7 +281,7 @@ namespace Chummer
         /// <param name="strReason">Reason for the Karma/Nuyen change.</param>
         /// <param name="objExpenseType">Type of expense, either Karma or Nuyen.</param>
         /// <param name="datDate">Date and time of the Expense.</param>
-        /// <param name="blnRefund">Whether or not this expense is a Karma refund.</param>
+        /// <param name="blnRefund">Whether this expense is a Karma refund.</param>
         public ExpenseLogEntry Create(decimal decAmount, string strReason, ExpenseType objExpenseType, DateTime datDate, bool blnRefund = false)
         {
             _decAmount = decAmount;
@@ -342,7 +345,7 @@ namespace Chummer
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -426,7 +429,7 @@ namespace Chummer
         /// <summary>
         /// The Reason for the Entry expense.
         /// </summary>
-        public async ValueTask<string> DisplayReasonAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayReasonAsync(string strLanguage, CancellationToken token = default)
         {
             if (Refund)
                 return Reason + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + '(' + await LanguageManager.GetStringAsync("String_Expense_Refund", strLanguage, token: token).ConfigureAwait(false) + ')';
@@ -448,7 +451,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Expense is a Karma refund.
+        /// Whether the Expense is a Karma refund.
         /// </summary>
         public bool Refund
         {

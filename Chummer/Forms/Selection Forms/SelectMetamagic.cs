@@ -46,9 +46,9 @@ namespace Chummer
 
         public SelectMetamagic(Character objCharacter, InitiationGrade objGrade)
         {
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             if (objGrade == null)
                 throw new ArgumentNullException(nameof(objGrade));
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -104,8 +104,8 @@ namespace Chummer
 
                 if (objXmlMetamagic != null)
                 {
-                    string strSource = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value;
-                    string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value;
+                    string strSource = objXmlMetamagic.SelectSingleNodeAndCacheExpression("source")?.Value;
+                    string strPage = objXmlMetamagic.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("page")?.Value;
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
                     await objSourceString.SetControlAsync(lblSource).ConfigureAwait(false);
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSourceString.ToString())).ConfigureAwait(false);
@@ -164,7 +164,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Metamagics.
         /// </summary>
-        private async ValueTask BuildMetamagicList(CancellationToken token = default)
+        private async Task BuildMetamagicList(CancellationToken token = default)
         {
             string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ')';
             // If the character has MAG enabled, filter the list based on Adept/Magician availability.
@@ -200,15 +200,15 @@ namespace Chummer
                 foreach (XPathNavigator objXmlMetamagic in
                          _objXmlDocument.Select(_strRootXPath + '[' + strFilter + ']'))
                 {
-                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
+                    string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
                     if (!chkLimitList.Checked || await objXmlMetamagic.CreateNavigator().RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                     {
                         lstMetamagics.Add(new ListItem(strId,
-                                                       (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))
-                                                                      ?.Value ?? (await objXmlMetamagic
-                                                           .SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ??
+                                                       objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate", token: token)
+                                                                      ?.Value ?? objXmlMetamagic
+                                                           .SelectSingleNodeAndCacheExpression("name", token: token)?.Value ??
                                                        await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                     }
                 }
@@ -239,7 +239,7 @@ namespace Chummer
                 // Make sure the selected Metamagic or Echo meets its requirements.
                 XPathNavigator objXmlMetamagic = _objXmlDocument.TryGetNodeByNameOrId(_strRootXPath, strSelectedId);
 
-                if (objXmlMetamagic?.RequirementsMet(_objCharacter, null, _strType) != true)
+                if (objXmlMetamagic?.RequirementsMet(_objCharacter, strLocalName: _strType) != true)
                     return;
 
                 _strSelectedMetamagic = strSelectedId;

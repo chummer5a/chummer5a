@@ -1382,7 +1382,7 @@
       <karma>-5</karma>
       <category>Negative</category>
       <bonus>
-        <blockskillgroupdefaulting />
+        <skillgroupdisablechoice />
         <notoriety>1</notoriety>
       </bonus>
       <source>SR5</source>
@@ -2631,6 +2631,7 @@
       <karma>10</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
       <bonus>
         <metageniclimit>30</metageniclimit>
       </bonus>
@@ -2650,6 +2651,7 @@
       <karma>15</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
       <bonus>
         <metageniclimit>30</metageniclimit>
       </bonus>
@@ -2669,6 +2671,7 @@
       <karma>30</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
       <bonus>
         <metageniclimit>30</metageniclimit>
       </bonus>
@@ -2723,6 +2726,7 @@
       <name>Born Rich</name>
       <karma>5</karma>
       <category>Positive</category>
+      <chargenonly />
       <bonus>
         <nuyenmaxbp>30</nuyenmaxbp>
       </bonus>
@@ -2752,7 +2756,7 @@
         </specificskill>
         <specificskill>
           <name>Survival</name>
-          <bonus>-1</bonus>
+          <bonus>2</bonus>
           <condition>Urban</condition>
         </specificskill>
       </bonus>
@@ -4213,7 +4217,6 @@
       <karma>-10</karma>
       <category>Negative</category>
       <bonus>
-        <basiclifestylecost>10</basiclifestylecost>
         <lifestylecost>10</lifestylecost>
       </bonus>
       <source>RF</source>
@@ -9637,7 +9640,6 @@
           <quality>Infected: Ghoul (Troll)</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Vampire (Non-Human)</quality>
-          <quality>Mystic Adept</quality>
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -11213,6 +11215,32 @@
           </discountqualities>
         </selectquality>
       </bonus>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
       <source>DTR</source>
       <page>163</page>
     </quality>
@@ -11222,6 +11250,32 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus />
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
       <source>DTR</source>
       <page>164</page>
     </quality>
@@ -11247,6 +11301,32 @@
       <bonus>
         <selecttext />
       </bonus>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
       <source>DTR</source>
       <page>164</page>
     </quality>
@@ -11805,6 +11885,7 @@
       <name>Prototype Transhuman</name>
       <karma>10</karma>
       <category>Positive</category>
+      <chargenonly />
       <bonus>
         <prototypetranshuman>1</prototypetranshuman>
         <selectquality>
@@ -14914,9 +14995,9 @@
           <oneof>
             <quality>Apprentice</quality>
             <quality>Aspected Magician</quality>
-            <quality>Aware</quality>
             <quality>Enchanter</quality>
             <quality>Explorer</quality>
+            <quality>Adept</quality>
           </oneof>
         </required>
         <value>-5</value>
@@ -14950,9 +15031,9 @@
           <oneof>
             <quality>Apprentice</quality>
             <quality>Aspected Magician</quality>
-            <quality>Aware</quality>
             <quality>Enchanter</quality>
             <quality>Explorer</quality>
+            <quality>Adept</quality>
           </oneof>
         </required>
         <value>-5</value>
@@ -15818,7 +15899,14 @@
           <quality>Spirit Hunter I</quality>
         </allof>
         <oneof>
-          <power>Killing Hands</power>
+          <group>
+            <power>Killing Hands</power>
+            <skill>
+              <name>Astral Combat</name>
+              <spec>Spirits</spec>
+              <val>6</val>
+            </skill>
+          </group>
           <skill>
             <name>Banishing</name>
             <val>8</val>
@@ -15851,7 +15939,14 @@
           <quality>Spirit Hunter II</quality>
         </allof>
         <oneof>
-          <power>Killing Hands</power>
+          <group>
+            <power>Killing Hands</power>
+            <skill>
+              <name>Astral Combat</name>
+              <spec>Spirits</spec>
+              <val>8</val>
+            </skill>
+          </group>
           <skill>
             <name>Banishing</name>
             <val>12</val>
@@ -17636,7 +17731,6 @@
       <karma>-8</karma>
       <category>Negative</category>
       <bonus>
-        <basiclifestylecost>10</basiclifestylecost>
         <lifestylecost>10</lifestylecost>
       </bonus>
       <source>TCT</source>
@@ -19093,7 +19187,7 @@
     </quality>
     <quality>
       <id>83e5f9a2-e76b-4a11-81db-4b0466b727ce</id>
-      <name>Shoot First, Don't Ask</name>
+      <name>Shoot First, Don't Ask Questions</name>
       <karma>2</karma>
       <category>Positive</category>
       <bonus />

@@ -808,15 +808,15 @@
     </string>
     <string>
       <key>String_Initiative</key>
-      <text>{0} +{1}d6</text>
+      <text>{0} + {1}d6</text>
     </string>
     <string>
       <key>String_MatrixInitiative</key>
-      <text>{0} + PD +{1}d6</text>
+      <text>{0} + PD + {1}d6</text>
     </string>
     <string>
       <key>String_MatrixInitiativeLong</key>
-      <text>{0} + Processamento de Dados +{1}d6</text>
+      <text>{0} + Processamento de Dados + {1}d6</text>
     </string>
     <string>
       <key>Checkbox_HideOverAvailLimit</key>
@@ -3452,7 +3452,11 @@
     </string>
     <string>
       <key>String_NotSupported</key>
-      <text>"Esta combinação Raça/Metavariante está incompleta e será completada em um lançamento futuro. Tentar criar um personagem com esta combinação Foi Possível produzir resultados inesperados."</text>
+      <text>Não suportado</text>
+    </string>
+    <string>
+      <key>Message_MetatypeNotSupported</key>
+      <text>Esta combinação Raça/Metavariante está incompleta e será completada em um lançamento futuro. Tentar criar um personagem com esta combinação Foi Possível produzir resultados inesperados.</text>
     </string>
     <string>
       <key>Warning_NoLimitFound</key>
@@ -6004,8 +6008,12 @@
       <text>Inimigos</text>
     </string>
     <string>
-      <key>Label_Options_Carryover</key>
-      <text>Transferir para Novo Personagem</text>
+      <key>Label_Options_Carryover_Nuyen</key>
+      <text>Max Neoiene Transferir</text>
+    </string>
+    <string>
+      <key>Label_Options_Carryover_Karma</key>
+      <text>Max Karma Transferir</text>
     </string>
     <string>
       <key>Label_Options_Initiation</key>
@@ -7909,6 +7917,10 @@
       <text>Cibernético Modular Não-equipado</text>
     </string>
     <string>
+      <key>Node_UnequippedModularBioware</key>
+      <text>Biônico Modular Não-equipado</text>
+    </string>
+    <string>
       <key>Button_ChangeMountedLocation</key>
       <text>Alterar Localização da Montagem</text>
     </string>
@@ -8226,7 +8238,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Tenant</key>
-      <text>Inquilino Primário</text>
+      <text>Aluguel Dividido</text>
     </string>
     <string>
       <key>Label_Roster_Settings_File</key>

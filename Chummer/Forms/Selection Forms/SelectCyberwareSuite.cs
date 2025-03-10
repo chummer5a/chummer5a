@@ -43,6 +43,7 @@ namespace Chummer
 
         public SelectCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             _eSource = eSource;
             if (_eSource == Improvement.ImprovementSource.Cyberware)
@@ -55,7 +56,6 @@ namespace Chummer
             }
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
             _objXmlDocument = objCharacter.LoadData(_strType + ".xml", string.Empty, true);
         }
 
@@ -100,7 +100,7 @@ namespace Chummer
                                 string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
                                 if (string.IsNullOrEmpty(strGrade))
                                 {
-                                    if (lstGrades.All(x => x.Name != strGrade))
+                                    if (lstGrades.TrueForAll(x => x.Name != strGrade))
                                         continue;
                                     // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                                     switch (_eSource)
@@ -162,7 +162,7 @@ namespace Chummer
             decimal decTotalCost = 0;
 
             List<Cyberware> lstSuiteCyberwares = new List<Cyberware>(5);
-            ParseNode(xmlSuite, objGrade, lstSuiteCyberwares);
+            await ParseNode(xmlSuite, objGrade, lstSuiteCyberwares).ConfigureAwait(false);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdCyberwareLabelString))
             {
@@ -271,34 +271,48 @@ namespace Chummer
         /// <param name="xmlSuite">XmlNode to parse.</param>
         /// <param name="objGrade">Grade that the Cyberware should be created with.</param>
         /// <param name="lstChildren">List for children to which child items should be assigned.</param>
-        private void ParseNode(XmlNode xmlSuite, Grade objGrade, ICollection<Cyberware> lstChildren)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async Task ParseNode(XmlNode xmlSuite, Grade objGrade, ICollection<Cyberware> lstChildren, CancellationToken token = default)
         {
-            // Run through all of the items in the Suite list.
-            using (XmlNodeList xmlChildrenList = xmlSuite.SelectNodes(_strType + "s/" + _strType))
+            IAsyncDisposable objLocker =
+                await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if (xmlChildrenList?.Count > 0)
+                token.ThrowIfCancellationRequested();
+                // Run through all of the items in the Suite list.
+                using (XmlNodeList xmlChildrenList = xmlSuite.SelectNodes(_strType + "s/" + _strType))
                 {
-                    foreach (XmlNode xmlChildItem in xmlChildrenList)
+                    if (xmlChildrenList?.Count > 0)
                     {
-                        int intRating = 0;
-                        xmlChildItem.TryGetInt32FieldQuickly("rating", ref intRating);
-                        string strName = string.Empty;
-                        xmlChildItem.TryGetStringFieldQuickly("name", ref strName);
+                        foreach (XmlNode xmlChildItem in xmlChildrenList)
+                        {
+                            int intRating = 0;
+                            xmlChildItem.TryGetInt32FieldQuickly("rating", ref intRating);
+                            string strName = string.Empty;
+                            xmlChildItem.TryGetStringFieldQuickly("name", ref strName);
 
-                        // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
-                        XmlNode objXmlCyberware = _objXmlDocument.TryGetNodeByNameOrId("/chummer/" + _strType + "s/" + _strType, strName.CleanXPath());
+                            // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
+                            XmlNode objXmlCyberware =
+                                _objXmlDocument.TryGetNodeByNameOrId("/chummer/" + _strType + "s/" + _strType,
+                                    strName.CleanXPath());
 
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        List<Vehicle> lstVehicles = new List<Vehicle>(1);
-                        Cyberware objCyberware = new Cyberware(_objCharacter);
-                        objCyberware.Create(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false);
-                        objCyberware.Suite = true;
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+                            List<Vehicle> lstVehicles = new List<Vehicle>(1);
+                            Cyberware objCyberware = new Cyberware(_objCharacter);
+                            await objCyberware.CreateAsync(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons,
+                                lstVehicles, false, false, token: token).ConfigureAwait(false);
+                            objCyberware.Suite = true;
 
-                        lstChildren.Add(objCyberware);
+                            lstChildren.Add(objCyberware);
 
-                        ParseNode(xmlChildItem, objGrade, objCyberware.Children);
+                            await ParseNode(xmlChildItem, objGrade, await objCyberware.GetChildrenAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        }
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -309,15 +323,14 @@ namespace Chummer
         /// <param name="objCyberware">Cyberware to iterate through.</param>
         /// <param name="intDepth">Current dept in the list to determine how many spaces to print.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private static async ValueTask WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth, CancellationToken token = default)
+        private static async Task WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth, CancellationToken token = default)
         {
             for (int i = 0; i <= intDepth; ++i)
                 objCyberwareLabelString.Append("   ");
 
             objCyberwareLabelString.AppendLine(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-
-            foreach (Cyberware objPlugin in objCyberware.Children)
-                await WriteList(objCyberwareLabelString, objPlugin, intDepth + 1, token).ConfigureAwait(false);
+            await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).ForEachAsync(
+                objPlugin => WriteList(objCyberwareLabelString, objPlugin, intDepth + 1, token), token).ConfigureAwait(false);
         }
 
         #endregion Methods

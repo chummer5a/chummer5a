@@ -2739,15 +2739,15 @@
     </string>
     <string>
       <key>Tip_SkillsSkillGroups</key>
-      <text>每个技能组点数花费{0}业力。</text>
+      <text>技能组花费每等级{0}点业力。</text>
     </string>
     <string>
       <key>Tip_SkillsActiveSkills</key>
-      <text>技能花费{0}点业力，专精花费{1}点业力。角色在创建阶段最多有一个行动技能达到6级，两个行动技能达到5级，其他的必须在4级或4级以下。</text>
+      <text>技能花费每等级{0}点业力，专精花费{1}点业力。</text>
     </string>
     <string>
       <key>Tip_SkillsKnowledgeSkills</key>
-      <text>角色获得（INT+LOG）x{0}点免费知识与语言技能点。额外的知识技能点每点花费{1}点业力。等级为0的知识技能视为你的母语。</text>
+      <text>角色依据角色选项获得若干点免费知识与语言技能点。额外的知识与语言技能花费每等级{0}点业力，专精花费{1}点业力。等级为0的语言技能视为你的母语。</text>
     </string>
     <!-- Martial Arts Tab -->
     <string>
@@ -4538,8 +4538,12 @@
       <text>敌人</text>
     </string>
     <string>
-      <key>Label_Options_Carryover</key>
-      <text>Carryover for New Character</text>
+      <key>Label_Options_Carryover_Nuyen</key>
+      <text>Max Nuyen Carry-Over</text>
+    </string>
+    <string>
+      <key>Label_Options_Carryover_Karma</key>
+      <text>Max Karma Carry-Over</text>
     </string>
     <string>
       <key>Label_Options_Initiation</key>
@@ -5650,11 +5654,11 @@
     </string>
     <string>
       <key>Label_CreateImprovementMinimum</key>
-      <text>最大：</text>
+      <text>最小：</text>
     </string>
     <string>
       <key>Label_CreateImprovementMaximum</key>
-      <text>最小：</text>
+      <text>最大：</text>
     </string>
     <string>
       <key>Label_CreateImprovementAugmented</key>
@@ -6947,11 +6951,11 @@
     </string>
     <string>
       <key>String_MatrixInitiative</key>
-      <text>{0} + 数据处理 +{1}d6</text>
+      <text>{0} + 数据处理 + {1}d6</text>
     </string>
     <string>
       <key>String_MatrixInitiativeLong</key>
-      <text>{0} + 数据处理 +{1}d6</text>
+      <text>{0} + 数据处理 + {1}d6</text>
     </string>
     <string>
       <key>Checkbox_HideOverAvailLimit</key>
@@ -7963,7 +7967,11 @@
     </string>
     <string>
       <key>String_NotSupported</key>
-      <text>“该种族/泛亚种搭配现在还未完成，会在未来发布版本中完成。尝试以该搭配创建该角色，可能会导致预料外的结果。”</text>
+      <text>不支持</text>
+    </string>
+    <string>
+      <key>Message_MetatypeNotSupported</key>
+      <text>该种族/泛亚种搭配现在还未完成，会在未来发布版本中完成。尝试以该搭配创建该角色，可能会导致预料外的结果。</text>
     </string>
     <string>
       <key>Node_SelectedQualities</key>
@@ -8456,6 +8464,10 @@
     <string>
       <key>Node_UnequippedModularCyberware</key>
       <text>未装载的模块赛博改造</text>
+    </string>
+    <string>
+      <key>Node_UnequippedModularBioware</key>
+      <text>未装载的模块生体改造</text>
     </string>
     <string>
       <key>Tip_Skill_OffHand</key>

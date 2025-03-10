@@ -1962,7 +1962,7 @@
       <test>
         <dice>{LOG} + {Software} v. 2 * {Icon: Rating}</dice>
         <limit>{Icon: Sleaze}</limit>
-        <bonusstring>Requires 1 mark on target file. On success, select a Data Bomb rating up to net hits, select a passcode for the Data Bomb, and select whether or not the Data Bomb deletes the file when it detonates. A file can only have one Data Bomb at a time, and if the target file already has a Data Bomb, it immediately detonates. The Data Bomb is triggered if someone attempts to read, edit, copy, protect, delete, or put a Data Bomb on the target file without using the already-in-place Data Bomb's passcode. When a Data Bomb detonates, the persona who detonated it must resist (Data Bomb Rating)D6 Matrix damage, and then the Data Bomb deletes itself. Data Bombs can be detected with Matrix Perception.</bonusstring>
+        <bonusstring>Requires 1 mark on target file. On success, select a Data Bomb rating up to net hits, select a passcode for the Data Bomb, and select whether the Data Bomb deletes the file when it detonates. A file can only have one Data Bomb at a time, and if the target file already has a Data Bomb, it immediately detonates. The Data Bomb is triggered if someone attempts to read, edit, copy, protect, delete, or put a Data Bomb on the target file without using the already-in-place Data Bomb's passcode. When a Data Bomb detonates, the persona who detonated it must resist (Data Bomb Rating)D6 Matrix damage, and then the Data Bomb deletes itself. Data Bombs can be detected with Matrix Perception.</bonusstring>
       </test>
       <source>SR5</source>
       <page>242</page>

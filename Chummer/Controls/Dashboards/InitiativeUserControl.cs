@@ -86,7 +86,7 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (await chkBoxChummer.DoThreadSafeFuncAsync(x => x.SelectedItem).ConfigureAwait(false) == null)
-                Program.ShowMessageBox("Please Select a Chummer to remove");
+                await Program.ShowMessageBoxAsync("Please Select a Chummer to remove").ConfigureAwait(false);
             else
             {
                 int index = 0;
@@ -111,7 +111,7 @@ namespace Chummer
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
                 Program.ShowMessageBox("Please Select a Chummer to remove");
-            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll > 1)
                 ApplyInitChange(-1);
             else
                 Program.ShowMessageBox("unable to go beyond 0");
@@ -126,7 +126,7 @@ namespace Chummer
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
                 Program.ShowMessageBox("Please Select a Chummer to remove");
-            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 5 >= 0)
+            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll >= 5)
                 ApplyInitChange(-5);
             else
                 Program.ShowMessageBox("unable to go beyond 0");
@@ -141,7 +141,7 @@ namespace Chummer
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
                 Program.ShowMessageBox("Please Select a Chummer to remove");
-            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll >= 1)
                 ApplyInitChange(-10);
             else
                 Program.ShowMessageBox("unable to go beyond 0");
@@ -156,7 +156,7 @@ namespace Chummer
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
                 Program.ShowMessageBox("Please Select a Chummer to remove");
-            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll >= 1)
                 ApplyInitChange(1);
             else
                 Program.ShowMessageBox("unable to go beyond 0");
@@ -171,7 +171,7 @@ namespace Chummer
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
                 Program.ShowMessageBox("Please Select a Chummer to remove");
-            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll >= 1)
                 ApplyInitChange(5);
             else
                 Program.ShowMessageBox("unable to go beyond 0");
@@ -186,7 +186,7 @@ namespace Chummer
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
                 Program.ShowMessageBox("Please Select a Chummer to remove");
-            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll >= 1)
                 ApplyInitChange(10);
             else
                 Program.ShowMessageBox("unable to go beyond 0");
@@ -409,7 +409,7 @@ namespace Chummer
             {
                 // confirm we are selecting a chummer
                 if (await chkBoxChummer.DoThreadSafeFuncAsync(x => x.SelectedItem == null).ConfigureAwait(false))
-                    Program.ShowMessageBox("Please select a chummer before right-clicking");
+                    await Program.ShowMessageBoxAsync("Please select a chummer before right-clicking").ConfigureAwait(false);
 
                 using (ThreadSafeForm<InitiativeRoller> frmHits = await ThreadSafeForm<InitiativeRoller>.GetAsync(() => new InitiativeRoller
                        {
@@ -444,7 +444,7 @@ namespace Chummer
         /// </summary>
         /// <param name="character"></param>
         /// <param name="token"></param>
-        public async ValueTask AddToken(Character character, CancellationToken token = default)
+        public async Task AddToken(Character character, CancellationToken token = default)
         {
             if (character == null)
                 return;
@@ -457,7 +457,7 @@ namespace Chummer
                 {
                     if (await frmHits.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
                     {
-                        Program.ShowMessageBox("ERROR"); // TODO edward show error
+                        await Program.ShowMessageBoxAsync("ERROR", token: token).ConfigureAwait(false); // TODO edward show error
                         return;
                     }
 

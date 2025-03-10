@@ -38,10 +38,10 @@ namespace Chummer
 
         public SelectExoticSkill(Character objCharacter)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -125,7 +125,7 @@ namespace Chummer
 
         #endregion Properties
 
-        private async ValueTask BuildList(CancellationToken token = default)
+        private async Task BuildList(CancellationToken token = default)
         {
             string strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
             if (string.IsNullOrEmpty(strSelectedCategory))

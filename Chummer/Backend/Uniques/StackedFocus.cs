@@ -34,13 +34,15 @@ namespace Chummer
     /// A Stacked Focus.
     /// </summary>
     [DebuggerDisplay("{Name(GlobalSettings.DefaultLanguage)}")]
-    public sealed class StackedFocus : IHasLockObject
+    public sealed class StackedFocus : IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;
         private bool _blnBonded;
         private Guid _guiGearId;
-        private readonly ThreadSafeList<Gear> _lstGear = new ThreadSafeList<Gear>(2);
+        private readonly ThreadSafeList<Gear> _lstGear;
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, and Load Methods
 
@@ -48,7 +50,9 @@ namespace Chummer
         {
             // Create the GUID for the new Focus.
             _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = objCharacter.LockObject;
+            _lstGear = new ThreadSafeList<Gear>(2, LockObject);
         }
 
         /// <summary>
@@ -128,14 +132,25 @@ namespace Chummer
             {
                 if (Guid.TryParse(value, out Guid guiTemp))
                 {
+                    using (LockObject.EnterReadLock())
+                    {
+                        if (_guiGearId == guiTemp)
+                            return;
+                    }
+
                     using (LockObject.EnterUpgradeableReadLock())
-                        _guiGearId = guiTemp;
+                    {
+                        if (_guiGearId == guiTemp)
+                            return;
+                        using (LockObject.EnterWriteLock())
+                            _guiGearId = guiTemp;
+                    }
                 }
             }
         }
 
         /// <summary>
-        /// Whether or not the Stacked Focus in Bonded.
+        /// Whether the Stacked Focus in Bonded.
         /// </summary>
         public bool Bonded
         {
@@ -146,8 +161,19 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnBonded == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
-                    _blnBonded = value;
+                {
+                    if (_blnBonded == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _blnBonded = value;
+                }
             }
         }
 
@@ -299,10 +325,11 @@ namespace Chummer
         /// <summary>
         /// The cost in Karma to bind this Stacked Focus.
         /// </summary>
-        public async ValueTask<int> GetBindingCostAsync(CancellationToken token = default)
+        public async Task<int> GetBindingCostAsync(CancellationToken token = default)
         {
             decimal decCost = 0;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 decCost += await Gear.SumAsync(async objFocus =>
@@ -436,8 +463,12 @@ namespace Chummer
                             }
                         }, token: token).ConfigureAwait(false);
 
-                    return objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
+                    return await objFocus.GetRatingAsync(token).ConfigureAwait(false) * decKarmaMultiplier + decExtraKarmaCost;
                 }, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return decCost.StandardRound();
@@ -470,12 +501,13 @@ namespace Chummer
         /// <summary>
         /// Stacked Focus Name.
         /// </summary>
-        public async ValueTask<string> NameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> NameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     await Gear.ForEachAsync(async objGear =>
@@ -483,6 +515,10 @@ namespace Chummer
                         sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: token)
                                                       .ConfigureAwait(false)).Append(", ");
                     }, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
                 // Remove the trailing comma.
@@ -495,7 +531,7 @@ namespace Chummer
 
         public string CurrentDisplayName => Name(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => NameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => NameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// List of Gear that make up the Stacked Focus.
@@ -513,22 +549,29 @@ namespace Chummer
 
         #region Methods
 
-        public TreeNode CreateTreeNode(Gear objGear, ContextMenuStrip cmsStackedFocus)
+        public async Task<TreeNode> CreateTreeNode(Gear objGear, ContextMenuStrip cmsStackedFocus, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objGear == null)
                 throw new ArgumentNullException(nameof(objGear));
-            using (LockObject.EnterReadLock())
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus, null);
+                TreeNode objNode = await objGear.CreateTreeNode(cmsStackedFocus, null, token).ConfigureAwait(false);
 
                 objNode.Name = InternalId;
-                objNode.Text = LanguageManager.GetString("String_StackedFocus")
-                               + LanguageManager.GetString("String_Colon") + LanguageManager.GetString("String_Space")
-                               + CurrentDisplayName;
+                objNode.Text = await LanguageManager.GetStringAsync("String_StackedFocus", token: token).ConfigureAwait(false)
+                               + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false)
+                               + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                               + await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                 objNode.Tag = this;
                 objNode.Checked = Bonded;
 
                 return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -539,7 +582,6 @@ namespace Chummer
         {
             using (LockObject.EnterWriteLock())
                 _lstGear.Dispose();
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -554,11 +596,9 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

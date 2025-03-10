@@ -29,12 +29,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    public sealed class Drug : IHasName, IHasSourceId, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable, IAsyncDisposable
+    public sealed class Drug : IHasName, IHasSourceId, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable, IAsyncDisposable, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -73,6 +72,7 @@ namespace Chummer.Backend.Equipment
             _objCharacter = objCharacter;
             // Create the GUID for the new Drug.
             _guiID = Guid.NewGuid();
+            _lstComponents = new ThreadSafeObservableCollection<DrugComponent>(objCharacter.LockObject);
             Components.CollectionChanged += ComponentsChanged;
         }
 
@@ -192,7 +192,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -421,14 +421,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Components of the Drug.
         /// </summary>
-        public ThreadSafeObservableCollection<DrugComponent> Components
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                    return _lstComponents;
-            }
-        }
+        public ThreadSafeObservableCollection<DrugComponent> Components => _lstComponents;
 
         /// <summary>
         /// Name of the Drug.
@@ -456,15 +449,14 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Translated Category.
         /// </summary>
-        public async ValueTask<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
-            return (await (await _objCharacter.LoadDataXPathAsync("gear.xml", token: token).ConfigureAwait(false))
-                          .SelectSingleNodeAndCacheExpressionAsync(
-                              "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token)
-                          .ConfigureAwait(false))?.Value ?? Category;
+            return (await _objCharacter.LoadDataXPathAsync("gear.xml", token: token).ConfigureAwait(false))
+                .SelectSingleNodeAndCacheExpression(
+                    "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token)?.Value ?? Category;
         }
 
         /// <summary>
@@ -494,13 +486,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base cost of the Drug.
         /// </summary>
-        public async ValueTask<decimal> GetCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetCostAsync(CancellationToken token = default)
         {
             if (_decCachedCost != decimal.MinValue)
                 return _decCachedCost;
             return _decCachedCost
                 = await Components.SumAsync(d => d.ActiveDrugEffect != null,
-                                            d => d.GetCostPerLevelAsync(token).AsTask(), token).ConfigureAwait(false);
+                                            d => d.GetCostPerLevelAsync(token), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -511,17 +503,17 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Drug.
         /// </summary>
-        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default) =>
+        public async Task<decimal> GetTotalCostAsync(CancellationToken token = default) =>
             await GetCostAsync(token).ConfigureAwait(false) * Quantity;
 
         public decimal StolenTotalCost => Stolen ? TotalCost : 0;
 
         public decimal NonStolenTotalCost => Stolen ? 0 : TotalCost;
 
-        public async ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) =>
+        public async Task<decimal> GetStolenTotalCostAsync(CancellationToken token = default) =>
             Stolen ? await GetTotalCostAsync(token).ConfigureAwait(false) : 0;
 
-        public async ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) =>
+        public async Task<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) =>
             Stolen ? 0 : await GetTotalCostAsync(token).ConfigureAwait(false);
 
         /// <summary>
@@ -546,7 +538,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
-        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Total Availability.
@@ -559,7 +551,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Availability of the Vehicle.
         /// </summary>
-        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token).ConfigureAwait(false);
         }
@@ -585,15 +577,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
-
-                    /*
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                    {
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
-                    }
-                    */
-
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
@@ -623,7 +607,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability as a triple.
         /// </summary>
-        public async ValueTask<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
+        public async Task<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
         {
             bool blnModifyParentAvail = false;
             string strAvail = Availability;
@@ -641,15 +625,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
-
-                    /*
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                    {
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
-                    }
-                    */
-
+                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
                     if (blnIsSuccess)
@@ -914,7 +890,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should appear on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                 ? Name
@@ -923,7 +899,7 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
             DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
@@ -940,7 +916,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             if (Quantity != 1)
@@ -950,7 +926,7 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         public Dictionary<string, decimal> Attributes
@@ -1001,6 +977,8 @@ namespace Chummer.Backend.Equipment
             get => _blnStolen;
             set => _blnStolen = value;
         }
+
+        public Character CharacterObject => _objCharacter;
 
         #endregion Properties
 
@@ -1353,13 +1331,15 @@ namespace Chummer.Backend.Equipment
         /// TODO: Refactor drug effects to just use XML nodes, which can then be passed to Improvement Manager?
         /// TODO: Refactor Improvement Manager to automatically collapse improvements of the same type into a single improvement?
         /// </summary>
-        public void GenerateImprovement()
+        public async Task GenerateImprovement(CancellationToken token = default)
         {
-            if (_objCharacter.Improvements.Any(ig => ig.SourceName == InternalId))
+            if (await _objCharacter.Improvements.AnyAsync(ig => ig.SourceName == InternalId, token: token)
+                    .ConfigureAwait(false))
                 return;
-            _objCharacter.ImprovementGroups.Add(Name);
-            string strSpace = LanguageManager.GetString("String_Space");
-            string strNamePrefix = CurrentDisplayNameShort + strSpace + '-' + strSpace;
+            await _objCharacter.ImprovementGroups.AddAsync(Name, token).ConfigureAwait(false);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strNamePrefix = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false) + strSpace + '-' +
+                                   strSpace;
             List<Improvement> lstImprovements = Attributes.Where(objAttribute => objAttribute.Value != 0)
                 .Select(objAttribute => new Improvement(_objCharacter)
                 {
@@ -1368,8 +1348,10 @@ namespace Chummer.Backend.Equipment
                     SourceName = InternalId,
                     Augmented = objAttribute.Value,
                     ImprovedName = objAttribute.Key,
-                    CustomName = strNamePrefix + LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short")
-                                               + strSpace + objAttribute.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
+                    CustomName =
+                        strNamePrefix + LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short", token: token)
+                                      + strSpace +
+                                      objAttribute.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
                 }).ToList();
 
             foreach (KeyValuePair<string, int> objLimit in Limits)
@@ -1380,8 +1362,11 @@ namespace Chummer.Backend.Equipment
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
                     Value = objLimit.Value,
-                    CustomName = strNamePrefix + LanguageManager.GetString("Node_" + objLimit.Key)
-                                               + strSpace + objLimit.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
+                    CustomName = strNamePrefix + await LanguageManager
+                                                   .GetStringAsync("Node_" + objLimit.Key, token: token)
+                                                   .ConfigureAwait(false)
+                                               + strSpace + objLimit.Value.ToString("+#,0;-#,0;0",
+                                                   GlobalSettings.CultureInfo)
                 };
                 switch (objLimit.Key)
                 {
@@ -1397,6 +1382,7 @@ namespace Chummer.Backend.Equipment
                         i.ImproveType = Improvement.ImprovementType.SocialLimit;
                         break;
                 }
+
                 lstImprovements.Add(i);
             }
 
@@ -1408,8 +1394,10 @@ namespace Chummer.Backend.Equipment
                     SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.Initiative,
                     Value = Initiative,
-                    CustomName = strNamePrefix + LanguageManager.GetString("String_Initiative")
-                                               + strSpace + Initiative.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
+                    CustomName = strNamePrefix + await LanguageManager.GetStringAsync("String_Initiative", token: token)
+                                                   .ConfigureAwait(false)
+                                               + strSpace + Initiative.ToString("+#,0;-#,0;0",
+                                                   GlobalSettings.CultureInfo)
                 };
                 lstImprovements.Add(i);
             }
@@ -1422,63 +1410,80 @@ namespace Chummer.Backend.Equipment
                     SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.InitiativeDice,
                     Value = InitiativeDice,
-                    CustomName = strNamePrefix + LanguageManager.GetString("String_InitiativeDice")
-                                               + strSpace + InitiativeDice.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
+                    CustomName = strNamePrefix + await LanguageManager
+                                                   .GetStringAsync("String_InitiativeDice", token: token)
+                                                   .ConfigureAwait(false)
+                                               + strSpace + InitiativeDice.ToString("+#,0;-#,0;0",
+                                                   GlobalSettings.CultureInfo)
                 };
                 lstImprovements.Add(i);
             }
 
             if (Qualities.Count > 0)
             {
-                XmlDocument objXmlDocument = _objCharacter.LoadData("qualities.xml");
+                XmlDocument objXmlDocument =
+                    await _objCharacter.LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
                 foreach (XmlNode objXmlAddQuality in Qualities)
                 {
-                    XmlNode objXmlSelectedQuality = objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", objXmlAddQuality.InnerText);
+                    XmlNode objXmlSelectedQuality =
+                        objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", objXmlAddQuality.InnerText);
                     if (objXmlSelectedQuality == null)
                         continue;
                     XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
                     string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
                     string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerText;
-                    int intCount = string.IsNullOrEmpty(strRating) ? 1 : ImprovementManager.ValueToInt(_objCharacter, strRating, 1);
-                    bool blnDoesNotContributeToBP = !string.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerText, bool.TrueString, StringComparison.OrdinalIgnoreCase);
+                    int intCount = string.IsNullOrEmpty(strRating)
+                        ? 1
+                        : await ImprovementManager.ValueToIntAsync(_objCharacter, strRating, 1, token)
+                            .ConfigureAwait(false);
+                    bool blnDoesNotContributeToBP =
+                        !string.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerText, bool.TrueString,
+                            StringComparison.OrdinalIgnoreCase);
 
                     for (int i = 0; i < intCount; ++i)
                     {
                         // Makes sure we aren't over our limits for this particular quality from this overall source
                         if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                            xpnSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, Name))
+                            await xpnSelectedQuality.RequirementsMetAsync(_objCharacter,
+                                strLocalName: await LanguageManager.GetStringAsync("String_Quality", token: token)
+                                    .ConfigureAwait(false), strIgnoreQuality: Name, token: token).ConfigureAwait(false))
                         {
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality objAddQuality = new Quality(_objCharacter);
                             try
                             {
-                                objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
-                                                     strForceValue, Name);
+                                await objAddQuality.CreateAsync(objXmlSelectedQuality, QualitySource.Improvement,
+                                    lstWeapons,
+                                    strForceValue, Name, token).ConfigureAwait(false);
 
                                 if (blnDoesNotContributeToBP)
                                 {
-                                    objAddQuality.BP = 0;
-                                    objAddQuality.ContributeToLimit = false;
+                                    await objAddQuality.SetBPAsync(0, token).ConfigureAwait(false);
+                                    await objAddQuality.SetContributeToLimitAsync(false, token).ConfigureAwait(false);
                                 }
 
-                                _objCharacter.Qualities.Add(objAddQuality);
+                                await _objCharacter.Qualities.AddAsync(objAddQuality, token).ConfigureAwait(false);
                                 foreach (Weapon objWeapon in lstWeapons)
-                                    _objCharacter.Weapons.Add(objWeapon);
+                                    await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
                                 Improvement objImprovement = new Improvement(_objCharacter)
                                 {
                                     ImprovedName = objAddQuality.InternalId,
                                     ImproveSource = Improvement.ImprovementSource.Drug,
                                     SourceName = InternalId,
                                     ImproveType = Improvement.ImprovementType.SpecificQuality,
-                                    CustomName = strNamePrefix + LanguageManager.GetString("String_InitiativeDice")
-                                                               + strSpace + objAddQuality.Name
+                                    CustomName =
+                                        strNamePrefix + await LanguageManager
+                                                          .GetStringAsync("String_InitiativeDice", token: token)
+                                                          .ConfigureAwait(false)
+                                                      + strSpace + await objAddQuality.GetNameAsync(token)
+                                                          .ConfigureAwait(false)
                                 };
                                 lstImprovements.Add(objImprovement);
                             }
                             catch
                             {
-                                objAddQuality.Dispose();
+                                await objAddQuality.DisposeAsync().ConfigureAwait(false);
                                 throw;
                             }
                         }
@@ -1489,6 +1494,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+
             foreach (Improvement i in lstImprovements)
             {
                 i.CustomGroup = Name;
@@ -1497,6 +1503,7 @@ namespace Chummer.Backend.Equipment
                 // This is initially set to false make sure no property changers are triggered
                 i.SetupComplete = true;
             }
+
             _objCharacter.Improvements.AddRange(lstImprovements);
         }
 
@@ -1506,7 +1513,7 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            XmlNode objDoc = blnSync
+            XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData("drugcomponents.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataAsync("drugcomponents.xml", strLanguage, token: token).ConfigureAwait(false);
@@ -1524,7 +1531,7 @@ namespace Chummer.Backend.Equipment
 
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
-        private readonly ThreadSafeObservableCollection<DrugComponent> _lstComponents = new ThreadSafeObservableCollection<DrugComponent>();
+        private readonly ThreadSafeObservableCollection<DrugComponent> _lstComponents;
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
@@ -1562,6 +1569,27 @@ namespace Chummer.Backend.Equipment
             return true;
         }
 
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (blnConfirmDelete && !await CommonFunctions
+                    .ConfirmDeleteAsync(
+                        await LanguageManager.GetStringAsync("Message_DeleteDrug", token: token).ConfigureAwait(false),
+                        token).ConfigureAwait(false))
+            {
+                return false;
+            }
+
+            await _objCharacter.Drugs.RemoveAsync(this, token).ConfigureAwait(false);
+            await ImprovementManager
+                .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Drug, InternalId, token)
+                .ConfigureAwait(false);
+
+            await DisposeAsync().ConfigureAwait(false);
+
+            return true;
+        }
+
         #endregion Methods
 
         /// <inheritdoc />
@@ -1580,7 +1608,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Drug Component.
     /// </summary>
-    public class DrugComponent : IHasName, IHasInternalId, IHasXmlDataNode
+    public class DrugComponent : IHasName, IHasInternalId, IHasXmlDataNode, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -1605,6 +1633,8 @@ namespace Chummer.Backend.Equipment
             _guidId = Guid.NewGuid();
             _objCharacter = objCharacter;
         }
+
+        public Character CharacterObject => _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -1822,24 +1852,24 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should appear on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             XPathNavigator xmlGearDataNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            if (xmlGearDataNode != null && (await xmlGearDataNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value == "Custom Item")
+            if (xmlGearDataNode?.SelectSingleNodeAndCacheExpression("name", token)?.Value == "Custom Item")
             {
                 return await _objCharacter.TranslateExtraAsync(Name, strLanguage, token: token).ConfigureAwait(false);
             }
 
-            return xmlGearDataNode != null ? (await xmlGearDataNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value ?? Name : Name;
+            return xmlGearDataNode?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? Name;
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Level X).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             if (Level != 0)
@@ -1850,9 +1880,9 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// Translated Category.
@@ -1944,16 +1974,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdCost.Append(strCostExpression.TrimStart('+'));
                     sbdCost.Replace("Level", Level.ToString(GlobalSettings.InvariantCultureInfo));
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                    {
-                        sbdCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev,
-                                             () => objLoopAttribute.TotalValue.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                        sbdCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base",
-                                             () => objLoopAttribute.TotalBase.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                    }
-
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                     if (blnIsSuccess)
@@ -1967,7 +1988,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Cost of the drug component per level
         /// </summary>
-        public async ValueTask<decimal> GetCostPerLevelAsync(CancellationToken token = default)
+        public async Task<decimal> GetCostPerLevelAsync(CancellationToken token = default)
         {
             string strCostExpression = Cost;
             if (string.IsNullOrEmpty(strCostExpression))
@@ -1988,34 +2009,7 @@ namespace Chummer.Backend.Equipment
             {
                 sbdCost.Append(strCostExpression.TrimStart('+'));
                 sbdCost.Replace("Level", Level.ToString(GlobalSettings.InvariantCultureInfo));
-                AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
-                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
-                {
-                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev,
-                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                        .ConfigureAwait(false)).ToString(
-                                                        GlobalSettings.InvariantCultureInfo), token: token)
-                                 .ConfigureAwait(false);
-                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev + "Base",
-                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                        .ConfigureAwait(false)).ToString(
-                                                        GlobalSettings.InvariantCultureInfo), token: token)
-                                 .ConfigureAwait(false);
-                }, token).ConfigureAwait(false);
-                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
-                {
-                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev,
-                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                        .ConfigureAwait(false)).ToString(
-                                                        GlobalSettings.InvariantCultureInfo), token: token)
-                                 .ConfigureAwait(false);
-                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev + "Base",
-                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                        .ConfigureAwait(false)).ToString(
-                                                        GlobalSettings.InvariantCultureInfo), token: token)
-                                 .ConfigureAwait(false);
-                }, token).ConfigureAwait(false);
-
+                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
                 (bool blnIsSuccess, object objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
                 if (blnIsSuccess)
@@ -2039,7 +2033,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
-        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Total Availability.
@@ -2052,7 +2046,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Availability of the Vehicle.
         /// </summary>
-        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             return await (await GetTotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token).ConfigureAwait(false);
         }
@@ -2080,15 +2074,7 @@ namespace Chummer.Backend.Equipment
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
-
-                        /*
-                        foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                        {
-                            sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
-                            sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
-                        }
-                        */
-
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                         if (blnIsSuccess)
@@ -2106,7 +2092,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability as a triple.
         /// </summary>
-        public async ValueTask<AvailabilityValue> GetTotalAvailTupleAsync(CancellationToken token = default)
+        public async Task<AvailabilityValue> GetTotalAvailTupleAsync(CancellationToken token = default)
         {
             bool blnModifyParentAvail = false;
             string strAvail = Availability;
@@ -2124,15 +2110,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
-
-                    /*
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                    {
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
-                    }
-                    */
-
+                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
                     if (blnIsSuccess)
@@ -2493,7 +2471,7 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            XmlNode objDoc = blnSync
+            XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData("drugcomponents.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataAsync("drugcomponents.xml", strLanguage, token: token).ConfigureAwait(false);

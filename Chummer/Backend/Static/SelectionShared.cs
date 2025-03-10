@@ -40,12 +40,11 @@ namespace Chummer
         /// <param name="objParent">Parent object to be compared to.</param>
         /// <param name="strLocalName">Name of the type of item being checked for displaying messages. If empty or null, no message is displayed.</param>
         /// <param name="strIgnoreQuality">Name of a Quality that should be ignored. Typically used when swapping Qualities in career mode.</param>
-        /// <param name="strSourceName">Name of the improvement that called this (if it was called by an improvement adding it)</param>
         /// <param name="strLocation">Limb side to use if we need a specific limb side (Left or Right)</param>
         /// <param name="blnIgnoreLimit">Whether to ignore checking for limits on the total amount of this item the character can have.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [Obsolete("This method is a wrapper that calls XPathNavigator instead. Where possible, refactor the calling object to an XPathNavigator instead.", false)]
-        public static bool RequirementsMet(this XmlNode xmlNode, Character objCharacter, object objParent = null, string strLocalName = "", string strIgnoreQuality = "", string strSourceName = "", string strLocation = "", bool blnIgnoreLimit = false, CancellationToken token = default)
+        public static bool RequirementsMet(this XmlNode xmlNode, Character objCharacter, object objParent = null, string strLocalName = "", string strIgnoreQuality = "", string strLocation = "", bool blnIgnoreLimit = false, CancellationToken token = default)
         {
             if (xmlNode == null || objCharacter == null)
                 return false;
@@ -55,7 +54,7 @@ namespace Chummer
             XPathNavigator objNavigator = xmlNode.CreateNavigator();
             return Utils.SafelyRunSynchronously(() => objNavigator.RequirementsMetCoreAsync(
                                                     true, objCharacter, objParent, strLocalName,
-                                                    strIgnoreQuality, strSourceName, strLocation,
+                                                    strIgnoreQuality, strLocation,
                                                     blnIgnoreLimit, token), token);
         }
 
@@ -65,12 +64,11 @@ namespace Chummer
         /// <param name="objParent">Parent object to be compared to.</param>
         /// <param name="strLocalName">Name of the type of item being checked for displaying messages. If empty or null, no message is displayed.</param>
         /// <param name="strIgnoreQuality">Name of a Quality that should be ignored. Typically used when swapping Qualities in career mode.</param>
-        /// <param name="strSourceName">Name of the improvement that called this (if it was called by an improvement adding it)</param>
         /// <param name="strLocation">Limb side to use if we need a specific limb side (Left or Right)</param>
         /// <param name="blnIgnoreLimit">Whether to ignore checking for limits on the total amount of this item the character can have.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [Obsolete("This method is a wrapper that calls XPathNavigator instead. Where possible, refactor the calling object to an XPathNavigator instead.", false)]
-        public static Task<bool> RequirementsMetAsync(this XmlNode xmlNode, Character objCharacter, object objParent = null, string strLocalName = "", string strIgnoreQuality = "", string strSourceName = "", string strLocation = "", bool blnIgnoreLimit = false, CancellationToken token = default)
+        public static Task<bool> RequirementsMetAsync(this XmlNode xmlNode, Character objCharacter, object objParent = null, string strLocalName = "", string strIgnoreQuality = "", string strLocation = "", bool blnIgnoreLimit = false, CancellationToken token = default)
         {
             if (xmlNode == null || objCharacter == null)
                 return Task.FromResult(false);
@@ -79,7 +77,7 @@ namespace Chummer
                 return Task.FromResult(true);
             XPathNavigator objNavigator = xmlNode.CreateNavigator();
             return objNavigator.RequirementsMetCoreAsync(false, objCharacter, objParent, strLocalName, strIgnoreQuality,
-                                                         strSourceName, strLocation, blnIgnoreLimit, token);
+                                                         strLocation, blnIgnoreLimit, token);
         }
 
         //TODO: Might be a better location for this; Class names are screwy.
@@ -89,18 +87,17 @@ namespace Chummer
         /// <param name="objParent">Parent object against which to check.</param>
         /// <param name="strLocalName">Name of the type of item being checked for displaying messages. If empty or null, no message is displayed.</param>
         /// <param name="strIgnoreQuality">Name (or ID) of a Quality that should be ignored. Typically used when swapping Qualities in career mode.</param>
-        /// <param name="strSourceName">Name of the improvement that called this (if it was called by an improvement adding it)</param>
         /// <param name="strLocation">Limb side to use if we need a specific limb side (Left or Right)</param>
         /// <param name="blnIgnoreLimit">Whether to ignore checking for limits on the total amount of this item the character can have.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static bool RequirementsMet(this XPathNavigator xmlNode, Character objCharacter, object objParent = null,
                                            string strLocalName = "", string strIgnoreQuality = "",
-                                           string strSourceName = "", string strLocation = "",
+                                           string strLocation = "",
                                            bool blnIgnoreLimit = false, CancellationToken token = default)
         {
             return Utils.SafelyRunSynchronously(
                 () => xmlNode.RequirementsMetCoreAsync(true, objCharacter, objParent, strLocalName, strIgnoreQuality,
-                                                       strSourceName, strLocation, blnIgnoreLimit, token), token);
+                                                       strLocation, blnIgnoreLimit, token), token);
         }
 
         //TODO: Might be a better location for this; Class names are screwy.
@@ -110,23 +107,22 @@ namespace Chummer
         /// <param name="objParent">Parent object against which to check.</param>
         /// <param name="strLocalName">Name of the type of item being checked for displaying messages. If empty or null, no message is displayed.</param>
         /// <param name="strIgnoreQuality">Name (or ID) of a Quality that should be ignored. Typically used when swapping Qualities in career mode.</param>
-        /// <param name="strSourceName">Name of the improvement that called this (if it was called by an improvement adding it)</param>
         /// <param name="strLocation">Limb side to use if we need a specific limb side (Left or Right)</param>
         /// <param name="blnIgnoreLimit">Whether to ignore checking for limits on the total amount of this item the character can have.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static Task<bool> RequirementsMetAsync(this XPathNavigator xmlNode, Character objCharacter, object objParent = null,
                                            string strLocalName = "", string strIgnoreQuality = "",
-                                           string strSourceName = "", string strLocation = "",
+                                           string strLocation = "",
                                            bool blnIgnoreLimit = false, CancellationToken token = default)
         {
             return xmlNode.RequirementsMetCoreAsync(false, objCharacter, objParent, strLocalName, strIgnoreQuality,
-                                                    strSourceName, strLocation, blnIgnoreLimit, token);
+                                                    strLocation, blnIgnoreLimit, token);
         }
 
         private static async Task<bool> RequirementsMetCoreAsync(this XPathNavigator xmlNode, bool blnSync,
                                                                  Character objCharacter, object objParent = null,
                                                                  string strLocalName = "", string strIgnoreQuality = "",
-                                                                 string strSourceName = "", string strLocation = "",
+                                                                 string strLocation = "",
                                                                  bool blnIgnoreLimit = false,
                                                                  CancellationToken token = default)
         {
@@ -134,39 +130,39 @@ namespace Chummer
             if (xmlNode == null || objCharacter == null)
                 return false;
             // Ignore the rules.
-            if (objCharacter.IgnoreRules)
+            if (blnSync ? objCharacter.IgnoreRules : await objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                 return true;
             bool blnShowMessage = !string.IsNullOrEmpty(strLocalName);
             // See if the character is in career mode but would want to add a chargen-only Quality
-            if (objCharacter.Created)
+            if (blnSync ? objCharacter.Created : await objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
             {
-                if ((blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("chargenonly", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("chargenonly", token)
-                                       .ConfigureAwait(false)) != null)
+                if (xmlNode.SelectSingleNodeAndCacheExpression("chargenonly", token) != null)
                 {
                     if (blnShowMessage)
                     {
-                        Program.ShowScrollableMessageBox(
-                            string.Format(
-                                GlobalSettings.CultureInfo,
-                                blnSync
+                        if (blnSync)
+                        {
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            Program.ShowScrollableMessageBox(
+                                string.Format(GlobalSettings.CultureInfo,
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction",
-                                                                token: token)
-                                    : await LanguageManager.GetStringAsync(
-                                        "Message_SelectGeneric_ChargenRestriction", token: token).ConfigureAwait(false),
-                                strLocalName),
-                            string.Format(
-                                GlobalSettings.CultureInfo,
-                                blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token)
-                                    : await LanguageManager.GetStringAsync(
-                                        "MessageTitle_SelectGeneric_Restriction", token: token).ConfigureAwait(false),
-                                strLocalName),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", token: token),
+                                    strLocalName),
+                                // ReSharper disable once MethodHasAsyncOverload
+                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            await Program.ShowScrollableMessageBoxAsync(
+                                string.Format(GlobalSettings.CultureInfo,
+                                    await LanguageManager.GetStringAsync("Message_SelectGeneric_ChargenRestriction", token: token)
+                                        .ConfigureAwait(false),
+                                    strLocalName),
+                                string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                    .ConfigureAwait(false), strLocalName),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                        }
                     }
 
                     return false;
@@ -175,68 +171,66 @@ namespace Chummer
             // See if the character is using priority-based gen and is trying to add a Quality that can only be added through priorities
             else
             {
-                if ((blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("careeronly", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("careeronly", token)
-                                       .ConfigureAwait(false)) != null)
+                if (xmlNode.SelectSingleNodeAndCacheExpression("careeronly", token) != null)
                 {
                     if (blnShowMessage)
                     {
-                        Program.ShowScrollableMessageBox(
-                            string.Format(
-                                GlobalSettings.CultureInfo,
-                                blnSync
+                        if (blnSync)
+                        {
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            Program.ShowScrollableMessageBox(
+                                string.Format(GlobalSettings.CultureInfo,
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction",
-                                                                token: token)
-                                    : await LanguageManager.GetStringAsync(
-                                                               "Message_SelectGeneric_CareerOnlyRestriction",
-                                                               token: token)
-                                                           .ConfigureAwait(false),
-                                strLocalName),
-                            string.Format(
-                                GlobalSettings.CultureInfo,
-                                blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token)
-                                    : await LanguageManager.GetStringAsync(
-                                        "MessageTitle_SelectGeneric_Restriction", token: token).ConfigureAwait(false),
-                                strLocalName),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", token: token),
+                                    strLocalName),
+                                // ReSharper disable once MethodHasAsyncOverload
+                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            await Program.ShowScrollableMessageBoxAsync(
+                                string.Format(GlobalSettings.CultureInfo,
+                                    await LanguageManager.GetStringAsync("Message_SelectGeneric_CareerOnlyRestriction", token: token)
+                                        .ConfigureAwait(false),
+                                    strLocalName),
+                                string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                    .ConfigureAwait(false), strLocalName),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                        }
                     }
 
                     return false;
                 }
 
                 if (objCharacter.EffectiveBuildMethodUsesPriorityTables
-                    && (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("onlyprioritygiven", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("onlyprioritygiven", token)
-                                       .ConfigureAwait(false)) != null)
+                    && xmlNode.SelectSingleNodeAndCacheExpression("onlyprioritygiven", token) != null)
                 {
                     if (blnShowMessage)
                     {
-                        Program.ShowScrollableMessageBox(
-                            string.Format(
-                                GlobalSettings.CultureInfo,
-                                blnSync
+                        if (blnSync)
+                        {
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            Program.ShowScrollableMessageBox(
+                                string.Format(GlobalSettings.CultureInfo,
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction",
-                                                                token: token)
-                                    : await LanguageManager.GetStringAsync(
-                                        "MessageTitle_SelectGeneric_Restriction", token: token).ConfigureAwait(false),
-                                strLocalName),
-                            string.Format(
-                                GlobalSettings.CultureInfo,
-                                blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token)
-                                    : await LanguageManager.GetStringAsync(
-                                        "MessageTitle_SelectGeneric_Restriction", token: token).ConfigureAwait(false),
-                                strLocalName),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction", token: token),
+                                    strLocalName),
+                                // ReSharper disable once MethodHasAsyncOverload
+                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            await Program.ShowScrollableMessageBoxAsync(
+                                string.Format(GlobalSettings.CultureInfo,
+                                    await LanguageManager.GetStringAsync("Message_SelectGeneric_PriorityRestriction", token: token)
+                                        .ConfigureAwait(false),
+                                    strLocalName),
+                                string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                    .ConfigureAwait(false), strLocalName),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                        }
                     }
 
                     return false;
@@ -245,21 +239,12 @@ namespace Chummer
 
             if (!blnIgnoreLimit)
             {
-                // See if the character already has this Quality and whether or not multiple copies are allowed.
+                // See if the character already has this Quality and whether multiple copies are allowed.
                 // If the limit at chargen is different from the actual limit, we need to make sure we fetch the former if the character is in Create mode
-                string strLimitString = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? xmlNode.SelectSingleNodeAndCacheExpression("chargenlimit", token)
-                    : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("chargenlimit", token)
-                                   .ConfigureAwait(false))?.Value;
+                string strLimitString = xmlNode.SelectSingleNodeAndCacheExpression("chargenlimit", token)?.Value ?? string.Empty;
                 if (string.IsNullOrWhiteSpace(strLimitString) || objCharacter.Created)
                 {
-                    strLimitString = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("limit", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("limit", token)
-                                           .ConfigureAwait(false))
-                        ?.Value;
+                    strLimitString = xmlNode.SelectSingleNodeAndCacheExpression("limit", token)?.Value ?? string.Empty;
                     // Default case is each quality can only be taken once
                     if (string.IsNullOrWhiteSpace(strLimitString))
                     {
@@ -271,11 +256,7 @@ namespace Chummer
                             strLimitString = "1";
                         else if (xmlNode.Name == "lifestylequality")
                         {
-                            strLimitString = (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? xmlNode.SelectSingleNodeAndCacheExpression("allowmultiple", token)
-                                : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("allowmultiple", token)
-                                               .ConfigureAwait(false)) != null
+                            strLimitString = xmlNode.SelectSingleNodeAndCacheExpression("allowmultiple", token) != null
                                 ? bool.FalseString
                                 : "1";
                         }
@@ -341,11 +322,8 @@ namespace Chummer
                         case "characterquality":
                         case "quality":
                         {
-                            objListToCheck = objCharacter.Qualities.Where(
-                                objQuality =>
-                                    objQuality.SourceName == strSourceName && objQuality.Name != strIgnoreQuality
-                                                                           && objQuality.SourceIDString
-                                                                           != strIgnoreQuality);
+                            objListToCheck = objCharacter.Qualities.Where(objQuality =>
+                                objQuality.Name != strIgnoreQuality && objQuality.SourceIDString != strIgnoreQuality);
                             break;
                         }
                         case "lifestylequality":
@@ -414,35 +392,18 @@ namespace Chummer
 
                     int intLimit = Convert.ToInt32(strLimitString, GlobalSettings.InvariantCultureInfo);
                     int intExtendedLimit = intLimit;
-                    string strLimitWithInclusions = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("limitwithinclusions", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("limitwithinclusions", token)
-                                       .ConfigureAwait(false))?.Value;
+                    string strLimitWithInclusions = xmlNode.SelectSingleNodeAndCacheExpression("limitwithinclusions", token)?.Value;
                     if (!string.IsNullOrEmpty(strLimitWithInclusions))
                         intExtendedLimit = Convert.ToInt32(strLimitWithInclusions, GlobalSettings.InvariantCultureInfo);
                     int intCount = 0;
                     int intExtendedCount = 0;
                     if (objListToCheck != null || blnCheckCyberwareChildren)
                     {
-                        string strNodeId = (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? xmlNode.SelectSingleNodeAndCacheExpression("id", token)
-                                : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("id", token)
-                                               .ConfigureAwait(false))
-                            ?.Value ?? string.Empty;
-                        string strNodeName = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("name", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                           .ConfigureAwait(false))?.Value ?? string.Empty;
+                        string strNodeId = xmlNode.SelectSingleNodeAndCacheExpression("id", token)?.Value ?? string.Empty;
+                        string strNodeName = xmlNode.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? string.Empty;
                         intExtendedCount = intCount;
                         // In case one item is split up into multiple entries with different names, e.g. Indomitable quality, we need to be able to check all those entries against the limit
-                        XPathNavigator xmlIncludeInLimit = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("includeinlimit", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("includeinlimit", token)
-                                           .ConfigureAwait(false);
+                        XPathNavigator xmlIncludeInLimit = xmlNode.SelectSingleNodeAndCacheExpression("includeinlimit", token);
                         if (xmlIncludeInLimit != null)
                         {
                             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -470,15 +431,21 @@ namespace Chummer
                                     foreach (Cyberware objItem in blnSync
                                                  ? objCharacter.Cyberware.GetAllDescendants(x => x.Children, token)
                                                  : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                                         .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
+                                                         .GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                                     {
                                         if (!setNamesIncludedInLimit.Contains(objItem.Name)
                                             && !setNamesIncludedInLimit.Contains(objItem.InternalId))
                                             continue;
                                         if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
                                             continue;
-                                        if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount)
-                                            || !objItem.IsModularCurrentlyEquipped)
+                                        if (blnSync)
+                                        {
+                                            if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount)
+                                                || !objItem.IsModularCurrentlyEquipped)
+                                                continue;
+                                        }
+                                        else if (!string.IsNullOrEmpty(await objItem.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false))
+                                                 || !await objItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                                             continue;
                                         if (strNodeName == objItem.Name || strNodeId == objItem.SourceIDString)
                                             ++intCount;
@@ -514,15 +481,22 @@ namespace Chummer
                             foreach (Cyberware objItem in blnSync
                                          ? objCharacter.Cyberware.GetAllDescendants(x => x.Children, token)
                                          : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                                 .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
+                                             .GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                             {
                                 if (strNodeName != objItem.Name && strNodeId != objItem.SourceIDString)
                                     continue;
                                 if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
                                     continue;
-                                if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount)
-                                    || !objItem.IsModularCurrentlyEquipped)
+                                if (blnSync)
+                                {
+                                    if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount)
+                                        || !objItem.IsModularCurrentlyEquipped)
+                                        continue;
+                                }
+                                else if (!string.IsNullOrEmpty(await objItem.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false))
+                                         || !await objItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                                     continue;
+
                                 ++intCount;
                                 if (!blnShowMessage && intCount >= intLimit)
                                     return false;
@@ -546,24 +520,29 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            Program.ShowScrollableMessageBox(
-                                string.Format(
-                                    GlobalSettings.CultureInfo,
-                                    blnSync
+                            if (blnSync)
+                            {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                Program.ShowScrollableMessageBox(
+                                    string.Format(GlobalSettings.CultureInfo,
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        ? LanguageManager.GetString("Message_SelectGeneric_Limit", token: token)
-                                        : await LanguageManager.GetStringAsync(
-                                            "Message_SelectGeneric_Limit", token: token).ConfigureAwait(false),
-                                    strLocalName, intLimit == 0 ? 1 : intLimit),
-                                string.Format(
-                                    GlobalSettings.CultureInfo,
-                                    blnSync
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        ? LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", token: token)
-                                        : await LanguageManager.GetStringAsync(
-                                            "MessageTitle_SelectGeneric_Limit", token: token).ConfigureAwait(false),
-                                    strLocalName),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        LanguageManager.GetString("Message_SelectGeneric_Limit", token: token),
+                                        strLocalName, intLimit == 0 ? 1 : intLimit),
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", token: token), strLocalName),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                await Program.ShowScrollableMessageBoxAsync(
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        await LanguageManager.GetStringAsync("Message_SelectGeneric_Limit", token: token)
+                                            .ConfigureAwait(false),
+                                        strLocalName, intLimit == 0 ? 1 : intLimit),
+                                    string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Limit", token: token)
+                                        .ConfigureAwait(false), strLocalName),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                            }
                         }
 
                         return false;
@@ -571,10 +550,7 @@ namespace Chummer
                 }
             }
 
-            XPathNavigator xmlForbiddenNode = blnSync
-                // ReSharper disable once MethodHasAsyncOverload
-                ? xmlNode.SelectSingleNodeAndCacheExpression("forbidden", token)
-                : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("forbidden", token).ConfigureAwait(false);
+            XPathNavigator xmlForbiddenNode = xmlNode.SelectSingleNodeAndCacheExpression("forbidden", token);
             if (xmlForbiddenNode != null)
             {
                 // Loop through the oneof requirements.
@@ -594,30 +570,29 @@ namespace Chummer
                         {
                             if (blnShowMessage)
                             {
-                                Program.ShowScrollableMessageBox(
-                                    string.Format(
-                                        GlobalSettings.CultureInfo,
-                                        blnSync
+                                if (blnSync)
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    Program.ShowScrollableMessageBox(
+                                        string.Format(GlobalSettings.CultureInfo,
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            ? LanguageManager.GetString("Message_SelectGeneric_Restriction",
-                                                                        token: token)
-                                            : await LanguageManager.GetStringAsync(
-                                                                       "Message_SelectGeneric_Restriction",
-                                                                       token: token)
-                                                                   .ConfigureAwait(false),
-                                        strLocalName) + strName,
-                                    string.Format(
-                                        GlobalSettings.CultureInfo,
-                                        blnSync
-                                            // ReSharper disable once MethodHasAsyncOverload
-                                            ? LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction",
-                                                                        token: token)
-                                            : await LanguageManager.GetStringAsync(
-                                                                       "MessageTitle_SelectGeneric_Restriction",
-                                                                       token: token)
-                                                                   .ConfigureAwait(false),
-                                        strLocalName),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                            LanguageManager.GetString("Message_SelectGeneric_Restriction", token: token),
+                                            strLocalName) + strName,
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                }
+                                else
+                                {
+                                    await Program.ShowScrollableMessageBoxAsync(
+                                        string.Format(GlobalSettings.CultureInfo,
+                                            await LanguageManager.GetStringAsync("Message_SelectGeneric_Restriction", token: token)
+                                                .ConfigureAwait(false),
+                                            strLocalName) + strName,
+                                        string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                            .ConfigureAwait(false), strLocalName),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                }
                             }
 
                             return false;
@@ -626,10 +601,7 @@ namespace Chummer
                 }
             }
 
-            XPathNavigator xmlRequiredNode = blnSync
-                // ReSharper disable once MethodHasAsyncOverload
-                ? xmlNode.SelectSingleNodeAndCacheExpression("required", token)
-                : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("required", token).ConfigureAwait(false);
+            XPathNavigator xmlRequiredNode = xmlNode.SelectSingleNodeAndCacheExpression("required", token);
             if (xmlRequiredNode != null)
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -743,27 +715,29 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            Program.ShowScrollableMessageBox(
-                                string.Format(
-                                    GlobalSettings.CultureInfo,
-                                    blnSync
+                            if (blnSync)
+                            {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                Program.ShowScrollableMessageBox(
+                                    string.Format(GlobalSettings.CultureInfo,
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        ? LanguageManager.GetString("Message_SelectGeneric_Restriction", token: token)
-                                        : await LanguageManager.GetStringAsync(
-                                            "Message_SelectGeneric_Restriction", token: token).ConfigureAwait(false),
-                                    strLocalName) + sbdRequirement,
-                                string.Format(
-                                    GlobalSettings.CultureInfo,
-                                    blnSync
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        ? LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction",
-                                                                    token: token)
-                                        : await LanguageManager.GetStringAsync(
-                                                                   "MessageTitle_SelectGeneric_Restriction",
-                                                                   token: token)
-                                                               .ConfigureAwait(false),
-                                    strLocalName),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        LanguageManager.GetString("Message_SelectGeneric_Restriction", token: token),
+                                        strLocalName) + sbdRequirement,
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                await Program.ShowScrollableMessageBoxAsync(
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        await LanguageManager.GetStringAsync("Message_SelectGeneric_Restriction", token: token)
+                                            .ConfigureAwait(false),
+                                        strLocalName) + sbdRequirement,
+                                    string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                        .ConfigureAwait(false), strLocalName),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                            }
                         }
 
                         return false;
@@ -774,9 +748,10 @@ namespace Chummer
             return true;
         }
 
-        private static async Task<Tuple<bool, string>> TestNodeRequirementsAsync(this XPathNavigator xmlNode, bool blnSync, Character objCharacter,
-                                                               object objParent, string strIgnoreQuality = "",
-                                                               bool blnShowMessage = true, CancellationToken token = default)
+        private static async Task<Tuple<bool, string>> TestNodeRequirementsAsync(this XPathNavigator xmlNode,
+            bool blnSync, Character objCharacter,
+            object objParent, string strIgnoreQuality = "",
+            bool blnShowMessage = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (xmlNode == null || objCharacter == null)
@@ -791,15 +766,9 @@ namespace Chummer
                 : await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             string strNodeInnerText = xmlNode.Value;
             string strNodeId
-                = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? xmlNode.SelectSingleNodeAndCacheExpression("id", token)
-                    : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                = xmlNode.SelectSingleNodeAndCacheExpression("id", token)?.Value ?? string.Empty;
             string strNodeName
-                = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? xmlNode.SelectSingleNodeAndCacheExpression("name", token)
-                    : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                = xmlNode.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? string.Empty;
             switch (xmlNode.Name)
             {
                 case "attribute":
@@ -809,35 +778,48 @@ namespace Chummer
                         // ReSharper disable MethodHasAsyncOverload
                         // Check to see if an Attribute meets a requirement.
                         CharacterAttrib objAttribute = objCharacter.GetAttribute(strNodeName, token: token);
-                        int intTargetValue = xmlNode.SelectSingleNodeAndCacheExpression("total", token)?.ValueAsInt ?? 0;
+                        int intTargetValue =
+                            xmlNode.SelectSingleNodeAndCacheExpression("total", token)?.ValueAsInt ?? 0;
                         if (blnShowMessage)
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{1}{2}{3}", Environment.NewLine,
-                                                    objAttribute.DisplayAbbrev, strSpace, intTargetValue);
+                                objAttribute?.DisplayAbbrev ?? objCharacter.TranslateExtra(strNodeName, token: token),
+                                strSpace, intTargetValue);
 
                         if (xmlNode.SelectSingleNodeAndCacheExpression("natural", token) != null)
                         {
-                            return new Tuple<bool, string>(objAttribute.Value >= intTargetValue, strName);
+                            return new Tuple<bool, string>((objAttribute?.Value ?? 0) >= intTargetValue, strName);
                         }
 
-                        return new Tuple<bool, string>(objAttribute.TotalValue >= intTargetValue, strName);
+                        return new Tuple<bool, string>((objAttribute?.TotalValue ?? 0) >= intTargetValue, strName);
                         // ReSharper restore MethodHasAsyncOverload
                     }
                     else
                     {
                         // Check to see if an Attribute meets a requirement.
-                        CharacterAttrib objAttribute = await objCharacter.GetAttributeAsync(strNodeName, token: token).ConfigureAwait(false);
+                        CharacterAttrib objAttribute = await objCharacter.GetAttributeAsync(strNodeName, token: token)
+                            .ConfigureAwait(false);
                         int intTargetValue
-                            = (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("total", token).ConfigureAwait(false))?.ValueAsInt ?? 0;
+                            = xmlNode.SelectSingleNodeAndCacheExpression("total", token)?.ValueAsInt ?? 0;
                         if (blnShowMessage)
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{1}{2}{3}", Environment.NewLine,
-                                                    await objAttribute.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false), strSpace, intTargetValue);
+                                objAttribute != null
+                                    ? await objAttribute.GetDisplayAbbrevAsync(GlobalSettings.Language, token)
+                                        .ConfigureAwait(false)
+                                    : await objCharacter.TranslateExtraAsync(strNodeName, token: token)
+                                        .ConfigureAwait(false), strSpace, intTargetValue);
 
-                        if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("natural", token).ConfigureAwait(false) != null)
+                        if (xmlNode.SelectSingleNodeAndCacheExpression("natural", token) != null)
                         {
-                            return new Tuple<bool, string>(await objAttribute.GetValueAsync(token).ConfigureAwait(false) >= intTargetValue, strName);
+                            return new Tuple<bool, string>(
+                                (objAttribute != null
+                                    ? await objAttribute.GetValueAsync(token).ConfigureAwait(false)
+                                    : 0) >= intTargetValue, strName);
                         }
 
-                        return new Tuple<bool, string>(await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false) >= intTargetValue, strName);
+                        return new Tuple<bool, string>(
+                            (objAttribute != null
+                                ? await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false)
+                                : 0) >= intTargetValue, strName);
                     }
                 }
                 case "attributetotal":
@@ -853,31 +835,33 @@ namespace Chummer
                             = objCharacter.AttributeSection.ProcessAttributesInXPath(strNodeAttributes, token: token);
                         if (blnShowMessage)
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                                    strSpace,
-                                                    objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(
-                                                        strNodeAttributes,
-                                                        blnShowValues: false, token: token), intNodeVal);
+                                strSpace,
+                                objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(
+                                    strNodeAttributes,
+                                    blnShowValues: false, token: token), intNodeVal);
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(strValue, token);
                         return new Tuple<bool, string>(
-                            (blnIsSuccess ? ((double) objProcess).StandardRound() : 0) >= intNodeVal, strName);
+                            (blnIsSuccess ? ((double)objProcess).StandardRound() : 0) >= intNodeVal, strName);
                         // ReSharper restore MethodHasAsyncOverload
                     }
                     else
                     {
                         string strNodeAttributes
-                            = (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("attributes", token).ConfigureAwait(false))?.Value ?? string.Empty;
-                        int intNodeVal = (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("val", token).ConfigureAwait(false))?.ValueAsInt ?? 0;
+                            = xmlNode.SelectSingleNodeAndCacheExpression("attributes", token)?.Value ?? string.Empty;
+                        int intNodeVal = xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.ValueAsInt ?? 0;
                         // Check if the character's Attributes add up to a particular total.
-                        AttributeSection objAttributeSection = await objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                        AttributeSection objAttributeSection =
+                            await objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
                         string strValue
-                            = await objAttributeSection.ProcessAttributesInXPathAsync(strNodeAttributes, token: token).ConfigureAwait(false);
+                            = await objAttributeSection.ProcessAttributesInXPathAsync(strNodeAttributes, token: token)
+                                .ConfigureAwait(false);
                         if (blnShowMessage)
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                                    strSpace,
-                                                    await objAttributeSection.ProcessAttributesInXPathForTooltipAsync(
-                                                        strNodeAttributes,
-                                                        blnShowValues: false, token: token).ConfigureAwait(false), intNodeVal);
+                                strSpace,
+                                await objAttributeSection.ProcessAttributesInXPathForTooltipAsync(
+                                    strNodeAttributes,
+                                    blnShowValues: false, token: token).ConfigureAwait(false), intNodeVal);
                         (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(strValue, token).ConfigureAwait(false);
                         return new Tuple<bool, string>(
@@ -893,7 +877,7 @@ namespace Chummer
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? LanguageManager.GetString("Message_SelectQuality_RequireKarma", token: token)
                                 : await LanguageManager.GetStringAsync("Message_SelectQuality_RequireKarma",
-                                                                       token: token).ConfigureAwait(false),
+                                    token: token).ConfigureAwait(false),
                             strNodeInnerText);
                     return new Tuple<bool, string>(objCharacter.CareerKarma >= xmlNode.ValueAsInt, strName);
                 }
@@ -908,7 +892,10 @@ namespace Chummer
                                                           : await LanguageManager.GetStringAsync(
                                                               "Message_SelectGeneric_ChargenRestriction",
                                                               token: token).ConfigureAwait(false));
-                    return new Tuple<bool, string>(!(blnSync ? objCharacter.Created : await objCharacter.GetCreatedAsync(token).ConfigureAwait(false)), strName);
+                    return new Tuple<bool, string>(
+                        !(blnSync
+                            ? objCharacter.Created
+                            : await objCharacter.GetCreatedAsync(token).ConfigureAwait(false)), strName);
                 }
                 case "careeronly":
                 {
@@ -922,23 +909,33 @@ namespace Chummer
                                                           : await LanguageManager.GetStringAsync(
                                                               "Message_SelectGeneric_CareerOnlyRestriction",
                                                               token: token).ConfigureAwait(false));
-                    return new Tuple<bool, string>(blnSync ? objCharacter.Created : await objCharacter.GetCreatedAsync(token).ConfigureAwait(false), strName);
+                    return new Tuple<bool, string>(
+                        blnSync
+                            ? objCharacter.Created
+                            : await objCharacter.GetCreatedAsync(token).ConfigureAwait(false), strName);
                 }
                 case "critterpower":
                 {
                     // Run through all of the Powers the character has and see if the current required item exists.
-                    if (objCharacter.CritterEnabled)
+                    if (blnSync
+                            ? objCharacter.CritterEnabled
+                            : await objCharacter.GetCritterEnabledAsync(token).ConfigureAwait(false))
                     {
                         CritterPower objCritterPower = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.CritterPowers.FirstOrDefault(
-                                p => p.Name == strNodeInnerText || string.Equals(p.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                            : await (await objCharacter.GetCritterPowersAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                                p => p.Name == strNodeInnerText || string.Equals(p.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                                p => p.Name == strNodeInnerText || string.Equals(p.SourceIDString, strNodeInnerText,
+                                    StringComparison.OrdinalIgnoreCase))
+                            : await (await objCharacter.GetCritterPowersAsync(token).ConfigureAwait(false))
+                                .FirstOrDefaultAsync(
+                                    p => p.Name == strNodeInnerText || string.Equals(p.SourceIDString, strNodeInnerText,
+                                        StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
                         if (objCritterPower != null)
                         {
                             if (blnShowMessage)
-                                strName = blnSync ? objCritterPower.CurrentDisplayName : await objCritterPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                strName = blnSync
+                                    ? objCritterPower.CurrentDisplayName
+                                    : await objCritterPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                             return new Tuple<bool, string>(true, strName);
                         }
                     }
@@ -949,32 +946,19 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.LoadDataXPath("critterpowers.xml", token: token)
                             : await objCharacter.LoadDataXPathAsync("critterpowers.xml", token: token)
-                                                .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                         XPathNavigator objLoopNode
                             = objLoopDoc.TryGetNodeByNameOrId("/chummer/powers/power", strNodeInnerText);
-                        string strTranslate = objLoopNode != null
-                            ? (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objLoopNode.SelectSingleNodeAndCacheExpression("translate", token)
-                                : await objLoopNode.SelectSingleNodeAndCacheExpressionAsync("translate", token)
-                                                   .ConfigureAwait(false))?.Value
-                            : string.Empty;
+                        string strTranslate =
+                            objLoopNode?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? string.Empty;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
-                                                              ? objLoopNode != null
-                                                                  ? (blnSync
-                                                                        ? objLoopNode
-                                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                                            .SelectSingleNodeAndCacheExpression(
-                                                                                "name", token)
-                                                                        : await objLoopNode
-                                                                            .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                "name", token)
-                                                                            .ConfigureAwait(false))?.Value
-                                                                    ?? strNodeInnerText
-                                                                  : strNodeInnerText
+                                                              ? objLoopNode?
+                                                                    .SelectSingleNodeAndCacheExpression(
+                                                                        "name", token)?.Value
+                                                                ?? strNodeInnerText
                                                               : strNodeInnerText) + strSpace + '('
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
@@ -990,22 +974,19 @@ namespace Chummer
                 case "bioware":
                 {
                     int intCount
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@count", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@count", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
                     if (blnShowMessage)
                     {
                         XPathNavigator objLoopDoc = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.LoadDataXPath("bioware.xml", token: token)
                             : await objCharacter.LoadDataXPathAsync("bioware.xml", token: token).ConfigureAwait(false);
-                            string strTranslate
+                        string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/biowares/bioware[id = "
                                                           + strNodeInnerText.CleanXPath() + "]/translate")?.Value
                               ?? objLoopDoc
-                                 .SelectSingleNode("/chummer/biowares/bioware[name = " + strNodeInnerText.CleanXPath()
-                                                   + "]/translate")?.Value;
+                                  .SelectSingleNode("/chummer/biowares/bioware[name = " + strNodeInnerText.CleanXPath()
+                                      + "]/translate")?.Value;
                         strName = Environment.NewLine + '\t' + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
@@ -1018,17 +999,14 @@ namespace Chummer
                                       ? strTranslate
                                       : strNodeInnerText.IsGuid()
                                           ? objLoopDoc
-                                            .SelectSingleNode(
-                                                "/chummer/biowares/bioware[id = " + strNodeInnerText.CleanXPath()
-                                                + "]/name")?.Value ?? strNodeInnerText
+                                              .SelectSingleNode(
+                                                  "/chummer/biowares/bioware[id = " + strNodeInnerText.CleanXPath()
+                                                  + "]/name")?.Value ?? strNodeInnerText
                                           : strNodeInnerText);
                     }
 
                     string strWareNodeSelectAttribute
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@select", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
                           ?? string.Empty;
                     if (blnSync)
                     {
@@ -1054,60 +1032,62 @@ namespace Chummer
                                                            strWareNodeSelectAttribute == objCyberware.Extra)
                                                        >= intCount, strName);
                     }
+
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                        return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                                           x => x.Children, objCyberware =>
-                                                               (objCyberware.Name == strNodeInnerText
-                                                                || objCyberware.SourceIDString
-                                                                == strNodeInnerText)
-                                                               && objCyberware.SourceType
-                                                               == Improvement.ImprovementSource.Bioware
-                                                               && string.IsNullOrEmpty(
-                                                                   objCyberware.PlugsIntoModularMount), token).ConfigureAwait(false)
-                                                       >= intCount, strName);
+                        return new Tuple<bool, string>(
+                            await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
+                                x => x.GetChildrenAsync(token), async objCyberware =>
+                                    (objCyberware.Name == strNodeInnerText
+                                     || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
+                                     == strNodeInnerText)
+                                    && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
+                                    == Improvement.ImprovementSource.Bioware
+                                    && string.IsNullOrEmpty(
+                                        await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
+                                token).ConfigureAwait(false)
+                            >= intCount, strName);
                     return new Tuple<bool, string>(
                         await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.Children, objCyberware =>
+                            x => x.GetChildrenAsync(token), async objCyberware =>
                                 (objCyberware.Name == strNodeInnerText
-                                 || objCyberware.SourceIDString
+                                 || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
                                  == strNodeInnerText)
-                                && objCyberware.SourceType
+                                && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                 == Improvement.ImprovementSource.Bioware
                                 && string.IsNullOrEmpty(
-                                    objCyberware.PlugsIntoModularMount) &&
+                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
                                 strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
                         >= intCount, strName);
                 }
                 case "cyberware":
                 {
                     int intCount
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@count", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@count", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
                     if (blnShowMessage)
                     {
                         XPathNavigator objLoopDoc = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.LoadDataXPath("cyberware.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token).ConfigureAwait(false);
-                            string strTranslate
+                            : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token)
+                                .ConfigureAwait(false);
+                        string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/cyberwares/cyberware[id = "
                                                           + strNodeInnerText.CleanXPath() + "]/translate")?.Value
                               ?? objLoopDoc
-                                 .SelectSingleNode("/chummer/cyberwares/cyberware[name = "
-                                                   + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                                  .SelectSingleNode("/chummer/cyberwares/cyberware[name = "
+                                                    + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
                         strName = Environment.NewLine + '\t' + (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString("Label_Cyberware", token: token)
-                            : await LanguageManager.GetStringAsync("Label_Cyberware", token: token).ConfigureAwait(false))
+                                      // ReSharper disable once MethodHasAsyncOverload
+                                      ? LanguageManager.GetString("Label_Cyberware", token: token)
+                                      : await LanguageManager.GetStringAsync("Label_Cyberware", token: token)
+                                          .ConfigureAwait(false))
                                   + strSpace + (!string.IsNullOrEmpty(strTranslate)
                                       ? strTranslate
                                       : strNodeInnerText.IsGuid()
                                           ? objLoopDoc
-                                            .SelectSingleNode(
-                                                "/chummer/cyberwares/cyberware[id = " + strNodeInnerText.CleanXPath()
-                                                + "]/name")?.Value ?? strNodeInnerText
+                                              .SelectSingleNode(
+                                                  "/chummer/cyberwares/cyberware[id = " + strNodeInnerText.CleanXPath()
+                                                  + "]/name")?.Value ?? strNodeInnerText
                                           : strNodeInnerText);
                     }
 
@@ -1115,30 +1095,27 @@ namespace Chummer
                     {
                         if (objParent is Cyberware objCyberware)
                             return new Tuple<bool, string>(blnSync
-                                                               // ReSharper disable once MethodHasAsyncOverload
-                                                               ? objCyberware.Children.Any(
-                                                                   mod => mod.Name == strNodeInnerText
-                                                                          || string.Equals(
-                                                                              mod.SourceIDString, strNodeInnerText,
-                                                                              StringComparison.OrdinalIgnoreCase),
-                                                                   token)
-                                                               : await objCyberware.Children
-                                                                   .AnyAsync(mod => mod.Name == strNodeInnerText
-                                                                                 || string.Equals(
-                                                                                     mod.SourceIDString,
-                                                                                     strNodeInnerText,
-                                                                                     StringComparison
-                                                                                         .OrdinalIgnoreCase), token)
-                                                                   .ConfigureAwait(false)
-                                                           , strName);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? objCyberware.Children.Any(
+                                        mod => mod.Name == strNodeInnerText
+                                               || string.Equals(
+                                                   mod.SourceIDString, strNodeInnerText,
+                                                   StringComparison.OrdinalIgnoreCase),
+                                        token)
+                                    : await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
+                                        .AnyAsync(async mod => mod.Name == strNodeInnerText
+                                                         || string.Equals(
+                                                             await mod.GetSourceIDStringAsync(token).ConfigureAwait(false),
+                                                             strNodeInnerText,
+                                                             StringComparison
+                                                                 .OrdinalIgnoreCase), token)
+                                        .ConfigureAwait(false)
+                                , strName);
                         return new Tuple<bool, string>(false, strName);
                     }
 
                     string strWareNodeSelectAttribute
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@select", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
                           ?? string.Empty;
                     if (blnSync)
                     {
@@ -1164,44 +1141,47 @@ namespace Chummer
                                                            strWareNodeSelectAttribute == objCyberware.Extra)
                                                        >= intCount, strName);
                     }
+
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                        return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                                           x => x.Children, objCyberware =>
-                                                               (objCyberware.Name == strNodeInnerText
-                                                                || objCyberware.SourceIDString
-                                                                == strNodeInnerText)
-                                                               && objCyberware.SourceType
-                                                               == Improvement.ImprovementSource.Cyberware
-                                                               && string.IsNullOrEmpty(
-                                                                   objCyberware.PlugsIntoModularMount), token).ConfigureAwait(false)
-                                                       >= intCount, strName);
+                        return new Tuple<bool, string>(
+                            await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
+                                x => x.GetChildrenAsync(token), async objCyberware =>
+                                    (objCyberware.Name == strNodeInnerText
+                                     || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
+                                     == strNodeInnerText)
+                                    && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
+                                    == Improvement.ImprovementSource.Cyberware
+                                    && string.IsNullOrEmpty(
+                                        await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
+                                token).ConfigureAwait(false)
+                            >= intCount, strName);
                     return new Tuple<bool, string>(
                         await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.Children, objCyberware =>
+                            x => x.GetChildrenAsync(token), async objCyberware =>
                                 (objCyberware.Name == strNodeInnerText
-                                 || objCyberware.SourceIDString
+                                 || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
                                  == strNodeInnerText)
-                                && objCyberware.SourceType
+                                && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                 == Improvement.ImprovementSource.Cyberware
                                 && string.IsNullOrEmpty(
-                                    objCyberware.PlugsIntoModularMount) &&
+                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
                                 strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
                         >= intCount, strName);
-                    }
+                }
                 case "biowarecategory":
                 {
                     int intCount
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@count", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@count", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
                     if (blnShowMessage)
                     {
                         string strTranslate = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("bioware.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("bioware.xml", token: token).ConfigureAwait(false)).SelectSingleNode(
-                            "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objCharacter.LoadDataXPath("bioware.xml", token: token)
+                                : await objCharacter.LoadDataXPathAsync("bioware.xml", token: token)
+                                    .ConfigureAwait(false))
+                            .SelectSingleNode(
+                                "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")
+                            ?.Value;
                         strName = Environment.NewLine + '\t' + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
@@ -1219,33 +1199,30 @@ namespace Chummer
                     {
                         if (objParent is Cyberware objCyberware)
                             return new Tuple<bool, string>(blnSync
-                                                               // ReSharper disable once MethodHasAsyncOverload
-                                                               ? objCyberware.Children.Any(
-                                                                   mod => mod.Category == strNodeInnerText, token)
-                                                               : await objCyberware.Children
-                                                                   .AnyAsync(mod => mod.Category == strNodeInnerText,
-                                                                             token)
-                                                                   .ConfigureAwait(false), strName);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objCyberware.Children.Any(
+                                    mod => mod.Category == strNodeInnerText, token)
+                                : await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
+                                    .AnyAsync(mod => mod.Category == strNodeInnerText,
+                                        token)
+                                    .ConfigureAwait(false), strName);
                         return new Tuple<bool, string>(false, strName);
                     }
 
                     string strWareNodeSelectAttribute
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@select", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
                           ?? string.Empty;
                     if (blnSync)
                     {
                         if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                             return new Tuple<bool, string>(objCharacter.Cyberware.DeepCount(
-                                                               x => x.Children, objCyberware =>
-                                                                   objCyberware.Category == strNodeInnerText &&
-                                                                   objCyberware.SourceType
-                                                                   == Improvement.ImprovementSource.Bioware
-                                                                   && string.IsNullOrEmpty(
-                                                                       objCyberware.PlugsIntoModularMount)) >= intCount,
-                                                           strName);
+                                    x => x.Children, objCyberware =>
+                                        objCyberware.Category == strNodeInnerText &&
+                                        objCyberware.SourceType
+                                        == Improvement.ImprovementSource.Bioware
+                                        && string.IsNullOrEmpty(
+                                            objCyberware.PlugsIntoModularMount)) >= intCount,
+                                strName);
                         return new Tuple<bool, string>(objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
                                                            objCyberware.Category == strNodeInnerText &&
                                                            objCyberware.SourceType
@@ -1255,37 +1232,40 @@ namespace Chummer
                                                            strWareNodeSelectAttribute == objCyberware.Extra)
                                                        >= intCount, strName);
                     }
+
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                        return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                                           x => x.Children, objCyberware =>
-                                                               objCyberware.Category == strNodeInnerText &&
-                                                               objCyberware.SourceType
-                                                               == Improvement.ImprovementSource.Bioware
-                                                               && string.IsNullOrEmpty(
-                                                                   objCyberware.PlugsIntoModularMount), token).ConfigureAwait(false) >= intCount,
-                                                       strName);
-                    return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(x => x.Children, objCyberware =>
-                                                       objCyberware.Category == strNodeInnerText &&
-                                                       objCyberware.SourceType
-                                                       == Improvement.ImprovementSource.Bioware
-                                                       && string.IsNullOrEmpty(
-                                                           objCyberware.PlugsIntoModularMount) &&
-                                                       strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
-                                                   >= intCount, strName);
-                    }
+                        return new Tuple<bool, string>(
+                            await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
+                                x => x.GetChildrenAsync(token), async objCyberware =>
+                                    objCyberware.Category == strNodeInnerText &&
+                                    await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
+                                    == Improvement.ImprovementSource.Bioware
+                                    && string.IsNullOrEmpty(
+                                        await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
+                                token).ConfigureAwait(false) >= intCount,
+                            strName);
+                    return new Tuple<bool, string>(
+                        await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
+                            x => x.GetChildrenAsync(token), async objCyberware =>
+                                objCyberware.Category == strNodeInnerText &&
+                                await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
+                                == Improvement.ImprovementSource.Bioware
+                                && string.IsNullOrEmpty(
+                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
+                                strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
+                        >= intCount, strName);
+                }
                 case "cyberwarecategory":
                 {
                     int intCount
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@count", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@count", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
-                        if (blnShowMessage)
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
+                    if (blnShowMessage)
                     {
                         string strTranslate = (blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.LoadDataXPath("cyberware.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token).ConfigureAwait(false)).SelectSingleNode(
+                            : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token)
+                                .ConfigureAwait(false)).SelectSingleNode(
                             "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
                         strName = Environment.NewLine + '\t' + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
@@ -1307,29 +1287,26 @@ namespace Chummer
                                 blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? objCyberware.Children.Any(mod => mod.Category == strNodeInnerText, token)
-                                    : await objCyberware.Children
-                                                        .AnyAsync(mod => mod.Category == strNodeInnerText, token)
-                                                        .ConfigureAwait(false), strName);
+                                    : await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
+                                        .AnyAsync(mod => mod.Category == strNodeInnerText, token)
+                                        .ConfigureAwait(false), strName);
                         return new Tuple<bool, string>(false, strName);
                     }
 
                     string strWareNodeSelectAttribute
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@select", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
                           ?? string.Empty;
                     if (blnSync)
                     {
                         if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                             return new Tuple<bool, string>(objCharacter.Cyberware.DeepCount(
-                                                               x => x.Children, objCyberware =>
-                                                                   objCyberware.Category == strNodeInnerText &&
-                                                                   objCyberware.SourceType
-                                                                   == Improvement.ImprovementSource.Cyberware
-                                                                   && string.IsNullOrEmpty(
-                                                                       objCyberware.PlugsIntoModularMount)) >= intCount,
-                                                           strName);
+                                    x => x.Children, objCyberware =>
+                                        objCyberware.Category == strNodeInnerText &&
+                                        objCyberware.SourceType
+                                        == Improvement.ImprovementSource.Cyberware
+                                        && string.IsNullOrEmpty(
+                                            objCyberware.PlugsIntoModularMount)) >= intCount,
+                                strName);
                         return new Tuple<bool, string>(objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
                                                            objCyberware.Category == strNodeInnerText &&
                                                            objCyberware.SourceType
@@ -1339,43 +1316,46 @@ namespace Chummer
                                                            strWareNodeSelectAttribute == objCyberware.Extra)
                                                        >= intCount, strName);
                     }
+
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                        return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                                           x => x.Children, objCyberware =>
-                                                               objCyberware.Category == strNodeInnerText &&
-                                                               objCyberware.SourceType
-                                                               == Improvement.ImprovementSource.Cyberware
-                                                               && string.IsNullOrEmpty(
-                                                                   objCyberware.PlugsIntoModularMount), token).ConfigureAwait(false) >= intCount,
-                                                       strName);
-                    return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(x => x.Children, objCyberware =>
-                                                       objCyberware.Category == strNodeInnerText &&
-                                                       objCyberware.SourceType
-                                                       == Improvement.ImprovementSource.Cyberware
-                                                       && string.IsNullOrEmpty(
-                                                           objCyberware.PlugsIntoModularMount) &&
-                                                       strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
-                                                   >= intCount, strName);
-                    }
+                        return new Tuple<bool, string>(
+                            await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
+                                x => x.GetChildrenAsync(token), async objCyberware =>
+                                    objCyberware.Category == strNodeInnerText &&
+                                    await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
+                                    == Improvement.ImprovementSource.Cyberware
+                                    && string.IsNullOrEmpty(
+                                        await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
+                                token).ConfigureAwait(false) >= intCount,
+                            strName);
+                    return new Tuple<bool, string>(
+                        await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
+                            x => x.GetChildrenAsync(token), async objCyberware =>
+                                objCyberware.Category == strNodeInnerText &&
+                                await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
+                                == Improvement.ImprovementSource.Cyberware
+                                && string.IsNullOrEmpty(
+                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
+                                strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
+                        >= intCount, strName);
+                }
                 case "biowarecontains":
                 {
                     int intCount
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@count", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@count", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
-                        if (blnShowMessage)
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
+                    if (blnShowMessage)
                     {
                         string strTranslate
                             = (blnSync
-                                  // ReSharper disable once MethodHasAsyncOverload
-                                  ? objCharacter.LoadDataXPath("bioware.xml", token: token)
-                                  : await objCharacter.LoadDataXPathAsync("bioware.xml", token: token).ConfigureAwait(false))
-                              .SelectSingleNode(
-                                  "/chummer/biowares/bioware[name = "
-                                  + strNodeInnerText.CleanXPath() + "]/translate")
-                              ?.Value;
-                            strName = Environment.NewLine + '\t' + (blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objCharacter.LoadDataXPath("bioware.xml", token: token)
+                                : await objCharacter.LoadDataXPathAsync("bioware.xml", token: token)
+                                    .ConfigureAwait(false))
+                            .SelectSingleNode(
+                                "/chummer/biowares/bioware[name = "
+                                + strNodeInnerText.CleanXPath() + "]/translate")
+                            ?.Value;
+                        strName = Environment.NewLine + '\t' + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
                                           "Label_Bioware",
@@ -1389,10 +1369,7 @@ namespace Chummer
                     }
 
                     string strWareNodeSelectAttribute
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@select", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
                           ?? string.Empty;
                     if (blnSync)
                     {
@@ -1414,42 +1391,45 @@ namespace Chummer
                                                            strWareNodeSelectAttribute == objCyberware.Extra)
                                                        >= intCount, strName);
                     }
+
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                        return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                                           x => x.Children, objCyberware =>
-                                                               objCyberware.Name.Contains(strNodeInnerText) &&
-                                                               objCyberware.SourceType
-                                                               == Improvement.ImprovementSource.Bioware
-                                                               && string.IsNullOrEmpty(
-                                                                   objCyberware.PlugsIntoModularMount), token).ConfigureAwait(false)
-                                                       >= intCount, strName);
-                    return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(x => x.Children, objCyberware =>
-                                                       objCyberware.Name.Contains(strNodeInnerText) &&
-                                                       objCyberware.SourceType
-                                                       == Improvement.ImprovementSource.Bioware
-                                                       && string.IsNullOrEmpty(
-                                                           objCyberware.PlugsIntoModularMount) &&
-                                                       strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
-                                                   >= intCount, strName);
-                    }
+                        return new Tuple<bool, string>(
+                            await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
+                                x => x.GetChildrenAsync(token), async objCyberware =>
+                                    objCyberware.Name.Contains(strNodeInnerText) &&
+                                    await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
+                                    == Improvement.ImprovementSource.Bioware
+                                    && string.IsNullOrEmpty(
+                                        await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
+                                token).ConfigureAwait(false)
+                            >= intCount, strName);
+                    return new Tuple<bool, string>(
+                        await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
+                            x => x.GetChildrenAsync(token), async objCyberware =>
+                                objCyberware.Name.Contains(strNodeInnerText) &&
+                                await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
+                                == Improvement.ImprovementSource.Bioware
+                                && string.IsNullOrEmpty(
+                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
+                                strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
+                        >= intCount, strName);
+                }
                 case "cyberwarecontains":
                 {
                     int intCount
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@count", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@count", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
                     if (blnShowMessage)
                     {
                         string strTranslate
                             = (blnSync
-                                  // ReSharper disable once MethodHasAsyncOverload
-                                  ? objCharacter.LoadDataXPath("cyberware.xml", token: token)
-                                  : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token).ConfigureAwait(false))
-                              .SelectSingleNode(
-                                  "/chummer/cyberwares/cyberware[name = "
-                                  + strNodeInnerText.CleanXPath() + "]/translate")
-                              ?.Value;
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objCharacter.LoadDataXPath("cyberware.xml", token: token)
+                                : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token)
+                                    .ConfigureAwait(false))
+                            .SelectSingleNode(
+                                "/chummer/cyberwares/cyberware[name = "
+                                + strNodeInnerText.CleanXPath() + "]/translate")
+                            ?.Value;
                         strName = Environment.NewLine + '\t' + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
@@ -1464,10 +1444,7 @@ namespace Chummer
                     }
 
                     string strWareNodeSelectAttribute
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@select", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
                           ?? string.Empty;
                     if (blnSync)
                     {
@@ -1489,23 +1466,28 @@ namespace Chummer
                                                            strWareNodeSelectAttribute == objCyberware.Extra)
                                                        >= intCount, strName);
                     }
+
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                        return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                                           x => x.Children, objCyberware =>
-                                                               objCyberware.Name.Contains(strNodeInnerText) &&
-                                                               objCyberware.SourceType
-                                                               == Improvement.ImprovementSource.Cyberware
-                                                               && string.IsNullOrEmpty(
-                                                                   objCyberware.PlugsIntoModularMount), token).ConfigureAwait(false)
-                                                       >= intCount, strName);
-                    return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(x => x.Children, objCyberware =>
-                                                       objCyberware.Name.Contains(strNodeInnerText) &&
-                                                       objCyberware.SourceType
-                                                       == Improvement.ImprovementSource.Cyberware
-                                                       && string.IsNullOrEmpty(
-                                                           objCyberware.PlugsIntoModularMount) &&
-                                                       strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
-                                                   >= intCount, strName);
+                        return new Tuple<bool, string>(
+                            await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
+                                x => x.GetChildrenAsync(token), async objCyberware =>
+                                    objCyberware.Name.Contains(strNodeInnerText) &&
+                                    await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
+                                    == Improvement.ImprovementSource.Cyberware
+                                    && string.IsNullOrEmpty(
+                                        await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
+                                token).ConfigureAwait(false)
+                            >= intCount, strName);
+                    return new Tuple<bool, string>(
+                        await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
+                            x => x.GetChildrenAsync(token), async objCyberware =>
+                                objCyberware.Name.Contains(strNodeInnerText) &&
+                                await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
+                                == Improvement.ImprovementSource.Cyberware
+                                && string.IsNullOrEmpty(
+                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
+                                strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
+                        >= intCount, strName);
                 }
                 case "damageresistance":
                 {
@@ -1524,7 +1506,8 @@ namespace Chummer
                           // ReSharper disable once MethodHasAsyncOverload
                           + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.DamageResistance,
                               token: token).StandardRound()
-                        : await (await objCharacter.GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        : await (await objCharacter.GetAttributeAsync("BOD", token: token).ConfigureAwait(false))
+                              .GetTotalValueAsync(token).ConfigureAwait(false)
                           + (await ImprovementManager.ValueOfAsync(objCharacter,
                               Improvement.ImprovementType.DamageResistance,
                               token: token).ConfigureAwait(false)).StandardRound();
@@ -1534,37 +1517,37 @@ namespace Chummer
                     // Character must be an AI.
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, blnSync
-                                                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                                                 ? LanguageManager.GetString(
-                                                                                     "Message_SelectGeneric_HaveAttributeEnabled",
-                                                                                     token: token)
-                                                                                 : await LanguageManager.GetStringAsync(
-                                                                                     "Message_SelectGeneric_HaveAttributeEnabled",
-                                                                                     token: token).ConfigureAwait(false),
-                                                                             blnSync
-                                                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                                                 ? LanguageManager.GetString(
-                                                                                     "String_AttributeDEPLong",
-                                                                                     token: token)
-                                                                                 : await LanguageManager.GetStringAsync(
-                                                                                     "String_AttributeDEPLong",
-                                                                                     token: token).ConfigureAwait(false));
-                    return new Tuple<bool, string>(blnSync ? objCharacter.DEPEnabled : await objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false), strName);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString(
+                                    "Message_SelectGeneric_HaveAttributeEnabled",
+                                    token: token)
+                                : await LanguageManager.GetStringAsync(
+                                    "Message_SelectGeneric_HaveAttributeEnabled",
+                                    token: token).ConfigureAwait(false),
+                            blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString(
+                                    "String_AttributeDEPLong",
+                                    token: token)
+                                : await LanguageManager.GetStringAsync(
+                                    "String_AttributeDEPLong",
+                                    token: token).ConfigureAwait(false));
+                    return new Tuple<bool, string>(
+                        blnSync
+                            ? objCharacter.DEPEnabled
+                            : await objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false), strName);
 
                 case "ess":
                 {
                     string strEssNodeGradeAttributeText
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlNode.SelectSingleNodeAndCacheExpression("@grade", token)
-                              : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@grade", token).ConfigureAwait(false))?.Value
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@grade", token)?.Value
                           ?? string.Empty;
                     if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText))
                     {
                         decimal decGrade;
                         using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                        out HashSet<string>
-                                                                            setEssNodeGradeAttributeText))
+                                   out HashSet<string>
+                                       setEssNodeGradeAttributeText))
                         {
                             setEssNodeGradeAttributeText.AddRange(
                                 strEssNodeGradeAttributeText.SplitNoAlloc(
@@ -1574,7 +1557,9 @@ namespace Chummer
                                     x => x.Grade.Name.ContainsAny(setEssNodeGradeAttributeText), x => x.CalculatedESS,
                                     token)
                                 : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).SumAsync(
-                                    x => x.Grade.Name.ContainsAny(setEssNodeGradeAttributeText),
+                                    async x =>
+                                        (await x.GetGradeAsync(token).ConfigureAwait(false)).Name.ContainsAny(
+                                            setEssNodeGradeAttributeText),
                                     x => x.GetCalculatedESSAsync(token), token).ConfigureAwait(false);
                         }
 
@@ -1584,30 +1569,35 @@ namespace Chummer
                             if (blnShowMessage)
                                 strName = Environment.NewLine + '\t' +
                                           string.Format(GlobalSettings.CultureInfo, blnSync
-                                              // ReSharper disable once MethodHasAsyncOverload
-                                              ? LanguageManager.GetString(
-                                                  "Message_SelectQuality_RequireESSGradeBelow",
-                                                  token: token)
-                                              : await LanguageManager.GetStringAsync(
-                                                  "Message_SelectQuality_RequireESSGradeBelow",
-                                                  token: token).ConfigureAwait(false), strNodeInnerText, strEssNodeGradeAttributeText, decGrade.ToString(GlobalSettings.CultureInfo));
+                                                  // ReSharper disable once MethodHasAsyncOverload
+                                                  ? LanguageManager.GetString(
+                                                      "Message_SelectQuality_RequireESSGradeBelow",
+                                                      token: token)
+                                                  : await LanguageManager.GetStringAsync(
+                                                      "Message_SelectQuality_RequireESSGradeBelow",
+                                                      token: token).ConfigureAwait(false), strNodeInnerText,
+                                              strEssNodeGradeAttributeText,
+                                              decGrade.ToString(GlobalSettings.CultureInfo));
                             return new Tuple<bool, string>(decGrade
                                                            < Convert.ToDecimal(strNodeInnerText.TrimStart('-'),
-                                                                               GlobalSettings.InvariantCultureInfo), strName);
+                                                               GlobalSettings.InvariantCultureInfo), strName);
                         }
 
                         // Essence must be equal to or greater than the value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' +
                                       string.Format(GlobalSettings.CultureInfo, blnSync
-                                          // ReSharper disable once MethodHasAsyncOverload
-                                          ? LanguageManager.GetString(
-                                              "Message_SelectQuality_RequireESSAbove",
-                                              token: token)
-                                          : await LanguageManager.GetStringAsync(
-                                              "Message_SelectQuality_RequireESSAbove",
-                                              token: token).ConfigureAwait(false), strNodeInnerText, strEssNodeGradeAttributeText, decGrade.ToString(GlobalSettings.CultureInfo));
-                        return new Tuple<bool, string>(decGrade >= Convert.ToDecimal(strNodeInnerText, GlobalSettings.InvariantCultureInfo), strName);
+                                              // ReSharper disable once MethodHasAsyncOverload
+                                              ? LanguageManager.GetString(
+                                                  "Message_SelectQuality_RequireESSAbove",
+                                                  token: token)
+                                              : await LanguageManager.GetStringAsync(
+                                                  "Message_SelectQuality_RequireESSAbove",
+                                                  token: token).ConfigureAwait(false), strNodeInnerText,
+                                          strEssNodeGradeAttributeText, decGrade.ToString(GlobalSettings.CultureInfo));
+                        return new Tuple<bool, string>(
+                            decGrade >= Convert.ToDecimal(strNodeInnerText, GlobalSettings.InvariantCultureInfo),
+                            strName);
                     }
 
                     decimal decEssence = blnSync
@@ -1622,46 +1612,55 @@ namespace Chummer
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' +
                                       string.Format(GlobalSettings.CultureInfo, blnSync
-                                          // ReSharper disable once MethodHasAsyncOverload
-                                          ? LanguageManager.GetString(
-                                              "Message_SelectQuality_RequireESSBelow",
-                                              token: token)
-                                          : await LanguageManager.GetStringAsync(
-                                              "Message_SelectQuality_RequireESSBelow",
-                                              token: token).ConfigureAwait(false), strNodeInnerText, decEssence.ToString(GlobalSettings.CultureInfo));
+                                              // ReSharper disable once MethodHasAsyncOverload
+                                              ? LanguageManager.GetString(
+                                                  "Message_SelectQuality_RequireESSBelow",
+                                                  token: token)
+                                              : await LanguageManager.GetStringAsync(
+                                                  "Message_SelectQuality_RequireESSBelow",
+                                                  token: token).ConfigureAwait(false), strNodeInnerText,
+                                          decEssence.ToString(GlobalSettings.CultureInfo));
                         return new Tuple<bool, string>(decEssence
                                                        < Convert.ToDecimal(strNodeInnerText.TrimStart('-'),
-                                                                           GlobalSettings.InvariantCultureInfo), strName);
+                                                           GlobalSettings.InvariantCultureInfo), strName);
                     }
 
                     // Essence must be equal to or greater than the value.
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' +
                                   string.Format(GlobalSettings.CultureInfo, blnSync
-                                      // ReSharper disable once MethodHasAsyncOverload
-                                      ? LanguageManager.GetString(
-                                          "Message_SelectQuality_RequireESSAbove",
-                                          token: token)
-                                      : await LanguageManager.GetStringAsync(
-                                          "Message_SelectQuality_RequireESSAbove",
-                                          token: token).ConfigureAwait(false), strNodeInnerText, decEssence.ToString(GlobalSettings.CultureInfo));
+                                          // ReSharper disable once MethodHasAsyncOverload
+                                          ? LanguageManager.GetString(
+                                              "Message_SelectQuality_RequireESSAbove",
+                                              token: token)
+                                          : await LanguageManager.GetStringAsync(
+                                              "Message_SelectQuality_RequireESSAbove",
+                                              token: token).ConfigureAwait(false), strNodeInnerText,
+                                      decEssence.ToString(GlobalSettings.CultureInfo));
                     return new Tuple<bool, string>(decEssence
-                                                   >= Convert.ToDecimal(strNodeInnerText, GlobalSettings.InvariantCultureInfo), strName);
+                                                   >= Convert.ToDecimal(strNodeInnerText,
+                                                       GlobalSettings.InvariantCultureInfo), strName);
                 }
                 case "echo":
                 {
                     Metamagic objMetamagic = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.Metamagics.FirstOrDefault(
-                            x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                            x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                     StringComparison.OrdinalIgnoreCase))
                                  && x.SourceType == Improvement.ImprovementSource.Echo)
-                        : await (await objCharacter.GetMetamagicsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                            x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                 && x.SourceType == Improvement.ImprovementSource.Echo, token).ConfigureAwait(false);
+                        : await (await objCharacter.GetMetamagicsAsync(token).ConfigureAwait(false))
+                            .FirstOrDefaultAsync(
+                                x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                         StringComparison.OrdinalIgnoreCase))
+                                     && x.SourceType == Improvement.ImprovementSource.Echo,
+                                token).ConfigureAwait(false);
                     if (objMetamagic != null)
                     {
                         if (blnShowMessage)
-                            strName = blnSync ? objMetamagic.CurrentDisplayName : await objMetamagic.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            strName = blnSync
+                                ? objMetamagic.CurrentDisplayName
+                                : await objMetamagic.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         return new Tuple<bool, string>(false, strName);
                     }
 
@@ -1671,27 +1670,29 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.LoadDataXPath("echoes.xml", token: token)
                             : await objCharacter.LoadDataXPathAsync("echoes.xml", token: token).ConfigureAwait(false);
-                            string strTranslate
+                        string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/echoes/echo[id = " + strNodeInnerText.CleanXPath()
-                                                          + "]/translate")?.Value
+                                  + "]/translate")?.Value
                               ?? objLoopDoc
-                                 .SelectSingleNode("/chummer/echoes/echo[name = " + strNodeInnerText.CleanXPath()
-                                                   + "]/translate")?.Value;
-                            strName = Environment.NewLine + '\t'
-                                                          + (!string.IsNullOrEmpty(strTranslate)
-                                                              ? strTranslate
-                                                              : strNodeInnerText.IsGuid()
-                                                                  ? objLoopDoc
+                                  .SelectSingleNode("/chummer/echoes/echo[name = " + strNodeInnerText.CleanXPath()
+                                      + "]/translate")?.Value;
+                        strName = Environment.NewLine + '\t'
+                                                      + (!string.IsNullOrEmpty(strTranslate)
+                                                          ? strTranslate
+                                                          : strNodeInnerText.IsGuid()
+                                                              ? objLoopDoc
                                                                     .SelectSingleNode(
                                                                         "/chummer/echoes/echo[id = "
                                                                         + strNodeInnerText.CleanXPath() + "]/name")
                                                                     ?.Value
-                                                                    ?? strNodeInnerText
-                                                                  : strNodeInnerText) + strSpace + '('
-                                                          + (blnSync
-                                                              // ReSharper disable once MethodHasAsyncOverload
-                                                              ? LanguageManager.GetString("String_Echo", token: token)
-                                                              : await LanguageManager.GetStringAsync("String_Echo", token: token).ConfigureAwait(false)) + ')';
+                                                                ?? strNodeInnerText
+                                                              : strNodeInnerText) + strSpace + '('
+                                                      + (blnSync
+                                                          // ReSharper disable once MethodHasAsyncOverload
+                                                          ? LanguageManager.GetString("String_Echo", token: token)
+                                                          : await LanguageManager
+                                                              .GetStringAsync("String_Echo", token: token)
+                                                              .ConfigureAwait(false)) + ')';
                     }
 
                     return new Tuple<bool, string>(false, strName);
@@ -1702,13 +1703,13 @@ namespace Chummer
                     // A particular gameplay option is required.
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' + (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString(
-                                "String_GameplayOption",
-                                token: token)
-                            : await LanguageManager.GetStringAsync(
-                                "String_GameplayOption",
-                                token: token).ConfigureAwait(false))
+                                      // ReSharper disable once MethodHasAsyncOverload
+                                      ? LanguageManager.GetString(
+                                          "String_GameplayOption",
+                                          token: token)
+                                      : await LanguageManager.GetStringAsync(
+                                          "String_GameplayOption",
+                                          token: token).ConfigureAwait(false))
                                   + strSpace + '=' + strSpace + strNodeInnerText;
                     return new Tuple<bool, string>(objCharacter.SettingsKey == strNodeInnerText, strName);
                 }
@@ -1717,32 +1718,29 @@ namespace Chummer
                     Gear objGear;
                     //TODO: Probably a better way to handle minrating/rating/maxrating but eh, YAGNI.
 
-                    XPathNavigator objExactRatingNode = blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("@rating", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@rating", token).ConfigureAwait(false);
+                    XPathNavigator objExactRatingNode = xmlNode.SelectSingleNodeAndCacheExpression("@rating", token);
                     if (objExactRatingNode != null)
                     {
                         int intRating = objExactRatingNode.ValueAsInt;
                         objGear = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.Gear.FirstOrDefault(
-                                x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                         StringComparison.OrdinalIgnoreCase))
                                      && x.Rating == intRating)
                             : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                                x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                     && x.Rating == intRating, token).ConfigureAwait(false);
+                                    async x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
+                                                   strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                               && await x.GetRatingAsync(token).ConfigureAwait(false) == intRating,
+                                    token)
+                                .ConfigureAwait(false);
                     }
                     else
                     {
-                        XPathNavigator objMinRatingNode = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@minrating", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@minrating", token).ConfigureAwait(false);
-                        XPathNavigator objMaxRatingNode = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@maxrating", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@maxrating", token).ConfigureAwait(false);
+                        XPathNavigator objMinRatingNode =
+                            xmlNode.SelectSingleNodeAndCacheExpression("@minrating", token);
+                        XPathNavigator objMaxRatingNode =
+                            xmlNode.SelectSingleNodeAndCacheExpression("@maxrating", token);
                         if (objMinRatingNode != null || objMaxRatingNode != null)
                         {
                             int intMinRating = objMinRatingNode?.ValueAsInt ?? 0;
@@ -1750,51 +1748,64 @@ namespace Chummer
                             objGear = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? objCharacter.Gear.FirstOrDefault(
-                                    x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                    x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
+                                             strNodeInnerText, StringComparison.OrdinalIgnoreCase))
                                          && x.Rating >= intMinRating && x.Rating <= intMaxRating)
-                                : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                                    x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                         && x.Rating >= intMinRating && x.Rating <= intMaxRating, token).ConfigureAwait(false);
+                                : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false))
+                                    .FirstOrDefaultAsync(
+                                        async x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
+                                                       strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                                   && await x.GetRatingAsync(token).ConfigureAwait(false) >=
+                                                   intMinRating &&
+                                                   await x.GetRatingAsync(token).ConfigureAwait(false) <= intMaxRating,
+                                        token).ConfigureAwait(false);
                         }
                         else
                         {
                             objGear = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? objCharacter.Gear.FirstOrDefault(
-                                    x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                                    x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                                    x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                        StringComparison.OrdinalIgnoreCase))
+                                : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false))
+                                    .FirstOrDefaultAsync(
+                                        x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
+                                            strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
+                                    .ConfigureAwait(false);
                         }
                     }
 
                     if (objGear != null)
                     {
                         if (blnShowMessage)
-                            strName = blnSync ? objGear.CurrentDisplayNameShort : await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                            strName = blnSync
+                                ? objGear.CurrentDisplayNameShort
+                                : await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
                         return new Tuple<bool, string>(true, strName);
                     }
 
                     if (blnShowMessage)
                     {
-                            // Character needs a specific Martial Art.
-                            XPathNavigator objLoopDoc = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objCharacter.LoadDataXPath("gear.xml", token: token)
-                                : await objCharacter.LoadDataXPathAsync("gear.xml", token: token).ConfigureAwait(false);
-                            string strTranslate
+                        // Character needs a specific Martial Art.
+                        XPathNavigator objLoopDoc = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.LoadDataXPath("gear.xml", token: token)
+                            : await objCharacter.LoadDataXPathAsync("gear.xml", token: token).ConfigureAwait(false);
+                        string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/gears/gear[id = " + strNodeInnerText.CleanXPath()
-                                                          + "]/translate")?.Value
+                                  + "]/translate")?.Value
                               ?? objLoopDoc
-                                 .SelectSingleNode("/chummer/gears/gear[name = " + strNodeInnerText.CleanXPath()
-                                                   + "]/translate")?.Value;
+                                  .SelectSingleNode("/chummer/gears/gear[name = " + strNodeInnerText.CleanXPath()
+                                      + "]/translate")?.Value;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
                                                               ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/gears/gear[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                    .SelectSingleNode(
+                                                                        "/chummer/gears/gear[id = "
+                                                                        + strNodeInnerText.CleanXPath() + "]/name")
+                                                                    ?.Value
                                                                 ?? strNodeInnerText
                                                               : strNodeInnerText) + strSpace + '('
                                                       + (blnSync
@@ -1814,17 +1825,17 @@ namespace Chummer
                     // Check that clustered options are present (Magical Tradition + Skill 6, for example)
                     bool blnResult = true;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdResultName))
+                               out StringBuilder sbdResultName))
                     {
                         sbdResultName.AppendLine().Append('\t')
-                                     .Append(blnSync
-                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                 ? LanguageManager.GetString(
-                                                     "Message_SelectQuality_AllOf",
-                                                     token: token)
-                                                 : await LanguageManager.GetStringAsync(
-                                                     "Message_SelectQuality_AllOf",
-                                                     token: token).ConfigureAwait(false));
+                            .Append(blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString(
+                                    "Message_SelectQuality_AllOf",
+                                    token: token)
+                                : await LanguageManager.GetStringAsync(
+                                    "Message_SelectQuality_AllOf",
+                                    token: token).ConfigureAwait(false));
                         foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
                         {
                             (bool blnLoopResult, string strLoopResult) = blnSync
@@ -1832,14 +1843,15 @@ namespace Chummer
                                     () => xmlChildNode.TestNodeRequirementsAsync(
                                         true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token), token)
                                 : await xmlChildNode.TestNodeRequirementsAsync(
-                                    false, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token).ConfigureAwait(false);
+                                        false, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token)
+                                    .ConfigureAwait(false);
                             blnResult = blnResult && blnLoopResult;
                             if (!blnResult && !blnShowMessage)
                                 break;
                             if (!blnLoopResult)
                                 sbdResultName.Append(
                                     strLoopResult.Replace(Environment.NewLine + '\t',
-                                                          Environment.NewLine + '\t' + '\t'));
+                                        Environment.NewLine + '\t' + '\t'));
                         }
 
                         if (blnShowMessage)
@@ -1853,17 +1865,17 @@ namespace Chummer
                     // Check that one of the clustered options are present
                     bool blnResult = false;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdResultName))
+                               out StringBuilder sbdResultName))
                     {
                         sbdResultName.AppendLine().Append('\t')
-                                     .Append(blnSync
-                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                 ? LanguageManager.GetString(
-                                                     "Message_SelectQuality_OneOf",
-                                                     token: token)
-                                                 : await LanguageManager.GetStringAsync(
-                                                     "Message_SelectQuality_OneOf",
-                                                     token: token).ConfigureAwait(false));
+                            .Append(blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString(
+                                    "Message_SelectQuality_OneOf",
+                                    token: token)
+                                : await LanguageManager.GetStringAsync(
+                                    "Message_SelectQuality_OneOf",
+                                    token: token).ConfigureAwait(false));
                         foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
                         {
                             (bool blnLoopResult, string strLoopResult) = blnSync
@@ -1871,13 +1883,14 @@ namespace Chummer
                                     () => xmlChildNode.TestNodeRequirementsAsync(
                                         true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token), token)
                                 : await xmlChildNode.TestNodeRequirementsAsync(
-                                    false, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token).ConfigureAwait(false);
-                                blnResult = blnLoopResult || blnResult;
+                                        false, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token)
+                                    .ConfigureAwait(false);
+                            blnResult = blnLoopResult || blnResult;
                             if (blnResult && !blnShowMessage)
                                 break;
                             sbdResultName.Append(
                                 strLoopResult.Replace(Environment.NewLine + '\t',
-                                                      Environment.NewLine + '\t' + '\t'));
+                                    Environment.NewLine + '\t' + '\t'));
                         }
 
                         if (blnShowMessage)
@@ -1891,16 +1904,18 @@ namespace Chummer
                     // Character's initiate grade must be higher than or equal to the required value.
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' + (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString(
-                                "String_InitiateGrade",
-                                token: token)
-                            : await LanguageManager.GetStringAsync(
-                                "String_InitiateGrade",
-                                token: token).ConfigureAwait(false))
+                                      // ReSharper disable once MethodHasAsyncOverload
+                                      ? LanguageManager.GetString(
+                                          "String_InitiateGrade",
+                                          token: token)
+                                      : await LanguageManager.GetStringAsync(
+                                          "String_InitiateGrade",
+                                          token: token).ConfigureAwait(false))
                                   + strSpace + '≥' + strSpace + strNodeInnerText;
                     return new Tuple<bool, string>(
-                        (blnSync ? objCharacter.InitiateGrade : await objCharacter.GetInitiateGradeAsync(token).ConfigureAwait(false))
+                        (blnSync
+                            ? objCharacter.InitiateGrade
+                            : await objCharacter.GetInitiateGradeAsync(token).ConfigureAwait(false))
                         >= Convert.ToInt32(strNodeInnerText, GlobalSettings.InvariantCultureInfo), strName);
                 }
                 case "martialart":
@@ -1908,37 +1923,44 @@ namespace Chummer
                     MartialArt objMartialArt = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.MartialArts.FirstOrDefault(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                        : await (await objCharacter.GetMartialArtsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                StringComparison.OrdinalIgnoreCase))
+                        : await (await objCharacter.GetMartialArtsAsync(token).ConfigureAwait(false))
+                            .FirstOrDefaultAsync(
+                                x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                    StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
                     if (objMartialArt != null)
                     {
                         if (blnShowMessage)
-                            strName = blnSync ? objMartialArt.CurrentDisplayName : await objMartialArt.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            strName = blnSync
+                                ? objMartialArt.CurrentDisplayName
+                                : await objMartialArt.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         return new Tuple<bool, string>(true, strName);
                     }
 
                     if (blnShowMessage)
                     {
-                            // Character needs a specific Martial Art.
-                            XPathNavigator objLoopDoc = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objCharacter.LoadDataXPath("martialarts.xml", token: token)
-                                : await objCharacter.LoadDataXPathAsync("martialarts.xml", token: token).ConfigureAwait(false);
-                            string strTranslate
+                        // Character needs a specific Martial Art.
+                        XPathNavigator objLoopDoc = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.LoadDataXPath("martialarts.xml", token: token)
+                            : await objCharacter.LoadDataXPathAsync("martialarts.xml", token: token)
+                                .ConfigureAwait(false);
+                        string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/martialarts/martialart[id = "
                                                           + strNodeInnerText.CleanXPath() + "]/translate")?.Value
                               ?? objLoopDoc
-                                 .SelectSingleNode("/chummer/martialarts/martialart[name = "
-                                                   + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                                  .SelectSingleNode("/chummer/martialarts/martialart[name = "
+                                                    + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
                                                               ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/martialarts/martialart[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                    .SelectSingleNode(
+                                                                        "/chummer/martialarts/martialart[id = "
+                                                                        + strNodeInnerText.CleanXPath() + "]/name")
+                                                                    ?.Value
                                                                 ?? strNodeInnerText
                                                               : strNodeInnerText) + strSpace + '('
                                                       + (blnSync
@@ -1959,54 +1981,63 @@ namespace Chummer
                     if (blnSync)
                     {
                         objMartialArtTechnique = objCharacter.MartialArts.SelectMany(x => x.Techniques)
-                                                             .FirstOrDefault(
-                                                                 x => x.Name == strNodeInnerText
-                                                                      || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase));
+                            .FirstOrDefault(
+                                x => x.Name == strNodeInnerText
+                                     || string.Equals(x.SourceIDString, strNodeInnerText,
+                                         StringComparison.OrdinalIgnoreCase));
                     }
                     else
                     {
-                        await (await objCharacter.GetMartialArtsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(async x =>
-                        {
-                            MartialArtTechnique objLoopTechnique
-                                = await x.Techniques.FirstOrDefaultAsync(
-                                    y => y.Name == strNodeInnerText || string.Equals(y.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
-                            if (objLoopTechnique != null)
+                        await (await objCharacter.GetMartialArtsAsync(token).ConfigureAwait(false))
+                            .ForEachWithBreakAsync(async x =>
                             {
-                                objMartialArtTechnique = objLoopTechnique;
-                                return false;
-                            }
+                                MartialArtTechnique objLoopTechnique
+                                    = await x.Techniques.FirstOrDefaultAsync(
+                                            y => y.Name == strNodeInnerText || string.Equals(y.SourceIDString,
+                                                strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
+                                        .ConfigureAwait(false);
+                                if (objLoopTechnique != null)
+                                {
+                                    objMartialArtTechnique = objLoopTechnique;
+                                    return false;
+                                }
 
-                            return true;
-                        }, token).ConfigureAwait(false);
+                                return true;
+                            }, token).ConfigureAwait(false);
                     }
+
                     if (objMartialArtTechnique != null)
                     {
                         if (blnShowMessage)
-                            strName = blnSync ? objMartialArtTechnique.CurrentDisplayName : await objMartialArtTechnique.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            strName = blnSync
+                                ? objMartialArtTechnique.CurrentDisplayName
+                                : await objMartialArtTechnique.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         return new Tuple<bool, string>(true, strName);
                     }
 
                     if (blnShowMessage)
                     {
-                            // Character needs a specific Martial Arts technique.
-                            XPathNavigator objLoopDoc = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objCharacter.LoadDataXPath("martialarts.xml", token: token)
-                                : await objCharacter.LoadDataXPathAsync("martialarts.xml", token: token).ConfigureAwait(false);
-                            string strTranslate
+                        // Character needs a specific Martial Arts technique.
+                        XPathNavigator objLoopDoc = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.LoadDataXPath("martialarts.xml", token: token)
+                            : await objCharacter.LoadDataXPathAsync("martialarts.xml", token: token)
+                                .ConfigureAwait(false);
+                        string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/techniques/technique[id = "
                                                           + strNodeInnerText.CleanXPath() + "]/translate")?.Value
                               ?? objLoopDoc
-                                 .SelectSingleNode("/chummer/techniques/technique[name = "
-                                                   + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                                  .SelectSingleNode("/chummer/techniques/technique[name = "
+                                                    + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
                                                               ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/techniques/technique[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                    .SelectSingleNode(
+                                                                        "/chummer/techniques/technique[id = "
+                                                                        + strNodeInnerText.CleanXPath() + "]/name")
+                                                                    ?.Value
                                                                 ?? strNodeInnerText
                                                               : strNodeInnerText) + strSpace + '('
                                                       + (blnSync
@@ -2027,13 +2058,18 @@ namespace Chummer
                     Metamagic objMetamagic = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.Metamagics.FirstOrDefault(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                        : await (await objCharacter.GetMetamagicsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                StringComparison.OrdinalIgnoreCase))
+                        : await (await objCharacter.GetMetamagicsAsync(token).ConfigureAwait(false))
+                            .FirstOrDefaultAsync(
+                                x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                    StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
                     if (objMetamagic != null)
                     {
                         if (blnShowMessage)
-                            strName = blnSync ? objMetamagic.CurrentDisplayName : await objMetamagic.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            strName = blnSync
+                                ? objMetamagic.CurrentDisplayName
+                                : await objMetamagic.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         return new Tuple<bool, string>(true, strName);
                     }
 
@@ -2042,21 +2078,23 @@ namespace Chummer
                         XPathNavigator objLoopDoc = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.LoadDataXPath("metamagic.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("metamagic.xml", token: token).ConfigureAwait(false);
-                            string strTranslate
+                            : await objCharacter.LoadDataXPathAsync("metamagic.xml", token: token)
+                                .ConfigureAwait(false);
+                        string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/metamagics/metamagic[id = "
                                                           + strNodeInnerText.CleanXPath() + "]/translate")?.Value
                               ?? objLoopDoc
-                                 .SelectSingleNode("/chummer/metamagics/metamagic[name = "
-                                                   + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                                  .SelectSingleNode("/chummer/metamagics/metamagic[name = "
+                                                    + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
                                                               ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/metamagics/metamagic[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                    .SelectSingleNode(
+                                                                        "/chummer/metamagics/metamagic[id = "
+                                                                        + strNodeInnerText.CleanXPath() + "]/name")
+                                                                    ?.Value
                                                                 ?? strNodeInnerText
                                                               : strNodeInnerText) + strSpace + '('
                                                       + (blnSync
@@ -2084,22 +2122,21 @@ namespace Chummer
                         }
 
                         XPathNavigator xmlMetamagicDoc
-                            = blnSync
+                            = (blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? objCharacter.LoadDataXPath("metamagic.xml", token: token)
-                                              // ReSharper disable once MethodHasAsyncOverload
-                                              .SelectSingleNodeAndCacheExpression("/chummer", token)
-                                : await (await objCharacter.LoadDataXPathAsync("metamagic.xml", token: token).ConfigureAwait(false))
-                                        .SelectSingleNodeAndCacheExpressionAsync("/chummer", token).ConfigureAwait(false);
+                                : await objCharacter.LoadDataXPathAsync("metamagic.xml", token: token)
+                                    .ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer", token);
                         if (blnShowMessage)
                         {
                             string strTranslateArt
                                 = xmlMetamagicDoc
-                                  ?.SelectSingleNode("arts/art[id = " + strNodeInnerText.CleanXPath() + "]/translate")
-                                  ?.Value
+                                      ?.SelectSingleNode("arts/art[id = " + strNodeInnerText.CleanXPath() +
+                                                         "]/translate")
+                                      ?.Value
                                   ?? xmlMetamagicDoc
-                                     ?.SelectSingleNode("arts/art[name = " + strNodeInnerText.CleanXPath()
-                                                                           + "]/translate")?.Value;
+                                      ?.SelectSingleNode("arts/art[name = " + strNodeInnerText.CleanXPath()
+                                                                            + "]/translate")?.Value;
                             strName = Environment.NewLine + '\t'
                                                           + (!string.IsNullOrEmpty(strTranslateArt)
                                                               ? strTranslateArt
@@ -2136,14 +2173,18 @@ namespace Chummer
                     Art objArt = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.Arts.FirstOrDefault(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                StringComparison.OrdinalIgnoreCase))
                         : await (await objCharacter.GetArtsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
                     if (objArt != null)
                     {
-                            if (blnShowMessage)
-                                strName = blnSync ? objArt.CurrentDisplayName : await objArt.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                            return new Tuple<bool, string>(true, strName);
+                        if (blnShowMessage)
+                            strName = blnSync
+                                ? objArt.CurrentDisplayName
+                                : await objArt.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        return new Tuple<bool, string>(true, strName);
                     }
 
                     // In some cases, we want to proxy metamagics for arts. If we haven't found a match yet, check it here.
@@ -2151,13 +2192,18 @@ namespace Chummer
                     {
                         Metamagic objMetamagic = blnSync
                             ? objCharacter.Metamagics.FirstOrDefault(
-                                x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                            : await (await objCharacter.GetMetamagicsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                                x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                                x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                    StringComparison.OrdinalIgnoreCase))
+                            : await (await objCharacter.GetMetamagicsAsync(token).ConfigureAwait(false))
+                                .FirstOrDefaultAsync(
+                                    x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                        StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
                         if (objMetamagic != null)
                         {
                             if (blnShowMessage)
-                                strName = blnSync ? objMetamagic.CurrentDisplayName : await objMetamagic.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                strName = blnSync
+                                    ? objMetamagic.CurrentDisplayName
+                                    : await objMetamagic.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                             return new Tuple<bool, string>(true, strName);
                         }
                     }
@@ -2168,20 +2214,20 @@ namespace Chummer
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.LoadDataXPath("metamagic.xml", token: token)
                         : await objCharacter.LoadDataXPathAsync("metamagic.xml", token: token).ConfigureAwait(false);
-                        string strTranslate
+                    string strTranslate
                         = objLoopDoc.SelectSingleNode("/chummer/arts/art[id = " + strNodeInnerText.CleanXPath()
-                                                      + "]/translate")?.Value
+                              + "]/translate")?.Value
                           ?? objLoopDoc
-                             .SelectSingleNode("/chummer/arts/art[name = " + strNodeInnerText.CleanXPath()
-                                                                           + "]/translate")?.Value;
+                              .SelectSingleNode("/chummer/arts/art[name = " + strNodeInnerText.CleanXPath()
+                                                                            + "]/translate")?.Value;
                     strName = Environment.NewLine + '\t'
                                                   + (!string.IsNullOrEmpty(strTranslate)
                                                       ? strTranslate
                                                       : strNodeInnerText.IsGuid()
                                                           ? objLoopDoc
-                                                            .SelectSingleNode(
-                                                                "/chummer/arts/art[id = "
-                                                                + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                .SelectSingleNode(
+                                                                    "/chummer/arts/art[id = "
+                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
                                                             ?? strNodeInnerText
                                                           : strNodeInnerText) + strSpace + '('
                                                   + (blnSync
@@ -2199,43 +2245,48 @@ namespace Chummer
                     // Character must be Awakened.
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, blnSync
-                                                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                                                 ? LanguageManager.GetString(
-                                                                                     "Message_SelectGeneric_HaveAttributeEnabled",
-                                                                                     token: token)
-                                                                                 : await LanguageManager.GetStringAsync(
-                                                                                     "Message_SelectGeneric_HaveAttributeEnabled",
-                                                                                     token: token).ConfigureAwait(false),
-                                                                             blnSync
-                                                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                                                 ? LanguageManager.GetString(
-                                                                                     "String_AttributeMAGLong",
-                                                                                     token: token)
-                                                                                 : await LanguageManager.GetStringAsync(
-                                                                                     "String_AttributeMAGLong",
-                                                                                     token: token).ConfigureAwait(false));
-                    return new Tuple<bool, string>(blnSync ? objCharacter.MAGEnabled : await objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false), strName);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString(
+                                    "Message_SelectGeneric_HaveAttributeEnabled",
+                                    token: token)
+                                : await LanguageManager.GetStringAsync(
+                                    "Message_SelectGeneric_HaveAttributeEnabled",
+                                    token: token).ConfigureAwait(false),
+                            blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString(
+                                    "String_AttributeMAGLong",
+                                    token: token)
+                                : await LanguageManager.GetStringAsync(
+                                    "String_AttributeMAGLong",
+                                    token: token).ConfigureAwait(false));
+                    return new Tuple<bool, string>(
+                        blnSync
+                            ? objCharacter.MAGEnabled
+                            : await objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false), strName);
                 }
                 case "metatype":
                 {
                     if (blnShowMessage)
                     {
-                            string strXPathFilter = "/chummer/metatypes/metatype[name = "
+                        string strXPathFilter = "/chummer/metatypes/metatype[name = "
                                                 + strNodeInnerText.CleanXPath() + " or id = "
                                                 + strNodeInnerText.CleanXPath() + "]/translate";
                         // Check the Metatype restriction.
                         XPathNavigator objLoopDoc = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.LoadDataXPath("metatypes.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("metatypes.xml", token: token).ConfigureAwait(false);
-                            string strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
+                            : await objCharacter.LoadDataXPathAsync("metatypes.xml", token: token)
+                                .ConfigureAwait(false);
+                        string strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
                         if (string.IsNullOrEmpty(strTranslate))
                         {
                             objLoopDoc = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? objCharacter.LoadDataXPath("critters.xml", token: token)
-                                : await objCharacter.LoadDataXPathAsync("critters.xml", token: token).ConfigureAwait(false);
-                                strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
+                                : await objCharacter.LoadDataXPathAsync("critters.xml", token: token)
+                                    .ConfigureAwait(false);
+                            strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
                         }
 
                         strName = Environment.NewLine + '\t'
@@ -2243,10 +2294,10 @@ namespace Chummer
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
                                                               ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/metatypes/metatype[id = "
-                                                                    + strNodeInnerText.CleanXPath()
-                                                                    + "]/name")?.Value ?? strNodeInnerText
+                                                                  .SelectSingleNode(
+                                                                      "/chummer/metatypes/metatype[id = "
+                                                                      + strNodeInnerText.CleanXPath()
+                                                                      + "]/name")?.Value ?? strNodeInnerText
                                                               : strNodeInnerText) + strSpace + '('
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
@@ -2259,7 +2310,8 @@ namespace Chummer
                     }
 
                     return new Tuple<bool, string>(strNodeInnerText == objCharacter.Metatype
-                                                   || strNodeInnerText == objCharacter.MetatypeGuid.ToString("D"), strName);
+                                                   || strNodeInnerText == objCharacter.MetatypeGuid.ToString("D",
+                                                       GlobalSettings.InvariantCultureInfo), strName);
                 }
                 case "metatypecategory":
                 {
@@ -2267,21 +2319,24 @@ namespace Chummer
                     {
                         string strXPathFilter = "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath()
                             + "]/@translate";
-                            // Check the Metatype Category restriction.
-                            XPathNavigator objLoopDoc = blnSync
+                        // Check the Metatype Category restriction.
+                        XPathNavigator objLoopDoc = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.LoadDataXPath("metatypes.xml", token: token)
+                            : await objCharacter.LoadDataXPathAsync("metatypes.xml", token: token)
+                                .ConfigureAwait(false);
+                        string strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
+                        if (string.IsNullOrEmpty(strTranslate))
+                        {
+                            objLoopDoc = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
-                                ? objCharacter.LoadDataXPath("metatypes.xml", token: token)
-                                : await objCharacter.LoadDataXPathAsync("metatypes.xml", token: token).ConfigureAwait(false);
-                            string strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
-                            if (string.IsNullOrEmpty(strTranslate))
-                            {
-                                objLoopDoc = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? objCharacter.LoadDataXPath("critters.xml", token: token)
-                                    : await objCharacter.LoadDataXPathAsync("critters.xml", token: token).ConfigureAwait(false);
-                                strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
-                            }
-                            strName = Environment.NewLine + '\t'
+                                ? objCharacter.LoadDataXPath("critters.xml", token: token)
+                                : await objCharacter.LoadDataXPathAsync("critters.xml", token: token)
+                                    .ConfigureAwait(false);
+                            strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
+                        }
+
+                        strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText) + strSpace + '('
@@ -2304,58 +2359,65 @@ namespace Chummer
                         string strXPathFilter = "/chummer/metatypes/metatype/metavariants/metavariant[name = "
                                                 + strNodeInnerText.CleanXPath() + " or id = "
                                                 + strNodeInnerText.CleanXPath() + "]/translate";
-                            // Check the Metavariant restriction.
-                            XPathNavigator objLoopDoc = blnSync
+                        // Check the Metavariant restriction.
+                        XPathNavigator objLoopDoc = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.LoadDataXPath("metatypes.xml", token: token)
+                            : await objCharacter.LoadDataXPathAsync("metatypes.xml", token: token)
+                                .ConfigureAwait(false);
+                        string strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
+                        if (string.IsNullOrEmpty(strTranslate))
+                        {
+                            objLoopDoc = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
-                                ? objCharacter.LoadDataXPath("metatypes.xml", token: token)
-                                : await objCharacter.LoadDataXPathAsync("metatypes.xml", token: token).ConfigureAwait(false);
-                            string strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
-                            if (string.IsNullOrEmpty(strTranslate))
-                            {
-                                objLoopDoc = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? objCharacter.LoadDataXPath("critters.xml", token: token)
-                                    : await objCharacter.LoadDataXPathAsync("critters.xml", token: token).ConfigureAwait(false);
-                                strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
-                            }
+                                ? objCharacter.LoadDataXPath("critters.xml", token: token)
+                                : await objCharacter.LoadDataXPathAsync("critters.xml", token: token)
+                                    .ConfigureAwait(false);
+                            strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
+                        }
 
-                            strName = Environment.NewLine + '\t'
-                                                          + (!string.IsNullOrEmpty(strTranslate)
-                                                              ? strTranslate
-                                                              : strNodeInnerText.IsGuid()
-                                                                  ? objLoopDoc
-                                                                    .SelectSingleNode(
-                                                                        "/chummer/metatypes/metatype/metavariants/metavariant[id = "
-                                                                        + strNodeInnerText.CleanXPath()
-                                                                        + "]/name")?.Value ?? strNodeInnerText
-                                                                  : strNodeInnerText) + strSpace + '('
-                                                          + (blnSync
-                                                              // ReSharper disable once MethodHasAsyncOverload
-                                                              ? LanguageManager.GetString(
-                                                                  "String_Metavariant",
-                                                                  token: token)
-                                                              : await LanguageManager.GetStringAsync(
-                                                                  "String_Metavariant",
-                                                                  token: token).ConfigureAwait(false)) + ')';
+                        strName = Environment.NewLine + '\t'
+                                                      + (!string.IsNullOrEmpty(strTranslate)
+                                                          ? strTranslate
+                                                          : strNodeInnerText.IsGuid()
+                                                              ? objLoopDoc
+                                                                  .SelectSingleNode(
+                                                                      "/chummer/metatypes/metatype/metavariants/metavariant[id = "
+                                                                      + strNodeInnerText.CleanXPath()
+                                                                      + "]/name")?.Value ?? strNodeInnerText
+                                                              : strNodeInnerText) + strSpace + '('
+                                                      + (blnSync
+                                                          // ReSharper disable once MethodHasAsyncOverload
+                                                          ? LanguageManager.GetString(
+                                                              "String_Metavariant",
+                                                              token: token)
+                                                          : await LanguageManager.GetStringAsync(
+                                                              "String_Metavariant",
+                                                              token: token).ConfigureAwait(false)) + ')';
                     }
 
                     return new Tuple<bool, string>(strNodeInnerText == objCharacter.Metavariant
-                                                   || strNodeInnerText == objCharacter.MetavariantGuid.ToString("D"), strName);
+                                                   || strNodeInnerText == objCharacter.MetavariantGuid.ToString("D",
+                                                       GlobalSettings.InvariantCultureInfo), strName);
                 }
                 case "nuyen":
                 {
                     // Character's nuyen must be higher than or equal to the required value.
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' + (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString(
-                                "String_Nuyen",
-                                token: token)
-                            : await LanguageManager.GetStringAsync(
-                                "String_Nuyen",
-                                token: token).ConfigureAwait(false)) + strSpace
+                                      // ReSharper disable once MethodHasAsyncOverload
+                                      ? LanguageManager.GetString(
+                                          "String_Nuyen",
+                                          token: token)
+                                      : await LanguageManager.GetStringAsync(
+                                          "String_Nuyen",
+                                          token: token).ConfigureAwait(false)) + strSpace
                                   + '≥' + strSpace + strNodeInnerText;
-                    return new Tuple<bool, string>(objCharacter.Nuyen >= xmlNode.ValueAsInt, strName);
+                    return new Tuple<bool, string>(
+                        (blnSync
+                            ? objCharacter.Nuyen
+                            : await objCharacter.GetNuyenAsync(token).ConfigureAwait(false)) >= xmlNode.ValueAsInt,
+                        strName);
                 }
                 case "onlyprioritygiven":
                 {
@@ -2369,18 +2431,29 @@ namespace Chummer
                                                           : await LanguageManager.GetStringAsync(
                                                               "Message_SelectGeneric_PriorityRestriction",
                                                               token: token).ConfigureAwait(false));
-                    return new Tuple<bool, string>(objCharacter.EffectiveBuildMethodUsesPriorityTables, strName);
+                    return new Tuple<bool, string>(
+                        blnSync
+                            ? objCharacter.EffectiveBuildMethodUsesPriorityTables
+                            : await objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync(token)
+                                .ConfigureAwait(false), strName);
                 }
                 case "power":
                 {
                     // Run through all of the Powers the character has and see if the current required item exists.
                     Power objPower = blnSync
-                        ? objCharacter.Powers.FirstOrDefault(p => p.Name == strNodeInnerText || string.Equals(p.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                        : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(p => p.Name == strNodeInnerText || string.Equals(p.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                        ? objCharacter.Powers.FirstOrDefault(p =>
+                            p.Name == strNodeInnerText || string.Equals(p.SourceIDString, strNodeInnerText,
+                                StringComparison.OrdinalIgnoreCase))
+                        : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false))
+                            .FirstOrDefaultAsync(
+                                p => p.Name == strNodeInnerText || string.Equals(p.SourceIDString, strNodeInnerText,
+                                    StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
                     if (objPower != null)
                     {
                         if (blnShowMessage)
-                            strName = blnSync ? objPower.CurrentDisplayName : await objPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            strName = blnSync
+                                ? objPower.CurrentDisplayName
+                                : await objPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         return new Tuple<bool, string>(true, strName);
                     }
 
@@ -2390,20 +2463,21 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.LoadDataXPath("powers.xml", token: token)
                             : await objCharacter.LoadDataXPathAsync("powers.xml", token: token).ConfigureAwait(false);
-                            string strTranslate
+                        string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/powers/power[id = " + strNodeInnerText.CleanXPath()
-                                                          + "]/translate")?.Value
+                                  + "]/translate")?.Value
                               ?? objLoopDoc
-                                 .SelectSingleNode("/chummer/powers/power[name = " + strNodeInnerText.CleanXPath()
-                                                   + "]/translate")?.Value;
+                                  .SelectSingleNode("/chummer/powers/power[name = " + strNodeInnerText.CleanXPath()
+                                      + "]/translate")?.Value;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
                                                               ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/powers/power[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                    .SelectSingleNode(
+                                                                        "/chummer/powers/power[id = "
+                                                                        + strNodeInnerText.CleanXPath() + "]/name")
+                                                                    ?.Value
                                                                 ?? strNodeInnerText
                                                               : strNodeInnerText) + strSpace + '('
                                                       + (blnSync
@@ -2423,9 +2497,13 @@ namespace Chummer
                     bool blnResult = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.AIPrograms.Any(p => p.Name == strNodeInnerText
-                                                           || string.Equals(p.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
-                        : await (await objCharacter.GetAIProgramsAsync(token).ConfigureAwait(false)).AnyAsync(p => p.Name == strNodeInnerText
-                                                           || string.Equals(p.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                                                           || string.Equals(p.SourceIDString, strNodeInnerText,
+                                                               StringComparison.OrdinalIgnoreCase), token)
+                        : await (await objCharacter.GetAIProgramsAsync(token).ConfigureAwait(false)).AnyAsync(p =>
+                                p.Name == strNodeInnerText
+                                || string.Equals(p.SourceIDString, strNodeInnerText,
+                                    StringComparison.OrdinalIgnoreCase),
+                            token).ConfigureAwait(false);
                     // Character needs a specific Program.
                     if (!blnShowMessage)
                         return new Tuple<bool, string>(blnResult, strName);
@@ -2433,20 +2511,20 @@ namespace Chummer
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.LoadDataXPath("programs.xml", token: token)
                         : await objCharacter.LoadDataXPathAsync("programs.xml", token: token).ConfigureAwait(false);
-                        string strTranslate
+                    string strTranslate
                         = objLoopDoc.SelectSingleNode("/chummer/programs/program[id = " + strNodeInnerText.CleanXPath()
-                                                      + "]/translate")?.Value
+                              + "]/translate")?.Value
                           ?? objLoopDoc
-                             .SelectSingleNode("/chummer/programs/program[name = " + strNodeInnerText.CleanXPath()
-                                               + "]/translate")?.Value;
+                              .SelectSingleNode("/chummer/programs/program[name = " + strNodeInnerText.CleanXPath()
+                                  + "]/translate")?.Value;
                     strName = Environment.NewLine + '\t'
                                                   + (!string.IsNullOrEmpty(strTranslate)
                                                       ? strTranslate
                                                       : strNodeInnerText.IsGuid()
                                                           ? objLoopDoc
-                                                            .SelectSingleNode(
-                                                                "/chummer/programs/program[id = "
-                                                                + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                .SelectSingleNode(
+                                                                    "/chummer/programs/program[id = "
+                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
                                                             ?? strNodeInnerText
                                                           : strNodeInnerText) + strSpace + '('
                                                   + (blnSync
@@ -2463,31 +2541,37 @@ namespace Chummer
                 case "quality":
                 {
                     string strExtra
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@extra", token).ConfigureAwait(false))?.Value;
-                        Quality objQuality = blnSync
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)?.Value;
+                    Quality objQuality = blnSync
                         ? !string.IsNullOrEmpty(strExtra)
                             ? objCharacter.Qualities.FirstOrDefault(
-                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText,
+                                         StringComparison.OrdinalIgnoreCase))
                                      && q.Extra == strExtra && q.Name != strIgnoreQuality
                                      && q.SourceIDString != strIgnoreQuality)
                             : objCharacter.Qualities.FirstOrDefault(
-                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText,
+                                         StringComparison.OrdinalIgnoreCase))
                                      && q.Name != strIgnoreQuality && q.SourceIDString != strIgnoreQuality)
                         : !string.IsNullOrEmpty(strExtra)
-                            ? await (await objCharacter.GetQualitiesAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                     && q.Extra == strExtra && q.Name != strIgnoreQuality
-                                     && q.SourceIDString != strIgnoreQuality, token).ConfigureAwait(false)
-                            : await (await objCharacter.GetQualitiesAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                     && q.Name != strIgnoreQuality && q.SourceIDString != strIgnoreQuality, token).ConfigureAwait(false);
+                            ? await (await objCharacter.GetQualitiesAsync(token).ConfigureAwait(false))
+                                .FirstOrDefaultAsync(
+                                    q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString,
+                                             strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                         && q.Extra == strExtra && q.Name != strIgnoreQuality
+                                         && q.SourceIDString != strIgnoreQuality, token).ConfigureAwait(false)
+                            : await (await objCharacter.GetQualitiesAsync(token).ConfigureAwait(false))
+                                .FirstOrDefaultAsync(
+                                    q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString,
+                                             strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                         && q.Name != strIgnoreQuality && q.SourceIDString != strIgnoreQuality, token)
+                                .ConfigureAwait(false);
                     if (objQuality != null)
                     {
                         if (blnShowMessage)
-                            strName = blnSync ? objQuality.CurrentDisplayName : await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            strName = blnSync
+                                ? objQuality.CurrentDisplayName
+                                : await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         return new Tuple<bool, string>(true, strName);
                     }
 
@@ -2497,20 +2581,20 @@ namespace Chummer
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.LoadDataXPath("qualities.xml", token: token)
                         : await objCharacter.LoadDataXPathAsync("qualities.xml", token: token).ConfigureAwait(false);
-                        string strTranslate
+                    string strTranslate
                         = objLoopDoc.SelectSingleNode("/chummer/qualities/quality[id = " + strNodeInnerText.CleanXPath()
-                                                      + "]/translate")?.Value
+                              + "]/translate")?.Value
                           ?? objLoopDoc
-                             .SelectSingleNode("/chummer/qualities/quality[name = " + strNodeInnerText.CleanXPath()
-                                               + "]/translate")?.Value;
+                              .SelectSingleNode("/chummer/qualities/quality[name = " + strNodeInnerText.CleanXPath()
+                                  + "]/translate")?.Value;
                     strName = Environment.NewLine + '\t'
                                                   + (!string.IsNullOrEmpty(strTranslate)
                                                       ? strTranslate
                                                       : strNodeInnerText.IsGuid()
                                                           ? objLoopDoc
-                                                            .SelectSingleNode(
-                                                                "/chummer/qualities/quality[id = "
-                                                                + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                .SelectSingleNode(
+                                                                    "/chummer/qualities/quality[id = "
+                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
                                                             ?? strNodeInnerText
                                                           : strNodeInnerText) + strSpace + '('
                                                   + (blnSync
@@ -2526,10 +2610,7 @@ namespace Chummer
                 case "lifestylequality":
                 {
                     string strExtra
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@extra", token).ConfigureAwait(false))?.Value;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)?.Value;
                     LifestyleQuality objQuality = null;
                     if (blnSync)
                     {
@@ -2538,63 +2619,77 @@ namespace Chummer
                             : objCharacter.Lifestyles.SelectMany(x => x.LifestyleQualities);
                         objQuality = !string.IsNullOrEmpty(strExtra)
                             ? lstLifestyleQualities.FirstOrDefault(
-                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText,
+                                         StringComparison.OrdinalIgnoreCase))
                                      && q.Extra == strExtra && q.Name != strIgnoreQuality
                                      && q.SourceIDString != strIgnoreQuality)
                             : lstLifestyleQualities.FirstOrDefault(
-                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText,
+                                         StringComparison.OrdinalIgnoreCase))
                                      && q.Name != strIgnoreQuality && q.SourceIDString != strIgnoreQuality);
                     }
                     else if (objParent is Lifestyle objLifestyle)
                     {
                         objQuality = !string.IsNullOrEmpty(strExtra)
                             ? await objLifestyle.LifestyleQualities.FirstOrDefaultAsync(
-                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText,
+                                         StringComparison.OrdinalIgnoreCase))
                                      && q.Extra == strExtra && q.Name != strIgnoreQuality
                                      && q.SourceIDString != strIgnoreQuality, token).ConfigureAwait(false)
                             : await objLifestyle.LifestyleQualities.FirstOrDefaultAsync(
-                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                     && q.Name != strIgnoreQuality && q.SourceIDString != strIgnoreQuality, token).ConfigureAwait(false);
+                                    q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString,
+                                             strNodeInnerText,
+                                             StringComparison.OrdinalIgnoreCase))
+                                         && q.Name != strIgnoreQuality && q.SourceIDString != strIgnoreQuality, token)
+                                .ConfigureAwait(false);
                     }
                     else if (!string.IsNullOrEmpty(strExtra))
                     {
-                        await (await objCharacter.GetLifestylesAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(async x =>
-                        {
-                            LifestyleQuality objLoopQuality
-                                = await x.LifestyleQualities.FirstOrDefaultAsync(
-                                    q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                         && q.Extra == strExtra && q.Name != strIgnoreQuality
-                                         && q.SourceIDString != strIgnoreQuality, token).ConfigureAwait(false);
-                            if (objLoopQuality != null)
+                        await (await objCharacter.GetLifestylesAsync(token).ConfigureAwait(false))
+                            .ForEachWithBreakAsync(async x =>
                             {
-                                objQuality = objLoopQuality;
-                                return false;
-                            }
-                            return true;
-                        }, token).ConfigureAwait(false);
+                                LifestyleQuality objLoopQuality
+                                    = await x.LifestyleQualities.FirstOrDefaultAsync(
+                                        q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString,
+                                                 strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                             && q.Extra == strExtra && q.Name != strIgnoreQuality
+                                             && q.SourceIDString != strIgnoreQuality, token).ConfigureAwait(false);
+                                if (objLoopQuality != null)
+                                {
+                                    objQuality = objLoopQuality;
+                                    return false;
+                                }
+
+                                return true;
+                            }, token).ConfigureAwait(false);
                     }
                     else
                     {
-                        await (await objCharacter.GetLifestylesAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(async x =>
-                        {
-                            LifestyleQuality objLoopQuality
-                                = await x.LifestyleQualities.FirstOrDefaultAsync(
-                                    q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                         && q.Name != strIgnoreQuality && q.SourceIDString != strIgnoreQuality,
-                                    token).ConfigureAwait(false);
-                            if (objLoopQuality != null)
+                        await (await objCharacter.GetLifestylesAsync(token).ConfigureAwait(false))
+                            .ForEachWithBreakAsync(async x =>
                             {
-                                objQuality = objLoopQuality;
-                                return false;
-                            }
-                            return true;
-                        }, token).ConfigureAwait(false);
+                                LifestyleQuality objLoopQuality
+                                    = await x.LifestyleQualities.FirstOrDefaultAsync(
+                                        q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString,
+                                                 strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                             && q.Name != strIgnoreQuality && q.SourceIDString != strIgnoreQuality,
+                                        token).ConfigureAwait(false);
+                                if (objLoopQuality != null)
+                                {
+                                    objQuality = objLoopQuality;
+                                    return false;
+                                }
+
+                                return true;
+                            }, token).ConfigureAwait(false);
                     }
 
                     if (objQuality != null)
                     {
                         if (blnShowMessage)
-                            strName = blnSync ? objQuality.CurrentDisplayName : await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            strName = blnSync
+                                ? objQuality.CurrentDisplayName
+                                : await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         return new Tuple<bool, string>(true, strName);
                     }
 
@@ -2604,20 +2699,20 @@ namespace Chummer
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.LoadDataXPath("lifestyles.xml", token: token)
                         : await objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token).ConfigureAwait(false);
-                        string strTranslate
+                    string strTranslate
                         = objLoopDoc.SelectSingleNode("/chummer/qualities/quality[id = " + strNodeInnerText.CleanXPath()
-                                                      + "]/translate")?.Value
+                              + "]/translate")?.Value
                           ?? objLoopDoc
-                             .SelectSingleNode("/chummer/qualities/quality[name = " + strNodeInnerText.CleanXPath()
-                                               + "]/translate")?.Value;
+                              .SelectSingleNode("/chummer/qualities/quality[name = " + strNodeInnerText.CleanXPath()
+                                  + "]/translate")?.Value;
                     strName = Environment.NewLine + '\t'
                                                   + (!string.IsNullOrEmpty(strTranslate)
                                                       ? strTranslate
                                                       : strNodeInnerText.IsGuid()
                                                           ? objLoopDoc
-                                                            .SelectSingleNode(
-                                                                "/chummer/qualities/quality[id = "
-                                                                + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                .SelectSingleNode(
+                                                                    "/chummer/qualities/quality[id = "
+                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
                                                             ?? strNodeInnerText
                                                           : strNodeInnerText) + strSpace + '('
                                                   + (blnSync
@@ -2637,23 +2732,25 @@ namespace Chummer
                         XPathNavigator objLoopDoc = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.LoadDataXPath("lifestyles.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token).ConfigureAwait(false);
-                            string strTranslate
+                            : await objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token)
+                                .ConfigureAwait(false);
+                        string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/lifestyles/lifestyle[id = "
                                                           + strNodeInnerText.CleanXPath()
                                                           + "]/translate")?.Value
                               ?? objLoopDoc
-                                 .SelectSingleNode("/chummer/lifestyles/lifestyle[name = "
-                                                   + strNodeInnerText.CleanXPath()
-                                                   + "]/translate")?.Value;
+                                  .SelectSingleNode("/chummer/lifestyles/lifestyle[name = "
+                                                    + strNodeInnerText.CleanXPath()
+                                                    + "]/translate")?.Value;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
                                                               ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/lifestyles/lifestyle[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                    .SelectSingleNode(
+                                                                        "/chummer/lifestyles/lifestyle[id = "
+                                                                        + strNodeInnerText.CleanXPath() + "]/name")
+                                                                    ?.Value
                                                                 ?? strNodeInnerText
                                                               : strNodeInnerText) + strSpace + '('
                                                       + (blnSync
@@ -2667,69 +2764,69 @@ namespace Chummer
                     }
 
                     return new Tuple<bool, string>(objParent is Lifestyle objLifestyle
-                                                       ? objLifestyle.BaseLifestyle == strNodeInnerText
-                                                       : blnSync
-                                                           // ReSharper disable once MethodHasAsyncOverload
-                                                           ? objCharacter.Lifestyles.Any(
-                                                               x => x.BaseLifestyle == strNodeInnerText, token)
-                                                           : await (await objCharacter.GetLifestylesAsync(token)
-                                                                       .ConfigureAwait(false))
-                                                                   .AnyAsync(x => x.BaseLifestyle == strNodeInnerText,
-                                                                             token)
-                                                                   .ConfigureAwait(false), strName);
+                        ? (blnSync
+                            ? objLifestyle.BaseLifestyle
+                            : await objLifestyle.GetBaseLifestyleAsync(token).ConfigureAwait(false)) == strNodeInnerText
+                        : blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.Lifestyles.Any(
+                                x => x.BaseLifestyle == strNodeInnerText, token)
+                            : await (await objCharacter.GetLifestylesAsync(token)
+                                    .ConfigureAwait(false))
+                                .AnyAsync(
+                                    async x => await x.GetBaseLifestyleAsync(token).ConfigureAwait(false) ==
+                                               strNodeInnerText,
+                                    token)
+                                .ConfigureAwait(false), strName);
                 }
                 case "resenabled":
                     // Character must be Emerged.
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, blnSync
-                                                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                                                 ? LanguageManager.GetString(
-                                                                                     "Message_SelectGeneric_HaveAttributeEnabled",
-                                                                                     token: token)
-                                                                                 : await LanguageManager.GetStringAsync(
-                                                                                     "Message_SelectGeneric_HaveAttributeEnabled",
-                                                                                     token: token).ConfigureAwait(false),
-                                                                             blnSync
-                                                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                                                 ? LanguageManager.GetString(
-                                                                                     "String_AttributeRESLong",
-                                                                                     token: token)
-                                                                                 : await LanguageManager.GetStringAsync(
-                                                                                     "String_AttributeRESLong",
-                                                                                     token: token).ConfigureAwait(false));
-                    return new Tuple<bool, string>(blnSync ? objCharacter.RESEnabled : await objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false), strName);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString(
+                                    "Message_SelectGeneric_HaveAttributeEnabled",
+                                    token: token)
+                                : await LanguageManager.GetStringAsync(
+                                    "Message_SelectGeneric_HaveAttributeEnabled",
+                                    token: token).ConfigureAwait(false),
+                            blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString(
+                                    "String_AttributeRESLong",
+                                    token: token)
+                                : await LanguageManager.GetStringAsync(
+                                    "String_AttributeRESLong",
+                                    token: token).ConfigureAwait(false));
+                    return new Tuple<bool, string>(
+                        blnSync
+                            ? objCharacter.RESEnabled
+                            : await objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false), strName);
 
                 case "skill":
                 {
                     string strSpec
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("spec", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("spec", token).ConfigureAwait(false))?.Value;
-                    string strValue = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("val", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("val", token).ConfigureAwait(false))?.Value;
-                    int intValue = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("val", token)
-                        : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("val", token).ConfigureAwait(false))?.ValueAsInt ?? 0;
+                        = xmlNode.SelectSingleNodeAndCacheExpression("spec", token)?.Value;
+                    string strValue = xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.Value;
+                    int intValue = xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.ValueAsInt ?? 0;
                     Skill objSkill = null;
                     SkillsSection objSkillsSection = blnSync
                         ? objCharacter.SkillsSection
                         : await objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                     // Check if the character has the required Skill.
                     // ReSharper disable once MethodHasAsyncOverload
-                    if ((blnSync ? xmlNode.SelectSingleNodeAndCacheExpression("type", token) : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("type", token).ConfigureAwait(false)) != null)
+                    if (xmlNode.SelectSingleNodeAndCacheExpression("type", token) != null)
                     {
                         if (blnSync)
                         {
                             objSkill = string.IsNullOrEmpty(strSpec)
                                 ? objSkillsSection.KnowledgeSkills.FirstOrDefault(
-                                    x => (string.Equals(x.SourceIDString, strNodeId, StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
+                                    x => (string.Equals(x.SourceIDString, strNodeId,
+                                             StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
                                          && x.TotalBaseRating >= intValue)
                                 : objSkillsSection.KnowledgeSkills.FirstOrDefault(
-                                    x => (string.Equals(x.SourceIDString, strNodeId, StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
+                                    x => (string.Equals(x.SourceIDString, strNodeId,
+                                             StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
                                          && x.HasSpecialization(strSpec, token)
                                          && x.TotalBaseRating >= intValue);
                         }
@@ -2737,12 +2834,19 @@ namespace Chummer
                         {
                             objSkill = string.IsNullOrEmpty(strSpec)
                                 ? await objSkillsSection.KnowledgeSkills.FirstOrDefaultAsync(
-                                    async x => (string.Equals(x.SourceIDString, strNodeId, StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
-                                               && await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) >= intValue, token).ConfigureAwait(false)
+                                    async x => (string.Equals(x.SourceIDString, strNodeId,
+                                                    StringComparison.OrdinalIgnoreCase) ||
+                                                x.DictionaryKey == strNodeName)
+                                               && await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) >=
+                                               intValue, token).ConfigureAwait(false)
                                 : await objSkillsSection.KnowledgeSkills.FirstOrDefaultAsync(
-                                    async x => (string.Equals(x.SourceIDString, strNodeId, StringComparison.OrdinalIgnoreCase) || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == strNodeName)
-                                               && await x.HasSpecializationAsync(strSpec, token).ConfigureAwait(false)
-                                               && await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) >= intValue, token).ConfigureAwait(false);
+                                    async x =>
+                                        (string.Equals(x.SourceIDString, strNodeId,
+                                             StringComparison.OrdinalIgnoreCase) ||
+                                         await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == strNodeName)
+                                        && await x.HasSpecializationAsync(strSpec, token).ConfigureAwait(false)
+                                        && await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) >= intValue,
+                                    token).ConfigureAwait(false);
                         }
 
                         if (objSkill != null)
@@ -2758,14 +2862,15 @@ namespace Chummer
                                             .GetCachedImprovementListForValueOf(
                                                 objCharacter,
                                                 Improvement.ImprovementType
-                                                           .DisableSpecializationEffects,
+                                                    .DisableSpecializationEffects,
                                                 objSkill.DictionaryKey, token: token)
                                         : await ImprovementManager
-                                                .GetCachedImprovementListForValueOfAsync(
-                                                    objCharacter,
-                                                    Improvement.ImprovementType
-                                                               .DisableSpecializationEffects,
-                                                    await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)).Count
+                                            .GetCachedImprovementListForValueOfAsync(
+                                                objCharacter,
+                                                Improvement.ImprovementType
+                                                    .DisableSpecializationEffects,
+                                                await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false),
+                                                token: token).ConfigureAwait(false)).Count
                                     == 0)
                                 {
                                     strName += strSpace + '(' + strSpec + ')';
@@ -2787,8 +2892,10 @@ namespace Chummer
                             objSkill = blnSync
                                 ? objSkillsSection.Skills.FirstOrDefault(
                                     x => string.Equals(x.SourceIDString, strNodeId, StringComparison.OrdinalIgnoreCase))
-                                : await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                                    x => string.Equals(x.SourceIDString, strNodeId, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                                : await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false))
+                                    .FirstOrDefaultAsync(
+                                        x => string.Equals(x.SourceIDString, strNodeId,
+                                            StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
                         }
                         else if (!string.IsNullOrEmpty(strNodeName))
                         {
@@ -2801,7 +2908,7 @@ namespace Chummer
                                 objSkill = blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? objSkillsSection.GetActiveSkill(strNodeName + strSpace + '(' + strSpec + ')',
-                                                                      token)
+                                        token)
                                     : await objSkillsSection.GetActiveSkillAsync(
                                         strNodeName + strSpace + '(' + strSpec + ')', token).ConfigureAwait(false);
                         }
@@ -2827,14 +2934,15 @@ namespace Chummer
                                                 .GetCachedImprovementListForValueOf(
                                                     objCharacter,
                                                     Improvement.ImprovementType
-                                                               .DisableSpecializationEffects,
+                                                        .DisableSpecializationEffects,
                                                     objSkill.DictionaryKey, token: token)
                                             : await ImprovementManager
-                                                    .GetCachedImprovementListForValueOfAsync(
-                                                        objCharacter,
-                                                        Improvement.ImprovementType
-                                                                   .DisableSpecializationEffects,
-                                                        await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)).Count
+                                                .GetCachedImprovementListForValueOfAsync(
+                                                    objCharacter,
+                                                    Improvement.ImprovementType
+                                                        .DisableSpecializationEffects,
+                                                    await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false),
+                                                    token: token).ConfigureAwait(false)).Count
                                         == 0)
                                     {
                                         strName += strSpace + '(' + strSpec + ')';
@@ -2858,34 +2966,28 @@ namespace Chummer
                             ? objCharacter.LoadDataXPath("skills.xml", token: token)
                             : await objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                         string strSkillId
-                            = (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? xmlNode.SelectSingleNodeAndCacheExpression("id", token)
-                                : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value;
+                            = xmlNode.SelectSingleNodeAndCacheExpression("id", token)?.Value;
                         string strSkillName
-                            = (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? xmlNode.SelectSingleNodeAndCacheExpression("name", token)
-                                : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
+                            = xmlNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                         string strTranslate
                             = xmlSkillDoc.SelectSingleNode("/chummer/skills/skill[id = " + strSkillId.CleanXPath()
-                                                           + "]/translate")?.Value
+                                  + "]/translate")?.Value
                               ?? xmlSkillDoc
-                                 .SelectSingleNode("/chummer/knowledgeskills/skill[id = " + strSkillId.CleanXPath()
-                                                   + "]/translate")?.Value
+                                  .SelectSingleNode("/chummer/knowledgeskills/skill[id = " + strSkillId.CleanXPath()
+                                      + "]/translate")?.Value
                               ?? xmlSkillDoc
-                                 .SelectSingleNode("/chummer/skills/skill[name = " + strSkillName.CleanXPath()
-                                                   + "]/translate")?.Value
+                                  .SelectSingleNode("/chummer/skills/skill[name = " + strSkillName.CleanXPath()
+                                      + "]/translate")?.Value
                               ?? xmlSkillDoc
-                                 .SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strSkillName.CleanXPath()
-                                                   + "]/translate")?.Value;
+                                  .SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strSkillName.CleanXPath()
+                                      + "]/translate")?.Value;
                         if (string.IsNullOrEmpty(strTranslate) && string.IsNullOrEmpty(strSkillName))
                             strSkillName
                                 = xmlSkillDoc.SelectSingleNode(
                                       "/chummer/skills/skill[id = " + strSkillId.CleanXPath() + "]/name")?.Value
                                   ?? xmlSkillDoc
-                                     .SelectSingleNode("/chummer/knowledgeskills/skill[id = " + strSkillId.CleanXPath()
-                                                       + "]/name")?.Value;
+                                      .SelectSingleNode("/chummer/knowledgeskills/skill[id = " + strSkillId.CleanXPath()
+                                          + "]/name")?.Value;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
@@ -2917,13 +3019,10 @@ namespace Chummer
                     // Check if the total combined Ratings of Skills adds up to a particular total.
                     int intTotal = 0;
                     IEnumerable<string> lstSkills
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("skills", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("skills", token).ConfigureAwait(false))?.Value
-                        .SplitNoAlloc('+', StringSplitOptions.RemoveEmptyEntries);
+                        = xmlNode.SelectSingleNodeAndCacheExpression("skills", token)?.Value
+                            .SplitNoAlloc('+', StringSplitOptions.RemoveEmptyEntries);
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdOutput))
+                               out StringBuilder sbdOutput))
                     {
                         sbdOutput.AppendLine().Append('\t');
                         if (lstSkills != null)
@@ -2934,7 +3033,6 @@ namespace Chummer
                             if (blnSync)
                             {
                                 // If the xmlnode contains Type element, assume that it is a Knowledge skill.
-                                // ReSharper disable once MethodHasAsyncOverload
                                 if (xmlNode.SelectSingleNodeAndCacheExpression("type", token) != null)
                                 {
                                     foreach (string strLoop in lstSkills)
@@ -2946,8 +3044,8 @@ namespace Chummer
                                                 continue;
                                             if (blnShowMessage)
                                                 sbdOutput.Append(objGroup.CurrentDisplayName)
-                                                         .Append(',')
-                                                         .Append(strSpace);
+                                                    .Append(',')
+                                                    .Append(strSpace);
                                             intTotal += objGroup.Rating;
                                             break;
                                         }
@@ -2964,8 +3062,8 @@ namespace Chummer
                                                 continue;
                                             if (blnShowMessage)
                                                 sbdOutput.Append(objGroup.CurrentDisplayName)
-                                                         .Append(',')
-                                                         .Append(strSpace);
+                                                    .Append(',')
+                                                    .Append(strSpace);
                                             intTotal += objGroup.Rating;
                                             break;
                                         }
@@ -2973,51 +3071,56 @@ namespace Chummer
                                 }
                             }
                             // If the xmlnode contains Type element, assume that it is a Knowledge skill.
-                            else if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("type", token).ConfigureAwait(false) != null)
+                            else if (xmlNode.SelectSingleNodeAndCacheExpression("type", token) != null)
                             {
                                 foreach (string strLoop in lstSkills)
                                 {
-                                    await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(
-                                        async objGroup =>
-                                        {
-                                            if (await objGroup.GetDictionaryKeyAsync(token).ConfigureAwait(false) != strLoop
-                                                && objGroup.SourceIDString != strLoop)
-                                                return true;
-                                            if (blnShowMessage)
-                                                sbdOutput.Append(await objGroup.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
-                                                         .Append(',')
-                                                         .Append(strSpace);
-                                            intTotal += await objGroup.GetRatingAsync(token).ConfigureAwait(false);
-                                            return false;
-                                        }, token).ConfigureAwait(false);
+                                    await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
+                                        .ForEachWithBreakAsync(
+                                            async objGroup =>
+                                            {
+                                                if (await objGroup.GetDictionaryKeyAsync(token).ConfigureAwait(false) !=
+                                                    strLoop
+                                                    && objGroup.SourceIDString != strLoop)
+                                                    return true;
+                                                if (blnShowMessage)
+                                                    sbdOutput.Append(await objGroup.GetCurrentDisplayNameAsync(token)
+                                                            .ConfigureAwait(false))
+                                                        .Append(',')
+                                                        .Append(strSpace);
+                                                intTotal += await objGroup.GetRatingAsync(token).ConfigureAwait(false);
+                                                return false;
+                                            }, token).ConfigureAwait(false);
                                 }
                             }
                             else
                             {
                                 foreach (string strLoop in lstSkills)
                                 {
-                                    await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(
-                                        async objGroup =>
-                                        {
-                                            if (await objGroup.GetDictionaryKeyAsync(token).ConfigureAwait(false) != strLoop
-                                                && objGroup.SourceIDString != strLoop)
-                                                return true;
-                                            if (blnShowMessage)
-                                                sbdOutput.Append(await objGroup.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
-                                                         .Append(',')
-                                                         .Append(strSpace);
-                                            intTotal += await objGroup.GetRatingAsync(token).ConfigureAwait(false);
-                                            return false;
-                                        }, token).ConfigureAwait(false);
+                                    await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false))
+                                        .ForEachWithBreakAsync(
+                                            async objGroup =>
+                                            {
+                                                if (await objGroup.GetDictionaryKeyAsync(token).ConfigureAwait(false) !=
+                                                    strLoop
+                                                    && objGroup.SourceIDString != strLoop)
+                                                    return true;
+                                                if (blnShowMessage)
+                                                    sbdOutput.Append(await objGroup.GetCurrentDisplayNameAsync(token)
+                                                            .ConfigureAwait(false))
+                                                        .Append(',')
+                                                        .Append(strSpace);
+                                                intTotal += await objGroup.GetRatingAsync(token).ConfigureAwait(false);
+                                                return false;
+                                            }, token).ConfigureAwait(false);
                                 }
                             }
                         }
 
                         if (!blnShowMessage)
-                            return new Tuple<bool, string>(intTotal >= ((blnSync
-                                                               // ReSharper disable once MethodHasAsyncOverload
-                                                               ? xmlNode.SelectSingleNodeAndCacheExpression("val", token)
-                                                               : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("val", token).ConfigureAwait(false))?.ValueAsInt ?? 0), strName);
+                            return new Tuple<bool, string>(
+                                intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.ValueAsInt ?? 0),
+                                strName);
                         if (sbdOutput.Length > 0)
                             sbdOutput.Length -= 2;
                         strName = sbdOutput + strSpace + '(' + (blnSync
@@ -3030,10 +3133,7 @@ namespace Chummer
                                 token: token).ConfigureAwait(false)) + ')';
                     }
 
-                    int intTarget = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("val", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("val", token).ConfigureAwait(false))
+                    int intTarget = xmlNode.SelectSingleNodeAndCacheExpression("val", token)
                         ?.ValueAsInt ?? 0;
                     return new Tuple<bool, string>(intTotal >= intTarget, strName);
                 }
@@ -3042,13 +3142,10 @@ namespace Chummer
                     // Check if the total combined Ratings of Skill Groups adds up to a particular total.
                     int intTotal = 0;
                     IEnumerable<string> lstGroups
-                        = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("skillgroups", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("skillgroups", token).ConfigureAwait(false))?.Value
-                        .SplitNoAlloc('+', StringSplitOptions.RemoveEmptyEntries);
+                        = xmlNode.SelectSingleNodeAndCacheExpression("skillgroups", token)?.Value
+                            .SplitNoAlloc('+', StringSplitOptions.RemoveEmptyEntries);
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdOutput))
+                               out StringBuilder sbdOutput))
                     {
                         sbdOutput.AppendLine().Append('\t');
                         if (lstGroups != null)
@@ -3066,8 +3163,8 @@ namespace Chummer
                                         {
                                             if (blnShowMessage)
                                                 sbdOutput.Append(objGroup.CurrentDisplayName)
-                                                         .Append(',')
-                                                         .Append(strSpace);
+                                                    .Append(',')
+                                                    .Append(strSpace);
                                             intTotal += objGroup.Rating;
                                             break;
                                         }
@@ -3078,20 +3175,25 @@ namespace Chummer
                             {
                                 foreach (string strLoop in lstGroups)
                                 {
-                                    await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(
-                                        async objGroup =>
-                                        {
-                                            if (objGroup.Name == strLoop)
+                                    await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false))
+                                        .ForEachWithBreakAsync(
+                                            async objGroup =>
                                             {
-                                                if (blnShowMessage)
-                                                    sbdOutput.Append(await objGroup.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
-                                                             .Append(',')
-                                                             .Append(strSpace);
-                                                intTotal += await objGroup.GetRatingAsync(token).ConfigureAwait(false);
-                                                return false;
-                                            }
-                                            return true;
-                                        }, token).ConfigureAwait(false);
+                                                if (objGroup.Name == strLoop)
+                                                {
+                                                    if (blnShowMessage)
+                                                        sbdOutput.Append(await objGroup
+                                                                .GetCurrentDisplayNameAsync(token)
+                                                                .ConfigureAwait(false))
+                                                            .Append(',')
+                                                            .Append(strSpace);
+                                                    intTotal += await objGroup.GetRatingAsync(token)
+                                                        .ConfigureAwait(false);
+                                                    return false;
+                                                }
+
+                                                return true;
+                                            }, token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -3112,12 +3214,8 @@ namespace Chummer
                         }
                     }
 
-                    int intTarget = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlNode.SelectSingleNodeAndCacheExpression("val", token)
-                            : await xmlNode.SelectSingleNodeAndCacheExpressionAsync("val", token).ConfigureAwait(false))
-                        ?.ValueAsInt ?? 0;
-                        return new Tuple<bool, string>(intTotal >= intTarget, strName);
+                    int intTarget = xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.ValueAsInt ?? 0;
+                    return new Tuple<bool, string>(intTotal >= intTarget, strName);
                 }
                 case "specialmodificationlimit":
                 {
@@ -3126,42 +3224,50 @@ namespace Chummer
                     if (blnSync)
                     {
                         intMods = objCharacter.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons, token).Concat(
-                                                  objCharacter.Vehicles.SelectMany(
-                                                      y => y.Weapons.Concat(y.WeaponMounts.SelectMany(x => x.Weapons))
-                                                            .GetAllDescendants(x => x.UnderbarrelWeapons)))
-                                              .Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification, token));
+                                objCharacter.Vehicles.SelectMany(
+                                    y => y.Weapons.Concat(y.WeaponMounts.SelectMany(x => x.Weapons))
+                                        .GetAllDescendants(x => x.UnderbarrelWeapons)))
+                            .Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification, token));
                     }
                     else
                     {
-                        foreach (Weapon objWeapon in await (await objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
+                        foreach (Weapon objWeapon in await (await objCharacter.GetWeaponsAsync(token)
+                                     .ConfigureAwait(false)).GetAllDescendantsAsync(
                                      x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
                         {
-                            intMods += await objWeapon.WeaponAccessories.CountAsync(x => x.SpecialModification, token).ConfigureAwait(false);
+                            intMods += await objWeapon.WeaponAccessories.CountAsync(x => x.SpecialModification, token)
+                                .ConfigureAwait(false);
                         }
 
-                        intMods += await (await objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).SumAsync(async objVehicle =>
-                        {
-                            int intInnerSum = 0;
-                            foreach (Weapon objWeapon in await objVehicle.Weapons.GetAllDescendantsAsync(x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
+                        intMods += await (await objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).SumAsync(
+                            async objVehicle =>
                             {
-                                intInnerSum += await objWeapon.WeaponAccessories.CountAsync(x => x.SpecialModification, token).ConfigureAwait(false);
-                            }
-
-                            intInnerSum += await objVehicle.WeaponMounts.SumAsync(async objMount =>
-                            {
-                                int intInnerSum2 = 0;
-                                foreach (Weapon objWeapon in await objMount.Weapons.GetAllDescendantsAsync(
-                                             x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
+                                int intInnerSum = 0;
+                                foreach (Weapon objWeapon in await objVehicle.Weapons
+                                             .GetAllDescendantsAsync(x => x.UnderbarrelWeapons, token)
+                                             .ConfigureAwait(false))
                                 {
-                                    intInnerSum2 += await objWeapon.WeaponAccessories.CountAsync(
-                                        x => x.SpecialModification, token).ConfigureAwait(false);
+                                    intInnerSum += await objWeapon.WeaponAccessories
+                                        .CountAsync(x => x.SpecialModification, token).ConfigureAwait(false);
                                 }
-                                return intInnerSum2;
-                            }, token).ConfigureAwait(false);
 
-                            return intInnerSum;
-                        }, token).ConfigureAwait(false);
+                                intInnerSum += await objVehicle.WeaponMounts.SumAsync(async objMount =>
+                                {
+                                    int intInnerSum2 = 0;
+                                    foreach (Weapon objWeapon in await objMount.Weapons.GetAllDescendantsAsync(
+                                                 x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
+                                    {
+                                        intInnerSum2 += await objWeapon.WeaponAccessories.CountAsync(
+                                            x => x.SpecialModification, token).ConfigureAwait(false);
+                                    }
+
+                                    return intInnerSum2;
+                                }, token).ConfigureAwait(false);
+
+                                return intInnerSum;
+                            }, token).ConfigureAwait(false);
                     }
+
                     if (blnShowMessage)
                     {
                         strName = Environment.NewLine + '\t'
@@ -3176,43 +3282,49 @@ namespace Chummer
                                                       + strSpace + '≥' + strSpace + strNodeInnerText;
                     }
 
-                    return new Tuple<bool, string>(intMods + xmlNode.ValueAsInt <= objCharacter.SpecialModificationLimit, strName);
+                    return new Tuple<bool, string>(
+                        intMods + xmlNode.ValueAsInt <= objCharacter.SpecialModificationLimit, strName);
                 }
                 case "spell":
                 {
                     Spell objSpell = blnSync
                         ? objCharacter.Spells.FirstOrDefault(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                StringComparison.OrdinalIgnoreCase))
                         : await (await objCharacter.GetSpellsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
                     if (objSpell != null)
                     {
                         if (blnShowMessage)
-                            strName = blnSync ? objSpell.CurrentDisplayName : await objSpell.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            strName = blnSync
+                                ? objSpell.CurrentDisplayName
+                                : await objSpell.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         return new Tuple<bool, string>(true, strName);
                     }
 
                     if (blnShowMessage)
                     {
-                            // Check for a specific Spell.
-                            XPathNavigator objLoopDoc = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objCharacter.LoadDataXPath("spells.xml", token: token)
-                                : await objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false);
-                            string strTranslate
+                        // Check for a specific Spell.
+                        XPathNavigator objLoopDoc = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.LoadDataXPath("spells.xml", token: token)
+                            : await objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false);
+                        string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/spells/spell[id = " + strNodeInnerText.CleanXPath()
-                                                          + "]/translate")?.Value
+                                  + "]/translate")?.Value
                               ?? objLoopDoc
-                                 .SelectSingleNode("/chummer/spells/spell[name = " + strNodeInnerText.CleanXPath()
-                                                   + "]/translate")?.Value;
+                                  .SelectSingleNode("/chummer/spells/spell[name = " + strNodeInnerText.CleanXPath()
+                                      + "]/translate")?.Value;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
                                                               ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/spells/spell[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                    .SelectSingleNode(
+                                                                        "/chummer/spells/spell[id = "
+                                                                        + strNodeInnerText.CleanXPath() + "]/name")
+                                                                    ?.Value
                                                                 ?? strNodeInnerText
                                                               : strNodeInnerText) + strSpace + '('
                                                       + (blnSync
@@ -3234,12 +3346,13 @@ namespace Chummer
                     {
                         string strTranslate
                             = (blnSync
-                                  // ReSharper disable once MethodHasAsyncOverload
-                                  ? objCharacter.LoadDataXPath("spells.xml", token: token)
-                                  : await objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false))
-                              .SelectSingleNode(
-                                  "/chummer/categories/category[. = "
-                                  + strNodeName.CleanXPath() + "]/@translate")?.Value;
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objCharacter.LoadDataXPath("spells.xml", token: token)
+                                : await objCharacter.LoadDataXPathAsync("spells.xml", token: token)
+                                    .ConfigureAwait(false))
+                            .SelectSingleNode(
+                                "/chummer/categories/category[. = "
+                                + strNodeName.CleanXPath() + "]/@translate")?.Value;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
@@ -3254,46 +3367,42 @@ namespace Chummer
                                                               token: token).ConfigureAwait(false)) + ')';
                     }
 
+                    int intTarget = xmlNode.SelectSingleNodeAndCacheExpression("count", token)?.ValueAsInt ?? 0;
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
-                        return new Tuple<bool, string>(objCharacter.Spells.Count(
-                                                           objSpell => objSpell.Category == strNodeName, token)
-                                                       // ReSharper disable once MethodHasAsyncOverload
-                                                       >= (xmlNode.SelectSingleNodeAndCacheExpression("count", token)
-                                                                  ?.ValueAsInt ?? 0), strName);
-                    return new Tuple<bool, string>(await (await objCharacter.GetSpellsAsync(token).ConfigureAwait(false)).CountAsync(
-                                                       objSpell => objSpell.Category == strNodeName, token).ConfigureAwait(false)
-                                                   >= ((await xmlNode
-                                                              .SelectSingleNodeAndCacheExpressionAsync("count", token).ConfigureAwait(false))
-                                                       ?.ValueAsInt ?? 0), strName);
+                        return new Tuple<bool, string>(
+                            objCharacter.Spells.Count(objSpell => objSpell.Category == strNodeName, token) >= intTarget,
+                            strName);
+                    return new Tuple<bool, string>(
+                        await (await objCharacter.GetSpellsAsync(token).ConfigureAwait(false))
+                            .CountAsync(objSpell => objSpell.Category == strNodeName, token).ConfigureAwait(false) >=
+                        intTarget, strName);
                 }
                 case "spelldescriptor":
                 {
-                    int intCount = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? xmlNode.SelectSingleNodeAndCacheExpression("count", token)
-                        : await xmlNode
-                                .SelectSingleNodeAndCacheExpressionAsync("count", token).ConfigureAwait(false))?.ValueAsInt ?? 0;
+                    int intCount = xmlNode.SelectSingleNodeAndCacheExpression("count", token)?.ValueAsInt ?? 0;
                     // Check for a specified amount of a particular Spell Descriptor.
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' + (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString(
-                                "Label_Descriptors",
-                                token: token)
-                            : await LanguageManager.GetStringAsync(
-                                "Label_Descriptors",
-                                token: token).ConfigureAwait(false)) + strSpace
+                                      // ReSharper disable once MethodHasAsyncOverload
+                                      ? LanguageManager.GetString(
+                                          "Label_Descriptors",
+                                          token: token)
+                                      : await LanguageManager.GetStringAsync(
+                                          "Label_Descriptors",
+                                          token: token).ConfigureAwait(false)) + strSpace
                                   + '≥' + strSpace + intCount.ToString(GlobalSettings.CultureInfo);
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
                         return new Tuple<bool, string>(objCharacter.Spells.Count(
-                                                           objSpell => objSpell.Descriptors.Contains(strNodeName), token)
+                                                           objSpell => objSpell.Descriptors.Contains(strNodeName),
+                                                           token)
                                                        // ReSharper disable once MethodHasAsyncOverload
                                                        >= intCount, strName);
-                    return new Tuple<bool, string>(await (await objCharacter.GetSpellsAsync(token).ConfigureAwait(false)).CountAsync(
-                                                       objSpell => objSpell.Descriptors.Contains(strNodeName), token).ConfigureAwait(false)
-                                                   >= intCount, strName);
+                    return new Tuple<bool, string>(
+                        await (await objCharacter.GetSpellsAsync(token).ConfigureAwait(false)).CountAsync(
+                            objSpell => objSpell.Descriptors.Contains(strNodeName), token).ConfigureAwait(false)
+                        >= intCount, strName);
                 }
                 case "streetcredvsnotoriety":
                 {
@@ -3315,23 +3424,29 @@ namespace Chummer
                                       : await LanguageManager.GetStringAsync(
                                           "String_Notoriety",
                                           token: token).ConfigureAwait(false));
-                    return new Tuple<bool, string>(objCharacter.StreetCred >= objCharacter.Notoriety, strName);
+                    return new Tuple<bool, string>(
+                        blnSync
+                            ? objCharacter.StreetCred >= objCharacter.Notoriety
+                            : await objCharacter.GetStreetCredAsync(token).ConfigureAwait(false) >=
+                              await objCharacter.GetNotorietyAsync(token).ConfigureAwait(false), strName);
                 }
                 case "submersiongrade":
                 {
                     // Character's initiate grade must be higher than or equal to the required value.
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' + (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString(
-                                "String_SubmersionGrade",
-                                token: token)
-                            : await LanguageManager.GetStringAsync(
-                                "String_SubmersionGrade",
-                                token: token).ConfigureAwait(false))
+                                      // ReSharper disable once MethodHasAsyncOverload
+                                      ? LanguageManager.GetString(
+                                          "String_SubmersionGrade",
+                                          token: token)
+                                      : await LanguageManager.GetStringAsync(
+                                          "String_SubmersionGrade",
+                                          token: token).ConfigureAwait(false))
                                   + strSpace + '≥' + strSpace + strNodeInnerText;
                     return new Tuple<bool, string>(
-                        (blnSync ? objCharacter.SubmersionGrade : await objCharacter.GetSubmersionGradeAsync(token).ConfigureAwait(false))
+                        (blnSync
+                            ? objCharacter.SubmersionGrade
+                            : await objCharacter.GetSubmersionGradeAsync(token).ConfigureAwait(false))
                         >= xmlNode.ValueAsInt, strName);
                 }
                 case "tradition":
@@ -3342,21 +3457,23 @@ namespace Chummer
                         XPathNavigator objLoopDoc = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.LoadDataXPath("traditions.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("traditions.xml", token: token).ConfigureAwait(false);
-                            string strTranslate
+                            : await objCharacter.LoadDataXPathAsync("traditions.xml", token: token)
+                                .ConfigureAwait(false);
+                        string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/traditions/tradition[id = "
                                                           + strNodeInnerText.CleanXPath() + "]/translate")?.Value
                               ?? objLoopDoc
-                                 .SelectSingleNode("/chummer/traditions/tradition[name = "
-                                                   + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                                  .SelectSingleNode("/chummer/traditions/tradition[name = "
+                                                    + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
                                                               ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/traditions/tradition[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                    .SelectSingleNode(
+                                                                        "/chummer/traditions/tradition[id = "
+                                                                        + strNodeInnerText.CleanXPath() + "]/name")
+                                                                    ?.Value
                                                                 ?? strNodeInnerText
                                                               : strNodeInnerText) + strSpace + '('
                                                       + (blnSync
@@ -3374,7 +3491,8 @@ namespace Chummer
                         : await objCharacter.GetMagicTraditionAsync(token).ConfigureAwait(false);
 
                     return new Tuple<bool, string>(objTradition.Name == strNodeInnerText
-                                                   || string.Equals(objTradition.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), strName);
+                                                   || string.Equals(objTradition.SourceIDString, strNodeInnerText,
+                                                       StringComparison.OrdinalIgnoreCase), strName);
                 }
                 case "traditionspiritform":
                 {
@@ -3385,21 +3503,23 @@ namespace Chummer
                         objLoopDoc = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.LoadDataXPath("critterpowers.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("critterpowers.xml", token: token).ConfigureAwait(false);
+                            : await objCharacter.LoadDataXPathAsync("critterpowers.xml", token: token)
+                                .ConfigureAwait(false);
                         string strTranslate
                             = objLoopDoc.SelectSingleNode("/chummer/powers/power[id = " + strNodeInnerText.CleanXPath()
-                                                          + "]/translate")?.Value
+                                  + "]/translate")?.Value
                               ?? objLoopDoc
-                                 .SelectSingleNode("/chummer/powers/power[name = " + strNodeInnerText.CleanXPath()
-                                                   + "]/translate")?.Value;
+                                  .SelectSingleNode("/chummer/powers/power[name = " + strNodeInnerText.CleanXPath()
+                                      + "]/translate")?.Value;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
                                                               ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/powers/power[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                    .SelectSingleNode(
+                                                                        "/chummer/powers/power[id = "
+                                                                        + strNodeInnerText.CleanXPath() + "]/name")
+                                                                    ?.Value
                                                                 ?? strNodeInnerText
                                                               : strNodeInnerText) + strSpace + '('
                                                       + (blnSync
@@ -3423,11 +3543,12 @@ namespace Chummer
                     objLoopDoc = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.LoadDataXPath("critterpowers.xml", token: token)
-                        : await objCharacter.LoadDataXPathAsync("critterpowers.xml", token: token).ConfigureAwait(false);
-                        string strEnglishName = objLoopDoc
-                                            .SelectSingleNode(
-                                                "/chummer/powers/power[id = " + strNodeInnerText.CleanXPath()
-                                                                              + "]/name")?.Value;
+                        : await objCharacter.LoadDataXPathAsync("critterpowers.xml", token: token)
+                            .ConfigureAwait(false);
+                    string strEnglishName = objLoopDoc
+                        .SelectSingleNode(
+                            "/chummer/powers/power[id = " + strNodeInnerText.CleanXPath()
+                                                          + "]/name")?.Value;
                     return new Tuple<bool, string>(objTradition.SpiritForm == strEnglishName, strName);
                 }
                 case "weapon":
@@ -3435,10 +3556,12 @@ namespace Chummer
                     bool blnReturn = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.Weapons.Any(x => x.Name == strNodeInnerText
-                                                        || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
+                                                        || string.Equals(x.SourceIDString, strNodeInnerText,
+                                                            StringComparison.OrdinalIgnoreCase), token)
                         : await objCharacter.Weapons.AnyAsync(
                             x => x.Name == strNodeInnerText
-                                 || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                                 || string.Equals(x.SourceIDString, strNodeInnerText,
+                                     StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
                     // Character needs a specific Weapon.
                     if (!blnShowMessage)
                         return new Tuple<bool, string>(blnReturn, strName);
@@ -3446,20 +3569,20 @@ namespace Chummer
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.LoadDataXPath("weapons.xml", token: token)
                         : await objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false);
-                        string strTranslate
+                    string strTranslate
                         = objLoopDoc.SelectSingleNode("/chummer/weapons/weapon[id = " + strNodeInnerText.CleanXPath()
-                                                      + "]/translate")?.Value
+                              + "]/translate")?.Value
                           ?? objLoopDoc
-                             .SelectSingleNode("/chummer/weapons/weapon[name = " + strNodeInnerText.CleanXPath()
-                                               + "]/translate")?.Value;
+                              .SelectSingleNode("/chummer/weapons/weapon[name = " + strNodeInnerText.CleanXPath()
+                                  + "]/translate")?.Value;
                     strName = Environment.NewLine + '\t'
                                                   + (!string.IsNullOrEmpty(strTranslate)
                                                       ? strTranslate
                                                       : strNodeInnerText.IsGuid()
                                                           ? objLoopDoc
-                                                            .SelectSingleNode(
-                                                                "/chummer/weapons/weapon[id = "
-                                                                + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                .SelectSingleNode(
+                                                                    "/chummer/weapons/weapon[id = "
+                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
                                                             ?? strNodeInnerText
                                                           : strNodeInnerText) + strSpace + '('
                                                   + (blnSync
@@ -3477,32 +3600,35 @@ namespace Chummer
                     bool blnReturn = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objWeapon.WeaponAccessories.Any(x =>
-                                                              x.Name == strNodeInnerText
-                                                              || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
+                                x.Name == strNodeInnerText
+                                || string.Equals(x.SourceIDString, strNodeInnerText,
+                                    StringComparison.OrdinalIgnoreCase),
+                            token)
                         : await objWeapon.WeaponAccessories.AnyAsync(x =>
-                                                                         x.Name == strNodeInnerText
-                                                                         || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase),
-                                                                     token).ConfigureAwait(false);
+                                x.Name == strNodeInnerText
+                                || string.Equals(x.SourceIDString, strNodeInnerText,
+                                    StringComparison.OrdinalIgnoreCase),
+                            token).ConfigureAwait(false);
                     if (!blnShowMessage)
                         return new Tuple<bool, string>(blnReturn, strName);
                     XPathNavigator objLoopDoc = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.LoadDataXPath("weapons.xml", token: token)
                         : await objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false);
-                        string strTranslate
+                    string strTranslate
                         = objLoopDoc.SelectSingleNode("/chummer/accessories/accessory[id = "
                                                       + strNodeInnerText.CleanXPath() + "]/translate")?.Value
                           ?? objLoopDoc
-                             .SelectSingleNode("/chummer/accessories/accessory[name = " + strNodeInnerText.CleanXPath()
-                                               + "]/translate")?.Value;
+                              .SelectSingleNode("/chummer/accessories/accessory[name = " + strNodeInnerText.CleanXPath()
+                                  + "]/translate")?.Value;
                     strName = Environment.NewLine + '\t'
                                                   + (!string.IsNullOrEmpty(strTranslate)
                                                       ? strTranslate
                                                       : strNodeInnerText.IsGuid()
                                                           ? objLoopDoc
-                                                            .SelectSingleNode(
-                                                                "/chummer/accessories/accessory[id = "
-                                                                + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                .SelectSingleNode(
+                                                                    "/chummer/accessories/accessory[id = "
+                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
                                                             ?? strNodeInnerText
                                                           : strNodeInnerText) + strSpace + '('
                                                   + (blnSync
@@ -3522,8 +3648,9 @@ namespace Chummer
                             // ReSharper disable MethodHasAsyncOverload
                             ? objWeapon.GetNodeXPath(token).ProcessFilterOperationNode(xmlNode, false, token)
                             // ReSharper restore MethodHasAsyncOverload
-                            : await (await objWeapon.GetNodeXPathAsync(token).ConfigureAwait(false)).ProcessFilterOperationNodeAsync(
-                                xmlNode, false, token).ConfigureAwait(false), strName);
+                            : await (await objWeapon.GetNodeXPathAsync(token).ConfigureAwait(false))
+                                .ProcessFilterOperationNodeAsync(
+                                    xmlNode, false, token).ConfigureAwait(false), strName);
                 }
                 case "armormod":
                 {
@@ -3537,16 +3664,18 @@ namespace Chummer
                             = objLoopDoc.SelectSingleNode("/chummer/armormods/armormod[id = "
                                                           + strNodeInnerText.CleanXPath() + "]/translate")?.Value
                               ?? objLoopDoc
-                                 .SelectSingleNode("/chummer/armormods/armormod[name = " + strNodeInnerText.CleanXPath()
-                                                   + "]/translate")?.Value;
+                                  .SelectSingleNode("/chummer/armormods/armormod[name = " +
+                                                    strNodeInnerText.CleanXPath()
+                                                    + "]/translate")?.Value;
                         strName = Environment.NewLine + '\t'
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
                                                               ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/armormods/armormod[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                                                                    .SelectSingleNode(
+                                                                        "/chummer/armormods/armormod[id = "
+                                                                        + strNodeInnerText.CleanXPath() + "]/name")
+                                                                    ?.Value
                                                                 ?? strNodeInnerText
                                                               : strNodeInnerText) + strSpace + '('
                                                       + (blnSync
@@ -3562,14 +3691,16 @@ namespace Chummer
                     if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
                     {
                         return new Tuple<bool, string>(objParent is Armor objArmor && (blnSync
-                                                           // ReSharper disable once MethodHasAsyncOverload
-                                                           ? objArmor.ArmorMods.Any(
-                                                               x => x.Name == strNodeInnerText
-                                                                    || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
-                                                           : await objArmor.ArmorMods.AnyAsync(
-                                                               x => x.Name == strNodeInnerText
-                                                                    || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false)),
-                                                       strName);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objArmor.ArmorMods.Any(
+                                    x => x.Name == strNodeInnerText
+                                         || string.Equals(x.SourceIDString, strNodeInnerText,
+                                             StringComparison.OrdinalIgnoreCase), token)
+                                : await objArmor.ArmorMods.AnyAsync(
+                                    x => x.Name == strNodeInnerText
+                                         || string.Equals(x.SourceIDString, strNodeInnerText,
+                                             StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false)),
+                            strName);
                     }
 
                     return new Tuple<bool, string>(
@@ -3577,10 +3708,12 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.Armor.Any(
                                 x => x.ArmorMods.Any(y => y.Name == strNodeInnerText
-                                                          || string.Equals(y.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token), token)
+                                                          || string.Equals(y.SourceIDString, strNodeInnerText,
+                                                              StringComparison.OrdinalIgnoreCase), token), token)
                             : await objCharacter.Armor.AnyAsync(
                                 x => x.ArmorMods.AnyAsync(
-                                    y => y.Name == strNodeInnerText || string.Equals(y.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), token),
+                                    y => y.Name == strNodeInnerText || string.Equals(y.SourceIDString, strNodeInnerText,
+                                        StringComparison.OrdinalIgnoreCase), token),
                                 token).ConfigureAwait(false), strName);
                 }
                 default:
@@ -3674,7 +3807,7 @@ namespace Chummer
         /// <summary>
         ///     Evaluates the availability of a given node against Availability Limits in Create Mode
         /// </summary>
-        public static async ValueTask<bool> CheckAvailRestrictionAsync(XmlNode objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
+        public static async Task<bool> CheckAvailRestrictionAsync(XmlNode objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
         {
             return objXmlGear != null && await objXmlGear.CreateNavigator().CheckAvailRestrictionAsync(objCharacter, intRating, intAvailModifier, token).ConfigureAwait(false);
         }
@@ -3688,7 +3821,7 @@ namespace Chummer
         /// <param name="intAvailModifier">Availability Modifier from other sources.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Returns False if not permitted with the current gameplay restrictions. Returns True if valid.</returns>
-        public static async ValueTask<bool> CheckAvailRestrictionAsync(this XPathNavigator objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
+        public static async Task<bool> CheckAvailRestrictionAsync(this XPathNavigator objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
         {
             if (objXmlGear == null)
                 return false;
@@ -3699,7 +3832,7 @@ namespace Chummer
                 return true;
             // Avail.
 
-            XPathNavigator objAvailNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false);
+            XPathNavigator objAvailNode = objXmlGear.SelectSingleNodeAndCacheExpression("avail", token);
             if (objAvailNode == null)
             {
                 int intHighestAvailNode = 0;
@@ -3805,7 +3938,7 @@ namespace Chummer
             return decMaxNuyen >= decCost * decCostMultiplier;
         }
 
-        public static async ValueTask<bool> CheckNuyenRestrictionAsync(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
+        public static async Task<bool> CheckNuyenRestrictionAsync(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
         {
             return objXmlGear != null && await objXmlGear.CreateNavigator()
                                                          .CheckNuyenRestrictionAsync(
@@ -3821,13 +3954,13 @@ namespace Chummer
         /// <param name="intRating">Effective Rating of the object.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Returns False if not permitted with the current restrictions. Returns True if valid.</returns>
-        public static async ValueTask<bool> CheckNuyenRestrictionAsync(this XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
+        public static async Task<bool> CheckNuyenRestrictionAsync(this XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
         {
             if (objXmlGear == null)
                 return false;
             // Cost.
             decimal decCost = 0.0m;
-            XPathNavigator objCostNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("cost", token).ConfigureAwait(false);
+            XPathNavigator objCostNode = objXmlGear.SelectSingleNodeAndCacheExpression("cost", token);
             if (objCostNode == null)
             {
                 int intCostRating = 1;

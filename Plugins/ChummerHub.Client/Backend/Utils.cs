@@ -613,7 +613,7 @@ namespace ChummerHub.Client.Backend
             if (blnSync)
                 ShowResponseForm();
             else
-                await Task.Run(ShowResponseForm, token);
+                await Task.Run(ShowResponseFormAsync, token);
             void ShowResponseForm()
             {
                 PluginHandler.MainForm.DoThreadSafe(() =>
@@ -627,7 +627,22 @@ namespace ChummerHub.Client.Backend
                     frmSIN.SINnerResponseUI.Result = rb;
                     Log.Trace("Showing Dialog for frmSINnerResponse()");
                     frmSIN.Show();
-                });
+                }, token: token);
+            }
+            Task ShowResponseFormAsync()
+            {
+                return PluginHandler.MainForm.DoThreadSafeAsync(() =>
+                {
+                    frmSINnerResponse frmSIN = new frmSINnerResponse
+                    {
+                        TopMost = true
+                    };
+                    if (rb.ErrorText.Length > 600)
+                        rb.ErrorText = rb.ErrorText.Substring(0, 598) + "...";
+                    frmSIN.SINnerResponseUI.Result = rb;
+                    Log.Trace("Showing Dialog for frmSINnerResponse()");
+                    frmSIN.Show();
+                }, token: token);
             }
             return rb;
         }
@@ -1172,11 +1187,11 @@ namespace ChummerHub.Client.Backend
                 Log.Info("Posting " + ce.MySINnerFile.Id + "...");
                 TaskScheduler objUIScheduler = null;
                 if (blnSync)
-                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    // ReSharper disable once MethodHasAsyncOverload
                     Program.MainForm.DoThreadSafe(() =>
                     {
                         objUIScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-                    });
+                    }, token: token);
                 SinnersClient client = StaticUtils.GetClient();
                 if (!StaticUtils.IsUnitTest)
                 {

@@ -27,11 +27,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class StoryModule : IHasName, IHasInternalId, IHasXmlDataNode, IHasLockObject
+    [DebuggerDisplay("{DisplayName(\"en-us\")}")]
+    public sealed class StoryModule : IHasName, IHasInternalId, IHasXmlDataNode, IHasLockObject, IHasCharacterObject
     {
         private readonly ConcurrentDictionary<string, string> _dicEnglishTexts = new ConcurrentDictionary<string, string>();
         private readonly Guid _guiInternalId;
@@ -43,10 +44,13 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
+
         public StoryModule(Character objCharacter)
         {
             _guiInternalId = Guid.NewGuid();
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = objCharacter.LockObject;
         }
 
         public void Create(XmlNode xmlStoryModuleDataNode)
@@ -91,17 +95,15 @@ namespace Chummer
                 xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
                 xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
 
-                XPathNavigator xmlTextsNode = await xmlStoryModuleDataNode
-                                                    .SelectSingleNodeAndCacheExpressionAsync("texts", token: token)
-                                                    .ConfigureAwait(false);
+                XPathNavigator xmlTextsNode = xmlStoryModuleDataNode
+                                                    .SelectSingleNodeAndCacheExpression("texts", token: token);
                 if (xmlTextsNode != null)
                 {
                     foreach (XPathNavigator xmlText in xmlStoryModuleDataNode.SelectChildren(XPathNodeType.Element))
                     {
                         token.ThrowIfCancellationRequested();
                         _dicEnglishTexts.TryAdd(xmlText.Name, xmlText.Value);
-                        if ((await xmlText.SelectSingleNodeAndCacheExpressionAsync("@default", token: token)
-                                          .ConfigureAwait(false))?.Value == bool.TrueString)
+                        if (xmlText.SelectSingleNodeAndCacheExpression("@default", token: token)?.Value == bool.TrueString)
                             _strDefaultTextKey = xmlText.Name;
                     }
 
@@ -209,30 +211,32 @@ namespace Chummer
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                return objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
-                    ?.Value ?? Name
-                    : Name;
+                return objNode?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? Name;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
-        public ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             return DisplayNameShortAsync(strLanguage, token);
         }
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
         public string DefaultKey
         {
@@ -263,9 +267,10 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<string> DisplayTextAsync(string strKey, string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayTextAsync(string strKey, string strLanguage, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 string strReturn;
@@ -279,21 +284,30 @@ namespace Chummer
 
                 return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>';
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public async ValueTask<string> TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return await ResolveMacros(await DisplayTextAsync(DefaultKey, strLanguage, token).ConfigureAwait(false),
                                            objCulture, strLanguage, true, token).ConfigureAwait(false);
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public async ValueTask<string> PrintModule(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> PrintModule(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterHiPrioReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -307,12 +321,13 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<string> ResolveMacros(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents = false, CancellationToken token = default)
+        public async Task<string> ResolveMacros(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents = false, CancellationToken token = default)
         {
             string strReturn = strInput;
             // Boolean in tuple is set to true if substring is a macro in need of processing, otherwise it's set to false
             List<Tuple<string, bool>> lstSubstrings = new List<Tuple<string, bool>>(1);
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 while (!string.IsNullOrEmpty(strReturn))
@@ -406,11 +421,16 @@ namespace Chummer
 
                 return string.Concat(lstOutputStrings);
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public async ValueTask<string> ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents, CancellationToken token = default)
+        public async Task<string> ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // Process Macros nested inside of single macro
@@ -442,7 +462,7 @@ namespace Chummer
                     }
                     case "$CharacterName":
                     {
-                        return _objCharacter.CharacterName;
+                        return await _objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                     }
                     case "$CharacterGrammaticalGender":
                     {
@@ -450,55 +470,57 @@ namespace Chummer
                     }
                     case "$Metatype":
                     {
-                        return _objCharacter.Metatype;
+                        return await _objCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
                     }
                     case "$Metavariant":
                     {
-                        return _objCharacter.Metavariant;
+                        return await _objCharacter.GetMetavariantAsync(token).ConfigureAwait(false);
                     }
                     case "$Eyes":
                     {
-                        return _objCharacter.Eyes;
+                        return await _objCharacter.GetEyesAsync(token).ConfigureAwait(false);
                     }
                     case "$Hair":
                     {
-                        return _objCharacter.Hair;
+                        return await _objCharacter.GetHairAsync(token).ConfigureAwait(false);
                     }
                     case "$Skin":
                     {
-                        return _objCharacter.Skin;
+                        return await _objCharacter.GetSkinAsync(token).ConfigureAwait(false);
                     }
                     case "$Height":
                     {
-                        return _objCharacter.Height;
+                        return await _objCharacter.GetHeightAsync(token).ConfigureAwait(false);
                     }
                     case "$Weight":
                     {
-                        return _objCharacter.Weight;
+                        return await _objCharacter.GetWeightAsync(token).ConfigureAwait(false);
                     }
                     case "$Gender":
                     {
-                        return _objCharacter.Gender;
+                        return await _objCharacter.GetGenderAsync(token).ConfigureAwait(false);
                     }
                     case "$Alias":
                     {
-                        return !string.IsNullOrEmpty(_objCharacter.Alias)
-                            ? _objCharacter.Alias
+                        string strAlias = await _objCharacter.GetAliasAsync(token).ConfigureAwait(false);
+                        return !string.IsNullOrEmpty(strAlias)
+                            ? strAlias
                             : await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
                                                    .ConfigureAwait(false);
                     }
                     case "$Name":
                     {
-                        if (!string.IsNullOrWhiteSpace(_objCharacter.Name))
+                        string strName = await _objCharacter.GetNameAsync(token).ConfigureAwait(false);
+                        if (!string.IsNullOrWhiteSpace(strName))
                         {
                             if (!string.IsNullOrEmpty(strArguments) && int.TryParse(strArguments, out int intNameIndex))
                             {
                                 string[] lstNames
-                                    = _objCharacter.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                                    = strName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                                 return lstNames[Math.Max(Math.Min(intNameIndex, lstNames.Length - 1), 0)];
                             }
 
-                            return _objCharacter.Name;
+                            return strName;
                         }
 
                         return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
@@ -506,7 +528,8 @@ namespace Chummer
                     }
                     case "$Year":
                     {
-                        if (int.TryParse(_objCharacter.Age, out int intCurrentAge))
+                        string strAge = await _objCharacter.GetAgeAsync(token).ConfigureAwait(false);
+                        if (int.TryParse(strAge, out int intCurrentAge))
                         {
                             int intBirthYear = DateTime.UtcNow.Year + 62 - intCurrentAge;
                             if (!string.IsNullOrEmpty(strArguments)
@@ -550,44 +573,110 @@ namespace Chummer
                     }
                     case "$LookupExtra":
                     {
-                        string strExtra = _objCharacter.AIPrograms
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.Armor
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.ComplexForms
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.CritterPowers
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.Cyberware
-                                                       .DeepFirstOrDefault(
-                                                           x => x.Children,
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.Gear
-                                                       .DeepFirstOrDefault(
-                                                           x => x.Children,
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.Powers
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.Qualities
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.Spells
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra;
+                        string strExtra = string.Empty;
+                        AIProgram objProgram = await _objCharacter.AIPrograms
+                            .FirstOrDefaultAsync(
+                                x => x.Name == strArguments
+                                     && !string.IsNullOrEmpty(x.Extra), token: token).ConfigureAwait(false);
+                        if (objProgram != null)
+                        {
+                            strExtra = objProgram.Extra;
+                        }
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            Armor objArmor = await _objCharacter.Armor
+                                .FirstOrDefaultAsync(
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objArmor != null)
+                            {
+                                strExtra = objArmor.Extra;
+                            }
+                        }
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            ComplexForm objComplexForm = await _objCharacter.ComplexForms
+                                .FirstOrDefaultAsync(
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objComplexForm != null)
+                            {
+                                strExtra = objComplexForm.Extra;
+                            }
+                        }
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            CritterPower objCritterPower = await _objCharacter.CritterPowers
+                                .FirstOrDefaultAsync(
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objCritterPower != null)
+                            {
+                                strExtra = objCritterPower.Extra;
+                            }
+                        }
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            Cyberware objCyberware = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
+                                .DeepFirstOrDefaultAsync(
+                                    x => x.GetChildrenAsync(token),
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objCyberware != null)
+                            {
+                                strExtra = objCyberware.Extra;
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            Gear objGear = await _objCharacter.Gear
+                                .DeepFirstOrDefaultAsync(
+                                    x => x.Children,
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objGear != null)
+                            {
+                                strExtra = objGear.Extra;
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            Power objPower = await _objCharacter.Powers
+                                .FirstOrDefaultAsync(
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objPower != null)
+                            {
+                                strExtra = objPower.Extra;
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            Quality objQuality = await _objCharacter.Qualities
+                                .FirstOrDefaultAsync(
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objQuality != null)
+                            {
+                                strExtra = objQuality.Extra;
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            Spell objSpell = await _objCharacter.Spells
+                                .FirstOrDefaultAsync(
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objSpell != null)
+                            {
+                                strExtra = objSpell.Extra;
+                            }
+                        }
+
                         if (!string.IsNullOrEmpty(strExtra))
                         {
                             return await _objCharacter.TranslateExtraAsync(strExtra, strLanguage, token: token)
@@ -642,6 +731,10 @@ namespace Chummer
                 return await LanguageManager.GetStringAsync("String_Error", strLanguage, token: token)
                                             .ConfigureAwait(false);
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public string InternalId
@@ -659,15 +752,22 @@ namespace Chummer
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XmlNode objReturn = _objCachedMyXmlNode;
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                XmlNode objDoc = blnSync
+                XmlDocument objDoc = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("stories.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync("stories.xml", strLanguage, token: token).ConfigureAwait(false);
@@ -681,6 +781,12 @@ namespace Chummer
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
             }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private XPathNavigator _objCachedMyXPathNode;
@@ -690,8 +796,15 @@ namespace Chummer
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? LockObject.EnterReadLock(token) : await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objReturn = _objCachedMyXPathNode;
@@ -712,21 +825,28 @@ namespace Chummer
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;
             }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            LockObject.Dispose();
+            // No disposal necessary because our LockObject is our character owner's LockObject
         }
 
         /// <inheritdoc />
         public ValueTask DisposeAsync()
         {
-            return LockObject.DisposeAsync();
+            // No disposal necessary because our LockObject is our character owner's LockObject
+            return default;
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

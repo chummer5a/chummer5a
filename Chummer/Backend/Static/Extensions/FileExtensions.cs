@@ -32,7 +32,7 @@ namespace Chummer
         /// Wait for an open file to be available for deletion and then delete it.
         /// </summary>
         /// <param name="strPath">File path to delete.</param>
-        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether to show a message if the file cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
@@ -45,7 +45,7 @@ namespace Chummer
         /// Wait for an open file to be available for deletion and then delete it.
         /// </summary>
         /// <param name="strPath">File path to delete.</param>
-        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether to show a message if the file cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
@@ -61,7 +61,7 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strPath">File path to delete.</param>
-        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether to show a message if the file cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
@@ -83,14 +83,25 @@ namespace Chummer
                         // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
                         if (blnShowUnauthorizedAccess)
                         {
-                            if (Program.ShowScrollableMessageBox(
-                                    string.Format(GlobalSettings.CultureInfo,
-                                                  blnSync
-                                                      // ReSharper disable once MethodHasAsyncOverload
-                                                      ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File", token: token)
-                                                      : await LanguageManager.GetStringAsync(
-                                                          "Message_Prompt_Delete_Existing_File", token: token).ConfigureAwait(false), strPath),
-                                    buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
+                            if (blnSync)
+                            {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                if (Program.ShowScrollableMessageBox(
+                                        string.Format(GlobalSettings.CultureInfo,
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            LanguageManager.GetString("Message_Prompt_Delete_Existing_File",
+                                                token: token), strPath),
+                                        buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) !=
+                                    DialogResult.Yes)
+                                    return false;
+                            }
+                            else if (await Program.ShowScrollableMessageBoxAsync(
+                                         string.Format(GlobalSettings.CultureInfo,
+                                             await LanguageManager.GetStringAsync(
+                                                     "Message_Prompt_Delete_Existing_File", token: token)
+                                                 .ConfigureAwait(false), strPath),
+                                         buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning, token: token).ConfigureAwait(false) !=
+                                     DialogResult.Yes)
                                 return false;
                         }
                         else
@@ -115,10 +126,19 @@ namespace Chummer
                 {
                     // We do not have sufficient privileges to delete this file.
                     if (blnShowUnauthorizedAccess)
-                        Program.ShowScrollableMessageBox(blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning", token: token)
-                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
+                    {
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            Program.ShowScrollableMessageBox(
+                                // ReSharper disable once MethodHasAsyncOverload
+                                LanguageManager.GetString("Message_Insufficient_Permissions_Warning", token: token));
+                        else
+                            await Program.ShowScrollableMessageBoxAsync(
+                                await LanguageManager
+                                    .GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
+                                    .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    }
+
                     return false;
                 }
                 catch (DirectoryNotFoundException)
@@ -289,14 +309,17 @@ namespace Chummer
         /// </summary>
         /// <param name="strPath">Path of the file where contents should be written.</param>
         /// <param name="strContents">The contents to write to the file.</param>
-        public static async Task WriteAllTextAsync(string strPath, string strContents)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task WriteAllTextAsync(string strPath, string strContents, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strPath))
                 return;
             using (FileStream objFileStream
                    = new FileStream(strPath, FileMode.Append, FileAccess.Write, FileShare.Write, 4096, true))
             using (StreamWriter objWriter = new StreamWriter(objFileStream))
             {
+                token.ThrowIfCancellationRequested();
                 await objWriter.WriteAsync(strContents).ConfigureAwait(false);
             }
         }
@@ -307,15 +330,69 @@ namespace Chummer
         /// <param name="strPath">Path of the file where contents should be written.</param>
         /// <param name="strContents">The contents to write to the file.</param>
         /// <param name="eEncoding">Specific encoding to use when writing to the file.</param>
-        public static async Task WriteAllTextAsync(string strPath, string strContents, Encoding eEncoding)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task WriteAllTextAsync(string strPath, string strContents, Encoding eEncoding, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strPath))
                 return;
             using (FileStream objFileStream
                    = new FileStream(strPath, FileMode.Append, FileAccess.Write, FileShare.Write, 4096, true))
             using (StreamWriter objWriter = new StreamWriter(objFileStream, eEncoding))
             {
+                token.ThrowIfCancellationRequested();
                 await objWriter.WriteAsync(strContents).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// An extended version of File.ReadAllBytes() that is asynchronous.
+        /// </summary>
+        /// <param name="strPath">The file to open for reading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<byte[]> ReadAllBytesAsync(string strPath, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strPath) || !File.Exists(strPath))
+                return Array.Empty<byte>();
+            using (FileStream objFileStream = new FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+            {
+                long lngLength = objFileStream.Length;
+                if (lngLength == 0)
+                    return Array.Empty<byte>();
+                int intCount = lngLength <= int.MaxValue ? (int)lngLength : throw new IOException("File too large.");
+                byte[] achrReturn = new byte[intCount];
+                int intLoop;
+                for (int intOffset = 0; intCount > 0; intCount -= intLoop)
+                {
+                    token.ThrowIfCancellationRequested();
+                    intLoop = await objFileStream.ReadAsync(achrReturn, intOffset, intCount, token).ConfigureAwait(false);
+                    if (intLoop == 0)
+                        throw new EndOfStreamException();
+                    intOffset += intLoop;
+                }
+                return achrReturn;
+            }
+        }
+
+        /// <summary>
+        /// An extended version of File.WriteAllBytes() that is asynchronous.
+        /// </summary>
+        /// <param name="strPath">The file to write to.</param>
+        /// <param name="achrBytes">The bytes to write to the file.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task WriteAllBytesAsync(string strPath, byte[] achrBytes, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strPath))
+                throw new ArgumentException("Path is empty.", nameof(strPath));
+            if (achrBytes == null)
+                throw new ArgumentNullException(nameof(achrBytes));
+
+            using (FileStream objFileStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.Write, 4096, true))
+            {
+                token.ThrowIfCancellationRequested();
+                await objFileStream.WriteAsync(achrBytes, 0, achrBytes.Length, token).ConfigureAwait(false);
             }
         }
     }

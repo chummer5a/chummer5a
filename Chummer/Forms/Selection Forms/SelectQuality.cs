@@ -48,10 +48,10 @@ namespace Chummer
         public SelectQuality(Character objCharacter)
         {
             Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
 
             // Load the Quality information.
             _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNodeAndCacheExpression("/chummer");
@@ -123,12 +123,12 @@ namespace Chummer
                     await nudRating.DoThreadSafeAsync(x => x.ValueAsInt = x.MinimumAsInt).ConfigureAwait(false);
                     int intMaxRating = int.MaxValue;
                     if (xmlQuality.TryGetInt32FieldQuickly("limit", ref intMaxRating)
-                        && await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("nolevels").ConfigureAwait(false) == null)
+                        && xmlQuality.SelectSingleNodeAndCacheExpression("nolevels") == null)
                     {
                         await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                         await nudRating.DoThreadSafeAsync(x =>
                         {
-                            x.MaximumAsInt = intMaxRating;
+                            x.Maximum = intMaxRating;
                             x.Visible = true;
                         }).ConfigureAwait(false);
                     }
@@ -137,18 +137,18 @@ namespace Chummer
                         await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
                         await nudRating.DoThreadSafeAsync(x =>
                         {
-                            x.MaximumAsInt = 1;
-                            x.ValueAsInt = 1;
+                            x.Maximum = 1;
+                            x.Value = 1;
                             x.Visible = false;
                         }).ConfigureAwait(false);
                     }
 
                     await UpdateCostLabel(xmlQuality).ConfigureAwait(false);
 
-                    string strSource = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value
+                    string strSource = xmlQuality.SelectSingleNodeAndCacheExpression("source")?.Value
                                        ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                    string strPage = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value
-                                     ?? (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value
+                    string strPage = xmlQuality.SelectSingleNodeAndCacheExpression("altpage")?.Value
+                                     ?? xmlQuality.SelectSingleNodeAndCacheExpression("page")?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     SourceString objSource = await SourceString.GetSourceStringAsync(
                         strSource, strPage, GlobalSettings.Language,
@@ -248,7 +248,7 @@ namespace Chummer
 
                         break;
                     }
-                case Keys.Up when lstQualities.SelectedIndex - 1 >= 0:
+                case Keys.Up when lstQualities.SelectedIndex >= 1:
                     --lstQualities.SelectedIndex;
                     break;
 
@@ -331,7 +331,7 @@ namespace Chummer
         {
             set
             {
-                if (_lstCategory.Any(x => x.Value.ToString() == value))
+                if (_lstCategory.Exists(x => string.Equals(x.Value.ToString(), value, StringComparison.OrdinalIgnoreCase)))
                 {
                     cboCategory.BeginUpdate();
                     try
@@ -353,12 +353,12 @@ namespace Chummer
         public string IgnoreQuality { get; set; } = string.Empty;
 
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Whether the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain => _blnAddAgain;
 
         /// <summary>
-        /// Whether or not the item has no cost.
+        /// Whether the item has no cost.
         /// </summary>
         public bool FreeCost => chkFree.Checked;
 
@@ -366,7 +366,7 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask UpdateCostLabel(XPathNavigator xmlQuality, CancellationToken token = default)
+        private async Task UpdateCostLabel(XPathNavigator xmlQuality, CancellationToken token = default)
         {
             if (xmlQuality != null)
             {
@@ -374,7 +374,7 @@ namespace Chummer
                     await lblBP.DoThreadSafeAsync(x => x.Text = 0.ToString(GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
                 else
                 {
-                    string strKarma = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("karma", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                    string strKarma = xmlQuality.SelectSingleNodeAndCacheExpression("karma", token)?.Value ?? string.Empty;
                     if (strKarma.StartsWith("Variable(", StringComparison.Ordinal))
                     {
                         int intMin;
@@ -404,13 +404,15 @@ namespace Chummer
                     {
                         int.TryParse(strKarma, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intBP);
 
-                        if (await (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("costdiscount", token).ConfigureAwait(false)).RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
+                        XPathNavigator xmlCostDiscount =
+                            xmlQuality.SelectSingleNodeAndCacheExpression("costdiscount", token);
+                        if (xmlCostDiscount != null && await xmlCostDiscount.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                         {
-                            XPathNavigator xmlValueNode = await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("costdiscount/value", token).ConfigureAwait(false);
+                            XPathNavigator xmlValueNode = xmlCostDiscount.SelectSingleNodeAndCacheExpression("value", token);
                             if (xmlValueNode != null)
                             {
                                 int intValue = xmlValueNode.ValueAsInt;
-                                switch ((await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value)
+                                switch (xmlQuality.SelectSingleNodeAndCacheExpression("category", token)?.Value)
                                 {
                                     case "Positive":
                                         intBP += intValue;
@@ -423,9 +425,9 @@ namespace Chummer
                             }
                         }
 
-                        if (_objCharacter.Created && !_objCharacter.Settings.DontDoubleQualityPurchases)
+                        if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) && !await _objCharacter.Settings.GetDontDoubleQualityPurchasesAsync(token).ConfigureAwait(false))
                         {
-                            string strDoubleCostCareer = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("doublecareer", token).ConfigureAwait(false))?.Value;
+                            string strDoubleCostCareer = xmlQuality.SelectSingleNodeAndCacheExpression("doublecareer", token)?.Value;
                             if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer != bool.FalseString)
                             {
                                 intBP *= 2;
@@ -439,9 +441,9 @@ namespace Chummer
                         if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                         {
                             int intFreeSpells = await _objCharacter.GetFreeSpellsAsync(token).ConfigureAwait(false);
-                            if (intFreeSpells > 0 
+                            if (intFreeSpells > 0
                                 && Convert.ToBoolean(
-                                    (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("canbuywithspellpoints", token).ConfigureAwait(false))?.Value,
+                                    xmlQuality.SelectSingleNodeAndCacheExpression("canbuywithspellpoints", token)?.Value,
                                     GlobalSettings.InvariantCultureInfo))
                             {
                                 int intSpellCost = await _objCharacter.SpellKarmaCostAsync("Spell", token)
@@ -483,7 +485,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Qualities.
         /// </summary>
-        private async ValueTask BuildQualityList(CancellationToken token = default)
+        private async Task BuildQualityList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -494,21 +496,21 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
                 sbdFilter.Append('(')
-                         .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
-                         .Append(')');
+                    .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
+                    .Append(')');
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
                                                            || await txtSearch
-                                                                    .DoThreadSafeFuncAsync(
-                                                                        x => x.TextLength, token: token)
-                                                                    .ConfigureAwait(false) == 0))
+                                                               .DoThreadSafeFuncAsync(
+                                                                   x => x.TextLength, token: token)
+                                                               .ConfigureAwait(false) == 0))
                 {
                     sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                 }
                 else
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCategoryFilter))
+                               out StringBuilder sbdCategoryFilter))
                     {
                         foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
                         {
@@ -529,59 +531,62 @@ namespace Chummer
                     sbdFilter.Append(" and (metagenic = 'True' or required/oneof[contains(., 'Changeling')])");
                 }
                 else if (await chkNotMetagenic.DoThreadSafeFuncAsync(x => x.Checked, token: token)
-                                              .ConfigureAwait(false))
+                             .ConfigureAwait(false))
                 {
                     sbdFilter.Append(" and not(metagenic = 'True') and not(required/oneof[contains(., 'Changeling')])");
                 }
 
                 decimal decValueBP = await nudValueBP.DoThreadSafeFuncAsync(x => x.Value, token: token)
-                                                     .ConfigureAwait(false);
+                    .ConfigureAwait(false);
                 if (decValueBP != 0)
                 {
                     string strValueBP = decValueBP.ToString(GlobalSettings.InvariantCultureInfo);
-                    if (_objCharacter.Created && !_objCharacter.Settings.DontDoubleQualityPurchases
-                                              && decValueBP > 0)
+                    if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                        && !await _objCharacter.Settings.GetDontDoubleQualityPurchasesAsync(token).ConfigureAwait(false)
+                        && decValueBP > 0)
                     {
                         string strValueBPHalved = (decValueBP / 2).ToString(GlobalSettings.InvariantCultureInfo);
                         sbdFilter.Append(" and ((doublecareer = 'False' and (karma = ").Append(strValueBP)
-                                 .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
-                                 .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP)
-                                 .Append("))) or (not(doublecareer = 'False') and (karma = ").Append(strValueBPHalved)
-                                 .Append(" or (not(nolevels) and limit != 'False' and (karma mod ")
-                                 .Append(strValueBPHalved)
-                                 .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBPHalved)
-                                 .Append("))))");
+                            .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
+                            .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP)
+                            .Append("))) or (not(doublecareer = 'False') and (karma = ").Append(strValueBPHalved)
+                            .Append(" or (not(nolevels) and limit != 'False' and (karma mod ")
+                            .Append(strValueBPHalved)
+                            .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBPHalved)
+                            .Append("))))");
                     }
                     else
                     {
                         sbdFilter.Append(" and (karma = ").Append(strValueBP)
-                                 .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
-                                 .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP).Append("))");
+                            .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
+                            .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP).Append("))");
                     }
                 }
                 else
                 {
                     int intMinimumBP = await nudMinimumBP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token)
-                                                         .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     int intMaximumBP = await nudMaximumBP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token)
-                                                         .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     if (intMinimumBP != 0 || intMaximumBP != 0)
                     {
                         if (intMinimumBP < 0 == intMaximumBP < 0)
                         {
                             sbdFilter.Append(" and (")
-                                     .Append(GetKarmaRangeString(intMaximumBP, intMinimumBP))
-                                     .Append(')');
+                                .Append(await GetKarmaRangeString(intMaximumBP, intMinimumBP).ConfigureAwait(false))
+                                .Append(')');
                         }
                         else
                         {
-                            sbdFilter.Append("and ((").Append(GetKarmaRangeString(intMaximumBP, 0))
-                                     .Append(") or (")
-                                     .Append(GetKarmaRangeString(-1, intMinimumBP)).Append("))");
+                            sbdFilter.Append("and ((")
+                                .Append(await GetKarmaRangeString(intMaximumBP, 0).ConfigureAwait(false))
+                                .Append(") or (")
+                                .Append(await GetKarmaRangeString(-1, intMinimumBP).ConfigureAwait(false)).Append("))");
                         }
 
-                        string GetKarmaRangeString(int intMax, int intMin)
+                        async Task<string> GetKarmaRangeString(int intMax, int intMin)
                         {
+                            token.ThrowIfCancellationRequested();
                             string strMax = intMax.ToString(GlobalSettings.InvariantCultureInfo);
                             string strMin = intMin.ToString(GlobalSettings.InvariantCultureInfo);
                             string strMostExtremeValue
@@ -589,7 +594,9 @@ namespace Chummer
                             string strValueDiff
                                 = (intMax > 0 ? intMax - intMin : intMin - intMax).ToString(
                                     GlobalSettings.InvariantCultureInfo);
-                            if (_objCharacter.Created && !_objCharacter.Settings.DontDoubleQualityPurchases)
+                            if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                                && !await _objCharacter.Settings.GetDontDoubleQualityPurchasesAsync(token)
+                                    .ConfigureAwait(false))
                             {
                                 return "((doublecareer = 'False' or karma < 0) and ((karma >= " + strMin
                                     + " and karma <= "
@@ -602,9 +609,9 @@ namespace Chummer
                                     strMin + ") or (karma < 0 and karma * limit <= " + strMax +
                                     "))))) or (not(doublecareer = 'False' or karma < 0) and ((2 * karma >= " + strMin +
                                     " and 2 * karma <= " + strMax +
-                                    ") or (not(nolevels) and limit != 'False' and 2 * karma * karma <= 2 * karma * " +
+                                    ") or (not(nolevels) and limit != 'False' and 2 * karma * karma <= karma * " +
                                     strMostExtremeValue + " and (2 * karma * (" + strMostExtremeValue +
-                                    " mod (2 * karma)) <= 2 * karma * " + strValueDiff +
+                                    " mod (2 * karma)) <= karma * " + strValueDiff +
                                     ") and ((karma >= 0 and 2 * karma * limit >= " + strMin +
                                     ") or (karma < 0 and 2 * karma * limit <= " + strMax + ")))))";
                             }
@@ -637,9 +644,8 @@ namespace Chummer
                 foreach (XPathNavigator objXmlQuality in
                          _xmlBaseQualityDataNode.Select("qualities/quality" + strFilter))
                 {
-                    string strLoopName = (await objXmlQuality
-                                                .SelectSingleNodeAndCacheExpressionAsync("name", token: token)
-                                                .ConfigureAwait(false))?.Value;
+                    string strLoopName = objXmlQuality
+                        .SelectSingleNodeAndCacheExpression("name", token: token)?.Value;
                     if (string.IsNullOrEmpty(strLoopName))
                         continue;
                     if (_xmlMetatypeQualityRestrictionNode != null
@@ -647,16 +653,14 @@ namespace Chummer
                             strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + ']') == null)
                         continue;
                     if (!blnLimitList
-                        || await objXmlQuality.RequirementsMetAsync(_objCharacter, string.Empty, string.Empty, IgnoreQuality, token: token).ConfigureAwait(false))
+                        || await objXmlQuality.RequirementsMetAsync(_objCharacter, strIgnoreQuality: IgnoreQuality, token: token).ConfigureAwait(false))
                     {
                         lstQuality.Add(new ListItem(
-                                           (await objXmlQuality
-                                                  .SelectSingleNodeAndCacheExpressionAsync("id", token: token)
-                                                  .ConfigureAwait(false))?.Value
+                                           objXmlQuality
+                                               .SelectSingleNodeAndCacheExpression("id", token: token)?.Value
                                            ?? string.Empty,
-                                           (await objXmlQuality
-                                                  .SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                                  .ConfigureAwait(false))?.Value
+                                           objXmlQuality
+                                               .SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                            ?? strLoopName));
                     }
                 }
@@ -683,7 +687,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             string strSelectedQuality = await lstQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedQuality))
@@ -691,13 +695,13 @@ namespace Chummer
 
             XPathNavigator objNode = _xmlBaseQualityDataNode.TryGetNodeByNameOrId("qualities/quality", strSelectedQuality);
 
-            if (objNode == null || !await objNode.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync("String_Quality", token: token).ConfigureAwait(false), IgnoreQuality, token: token).ConfigureAwait(false))
+            if (objNode == null || !await objNode.RequirementsMetAsync(_objCharacter, strLocalName: await LanguageManager.GetStringAsync("String_Quality", token: token).ConfigureAwait(false), strIgnoreQuality: IgnoreQuality, token: token).ConfigureAwait(false))
                 return;
 
             _strSelectedQuality = strSelectedQuality;
             _strSelectCategory = GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0
                 ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false)
-                : (await objNode.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value;
+                : objNode.SelectSingleNodeAndCacheExpression("category", token)?.Value;
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;

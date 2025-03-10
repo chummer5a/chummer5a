@@ -34,7 +34,7 @@ namespace Chummer
     /// A Location.
     /// </summary>
     [DebuggerDisplay("{nameof(Name)}")]
-    public sealed class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IHasLockObject
+    public sealed class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;
         private string _strName;
@@ -42,7 +42,9 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
         private readonly Character _objCharacter;
-        private readonly ThreadSafeObservableCollection<IHasLocation> _lstChildren = new ThreadSafeObservableCollection<IHasLocation>();
+        private readonly ThreadSafeObservableCollection<IHasLocation> _lstChildren;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -50,7 +52,9 @@ namespace Chummer
         {
             // Create the GUID for the new art.
             _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = objCharacter.LockObject;
+            _lstChildren = new ThreadSafeObservableCollection<IHasLocation>(LockObject);
             _strName = strName;
             Parent = objParent;
             Children.CollectionChanged += ChildrenOnCollectionChanged;
@@ -192,12 +196,12 @@ namespace Chummer
             return DisplayNameShort(strLanguage);
         }
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
         {
             return DisplayNameAsync(GlobalSettings.Language, token);
         }
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default)
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default)
         {
             return DisplayNameShortAsync(GlobalSettings.Language, token);
         }
@@ -205,11 +209,12 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage = "", CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage = "", CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
                 return Name;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return await _objCharacter.TranslateExtraAsync(
@@ -219,12 +224,16 @@ namespace Chummer
                                 .ConfigureAwait(false)
                         : Name, strLanguage, token: token).ConfigureAwait(false);
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public ValueTask<string> DisplayNameAsync(string strLanguage = "", CancellationToken token = default)
+        public Task<string> DisplayNameAsync(string strLanguage = "", CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
@@ -297,11 +306,14 @@ namespace Chummer
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsLocation, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                string strText = CurrentDisplayName;
+                token.ThrowIfCancellationRequested();
+                string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                 TreeNode objNode = new TreeNode
                 {
                     Name = InternalId,
@@ -313,6 +325,10 @@ namespace Chummer
                 };
 
                 return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -363,7 +379,7 @@ namespace Chummer
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    foreach (IHasLocation objItem in Children)
+                    foreach (IHasLocation objItem in Children.AsEnumerableWithSideEffects())
                         objItem.Location = this;
                     break;
             }
@@ -374,12 +390,30 @@ namespace Chummer
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation")))
                 return false;
 
-            foreach (IHasLocation item in Children)
+            foreach (IHasLocation item in Children.AsEnumerableWithSideEffects())
                 item.Location = null;
 
             bool blnReturn = Parent?.Contains(this) != true || Parent.Remove(this);
 
             Dispose();
+
+            return blnReturn;
+        }
+
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (blnConfirmDelete && !await CommonFunctions
+                    .ConfirmDeleteAsync(
+                        await LanguageManager.GetStringAsync("Message_DeleteGearLocation", token: token)
+                            .ConfigureAwait(false), token).ConfigureAwait(false))
+                return false;
+
+            await Children.ForEachWithSideEffectsAsync(x => x.Location = null, token: token).ConfigureAwait(false);
+
+            bool blnReturn = Parent?.Contains(this) != true || Parent.Remove(this);
+
+            await DisposeAsync().ConfigureAwait(false);
 
             return blnReturn;
         }
@@ -403,11 +437,9 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

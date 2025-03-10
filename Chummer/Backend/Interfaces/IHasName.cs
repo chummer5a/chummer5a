@@ -28,6 +28,6 @@ namespace Chummer
 
         string CurrentDisplayName { get; }
 
-        ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default);
+        Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default);
     }
 }

@@ -4037,8 +4037,12 @@
       <text>Feinde</text>
     </string>
     <string>
-      <key>Label_Options_Carryover</key>
-      <text>Übertragen für neuen Charakter</text>
+      <key>Label_Options_Carryover_Nuyen</key>
+      <text>Max Nuyen Übertragen</text>
+    </string>
+    <string>
+      <key>Label_Options_Carryover_Karma</key>
+      <text>Max Karma Übertragen</text>
     </string>
     <string>
       <key>Label_Options_Initiation</key>
@@ -6891,15 +6895,15 @@
     </string>
     <string>
       <key>String_Initiative</key>
-      <text>{0} +{1}W6</text>
+      <text>{0} + {1}W6</text>
     </string>
     <string>
       <key>String_MatrixInitiative</key>
-      <text>{0} + DV +{1}W6</text>
+      <text>{0} + DV + {1}W6</text>
     </string>
     <string>
       <key>String_MatrixInitiativeLong</key>
-      <text>{0} + Datenverarbeitung +{1}W6</text>
+      <text>{0} + Datenverarbeitung + {1}W6</text>
     </string>
     <string>
       <key>String_AttributeESSLong</key>
@@ -7362,6 +7366,10 @@
       <text>Unausgerüstete Modulare Cyberware</text>
     </string>
     <string>
+      <key>Node_UnequippedModularBioware</key>
+      <text>Unausgerüstete Modulare Bioware</text>
+    </string>
+    <string>
       <key>Menu_EditWeaponMount</key>
       <text>Waffenhalterung &amp;bearbeiten</text>
     </string>
@@ -7415,7 +7423,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Tenant</key>
-      <text>Hauptmieter</text>
+      <text>Miete aufteilen</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_LPContribution</key>
@@ -8663,7 +8671,11 @@
     </string>
     <string>
       <key>String_NotSupported</key>
-      <text>"Diese Kombination von Rasse/Metavariante ist aktuell noch unvollständig und wird in künftige Versionen vervollständigt. Versuche, einen Charakter mit dieser Kombination zu erstellen, können zu unerwarteten Ergebnissen führen."</text>
+      <text>Nicht unterstützt</text>
+    </string>
+    <string>
+      <key>Message_MetatypeNotSupported</key>
+      <text>Diese Kombination von Rasse/Metavariante ist aktuell noch unvollständig und wird in künftige Versionen vervollständigt. Versuche, einen Charakter mit dieser Kombination zu erstellen, können zu unerwarteten Ergebnissen führen.</text>
     </string>
     <string>
       <key>Warning_NoLimitFound</key>

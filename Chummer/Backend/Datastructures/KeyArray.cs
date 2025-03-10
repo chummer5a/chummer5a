@@ -89,15 +89,15 @@ namespace Chummer
         public static bool operator !=(KeyArray<T> lhs, KeyArray<T> rhs) => !(lhs == rhs);
 
         /// <inheritdoc />
-        public bool Equals(KeyArray<T> rhs)
+        public bool Equals(KeyArray<T> other)
         {
-            if (GetHashCode() != rhs.GetHashCode())
+            if (GetHashCode() != other.GetHashCode())
                 return false;
-            if (Length != rhs.Length)
+            if (Length != other.Length)
                 return false;
             for (int i = 0; i < Length; ++i)
             {
-                if (!Equals(this[i], rhs[i]))
+                if (!Equals(this[i], other[i]))
                     return false;
             }
             return true;

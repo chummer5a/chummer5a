@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -34,7 +35,7 @@ using ListView = System.Windows.Forms.ListView;
 using SystemColors = System.Drawing.SystemColors;
 using TableCell = Chummer.UI.Table.TableCell;
 using TextBox = System.Windows.Forms.TextBox;
-using Timer = System.Windows.Forms.Timer;
+using Timer = System.Timers.Timer;
 using TreeNode = System.Windows.Forms.TreeNode;
 using TreeView = System.Windows.Forms.TreeView;
 
@@ -69,7 +70,7 @@ namespace Chummer
             }
 
             s_TmrDarkModeCheckerTimer = new Timer { Interval = 5000 }; // Poll registry every 5 seconds
-            s_TmrDarkModeCheckerTimer.Tick += TmrDarkModeCheckerTimerOnTick;
+            s_TmrDarkModeCheckerTimer.Elapsed += TmrDarkModeCheckerTimerOnTick;
             switch (GlobalSettings.ColorModeSetting)
             {
                 case ColorMode.Automatic:
@@ -88,7 +89,7 @@ namespace Chummer
 
         private static async void TmrDarkModeCheckerTimerOnTick(object sender, EventArgs e)
         {
-            await AutoApplyLightDarkModeAsync().ConfigureAwait(false);
+            await AutoApplyLightDarkModeAsync(CancellationToken.None).ConfigureAwait(false);
         }
 
         public static void AutoApplyLightDarkMode()
@@ -135,7 +136,7 @@ namespace Chummer
                 if (Program.MainForm == null)
                     return;
                 using (CursorWait.New(Program.MainForm))
-                    Program.MainForm.UpdateLightDarkMode();
+                    Program.MainForm.UpdateLightDarkMode(CancellationToken.None);
             }
         }
 
@@ -171,7 +172,7 @@ namespace Chummer
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with lightness and saturation adjusted for Dark Mode.</returns>
         public static Color GenerateDarkModeColor(Color objColor)
         {
-            return s_DicDarkModeColors.GetOrAdd(objColor, x => GetDarkModeVersion(objColor));
+            return s_DicDarkModeColors.GetOrAdd(objColor, GetDarkModeVersion);
         }
 
         /// <summary>
@@ -181,7 +182,7 @@ namespace Chummer
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its Dark Mode conversion inverted.</returns>
         public static Color GenerateInverseDarkModeColor(Color objColor)
         {
-            return s_DicInverseDarkModeColors.GetOrAdd(objColor, x => InverseGetDarkModeVersion(objColor));
+            return s_DicInverseDarkModeColors.GetOrAdd(objColor, InverseGetDarkModeVersion);
         }
 
         /// <summary>
@@ -212,8 +213,8 @@ namespace Chummer
         public static Color GenerateCurrentModeDimmedColor(Color objColor)
         {
             return IsLightMode
-                ? s_DicDimmedColors.GetOrAdd(objColor, x => GetDimmedVersion(objColor))
-                : s_DicBrightenedColors.GetOrAdd(objColor, x => GetBrightenedVersion(objColor));
+                ? s_DicDimmedColors.GetOrAdd(objColor, GetDimmedVersion)
+                : s_DicBrightenedColors.GetOrAdd(objColor, GetBrightenedVersion);
         }
 
         /// <summary>
@@ -424,9 +425,10 @@ namespace Chummer
             float fltNewValue = Math.Min((float)(fltValue - 0.1302 + 0.14 * Math.Sqrt(fltValue - 0.1351)), 1.0f);
             // Now convert to Lightness so we can flip it
             float fltNewLightness = fltNewValue * (1 - fltNewSaturationHsv / 2.0f);
-            float fltNewSaturationHsl = fltNewLightness == 0
-                ? 0
-                : (fltNewValue - fltNewLightness) / Math.Min(fltNewLightness, 1 - fltNewLightness);
+            float fltDivisor = Math.Min(fltNewLightness, 1 - fltNewLightness);
+            float fltNewSaturationHsl = fltDivisor == 0
+                ? 1
+                : (fltNewValue - fltNewLightness) / fltDivisor;
             fltNewLightness = 1 - fltNewLightness;
             return FromHsla(fltHue, fltNewSaturationHsl, fltNewLightness, objColor.A);
         }
@@ -538,7 +540,7 @@ namespace Chummer
                             x.LineColor = WindowTextDark;
                         }
                     }, token);
-                    foreach (TreeNode objNode in treControl.DoThreadSafeFunc(x => x.Nodes))
+                    foreach (TreeNode objNode in treControl.DoThreadSafeFunc(x => x.Nodes, token))
                         ApplyColorsRecursively(objNode, blnLightMode, token);
                     break;
 
@@ -585,7 +587,7 @@ namespace Chummer
                         {
                             x.ForeColor = WindowTextLight;
                             x.BackColor = WindowLight;
-                            foreach (DiceRollerListViewItem objItem in x.Items)
+                            foreach (DiceRollerListViewItem objItem in x.Items.OfType<DiceRollerListViewItem>())
                             {
                                 if (objItem.IsHit)
                                 {
@@ -616,7 +618,7 @@ namespace Chummer
                         {
                             x.ForeColor = WindowTextDark;
                             x.BackColor = WindowDark;
-                            foreach (DiceRollerListViewItem objItem in x.Items)
+                            foreach (DiceRollerListViewItem objItem in x.Items.OfType<DiceRollerListViewItem>())
                             {
                                 if (objItem.IsHit)
                                 {
@@ -830,7 +832,7 @@ namespace Chummer
 
             ToolStrip objParent = tssItem.GetCurrentParent();
             if (objParent != null)
-                objParent.DoThreadSafe(DoColor);
+                objParent.DoThreadSafe(DoColor, token: token);
             else
                 DoColor();
 
@@ -882,7 +884,7 @@ namespace Chummer
                         ApplyColorsRecursively(tssDropDownChild, blnLightMode, token);
                     break;
                 case ColorableToolStripSeparator tssSeparator when objParent != null:
-                    objParent.DoThreadSafe(() => tssSeparator.DefaultColorScheme = blnLightMode);
+                    objParent.DoThreadSafe(() => tssSeparator.DefaultColorScheme = blnLightMode, token: token);
                     break;
                 case ColorableToolStripSeparator tssSeparator:
                     tssSeparator.DefaultColorScheme = blnLightMode;
@@ -895,7 +897,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             TreeView treView = nodNode.TreeView;
             if (treView != null)
-                treView.DoThreadSafe(DoColor);
+                treView.DoThreadSafe(DoColor, token: token);
             else
                 DoColor();
 
@@ -1074,7 +1076,7 @@ namespace Chummer
                             x.BackColor = objBackColor;
                             if (blnLightMode)
                             {
-                                foreach (DiceRollerListViewItem objItem in x.Items)
+                                foreach (DiceRollerListViewItem objItem in x.Items.OfType<DiceRollerListViewItem>())
                                 {
                                     if (objItem.IsHit)
                                     {
@@ -1103,7 +1105,7 @@ namespace Chummer
                             }
                             else
                             {
-                                foreach (DiceRollerListViewItem objItem in x.Items)
+                                foreach (DiceRollerListViewItem objItem in x.Items.OfType<DiceRollerListViewItem>())
                                 {
                                     if (objItem.IsHit)
                                     {
@@ -1532,10 +1534,14 @@ namespace Chummer
                     break;
             }
 
+            dblRed = Math.Round(dblRed * byte.MaxValue, MidpointRounding.AwayFromZero);
+            dblGreen = Math.Round(dblGreen * byte.MaxValue, MidpointRounding.AwayFromZero);
+            dblBlue = Math.Round(dblBlue * byte.MaxValue, MidpointRounding.AwayFromZero);
+
             return Color.FromArgb(chrAlpha,
-                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblRed * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
-                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblGreen * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
-                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblBlue * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue));
+                Math.Max(Math.Min(double.IsNaN(dblRed) ? 0 : Convert.ToInt32(dblRed), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(double.IsNaN(dblGreen) ? 0 : Convert.ToInt32(dblGreen), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(double.IsNaN(dblBlue) ? 0 : Convert.ToInt32(dblBlue), byte.MaxValue), byte.MinValue));
         }
 
         /// <summary>
@@ -1612,10 +1618,14 @@ namespace Chummer
                     break;
             }
 
+            dblRed = Math.Round(dblRed * byte.MaxValue, MidpointRounding.AwayFromZero);
+            dblGreen = Math.Round(dblGreen * byte.MaxValue, MidpointRounding.AwayFromZero);
+            dblBlue = Math.Round(dblBlue * byte.MaxValue, MidpointRounding.AwayFromZero);
+
             return Color.FromArgb(chrAlpha,
-                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblRed * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
-                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblGreen * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
-                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblBlue * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue));
+                Math.Max(Math.Min(double.IsNaN(dblRed) ? 0 : Convert.ToInt32(dblRed), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(double.IsNaN(dblGreen) ? 0 : Convert.ToInt32(dblGreen), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(double.IsNaN(dblBlue) ? 0 : Convert.ToInt32(dblBlue), byte.MaxValue), byte.MinValue));
         }
 
         #endregion Color Utility Methods

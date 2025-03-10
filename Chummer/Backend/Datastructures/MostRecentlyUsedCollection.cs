@@ -26,15 +26,15 @@ namespace Chummer
 {
     public class MostRecentlyUsedCollection<T> : ThreadSafeObservableCollectionWithMaxSize<T>
     {
-        public MostRecentlyUsedCollection(int intMaxSize) : base(intMaxSize)
+        public MostRecentlyUsedCollection(int intMaxSize, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(intMaxSize, objParentLock, blnLockReadOnlyForParent)
         {
         }
 
-        public MostRecentlyUsedCollection(List<T> list, int intMaxSize) : base(list, intMaxSize)
+        public MostRecentlyUsedCollection(List<T> list, int intMaxSize, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(list, intMaxSize, objParentLock, blnLockReadOnlyForParent)
         {
         }
 
-        public MostRecentlyUsedCollection(IEnumerable<T> collection, int intMaxSize) : base(collection, intMaxSize)
+        public MostRecentlyUsedCollection(IEnumerable<T> collection, int intMaxSize, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(collection, intMaxSize, objParentLock, blnLockReadOnlyForParent)
         {
         }
 
@@ -52,7 +52,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Insert" />
-        public override async ValueTask InsertAsync(int index, T item, CancellationToken token = default)
+        public override async Task InsertAsync(int index, T item, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -96,16 +96,22 @@ namespace Chummer
             }
         }
 
-        public override async ValueTask AddAsync(T item, CancellationToken token = default)
+        public override async Task AddAsync(T item, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
                 if (intExistingIndex == -1)
                     await base.AddAsync(item, token).ConfigureAwait(false);
                 else
-                    await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token).ConfigureAwait(false);
+                    await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token)
+                        .ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -123,16 +129,22 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public override async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
+        public override async Task<bool> TryAddAsync(T item, CancellationToken token = default)
         {
-            using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
                 if (intExistingIndex == -1)
                     return await base.TryAddAsync(item, token).ConfigureAwait(false);
-                await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token).ConfigureAwait(false);
+                await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token)
+                    .ConfigureAwait(false);
                 return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
     }

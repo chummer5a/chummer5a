@@ -28,12 +28,19 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public interface IHasMatrixAttributes
+    public interface IHasMatrixAttributes : IHasCharacterObject
     {
         int GetBaseMatrixAttribute(string strAttributeName);
 
+        Task<int> GetBaseMatrixAttributeAsync(string strAttributeName, CancellationToken token = default);
+
         int GetBonusMatrixAttribute(string strAttributeName);
 
+        Task<int> GetBonusMatrixAttributeAsync(string strAttributeName, CancellationToken token = default);
+
+        /// <summary>
+        /// Whether the Gear qualifies as a Program in the printout XML.
+        /// </summary>
         bool IsProgram { get; }
         string Attack { get; set; }
         string Sleaze { get; set; }
@@ -43,10 +50,31 @@ namespace Chummer
         string ModSleaze { get; set; }
         string ModDataProcessing { get; set; }
         string ModFirewall { get; set; }
-        string Overclocked { get; set; }
 
+        /// <summary>
+        /// ASDF attribute boosted by Overclocker.
+        /// </summary>
+        string Overclocked { get; set; }
+        /// <summary>
+        /// ASDF attribute boosted by Overclocker.
+        /// </summary>
+        Task<string> GetOverclockedAsync(CancellationToken token = default);
+        /// <summary>
+        /// String to determine if the device can form persona or grants persona forming to its parent.
+        /// </summary>
         string CanFormPersona { get; set; }
+        /// <summary>
+        /// String to determine if the device can form persona or grants persona forming to its parent.
+        /// </summary>
+        Task<string> GetCanFormPersonaAsync(CancellationToken token = default);
+        /// <summary>
+        /// Is this device one that can form a persona?
+        /// </summary>
         bool IsCommlink { get; }
+        /// <summary>
+        /// Is this device one that can form a persona?
+        /// </summary>
+        Task<bool> GetIsCommlinkAsync(CancellationToken token = default);
 
         string DeviceRating { get; set; }
         int BaseMatrixBoxes { get; }
@@ -79,13 +107,38 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this Commlink is active and counting towards the character's Matrix Initiative.
+        /// Get the total value of a Matrix attribute of this gear after children and Overclocker
+        /// </summary>
+        public static async Task<int> GetTotalMatrixAttributeAsync(this IHasMatrixAttributes objThis,
+            string strAttributeName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objThis == null)
+                return 0;
+            return await objThis.GetBaseMatrixAttributeAsync(strAttributeName, token).ConfigureAwait(false) +
+                   await objThis.GetBonusMatrixAttributeAsync(strAttributeName, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Whether this Commlink is active and counting towards the character's Matrix Initiative.
         /// </summary>
         public static bool IsActiveCommlink(this IHasMatrixAttributes objThis, Character objCharacter)
         {
             if (objThis == null || objCharacter == null)
                 return false;
             return objCharacter.ActiveCommlink == objThis;
+        }
+
+        /// <summary>
+        /// Whether this Commlink is active and counting towards the character's Matrix Initiative.
+        /// </summary>
+        public static async Task<bool> IsActiveCommlinkAsync(this IHasMatrixAttributes objThis,
+            Character objCharacter, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objThis == null || objCharacter == null)
+                return false;
+            return await objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == objThis;
         }
 
         /// <summary>
@@ -107,7 +160,27 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this is an A.I.'s Home Node.
+        /// Set a Commlink to be active and count towards the character's Matrix Initiative.
+        /// </summary>
+        public static async Task SetActiveCommlinkAsync(this IHasMatrixAttributes objThis, Character objCharacter,
+            bool blnValue, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objThis == null || objCharacter == null)
+                return;
+
+            if (blnValue && await objThis.GetIsCommlinkAsync(token).ConfigureAwait(false))
+            {
+                await objCharacter.SetActiveCommlinkAsync(objThis, token).ConfigureAwait(false);
+            }
+            else if (await objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == objThis)
+            {
+                await objCharacter.SetActiveCommlinkAsync(null, token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether this is an A.I.'s Home Node.
         /// </summary>
         public static bool IsHomeNode(this IHasMatrixAttributes objThis, Character objCharacter)
         {
@@ -117,7 +190,19 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Set whether or not this is an A.I.'s Home Node.
+        /// Whether this is an A.I.'s Home Node.
+        /// </summary>
+        public static async Task<bool> IsHomeNodeAsync(this IHasMatrixAttributes objThis, Character objCharacter,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objThis == null || objCharacter == null)
+                return false;
+            return await objCharacter.GetHomeNodeAsync(token).ConfigureAwait(false) == objThis;
+        }
+
+        /// <summary>
+        /// Set whether this is an A.I.'s Home Node.
         /// </summary>
         public static void SetHomeNode(this IHasMatrixAttributes objThis, Character objCharacter, bool blnValue)
         {
@@ -126,8 +211,20 @@ namespace Chummer
 
             if (blnValue)
                 objCharacter.HomeNode = objThis;
-            else if (objCharacter.ActiveCommlink == objThis)
-                objCharacter.ActiveCommlink = null;
+            else if (objCharacter.HomeNode == objThis)
+                objCharacter.HomeNode = null;
+        }
+
+        public static async Task SetHomeNodeAsync(this IHasMatrixAttributes objThis, Character objCharacter, bool blnValue,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objThis == null || objCharacter == null)
+                return;
+            if (blnValue)
+                await objCharacter.SetHomeNodeAsync(objThis, token).ConfigureAwait(false);
+            else if (await objCharacter.GetHomeNodeAsync(token).ConfigureAwait(false) == objThis)
+                await objCharacter.SetHomeNodeAsync(null, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -135,7 +232,6 @@ namespace Chummer
         /// </summary>
         /// <param name="strAttributeName">Name of the Matrix Attribute</param>
         /// <param name="objThis">Object whose Matrix Attribute to get.</param>
-        /// <returns></returns>
         public static string GetMatrixAttributeString(this IHasMatrixAttributes objThis, string strAttributeName)
         {
             if (objThis == null)
@@ -193,131 +289,145 @@ namespace Chummer
             if (cboFirewall == null)
                 throw new ArgumentNullException(nameof(cboFirewall));
 
-            int intBaseAttack = objThis.GetBaseMatrixAttribute("Attack");
-            int intBaseSleaze = objThis.GetBaseMatrixAttribute("Sleaze");
-            int intBaseDataProcessing = objThis.GetBaseMatrixAttribute("Data Processing");
-            int intBaseFirewall = objThis.GetBaseMatrixAttribute("Firewall");
-            int intBonusAttack = objThis.GetBonusMatrixAttribute("Attack");
-            int intBonusSleaze = objThis.GetBonusMatrixAttribute("Sleaze");
-            int intBonusDataProcessing = objThis.GetBonusMatrixAttribute("Data Processing");
-            int intBonusFirewall = objThis.GetBonusMatrixAttribute("Firewall");
-
-            cboAttack.DoThreadSafe(x =>
-            {
-                x.SuspendLayout();
-                x.BeginUpdate();
-            });
-            cboSleaze.DoThreadSafe(x =>
-            {
-                x.SuspendLayout();
-                x.BeginUpdate();
-            });
-            cboDataProcessing.DoThreadSafe(x =>
-            {
-                x.SuspendLayout();
-                x.BeginUpdate();
-            });
-            cboFirewall.DoThreadSafe(x =>
-            {
-                x.SuspendLayout();
-                x.BeginUpdate();
-            });
-
+            IDisposable objThisLocker = null;
+            if (objThis is IHasLockObject objHasLock)
+                objThisLocker = objHasLock.LockObject.EnterReadLock();
             try
             {
+                int intBaseAttack = objThis.GetBaseMatrixAttribute("Attack");
+                int intBaseSleaze = objThis.GetBaseMatrixAttribute("Sleaze");
+                int intBaseDataProcessing = objThis.GetBaseMatrixAttribute("Data Processing");
+                int intBaseFirewall = objThis.GetBaseMatrixAttribute("Firewall");
+                int intBonusAttack = objThis.GetBonusMatrixAttribute("Attack");
+                int intBonusSleaze = objThis.GetBonusMatrixAttribute("Sleaze");
+                int intBonusDataProcessing = objThis.GetBonusMatrixAttribute("Data Processing");
+                int intBonusFirewall = objThis.GetBonusMatrixAttribute("Firewall");
+                bool blnCanSwapAttributes = objThis.CanSwapAttributes;
+
                 cboAttack.DoThreadSafe(x =>
                 {
-                    x.Enabled = false;
-                    x.BindingContext = new BindingContext();
-                    x.DataSource = new List<string>(4)
-                    {
-                        (intBaseAttack + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseSleaze + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseDataProcessing + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseFirewall + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo)
-                    };
-                    x.SelectedIndex = 0;
-                    x.Visible = true;
-                    x.Enabled = objThis.CanSwapAttributes;
+                    x.SuspendLayout();
+                    x.BeginUpdate();
                 });
-
                 cboSleaze.DoThreadSafe(x =>
                 {
-                    x.Enabled = false;
-                    x.BindingContext = new BindingContext();
-                    x.DataSource = new List<string>(4)
-                    {
-                        (intBaseAttack + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseSleaze + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseDataProcessing + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseFirewall + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo)
-                    };
-                    x.SelectedIndex = 1;
-                    x.Visible = true;
-                    x.Enabled = objThis.CanSwapAttributes;
+                    x.SuspendLayout();
+                    x.BeginUpdate();
                 });
-
                 cboDataProcessing.DoThreadSafe(x =>
                 {
-                    x.Enabled = false;
-                    x.BindingContext = new BindingContext();
-                    x.DataSource = new List<string>(4)
-                    {
-                        (intBaseAttack + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseSleaze + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseDataProcessing + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseFirewall + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo)
-                    };
-                    x.SelectedIndex = 2;
-                    x.Visible = true;
-                    x.Enabled = objThis.CanSwapAttributes;
+                    x.SuspendLayout();
+                    x.BeginUpdate();
                 });
-
                 cboFirewall.DoThreadSafe(x =>
                 {
-                    x.Enabled = false;
-                    x.BindingContext = new BindingContext();
-                    x.DataSource = new List<string>(4)
-                    {
-                        (intBaseAttack + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseSleaze + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseDataProcessing + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseFirewall + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo)
-                    };
-                    x.SelectedIndex = 3;
-                    x.Visible = true;
-                    x.Enabled = objThis.CanSwapAttributes;
+                    x.SuspendLayout();
+                    x.BeginUpdate();
                 });
+
+                try
+                {
+                    cboAttack.DoThreadSafe(x =>
+                    {
+                        x.Enabled = false;
+                        x.BindingContext = new BindingContext();
+                        x.DataSource = new List<string>(4)
+                        {
+                            (intBaseAttack + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseSleaze + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseDataProcessing + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseFirewall + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo)
+                        };
+                        x.SelectedIndex = 0;
+                        x.Visible = true;
+                        x.Enabled = blnCanSwapAttributes;
+                    });
+
+                    cboSleaze.DoThreadSafe(x =>
+                    {
+                        x.Enabled = false;
+                        x.BindingContext = new BindingContext();
+                        x.DataSource = new List<string>(4)
+                        {
+                            (intBaseAttack + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseSleaze + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseDataProcessing + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseFirewall + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo)
+                        };
+                        x.SelectedIndex = 1;
+                        x.Visible = true;
+                        x.Enabled = blnCanSwapAttributes;
+                    });
+
+                    cboDataProcessing.DoThreadSafe(x =>
+                    {
+                        x.Enabled = false;
+                        x.BindingContext = new BindingContext();
+                        x.DataSource = new List<string>(4)
+                        {
+                            (intBaseAttack + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseSleaze + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseDataProcessing + intBonusDataProcessing).ToString(GlobalSettings
+                                .InvariantCultureInfo),
+                            (intBaseFirewall + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo)
+                        };
+                        x.SelectedIndex = 2;
+                        x.Visible = true;
+                        x.Enabled = blnCanSwapAttributes;
+                    });
+
+                    cboFirewall.DoThreadSafe(x =>
+                    {
+                        x.Enabled = false;
+                        x.BindingContext = new BindingContext();
+                        x.DataSource = new List<string>(4)
+                        {
+                            (intBaseAttack + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseSleaze + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseDataProcessing + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseFirewall + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo)
+                        };
+                        x.SelectedIndex = 3;
+                        x.Visible = true;
+                        x.Enabled = blnCanSwapAttributes;
+                    });
+                }
+                finally
+                {
+                    cboAttack.DoThreadSafe(x =>
+                    {
+                        x.EndUpdate();
+                        x.ResumeLayout();
+                    });
+                    cboSleaze.DoThreadSafe(x =>
+                    {
+                        x.EndUpdate();
+                        x.ResumeLayout();
+                    });
+                    cboDataProcessing.DoThreadSafe(x =>
+                    {
+                        x.EndUpdate();
+                        x.ResumeLayout();
+                    });
+                    cboFirewall.DoThreadSafe(x =>
+                    {
+                        x.EndUpdate();
+                        x.ResumeLayout();
+                    });
+                }
             }
             finally
             {
-                cboAttack.DoThreadSafe(x =>
-                {
-                    x.EndUpdate();
-                    x.ResumeLayout();
-                });
-                cboSleaze.DoThreadSafe(x =>
-                {
-                    x.EndUpdate();
-                    x.ResumeLayout();
-                });
-                cboDataProcessing.DoThreadSafe(x =>
-                {
-                    x.EndUpdate();
-                    x.ResumeLayout();
-                });
-                cboFirewall.DoThreadSafe(x =>
-                {
-                    x.EndUpdate();
-                    x.ResumeLayout();
-                });
+                objThisLocker?.Dispose();
             }
         }
 
         /// <summary>
         /// Refreshes a set of ComboBoxes corresponding to Matrix attributes
         /// </summary>
-        public static async Task RefreshMatrixAttributeComboBoxesAsync(this IHasMatrixAttributes objThis, ElasticComboBox cboAttack, ElasticComboBox cboSleaze, ElasticComboBox cboDataProcessing, ElasticComboBox cboFirewall, CancellationToken token = default)
+        public static async Task RefreshMatrixAttributeComboBoxesAsync(this IHasMatrixAttributes objThis,
+            ElasticComboBox cboAttack, ElasticComboBox cboSleaze, ElasticComboBox cboDataProcessing,
+            ElasticComboBox cboFirewall, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objThis == null)
@@ -331,124 +441,142 @@ namespace Chummer
             if (cboFirewall == null)
                 throw new ArgumentNullException(nameof(cboFirewall));
 
-            int intBaseAttack = objThis.GetBaseMatrixAttribute("Attack");
-            int intBaseSleaze = objThis.GetBaseMatrixAttribute("Sleaze");
-            int intBaseDataProcessing = objThis.GetBaseMatrixAttribute("Data Processing");
-            int intBaseFirewall = objThis.GetBaseMatrixAttribute("Firewall");
-            int intBonusAttack = objThis.GetBonusMatrixAttribute("Attack");
-            int intBonusSleaze = objThis.GetBonusMatrixAttribute("Sleaze");
-            int intBonusDataProcessing = objThis.GetBonusMatrixAttribute("Data Processing");
-            int intBonusFirewall = objThis.GetBonusMatrixAttribute("Firewall");
-
-            await cboAttack.DoThreadSafeAsync(x =>
-            {
-                x.SuspendLayout();
-                x.BeginUpdate();
-            }, token).ConfigureAwait(false);
-            await cboSleaze.DoThreadSafeAsync(x =>
-            {
-                x.SuspendLayout();
-                x.BeginUpdate();
-            }, token).ConfigureAwait(false);
-            await cboDataProcessing.DoThreadSafeAsync(x =>
-            {
-                x.SuspendLayout();
-                x.BeginUpdate();
-            }, token).ConfigureAwait(false);
-            await cboFirewall.DoThreadSafeAsync(x =>
-            {
-                x.SuspendLayout();
-                x.BeginUpdate();
-            }, token).ConfigureAwait(false);
-
+            IAsyncDisposable objThisLocker = null;
+            if (objThis is IHasLockObject objHasLock)
+                objThisLocker = await objHasLock.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
+                int intBaseAttack = await objThis.GetBaseMatrixAttributeAsync("Attack", token).ConfigureAwait(false);
+                int intBaseSleaze = await objThis.GetBaseMatrixAttributeAsync("Sleaze", token).ConfigureAwait(false);
+                int intBaseDataProcessing =
+                    await objThis.GetBaseMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+                int intBaseFirewall =
+                    await objThis.GetBaseMatrixAttributeAsync("Firewall", token).ConfigureAwait(false);
+                int intBonusAttack = await objThis.GetBonusMatrixAttributeAsync("Attack", token).ConfigureAwait(false);
+                int intBonusSleaze = await objThis.GetBonusMatrixAttributeAsync("Sleaze", token).ConfigureAwait(false);
+                int intBonusDataProcessing = await objThis.GetBonusMatrixAttributeAsync("Data Processing", token)
+                    .ConfigureAwait(false);
+                int intBonusFirewall =
+                    await objThis.GetBonusMatrixAttributeAsync("Firewall", token).ConfigureAwait(false);
+                bool blnCanSwapAttributes = objThis.CanSwapAttributes;
+
                 await cboAttack.DoThreadSafeAsync(x =>
                 {
-                    x.Enabled = false;
-                    x.BindingContext = new BindingContext();
-                    x.DataSource = new List<string>(4)
-                    {
-                        (intBaseAttack + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseSleaze + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseDataProcessing + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseFirewall + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo)
-                    };
-                    x.SelectedIndex = 0;
-                    x.Visible = true;
-                    x.Enabled = objThis.CanSwapAttributes;
+                    x.SuspendLayout();
+                    x.BeginUpdate();
                 }, token).ConfigureAwait(false);
-
                 await cboSleaze.DoThreadSafeAsync(x =>
                 {
-                    x.Enabled = false;
-                    x.BindingContext = new BindingContext();
-                    x.DataSource = new List<string>(4)
-                    {
-                        (intBaseAttack + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseSleaze + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseDataProcessing + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseFirewall + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo)
-                    };
-                    x.SelectedIndex = 1;
-                    x.Visible = true;
-                    x.Enabled = objThis.CanSwapAttributes;
+                    x.SuspendLayout();
+                    x.BeginUpdate();
                 }, token).ConfigureAwait(false);
-
                 await cboDataProcessing.DoThreadSafeAsync(x =>
                 {
-                    x.Enabled = false;
-                    x.BindingContext = new BindingContext();
-                    x.DataSource = new List<string>(4)
-                    {
-                        (intBaseAttack + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseSleaze + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseDataProcessing + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseFirewall + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo)
-                    };
-                    x.SelectedIndex = 2;
-                    x.Visible = true;
-                    x.Enabled = objThis.CanSwapAttributes;
+                    x.SuspendLayout();
+                    x.BeginUpdate();
                 }, token).ConfigureAwait(false);
-
                 await cboFirewall.DoThreadSafeAsync(x =>
                 {
-                    x.Enabled = false;
-                    x.BindingContext = new BindingContext();
-                    x.DataSource = new List<string>(4)
-                    {
-                        (intBaseAttack + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseSleaze + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseDataProcessing + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
-                        (intBaseFirewall + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo)
-                    };
-                    x.SelectedIndex = 3;
-                    x.Visible = true;
-                    x.Enabled = objThis.CanSwapAttributes;
+                    x.SuspendLayout();
+                    x.BeginUpdate();
                 }, token).ConfigureAwait(false);
+
+                try
+                {
+                    await cboAttack.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = false;
+                        x.BindingContext = new BindingContext();
+                        x.DataSource = new List<string>(4)
+                        {
+                            (intBaseAttack + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseSleaze + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseDataProcessing + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseFirewall + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo)
+                        };
+                        x.SelectedIndex = 0;
+                        x.Visible = true;
+                        x.Enabled = blnCanSwapAttributes;
+                    }, token).ConfigureAwait(false);
+
+                    await cboSleaze.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = false;
+                        x.BindingContext = new BindingContext();
+                        x.DataSource = new List<string>(4)
+                        {
+                            (intBaseAttack + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseSleaze + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseDataProcessing + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseFirewall + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo)
+                        };
+                        x.SelectedIndex = 1;
+                        x.Visible = true;
+                        x.Enabled = blnCanSwapAttributes;
+                    }, token).ConfigureAwait(false);
+
+                    await cboDataProcessing.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = false;
+                        x.BindingContext = new BindingContext();
+                        x.DataSource = new List<string>(4)
+                        {
+                            (intBaseAttack + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseSleaze + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseDataProcessing + intBonusDataProcessing).ToString(GlobalSettings
+                                .InvariantCultureInfo),
+                            (intBaseFirewall + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo)
+                        };
+                        x.SelectedIndex = 2;
+                        x.Visible = true;
+                        x.Enabled = blnCanSwapAttributes;
+                    }, token).ConfigureAwait(false);
+
+                    await cboFirewall.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = false;
+                        x.BindingContext = new BindingContext();
+                        x.DataSource = new List<string>(4)
+                        {
+                            (intBaseAttack + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseSleaze + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseDataProcessing + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
+                            (intBaseFirewall + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo)
+                        };
+                        x.SelectedIndex = 3;
+                        x.Visible = true;
+                        x.Enabled = blnCanSwapAttributes;
+                    }, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await cboAttack.DoThreadSafeAsync(x =>
+                    {
+                        x.EndUpdate();
+                        x.ResumeLayout();
+                    }, token).ConfigureAwait(false);
+                    await cboSleaze.DoThreadSafeAsync(x =>
+                    {
+                        x.EndUpdate();
+                        x.ResumeLayout();
+                    }, token).ConfigureAwait(false);
+                    await cboDataProcessing.DoThreadSafeAsync(x =>
+                    {
+                        x.EndUpdate();
+                        x.ResumeLayout();
+                    }, token).ConfigureAwait(false);
+                    await cboFirewall.DoThreadSafeAsync(x =>
+                    {
+                        x.EndUpdate();
+                        x.ResumeLayout();
+                    }, token).ConfigureAwait(false);
+                }
             }
             finally
             {
-                await cboAttack.DoThreadSafeAsync(x =>
-                {
-                    x.EndUpdate();
-                    x.ResumeLayout();
-                }, token).ConfigureAwait(false);
-                await cboSleaze.DoThreadSafeAsync(x =>
-                {
-                    x.EndUpdate();
-                    x.ResumeLayout();
-                }, token).ConfigureAwait(false);
-                await cboDataProcessing.DoThreadSafeAsync(x =>
-                {
-                    x.EndUpdate();
-                    x.ResumeLayout();
-                }, token).ConfigureAwait(false);
-                await cboFirewall.DoThreadSafeAsync(x =>
-                {
-                    x.EndUpdate();
-                    x.ResumeLayout();
-                }, token).ConfigureAwait(false);
+                if (objThisLocker != null)
+                    await objThisLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -469,91 +597,106 @@ namespace Chummer
             if (cboFirewall == null)
                 throw new ArgumentNullException(nameof(cboFirewall));
 
-            string strTemp;
-            Action<string> funcAttributePropertySetter;
-
-            if (cboChangedAttribute == cboAttack)
+            IDisposable objThisLocker = null;
+            if (objThis is IHasLockObject objHasLock)
+                objThisLocker = objHasLock.LockObject.EnterUpgradeableReadLock();
+            try
             {
-                strTemp = objThis.Attack;
-                funcAttributePropertySetter = (x => objThis.Attack = x);
-            }
-            else if (cboChangedAttribute == cboSleaze)
-            {
-                strTemp = objThis.Sleaze;
-                funcAttributePropertySetter = (x => objThis.Sleaze = x);
-            }
-            else if (cboChangedAttribute == cboDataProcessing)
-            {
-                strTemp = objThis.DataProcessing;
-                funcAttributePropertySetter = (x => objThis.DataProcessing = x);
-            }
-            else if (cboChangedAttribute == cboFirewall)
-            {
-                strTemp = objThis.Firewall;
-                funcAttributePropertySetter = (x => objThis.Firewall = x);
-            }
-            else
-                return false;
-
-            int intCurrentIndex = cboChangedAttribute.DoThreadSafeFunc(x => x.SelectedIndex);
-            bool blnRefreshCharacter = false;
-            bool blnDPChanged = cboChangedAttribute == cboDataProcessing;
-            // Find the combo with the same value as this one and change it to the missing value.
-            if (cboChangedAttribute != cboAttack && cboAttack.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
-            {
-                funcAttributePropertySetter.Invoke(objThis.Attack);
-                objThis.Attack = strTemp;
-                blnRefreshCharacter = true;
-            }
-            else if (cboChangedAttribute != cboSleaze && cboSleaze.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
-            {
-                funcAttributePropertySetter.Invoke(objThis.Sleaze);
-                objThis.Sleaze = strTemp;
-                blnRefreshCharacter = true;
-            }
-            else if (!blnDPChanged && cboDataProcessing.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
-            {
-                funcAttributePropertySetter.Invoke(objThis.DataProcessing);
-                objThis.DataProcessing = strTemp;
-                blnRefreshCharacter = true;
-                blnDPChanged = true;
-            }
-            else if (cboChangedAttribute != cboFirewall && cboFirewall.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
-            {
-                funcAttributePropertySetter.Invoke(objThis.Firewall);
-                objThis.Firewall = strTemp;
-                blnRefreshCharacter = true;
-            }
-
-            if (blnRefreshCharacter)
-            {
-                objThis.RefreshMatrixAttributeComboBoxes(cboAttack, cboSleaze, cboDataProcessing, cboFirewall);
-                if (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter))
+                string strTemp;
+                Action<string> funcAttributePropertySetter;
+                if (cboChangedAttribute == cboAttack)
                 {
-                    if (blnDPChanged)
-                    {
-                        if (objThis.IsActiveCommlink(objCharacter))
-                        {
-                            if (objThis.IsHomeNode(objCharacter))
-                                objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
-                                                                       nameof(Character.MatrixInitiativeColdValue),
-                                                                       nameof(Character.MatrixInitiativeHotValue));
-                            else
-                                objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
-                                                                       nameof(Character.MatrixInitiativeHotValue));
-                        }
-                        else
-                            objCharacter.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
-                    }
-
-                    return true;
+                    strTemp = objThis.Attack;
+                    funcAttributePropertySetter = (x => objThis.Attack = x);
                 }
-            }
+                else if (cboChangedAttribute == cboSleaze)
+                {
+                    strTemp = objThis.Sleaze;
+                    funcAttributePropertySetter = (x => objThis.Sleaze = x);
+                }
+                else if (cboChangedAttribute == cboDataProcessing)
+                {
+                    strTemp = objThis.DataProcessing;
+                    funcAttributePropertySetter = (x => objThis.DataProcessing = x);
+                }
+                else if (cboChangedAttribute == cboFirewall)
+                {
+                    strTemp = objThis.Firewall;
+                    funcAttributePropertySetter = (x => objThis.Firewall = x);
+                }
+                else
+                    return false;
 
-            return false;
+                int intCurrentIndex = cboChangedAttribute.DoThreadSafeFunc(x => x.SelectedIndex);
+                bool blnRefreshCharacter = false;
+                bool blnDPChanged = cboChangedAttribute == cboDataProcessing;
+                // Find the combo with the same value as this one and change it to the missing value.
+                if (cboChangedAttribute != cboAttack &&
+                    cboAttack.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
+                {
+                    funcAttributePropertySetter.Invoke(objThis.Attack);
+                    objThis.Attack = strTemp;
+                    blnRefreshCharacter = true;
+                }
+                else if (cboChangedAttribute != cboSleaze &&
+                         cboSleaze.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
+                {
+                    funcAttributePropertySetter.Invoke(objThis.Sleaze);
+                    objThis.Sleaze = strTemp;
+                    blnRefreshCharacter = true;
+                }
+                else if (!blnDPChanged && cboDataProcessing.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
+                {
+                    funcAttributePropertySetter.Invoke(objThis.DataProcessing);
+                    objThis.DataProcessing = strTemp;
+                    blnRefreshCharacter = true;
+                    blnDPChanged = true;
+                }
+                else if (cboChangedAttribute != cboFirewall &&
+                         cboFirewall.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
+                {
+                    funcAttributePropertySetter.Invoke(objThis.Firewall);
+                    objThis.Firewall = strTemp;
+                    blnRefreshCharacter = true;
+                }
+
+                if (blnRefreshCharacter)
+                {
+                    objThis.RefreshMatrixAttributeComboBoxes(cboAttack, cboSleaze, cboDataProcessing, cboFirewall);
+                    if (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter))
+                    {
+                        if (blnDPChanged)
+                        {
+                            if (objThis.IsActiveCommlink(objCharacter))
+                            {
+                                if (objThis.IsHomeNode(objCharacter))
+                                    objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
+                                        nameof(Character.MatrixInitiativeColdValue),
+                                        nameof(Character.MatrixInitiativeHotValue));
+                                else
+                                    objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
+                                        nameof(Character.MatrixInitiativeHotValue));
+                            }
+                            else
+                                objCharacter.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+                        }
+
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            finally
+            {
+                objThisLocker?.Dispose();
+            }
         }
 
-        public static async Task<bool> ProcessMatrixAttributeComboBoxChangeAsync(this IHasMatrixAttributes objThis, Character objCharacter, ElasticComboBox cboChangedAttribute, ElasticComboBox cboAttack, ElasticComboBox cboSleaze, ElasticComboBox cboDataProcessing, ElasticComboBox cboFirewall, CancellationToken token = default)
+        public static async Task<bool> ProcessMatrixAttributeComboBoxChangeAsync(this IHasMatrixAttributes objThis,
+            Character objCharacter, ElasticComboBox cboChangedAttribute, ElasticComboBox cboAttack,
+            ElasticComboBox cboSleaze, ElasticComboBox cboDataProcessing, ElasticComboBox cboFirewall,
+            CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objThis == null)
@@ -571,87 +714,117 @@ namespace Chummer
             if (cboFirewall == null)
                 throw new ArgumentNullException(nameof(cboFirewall));
 
-            string strTemp;
-            Action<string> funcAttributePropertySetter;
+            IAsyncDisposable objThisLocker = null;
+            if (objThis is IHasLockObject objHasLock)
+                objThisLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                string strTemp;
+                Action<string> funcAttributePropertySetter;
 
-            if (cboChangedAttribute == cboAttack)
-            {
-                strTemp = objThis.Attack;
-                funcAttributePropertySetter = (x => objThis.Attack = x);
-            }
-            else if (cboChangedAttribute == cboSleaze)
-            {
-                strTemp = objThis.Sleaze;
-                funcAttributePropertySetter = (x => objThis.Sleaze = x);
-            }
-            else if (cboChangedAttribute == cboDataProcessing)
-            {
-                strTemp = objThis.DataProcessing;
-                funcAttributePropertySetter = (x => objThis.DataProcessing = x);
-            }
-            else if (cboChangedAttribute == cboFirewall)
-            {
-                strTemp = objThis.Firewall;
-                funcAttributePropertySetter = (x => objThis.Firewall = x);
-            }
-            else
-                return false;
-
-            int intCurrentIndex = await cboChangedAttribute.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
-            bool blnRefreshCharacter = false;
-            bool blnDPChanged = cboChangedAttribute == cboDataProcessing;
-            // Find the combo with the same value as this one and change it to the missing value.
-            if (cboChangedAttribute != cboAttack && await cboAttack.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == intCurrentIndex)
-            {
-                funcAttributePropertySetter.Invoke(objThis.Attack);
-                objThis.Attack = strTemp;
-                blnRefreshCharacter = true;
-            }
-            else if (cboChangedAttribute != cboSleaze && await cboSleaze.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == intCurrentIndex)
-            {
-                funcAttributePropertySetter.Invoke(objThis.Sleaze);
-                objThis.Sleaze = strTemp;
-                blnRefreshCharacter = true;
-            }
-            else if (!blnDPChanged && await cboDataProcessing.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == intCurrentIndex)
-            {
-                funcAttributePropertySetter.Invoke(objThis.DataProcessing);
-                objThis.DataProcessing = strTemp;
-                blnRefreshCharacter = true;
-                blnDPChanged = true;
-            }
-            else if (cboChangedAttribute != cboFirewall && await cboFirewall.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == intCurrentIndex)
-            {
-                funcAttributePropertySetter.Invoke(objThis.Firewall);
-                objThis.Firewall = strTemp;
-                blnRefreshCharacter = true;
-            }
-
-            if (blnRefreshCharacter)
-            {
-                await objThis.RefreshMatrixAttributeComboBoxesAsync(cboAttack, cboSleaze, cboDataProcessing, cboFirewall, token).ConfigureAwait(false);
-                if (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter))
+                if (cboChangedAttribute == cboAttack)
                 {
-                    if (blnDPChanged)
-                    {
-                        if (objThis.IsActiveCommlink(objCharacter))
-                        {
-                            if (objThis.IsHomeNode(objCharacter))
-                                objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
-                                                                       nameof(Character.MatrixInitiativeColdValue),
-                                                                       nameof(Character.MatrixInitiativeHotValue));
-                            else
-                                objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
-                                                                       nameof(Character.MatrixInitiativeHotValue));
-                        }
-                        else
-                            objCharacter.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
-                    }
-                    return true;
+                    strTemp = objThis.Attack;
+                    funcAttributePropertySetter = (x => objThis.Attack = x);
                 }
-            }
+                else if (cboChangedAttribute == cboSleaze)
+                {
+                    strTemp = objThis.Sleaze;
+                    funcAttributePropertySetter = (x => objThis.Sleaze = x);
+                }
+                else if (cboChangedAttribute == cboDataProcessing)
+                {
+                    strTemp = objThis.DataProcessing;
+                    funcAttributePropertySetter = (x => objThis.DataProcessing = x);
+                }
+                else if (cboChangedAttribute == cboFirewall)
+                {
+                    strTemp = objThis.Firewall;
+                    funcAttributePropertySetter = (x => objThis.Firewall = x);
+                }
+                else
+                    return false;
 
-            return false;
+                int intCurrentIndex = await cboChangedAttribute.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                    .ConfigureAwait(false);
+                bool blnRefreshCharacter = false;
+                bool blnDPChanged = cboChangedAttribute == cboDataProcessing;
+                // Find the combo with the same value as this one and change it to the missing value.
+                if (cboChangedAttribute != cboAttack &&
+                    await cboAttack.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) ==
+                    intCurrentIndex)
+                {
+                    funcAttributePropertySetter.Invoke(objThis.Attack);
+                    objThis.Attack = strTemp;
+                    blnRefreshCharacter = true;
+                }
+                else if (cboChangedAttribute != cboSleaze &&
+                         await cboSleaze.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) ==
+                         intCurrentIndex)
+                {
+                    funcAttributePropertySetter.Invoke(objThis.Sleaze);
+                    objThis.Sleaze = strTemp;
+                    blnRefreshCharacter = true;
+                }
+                else if (!blnDPChanged &&
+                         await cboDataProcessing.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                             .ConfigureAwait(false) ==
+                         intCurrentIndex)
+                {
+                    funcAttributePropertySetter.Invoke(objThis.DataProcessing);
+                    objThis.DataProcessing = strTemp;
+                    blnRefreshCharacter = true;
+                    blnDPChanged = true;
+                }
+                else if (cboChangedAttribute != cboFirewall &&
+                         await cboFirewall.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) ==
+                         intCurrentIndex)
+                {
+                    funcAttributePropertySetter.Invoke(objThis.Firewall);
+                    objThis.Firewall = strTemp;
+                    blnRefreshCharacter = true;
+                }
+
+                if (blnRefreshCharacter)
+                {
+                    await objThis
+                        .RefreshMatrixAttributeComboBoxesAsync(cboAttack, cboSleaze, cboDataProcessing, cboFirewall,
+                            token)
+                        .ConfigureAwait(false);
+                    if (await objThis.IsActiveCommlinkAsync(objCharacter, token).ConfigureAwait(false) ||
+                        await objThis.IsHomeNodeAsync(objCharacter, token).ConfigureAwait(false))
+                    {
+                        if (blnDPChanged)
+                        {
+                            if (await objThis.IsActiveCommlinkAsync(objCharacter, token).ConfigureAwait(false))
+                            {
+                                if (await objThis.IsHomeNodeAsync(objCharacter, token).ConfigureAwait(false))
+                                    await objCharacter.OnMultiplePropertyChangedAsync(token,
+                                        nameof(Character.MatrixInitiativeValue),
+                                        nameof(Character.MatrixInitiativeColdValue),
+                                        nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
+                                else
+                                    await objCharacter.OnMultiplePropertyChangedAsync(token,
+                                        nameof(Character.MatrixInitiativeColdValue),
+                                        nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
+                            }
+                            else
+                                await objCharacter
+                                    .OnPropertyChangedAsync(nameof(Character.MatrixInitiativeValue), token)
+                                    .ConfigureAwait(false);
+                        }
+
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            finally
+            {
+                if (objThisLocker != null)
+                    await objThisLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -661,11 +834,9 @@ namespace Chummer
         {
             if (objThis == null)
                 return;
-            IDisposable objThisLocker = null;
-            if (objThis is IHasLockObject objHasLock)
-                objThisLocker = objHasLock.LockObject.EnterUpgradeableReadLock();
-            else
-                objHasLock = null;
+            if (!(objThis is IHasLockObject objHasLock))
+                objHasLock = objThis.CharacterObject;
+            IDisposable objLocker = objHasLock?.LockObject.EnterUpgradeableReadLock();
             try
             {
                 if (objThis.CanSwapAttributes)
@@ -717,9 +888,7 @@ namespace Chummer
                             }
                         }
 
-                        IDisposable objLocker = null;
-                        if (objHasLock != null)
-                            objLocker = objHasLock.LockObject.EnterWriteLock();
+                        IDisposable objLocker2 = objHasLock?.LockObject.EnterWriteLock();
                         try
                         {
                             for (int i = 0; i < 4; ++i)
@@ -763,7 +932,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            objLocker?.Dispose();
+                            objLocker2?.Dispose();
                         }
                     }
                 }
@@ -786,7 +955,151 @@ namespace Chummer
             }
             finally
             {
-                objThisLocker?.Dispose();
+                objLocker?.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// If this item has an attribute array, refresh it.
+        /// </summary>
+        public static async Task RefreshMatrixAttributeArrayAsync(this IHasMatrixAttributes objThis,
+            Character objCharacter, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objThis == null)
+                return;
+            if (!(objThis is IHasLockObject objHasLock))
+                objHasLock = objThis.CharacterObject;
+            IAsyncDisposable objLocker = null;
+            if (objHasLock != null)
+                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (objThis.CanSwapAttributes)
+                {
+                    int intBaseAttack = await objThis.GetBaseMatrixAttributeAsync("Attack", token).ConfigureAwait(false);
+                    int intBaseSleaze = await objThis.GetBaseMatrixAttributeAsync("Sleaze", token).ConfigureAwait(false);
+                    int intBaseDataProcessing = await objThis.GetBaseMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
+                    int intBaseFirewall = await objThis.GetBaseMatrixAttributeAsync("Firewall", token).ConfigureAwait(false);
+                    List<int> lstStatsArray = new List<int>(4)
+                    {
+                        intBaseAttack,
+                        intBaseSleaze,
+                        intBaseDataProcessing,
+                        intBaseFirewall
+                    };
+                    lstStatsArray.Sort();
+                    lstStatsArray.Reverse();
+
+                    string[] strCyberdeckArray = objThis.AttributeArray.Split(',');
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdCyberdeckArray0))
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdCyberdeckArray1))
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdCyberdeckArray2))
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdCyberdeckArray3))
+                    {
+                        sbdCyberdeckArray0.Append(strCyberdeckArray[0]);
+                        sbdCyberdeckArray1.Append(strCyberdeckArray[1]);
+                        sbdCyberdeckArray2.Append(strCyberdeckArray[2]);
+                        sbdCyberdeckArray3.Append(strCyberdeckArray[3]);
+                        StringBuilder[] asbdCyberdeckArray =
+                        {
+                            sbdCyberdeckArray0,
+                            sbdCyberdeckArray1,
+                            sbdCyberdeckArray2,
+                            sbdCyberdeckArray3
+                        };
+                        foreach (string strLoopArrayText in objThis.ChildrenWithMatrixAttributes.Select(
+                                     x => x.ModAttributeArray))
+                        {
+                            if (string.IsNullOrEmpty(strLoopArrayText))
+                                continue;
+                            string[] strLoopArray = strLoopArrayText.Split(',');
+                            for (int i = 0; i < 4; ++i)
+                            {
+                                asbdCyberdeckArray[i].Append("+(").Append(strLoopArray[i]).Append(')');
+                            }
+                        }
+
+                        IAsyncDisposable objLocker2 = null;
+                        if (objHasLock != null)
+                            objLocker2 = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            for (int i = 0; i < 4; ++i)
+                            {
+                                if (intBaseAttack == lstStatsArray[i])
+                                {
+                                    objThis.Attack = asbdCyberdeckArray[i].ToString();
+                                    lstStatsArray[i] = int.MinValue;
+                                    break;
+                                }
+                            }
+
+                            for (int i = 0; i < 4; ++i)
+                            {
+                                if (intBaseSleaze == lstStatsArray[i])
+                                {
+                                    objThis.Sleaze = asbdCyberdeckArray[i].ToString();
+                                    lstStatsArray[i] = int.MinValue;
+                                    break;
+                                }
+                            }
+
+                            for (int i = 0; i < 4; ++i)
+                            {
+                                if (intBaseDataProcessing == lstStatsArray[i])
+                                {
+                                    objThis.DataProcessing = asbdCyberdeckArray[i].ToString();
+                                    lstStatsArray[i] = int.MinValue;
+                                    break;
+                                }
+                            }
+
+                            for (int i = 0; i < 4; ++i)
+                            {
+                                if (intBaseFirewall == lstStatsArray[i])
+                                {
+                                    objThis.Firewall = asbdCyberdeckArray[i].ToString();
+                                    break;
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            if (objLocker2 != null)
+                                await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+
+                if (objCharacter != null)
+                {
+                    if (await objThis.IsActiveCommlinkAsync(objCharacter, token).ConfigureAwait(false))
+                    {
+                        if (await objThis.IsHomeNodeAsync(objCharacter, token).ConfigureAwait(false))
+                            await objCharacter.OnMultiplePropertyChangedAsync(token,
+                                nameof(Character.MatrixInitiativeValue),
+                                nameof(Character.MatrixInitiativeColdValue),
+                                nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
+                        else
+                            await objCharacter.OnMultiplePropertyChangedAsync(token,
+                                nameof(Character.MatrixInitiativeColdValue),
+                                nameof(Character.MatrixInitiativeHotValue)).ConfigureAwait(false);
+                    }
+                    else
+                        await objCharacter.OnPropertyChangedAsync(nameof(Character.MatrixInitiativeValue), token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
     }

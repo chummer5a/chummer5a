@@ -34,7 +34,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayNameShort(GlobalSettings.DefaultLanguage)}")]
-    public class AIProgram : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource
+    public class AIProgram : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -50,6 +50,8 @@ namespace Chummer
         private bool _blnIsAdvancedProgram;
         private bool _blnCanDelete = true;
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -87,34 +89,124 @@ namespace Chummer
             if (!objXmlProgramNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlProgramNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
+            string strCategory = string.Empty;
+            if (objXmlProgramNode.TryGetStringFieldQuickly("category", ref strCategory))
+                _blnIsAdvancedProgram = strCategory == "Advanced Programs";
+
             string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objXmlProgramNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
-                Notes = CommonFunctions.GetBookNotes(objXmlProgramNode, Name, CurrentDisplayNameShort, Source, Page,
+                Notes = CommonFunctions.GetBookNotes(objXmlProgramNode, Name, CurrentDisplayName, Source, Page,
                     DisplayPage(GlobalSettings.Language), _objCharacter);
             }
 
-            _strExtra = strExtra;
+            if (objXmlProgramNode["bonus"] != null)
+            {
+                ImprovementManager.SetForcedValue(strExtra, _objCharacter);
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.AIProgram, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), objXmlProgramNode["bonus"], 1, CurrentDisplayNameShort))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue))
+                {
+                    _strExtra = strSelectedValue;
+                }
+            }
+            else
+            {
+                _strExtra = strExtra;
+            }
+        }
+
+        /// <summary>
+        /// Create a Program from an XmlNode.
+        /// </summary>
+        /// <param name="objXmlProgramNode">XmlNode to create the object from.</param>
+        /// <param name="strExtra">Value to forcefully select for any ImprovementManager prompts.</param>
+        /// <param name="blnCanDelete">Can this AI program be deleted on its own (set to false for Improvement-granted programs).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(XmlNode objXmlProgramNode, string strExtra = "", bool blnCanDelete = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!objXmlProgramNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for program xmlnode", objXmlProgramNode });
+                Utils.BreakIfDebug();
+            }
+
+            if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
+            _blnCanDelete = blnCanDelete;
+            objXmlProgramNode.TryGetStringFieldQuickly("require", ref _strRequiresProgram);
+            objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlProgramNode.TryGetStringFieldQuickly("page", ref _strPage);
+            if (!objXmlProgramNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlProgramNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
             string strCategory = string.Empty;
             if (objXmlProgramNode.TryGetStringFieldQuickly("category", ref strCategory))
                 _blnIsAdvancedProgram = strCategory == "Advanced Programs";
+
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlProgramNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+            {
+                Notes = await CommonFunctions.GetBookNotesAsync(objXmlProgramNode, Name, await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                    await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+            }
+
+            if (objXmlProgramNode["bonus"] != null)
+            {
+                ImprovementManager.SetForcedValue(Extra, _objCharacter);
+                if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.AIProgram, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), objXmlProgramNode["bonus"], 1, await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue))
+                {
+                    _strExtra = strSelectedValue;
+                }
+            }
+            else
+            {
+                _strExtra = strExtra;
+            }
         }
 
         private SourceString _objCachedSourceDetail;
 
-        public SourceString SourceDetail
+        public SourceString SourceDetail =>
+            _objCachedSourceDetail == default
+                ? _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                    DisplayPage(GlobalSettings.Language),
+                    GlobalSettings.Language,
+                    GlobalSettings.CultureInfo,
+                    _objCharacter)
+                : _objCachedSourceDetail;
+
+        public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
         {
-            get
-            {
-                if (_objCachedSourceDetail == default)
-                    _objCachedSourceDetail = SourceString.GetSourceString(Source,
-                        DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
-                        _objCharacter);
-                return _objCachedSourceDetail;
-            }
+            token.ThrowIfCancellationRequested();
+            return _objCachedSourceDetail == default
+                ? _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                    await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                    GlobalSettings.Language,
+                    GlobalSettings.CultureInfo,
+                    _objCharacter, token).ConfigureAwait(false)
+                : _objCachedSourceDetail;
         }
 
         /// <summary>
@@ -184,7 +276,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -258,7 +350,7 @@ namespace Chummer
             return DisplayNameShort(strLanguage);
         }
 
-        public ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             return DisplayNameShortAsync(strLanguage, token);
         }
@@ -286,7 +378,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             string strReturn = Name;
             // Get the translated name if applicable.
@@ -308,14 +400,14 @@ namespace Chummer
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// AI Advanced Program's requirement program.
@@ -344,7 +436,7 @@ namespace Chummer
         /// <summary>
         /// AI Advanced Program's requirement program.
         /// </summary>
-        public async ValueTask<string> DisplayRequiresProgramAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayRequiresProgramAsync(string strLanguage, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(RequiresProgram))
                 return await LanguageManager.GetStringAsync("String_None", strLanguage, token: token).ConfigureAwait(false);
@@ -356,8 +448,7 @@ namespace Chummer
                                       .ConfigureAwait(false))
                 .TryGetNodeByNameOrId("/chummer/programs/program", RequiresProgram);
             return xmlRequiresProgramNode != null
-                ? (await xmlRequiresProgramNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
-                                               .ConfigureAwait(false))?.Value ?? RequiresProgram
+                ? xmlRequiresProgramNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? RequiresProgram
                 : RequiresProgram;
         }
 
@@ -409,15 +500,13 @@ namespace Chummer
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            string s = objNode != null
-                ? objNode.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page
-                : Page;
-            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+            string strReturn = objNode?.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(strReturn) ? strReturn : Page;
         }
 
         /// <summary>
@@ -545,6 +634,23 @@ namespace Chummer
             return _objCharacter.AIPrograms.Remove(this);
         }
 
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!CanDelete)
+                return false;
+            if (blnConfirmDelete && !await CommonFunctions
+                    .ConfirmDeleteAsync(
+                        await LanguageManager.GetStringAsync("Message_DeleteAIProgram", token: token)
+                            .ConfigureAwait(false), token: token).ConfigureAwait(false))
+                return false;
+
+            await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.AIProgram,
+                InternalId, token).ConfigureAwait(false);
+
+            return await _objCharacter.AIPrograms.RemoveAsync(this, token).ConfigureAwait(false);
+        }
+
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)
@@ -552,11 +658,11 @@ namespace Chummer
             SourceDetail.SetControl(sourceControl);
         }
 
-        public Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
+        public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
         {
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
-            return SourceDetail.SetControlAsync(sourceControl, token);
+            await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
         }
     }
 }

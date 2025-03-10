@@ -88,56 +88,12 @@ namespace Chummer
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static IReadOnlyDictionary<string, CharacterSettings> LoadedCharacterSettings
-        {
-            get
-            {
-                do
-                {
-                    try
-                    {
-                        if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 0, -1)
-                            < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
-                            LoadCharacterSettings();
-                    }
-                    catch
-                    {
-                        _intDicLoadedCharacterSettingsLoadedStatus = -1;
-                        throw;
-                    }
-
-                    while (_intDicLoadedCharacterSettingsLoadedStatus <= 1
-                           && _intDicLoadedCharacterSettingsLoadedStatus >= 0)
-                        Utils.SafeSleep();
-                }
-                while (_intDicLoadedCharacterSettingsLoadedStatus < 0);
-                return s_DicLoadedCharacterSettings;
-            }
-        }
+        public static IReadOnlyDictionary<string, CharacterSettings> LoadedCharacterSettings => LoadedCharacterSettingsAsModifiable;
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static async ValueTask<IReadOnlyDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsync(CancellationToken token = default)
+        public static async Task<IReadOnlyDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsync(CancellationToken token = default)
         {
-            do
-            {
-                try
-                {
-                    if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 0, -1)
-                        < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
-                        await LoadCharacterSettingsAsync(token).ConfigureAwait(false);
-                }
-                catch
-                {
-                    _intDicLoadedCharacterSettingsLoadedStatus = -1;
-                    throw;
-                }
-
-                while (_intDicLoadedCharacterSettingsLoadedStatus <= 1
-                       && _intDicLoadedCharacterSettingsLoadedStatus >= 0)
-                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-            } while (_intDicLoadedCharacterSettingsLoadedStatus < 0);
-
-            return s_DicLoadedCharacterSettings;
+            return await GetLoadedCharacterSettingsAsModifiableAsync(token).ConfigureAwait(false);
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
@@ -169,7 +125,7 @@ namespace Chummer
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static async ValueTask<ConcurrentDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsModifiableAsync(CancellationToken token = default)
+        public static async Task<ConcurrentDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsModifiableAsync(CancellationToken token = default)
         {
             do
             {
@@ -196,6 +152,8 @@ namespace Chummer
         private static void LoadCharacterSettings()
         {
             _intDicLoadedCharacterSettingsLoadedStatus = 0;
+            foreach (CharacterSettings objSettings in s_DicLoadedCharacterSettings.Values)
+                objSettings.Dispose();
             s_DicLoadedCharacterSettings.Clear();
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
             {
@@ -219,11 +177,10 @@ namespace Chummer
                 return;
             }
 
-            Utils.RunWithoutThreadLock(async () =>
+            Utils.RunWithoutThreadLock(() =>
             {
                 IEnumerable<XPathNavigator> xmlSettingsIterator
-                    = (await XmlManager.LoadXPathAsync("settings.xml").ConfigureAwait(false))
-                    .SelectAndCacheExpression("/chummer/settings/setting")
+                    = XmlManager.LoadXPath("settings.xml").SelectAndCacheExpression("/chummer/settings/setting")
                     .Cast<XPathNavigator>();
                 Parallel.ForEach(xmlSettingsIterator, xmlBuiltInSetting =>
                 {
@@ -277,9 +234,11 @@ namespace Chummer
             Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 2, 1);
         }
 
-        private static async ValueTask LoadCharacterSettingsAsync(CancellationToken token = default)
+        private static async Task LoadCharacterSettingsAsync(CancellationToken token = default)
         {
             _intDicLoadedCharacterSettingsLoadedStatus = 0;
+            foreach (CharacterSettings objSettings in s_DicLoadedCharacterSettings.Values)
+                await objSettings.DisposeAsync().ConfigureAwait(false);
             s_DicLoadedCharacterSettings.Clear();
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
             {
@@ -303,11 +262,17 @@ namespace Chummer
                 return;
             }
 
-            List<Task> lstTasks = new List<Task>();
+            List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+            int i = 0;
             foreach (XPathNavigator xmlBuiltInSetting in (await XmlManager.LoadXPathAsync("settings.xml", token: token)
                          .ConfigureAwait(false)).SelectAndCacheExpression("/chummer/settings/setting", token: token))
             {
                 lstTasks.Add(Task.Run(() => LoadSettings(xmlBuiltInSetting), token));
+                if (++i < Utils.MaxParallelBatchSize)
+                    continue;
+                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                lstTasks.Clear();
+                i = 0;
             }
 
             await Task.WhenAll(lstTasks).ConfigureAwait(false);
@@ -342,8 +307,16 @@ namespace Chummer
             if (Directory.Exists(strSettingsPath))
             {
                 lstTasks.Clear();
+                i = 0;
                 foreach (string strSettingsFilePath in Directory.EnumerateFiles(strSettingsPath, "*.xml"))
+                {
                     lstTasks.Add(Task.Run(() => LoadSettingsFromFile(strSettingsFilePath), token));
+                    if (++i < Utils.MaxParallelBatchSize)
+                        continue;
+                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                    lstTasks.Clear();
+                    i = 0;
+                }
 
                 await Task.WhenAll(lstTasks).ConfigureAwait(false);
 
@@ -375,7 +348,7 @@ namespace Chummer
             Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 2, 1);
         }
 
-        private static async ValueTask AddSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
+        private static async Task AddSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
         {
             if (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
                 return;
@@ -414,9 +387,11 @@ namespace Chummer
                 await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
+
+            await GlobalSettings.ReloadCustomSourcebookInfosAsync(token).ConfigureAwait(false);
         }
 
-        private static async ValueTask RemoveSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
+        private static async Task RemoveSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
         {
             if (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
                 return;
@@ -451,14 +426,19 @@ namespace Chummer
                 }, Utils.JoinableTaskFactory);
                 await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                 {
-                    using (await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                    System.IAsyncDisposable objLocker2 = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
                         token.ThrowIfCancellationRequested();
                         if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
                             await objCharacter
-                                  .SetSettingsKeyAsync(
-                                      await strBestMatchNewSettingsKey.GetValueAsync(token).ConfigureAwait(false),
-                                      token).ConfigureAwait(false);
+                                .SetSettingsKeyAsync(
+                                    await strBestMatchNewSettingsKey.GetValueAsync(token).ConfigureAwait(false),
+                                    token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }, token: token).ConfigureAwait(false);
             }
@@ -467,9 +447,11 @@ namespace Chummer
                 s_DicLoadedCharacterSettings.TryRemove(strKeyToDelete, out _);
                 await objSettingsToDelete.DisposeAsync().ConfigureAwait(false);
             }
+
+            await GlobalSettings.ReloadCustomSourcebookInfosAsync(token).ConfigureAwait(false);
         }
 
-        private static async ValueTask ReloadSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
+        private static async Task ReloadSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
         {
             if (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
                 return;
@@ -532,14 +514,16 @@ namespace Chummer
                 await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
+
+            await GlobalSettings.ReloadCustomSourcebookInfosAsync(token).ConfigureAwait(false);
         }
 
-        private static async ValueTask<int> CalculateCharacterSettingsMatchScore(CharacterSettings objBaselineSettings, CharacterSettings objOptionsToCheck, CancellationToken token = default)
+        private static async Task<int> CalculateCharacterSettingsMatchScore(CharacterSettings objBaselineSettings, CharacterSettings objOptionsToCheck, CancellationToken token = default)
         {
-            int intReturn = int.MaxValue - ((await objBaselineSettings.GetBuildKarmaAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetBuildKarmaAsync(token).ConfigureAwait(false)).RaiseToPower(2)
+            int intReturn = int.MaxValue - ((await objBaselineSettings.GetBuildKarmaAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetBuildKarmaAsync(token).ConfigureAwait(false)).Pow(2)
                                             + (await objBaselineSettings.GetNuyenMaximumBPAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetNuyenMaximumBPAsync(token).ConfigureAwait(false))
-                                            .RaiseToPower(2))
-                                           .RaiseToPower(0.5m).StandardRound();
+                                            .Pow(2))
+                                           .FastSqrt().StandardRound();
             int intBaseline = await objOptionsToCheck.GetBuiltInOptionAsync(token).ConfigureAwait(false) ? 5 : 4;
             CharacterBuildMethod eLeftBuildMethod = await objBaselineSettings.GetBuildMethodAsync(token).ConfigureAwait(false);
             CharacterBuildMethod eRightBuildMethod = await objOptionsToCheck.GetBuildMethodAsync(token).ConfigureAwait(false);
@@ -557,56 +541,49 @@ namespace Chummer
                 }
             }
 
-            int intBaselineCustomDataCount = objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count;
+            IReadOnlyList<CustomDataDirectoryInfo> setBaselineCustomDataDirectoryInfos = await objBaselineSettings.GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false);
+            IReadOnlyList<CustomDataDirectoryInfo> setCheckCustomDataDirectoryInfos = await objOptionsToCheck.GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false);
+            int intBaselineCustomDataCount = setCheckCustomDataDirectoryInfos.Count;
             if (intBaselineCustomDataCount == 0)
             {
-                intBaselineCustomDataCount = objBaselineSettings.EnabledCustomDataDirectoryInfos.Count;
+                intBaselineCustomDataCount = setBaselineCustomDataDirectoryInfos.Count;
                 if (intBaselineCustomDataCount > 0)
                 {
-                    intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
+                    intReturn -= intBaselineCustomDataCount.Pow(2) * intBaseline;
                 }
             }
-            else if (objBaselineSettings.EnabledCustomDataDirectoryInfos.Count == 0)
+            else if (setBaselineCustomDataDirectoryInfos.Count == 0)
             {
-                intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
+                intReturn -= intBaselineCustomDataCount.Pow(2) * intBaseline;
             }
             else
             {
-                intBaselineCustomDataCount
-                    = Math.Max(objBaselineSettings.EnabledCustomDataDirectoryInfos.Count,
-                               intBaselineCustomDataCount);
+                intBaselineCustomDataCount = Math.Max(setBaselineCustomDataDirectoryInfos.Count, intBaselineCustomDataCount);
                 for (int i = 0;
-                     i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count;
+                     i < setCheckCustomDataDirectoryInfos.Count;
                      ++i)
                 {
-                    string strLoopCustomDataName =
-                        objOptionsToCheck.EnabledCustomDataDirectoryInfos[i].Name;
-                    int intLoopIndex =
-                        objBaselineSettings.EnabledCustomDataDirectoryInfos.FindIndex(x => x.Name == strLoopCustomDataName);
+                    string strLoopCustomDataName = setCheckCustomDataDirectoryInfos[i].Name;
+                    int intLoopIndex = setBaselineCustomDataDirectoryInfos.FindIndex(x => x.Name == strLoopCustomDataName);
                     if (intLoopIndex < 0)
                         intReturn -= intBaselineCustomDataCount * intBaseline;
                     else
                         intReturn -= Math.Abs(i - intLoopIndex) * intBaseline;
                 }
 
-                foreach (string strLoopCustomDataName in objBaselineSettings.EnabledCustomDataDirectoryInfos.Select(x => x.Name))
-                {
-                    if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(x => x.Name != strLoopCustomDataName))
-                        intReturn -= intBaselineCustomDataCount * intBaseline;
-                }
+                int intMismatchCount = setBaselineCustomDataDirectoryInfos.Count(x =>
+                    setCheckCustomDataDirectoryInfos.All(y => y.Name != x.Name));
+                if (intMismatchCount != 0)
+                    intReturn -= intMismatchCount * intBaselineCustomDataCount * intBaseline;
             }
 
             using (new FetchSafelyFromPool<HashSet<string>>(
                        Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
             {
-                setDummyBooks.AddRange(objBaselineSettings.Books);
-                int intExtraBooks = 0;
-                foreach (string strBook in objOptionsToCheck.Books)
-                {
-                    if (setDummyBooks.Remove(strBook))
-                        ++intExtraBooks;
-                }
-                setDummyBooks.IntersectWith(objOptionsToCheck.Books);
+                setDummyBooks.AddRange(await objBaselineSettings.GetBooksAsync(token).ConfigureAwait(false));
+                IReadOnlyCollection<string> setNewBooks = await objOptionsToCheck.GetBooksAsync(token).ConfigureAwait(false);
+                int intExtraBooks = setNewBooks.Count(x => !setDummyBooks.Remove(x));
+                setDummyBooks.IntersectWith(setNewBooks);
                 intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
                               + intExtraBooks) * intBaseline;
             }

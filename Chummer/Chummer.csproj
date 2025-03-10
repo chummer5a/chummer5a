@@ -16,20 +16,6 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <Version>5.225.0.0</Version>
-    <ApplicationVersion>5.225.0.0</ApplicationVersion>
-    <EnableNETAnalyzers>True</EnableNETAnalyzers>
-    <AnalysisLevel>latest-minimum</AnalysisLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <AssemblyVersion>5.225.0.0</AssemblyVersion>
-    <FileVersion>5.225.0.0</FileVersion>
-    <Description>Character generator for Shadowrun 5th Edition</Description>
-    <Copyright>Licensed GNU GPLv3</Copyright>
-    <PackageProjectUrl></PackageProjectUrl>
-    <RepositoryUrl>https://github.com/chummer5a/chummer5a</RepositoryUrl>
-    <PackageId>Chummer5a</PackageId>
-    <Title>Chummer5a</Title>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -37,8 +23,19 @@
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <Configurations>Debug;Release;Debuggable Release;Release with ChummerHub</Configurations>
+	<Configurations>Debug;Release;Debuggable Release</Configurations>
+    <EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.InteropServices.ComVisible">
+      <_Parameter1>False</_Parameter1>
+      <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.InteropServices.Guid">
+      <_Parameter1>28a46ea3-4e45-4842-b8ae-313afde61173</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
   <PropertyGroup>
     <StartupObject>Chummer.Program</StartupObject>
   </PropertyGroup>
@@ -74,19 +71,28 @@
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with ChummerHub|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Optimize>True</Optimize>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debuggable Release|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debuggable Release\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
+  <ItemGroup>
+    <Reference Update="System">
+      <HintPath>$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.dll</HintPath>
+    </Reference>
+    <Reference Update="System.Drawing">
+      <HintPath>$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Update="Backend\Improvements\ImprovementMethods.cs">
       <AutoGen>True</AutoGen>
@@ -150,8 +156,20 @@
     <Content Include="customdata\4e Critters Conversion\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\German Data Changes\amend_martialarts.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\manifest.xsd">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Shapeshifter Provisional Run Faster Errata\amend_shapeshifter_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Shapeshifter Provisional Run Faster Errata\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="data\drugcomponents.xsd">
@@ -241,71 +259,15 @@
     <Content Include="customdata\Dark Terrors Stealth Errata\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_armor.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_bioware.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_critterpowers.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_critters.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_cyberware.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_gear.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_lifemodules.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_martialarts.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_mentors.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_metatypes.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_paragons.xml" />
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_powers.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_priorities.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_qualities.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_skills.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_spells.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_streams.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_traditions.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_weapons.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\manifest.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="customdata\Delnar Skills Remake\amend_critters.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Delnar Skills Remake\amend_lifemodules.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Delnar Skills Remake\amend_paragons.xml" />
+    <Content Include="customdata\Delnar Skills Remake\amend_paragons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Delnar Skills Remake\amend_spells.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -627,7 +589,9 @@
     <Content Include="customdata\Shadowrun Missions Rules\custom_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Shadowrun Missions Rules\custom_weapons.xml" />
+    <Content Include="customdata\Shadowrun Missions Rules\custom_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Shapeshifter Initiative Bonus\amend_shapeshifter_metatypes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -753,6 +717,11 @@
     </Compile>
     <Compile Update="Controls\Table\TextTableCell.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Update="NLog.xsd">
       <SubType>Designer</SubType>
@@ -1137,7 +1106,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\tips.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Plugins\Readme.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -25697,44 +25666,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Codaxy.WkHtmlToPdf" Version="0.5.8" />
-    <PackageReference Include="HtmlRenderer.Core" Version="1.5.0.6" />
-    <PackageReference Include="HtmlRenderer.WinForms" Version="1.5.0.6" />
-    <PackageReference Include="itext" Version="8.0.2" />
-    <PackageReference Include="itext.commons" Version="8.0.2" />
-    <PackageReference Include="itext7" Version="8.0.2" />
-    <PackageReference Include="itext7.commons" Version="8.0.2" />
-    <PackageReference Include="LiveCharts.NetCore" Version="0.9.7" />
-    <PackageReference Include="LiveCharts.WinForms.NetCore3" Version="0.9.7" />
-    <PackageReference Include="LiveCharts.Wpf.NetCore3" Version="0.9.7" />
-    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.21.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.21.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.4" />
-    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.7.30" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30" />
-    <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.6.11" />
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.5" />
-    <PackageReference Include="NLog" Version="5.2.5" />
-    <PackageReference Include="NLog.Schema" Version="5.2.5" />
-    <PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
-    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
-    <PackageReference Include="XoshiroPRNG.Net" Version="1.6.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SystemWebAdapters" Version="1.2.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-    <PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
-    <PackageReference Include="System.ServiceModel.Primitives" Version="6.1.0" />
-    <PackageReference Include="System.ServiceModel.Http" Version="6.1.0" />
-    <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.0" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="6.1.0" />
-    <PackageReference Include="System.ServiceModel.Security" Version="6.0.0" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="Forms\Dashboard Forms\GameMasterDashboard.cs" />
     <Compile Remove="Forms\Dashboard Forms\GameMasterDashboard.Designer.cs" />
     <Compile Remove="Forms\Dashboard Forms\PlayerDashboard.cs" />
@@ -25743,21 +25674,82 @@
     <Compile Remove="Forms\Selection Forms\SelectProgramOption.Designer.cs" />
     <Compile Remove="InheritedListView.cs" />
     <Compile Remove="packages\Codaxy.WkHtmlToPdf.0.5.8\content\PdfConvert.cs" />
-    <EmbeddedResource Remove="frmCreate.resx" />
-    <EmbeddedResource Remove="frmDiceHits.resx" />
-    <EmbeddedResource Remove="frmDiceRoller.resx" />
-    <EmbeddedResource Remove="frmInitiative.resx" />
-    <EmbeddedResource Remove="frmInitRoller.resx" />
-    <EmbeddedResource Remove="frmMetatype.resx" />
-    <EmbeddedResource Remove="frmOmae.resx" />
-    <EmbeddedResource Remove="frmOmaeAccount.resx" />
-    <EmbeddedResource Remove="frmOmaeCompress.resx" />
-    <EmbeddedResource Remove="frmOmaeUpload.resx" />
-    <EmbeddedResource Remove="frmOmaeUploadData.resx" />
-    <EmbeddedResource Remove="frmOmaeUploadLanguage.resx" />
-    <EmbeddedResource Remove="frmOmaeUploadSheet.resx" />
-    <EmbeddedResource Remove="frmPriorityMetatype.resx" />
-    <EmbeddedResource Remove="frmSelectBP.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
+    <PackageReference Include="Codaxy.WkHtmlToPdf" Version="0.5.8" />
+    <PackageReference Include="HtmlRenderer.Core" Version="1.5.0.6" />
+    <PackageReference Include="HtmlRenderer.WinForms" Version="1.5.0.6" />
+    <PackageReference Include="itext" Version="9.0.0" />
+    <PackageReference Include="itext.commons" Version="9.0.0" />
+    <PackageReference Include="itext7" Version="9.0.0" />
+    <PackageReference Include="itext7.commons" Version="9.0.0" />
+    <PackageReference Include="LiveCharts" Version="0.9.7" />
+    <PackageReference Include="LiveCharts.WinForms" Version="0.9.7.1" />
+    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.22.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.22.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.22.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.12.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.1" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.12.19" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.12.19">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.8.8" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NLog" Version="5.3.4" />
+    <PackageReference Include="NLog.Schema" Version="5.3.4" />
+    <PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
+    <PackageReference Include="System.Buffers" Version="4.6.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="9.0.1" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.1" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.1" />
+    <PackageReference Include="System.IO" Version="4.3.0" />
+    <PackageReference Include="System.Memory" Version="4.6.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.6.0" />
+    <PackageReference Include="System.Reflection.Metadata" Version="9.0.1" />
+    <PackageReference Include="System.Runtime.Caching" Version="9.0.1" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.0" />
+    <PackageReference Include="System.Security.AccessControl" Version="6.0.1" />
+    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
+    <PackageReference Include="System.Security.Cryptography.Encoding" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
+    <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.1" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="9.0.1" />
+    <PackageReference Include="System.Text.Json" Version="9.0.1" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="XoshiroPRNG.Net" Version="1.6.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">
@@ -25769,7 +25761,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
-        copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
+        copy "$(SolutionDir)LICENSE" "$(TargetDir)LICENSE"
         if not exist "$(TargetDir)livecustomdata" mkdir "$(TargetDir)livecustomdata"
         if not exist "$(TargetDir)packs" mkdir "$(TargetDir)packs"
         if not exist "$(TargetDir)settings" mkdir "$(TargetDir)settings"
@@ -25781,6 +25773,22 @@
             echo "No .git directory found, skipping copying of hooks."
         )
 </PreBuildEvent>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <AnalysisLevel>latest-minimum</AnalysisLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <AssemblyVersion>5.225.0.0</AssemblyVersion>
+    <FileVersion>5.225.0.0</FileVersion>
+    <InformationalVersion>5.225.0.0</InformationalVersion>
+    <ApplicationVersion>5.225.0.0</ApplicationVersion>
+    <VersionPrefix>5.225.0.0</VersionPrefix>
+    <Description>Character generator for Shadowrun 5th Edition</Description>
+    <Copyright>Licensed GNU GPLv3</Copyright>
+    <RepositoryUrl>https://github.com/chummer5a/chummer5a/</RepositoryUrl>
+    <Title>Chummer5a</Title>
+    <Product>Chummer5a</Product>
     <Nullable>disable</Nullable>
+    <Company>Chummer5a</Company>
+    <Authors>Chummer5a</Authors>
   </PropertyGroup>
 </Project>

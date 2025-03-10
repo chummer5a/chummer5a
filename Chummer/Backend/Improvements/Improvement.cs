@@ -27,13 +27,14 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
 {
     [DebuggerDisplay("{" + nameof(DisplayDebug) + "()}")]
-    public class Improvement : IHasNotes, IHasInternalId, ICanSort
+    public class Improvement : IHasNotes, IHasInternalId, ICanSort, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -150,7 +151,6 @@ namespace Chummer
             IgnoreCMPenaltyPhysical,
             CyborgEssence,
             EssenceMax,
-            AdeptPower,
             SpecificQuality,
             MartialArt,
             LimitModifier,
@@ -187,6 +187,9 @@ namespace Chummer
             ReplaceAttribute, //Alter the base metatype or metavariant of a character. Used for infected.
             SpecialSkills,
             ReflexRecorderOptimization,
+            RemoveSkillCategoryDefaultPenalty,
+            RemoveSkillGroupDefaultPenalty,
+            RemoveSkillDefaultPenalty,
             BlockSkillCategoryDefault,
             BlockSkillGroupDefault,
             BlockSkillDefault,
@@ -485,8 +488,6 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            Log.Trace("Save enter");
-
             objWriter.WriteStartElement("improvement");
             if (!string.IsNullOrEmpty(_strUniqueName))
                 objWriter.WriteElementString("unique", _strUniqueName);
@@ -513,8 +514,6 @@ namespace Chummer
             objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
-
-            Log.Trace("Save end");
         }
 
         /// <summary>
@@ -525,8 +524,6 @@ namespace Chummer
         {
             if (objNode == null)
                 return;
-            Log.Trace("Load enter");
-
             objNode.TryGetStringFieldQuickly("unique", ref _strUniqueName);
             objNode.TryGetStringFieldQuickly("target", ref _strTarget);
             objNode.TryGetStringFieldQuickly("improvedname", ref _strImprovedName);
@@ -544,7 +541,7 @@ namespace Chummer
             if (objNode["improvementsource"] != null)
                 _eImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
             // Legacy shims
-            if (_objCharacter.LastSavedVersion <= new Version(5, 214, 112)
+            if (_objCharacter.LastSavedVersion <= new ValueVersion(5, 214, 112)
                 && (_eImprovementSource == ImprovementSource.Initiation
                     || _eImprovementSource == ImprovementSource.Submersion)
                 && _eImprovementType == ImprovementType.Attribute
@@ -566,7 +563,7 @@ namespace Chummer
                     _decVal = 24;
                     break;
 
-                case ImprovementType.BlockSkillDefault when _objCharacter.LastSavedVersion <= new Version(5, 224, 39):
+                case ImprovementType.BlockSkillDefault when _objCharacter.LastSavedVersion <= new ValueVersion(5, 224, 39):
                     _eImprovementType = ImprovementType.BlockSkillGroupDefault;
                     break;
             }
@@ -594,16 +591,16 @@ namespace Chummer
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             objNode.TryGetInt32FieldQuickly("order", ref _intOrder);
-
-            Log.Trace("Load exit");
         }
 
         #endregion Save and Load Methods
 
         #region Properties
 
+        public Character CharacterObject => _objCharacter;
+
         /// <summary>
-        /// Whether or not this is a custom-made (manually created) Improvement.
+        /// Whether this is a custom-made (manually created) Improvement.
         /// </summary>
         public bool Custom
         {
@@ -870,7 +867,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the bonus applies directly to a Skill's Rating
+        /// Whether the bonus applies directly to a Skill's Rating
         /// </summary>
         public bool AddToRating
         {
@@ -901,7 +898,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Improvement is enabled and provided its bonus.
+        /// Whether the Improvement is enabled and provided its bonus.
         /// </summary>
         public bool Enabled
         {
@@ -917,7 +914,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not we have completed our first setup. Needed to skip superfluous event updates at startup
+        /// Whether we have completed our first setup. Needed to skip superfluous event updates at startup
         /// </summary>
         public bool SetupComplete
         {
@@ -943,7 +940,7 @@ namespace Chummer
         /// TODO: Merge parts or all of this function with ImprovementManager methods that enable, disable, add, or remove improvements.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Tuple<INotifyMultiplePropertyChanged, string>> GetRelevantPropertyChangers(ICollection<string> lstExtraImprovedName = null, ImprovementType eOverrideType = ImprovementType.None, ICollection<string> lstExtraUniqueName = null, ICollection<string> lstExtraTarget = null)
+        public IEnumerable<Tuple<INotifyMultiplePropertiesChangedAsync, string>> GetRelevantPropertyChangers(ICollection<string> lstExtraImprovedName = null, ImprovementType eOverrideType = ImprovementType.None, ICollection<string> lstExtraUniqueName = null, ICollection<string> lstExtraTarget = null)
         {
             switch (eOverrideType != ImprovementType.None ? eOverrideType : ImproveType)
             {
@@ -996,7 +993,7 @@ namespace Chummer
                                     continue;
                                 foreach (string strPropertyName in setAttributePropertiesChanged)
                                 {
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
                                         objCharacterAttrib,
                                         strPropertyName);
                                 }
@@ -1013,10 +1010,10 @@ namespace Chummer
                     {
                         if (objCharacterAttrib.Abbrev != strTargetAttribute && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
                             continue;
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(
+                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
                             objCharacterAttrib,
                             nameof(CharacterAttrib.AttributeModifiers));
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(
+                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
                             objCharacterAttrib,
                             nameof(CharacterAttrib.TotalAugmentedMaximum));
                     }
@@ -1025,49 +1022,49 @@ namespace Chummer
 
                 case ImprovementType.Armor:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.GetArmorRating));
                 }
                     break;
 
                 case ImprovementType.FireArmor:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.TotalFireArmorRating));
                 }
                     break;
 
                 case ImprovementType.ColdArmor:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.TotalColdArmorRating));
                 }
                     break;
 
                 case ImprovementType.ElectricityArmor:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.TotalElectricityArmorRating));
                 }
                     break;
 
                 case ImprovementType.AcidArmor:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.TotalAcidArmorRating));
                 }
                     break;
 
                 case ImprovementType.FallingArmor:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.TotalFallingArmorRating));
                 }
                     break;
 
                 case ImprovementType.Dodge:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.TotalBonusDodgeRating));
                 }
                     break;
@@ -1077,21 +1074,24 @@ namespace Chummer
 
                 case ImprovementType.Nuyen:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.TotalStartingNuyen));
+                    if (ImprovedName == "Stolen")
+                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.HasStolenNuyen));
                 }
                     break;
 
                 case ImprovementType.PhysicalCM:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.PhysicalCM));
                 }
                     break;
 
                 case ImprovementType.StunCM:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.StunCM));
                 }
                     break;
@@ -1102,14 +1102,14 @@ namespace Chummer
                 case ImprovementType.InitiativeDiceAdd:
                 case ImprovementType.InitiativeDice:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.InitiativeDice));
                 }
                     break;
 
                 case ImprovementType.MatrixInitiative:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.MatrixInitiativeValue));
                 }
                     break;
@@ -1117,7 +1117,7 @@ namespace Chummer
                 case ImprovementType.MatrixInitiativeDiceAdd:
                 case ImprovementType.MatrixInitiativeDice:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.MatrixInitiativeDice));
                 }
                     break;
@@ -1127,7 +1127,7 @@ namespace Chummer
 
                 case ImprovementType.CMThreshold:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.CMThreshold));
                 }
                     break;
@@ -1137,7 +1137,7 @@ namespace Chummer
                 case ImprovementType.CMThresholdOffset:
                 case ImprovementType.CMSharedThresholdOffset:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.CMThresholdOffsets));
                 }
                     break;
@@ -1156,7 +1156,7 @@ namespace Chummer
 
                 case ImprovementType.Initiative:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.InitiativeValue));
                 }
                     break;
@@ -1194,7 +1194,7 @@ namespace Chummer
                     {
                         // Immediately reset cached essence to make sure this fires off before any other property changers would
                         _objCharacter.ResetCachedEssence();
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                             nameof(Character.Essence));
                     }
                     break;
@@ -1207,14 +1207,14 @@ namespace Chummer
 
                 case ImprovementType.DisableBioware:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.AddBiowareEnabled));
                 }
                     break;
 
                 case ImprovementType.DisableCyberware:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.AddCyberwareEnabled));
                 }
                     break;
@@ -1242,21 +1242,21 @@ namespace Chummer
 
                 case ImprovementType.FreeKnowledgeSkills:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter.SkillsSection,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter.SkillsSection,
                         nameof(SkillsSection.KnowledgeSkillPoints));
                 }
                     break;
 
                 case ImprovementType.NuyenMaxBP:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.TotalNuyenMaximumBP));
                 }
                     break;
 
                 case ImprovementType.CMOverflow:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.CMOverflow));
                 }
                     break;
@@ -1266,7 +1266,7 @@ namespace Chummer
 
                 case ImprovementType.AdeptPowerPoints:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.PowerPointsTotal));
                 }
                     break;
@@ -1287,7 +1287,7 @@ namespace Chummer
                 {
                     foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
+                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                             nameof(Skill.CyberwareRating));
                     }
                 }
@@ -1295,44 +1295,44 @@ namespace Chummer
 
                 case ImprovementType.DamageResistance:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.DamageResistancePool));
                 }
                     break;
 
                 case ImprovementType.JudgeIntentions:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.JudgeIntentions));
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.JudgeIntentionsResist));
                 }
                     break;
 
                 case ImprovementType.JudgeIntentionsOffense:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.JudgeIntentions));
                 }
                     break;
 
                 case ImprovementType.JudgeIntentionsDefense:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.JudgeIntentionsResist));
                 }
                     break;
 
                 case ImprovementType.LiftAndCarry:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.LiftAndCarry));
                 }
                     break;
 
                 case ImprovementType.Memory:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.Memory));
                 }
                     break;
@@ -1350,7 +1350,7 @@ namespace Chummer
                             string strKey = objTargetSkill.DictionaryKey;
                             if (strKey == Target || lstExtraTarget.Contains(strKey))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.DefaultAttribute));
                             }
                         }
@@ -1362,14 +1362,14 @@ namespace Chummer
                                                  || Target == objTargetSkill.InternalId
                                                  || lstExtraTarget.Contains(objTargetSkill.InternalId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.DefaultAttribute));
                             }
                             else
                             {
                                 string strDisplayName = objTargetSkill.CurrentDisplayName;
                                 if (strDisplayName == Target || lstExtraTarget.Contains(strDisplayName))
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.DefaultAttribute));
                             }
                         }
@@ -1383,7 +1383,7 @@ namespace Chummer
                                                        || x.CurrentDisplayName == Target);
                         if (objTargetSkill != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.DefaultAttribute));
                         }
                     }
@@ -1393,14 +1393,14 @@ namespace Chummer
                 case ImprovementType.DrainResistance:
                 case ImprovementType.FadingResistance:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter.MagicTradition,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter.MagicTradition,
                         nameof(Tradition.DrainValue));
                 }
                     break;
 
                 case ImprovementType.Composure:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.Composure));
                 }
                     break;
@@ -1413,7 +1413,7 @@ namespace Chummer
 
                 case ImprovementType.Notoriety:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.CalculatedNotoriety));
                 }
                     break;
@@ -1435,13 +1435,13 @@ namespace Chummer
                     // Keeping two enumerations separate helps avoid extra heap allocations
                     foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
+                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                             nameof(Skill.CyberwareRating));
                     }
 
                     foreach (KnowledgeSkill objSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
+                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                             nameof(Skill.CyberwareRating));
                     }
                 }
@@ -1452,7 +1452,7 @@ namespace Chummer
 
                 case ImprovementType.BlackMarketDiscount:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.BlackMarketDiscount));
                 }
                     break;
@@ -1465,7 +1465,7 @@ namespace Chummer
 
                 case ImprovementType.QuickeningMetamagic:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.QuickeningEnabled));
                 }
                     break;
@@ -1482,14 +1482,11 @@ namespace Chummer
                     {
                         if (objCharacterAttrib.Abbrev == "ESS")
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
                                 nameof(CharacterAttrib.MetatypeMaximum));
                         }
                     }
                 }
-                    break;
-
-                case ImprovementType.AdeptPower:
                     break;
 
                 case ImprovementType.SpecificQuality:
@@ -1503,77 +1500,77 @@ namespace Chummer
 
                 case ImprovementType.PhysicalLimit:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.LimitPhysical));
                 }
                     break;
 
                 case ImprovementType.MentalLimit:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.LimitMental));
                 }
                     break;
 
                 case ImprovementType.SocialLimit:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.LimitSocial));
                 }
                     break;
 
                 case ImprovementType.FriendsInHighPlaces:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.FriendsInHighPlaces));
                 }
                     break;
 
                 case ImprovementType.Erased:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.Erased));
                 }
                     break;
 
                 case ImprovementType.Fame:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.Fame));
                 }
                     break;
 
                 case ImprovementType.MadeMan:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.MadeMan));
                 }
                     break;
 
                 case ImprovementType.Overclocker:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.Overclocker));
                 }
                     break;
 
                 case ImprovementType.RestrictedGear:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.RestrictedGear));
                 }
                     break;
 
                 case ImprovementType.TrustFund:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.TrustFund));
                 }
                     break;
 
                 case ImprovementType.ExCon:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.ExCon));
                 }
                     break;
@@ -1587,7 +1584,7 @@ namespace Chummer
                             if (objTargetContact.UniqueId == ImprovedName
                                 || lstExtraImprovedName.Contains(objTargetContact.UniqueId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetContact,
                                     nameof(Contact.GroupEnabled));
                             }
                         }
@@ -1598,7 +1595,7 @@ namespace Chummer
                             = _objCharacter.Contacts.FirstOrDefault(x => x.UniqueId == ImprovedName);
                         if (objTargetContact != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetContact,
                                 nameof(Contact.GroupEnabled));
                         }
                     }
@@ -1611,7 +1608,7 @@ namespace Chummer
                     {
                         if (objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
                                 nameof(CharacterAttrib.FreeBase));
                         }
                     }
@@ -1623,14 +1620,14 @@ namespace Chummer
 
                 case ImprovementType.Seeker:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.RedlinerBonus));
                 }
                     break;
 
                 case ImprovementType.PublicAwareness:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.CalculatedPublicAwareness));
                 }
                     break;
@@ -1647,7 +1644,7 @@ namespace Chummer
                             string strKey = objTargetSkill.DictionaryKey;
                             if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.CyberwareRating));
                             }
                         }
@@ -1659,14 +1656,14 @@ namespace Chummer
                                                        || ImprovedName == objTargetSkill.InternalId
                                                        || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.CyberwareRating));
                             }
                             else
                             {
                                 string strDisplayName = objTargetSkill.CurrentDisplayName;
                                 if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.CyberwareRating));
                             }
                         }
@@ -1680,7 +1677,7 @@ namespace Chummer
                                                              || x.CurrentDisplayName == ImprovedName);
                         if (objTargetSkill != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.CyberwareRating));
                         }
                     }
@@ -1689,7 +1686,7 @@ namespace Chummer
 
                 case ImprovementType.DealerConnection:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.DealerConnectionDiscount));
                 }
                     break;
@@ -1702,13 +1699,13 @@ namespace Chummer
                         // Kludgiest of kludges, but it fits spec and Sapience isn't exactly getting turned off and on constantly.
                         foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                                 nameof(Skill.Default));
                         }
 
                         foreach (KnowledgeSkill objSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                                 nameof(Skill.Default));
                         }
                     }
@@ -1719,7 +1716,7 @@ namespace Chummer
                             string strKey = objTargetSkill.DictionaryKey;
                             if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.Default));
                             }
                         }
@@ -1731,14 +1728,14 @@ namespace Chummer
                                                        || ImprovedName == objTargetSkill.InternalId
                                                        || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.Default));
                             }
                             else
                             {
                                 string strDisplayName = objTargetSkill.CurrentDisplayName;
                                 if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.Default));
                             }
                         }
@@ -1752,7 +1749,7 @@ namespace Chummer
                                                              || x.CurrentDisplayName == ImprovedName);
                         if (objTargetSkill != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.Default));
                         }
                     }
@@ -1768,8 +1765,8 @@ namespace Chummer
                             string strKey = objTargetSkill.DictionaryKey;
                             if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                                    nameof(Skill.Base));
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.RelevantImprovements));
                             }
                         }
 
@@ -1780,15 +1777,17 @@ namespace Chummer
                                                        || ImprovedName == objTargetSkill.InternalId
                                                        || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                                    nameof(Skill.Base));
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.RelevantImprovements));
                             }
                             else
                             {
                                 string strDisplayName = objTargetSkill.CurrentDisplayName;
                                 if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                                        nameof(Skill.Base));
+                                {
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.RelevantImprovements));
+                                }
                             }
                         }
                     }
@@ -1801,8 +1800,8 @@ namespace Chummer
                                                              || x.CurrentDisplayName == ImprovedName);
                         if (objTargetSkill != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                                nameof(Skill.Base));
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.RelevantImprovements));
                         }
                     }
                 }
@@ -1813,7 +1812,7 @@ namespace Chummer
                     foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
                         if (objTargetSkill.SkillGroup == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillGroup) == true)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.PoolModifiers));
                     }
                 }
@@ -1824,7 +1823,7 @@ namespace Chummer
                     foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
                         if (objTargetSkill.SkillGroup == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillGroup) == true)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.Default));
                     }
                 }
@@ -1836,14 +1835,14 @@ namespace Chummer
                     foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.PoolModifiers));
                     }
 
                     foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.PoolModifiers));
                     }
                 }
@@ -1854,7 +1853,7 @@ namespace Chummer
                     foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.Default));
                     }
                 }
@@ -1866,14 +1865,14 @@ namespace Chummer
                     foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
                         if (objTargetSkill.Attribute == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.Attribute) == true)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.PoolModifiers));
                     }
 
                     foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
                         if (objTargetSkill.Attribute == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.Attribute) == true)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.PoolModifiers));
                     }
                 }
@@ -1888,7 +1887,7 @@ namespace Chummer
                             string strKey = objTargetSkill.DictionaryKey;
                             if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.FreeKarma));
                             }
                         }
@@ -1900,14 +1899,14 @@ namespace Chummer
                                                        || ImprovedName == objTargetSkill.InternalId
                                                        || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.FreeKarma));
                             }
                             else
                             {
                                 string strDisplayName = objTargetSkill.CurrentDisplayName;
                                 if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.FreeKarma));
                             }
                         }
@@ -1921,7 +1920,7 @@ namespace Chummer
                                                              || x.CurrentDisplayName == ImprovedName);
                         if (objTargetSkill != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.FreeKarma));
                         }
                     }
@@ -1936,7 +1935,7 @@ namespace Chummer
                         {
                             if (objTargetGroup.Name == ImprovedName || lstExtraImprovedName.Contains(objTargetGroup.Name))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                     nameof(SkillGroup.FreeLevels));
                             }
                         }
@@ -1947,7 +1946,7 @@ namespace Chummer
                             _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
                         if (objTargetGroup != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                 nameof(SkillGroup.FreeLevels));
                         }
                     }
@@ -1963,7 +1962,7 @@ namespace Chummer
                             string strKey = objTargetSkill.DictionaryKey;
                             if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.FreeBase));
                             }
                         }
@@ -1975,14 +1974,14 @@ namespace Chummer
                                                        || ImprovedName == objTargetSkill.InternalId
                                                        || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.FreeBase));
                             }
                             else
                             {
                                 string strDisplayName = objTargetSkill.CurrentDisplayName;
                                 if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.FreeBase));
                             }
                         }
@@ -1996,7 +1995,7 @@ namespace Chummer
                                                              || x.CurrentDisplayName == ImprovedName);
                         if (objTargetSkill != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.FreeBase));
                         }
                     }
@@ -2011,7 +2010,7 @@ namespace Chummer
                         {
                             if (objTargetGroup.Name == ImprovedName || lstExtraImprovedName.Contains(objTargetGroup.Name))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                     nameof(SkillGroup.FreeBase));
                             }
                         }
@@ -2022,7 +2021,7 @@ namespace Chummer
                             _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
                         if (objTargetGroup != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                 nameof(SkillGroup.FreeBase));
                         }
                     }
@@ -2040,14 +2039,14 @@ namespace Chummer
                                                        || ImprovedName == objTargetSkill.InternalId
                                                        || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.CyberwareRating));
                             }
                             else
                             {
                                 string strDisplayName = objTargetSkill.CurrentDisplayName;
                                 if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.CyberwareRating));
                             }
                         }
@@ -2059,7 +2058,7 @@ namespace Chummer
                                                          || x.CurrentDisplayName == ImprovedName);
                         if (objTargetSkill != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.CyberwareRating));
                         }
                     }
@@ -2075,7 +2074,7 @@ namespace Chummer
                             string strKey = objTargetSkill.DictionaryKey;
                             if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.CyberwareRating));
                             }
                         }
@@ -2086,7 +2085,7 @@ namespace Chummer
                             _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName);
                         if (objTargetSkill != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.CyberwareRating));
                         }
                     }
@@ -2101,13 +2100,13 @@ namespace Chummer
                             || objCharacterAttrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
                             continue;
                         if (Maximum != 0)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
                                 nameof(CharacterAttrib.MetatypeMaximum));
                         if (Minimum != 0)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
                                 nameof(CharacterAttrib.MetatypeMinimum));
                         if (AugmentedMaximum != 0)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
                                 nameof(CharacterAttrib.MetatypeAugmentedMaximum));
                     }
                 }
@@ -2117,19 +2116,57 @@ namespace Chummer
                     break;
 
                 case ImprovementType.SkillAttribute:
+                {
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
+                            nameof(Skill.PoolModifiers));
+                    }
+                }
+                    break;
+                case ImprovementType.RemoveSkillCategoryDefaultPenalty:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.DefaultModifier));
+                    }
+                }
+                    break;
+                case ImprovementType.RemoveSkillGroupDefaultPenalty:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        if (objTargetSkill.SkillGroup == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillGroup) == true)
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.DefaultModifier));
+                    }
+                }
+                    break;
+                case ImprovementType.RemoveSkillDefaultPenalty:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        if (objTargetSkill.DictionaryKey == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.DictionaryKey) == true)
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.DefaultModifier));
+                    }
+                }
+                    break;
                 case ImprovementType.ReflexRecorderOptimization:
                 {
                     foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
-                            nameof(Skill.PoolModifiers));
+                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
+                            nameof(Skill.DefaultModifier));
                     }
                 }
                     break;
 
                 case ImprovementType.Ambidextrous:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.Ambidextrous));
                 }
                     break;
@@ -2147,7 +2184,7 @@ namespace Chummer
                             string strKey = objTargetSkill.DictionaryKey;
                             if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.Specializations));
                             }
                         }
@@ -2159,14 +2196,14 @@ namespace Chummer
                                                        || ImprovedName == objTargetSkill.InternalId
                                                        || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.Specializations));
                             }
                             else
                             {
                                 string strDisplayName = objTargetSkill.CurrentDisplayName;
                                 if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.Specializations));
                             }
                         }
@@ -2180,7 +2217,7 @@ namespace Chummer
                                                              || x.CurrentDisplayName == ImprovedName);
                         if (objTargetSkill != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.Specializations));
                         }
                     }
@@ -2197,7 +2234,7 @@ namespace Chummer
                             string strKey = objTargetSkill.DictionaryKey;
                             if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.CGLSpecializations));
                             }
                         }
@@ -2209,14 +2246,14 @@ namespace Chummer
                                                        || ImprovedName == objTargetSkill.InternalId
                                                        || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.CGLSpecializations));
                             }
                             else
                             {
                                 string strDisplayName = objTargetSkill.CurrentDisplayName;
                                 if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.CGLSpecializations));
                             }
                         }
@@ -2230,7 +2267,7 @@ namespace Chummer
                                                              || x.CurrentDisplayName == ImprovedName);
                         if (objTargetSkill != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.CGLSpecializations));
                         }
                     }
@@ -2238,7 +2275,7 @@ namespace Chummer
                     break;
                 }
                 case ImprovementType.NativeLanguageLimit:
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter.SkillsSection,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter.SkillsSection,
                         nameof(SkillsSection.HasAvailableNativeLanguageSlots));
                     break;
 
@@ -2252,7 +2289,7 @@ namespace Chummer
                             if ((objImprovedPower.Name == ImprovedName || lstExtraImprovedName?.Contains(objImprovedPower.Name) == true)
                                 && (objImprovedPower.Extra == UniqueName || lstExtraUniqueName?.Contains(objImprovedPower.Extra) == true))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objImprovedPower,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objImprovedPower,
                                     nameof(Power.FreePoints));
                             }
                         }
@@ -2263,7 +2300,7 @@ namespace Chummer
                             objPower.Name == ImprovedName && objPower.Extra == UniqueName);
                         if (objImprovedPower != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objImprovedPower,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objImprovedPower,
                                 nameof(Power.FreePoints));
                         }
                     }
@@ -2282,7 +2319,7 @@ namespace Chummer
                                 && (objImprovedPower.Extra == UniqueName
                                     || lstExtraUniqueName?.Contains(objImprovedPower.Extra) == true))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objImprovedPower,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objImprovedPower,
                                     nameof(Power.FreeLevels));
                             }
                         }
@@ -2293,7 +2330,7 @@ namespace Chummer
                             objPower.Name == ImprovedName && objPower.Extra == UniqueName);
                         if (objImprovedPower != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objImprovedPower,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objImprovedPower,
                                 nameof(Power.FreeLevels));
                         }
                     }
@@ -2311,7 +2348,7 @@ namespace Chummer
 
                 case ImprovementType.SpellResistance:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellResistance));
                 }
                     break;
@@ -2327,21 +2364,21 @@ namespace Chummer
 
                 case ImprovementType.WalkSpeed:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.WalkingRate));
                 }
                     break;
 
                 case ImprovementType.RunSpeed:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.RunningRate));
                 }
                     break;
 
                 case ImprovementType.SprintSpeed:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SprintingRate));
                 }
                     break;
@@ -2353,7 +2390,7 @@ namespace Chummer
                 case ImprovementType.SprintBonus:
                 case ImprovementType.SprintBonusPercent:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.CalculatedMovement));
                 }
                     break;
@@ -2374,7 +2411,7 @@ namespace Chummer
                 case ImprovementType.GenetechEssMultiplier:
                     // Immediately reset cached essence to make sure this fires off before any other property changers would
                     _objCharacter.ResetCachedEssence();
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.Essence));
                     break;
 
@@ -2420,7 +2457,7 @@ namespace Chummer
                             string strKey = objTargetSkill.DictionaryKey;
                             if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.GetSpecializationBonus));
                             }
                         }
@@ -2432,14 +2469,14 @@ namespace Chummer
                                                        || ImprovedName == objTargetSkill.InternalId
                                                        || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.GetSpecializationBonus));
                             }
                             else
                             {
                                 string strDisplayName = objTargetSkill.CurrentDisplayName;
                                 if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.GetSpecializationBonus));
                             }
                         }
@@ -2453,7 +2490,7 @@ namespace Chummer
                                                              || x.CurrentDisplayName == ImprovedName);
                         if (objTargetSkill != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.GetSpecializationBonus));
                         }
                     }
@@ -2462,28 +2499,28 @@ namespace Chummer
 
                 case ImprovementType.PhysiologicalAddictionFirstTime:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.PhysiologicalAddictionResistFirstTime));
                 }
                     break;
 
                 case ImprovementType.PsychologicalAddictionFirstTime:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.PsychologicalAddictionResistFirstTime));
                 }
                     break;
 
                 case ImprovementType.PhysiologicalAddictionAlreadyAddicted:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.PhysiologicalAddictionResistAlreadyAddicted));
                 }
                     break;
 
                 case ImprovementType.PsychologicalAddictionAlreadyAddicted:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.PsychologicalAddictionResistAlreadyAddicted));
                 }
                     break;
@@ -2491,7 +2528,7 @@ namespace Chummer
                 case ImprovementType.AddESStoStunCMRecovery:
                 case ImprovementType.StunCMRecovery:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.StunCMNaturalRecovery));
                 }
                     break;
@@ -2499,133 +2536,133 @@ namespace Chummer
                 case ImprovementType.AddESStoPhysicalCMRecovery:
                 case ImprovementType.PhysicalCMRecovery:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.PhysicalCMNaturalRecovery));
                 }
                     break;
 
                 case ImprovementType.MentalManipulationResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseManipulationMental));
                 }
                     break;
 
                 case ImprovementType.PhysicalManipulationResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseManipulationPhysical));
                 }
                     break;
 
                 case ImprovementType.ManaIllusionResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseIllusionMana));
                 }
                     break;
 
                 case ImprovementType.PhysicalIllusionResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseIllusionPhysical));
                 }
                     break;
 
                 case ImprovementType.DetectionSpellResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseDetection));
                 }
                     break;
 
                 case ImprovementType.DirectManaSpellResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseDirectSoakMana));
                 }
                     break;
 
                 case ImprovementType.DirectPhysicalSpellResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseDirectSoakPhysical));
                 }
                     break;
 
                 case ImprovementType.DecreaseBODResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseDecreaseBOD));
                 }
                     break;
 
                 case ImprovementType.DecreaseAGIResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseDecreaseAGI));
                 }
                     break;
 
                 case ImprovementType.DecreaseREAResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseDecreaseREA));
                 }
                     break;
 
                 case ImprovementType.DecreaseSTRResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseDecreaseSTR));
                 }
                     break;
 
                 case ImprovementType.DecreaseCHAResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseDecreaseCHA));
                 }
                     break;
 
                 case ImprovementType.DecreaseINTResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseDecreaseINT));
                 }
                     break;
 
                 case ImprovementType.DecreaseLOGResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseDecreaseLOG));
                 }
                     break;
 
                 case ImprovementType.DecreaseWILResist:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellDefenseDecreaseWIL));
                 }
                     break;
 
                 case ImprovementType.AddLimb:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.LimbCount));
                 }
                     break;
 
                 case ImprovementType.StreetCredMultiplier:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.CalculatedStreetCred));
                 }
                     break;
 
                 case ImprovementType.StreetCred:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.TotalStreetCred));
                 }
                     break;
@@ -2637,7 +2674,7 @@ namespace Chummer
                     {
                         if (string.IsNullOrEmpty(ImprovedName) || objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
                                 nameof(CharacterAttrib.UpgradeKarmaCost));
                         }
                     }
@@ -2656,7 +2693,7 @@ namespace Chummer
                                 string strKey = objTargetSkill.DictionaryKey;
                                 if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                                 {
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.UpgradeKarmaCost));
                                 }
                             }
@@ -2668,7 +2705,7 @@ namespace Chummer
                                     x => x.DictionaryKey == ImprovedName);
                             if (objTargetSkill != null)
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.UpgradeKarmaCost));
                             }
                         }
@@ -2677,7 +2714,7 @@ namespace Chummer
                     {
                         foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.UpgradeKarmaCost));
                         }
                     }
@@ -2699,14 +2736,14 @@ namespace Chummer
                                                            || ImprovedName == objTargetSkill.InternalId
                                                            || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                                 {
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.UpgradeKarmaCost));
                                 }
                                 else
                                 {
                                     string strDisplayName = objTargetSkill.CurrentDisplayName;
                                     if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
-                                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                             nameof(Skill.UpgradeKarmaCost));
                                 }
                             }
@@ -2718,7 +2755,7 @@ namespace Chummer
                                     x.DictionaryKey == ImprovedName || x.CurrentDisplayName == ImprovedName);
                             if (objTargetSkill != null)
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.UpgradeKarmaCost));
                             }
                         }
@@ -2727,7 +2764,7 @@ namespace Chummer
                     {
                         foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.UpgradeKarmaCost));
                         }
                     }
@@ -2745,7 +2782,7 @@ namespace Chummer
                             {
                                 if (objTargetGroup.Name == ImprovedName || lstExtraImprovedName.Contains(objTargetGroup.Name))
                                 {
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                         nameof(SkillGroup.UpgradeKarmaCost));
                                 }
                             }
@@ -2756,7 +2793,7 @@ namespace Chummer
                                 _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
                             if (objTargetGroup != null)
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                     nameof(SkillGroup.UpgradeKarmaCost));
                             }
                         }
@@ -2765,7 +2802,7 @@ namespace Chummer
                     {
                         foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                 nameof(SkillGroup.UpgradeKarmaCost));
                         }
                     }
@@ -2780,7 +2817,7 @@ namespace Chummer
                         {
                             if (objTargetGroup.Name == ImprovedName || lstExtraImprovedName.Contains(objTargetGroup.Name))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                     nameof(SkillGroup.IsDisabled));
                             }
                         }
@@ -2791,7 +2828,7 @@ namespace Chummer
                             _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
                         if (objTargetGroup != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                 nameof(SkillGroup.IsDisabled));
                         }
                     }
@@ -2807,7 +2844,7 @@ namespace Chummer
                             string strKey = objTargetSkill.DictionaryKey;
                             if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.Enabled));
                             }
                         }
@@ -2819,14 +2856,14 @@ namespace Chummer
                                                        || ImprovedName == objTargetSkill.InternalId
                                                        || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.Enabled));
                             }
                             else
                             {
                                 string strDisplayName = objTargetSkill.CurrentDisplayName;
                                 if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.Enabled));
                             }
                         }
@@ -2840,7 +2877,7 @@ namespace Chummer
                                                              || x.CurrentDisplayName == ImprovedName);
                         if (objTargetSkill != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.Enabled));
                         }
                     }
@@ -2854,14 +2891,14 @@ namespace Chummer
                     foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.CanAffordSpecialization));
                     }
 
                     foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.CanAffordSpecialization));
                     }
                 }
@@ -2874,14 +2911,14 @@ namespace Chummer
                     foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.UpgradeKarmaCost));
                     }
 
                     foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.UpgradeKarmaCost));
                     }
                 }
@@ -2896,7 +2933,7 @@ namespace Chummer
                                 && objTargetGroup.GetRelevantSkillCategories.Any(
                                     lstExtraImprovedName.Contains)))
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
                                 objTargetGroup, nameof(SkillGroup.IsDisabled));
                         }
                     }
@@ -2913,7 +2950,7 @@ namespace Chummer
                                 && objTargetGroup.GetRelevantSkillCategories.Any(
                                     lstExtraImprovedName.Contains)))
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
                                 objTargetGroup, nameof(SkillGroup.UpgradeKarmaCost));
                         }
                     }
@@ -2922,32 +2959,184 @@ namespace Chummer
 
                 case ImprovementType.AttributePointCost:
                 case ImprovementType.AttributePointCostMultiplier:
+                {
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
+                    {
+                        if (string.IsNullOrEmpty(ImprovedName) || objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
+                                nameof(CharacterAttrib.SpentPriorityPoints));
+                        }
+                    }
+                }
                     break;
 
                 case ImprovementType.ActiveSkillPointCost:
                 case ImprovementType.ActiveSkillPointCostMultiplier:
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                            {
+                                string strKey = objTargetSkill.DictionaryKey;
+                                if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
+                                {
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.CurrentSpCost));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                _objCharacter.SkillsSection.Skills.FirstOrDefault(
+                                    x => x.DictionaryKey == ImprovedName);
+                            if (objTargetSkill != null)
+                            {
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.CurrentSpCost));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.CurrentSpCost));
+                        }
+                    }
                     break;
 
                 case ImprovementType.SkillGroupPointCost:
                 case ImprovementType.SkillGroupPointCostMultiplier:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups)
+                            {
+                                if (objTargetGroup.Name == ImprovedName || lstExtraImprovedName.Contains(objTargetGroup.Name))
+                                {
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                        nameof(SkillGroup.CurrentSpCost));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            SkillGroup objTargetGroup =
+                                _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
+                            if (objTargetGroup != null)
+                            {
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                    nameof(SkillGroup.CurrentSpCost));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                nameof(SkillGroup.CurrentSpCost));
+                        }
+                    }
+                }
                     break;
 
                 case ImprovementType.KnowledgeSkillPointCost:
                 case ImprovementType.KnowledgeSkillPointCostMultiplier:
+                    {
+                        if (!string.IsNullOrEmpty(ImprovedName))
+                        {
+                            if (lstExtraImprovedName?.Count > 0)
+                            {
+                                foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                                {
+                                    string strKey = objTargetSkill.DictionaryKey;
+                                    if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey)
+                                                               || ImprovedName == objTargetSkill.InternalId
+                                                               || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
+                                    {
+                                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                            nameof(KnowledgeSkill.CurrentSpCost));
+                                    }
+                                    else
+                                    {
+                                        string strDisplayName = objTargetSkill.CurrentDisplayName;
+                                        if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
+                                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                                nameof(KnowledgeSkill.CurrentSpCost));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                KnowledgeSkill objTargetSkill
+                                    = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
+                                        x.DictionaryKey == ImprovedName || x.CurrentDisplayName == ImprovedName);
+                                if (objTargetSkill != null)
+                                {
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(KnowledgeSkill.CurrentSpCost));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                            {
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(KnowledgeSkill.CurrentSpCost));
+                            }
+                        }
+                    }
                     break;
 
                 case ImprovementType.SkillCategoryPointCost:
                 case ImprovementType.SkillCategoryPointCostMultiplier:
+                {
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.CurrentSpCost));
+                    }
+
+                    foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.CurrentSpCost));
+                    }
+                }
                     break;
 
                 case ImprovementType.SkillGroupCategoryPointCost:
                 case ImprovementType.SkillGroupCategoryPointCostMultiplier:
+                {
+                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups)
+                    {
+                        if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName)
+                            || (lstExtraImprovedName != null
+                                && objTargetGroup.GetRelevantSkillCategories.Any(
+                                    lstExtraImprovedName.Contains)))
+                        {
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                objTargetGroup, nameof(SkillGroup.CurrentSpCost));
+                        }
+                    }
+                }
                     break;
 
                 case ImprovementType.NewSpellKarmaCost:
                 case ImprovementType.NewSpellKarmaCostMultiplier:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpellKarmaCost));
                 }
                     break;
@@ -2955,7 +3144,7 @@ namespace Chummer
                 case ImprovementType.NewComplexFormKarmaCost:
                 case ImprovementType.NewComplexFormKarmaCostMultiplier:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.ComplexFormKarmaCost));
                 }
                     break;
@@ -2963,7 +3152,7 @@ namespace Chummer
                 case ImprovementType.NewAIProgramKarmaCost:
                 case ImprovementType.NewAIProgramKarmaCostMultiplier:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.AIProgramKarmaCost));
                 }
                     break;
@@ -2971,7 +3160,7 @@ namespace Chummer
                 case ImprovementType.NewAIAdvancedProgramKarmaCost:
                 case ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.AIAdvancedProgramKarmaCost));
                 }
                     break;
@@ -2987,7 +3176,7 @@ namespace Chummer
                                 string strKey = objTargetSkill.DictionaryKey;
                                 if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                                 {
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.CanHaveSpecs));
                                 }
                             }
@@ -2999,14 +3188,14 @@ namespace Chummer
                                                            || ImprovedName == objTargetSkill.InternalId
                                                            || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                                 {
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.CanHaveSpecs));
                                 }
                                 else
                                 {
                                     string strDisplayName = objTargetSkill.CurrentDisplayName;
                                     if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
-                                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                             nameof(Skill.CanHaveSpecs));
                                 }
                             }
@@ -3021,7 +3210,7 @@ namespace Chummer
                                                                  || x.CurrentDisplayName == ImprovedName);
                             if (objTargetSkill != null)
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.CanHaveSpecs));
                             }
                         }
@@ -3030,7 +3219,7 @@ namespace Chummer
                     {
                         foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.CanHaveSpecs));
                         }
                     }
@@ -3043,14 +3232,14 @@ namespace Chummer
                     foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.CanHaveSpecs));
                     }
 
                     foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.CanHaveSpecs));
                     }
                 }
@@ -3067,7 +3256,7 @@ namespace Chummer
                     foreach (Power objLoopPower in _objCharacter.Powers)
                     {
                         if (objLoopPower.AdeptWayDiscount != 0)
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objLoopPower,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objLoopPower,
                                 nameof(Power.AdeptWayDiscountEnabled));
                     }
                 }
@@ -3084,7 +3273,7 @@ namespace Chummer
                         {
                             if (objTargetContact.UniqueId == ImprovedName || lstExtraImprovedName.Contains(objTargetContact.UniqueId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetContact,
                                     nameof(Contact.ForcedLoyalty));
                             }
                         }
@@ -3094,7 +3283,7 @@ namespace Chummer
                         Contact objTargetContact = _objCharacter.Contacts.FirstOrDefault(x => x.UniqueId == ImprovedName);
                         if (objTargetContact != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetContact,
                                 nameof(Contact.ForcedLoyalty));
                         }
                     }
@@ -3110,7 +3299,7 @@ namespace Chummer
                             if (objTargetContact.UniqueId == ImprovedName
                                 || lstExtraImprovedName.Contains(objTargetContact.UniqueId))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetContact,
                                     nameof(Contact.Free));
                             }
                         }
@@ -3121,7 +3310,7 @@ namespace Chummer
                             = _objCharacter.Contacts.FirstOrDefault(x => x.UniqueId == ImprovedName);
                         if (objTargetContact != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetContact,
                                 nameof(Contact.Free));
                         }
                     }
@@ -3139,14 +3328,14 @@ namespace Chummer
 
                 case ImprovementType.SpecialModificationLimit:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SpecialModificationLimit));
                 }
                     break;
 
                 case ImprovementType.MetageneticLimit:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.MetagenicLimit));
                 }
                     break;
@@ -3162,9 +3351,9 @@ namespace Chummer
                                 || lstExtraImprovedName.Contains(objQuality.Name)
                                 || lstExtraImprovedName.Contains(objQuality.SourceIDString))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,
                                     nameof(Quality.Suppressed));
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                                     nameof(Character.Qualities));
                             }
                         }
@@ -3175,9 +3364,9 @@ namespace Chummer
                             x.Name == ImprovedName || string.Equals(x.SourceIDString, ImprovedName, StringComparison.OrdinalIgnoreCase));
                         if (objQuality != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,
                                 nameof(Quality.Suppressed));
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                                 nameof(Character.Qualities));
                         }
                     }
@@ -3195,11 +3384,11 @@ namespace Chummer
                                 || lstExtraImprovedName.Contains(objQuality.Name)
                                 || lstExtraImprovedName.Contains(objQuality.SourceIDString))
                             {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,
                                     nameof(Quality.ContributeToBP));
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,
                                     nameof(Quality.ContributeToLimit));
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                                     nameof(Character.Qualities));
                             }
                         }
@@ -3210,11 +3399,11 @@ namespace Chummer
                             x.Name == ImprovedName || string.Equals(x.SourceIDString, ImprovedName, StringComparison.OrdinalIgnoreCase));
                         if (objQuality != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,
                                 nameof(Quality.ContributeToBP));
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,
                                 nameof(Quality.ContributeToLimit));
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                                 nameof(Character.Qualities));
                         }
                     }
@@ -3223,42 +3412,2653 @@ namespace Chummer
 
                 case ImprovementType.AllowSpriteFettering:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.AllowSpriteFettering));
                     break;
                 }
                 case ImprovementType.Surprise:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.Surprise));
                     break;
                 }
                 case ImprovementType.AstralReputation:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.AstralReputation));
                     break;
                 }
                 case ImprovementType.AstralReputationWild:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.WildReputation));
                     break;
                 }
                 case ImprovementType.CyberadeptDaemon:
                 {
                     if (_objCharacter.Settings.SpecialKarmaCostBasedOnShownValue)
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                             nameof(Character.CyberwareEssence));
                     break;
                 }
                 case ImprovementType.PenaltyFreeSustain:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.SustainingPenalty));
                     break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Get an enumerable of events to fire related to this specific improvement.
+        /// TODO: Merge parts or all of this function with ImprovementManager methods that enable, disable, add, or remove improvements.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Tuple<INotifyMultiplePropertiesChangedAsync, string>>> GetRelevantPropertyChangersAsync(ICollection<string> lstExtraImprovedName = null, ImprovementType eOverrideType = ImprovementType.None, ICollection<string> lstExtraUniqueName = null, ICollection<string> lstExtraTarget = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Tuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn =
+                new List<Tuple<INotifyMultiplePropertiesChangedAsync, string>>();
+            switch (eOverrideType != ImprovementType.None ? eOverrideType : ImproveType)
+            {
+                case ImprovementType.Attribute:
+                    {
+                        string strTargetAttribute = ImprovedName;
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string>
+                                                                            setAttributePropertiesChanged))
+                        {
+                            if (AugmentedMaximum != 0)
+                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AugmentedMaximumModifiers));
+                            if (Maximum != 0)
+                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MaximumModifiers));
+                            if (Minimum != 0)
+                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MinimumModifiers));
+                            if (lstExtraImprovedName != null)
+                            {
+                                foreach (string strExtraAttribute in lstExtraImprovedName.Where(x => x.EndsWith("Base", StringComparison.Ordinal)).ToList())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    lstExtraImprovedName.Add(strExtraAttribute.TrimEndOnce("Base", true));
+                                }
+                            }
+                            strTargetAttribute = strTargetAttribute.TrimEndOnce("Base");
+                            if (Augmented != 0)
+                            {
+                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeModifiers));
+                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.HasModifiers));
+                            }
+                            else if ((ImproveSource == ImprovementSource.EssenceLoss ||
+                                      ImproveSource == ImprovementSource.EssenceLossChargen ||
+                                      ImproveSource == ImprovementSource.CyberadeptDaemon)
+                                     && (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false) && (strTargetAttribute == "MAG"
+                                                                      || strTargetAttribute == "MAGAdept"
+                                                                      || (lstExtraImprovedName != null
+                                                                          && (lstExtraImprovedName.Contains("MAG")
+                                                                              || lstExtraImprovedName
+                                                                                  .Contains("MAGAdept")))) ||
+                                         await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false) && (strTargetAttribute == "RES"
+                                                                               || lstExtraImprovedName?.Contains("RES") == true) ||
+                                         await _objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false) && (strTargetAttribute == "DEP"
+                                                                               || lstExtraImprovedName?.Contains("DEP") == true)))
+                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.HasModifiers));
+
+                            if (setAttributePropertiesChanged.Count > 0)
+                            {
+                                foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(token))
+                                {
+                                    if (objCharacterAttrib.Abbrev != strTargetAttribute && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
+                                        continue;
+                                    foreach (string strPropertyName in setAttributePropertiesChanged)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objCharacterAttrib,
+                                            strPropertyName));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.AttributeMaxClamp:
+                    {
+                        string strTargetAttribute = ImprovedName;
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(token))
+                        {
+                            if (objCharacterAttrib.Abbrev != strTargetAttribute && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
+                                continue;
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                objCharacterAttrib,
+                                nameof(CharacterAttrib.AttributeModifiers)));
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                objCharacterAttrib,
+                                nameof(CharacterAttrib.TotalAugmentedMaximum)));
+                        }
+                    }
+                    break;
+
+                case ImprovementType.Armor:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.GetArmorRating)));
+                    }
+                    break;
+
+                case ImprovementType.FireArmor:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.TotalFireArmorRating)));
+                    }
+                    break;
+
+                case ImprovementType.ColdArmor:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.TotalColdArmorRating)));
+                    }
+                    break;
+
+                case ImprovementType.ElectricityArmor:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.TotalElectricityArmorRating)));
+                    }
+                    break;
+
+                case ImprovementType.AcidArmor:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.TotalAcidArmorRating)));
+                    }
+                    break;
+
+                case ImprovementType.FallingArmor:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.TotalFallingArmorRating)));
+                    }
+                    break;
+
+                case ImprovementType.Dodge:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.TotalBonusDodgeRating)));
+                    }
+                    break;
+
+                case ImprovementType.Reach:
+                    break;
+
+                case ImprovementType.Nuyen:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.TotalStartingNuyen)));
+                        if (ImprovedName == "Stolen")
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                                nameof(Character.HasStolenNuyen)));
+                    }
+                    break;
+
+                case ImprovementType.PhysicalCM:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.PhysicalCM)));
+                    }
+                    break;
+
+                case ImprovementType.StunCM:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.StunCM)));
+                    }
+                    break;
+
+                case ImprovementType.UnarmedDV:
+                    break;
+
+                case ImprovementType.InitiativeDiceAdd:
+                case ImprovementType.InitiativeDice:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.InitiativeDice)));
+                    }
+                    break;
+
+                case ImprovementType.MatrixInitiative:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.MatrixInitiativeValue)));
+                    }
+                    break;
+
+                case ImprovementType.MatrixInitiativeDiceAdd:
+                case ImprovementType.MatrixInitiativeDice:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.MatrixInitiativeDice)));
+                    }
+                    break;
+
+                case ImprovementType.LifestyleCost:
+                    break;
+
+                case ImprovementType.CMThreshold:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.CMThreshold)));
+                    }
+                    break;
+
+                case ImprovementType.IgnoreCMPenaltyPhysical:
+                case ImprovementType.IgnoreCMPenaltyStun:
+                case ImprovementType.CMThresholdOffset:
+                case ImprovementType.CMSharedThresholdOffset:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.CMThresholdOffsets)));
+                    }
+                    break;
+
+                case ImprovementType.EnhancedArticulation:
+                    break;
+
+                case ImprovementType.WeaponCategoryDV:
+                    break;
+
+                case ImprovementType.WeaponCategoryDice:
+                    break;
+
+                case ImprovementType.SpecialTab:
+                    break;
+
+                case ImprovementType.Initiative:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.InitiativeValue)));
+                    }
+                    break;
+
+                case ImprovementType.LivingPersonaDeviceRating:
+                    break;
+
+                case ImprovementType.LivingPersonaProgramLimit:
+                    break;
+
+                case ImprovementType.LivingPersonaAttack:
+                    break;
+
+                case ImprovementType.LivingPersonaSleaze:
+                    break;
+
+                case ImprovementType.LivingPersonaDataProcessing:
+                    break;
+
+                case ImprovementType.LivingPersonaFirewall:
+                    break;
+
+                case ImprovementType.LivingPersonaMatrixCM:
+                    break;
+
+                case ImprovementType.Smartlink:
+                    break;
+
+                case ImprovementType.CyberwareEssCostNonRetroactive:
+                case ImprovementType.CyberwareTotalEssMultiplierNonRetroactive:
+                case ImprovementType.BiowareEssCostNonRetroactive:
+                case ImprovementType.BiowareTotalEssMultiplierNonRetroactive:
+                    {
+                        if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                        {
+                            // Immediately reset cached essence to make sure this fires off before any other property changers would
+                            await _objCharacter.ResetCachedEssenceAsync(token).ConfigureAwait(false);
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                                nameof(Character.Essence)));
+                        }
+                        break;
+                    }
+                case ImprovementType.GenetechCostMultiplier:
+                    break;
+
+                case ImprovementType.SoftWeave:
+                    break;
+
+                case ImprovementType.DisableBioware:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.AddBiowareEnabled)));
+                    }
+                    break;
+
+                case ImprovementType.DisableCyberware:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.AddCyberwareEnabled)));
+                    }
+                    break;
+
+                case ImprovementType.DisableBiowareGrade:
+                    break;
+
+                case ImprovementType.DisableCyberwareGrade:
+                    break;
+
+                case ImprovementType.ConditionMonitor:
+                    break;
+
+                case ImprovementType.UnarmedDVPhysical:
+                    break;
+
+                case ImprovementType.Adapsin:
+                    break;
+
+                case ImprovementType.FreePositiveQualities:
+                    break;
+
+                case ImprovementType.FreeNegativeQualities:
+                    break;
+
+                case ImprovementType.FreeKnowledgeSkills:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter.SkillsSection,
+                            nameof(SkillsSection.KnowledgeSkillPoints)));
+                    }
+                    break;
+
+                case ImprovementType.NuyenMaxBP:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.TotalNuyenMaximumBP)));
+                    }
+                    break;
+
+                case ImprovementType.CMOverflow:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.CMOverflow)));
+                    }
+                    break;
+
+                case ImprovementType.FreeSpiritPowerPoints:
+                    break;
+
+                case ImprovementType.AdeptPowerPoints:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.PowerPointsTotal)));
+                    }
+                    break;
+
+                case ImprovementType.ArmorEncumbrancePenalty:
+                    break;
+
+                case ImprovementType.Art:
+                    break;
+
+                case ImprovementType.Metamagic:
+                    break;
+
+                case ImprovementType.Echo:
+                    break;
+
+                case ImprovementType.Skillwire:
+                {
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objSkill =>
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
+                            nameof(Skill.CyberwareRating)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+
+                case ImprovementType.DamageResistance:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.DamageResistancePool)));
+                    }
+                    break;
+
+                case ImprovementType.JudgeIntentions:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.JudgeIntentions)));
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.JudgeIntentionsResist)));
+                    }
+                    break;
+
+                case ImprovementType.JudgeIntentionsOffense:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.JudgeIntentions)));
+                    }
+                    break;
+
+                case ImprovementType.JudgeIntentionsDefense:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.JudgeIntentionsResist)));
+                    }
+                    break;
+
+                case ImprovementType.LiftAndCarry:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.LiftAndCarry)));
+                    }
+                    break;
+
+                case ImprovementType.Memory:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.Memory)));
+                    }
+                    break;
+
+                case ImprovementType.Concealability:
+                    break;
+
+                case ImprovementType.SwapSkillAttribute:
+                case ImprovementType.SwapSkillSpecAttribute:
+                {
+                    if (lstExtraTarget?.Count > 0)
+                    {
+                        await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                        {
+                            string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                            if (strKey == Target || lstExtraTarget.Contains(strKey))
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.DefaultAttribute)));
+                            }
+                        }, token).ConfigureAwait(false);
+
+                        await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                        {
+                            string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                            if (strKey == Target || lstExtraTarget.Contains(strKey)
+                                                 || Target == objTargetSkill.InternalId
+                                                 || lstExtraTarget.Contains(objTargetSkill.InternalId))
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.DefaultAttribute)));
+                            }
+                            else
+                            {
+                                string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                if (strDisplayName == Target || lstExtraTarget.Contains(strDisplayName))
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                        objTargetSkill,
+                                        nameof(Skill.DefaultAttribute)));
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        Skill objTargetSkill =
+                            await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false)
+                            ?? await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                x.InternalId == Target || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target
+                                                       || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false);
+                        if (objTargetSkill != null)
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.DefaultAttribute)));
+                        }
+                    }
+                }
+                    break;
+
+                case ImprovementType.DrainResistance:
+                case ImprovementType.FadingResistance:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter.MagicTradition,
+                            nameof(Tradition.DrainValue)));
+                    }
+                    break;
+
+                case ImprovementType.Composure:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.Composure)));
+                    }
+                    break;
+
+                case ImprovementType.UnarmedAP:
+                    break;
+
+                case ImprovementType.Restricted:
+                    break;
+
+                case ImprovementType.Notoriety:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.CalculatedNotoriety)));
+                    }
+                    break;
+
+                case ImprovementType.SpellCategory:
+                    break;
+
+                case ImprovementType.SpellCategoryDamage:
+                    break;
+
+                case ImprovementType.SpellCategoryDrain:
+                    break;
+
+                case ImprovementType.ThrowRange:
+                    break;
+
+                case ImprovementType.SkillsoftAccess:
+                    {
+                        // Keeping two enumerations separate helps avoid extra heap allocations
+                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objSkill =>
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
+                                nameof(Skill.CyberwareRating)));
+                        }, token).ConfigureAwait(false);
+
+                        await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objSkill =>
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
+                                nameof(Skill.CyberwareRating)));
+                        }, token).ConfigureAwait(false);
+                    }
+                    break;
+
+                case ImprovementType.AddSprite:
+                    break;
+
+                case ImprovementType.BlackMarketDiscount:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.BlackMarketDiscount)));
+                    }
+                    break;
+
+                case ImprovementType.ComplexFormLimit:
+                    break;
+
+                case ImprovementType.SpellLimit:
+                    break;
+
+                case ImprovementType.QuickeningMetamagic:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.QuickeningEnabled)));
+                    }
+                    break;
+
+                case ImprovementType.BasicLifestyleCost:
+                    break;
+
+                case ImprovementType.ThrowSTR:
+                    break;
+
+                case ImprovementType.EssenceMax:
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(token))
+                        {
+                            if (objCharacterAttrib.Abbrev == "ESS")
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
+                                    nameof(CharacterAttrib.MetatypeMaximum)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.SpecificQuality:
+                    break;
+
+                case ImprovementType.MartialArt:
+                    break;
+
+                case ImprovementType.LimitModifier:
+                    break;
+
+                case ImprovementType.PhysicalLimit:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.LimitPhysical)));
+                    }
+                    break;
+
+                case ImprovementType.MentalLimit:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.LimitMental)));
+                    }
+                    break;
+
+                case ImprovementType.SocialLimit:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.LimitSocial)));
+                    }
+                    break;
+
+                case ImprovementType.FriendsInHighPlaces:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.FriendsInHighPlaces)));
+                    }
+                    break;
+
+                case ImprovementType.Erased:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.Erased)));
+                    }
+                    break;
+
+                case ImprovementType.Fame:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.Fame)));
+                    }
+                    break;
+
+                case ImprovementType.MadeMan:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.MadeMan)));
+                    }
+                    break;
+
+                case ImprovementType.Overclocker:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.Overclocker)));
+                    }
+                    break;
+
+                case ImprovementType.RestrictedGear:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.RestrictedGear)));
+                    }
+                    break;
+
+                case ImprovementType.TrustFund:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.TrustFund)));
+                    }
+                    break;
+
+                case ImprovementType.ExCon:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.ExCon)));
+                    }
+                    break;
+
+                case ImprovementType.ContactForceGroup:
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.Contacts.ForEachAsync(async objTargetContact =>
+                            {
+                                string strId = await objTargetContact.GetUniqueIdAsync(token).ConfigureAwait(false);
+                                if (strId == ImprovedName || lstExtraImprovedName.Contains(strId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                        objTargetContact,
+                                        nameof(Contact.GroupEnabled)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Contact objTargetContact
+                                = await _objCharacter.Contacts.FirstOrDefaultAsync(x => x.UniqueId == ImprovedName, token: token).ConfigureAwait(false);
+                            if (objTargetContact != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetContact,
+                                    nameof(Contact.GroupEnabled)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.Attributelevel:
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(token))
+                        {
+                            if (objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
+                                    nameof(CharacterAttrib.FreeBase)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.AddContact:
+                    break;
+
+                case ImprovementType.Seeker:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.RedlinerBonus)));
+                    }
+                    break;
+
+                case ImprovementType.PublicAwareness:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.CalculatedPublicAwareness)));
+                    }
+                    break;
+
+                case ImprovementType.PrototypeTranshuman:
+                    break;
+
+                case ImprovementType.Hardwire:
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.CyberwareRating)));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey)
+                                                           || ImprovedName == objTargetSkill.InternalId
+                                                           || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.CyberwareRating)));
+                                }
+                                else
+                                {
+                                    string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(Skill.CyberwareRating)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(async x =>
+                                    await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false)
+                                ?? await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                    x.InternalId == ImprovedName || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == ImprovedName
+                                                                 || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) ==
+                                                                 ImprovedName, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.CyberwareRating)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.DealerConnection:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.DealerConnectionDiscount)));
+                    }
+                    break;
+
+                case ImprovementType.BlockSkillDefault:
+                case ImprovementType.AllowSkillDefault:
+                    {
+                        if (string.IsNullOrEmpty(ImprovedName))
+                        {
+                            // Kludgiest of kludges, but it fits spec and Sapience isn't exactly getting turned off and on constantly.
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(objSkill =>
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
+                                    nameof(Skill.Default)));
+                            }, token).ConfigureAwait(false);
+
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objSkill =>
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
+                                    nameof(Skill.Default)));
+                            }, token).ConfigureAwait(false);
+                        }
+                        else if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.Default)));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey)
+                                                           || ImprovedName == objTargetSkill.InternalId
+                                                           || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.Default)));
+                                }
+                                else
+                                {
+                                    string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(Skill.Default)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false)
+                                ?? await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                    x.InternalId == ImprovedName || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == ImprovedName
+                                                                 || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.Default)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.Skill:
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.RelevantImprovements)));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey)
+                                                           || ImprovedName == objTargetSkill.InternalId
+                                                           || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.RelevantImprovements)));
+                                }
+                                else
+                                {
+                                    string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
+                                    {
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(Skill.RelevantImprovements)));
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false)
+                                ?? await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                    x.InternalId == ImprovedName || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == ImprovedName
+                                                                 || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.RelevantImprovements)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.SkillGroup:
+                {
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    {
+                        if (objTargetSkill.SkillGroup == ImprovedName ||
+                            lstExtraImprovedName?.Contains(objTargetSkill.SkillGroup) == true)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.PoolModifiers)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+
+                case ImprovementType.BlockSkillGroupDefault:
+                {
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    {
+                        if (objTargetSkill.SkillGroup == ImprovedName ||
+                            lstExtraImprovedName?.Contains(objTargetSkill.SkillGroup) == true)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.Default)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+
+                case ImprovementType.SkillCategory:
+                    {
+                        // Keeping two enumerations separate helps avoid extra heap allocations
+                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                        {
+                            if (objTargetSkill.SkillCategory == ImprovedName ||
+                                lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.PoolModifiers)));
+                        }, token).ConfigureAwait(false);
+
+                        await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                        {
+                            if (objTargetSkill.SkillCategory == ImprovedName ||
+                                lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.PoolModifiers)));
+                        }, token).ConfigureAwait(false);
+                    }
+                    break;
+
+                case ImprovementType.BlockSkillCategoryDefault:
+                {
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName ||
+                            lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.Default)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+
+                case ImprovementType.SkillLinkedAttribute:
+                    {
+                        // Keeping two enumerations separate helps avoid extra heap allocations
+                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                        {
+                            if (objTargetSkill.Attribute == ImprovedName ||
+                                lstExtraImprovedName?.Contains(objTargetSkill.Attribute) == true)
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.PoolModifiers)));
+                        }, token).ConfigureAwait(false);
+
+                        await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                        {
+                            if (objTargetSkill.Attribute == ImprovedName ||
+                                lstExtraImprovedName?.Contains(objTargetSkill.Attribute) == true)
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.PoolModifiers)));
+                        }, token).ConfigureAwait(false);
+                    }
+                    break;
+
+                case ImprovementType.SkillLevel:
+                    {
+                        if (lstExtraTarget?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.FreeKarma)));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey)
+                                                     || Target == objTargetSkill.InternalId
+                                                     || lstExtraTarget.Contains(objTargetSkill.InternalId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.FreeKarma)));
+                                }
+                                else
+                                {
+                                    string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    if (strDisplayName == Target || lstExtraTarget.Contains(strDisplayName))
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(Skill.FreeKarma)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                    async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false)
+                                ?? await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                    x.InternalId == Target || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target
+                                                           || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.FreeKarma)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.SkillGroupLevel:
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                            {
+                                if (objTargetGroup.Name == ImprovedName ||
+                                    lstExtraImprovedName.Contains(objTargetGroup.Name))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                        nameof(SkillGroup.FreeLevels)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            SkillGroup objTargetGroup =
+                                await _objCharacter.SkillsSection.SkillGroups.FirstOrDefaultAsync(x => x.Name == ImprovedName, token).ConfigureAwait(false);
+                            if (objTargetGroup != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                    nameof(SkillGroup.FreeLevels)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.SkillBase:
+                    {
+                        if (lstExtraTarget?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.FreeBase)));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey)
+                                                     || Target == objTargetSkill.InternalId
+                                                     || lstExtraTarget.Contains(objTargetSkill.InternalId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.FreeBase)));
+                                }
+                                else
+                                {
+                                    string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    if (strDisplayName == Target || lstExtraTarget.Contains(strDisplayName))
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(Skill.FreeBase)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                    async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false)
+                                ?? await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                    x.InternalId == Target || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target
+                                                           || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.FreeBase)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.SkillGroupBase:
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                            {
+                                if (objTargetGroup.Name == ImprovedName ||
+                                    lstExtraImprovedName.Contains(objTargetGroup.Name))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                        nameof(SkillGroup.FreeBase)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            SkillGroup objTargetGroup =
+                                await _objCharacter.SkillsSection.SkillGroups.FirstOrDefaultAsync(x => x.Name == ImprovedName, token).ConfigureAwait(false);
+                            if (objTargetGroup != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                    nameof(SkillGroup.FreeBase)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.Skillsoft:
+                    {
+                        if (lstExtraTarget?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.CyberwareRating)));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey)
+                                                     || Target == objTargetSkill.InternalId
+                                                     || lstExtraTarget.Contains(objTargetSkill.InternalId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.CyberwareRating)));
+                                }
+                                else
+                                {
+                                    string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    if (strDisplayName == Target || lstExtraTarget.Contains(strDisplayName))
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(Skill.CyberwareRating)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                    async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false)
+                                ?? await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                    x.InternalId == Target || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target
+                                                           || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.CyberwareRating)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.Activesoft:
+                {
+                    if (lstExtraImprovedName?.Count > 0)
+                    {
+                        await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                        {
+                            string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                            if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.CyberwareRating)));
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        Skill objTargetSkill =
+                            await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                        if (objTargetSkill != null)
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.CyberwareRating)));
+                        }
+                    }
+                }
+                    break;
+
+                case ImprovementType.ReplaceAttribute:
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(token))
+                        {
+                            if ((objCharacterAttrib.Abbrev != ImprovedName && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
+                                || objCharacterAttrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+                                continue;
+                            if (Maximum != 0)
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
+                                    nameof(CharacterAttrib.MetatypeMaximum)));
+                            if (Minimum != 0)
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
+                                    nameof(CharacterAttrib.MetatypeMinimum)));
+                            if (AugmentedMaximum != 0)
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
+                                    nameof(CharacterAttrib.MetatypeAugmentedMaximum)));
+                        }
+                    }
+                    break;
+
+                case ImprovementType.SpecialSkills:
+                    break;
+
+                case ImprovementType.SkillAttribute:
+                {
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objSkill =>
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
+                            nameof(Skill.PoolModifiers)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+                case ImprovementType.RemoveSkillCategoryDefaultPenalty:
+                {
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName ||
+                            lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.DefaultModifier)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+                case ImprovementType.RemoveSkillGroupDefaultPenalty:
+                {
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    {
+                        if (objTargetSkill.SkillGroup == ImprovedName ||
+                            lstExtraImprovedName?.Contains(objTargetSkill.SkillGroup) == true)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.DefaultModifier)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+                case ImprovementType.RemoveSkillDefaultPenalty:
+                {
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    {
+                        if (objTargetSkill.DictionaryKey == ImprovedName ||
+                            lstExtraImprovedName?.Contains(objTargetSkill.DictionaryKey) == true)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.DefaultModifier)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+                case ImprovementType.ReflexRecorderOptimization:
+                {
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objSkill =>
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
+                            nameof(Skill.DefaultModifier)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+
+                case ImprovementType.Ambidextrous:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.Ambidextrous)));
+                    }
+                    break;
+
+                case ImprovementType.UnarmedReach:
+                    break;
+
+                case ImprovementType.SkillExpertise:
+                case ImprovementType.SkillSpecialization:
+                    {
+                        if (lstExtraTarget?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.Specializations)));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey)
+                                                     || Target == objTargetSkill.InternalId
+                                                     || lstExtraTarget.Contains(objTargetSkill.InternalId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.Specializations)));
+                                }
+                                else
+                                {
+                                    string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    if (strDisplayName == Target || lstExtraTarget.Contains(strDisplayName))
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(Skill.Specializations)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                    async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false)
+                                ?? await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                    x.InternalId == Target || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target
+                                                           || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.Specializations)));
+                            }
+                        }
+
+                        break;
+                    }
+
+                case ImprovementType.SkillSpecializationOption:
+                    {
+                        if (lstExtraTarget?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.CGLSpecializations)));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey)
+                                                     || Target == objTargetSkill.InternalId
+                                                     || lstExtraTarget.Contains(objTargetSkill.InternalId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.CGLSpecializations)));
+                                }
+                                else
+                                {
+                                    string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    if (strDisplayName == Target || lstExtraTarget.Contains(strDisplayName))
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(Skill.CGLSpecializations)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                    async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false)
+                                ?? await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                    x.InternalId == Target || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target
+                                                           || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.CGLSpecializations)));
+                            }
+                        }
+
+                        break;
+                    }
+                case ImprovementType.NativeLanguageLimit:
+                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter.SkillsSection,
+                        nameof(SkillsSection.HasAvailableNativeLanguageSlots)));
+                    break;
+
+                case ImprovementType.AdeptPowerFreePoints:
+                    {
+                        // Get the power improved by this improvement
+                        if (lstExtraImprovedName?.Count > 0 || lstExtraUniqueName?.Count > 0)
+                        {
+                            await _objCharacter.Powers.ForEachAsync(async objImprovedPower =>
+                            {
+                                string strName = await objImprovedPower.GetNameAsync(token).ConfigureAwait(false);
+                                string strExtra = await objImprovedPower.GetExtraAsync(token).ConfigureAwait(false);
+                                if ((strName == ImprovedName || lstExtraImprovedName?.Contains(strName) == true)
+                                    && (strExtra == UniqueName || lstExtraUniqueName?.Contains(strExtra) == true))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                        objImprovedPower,
+                                        nameof(Power.FreePoints)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Power objImprovedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async objPower =>
+                                await objPower.GetNameAsync(token).ConfigureAwait(false) == ImprovedName && await objPower.GetExtraAsync(token).ConfigureAwait(false) == UniqueName, token).ConfigureAwait(false);
+                            if (objImprovedPower != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objImprovedPower,
+                                    nameof(Power.FreePoints)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.AdeptPowerFreeLevels:
+                    {
+                        // Get the power improved by this improvement
+                        if (lstExtraImprovedName?.Count > 0 || lstExtraUniqueName?.Count > 0)
+                        {
+                            await _objCharacter.Powers.ForEachAsync(async objImprovedPower =>
+                            {
+                                string strLoop = await objImprovedPower.GetNameAsync(token).ConfigureAwait(false);
+                                if (strLoop == ImprovedName || lstExtraImprovedName?.Contains(strLoop) == true)
+                                {
+                                    strLoop = await objImprovedPower.GetExtraAsync(token).ConfigureAwait(false);
+                                    if (strLoop == UniqueName || lstExtraUniqueName?.Contains(strLoop) == true)
+                                    {
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objImprovedPower,
+                                            nameof(Power.FreeLevels)));
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Power objImprovedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async objPower =>
+                                await objPower.GetNameAsync(token).ConfigureAwait(false) == ImprovedName && await objPower.GetExtraAsync(token).ConfigureAwait(false) == UniqueName, token).ConfigureAwait(false);
+                            if (objImprovedPower != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objImprovedPower,
+                                    nameof(Power.FreeLevels)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.AIProgram:
+                    break;
+
+                case ImprovementType.CritterPowerLevel:
+                    break;
+
+                case ImprovementType.CritterPower:
+                    break;
+
+                case ImprovementType.SpellResistance:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellResistance)));
+                    }
+                    break;
+
+                case ImprovementType.LimitSpellCategory:
+                    break;
+
+                case ImprovementType.LimitSpellDescriptor:
+                    break;
+
+                case ImprovementType.LimitSpiritCategory:
+                    break;
+
+                case ImprovementType.WalkSpeed:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.WalkingRate)));
+                    }
+                    break;
+
+                case ImprovementType.RunSpeed:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.RunningRate)));
+                    }
+                    break;
+
+                case ImprovementType.SprintSpeed:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SprintingRate)));
+                    }
+                    break;
+
+                case ImprovementType.WalkMultiplier:
+                case ImprovementType.WalkMultiplierPercent:
+                case ImprovementType.RunMultiplier:
+                case ImprovementType.RunMultiplierPercent:
+                case ImprovementType.SprintBonus:
+                case ImprovementType.SprintBonusPercent:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.CalculatedMovement)));
+                    }
+                    break;
+
+                case ImprovementType.EssencePenalty:
+                case ImprovementType.EssencePenaltyT100:
+                case ImprovementType.EssencePenaltyMAGOnlyT100:
+                case ImprovementType.EssencePenaltyRESOnlyT100:
+                case ImprovementType.EssencePenaltyDEPOnlyT100:
+                case ImprovementType.SpecialAttBurn:
+                case ImprovementType.SpecialAttTotalBurnMultiplier:
+                case ImprovementType.CyborgEssence:
+                case ImprovementType.CyberwareEssCost:
+                case ImprovementType.CyberwareTotalEssMultiplier:
+                case ImprovementType.BiowareEssCost:
+                case ImprovementType.BiowareTotalEssMultiplier:
+                case ImprovementType.BasicBiowareEssCost:
+                case ImprovementType.GenetechEssMultiplier:
+                    // Immediately reset cached essence to make sure this fires off before any other property changers would
+                    await _objCharacter.ResetCachedEssenceAsync(token).ConfigureAwait(false);
+                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                        nameof(Character.Essence)));
+                    break;
+
+                case ImprovementType.FreeSpellsATT:
+                    break;
+
+                case ImprovementType.FreeSpells:
+                    break;
+
+                case ImprovementType.DrainValue:
+                    break;
+
+                case ImprovementType.FadingValue:
+                    break;
+
+                case ImprovementType.Spell:
+                    break;
+
+                case ImprovementType.ComplexForm:
+                    break;
+
+                case ImprovementType.Gear:
+                    break;
+
+                case ImprovementType.Weapon:
+                    break;
+
+                case ImprovementType.MentorSpirit:
+                    break;
+
+                case ImprovementType.Paragon:
+                    break;
+
+                case ImprovementType.FreeSpellsSkill:
+                    break;
+
+                case ImprovementType.DisableSpecializationEffects:
+                    {
+                        if (lstExtraTarget?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.GetSpecializationBonus)));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey)
+                                                     || Target == objTargetSkill.InternalId
+                                                     || lstExtraTarget.Contains(objTargetSkill.InternalId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.GetSpecializationBonus)));
+                                }
+                                else
+                                {
+                                    string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    if (strDisplayName == Target || lstExtraTarget.Contains(strDisplayName))
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(Skill.GetSpecializationBonus)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                    async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false)
+                                ?? await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                    x.InternalId == Target || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target
+                                                           || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.GetSpecializationBonus)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.PhysiologicalAddictionFirstTime:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.PhysiologicalAddictionResistFirstTime)));
+                    }
+                    break;
+
+                case ImprovementType.PsychologicalAddictionFirstTime:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.PsychologicalAddictionResistFirstTime)));
+                    }
+                    break;
+
+                case ImprovementType.PhysiologicalAddictionAlreadyAddicted:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.PhysiologicalAddictionResistAlreadyAddicted)));
+                    }
+                    break;
+
+                case ImprovementType.PsychologicalAddictionAlreadyAddicted:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.PsychologicalAddictionResistAlreadyAddicted)));
+                    }
+                    break;
+
+                case ImprovementType.AddESStoStunCMRecovery:
+                case ImprovementType.StunCMRecovery:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.StunCMNaturalRecovery)));
+                    }
+                    break;
+
+                case ImprovementType.AddESStoPhysicalCMRecovery:
+                case ImprovementType.PhysicalCMRecovery:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.PhysicalCMNaturalRecovery)));
+                    }
+                    break;
+
+                case ImprovementType.MentalManipulationResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseManipulationMental)));
+                    }
+                    break;
+
+                case ImprovementType.PhysicalManipulationResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseManipulationPhysical)));
+                    }
+                    break;
+
+                case ImprovementType.ManaIllusionResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseIllusionMana)));
+                    }
+                    break;
+
+                case ImprovementType.PhysicalIllusionResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseIllusionPhysical)));
+                    }
+                    break;
+
+                case ImprovementType.DetectionSpellResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseDetection)));
+                    }
+                    break;
+
+                case ImprovementType.DirectManaSpellResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseDirectSoakMana)));
+                    }
+                    break;
+
+                case ImprovementType.DirectPhysicalSpellResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseDirectSoakPhysical)));
+                    }
+                    break;
+
+                case ImprovementType.DecreaseBODResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseDecreaseBOD)));
+                    }
+                    break;
+
+                case ImprovementType.DecreaseAGIResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseDecreaseAGI)));
+                    }
+                    break;
+
+                case ImprovementType.DecreaseREAResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseDecreaseREA)));
+                    }
+                    break;
+
+                case ImprovementType.DecreaseSTRResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseDecreaseSTR)));
+                    }
+                    break;
+
+                case ImprovementType.DecreaseCHAResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseDecreaseCHA)));
+                    }
+                    break;
+
+                case ImprovementType.DecreaseINTResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseDecreaseINT)));
+                    }
+                    break;
+
+                case ImprovementType.DecreaseLOGResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseDecreaseLOG)));
+                    }
+                    break;
+
+                case ImprovementType.DecreaseWILResist:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellDefenseDecreaseWIL)));
+                    }
+                    break;
+
+                case ImprovementType.AddLimb:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.LimbCount)));
+                    }
+                    break;
+
+                case ImprovementType.StreetCredMultiplier:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.CalculatedStreetCred)));
+                    }
+                    break;
+
+                case ImprovementType.StreetCred:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.TotalStreetCred)));
+                    }
+                    break;
+
+                case ImprovementType.AttributeKarmaCostMultiplier:
+                case ImprovementType.AttributeKarmaCost:
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(token).ConfigureAwait(false))
+                        {
+                            if (string.IsNullOrEmpty(ImprovedName) || objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
+                                    nameof(CharacterAttrib.UpgradeKarmaCost)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.ActiveSkillKarmaCost:
+                case ImprovementType.ActiveSkillKarmaCostMultiplier:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                        objTargetSkill,
+                                        nameof(Skill.UpgradeKarmaCost)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                    async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.UpgradeKarmaCost)));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.UpgradeKarmaCost)));
+                        }, token).ConfigureAwait(false);
+                    }
+                }
+                    break;
+
+                case ImprovementType.KnowledgeSkillKarmaCost:
+                case ImprovementType.KnowledgeSkillKarmaCostMinimum:
+                case ImprovementType.KnowledgeSkillKarmaCostMultiplier:
+                    {
+                        if (!string.IsNullOrEmpty(ImprovedName))
+                        {
+                            if (lstExtraImprovedName?.Count > 0)
+                            {
+                                await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                                {
+                                    string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                    if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey)
+                                                               || ImprovedName == objTargetSkill.InternalId
+                                                               || lstExtraImprovedName.Contains(objTargetSkill
+                                                                   .InternalId))
+                                    {
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(Skill.UpgradeKarmaCost)));
+                                    }
+                                    else
+                                    {
+                                        string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                        if (strDisplayName == ImprovedName ||
+                                            lstExtraImprovedName.Contains(strDisplayName))
+                                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                                objTargetSkill,
+                                                nameof(Skill.UpgradeKarmaCost)));
+                                    }
+                                }, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                KnowledgeSkill objTargetSkill
+                                    = await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                        await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == ImprovedName || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                                if (objTargetSkill != null)
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.UpgradeKarmaCost)));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.UpgradeKarmaCost)));
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    break;
+
+                case ImprovementType.SkillGroupKarmaCost:
+                case ImprovementType.SkillGroupKarmaCostMultiplier:
+                    {
+                        if (!string.IsNullOrEmpty(ImprovedName))
+                        {
+                            if (lstExtraImprovedName?.Count > 0)
+                            {
+                                await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                                {
+                                    if (objTargetGroup.Name == ImprovedName ||
+                                        lstExtraImprovedName.Contains(objTargetGroup.Name))
+                                    {
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetGroup,
+                                            nameof(SkillGroup.UpgradeKarmaCost)));
+                                    }
+                                }, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                SkillGroup objTargetGroup =
+                                    await _objCharacter.SkillsSection.SkillGroups.FirstOrDefaultAsync(x => x.Name == ImprovedName, token).ConfigureAwait(false);
+                                if (objTargetGroup != null)
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                        nameof(SkillGroup.UpgradeKarmaCost)));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                    nameof(SkillGroup.UpgradeKarmaCost)));
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    break;
+
+                case ImprovementType.SkillGroupDisable:
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                            {
+                                if (objTargetGroup.Name == ImprovedName ||
+                                    lstExtraImprovedName.Contains(objTargetGroup.Name))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                        nameof(SkillGroup.IsDisabled)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            SkillGroup objTargetGroup =
+                                await _objCharacter.SkillsSection.SkillGroups.FirstOrDefaultAsync(x => x.Name == ImprovedName, token).ConfigureAwait(false);
+                            if (objTargetGroup != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                    nameof(SkillGroup.IsDisabled)));
+                            }
+                        }
+
+                        break;
+                    }
+                case ImprovementType.SkillDisable:
+                    {
+                        if (lstExtraTarget?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.Enabled)));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey)
+                                                     || Target == objTargetSkill.InternalId
+                                                     || lstExtraTarget.Contains(objTargetSkill.InternalId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.Enabled)));
+                                }
+                                else
+                                {
+                                    string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    if (strDisplayName == Target || lstExtraTarget.Contains(strDisplayName))
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(Skill.Enabled)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                    async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false)
+                                ?? await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                    x.InternalId == Target || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target
+                                                           || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.Enabled)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.SkillCategorySpecializationKarmaCost:
+                case ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
+                    {
+                        // Keeping two enumerations separate helps avoid extra heap allocations
+                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                        {
+                            if (objTargetSkill.SkillCategory == ImprovedName ||
+                                lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.CanAffordSpecialization)));
+                        }, token).ConfigureAwait(false);
+
+                        await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                        {
+                            if (objTargetSkill.SkillCategory == ImprovedName ||
+                                lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.CanAffordSpecialization)));
+                        }, token).ConfigureAwait(false);
+                    }
+                    break;
+
+                case ImprovementType.SkillCategoryKarmaCost:
+                case ImprovementType.SkillCategoryKarmaCostMultiplier:
+                    {
+                        // Keeping two enumerations separate helps avoid extra heap allocations
+                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                        {
+                            if (objTargetSkill.SkillCategory == ImprovedName ||
+                                lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.UpgradeKarmaCost)));
+                        }, token).ConfigureAwait(false);
+
+                        await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                        {
+                            if (objTargetSkill.SkillCategory == ImprovedName ||
+                                lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.UpgradeKarmaCost)));
+                        }, token).ConfigureAwait(false);
+                    }
+                    break;
+
+                case ImprovementType.SkillGroupCategoryDisable:
+                {
+                    await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                    {
+                        if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName)
+                            || (lstExtraImprovedName != null
+                                && objTargetGroup.GetRelevantSkillCategories.Any(
+                                    lstExtraImprovedName.Contains)))
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                objTargetGroup, nameof(SkillGroup.IsDisabled)));
+                        }
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+
+                case ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
+                case ImprovementType.SkillGroupCategoryKarmaCost:
+                {
+                    await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                    {
+                        if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName)
+                            || (lstExtraImprovedName != null
+                                && objTargetGroup.GetRelevantSkillCategories.Any(
+                                    lstExtraImprovedName.Contains)))
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                objTargetGroup, nameof(SkillGroup.UpgradeKarmaCost)));
+                        }
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+
+                case ImprovementType.AttributePointCost:
+                case ImprovementType.AttributePointCostMultiplier:
+                {
+                    foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(token).ConfigureAwait(false))
+                    {
+                        if (string.IsNullOrEmpty(ImprovedName) || objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
+                                nameof(CharacterAttrib.SpentPriorityPoints)));
+                        }
+                    }
+                }
+                    break;
+
+                case ImprovementType.ActiveSkillPointCost:
+                case ImprovementType.ActiveSkillPointCostMultiplier:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                        objTargetSkill,
+                                        nameof(Skill.CurrentSpCost)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                    async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.CurrentSpCost)));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.CurrentSpCost)));
+                        }, token).ConfigureAwait(false);
+                    }
+                }
+                    break;
+
+                case ImprovementType.SkillGroupPointCost:
+                case ImprovementType.SkillGroupPointCostMultiplier:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                            {
+                                if (objTargetGroup.Name == ImprovedName ||
+                                    lstExtraImprovedName.Contains(objTargetGroup.Name))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                        objTargetGroup,
+                                        nameof(SkillGroup.CurrentSpCost)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            SkillGroup objTargetGroup =
+                                await _objCharacter.SkillsSection.SkillGroups.FirstOrDefaultAsync(x => x.Name == ImprovedName, token).ConfigureAwait(false);
+                            if (objTargetGroup != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                    nameof(SkillGroup.CurrentSpCost)));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                nameof(SkillGroup.CurrentSpCost)));
+                        }, token).ConfigureAwait(false);
+                    }
+                }
+                    break;
+
+                case ImprovementType.KnowledgeSkillPointCost:
+                case ImprovementType.KnowledgeSkillPointCostMultiplier:
+                    {
+                        if (!string.IsNullOrEmpty(ImprovedName))
+                        {
+                            if (lstExtraImprovedName?.Count > 0)
+                            {
+                                await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                                {
+                                    string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                    if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey)
+                                                               || ImprovedName == objTargetSkill.InternalId
+                                                               || lstExtraImprovedName.Contains(objTargetSkill
+                                                                   .InternalId))
+                                    {
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(KnowledgeSkill.CurrentSpCost)));
+                                    }
+                                    else
+                                    {
+                                        string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                        if (strDisplayName == ImprovedName ||
+                                            lstExtraImprovedName.Contains(strDisplayName))
+                                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                                objTargetSkill,
+                                                nameof(KnowledgeSkill.CurrentSpCost)));
+                                    }
+                                }, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                KnowledgeSkill objTargetSkill
+                                    = await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                        await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == ImprovedName || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                                if (objTargetSkill != null)
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(KnowledgeSkill.CurrentSpCost)));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(KnowledgeSkill.CurrentSpCost)));
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    break;
+
+                case ImprovementType.SkillCategoryPointCost:
+                case ImprovementType.SkillCategoryPointCostMultiplier:
+                {
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName ||
+                            lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.CurrentSpCost)));
+                    }, token).ConfigureAwait(false);
+
+                    await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName ||
+                            lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.CurrentSpCost)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+
+                case ImprovementType.SkillGroupCategoryPointCost:
+                case ImprovementType.SkillGroupCategoryPointCostMultiplier:
+                {
+                    await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                    {
+                        if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName)
+                            || (lstExtraImprovedName != null
+                                && objTargetGroup.GetRelevantSkillCategories.Any(
+                                    lstExtraImprovedName.Contains)))
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                objTargetGroup, nameof(SkillGroup.CurrentSpCost)));
+                        }
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+
+                case ImprovementType.NewSpellKarmaCost:
+                case ImprovementType.NewSpellKarmaCostMultiplier:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpellKarmaCost)));
+                    }
+                    break;
+
+                case ImprovementType.NewComplexFormKarmaCost:
+                case ImprovementType.NewComplexFormKarmaCostMultiplier:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.ComplexFormKarmaCost)));
+                    }
+                    break;
+
+                case ImprovementType.NewAIProgramKarmaCost:
+                case ImprovementType.NewAIProgramKarmaCostMultiplier:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.AIProgramKarmaCost)));
+                    }
+                    break;
+
+                case ImprovementType.NewAIAdvancedProgramKarmaCost:
+                case ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.AIAdvancedProgramKarmaCost)));
+                    }
+                    break;
+
+                case ImprovementType.BlockSkillSpecializations:
+                    {
+                        if (!string.IsNullOrEmpty(ImprovedName))
+                        {
+                            if (lstExtraTarget?.Count > 0)
+                            {
+                                await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                                {
+                                    string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                    if (strKey == Target || lstExtraTarget.Contains(strKey))
+                                    {
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                            nameof(Skill.CanHaveSpecs)));
+                                    }
+                                }, token).ConfigureAwait(false);
+
+                                await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                                {
+                                    string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                    if (strKey == Target || lstExtraTarget.Contains(strKey)
+                                                         || Target == objTargetSkill.InternalId
+                                                         || lstExtraTarget.Contains(objTargetSkill.InternalId))
+                                    {
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                            nameof(Skill.CanHaveSpecs)));
+                                    }
+                                    else
+                                    {
+                                        string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                        if (strDisplayName == Target || lstExtraTarget.Contains(strDisplayName))
+                                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                                objTargetSkill,
+                                                nameof(Skill.CanHaveSpecs)));
+                                    }
+                                }, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                Skill objTargetSkill =
+                                    await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                        async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false)
+                                    ?? await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                        x.InternalId == Target || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target
+                                                               || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false);
+                                if (objTargetSkill != null)
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.CanHaveSpecs)));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.CanHaveSpecs)));
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    break;
+
+                case ImprovementType.BlockSkillCategorySpecializations:
+                    {
+                        // Keeping two enumerations separate helps avoid extra heap allocations
+                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                        {
+                            if (objTargetSkill.SkillCategory == ImprovedName ||
+                                lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.CanHaveSpecs)));
+                        }, token).ConfigureAwait(false);
+
+                        await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                        {
+                            if (objTargetSkill.SkillCategory == ImprovedName ||
+                                lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.CanHaveSpecs)));
+                        }, token).ConfigureAwait(false);
+                    }
+                    break;
+
+                case ImprovementType.FocusBindingKarmaCost:
+                    break;
+
+                case ImprovementType.FocusBindingKarmaMultiplier:
+                    break;
+
+                case ImprovementType.MagiciansWayDiscount:
+                {
+                    await _objCharacter.Powers.ForEachAsync(async objLoopPower =>
+                    {
+                        if (await objLoopPower.GetAdeptWayDiscountAsync(token).ConfigureAwait(false) != 0)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objLoopPower,
+                                nameof(Power.AdeptWayDiscountEnabled)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+
+                case ImprovementType.BurnoutsWay:
+                    break;
+
+                case ImprovementType.ContactForcedLoyalty:
+                {
+                    if (lstExtraImprovedName?.Count > 0)
+                    {
+                        await _objCharacter.Contacts.ForEachAsync(async objTargetContact =>
+                        {
+                            string strLoop = await objTargetContact.GetUniqueIdAsync(token).ConfigureAwait(false);
+                            if (strLoop == ImprovedName || lstExtraImprovedName.Contains(strLoop))
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                    objTargetContact,
+                                    nameof(Contact.ForcedLoyalty)));
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        Contact objTargetContact =
+                            await _objCharacter.Contacts.FirstOrDefaultAsync(
+                                async x => await x.GetUniqueIdAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                        if (objTargetContact != null)
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetContact,
+                                nameof(Contact.ForcedLoyalty)));
+                        }
+                    }
+                }
+                    break;
+
+                case ImprovementType.ContactMakeFree:
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.Contacts.ForEachAsync(async objTargetContact =>
+                            {
+                                string strLoop = await objTargetContact.GetUniqueIdAsync(token).ConfigureAwait(false);
+                                if (strLoop == ImprovedName || lstExtraImprovedName.Contains(strLoop))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                        objTargetContact,
+                                        nameof(Contact.Free)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Contact objTargetContact =
+                                await _objCharacter.Contacts.FirstOrDefaultAsync(
+                                    async x => await x.GetUniqueIdAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                            if (objTargetContact != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetContact,
+                                    nameof(Contact.Free)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.FreeWare:
+                    break;
+
+                case ImprovementType.WeaponSkillAccuracy:
+                    break;
+
+                case ImprovementType.WeaponAccuracy:
+                    break;
+
+                case ImprovementType.SpecialModificationLimit:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SpecialModificationLimit)));
+                    }
+                    break;
+
+                case ImprovementType.MetageneticLimit:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.MetagenicLimit)));
+                    }
+                    break;
+
+                case ImprovementType.DisableQuality:
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.Qualities.ForEachAsync(async objQuality =>
+                            {
+                                string strName = await objQuality.GetNameAsync(token).ConfigureAwait(false);
+                                string strSourceId = await objQuality.GetSourceIDStringAsync(token).ConfigureAwait(false);
+                                if (strName == ImprovedName
+                                    || string.Equals(strSourceId, ImprovedName, StringComparison.OrdinalIgnoreCase)
+                                    || lstExtraImprovedName.Contains(strName)
+                                    || lstExtraImprovedName.Contains(strSourceId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,
+                                        nameof(Quality.Suppressed)));
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                                        nameof(Character.Qualities)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Quality objQuality = await _objCharacter.Qualities.FirstOrDefaultAsync(async x =>
+                                await x.GetNameAsync(token).ConfigureAwait(false) == ImprovedName || string.Equals(await x.GetSourceIDStringAsync(token).ConfigureAwait(false), ImprovedName, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                            if (objQuality != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,
+                                    nameof(Quality.Suppressed)));
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                                    nameof(Character.Qualities)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.FreeQuality:
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.Qualities.ForEachAsync(async objQuality =>
+                            {
+                                string strName = await objQuality.GetNameAsync(token).ConfigureAwait(false);
+                                string strSourceId = await objQuality.GetSourceIDStringAsync(token).ConfigureAwait(false);
+                                if (strName == ImprovedName
+                                    || string.Equals(strSourceId, ImprovedName, StringComparison.OrdinalIgnoreCase)
+                                    || lstExtraImprovedName.Contains(strName)
+                                    || lstExtraImprovedName.Contains(strSourceId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,
+                                        nameof(Quality.ContributeToBP)));
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,
+                                        nameof(Quality.ContributeToLimit)));
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                                        nameof(Character.Qualities)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Quality objQuality = await _objCharacter.Qualities.FirstOrDefaultAsync(async x =>
+                                await x.GetNameAsync(token).ConfigureAwait(false) == ImprovedName || string.Equals(await x.GetSourceIDStringAsync(token).ConfigureAwait(false), ImprovedName, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                            if (objQuality != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,
+                                    nameof(Quality.ContributeToBP)));
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,
+                                    nameof(Quality.ContributeToLimit)));
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                                    nameof(Character.Qualities)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.AllowSpriteFettering:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.AllowSpriteFettering)));
+                        break;
+                    }
+                case ImprovementType.Surprise:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.Surprise)));
+                        break;
+                    }
+                case ImprovementType.AstralReputation:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.AstralReputation)));
+                        break;
+                    }
+                case ImprovementType.AstralReputationWild:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.WildReputation)));
+                        break;
+                    }
+                case ImprovementType.CyberadeptDaemon:
+                    {
+                        if (_objCharacter.Settings.SpecialKarmaCostBasedOnShownValue)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                                nameof(Character.CyberwareEssence)));
+                        break;
+                    }
+                case ImprovementType.PenaltyFreeSustain:
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.SustainingPenalty)));
+                        break;
+                    }
+            }
+
+            return lstReturn;
         }
 
         #region UI Methods

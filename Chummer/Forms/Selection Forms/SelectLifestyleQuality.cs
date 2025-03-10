@@ -52,12 +52,18 @@ namespace Chummer
         public SelectLifestyleQuality(Character objCharacter, Lifestyle objParentLifestyle)
         {
             Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _objParentLifestyle = objParentLifestyle ?? throw new ArgumentNullException(nameof(objParentLifestyle));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
-            _objParentLifestyle = objParentLifestyle;
-
+            if (_objParentLifestyle.StyleType == LifestyleType.Standard)
+            {
+                lblBP.Visible = false;
+                lblBPLabel.Visible = false;
+                lblMinimum.Visible = false;
+                lblMinimumLabel.Visible = false;
+            }
             // Load the Quality information.
             _objXPathDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
         }
@@ -93,7 +99,7 @@ namespace Chummer
             }).ConfigureAwait(false);
 
             // Change the BP Label to Karma if the character is being built with Karma instead (or is in Career Mode).
-            if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
+            if (await _objCharacter.GetCreatedAsync().ConfigureAwait(false) || !await _objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync().ConfigureAwait(false))
             {
                 string strTemp = await LanguageManager.GetStringAsync("Label_LP").ConfigureAwait(false);
                 await lblBPLabel.DoThreadSafeAsync(x => x.Text = strTemp).ConfigureAwait(false);
@@ -131,18 +137,22 @@ namespace Chummer
             await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
             try
             {
-                int intBP = 0;
-                objXmlQuality.TryGetInt32FieldQuickly("lp", ref intBP);
-                string strBP = await chkFree.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
-                    ? await LanguageManager.GetStringAsync("Checkbox_Free").ConfigureAwait(false)
-                    : intBP.ToString(GlobalSettings.CultureInfo);
-                await lblBP.DoThreadSafeAsync(x => x.Text = strBP).ConfigureAwait(false);
-                await lblBPLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strBP)).ConfigureAwait(false);
+                if (_objParentLifestyle.StyleType != LifestyleType.Standard)
+                {
+                    int intBP = 0;
+                    objXmlQuality.TryGetInt32FieldQuickly("lp", ref intBP);
+                    string strBP = await chkFree.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
+                        ? await LanguageManager.GetStringAsync("Checkbox_Free").ConfigureAwait(false)
+                        : intBP.ToString(GlobalSettings.CultureInfo);
+                    await lblBP.DoThreadSafeAsync(x => x.Text = strBP).ConfigureAwait(false);
+                    await lblBPLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strBP))
+                        .ConfigureAwait(false);
+                }
 
-                string strSource = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value
+                string strSource = objXmlQuality.SelectSingleNodeAndCacheExpression("source")?.Value
                                    ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                string strPage = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value
-                                 ?? (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value
+                string strPage = objXmlQuality.SelectSingleNodeAndCacheExpression("altpage")?.Value
+                                 ?? objXmlQuality.SelectSingleNodeAndCacheExpression("page")?.Value
                                  ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
@@ -158,39 +168,49 @@ namespace Chummer
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 }
 
-                string strAllowed = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("allowed").ConfigureAwait(false))?.Value;
-                if (!string.IsNullOrEmpty(strAllowed))
+                string strAllowed = string.Empty;
+                if (await _objParentLifestyle.GetStyleTypeAsync().ConfigureAwait(false) != LifestyleType.Standard)
                 {
-                    await lblMinimum.DoThreadSafeAsync(x =>
+                    strAllowed = objXmlQuality.SelectSingleNodeAndCacheExpression("allowed")?.Value ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strAllowed))
                     {
-                        x.Text = GetMinimumRequirement(strAllowed);
-                        x.Visible = true;
-                    }).ConfigureAwait(false);
-                    await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
-                }
-                else
-                {
-                    await lblMinimum.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
-                    await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                        await lblMinimum.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = GetMinimumRequirement(strAllowed);
+                            x.Visible = true;
+                        }).ConfigureAwait(false);
+                        await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await lblMinimum.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                        await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                    }
                 }
 
-                string strCost = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("cost").ConfigureAwait(false))?.Value;
+                string strCost = objXmlQuality.SelectSingleNodeAndCacheExpression("cost")?.Value ?? string.Empty;
                 if (!string.IsNullOrEmpty(strCost))
                 {
-                    if (chkFree.Checked)
+                    if (await chkFree.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                     {
                         strCost = await LanguageManager.GetStringAsync("Checkbox_Free").ConfigureAwait(false);
                     }
-                    else if (strAllowed?.Contains(_objParentLifestyle.BaseLifestyle) == true)
+                    else if (strAllowed.Contains(await _objParentLifestyle.GetBaseLifestyleAsync().ConfigureAwait(false)))
                     {
                         strCost = await LanguageManager.GetStringAsync("String_LifestyleFreeNuyen").ConfigureAwait(false);
                     }
                     else
                     {
                         (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost).ConfigureAwait(false);
-                        decimal decCost = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
-                        strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                  + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
+                        if (blnIsSuccess)
+                        {
+                            decimal decCost = Convert.ToDecimal((double)objProcess);
+                            strCost = decCost.ToString(
+                                          await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetNuyenFormatAsync().ConfigureAwait(false),
+                                          GlobalSettings.CultureInfo)
+                                      + await LanguageManager.GetStringAsync("String_NuyenSymbol")
+                                          .ConfigureAwait(false);
+                        }
                     }
 
                     await lblCost.DoThreadSafeAsync(x =>
@@ -266,7 +286,7 @@ namespace Chummer
 
                         break;
                     }
-                case Keys.Up when lstLifestyleQualities.SelectedIndex - 1 >= 0:
+                case Keys.Up when lstLifestyleQualities.SelectedIndex >= 1:
                     --lstLifestyleQualities.SelectedIndex;
                     break;
 
@@ -326,12 +346,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Whether the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain => _blnAddAgain;
 
         /// <summary>
-        /// Whether or not the item has no cost.
+        /// Whether the item has no cost.
         /// </summary>
         public bool FreeCost => chkFree.Checked;
 
@@ -339,17 +359,17 @@ namespace Chummer
 
         #region Methods
 
-        private ValueTask<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
+        private Task<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
         {
             return RefreshList(strCategory, false, token);
         }
 
-        private ValueTask<bool> RefreshList(string strCategory = "", CancellationToken token = default)
+        private Task<bool> RefreshList(string strCategory = "", CancellationToken token = default)
         {
             return RefreshList(strCategory, true, token);
         }
 
-        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate, CancellationToken token = default)
+        private async Task<bool> RefreshList(string strCategory, bool blnDoUIUpdate, CancellationToken token = default)
         {
             if (_blnLoading && blnDoUIUpdate)
                 return false;
@@ -357,7 +377,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
                 string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-                sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
+                sbdFilter.Append('(').Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
                                                            || string.IsNullOrWhiteSpace(strSearch)))
@@ -383,9 +403,9 @@ namespace Chummer
                     }
                 }
 
-                if (_objParentLifestyle.BaseLifestyle != "Bolt Hole")
+                if (_objParentLifestyle.StyleType == LifestyleType.Standard)
                 {
-                    sbdFilter.Append(" and (name != \"Dug a Hole\")");
+                    sbdFilter.Append(" and (source = \"SR5\" or category = \"Contracts\")");
                 }
 
                 if (!string.IsNullOrEmpty(strSearch))
@@ -398,11 +418,10 @@ namespace Chummer
             List<ListItem> lstLifestyleQuality = blnDoUIUpdate ? Utils.ListItemListPool.Get() : null;
             try
             {
-                bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token)
-                                                      .ConfigureAwait(false);
+                bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlQuality in _objXPathDocument.Select("/chummer/qualities/quality" + strFilter))
                 {
-                    string strId = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value;
+                    string strId = objXmlQuality.SelectSingleNodeAndCacheExpression("id", token)?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
                     if (!blnDoUIUpdate)
@@ -416,8 +435,8 @@ namespace Chummer
                     lstLifestyleQuality.Add(
                         new ListItem(
                             strId,
-                            (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value
-                            ?? (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value
+                            objXmlQuality.SelectSingleNodeAndCacheExpression("translate", token)?.Value
+                            ?? objXmlQuality.SelectSingleNodeAndCacheExpression("name", token)?.Value
                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)
                                                     .ConfigureAwait(false)));
                 }
@@ -451,23 +470,23 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             string strSelectedSourceIDString = await lstLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedSourceIDString))
                 return;
             XPathNavigator objNode = _objXPathDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strSelectedSourceIDString);
             if (objNode == null || !await objNode.RequirementsMetAsync(_objCharacter, _objParentLifestyle,
-                                                                       (await objNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                                           "translate", token).ConfigureAwait(false))?.Value
-                                                                       ?? (await objNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                                           "name", token).ConfigureAwait(false))?.Value, _strIgnoreQuality, token: token).ConfigureAwait(false))
+                                                                       objNode.SelectSingleNodeAndCacheExpression(
+                                                                           "translate", token)?.Value
+                                                                       ?? objNode.SelectSingleNodeAndCacheExpression(
+                                                                           "name", token)?.Value, _strIgnoreQuality, token: token).ConfigureAwait(false))
                 return;
 
             _strSelectedQuality = strSelectedSourceIDString;
             _strSelectCategory = GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0
                 ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false)
-                : (await objNode.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value;
+                : objNode.SelectSingleNodeAndCacheExpression("category", token)?.Value;
 
             await this.DoThreadSafeAsync(x =>
             {

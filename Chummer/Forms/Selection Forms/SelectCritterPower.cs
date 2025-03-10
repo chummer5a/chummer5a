@@ -46,11 +46,11 @@ namespace Chummer
 
         public SelectCritterPower(Character objCharacter)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _xmlBaseCritterPowerDataNode = _objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _xmlMetatypeDataNode = _objCharacter.GetNodeXPath();
 
@@ -71,8 +71,7 @@ namespace Chummer
                                                         Improvement.ImprovementType.AllowCritterPowerCategory)
                                                     .ConfigureAwait(false))
                                              .Select(imp => imp.ImprovedName))
-                    && (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@whitelist")
-                                            .ConfigureAwait(false))?.Value == bool.TrueString
+                    && objXmlCategory.SelectSingleNodeAndCacheExpression("@whitelist")?.Value == bool.TrueString
                     || strInnerText.ContainsAny((await ImprovementManager
                                                        .GetCachedImprovementListForValueOfAsync(_objCharacter,
                                                            Improvement.ImprovementType
@@ -81,16 +80,14 @@ namespace Chummer
                                                 .Select(imp => imp.ImprovedName)))
                 {
                     _lstCategory.Add(new ListItem(strInnerText,
-                                                  (await objXmlCategory
-                                                         .SelectSingleNodeAndCacheExpressionAsync("@translate")
-                                                         .ConfigureAwait(false))?.Value ?? strInnerText));
+                                                  objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                     continue;
                 }
 
                 if ((await ImprovementManager
                            .GetCachedImprovementListForValueOfAsync(_objCharacter,
                                                                     Improvement.ImprovementType.LimitCritterPowerCategory).ConfigureAwait(false))
-                    .Any(imp => !strInnerText.Contains(imp.ImprovedName)))
+                    .Exists(imp => !strInnerText.Contains(imp.ImprovedName)))
                 {
                     continue;
                 }
@@ -141,11 +138,11 @@ namespace Chummer
                 XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.TryGetNodeByNameOrId("powers/power", strSelectedPower);
                 if (objXmlPower != null)
                 {
-                    string strCategory = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("category").ConfigureAwait(false))?.Value
+                    string strCategory = objXmlPower.SelectSingleNodeAndCacheExpression("category")?.Value
                                          ?? string.Empty;
                     await lblCritterPowerCategory.DoThreadSafeAsync(x => x.Text = strCategory).ConfigureAwait(false);
 
-                    string strType = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("type").ConfigureAwait(false))?.Value
+                    string strType = objXmlPower.SelectSingleNodeAndCacheExpression("type")?.Value
                                      ?? string.Empty;
                     switch (strType)
                     {
@@ -159,7 +156,7 @@ namespace Chummer
                     }
                     await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = strType).ConfigureAwait(false);
 
-                    string strAction = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("action").ConfigureAwait(false))?.Value ?? string.Empty;
+                    string strAction = objXmlPower.SelectSingleNodeAndCacheExpression("action")?.Value ?? string.Empty;
                     switch (strAction)
                     {
                         case "Auto":
@@ -184,7 +181,7 @@ namespace Chummer
                     }
                     await lblCritterPowerAction.DoThreadSafeAsync(x => x.Text = strAction).ConfigureAwait(false);
 
-                    string strRange = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("range").ConfigureAwait(false))?.Value ?? string.Empty;
+                    string strRange = objXmlPower.SelectSingleNodeAndCacheExpression("range")?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strRange))
                     {
                         strRange = await strRange.CheapReplaceAsync("Self",
@@ -201,7 +198,7 @@ namespace Chummer
                     }
                     await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = strRange).ConfigureAwait(false);
 
-                    string strDuration = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("duration").ConfigureAwait(false))?.Value ?? string.Empty;
+                    string strDuration = objXmlPower.SelectSingleNodeAndCacheExpression("duration")?.Value ?? string.Empty;
                     switch (strDuration)
                     {
                         case "Instant":
@@ -222,23 +219,23 @@ namespace Chummer
                     }
                     await lblCritterPowerDuration.DoThreadSafeAsync(x => x.Text = strDuration).ConfigureAwait(false);
 
-                    string strSource = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                    string strPage = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                    string strSource = objXmlPower.SelectSingleNodeAndCacheExpression("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                    string strPage = objXmlPower.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlPower.SelectSingleNodeAndCacheExpression("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
                     await objSource.SetControlAsync(lblCritterPowerSource).ConfigureAwait(false);
 
-                    bool blnVisible = await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("rating").ConfigureAwait(false) != null;
+                    bool blnVisible = objXmlPower.SelectSingleNodeAndCacheExpression("rating") != null;
                     await nudCritterPowerRating.DoThreadSafeAsync(x => { x.Visible = blnVisible; x.Enabled = blnVisible; }).ConfigureAwait(false);
 
-                    string strKarma = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("karma").ConfigureAwait(false))?.Value
+                    string strKarma = objXmlPower.SelectSingleNodeAndCacheExpression("karma")?.Value
                                       ?? "0";
                     await lblKarma.DoThreadSafeAsync(x => x.Text = strKarma).ConfigureAwait(false);
 
                     // If the character is a Free Spirit, populate the Power Points Cost as well.
                     if (_objCharacter.Metatype == "Free Spirit")
                     {
-                        XPathNavigator xmlOptionalPowerCostNode = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = " + (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value.CleanXPath() + "]/@cost");
+                        XPathNavigator xmlOptionalPowerCostNode = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = " + objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value.CleanXPath() + "]/@cost");
                         if (xmlOptionalPowerCostNode != null)
                         {
                             await lblPowerPoints.DoThreadSafeAsync(x =>
@@ -274,7 +271,7 @@ namespace Chummer
             await RefreshCategory().ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshCategory(CancellationToken token = default)
+        private async Task RefreshCategory(CancellationToken token = default)
         {
             await trePowers.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token).ConfigureAwait(false);
 
@@ -283,7 +280,7 @@ namespace Chummer
             List<string> lstPowerWhitelist = new List<string>(10);
 
             // If the Critter is only allowed certain Powers, display only those.
-            XPathNavigator xmlOptionalPowers = await _xmlMetatypeDataNode.SelectSingleNodeAndCacheExpressionAsync("optionalpowers", token: token).ConfigureAwait(false);
+            XPathNavigator xmlOptionalPowers = _xmlMetatypeDataNode.SelectSingleNodeAndCacheExpression("optionalpowers", token: token);
             if (xmlOptionalPowers != null)
             {
                 foreach (XPathNavigator xmlNode in xmlOptionalPowers.SelectAndCacheExpression("power", token: token))
@@ -408,14 +405,15 @@ namespace Chummer
 
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power" + strFilter))
             {
-                string strPowerName = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                string strPowerName = objXmlPower.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                 if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0)
                     continue;
-                if (!await objXmlPower.RequirementsMetAsync(_objCharacter, string.Empty, string.Empty, token: token).ConfigureAwait(false)) continue;
+                if (!await objXmlPower.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
+                    continue;
                 TreeNode objNode = new TreeNode
                 {
-                    Tag = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value ?? string.Empty,
-                    Text = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strPowerName
+                    Tag = objXmlPower.SelectSingleNodeAndCacheExpression("id", token: token)?.Value ?? string.Empty,
+                    Text = objXmlPower.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strPowerName
                 };
                 await trePowers.DoThreadSafeAsync(x => x.Nodes.Add(objNode), token: token).ConfigureAwait(false);
             }
@@ -482,7 +480,7 @@ namespace Chummer
         #region Properties
 
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Whether the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain => _blnAddAgain;
 
