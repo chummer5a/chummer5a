@@ -374,24 +374,31 @@ namespace Chummer.Tests
             try
             {
                 Utils.IsUnitTestForUI = true;
-                frmTestForm = frmOldMainForm.DoThreadSafeFunc(() => new ChummerMainForm(true, true)
+                frmTestForm = Utils.RunOnMainThread(() => new ChummerMainForm(true, true)
                 {
                     ShowInTaskbar =
                         false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
                 });
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
-                frmTestForm.DoThreadSafe(x =>
+                try
                 {
-                    x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+                    frmTestForm.DoThreadSafe(x =>
+                    {
+                        x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
 #if DEBUG
-                    x.SendToBack();
+                        x.SendToBack();
 #endif
-                });
-                while
-                    (!frmTestForm
-                        .IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                    });
+                    while
+                        (!frmTestForm
+                            .IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                    {
+                        Utils.SafeSleep();
+                    }
+                }
+                finally
                 {
-                    Utils.SafeSleep();
+                    Program.MainForm = frmOldMainForm;
                 }
             }
             catch (Exception ex)
@@ -414,7 +421,6 @@ namespace Chummer.Tests
                 }
                 Utils.IsUnitTestForUI = false;
             }
-            Program.MainForm = frmOldMainForm;
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
@@ -428,108 +434,121 @@ namespace Chummer.Tests
             try
             {
                 Utils.IsUnitTestForUI = true;
-                frmTestForm = frmOldMainForm.DoThreadSafeFunc(() => new ChummerMainForm(true, true)
+                frmTestForm = Utils.RunOnMainThread(() => new ChummerMainForm(true, true)
                 {
                     ShowInTaskbar =
                         false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
                 });
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
-                frmTestForm.DoThreadSafe(x =>
+                try
                 {
-                    x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
-#if DEBUG
-                    x.SendToBack();
-#endif
-                });
-                while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
-                {
-                    Utils.SafeSleep();
-                }
-                Debug.WriteLine("Main form loaded");
-                foreach (Character objCharacter in GetTestCharacters())
-                {
-                    string strFileName = Path.GetFileName(objCharacter.FileName) ?? LanguageManager.GetString("String_Unknown");
-                    Debug.WriteLine("Checking " + strFileName);
-                    string strDummyFileName = Path.Combine(CommonTestData.TestPathInfo.FullName,
-                                                           "(UnitTest07Dummy) "
-                                                           + Path.GetFileNameWithoutExtension(objCharacter.FileName)
-                                                           + ".txt");
-                    using (File.Create(strDummyFileName, byte.MaxValue,
-                                       FileOptions
-                                           .DeleteOnClose)) // Create this so that we can track how far along the Unit Test is even if we don't have a debugger attached
+                    frmTestForm.DoThreadSafe(x =>
                     {
-                        try
+                        x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+#if DEBUG
+                        x.SendToBack();
+#endif
+                    });
+                    while
+                        (!frmTestForm
+                            .IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                    {
+                        Utils.SafeSleep();
+                    }
+
+                    Debug.WriteLine("Main form loaded");
+                    foreach (Character objCharacter in GetTestCharacters())
+                    {
+                        string strFileName = Path.GetFileName(objCharacter.FileName) ??
+                                             LanguageManager.GetString("String_Unknown");
+                        Debug.WriteLine("Checking " + strFileName);
+                        string strDummyFileName = Path.Combine(CommonTestData.TestPathInfo.FullName,
+                            "(UnitTest07Dummy) "
+                            + Path.GetFileNameWithoutExtension(objCharacter.FileName)
+                            + ".txt");
+                        using (File.Create(strDummyFileName, byte.MaxValue,
+                                   FileOptions
+                                       .DeleteOnClose)) // Create this so that we can track how far along the Unit Test is even if we don't have a debugger attached
                         {
-                            bool blnFormClosed = false;
-                            // ReSharper disable once AccessToDisposedClosure
-                            CharacterShared frmCharacterForm = Program.MainForm.DoThreadSafeFunc(
-                                () => objCharacter.Created
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    ? (CharacterShared) new CharacterCareer(objCharacter)
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    : new CharacterCreate(objCharacter));
                             try
                             {
-                                frmCharacterForm.DoThreadSafe(x =>
-                                {
-                                    x.FormClosed += (_, _) => blnFormClosed = true;
-                                    x.MdiParent = frmTestForm;
-                                    x.ShowInTaskbar = false;
-                                    x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
-#if DEBUG
-                                    x.SendToBack();
-#endif
-                                });
-                                while
-                                    (!frmCharacterForm
-                                        .IsFinishedInitializing) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
-                                {
-                                    Utils.SafeSleep();
-                                }
-                            }
-                            finally
-                            {
+                                bool blnFormClosed = false;
+                                // ReSharper disable once AccessToDisposedClosure
+                                CharacterShared frmCharacterForm = Program.MainForm.DoThreadSafeFunc(
+                                    () => objCharacter.Created
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        ? (CharacterShared)new CharacterCareer(objCharacter)
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        : new CharacterCreate(objCharacter));
                                 try
                                 {
-                                    frmCharacterForm.DoThreadSafe(x => x.Close());
+                                    frmCharacterForm.DoThreadSafe(x =>
+                                    {
+                                        x.FormClosed += (_, _) => blnFormClosed = true;
+                                        x.MdiParent = frmTestForm;
+                                        x.ShowInTaskbar = false;
+                                        x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+#if DEBUG
+                                        x.SendToBack();
+#endif
+                                    });
                                     while
-                                        (!blnFormClosed && !frmCharacterForm.IsDisposed) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                        (!frmCharacterForm
+                                            .IsFinishedInitializing) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                                     {
                                         Utils.SafeSleep();
                                     }
                                 }
-                                catch (ApplicationException e)
+                                finally
                                 {
-                                    string strErrorMessage
-                                        = "Encountered (non-fatal) exception while disposing of character form."
-                                          + Environment.NewLine
-                                          + e.Message;
-                                    Debug.WriteLine(strErrorMessage);
-                                    Console.WriteLine(strErrorMessage);
-                                    Program.OpenCharacters.Remove(objCharacter);
-                                }
-                                catch (InvalidOperationException e)
-                                {
-                                    string strErrorMessage
-                                        = "Encountered (non-fatal) exception while disposing of character form."
-                                          + Environment.NewLine
-                                          + e.Message;
-                                    Debug.WriteLine(strErrorMessage);
-                                    Console.WriteLine(strErrorMessage);
-                                    Program.OpenCharacters.Remove(objCharacter);
+                                    try
+                                    {
+                                        frmCharacterForm.DoThreadSafe(x => x.Close());
+                                        while
+                                            (!blnFormClosed &&
+                                             !frmCharacterForm
+                                                 .IsDisposed) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                        {
+                                            Utils.SafeSleep();
+                                        }
+                                    }
+                                    catch (ApplicationException e)
+                                    {
+                                        string strErrorMessage
+                                            = "Encountered (non-fatal) exception while disposing of character form."
+                                              + Environment.NewLine
+                                              + e.Message;
+                                        Debug.WriteLine(strErrorMessage);
+                                        Console.WriteLine(strErrorMessage);
+                                        Program.OpenCharacters.Remove(objCharacter);
+                                    }
+                                    catch (InvalidOperationException e)
+                                    {
+                                        string strErrorMessage
+                                            = "Encountered (non-fatal) exception while disposing of character form."
+                                              + Environment.NewLine
+                                              + e.Message;
+                                        Debug.WriteLine(strErrorMessage);
+                                        Console.WriteLine(strErrorMessage);
+                                        Program.OpenCharacters.Remove(objCharacter);
+                                    }
                                 }
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            string strErrorMessage
-                                = "Exception while loading form for " + strFileName + ":";
-                            strErrorMessage += Environment.NewLine + e;
-                            Debug.WriteLine(strErrorMessage);
-                            Console.WriteLine(strErrorMessage);
-                            Assert.Fail(strErrorMessage);
+                            catch (Exception e)
+                            {
+                                string strErrorMessage
+                                    = "Exception while loading form for " + strFileName + ":";
+                                strErrorMessage += Environment.NewLine + e;
+                                Debug.WriteLine(strErrorMessage);
+                                Console.WriteLine(strErrorMessage);
+                                Assert.Fail(strErrorMessage);
+                            }
                         }
                     }
+                }
+                finally
+                {
+                    Program.MainForm = frmOldMainForm;
                 }
             }
             finally
@@ -548,7 +567,6 @@ namespace Chummer.Tests
                 }
                 Utils.IsUnitTestForUI = false;
             }
-            Program.MainForm = frmOldMainForm;
         }
 
         /// <summary>
