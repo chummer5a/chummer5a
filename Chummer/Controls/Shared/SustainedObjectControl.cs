@@ -62,7 +62,7 @@ namespace Chummer
                     _objLinkedSustainedObject, nameof(SustainedObject.Force),
                     (x, y) => x.ValueChanged += y, x => x.GetForceAsync(_objMyToken),
                     (x, y) => x.SetForceAsync(y, _objMyToken), _objMyToken, _objMyToken).ConfigureAwait(false);
-                await nudForce.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                await nudNetHits.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                     _objLinkedSustainedObject, nameof(SustainedObject.NetHits),
                     (x, y) => x.ValueChanged += y, x => x.GetNetHitsAsync(_objMyToken),
                     (x, y) => x.SetNetHitsAsync(y, _objMyToken), _objMyToken, _objMyToken).ConfigureAwait(false);
