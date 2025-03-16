@@ -39042,6 +39042,9 @@ namespace Chummer
                                            .GetCachedImprovementListForValueOf(
                                                this, Improvement.ImprovementType.FriendsInHighPlaces).Count > 0;
 
+        /// <summary>
+        /// Whether Friends in High Places is enabled.
+        /// </summary>
         public async Task<bool> GetFriendsInHighPlacesAsync(CancellationToken token = default)
         {
             return (await ImprovementManager
@@ -39054,6 +39057,16 @@ namespace Chummer
         /// </summary>
         public bool ExCon => ImprovementManager
                              .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.ExCon).Count > 0;
+
+        /// <summary>
+        /// Whether ExCon is enabled.
+        /// </summary>
+        public async Task<bool> GetExConAsync(CancellationToken token = default)
+        {
+            return (await ImprovementManager
+                          .GetCachedImprovementListForValueOfAsync(
+                              this, Improvement.ImprovementType.ExCon, token: token).ConfigureAwait(false)).Count > 0;
+        }
 
         private int _intCachedTrustFund = int.MinValue;
 

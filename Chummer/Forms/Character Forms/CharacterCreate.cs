@@ -2766,7 +2766,7 @@ namespace Chummer
                     }
                 }
 
-                if (e.PropertyNames.Contains(nameof(Character.ExCon)) && CharacterObject.ExCon)
+                if (e.PropertyNames.Contains(nameof(Character.ExCon)) && await CharacterObject.GetExConAsync(token).ConfigureAwait(false))
                 {
                     foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
                                      x => x.GetChildrenAsync(token), async x =>

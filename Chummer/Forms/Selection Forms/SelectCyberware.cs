@@ -1644,9 +1644,9 @@ namespace Chummer
                         }
 
                         string strMaxRating = xmlCyberware
-                            .SelectSingleNodeAndCacheExpression("rating", token: token)?.Value;
+                            .SelectSingleNodeAndCacheExpression("rating", token: token)?.Value ?? string.Empty;
                         string strMinRating = xmlCyberware
-                            .SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value;
+                            .SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value ?? string.Empty;
                         int intMinRating = 1;
                         // If our rating tag is a complex property, check to make sure our maximum rating is not less than our minimum rating
                         if ((!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating))
@@ -1715,7 +1715,7 @@ namespace Chummer
                         }
 
                         // Ex-Cons cannot have forbidden or restricted 'ware
-                        if (_objCharacter.ExCon && ParentVehicle == null
+                        if (await _objCharacter.GetExConAsync(token).ConfigureAwait(false) && ParentVehicle == null
                                                 && xmlCyberware
                                                          .SelectSingleNodeAndCacheExpression(
                                                              "mountsto", token: token) == null)
@@ -1781,10 +1781,13 @@ namespace Chummer
                             }
                         }
 
-                        lstCyberwares.Add(new ListItem(
-                                              xmlCyberware.SelectSingleNodeAndCacheExpression("id", token: token)?.Value,
-                                              xmlCyberware.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
-                                              ?? xmlCyberware.SelectSingleNodeAndCacheExpression("name", token: token)?.Value));
+                        string strId = xmlCyberware.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
+                        if (!string.IsNullOrEmpty(strId))
+                            lstCyberwares.Add(new ListItem(
+                                                  strId,
+                                                  xmlCyberware.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                                  ?? xmlCyberware.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
+                                                  ?? strId));
                     }
                 }
 
@@ -1929,7 +1932,7 @@ namespace Chummer
 
             s_strSelectCategory = GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0
                 ? _strSelectedCategory
-                : objCyberwareNode.SelectSingleNodeAndCacheExpression("category", token: token)?.Value;
+                : objCyberwareNode.SelectSingleNodeAndCacheExpression("category", token: token)?.Value ?? string.Empty;
             _sStrSelectGrade = SelectedGrade?.SourceIDString;
             SelectedCyberware = strSelectedId;
             SelectedRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);

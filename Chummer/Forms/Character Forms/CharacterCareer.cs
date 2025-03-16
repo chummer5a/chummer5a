@@ -3475,7 +3475,7 @@ namespace Chummer
                     }
                 }
 
-                if (e.PropertyNames.Contains(nameof(Character.ExCon)) && CharacterObject.ExCon)
+                if (e.PropertyNames.Contains(nameof(Character.ExCon)) && await CharacterObject.GetExConAsync(token).ConfigureAwait(false))
                 {
                     string strExConString = string.Empty;
                     Improvement objExConImprovement = (await ImprovementManager
