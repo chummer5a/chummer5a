@@ -10527,6 +10527,7 @@ namespace Chummer
                                     setAlwaysChangedProperties.Add(nameof(SustainingPenalty));
                                     setAlwaysChangedProperties.Add(nameof(Encumbrance));
                                     setAlwaysChangedProperties.Add(nameof(ArmorEncumbrance));
+                                    setAlwaysChangedProperties.Add(nameof(LimbCount)); // Makes sure attributes properly reflect equipped cyberlimbs whose effects aren't handled through improvements
 
                                     if (blnSync)
                                     {
