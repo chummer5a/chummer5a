@@ -905,8 +905,8 @@ namespace Chummer
                                             {
                                                 token.ThrowIfCancellationRequested();
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    xmlScratchpad.LoadStandard(strPath);
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    xmlScratchpad.LoadStandard(strPath, token: token);
                                                 else
                                                     await xmlScratchpad.LoadStandardAsync(strPath, token: token)
                                                         .ConfigureAwait(false);
@@ -943,11 +943,25 @@ namespace Chummer
                                         // Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
                                         if (blnHasCustomData)
                                         {
-                                            foreach (string strLoopPath in astrRelevantCustomDataPaths)
+                                            if (blnSync)
                                             {
-                                                DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strLoopPath,
-                                                    strFileName,
-                                                    token: token);
+                                                foreach (string strLoopPath in astrRelevantCustomDataPaths)
+                                                {
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strLoopPath,
+                                                        strFileName,
+                                                        token: token);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                foreach (string strLoopPath in astrRelevantCustomDataPaths)
+                                                {
+                                                    await DoProcessCustomDataFilesAsync(xmlScratchpad, xmlReturn,
+                                                        strLoopPath,
+                                                        strFileName,
+                                                        token: token).ConfigureAwait(false);
+                                                }
                                             }
                                         }
 
@@ -1080,7 +1094,11 @@ namespace Chummer
                     strPath = Utils.GetLiveCustomDataFolderPath;
                     if (Directory.Exists(strPath))
                     {
-                        blnHasLiveCustomData = DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strPath, strFileName, token: token);
+                        blnHasLiveCustomData = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strPath, strFileName, token: token)
+                            : await DoProcessCustomDataFilesAsync(xmlScratchpad, xmlReturn, strPath, strFileName,
+                                token: token).ConfigureAwait(false);
                     }
                 }
 
@@ -1520,7 +1538,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    xmlFile.LoadStandard(strFile);
+                    xmlFile.LoadStandardPatient(strFile, token: token);
                 }
 #if DEBUG
                 catch (IOException e)
@@ -1617,7 +1635,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    xmlFile.LoadStandard(strFile);
+                    xmlFile.LoadStandardPatient(strFile, token: token);
                 }
 #if DEBUG
                 catch (IOException e)
@@ -1770,7 +1788,324 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    xmlFile.LoadStandard(strFile);
+                    xmlFile.LoadStandardPatient(strFile, token: token);
+                }
+#if DEBUG
+                catch (IOException e)
+                {
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+                    continue;
+                }
+                catch (XmlException e)
+                {
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+                    continue;
+                }
+#else
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+#endif
+                token.ThrowIfCancellationRequested();
+
+                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
+                {
+                    if (xmlNodeList?.Count > 0)
+                    {
+                        foreach (XmlNode objNode in xmlNodeList)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            blnReturn = AmendNodeChildren(xmlDataDoc, objNode, "/chummer", token: token) || blnReturn;
+                        }
+                    }
+                }
+            }
+
+            return blnReturn;
+        }
+
+        private static async Task<bool> DoProcessCustomDataFilesAsync(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.AllDirectories, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            bool blnReturn = false;
+            XmlElement objDocElement = xmlDataDoc.DocumentElement;
+            List<string> lstPossibleCustomFiles = new List<string>(Utils.BasicDataFileNames.Count);
+            foreach (string strFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName, eSearchOption))
+            {
+                token.ThrowIfCancellationRequested();
+                string strLoopFileName = Path.GetFileName(strFile);
+                if (!strLoopFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
+                    && !strLoopFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                    && !strLoopFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                lstPossibleCustomFiles.Add(strFile);
+            }
+            foreach (string strFile in lstPossibleCustomFiles)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!Path.GetFileName(strFile).StartsWith("override_", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    await xmlFile.LoadStandardPatientAsync(strFile, token: token).ConfigureAwait(false);
+                }
+#if DEBUG
+                catch (IOException e)
+                {
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+                    continue;
+                }
+                catch (XmlException e)
+                {
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+                    continue;
+                }
+#else
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+#endif
+                token.ThrowIfCancellationRequested();
+
+                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
+                {
+                    if (xmlNodeList?.Count > 0)
+                    {
+                        foreach (XmlNode objNode in xmlNodeList)
+                        {
+                            foreach (XmlNode objType in objNode.ChildNodes)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                string strFilter;
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdFilter))
+                                {
+                                    XmlElement xmlIdNode = objType["id"];
+                                    if (xmlIdNode != null)
+                                        sbdFilter.Append("id = ")
+                                                 .Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
+                                    else
+                                    {
+                                        xmlIdNode = objType["name"];
+                                        if (xmlIdNode != null)
+                                            sbdFilter.Append("name = ")
+                                                     .Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
+                                    }
+
+                                    // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
+                                    using (XmlNodeList objAmendingNodeExtraIds
+                                           = objType.SelectNodes("child::*[@isidnode = " + bool.TrueString.CleanXPath() + ']'))
+                                    {
+                                        if (objAmendingNodeExtraIds?.Count > 0)
+                                        {
+                                            foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                if (sbdFilter.Length > 0)
+                                                    sbdFilter.Append(" and ");
+                                                sbdFilter.Append(objExtraId.Name).Append(" = ")
+                                                         .Append(
+                                                             objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
+                                            }
+                                        }
+                                    }
+
+                                    strFilter = sbdFilter.ToString();
+                                }
+                                if (!string.IsNullOrEmpty(strFilter))
+                                {
+                                    XmlNode objItem = xmlDataDoc.SelectSingleNode(
+                                        "/chummer/" + objNode.Name + '/' + objType.Name + '[' + strFilter + ']');
+                                    if (objItem != null)
+                                    {
+                                        objItem.InnerXml = objType.InnerXml;
+                                        blnReturn = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
+            foreach (string strFile in lstPossibleCustomFiles)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!Path.GetFileName(strFile).StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    await xmlFile.LoadStandardPatientAsync(strFile, token: token).ConfigureAwait(false);
+                }
+#if DEBUG
+                catch (IOException e)
+                {
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+                    continue;
+                }
+                catch (XmlException e)
+                {
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+                    continue;
+                }
+#else
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+#endif
+                token.ThrowIfCancellationRequested();
+
+                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
+                {
+                    if (xmlNodeList?.Count > 0 && objDocElement != null)
+                    {
+                        foreach (XmlNode objNode in xmlNodeList)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
+                            List<XmlNode> lstDelete = new List<XmlNode>(objNode.ChildNodes.Count);
+                            foreach (XmlNode objChild in objNode.ChildNodes)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                XmlNode objParentNode = objChild.ParentNode;
+                                if (objParentNode == null)
+                                    continue;
+                                string strFilter = string.Empty;
+                                XmlElement xmlIdNode = objChild["id"];
+                                if (xmlIdNode != null)
+                                    strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
+                                else
+                                {
+                                    XmlElement xmlNameNode = objChild["name"];
+                                    if (xmlNameNode != null)
+                                    {
+                                        strFilter += (string.IsNullOrEmpty(strFilter)
+                                                         ? "name = "
+                                                         : " and name = ") +
+                                                     xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath();
+                                    }
+                                }
+
+                                // Only do this if the child has the name or id field since this is what we must match on.
+                                if (!string.IsNullOrEmpty(strFilter))
+                                {
+                                    string strParentNodeFilter = string.Empty;
+                                    if (objParentNode.Attributes?.Count > 0)
+                                    {
+                                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                   out StringBuilder sbdParentNodeFilter))
+                                        {
+                                            foreach (XmlAttribute objLoopAttribute in objParentNode.Attributes)
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                sbdParentNodeFilter
+                                                    .Append('@').Append(objLoopAttribute.Name).Append(" = ")
+                                                    .Append(objLoopAttribute.Value.Replace("&amp;", "&")
+                                                                            .CleanXPath()).Append(" and ");
+                                            }
+
+                                            if (sbdParentNodeFilter.Length > 0)
+                                                sbdParentNodeFilter.Length -= 5;
+
+                                            strParentNodeFilter = sbdParentNodeFilter.ToString();
+                                        }
+                                    }
+                                    XmlNode objItem = xmlDataDoc.SelectSingleNode(string.IsNullOrEmpty(strParentNodeFilter)
+                                        ? "/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']'
+                                        : "/chummer/" + objParentNode.Name + '[' + strParentNodeFilter + "]/" + objChild.Name + '[' + strFilter + ']');
+                                    if (objItem != null)
+                                        lstDelete.Add(objChild);
+                                }
+                            }
+
+                            // Remove the offending items from the node we're about to merge in.
+                            foreach (XmlNode objRemoveNode in lstDelete)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                objNode.RemoveChild(objRemoveNode);
+                            }
+
+                            XmlElement xmlExistingNode = objDocElement[objNode.Name];
+                            if (xmlExistingNode != null
+                                && xmlExistingNode.Attributes?.Count == objNode.Attributes?.Count)
+                            {
+                                bool blnAllMatching = true;
+                                foreach (XmlAttribute x in xmlExistingNode.Attributes)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objNode.Attributes.GetNamedItem(x.Name)?.Value != x.Value)
+                                    {
+                                        blnAllMatching = false;
+                                        break;
+                                    }
+                                }
+
+                                if (blnAllMatching)
+                                {
+                                    /* We need to do this to avoid creating multiple copies of the root node, ie
+                                       <chummer>
+                                           <metatypes>
+                                               <metatype>Standard</metatype>
+                                           </metatypes>
+                                           <metatypes>
+                                               <metatype>Custom</metatype>
+                                           </metatypes>
+                                       </chummer>
+                                       Otherwise xpathnavigators that to a selectsinglenode will only grab the first instance of the name. TODO: fix better?
+                                   */
+                                    foreach (XmlNode childNode in objNode.ChildNodes)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        xmlExistingNode.AppendChild(xmlDataDoc.ImportNode(childNode, true));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // Append the entire child node to the new document.
+                                objDocElement.AppendChild(xmlDataDoc.ImportNode(objNode, true));
+                            }
+
+                            blnReturn = true;
+                        }
+                    }
+                }
+            }
+
+            // Load any amending data we might have, i.e. rules that only amend items instead of replacing them. Do not attempt this if we're loading the Improvements file.
+            foreach (string strFile in lstPossibleCustomFiles)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!Path.GetFileName(strFile).StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    await xmlFile.LoadStandardPatientAsync(strFile, token: token).ConfigureAwait(false);
                 }
 #if DEBUG
                 catch (IOException e)

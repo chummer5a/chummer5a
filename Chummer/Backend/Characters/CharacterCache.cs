@@ -651,9 +651,9 @@ namespace Chummer
                         XPathDocument LoadXPathDocument()
                         {
                             if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                return XPathDocumentExtensions.LoadStandardFromFile(strFile, token: token);
+                                return XPathDocumentExtensions.LoadStandardFromFilePatient(strFile, token: token);
                             if (strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
-                                return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFile(strFile, token: token);
+                                return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFilePatient(strFile, token: token);
                             Utils.BreakIfDebug();
                             throw new InvalidOperationException();
                         }
@@ -661,9 +661,9 @@ namespace Chummer
                         Task<XPathDocument> LoadXPathDocumentAsync()
                         {
                             if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                return XPathDocumentExtensions.LoadStandardFromFileAsync(strFile, token: token);
+                                return XPathDocumentExtensions.LoadStandardFromFilePatientAsync(strFile, token: token);
                             if (strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
-                                return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFileAsync(
+                                return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFilePatientAsync(
                                     strFile, token: token);
                             Utils.BreakIfDebug();
                             return Task.FromException<XPathDocument>(new InvalidOperationException());

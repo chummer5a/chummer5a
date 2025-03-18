@@ -81,7 +81,7 @@ namespace Chummer
                 if (File.Exists(strFullDirectory))
                 {
                     HasManifest = true;
-                    XPathDocument xmlObjManifest = XPathDocumentExtensions.LoadStandardFromFile(strFullDirectory);
+                    XPathDocument xmlObjManifest = XPathDocumentExtensions.LoadStandardFromFilePatient(strFullDirectory);
                     XPathNavigator xmlNode = xmlObjManifest.CreateNavigator()
                                                            .SelectSingleNodeAndCacheExpression("manifest");
 
@@ -114,7 +114,7 @@ namespace Chummer
                 if (File.Exists(strFullDirectory))
                 {
                     HasManifest = true;
-                    XPathDocument xmlObjManifest = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFullDirectory, token: token).ConfigureAwait(false);
+                    XPathDocument xmlObjManifest = await XPathDocumentExtensions.LoadStandardFromFilePatientAsync(strFullDirectory, token: token).ConfigureAwait(false);
                     XPathNavigator xmlNode = xmlObjManifest.CreateNavigator()
                                                            .SelectSingleNodeAndCacheExpression("manifest", token);
 

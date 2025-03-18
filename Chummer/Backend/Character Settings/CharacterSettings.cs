@@ -3562,7 +3562,7 @@ namespace Chummer
                             continue;
                         try
                         {
-                            objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strMruCharacterFile, token: token);
+                            objXmlDocument = XPathDocumentExtensions.LoadStandardFromFilePatient(strMruCharacterFile, token: token);
                         }
                         catch (XmlException)
                         {
@@ -3591,7 +3591,7 @@ namespace Chummer
                                 continue;
                             try
                             {
-                                objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strMruCharacterFile, token: token);
+                                objXmlDocument = XPathDocumentExtensions.LoadStandardFromFilePatient(strMruCharacterFile, token: token);
                             }
                             catch (XmlException)
                             {
@@ -4331,7 +4331,7 @@ namespace Chummer
                             continue;
                         try
                         {
-                            objXmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strMruCharacterFile, token: token).ConfigureAwait(false);
+                            objXmlDocument = await XPathDocumentExtensions.LoadStandardFromFilePatientAsync(strMruCharacterFile, token: token).ConfigureAwait(false);
                         }
                         catch (XmlException)
                         {
@@ -4361,7 +4361,7 @@ namespace Chummer
                             try
                             {
                                 objXmlDocument
-                                    = await XPathDocumentExtensions.LoadStandardFromFileAsync(
+                                    = await XPathDocumentExtensions.LoadStandardFromFilePatientAsync(
                                         strMruCharacterFile, token: token).ConfigureAwait(false);
                             }
                             catch (XmlException)

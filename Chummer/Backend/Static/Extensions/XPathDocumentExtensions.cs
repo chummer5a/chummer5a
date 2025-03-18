@@ -16,6 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -165,6 +167,124 @@ namespace Chummer
                     }
                 }
             }, token);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously loading an XPathDocument from a file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// </summary>
+        /// <param name="strFileName">The file to use.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="intTimeout">Maximum amount of time to wait in case a file is in use, in milliseconds.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static XPathDocument LoadStandardFromFilePatient(string strFileName, bool blnSafe = true, int intTimeout = Utils.SleepEmergencyReleaseMaxTicks, CancellationToken token = default)
+        {
+            for (int i = 0; i < intTimeout; i += Utils.DefaultSleepDuration)
+            {
+                try
+                {
+                    return LoadStandardFromFile(strFileName, blnSafe, token);
+                }
+                catch (IOException)
+                {
+                    // swallow this unless we are at the emergency release stage
+                    if (i >= intTimeout - Utils.DefaultSleepDuration)
+                        throw;
+                }
+
+                Utils.SafeSleep(token);
+            }
+
+            throw new TimeoutException();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for asynchronously loading an XPathDocument from a file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// </summary>
+        /// <param name="strFileName">The file to use.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="intTimeout">Maximum amount of time to wait in case a file is in use, in milliseconds.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<XPathDocument> LoadStandardFromFilePatientAsync(string strFileName, bool blnSafe = true, int intTimeout = Utils.SleepEmergencyReleaseMaxTicks, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            for (int i = 0; i < intTimeout; i += Utils.DefaultSleepDuration)
+            {
+                try
+                {
+                    return await LoadStandardFromFileAsync(strFileName, blnSafe, token).ConfigureAwait(false);
+                }
+                catch (IOException)
+                {
+                    // swallow this unless we are at the emergency release stage
+                    if (i >= intTimeout - Utils.DefaultSleepDuration)
+                        throw;
+                }
+
+                await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+            }
+
+            throw new TimeoutException();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously loading an XPathDocument from an LZMA-compressed file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// </summary>
+        /// <param name="strFileName">The file to use.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="intTimeout">Maximum amount of time to wait in case a file is in use, in milliseconds.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static XPathDocument LoadStandardFromLzmaCompressedFilePatient(string strFileName, bool blnSafe = true, int intTimeout = Utils.SleepEmergencyReleaseMaxTicks, CancellationToken token = default)
+        {
+            for (int i = 0; i < intTimeout; i += Utils.DefaultSleepDuration)
+            {
+                try
+                {
+                    return LoadStandardFromLzmaCompressedFile(strFileName, blnSafe, token);
+                }
+                catch (IOException)
+                {
+                    // swallow this unless we are at the emergency release stage
+                    if (i >= intTimeout - Utils.DefaultSleepDuration)
+                        throw;
+                }
+
+                Utils.SafeSleep(token);
+            }
+
+            throw new TimeoutException();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for asynchronously loading an XPathDocument from an LZMA-compressed file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// </summary>
+        /// <param name="strFileName">The file to use.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="intTimeout">Maximum amount of time to wait in case a file is in use, in milliseconds.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<XPathDocument> LoadStandardFromLzmaCompressedFilePatientAsync(string strFileName, bool blnSafe = true, int intTimeout = Utils.SleepEmergencyReleaseMaxTicks, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            for (int i = 0; i < intTimeout; i += Utils.DefaultSleepDuration)
+            {
+                try
+                {
+                    return await LoadStandardFromLzmaCompressedFileAsync(strFileName, blnSafe, token).ConfigureAwait(false);
+                }
+                catch (IOException)
+                {
+                    // swallow this unless we are at the emergency release stage
+                    if (i >= intTimeout - Utils.DefaultSleepDuration)
+                        throw;
+                }
+
+                await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+            }
+
+            throw new TimeoutException();
         }
     }
 }

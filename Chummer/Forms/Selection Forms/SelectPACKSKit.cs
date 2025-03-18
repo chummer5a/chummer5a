@@ -855,7 +855,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
                 try
                 {
-                    await objXmlDocument.LoadStandardAsync(strFile).ConfigureAwait(false);
+                    await objXmlDocument.LoadStandardPatientAsync(strFile).ConfigureAwait(false);
                 }
                 catch (IOException)
                 {

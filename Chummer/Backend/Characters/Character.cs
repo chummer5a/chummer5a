@@ -6126,10 +6126,10 @@ namespace Chummer
                                     {
                                         token.ThrowIfCancellationRequested();
                                         if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                            objXmlDocument.LoadStandard(strFileName, !blnErrorCaught);
+                                            objXmlDocument.LoadStandardPatient(strFileName, !blnErrorCaught, token: token);
                                         else if (strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
-                                            objXmlDocument.LoadStandardFromLzmaCompressed(
-                                                strFileName, !blnErrorCaught);
+                                            objXmlDocument.LoadStandardFromLzmaCompressedPatient(
+                                                strFileName, !blnErrorCaught, token: token);
                                         else
                                             throw new InvalidOperationException();
                                         blnErrorCaught = false;
@@ -6190,11 +6190,11 @@ namespace Chummer
                                     {
                                         token.ThrowIfCancellationRequested();
                                         if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                            await objXmlDocument.LoadStandardAsync(
-                                                strFileName, !blnErrorCaught, token).ConfigureAwait(false);
+                                            await objXmlDocument.LoadStandardPatientAsync(
+                                                strFileName, !blnErrorCaught, token: token).ConfigureAwait(false);
                                         else if (strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
-                                            await objXmlDocument.LoadStandardFromLzmaCompressedAsync(
-                                                strFileName, !blnErrorCaught, token).ConfigureAwait(false);
+                                            await objXmlDocument.LoadStandardFromLzmaCompressedPatientAsync(
+                                                strFileName, !blnErrorCaught, token: token).ConfigureAwait(false);
                                         else
                                             throw new InvalidOperationException();
                                         blnErrorCaught = false;
