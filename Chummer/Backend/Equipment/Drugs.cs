@@ -498,13 +498,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Drug.
         /// </summary>
-        public decimal TotalCost => Cost * Quantity;
+        public decimal TotalCost => Cost * Quantity * Grade.Cost;
 
         /// <summary>
         /// Total cost of the Drug.
         /// </summary>
         public async Task<decimal> GetTotalCostAsync(CancellationToken token = default) =>
-            await GetCostAsync(token).ConfigureAwait(false) * Quantity;
+            await GetCostAsync(token).ConfigureAwait(false) * Quantity * Grade.Cost;
 
         public decimal StolenTotalCost => Stolen ? TotalCost : 0;
 
@@ -790,8 +790,8 @@ namespace Chummer.Backend.Equipment
             {
                 if (_intCachedDuration != int.MinValue)
                     return _intCachedDuration;
-                if (string.IsNullOrWhiteSpace(_strDuration))
-                    return _intCachedDuration = 0;
+                //if (string.IsNullOrWhiteSpace(_strDuration))
+                //    return _intCachedDuration = 0;
 
                 string strDuration;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDrain))
@@ -1264,13 +1264,16 @@ namespace Chummer.Backend.Equipment
                         sbdDescription.AppendLine(await _objCharacter.TranslateExtraAsync(strInfo, strLanguage, token: token).ConfigureAwait(false));
 
                     if (Category == "Custom Drug" || Duration != 0)
-                        sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Duration", strLanguage, token: token).ConfigureAwait(false))
-                                      .AppendLine(DisplayDuration);
+                        sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Duration", token: token).ConfigureAwait(false))
+                                      .Append(strSpace)
+                                      .Append("10 ⨯ ")
+                                      .Append((Duration + 1).ToString(GlobalSettings.CultureInfo))
+                                      .Append(await LanguageManager.GetStringAsync("String_D6", token: token).ConfigureAwait(false)).Append(strSpace)
+                                      .AppendLine(await LanguageManager.GetStringAsync("String_Minutes", token: token).ConfigureAwait(false));
 
                     if (Category == "Custom Drug" || Speed != 0)
                     {
-                        sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Speed", token: token).ConfigureAwait(false))
-                                      .Append(await LanguageManager.GetStringAsync("String_Colon", strLanguage, token: token).ConfigureAwait(false)).Append(strSpace);
+                        sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Speed", token: token).ConfigureAwait(false)).Append(strSpace);
                         if (Speed <= 0)
                             sbdDescription.AppendLine(await LanguageManager.GetStringAsync("String_Immediate", token: token).ConfigureAwait(false));
                         else if (Speed <= 60)
@@ -1297,7 +1300,7 @@ namespace Chummer.Backend.Equipment
                                       .Append(strSpace)
                                       .AppendLine((AddictionThreshold * (intLevel + 1)).ToString(objCulture))
                                       .Append(await LanguageManager.GetStringAsync("Label_Cost", strLanguage, token: token).ConfigureAwait(false)).Append(strSpace)
-                                      .Append((Cost * (intLevel + 1)).ToString(
+                                      .Append((Cost * (intLevel + 1) * Grade.Cost).ToString(
                                                   _objCharacter.Settings.NuyenFormat, objCulture)).AppendLine(await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false))
                                       .Append(await LanguageManager.GetStringAsync("Label_Avail", strLanguage, token: token).ConfigureAwait(false)).Append(strSpace)
                                       .AppendLine(await TotalAvailAsync(objCulture, strLanguage, token).ConfigureAwait(false));
@@ -1753,6 +1756,7 @@ namespace Chummer.Backend.Equipment
             foreach (DrugEffect objDrugEffect in DrugEffects)
             {
                 objXmlWriter.WriteStartElement("effect");
+                objXmlWriter.WriteElementString("level", objDrugEffect.Level.ToString(GlobalSettings.InvariantCultureInfo));
                 foreach (KeyValuePair<string, decimal> objAttribute in objDrugEffect.Attributes)
                 {
                     objXmlWriter.WriteStartElement("attribute");
