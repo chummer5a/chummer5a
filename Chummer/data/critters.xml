@@ -8788,7 +8788,7 @@
             <power>Deathly Aura</power>
             <power select="Essence">Energy Drain</power>
             <power>Fear</power>
-            <power> Magical Guard</power>
+            <power>Magical Guard</power>
             <power>Mimicry</power>
             <power select="Bones">Possession</power>
             <power>Realistic Form</power>
@@ -10318,7 +10318,7 @@
             <power>Materialization</power>
             <power>Paralyzing Touch</power>
             <power>Sapience</power>
-            <power>Sillence</power>
+            <power>Silence</power>
             <power>Vanishing</power>
          </powers>
          <optionalpowers />
@@ -19466,7 +19466,7 @@
             <power>Accident</power>
             <power>Astral Form</power>
             <power>Aura Masking</power>
-            <power>Banishing</power>
+            <power>Banishing Resistance</power>
          </powers>
          <bonus>
             <enabletab>
@@ -19734,7 +19734,7 @@
             <power>Aura Masking</power>
             <power>Materialization</power>
             <power select="Essence">Energy Drain</power>
-            <power>Age)</power>
+            <power>Age</power>
             <power>Fey Glamour</power>
             <power>Sapience</power>
             <power>Spirit Pact</power>
@@ -19887,7 +19887,7 @@
             <power select="Claws (DV (F+2)P AP -F)">Natural Weapon</power>
             <power select="Wings (DV (F+6)S AP -F)">Natural Weapon</power>
             <power>AP -Force</power>
-            <power>Knockdown)</power>
+            <power>Knockdown</power>
             <power>Psychokinesis</power>
             <power>Sapience</power>
          </powers>
@@ -19951,7 +19951,7 @@
             <power select="Domain">Accident</power>
             <power>Alienate</power>
             <power>Astral Form</power>
-            <power>Aura</power>
+            <power>Aura Masking</power>
          </powers>
          <bonus>
             <enabletab>
