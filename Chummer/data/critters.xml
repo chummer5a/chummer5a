@@ -10560,7 +10560,7 @@
          <essmin>0</essmin>
          <essmax>6</essmax>
          <essaug>6</essaug>
-         <walk>0/0/(0</walk>
+         <walk>0/0/0</walk>
          <run>0/0/0</run>
          <sprint>2/2/2</sprint>
          <bonus>
@@ -10648,7 +10648,7 @@
          <essmin>0</essmin>
          <essmax>6</essmax>
          <essaug>6</essaug>
-         <walk>0/0/(0</walk>
+         <walk>0/0/0</walk>
          <run>0/0/0</run>
          <sprint>2/2/2</sprint>
          <bonus>
