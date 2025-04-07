@@ -25894,7 +25894,7 @@
             <skill rating="5">Electronic Warfare</skill>
          </skills>
          <complexforms>
-            <complexform>Deezz</complexform>
+            <complexform>Derezz</complexform>
             <complexform select="Firewall">Diffusion of [Matrix Attribute]</complexform>
             <complexform>Editor</complexform>
             <complexform select="Sleaze">Infusion of [Matrix Attribute]</complexform>
