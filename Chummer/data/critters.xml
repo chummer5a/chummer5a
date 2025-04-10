@@ -19913,7 +19913,6 @@
             <power>Materialization</power>
             <power select="Claws (DV (F+2)P AP -F)">Natural Weapon</power>
             <power select="Wings (DV (F+6)S AP -F)">Natural Weapon</power>
-            <power>AP -Force</power>
             <power>Knockdown</power>
             <power>Psychokinesis</power>
             <power>Sapience</power>
@@ -20461,7 +20460,6 @@
             <power>Influence</power>
             <power>Materialization</power>
             <power select="DV (F-1)S">Natural Weapon (Fist)</power>
-            <power>AP -Force)</power>
             <power>Psychokinesis</power>
             <power>Sapience</power>
             <power>Search</power>
