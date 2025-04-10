@@ -853,8 +853,8 @@
                 <xs:simpleContent>
                   <xs:extension base="xs:string">
                     <xs:attribute name="contributetobp" type="xs:string" use="optional" />
-                    <xs:attribute name="forced" type="boolean" use="optional" />
-                    <xs:attribute name="rating" type="integer" use="optional" />
+                    <xs:attribute name="forced" type="xs:boolean" use="optional" />
+                    <xs:attribute name="rating" type="xs:integer" use="optional" />
                   </xs:extension>
                 </xs:simpleContent>
               </xs:complexType>
@@ -948,7 +948,7 @@
             <xs:element name="bonus" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="exclude" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />s
+            <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
