@@ -19684,7 +19684,9 @@
             <skill>Perception</skill>
          </skills>
          <qualities>
-            <quality>Shiva Arms</quality>
+            <positive>
+               <quality>Shiva Arms</quality>
+            </positive>
          </qualities>
          <powers>
             <power>Astral Form</power>
