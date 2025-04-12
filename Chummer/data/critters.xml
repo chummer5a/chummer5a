@@ -8788,7 +8788,7 @@
             <power>Deathly Aura</power>
             <power select="Essence">Energy Drain</power>
             <power>Fear</power>
-            <power> Magical Guard</power>
+            <power>Magical Guard</power>
             <power>Mimicry</power>
             <power select="Bones">Possession</power>
             <power>Realistic Form</power>
@@ -10318,7 +10318,7 @@
             <power>Materialization</power>
             <power>Paralyzing Touch</power>
             <power>Sapience</power>
-            <power>Sillence</power>
+            <power>Silence</power>
             <power>Vanishing</power>
          </powers>
          <optionalpowers />
@@ -10560,7 +10560,7 @@
          <essmin>0</essmin>
          <essmax>6</essmax>
          <essaug>6</essaug>
-         <walk>0/0/(0</walk>
+         <walk>0/0/0</walk>
          <run>0/0/0</run>
          <sprint>2/2/2</sprint>
          <bonus>
@@ -10648,7 +10648,7 @@
          <essmin>0</essmin>
          <essmax>6</essmax>
          <essaug>6</essaug>
-         <walk>0/0/(0</walk>
+         <walk>0/0/0</walk>
          <run>0/0/0</run>
          <sprint>2/2/2</sprint>
          <bonus>
@@ -11151,7 +11151,6 @@
                <name>Beetle</name>
                <karma>0</karma>
                <forcecreature />
-               <karma>0</karma>
                <bodmin>F</bodmin>
                <bodmax>F</bodmax>
                <bodaug>F</bodaug>
@@ -19365,20 +19364,48 @@
          <name>Bugul</name>
          <category>Extraplanar Travelers</category>
          <forcecreature />
-         <bod>F</bod>
-         <agi>F-1</agi>
-         <rea>F-1</rea>
-         <str>F-2</str>
-         <cha>F</cha>
-         <int>F</int>
-         <log>F+2</log>
-         <wil>F+1</wil>
-         <ini>0</ini>
-         <edg>F/2</edg>
-         <mag>F</mag>
-         <res>0</res>
-         <dep>0</dep>
-         <ess>F</ess>
+         <bodmin>F</bodmin>
+         <bodmax>F</bodmax>
+         <bodaug>F</bodaug>
+         <agimin>F-1</agimin>
+         <agimax>F-1</agimax>
+         <agiaug>F-1</agiaug>
+         <reamin>F-1</reamin>
+         <reamax>F-1</reamax>
+         <reaaug>F-1</reaaug>
+         <strmin>F-2</strmin>
+         <strmax>F-2</strmax>
+         <straug>F-2</straug>
+         <chamin>F</chamin>
+         <chamax>F</chamax>
+         <chaaug>F</chaaug>
+         <intmin>F</intmin>
+         <intmax>F</intmax>
+         <intaug>F</intaug>
+         <logmin>F+2</logmin>
+         <logmax>F+2</logmax>
+         <logaug>F+2</logaug>
+         <wilmin>F+1</wilmin>
+         <wilmax>F+1</wilmax>
+         <wilaug>F+1</wilaug>
+         <inimin>0</inimin>
+         <inimax>0</inimax>
+         <iniaug>0</iniaug>
+         <edgmin>F/2</edgmin>
+         <edgmax>F/2</edgmax>
+         <edgaug>F/2</edgaug>
+         <magmin>F</magmin>
+         <magmax>F</magmax>
+         <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>F</essmin>
+         <essmax>F</essmax>
+         <essaug>F</essaug>
          <walk>2/1/0</walk>
          <run>4/0/0</run>
          <sprint>2/1/0</sprint>
@@ -19466,7 +19493,7 @@
             <power>Accident</power>
             <power>Astral Form</power>
             <power>Aura Masking</power>
-            <power>Banishing</power>
+            <power>Banishing Resistance</power>
          </powers>
          <bonus>
             <enabletab>
@@ -19657,7 +19684,9 @@
             <skill>Perception</skill>
          </skills>
          <qualities>
-            <quality>Shiva Arms</quality>
+            <positive>
+               <quality>Shiva Arms</quality>
+            </positive>
          </qualities>
          <powers>
             <power>Astral Form</power>
@@ -19734,7 +19763,7 @@
             <power>Aura Masking</power>
             <power>Materialization</power>
             <power select="Essence">Energy Drain</power>
-            <power>Age)</power>
+            <power>Age</power>
             <power>Fey Glamour</power>
             <power>Sapience</power>
             <power>Spirit Pact</power>
@@ -19886,8 +19915,7 @@
             <power>Materialization</power>
             <power select="Claws (DV (F+2)P AP -F)">Natural Weapon</power>
             <power select="Wings (DV (F+6)S AP -F)">Natural Weapon</power>
-            <power>AP -Force</power>
-            <power>Knockdown)</power>
+            <power>Knockdown</power>
             <power>Psychokinesis</power>
             <power>Sapience</power>
          </powers>
@@ -19951,7 +19979,7 @@
             <power select="Domain">Accident</power>
             <power>Alienate</power>
             <power>Astral Form</power>
-            <power>Aura</power>
+            <power>Aura Masking</power>
          </powers>
          <bonus>
             <enabletab>
@@ -20434,7 +20462,6 @@
             <power>Influence</power>
             <power>Materialization</power>
             <power select="DV (F-1)S">Natural Weapon (Fist)</power>
-            <power>AP -Force)</power>
             <power>Psychokinesis</power>
             <power>Sapience</power>
             <power>Search</power>
@@ -25885,7 +25912,7 @@
             <group rating="4">Athletics</group>
             <skill rating="3">Clubs</skill>
             <skill rating="4">Perception</skill>           
-            <skill rating="2">Thrown Weapons</skill>           
+            <skill rating="2">Throwing Weapons</skill>           
             <skill rating="6">Unarmed Combat</skill>           
             <skill rating="6">Computer</skill>
             <skill rating="5">Cybercombat</skill>
@@ -25894,7 +25921,7 @@
             <skill rating="5">Electronic Warfare</skill>
          </skills>
          <complexforms>
-            <complexform>Deezz</complexform>
+            <complexform>Derezz</complexform>
             <complexform select="Firewall">Diffusion of [Matrix Attribute]</complexform>
             <complexform>Editor</complexform>
             <complexform select="Sleaze">Infusion of [Matrix Attribute]</complexform>
@@ -26048,7 +26075,7 @@
                <quality>Munge</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26124,7 +26151,7 @@
                <quality>Snooper</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26197,7 +26224,7 @@
                <quality>Munge</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26271,7 +26298,7 @@
                <quality>Munge</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26344,7 +26371,7 @@
                <quality>Munge</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26417,7 +26444,7 @@
                <quality>Munge</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26493,7 +26520,7 @@
                <quality>Munge</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26568,7 +26595,7 @@
                <quality>Redundancy</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
