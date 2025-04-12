@@ -817,7 +817,6 @@
           <id>6781163b-5f5e-4ca6-91bc-bc4a7fbe725b</id>
           <name>Hobgoblin</name>
           <category>Metavariant</category>
-          <karma>40</karma>
           <bodmin>3</bodmin>
           <bodmax>8</bodmax>
           <bodaug>12</bodaug>
@@ -878,7 +877,6 @@
         <metavariant>
           <id>349189e0-0815-49fb-8691-84b516372c1f</id>
           <name>Ogre</name>
-          <karma>40</karma>
           <category>Metavariant</category>
           <bodmin>4</bodmin>
           <bodmax>9</bodmax>
@@ -936,7 +934,6 @@
         <metavariant>
           <id>0950b72c-f8b7-4a7d-9680-b1eab3f714e5</id>
           <name>Oni</name>
-          <karma>50</karma>
           <category>Metavariant</category>
           <bodmin>3</bodmin>
           <bodmax>8</bodmax>
@@ -1122,7 +1119,6 @@
           <id>02716eab-97fc-4616-97f3-bcf40437517a</id>
           <name>Cyclops</name>
           <category>Metavariant</category>
-          <karma>100</karma>
           <bodmin>5</bodmin>
           <bodmax>10</bodmax>
           <bodaug>14</bodaug>
@@ -1185,7 +1181,6 @@
           <id>238ba2c1-445a-4683-b5bc-837d52d75fc4</id>
           <name>Fomorian</name>
           <category>Metavariant</category>
-          <karma>100</karma>
           <bodmin>4</bodmin>
           <bodmax>9</bodmax>
           <bodaug>13</bodaug>
@@ -1246,7 +1241,6 @@
           <id>bfe77671-2e04-4bd3-85aa-7bceaa0ad65c</id>
           <name>Giant</name>
           <category>Metavariant</category>
-          <karma>90</karma>
           <bodmin>5</bodmin>
           <bodmax>10</bodmax>
           <bodaug>14</bodaug>
@@ -1307,7 +1301,6 @@
           <id>3c4cf9d3-66be-461d-b74e-bff42f24aeca</id>
           <name>Minotaur</name>
           <category>Metavariant</category>
-          <karma>100</karma>
           <bodmin>6</bodmin>
           <bodmax>11</bodmax>
           <bodaug>15</bodaug>
@@ -4026,7 +4019,6 @@
         <metavariant>
           <id>b54a50d0-11b0-4e92-abba-b78c144ff0ab</id>
           <name>Minotaur</name>
-          <karma>120</karma>
           <bodmin>6</bodmin>
           <bodmax>11</bodmax>
           <bodaug>15</bodaug>
@@ -4566,7 +4558,6 @@
               <name>critter</name>
             </enabletab>
           </bonus>
-          <qualities />
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -5418,7 +5409,6 @@
         <metavariant>
           <id>49f38c9d-3a3c-4db4-80cc-157aeacb5552</id>
           <name>Oni</name>
-          <karma>120</karma>
           <bodmin>3</bodmin>
           <bodmax>8</bodmax>
           <bodaug>12</bodaug>
@@ -7168,7 +7158,6 @@
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
-          <karma>8</karma>
           <bonus>
             <enableattribute>
               <name>MAG</name>
@@ -7543,7 +7532,6 @@
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
-          <karma>12</karma>
           <bonus>
             <enableattribute>
               <name>MAG</name>
@@ -15295,7 +15283,6 @@
         <metavariant>
           <id>efc03595-cea6-49cf-9379-f834d67f4ea2</id>
           <name>Hobgoblin</name>
-          <karma>160</karma>
           <bodmin>3</bodmin>
           <bodmax>8</bodmax>
           <bodaug>12</bodaug>
@@ -17470,7 +17457,6 @@
         <metavariant>
           <id>c7aaa3ac-236d-467b-867d-961d7ba1d40f</id>
           <name>Hobgoblin</name>
-          <karma>160</karma>
           <bodmin>3</bodmin>
           <bodmax>8</bodmax>
           <bodaug>12</bodaug>
@@ -19559,9 +19545,6 @@
             </naturalweapon>
             <lifestylecost>20</lifestylecost>
           </bonus>
-          <qualities>
-            <positive />
-          </qualities>
           <source>RF</source>
           <page>90</page>
         </metavariant>
@@ -19663,7 +19646,6 @@
         <metavariant>
           <id>e71ca147-19c2-4333-b2e9-3ef5daae8e52</id>
           <name>Hobgoblin</name>
-          <karma>170</karma>
           <bodmin>3</bodmin>
           <bodmax>8</bodmax>
           <bodaug>12</bodaug>
@@ -23014,7 +22996,6 @@
         <metavariant>
           <id>21c90429-265e-46bd-9f71-1358ae099512</id>
           <name>Xapiri Thëpë</name>
-          <karma>143</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <karma>103</karma>
