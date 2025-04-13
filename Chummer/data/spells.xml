@@ -3514,7 +3514,7 @@
       <type>M</type>
       <required>
         <allof>
-          <art>Invocation</art>
+          <metamagicart>Invocation</metamagicart>
         </allof>
       </required>
     </spell>
@@ -3728,6 +3728,7 @@
       <source>SS</source>
       <category>Manipulation</category>
       <damage>0</damage>
+      <descriptor />
       <duration>P</duration>
       <dv>F-1</dv>
       <range>T (A)</range>

@@ -135,7 +135,7 @@
       <category>Mundane</category>
       <type>M</type>
       <action>Simple</action>
-      <range>MAG × 50</range>
+      <range>MAG x 50</range>
       <duration>Always</duration>
       <source>SG</source>
       <page>198</page>
@@ -1324,204 +1324,6 @@
       <page>195</page>
     </power>
     <power>
-      <id>cc29cf63-fd2b-47bc-8f68-c0c84c4e2986</id>
-      <name>Assault</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>156</page>
-    </power>
-    <power>
-      <id>98f09b44-476f-4017-b2b0-7424756e4398</id>
-      <name>Castling</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>156</page>
-    </power>
-    <power>
-      <id>de9a0dab-6477-4b1d-965d-b24cec5c22c9</id>
-      <name>Info Sortilege</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>156</page>
-    </power>
-    <power>
-      <id>b3e30f26-869b-4e41-bca5-da062adb62cd</id>
-      <name>Probability Distribution</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>156</page>
-    </power>
-    <power>
-      <id>1f096d1f-02bc-4fc6-a6d9-810edb8da58e</id>
-      <name>Proficiency</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>156</page>
-    </power>
-    <power>
-      <id>20af1748-e083-4e46-89ec-48b4023f402b</id>
-      <name>Transfer</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>157</page>
-    </power>
-    <power>
-      <id>dc7ed88c-ee5d-4817-bf45-5f3b3431eb63</id>
-      <name>Credit</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>160</page>
-    </power>
-    <power>
-      <id>c2899500-5932-4c39-81a8-fa64b08fa916</id>
-      <name>Denial</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>160</page>
-    </power>
-    <power>
-      <id>9448e4a2-544d-4e09-bcd6-6a7db747be85</id>
-      <name>Doorstop</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>160</page>
-    </power>
-    <power>
-      <id>5c5361a9-565f-4873-91c2-f30c19634e4d</id>
-      <name>Resonance Rift</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>160</page>
-    </power>
-    <power>
-      <id>f5c90e81-cb15-4548-90bb-e403138f6dc3</id>
-      <name>Datavore</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>181</page>
-    </power>
-    <power>
-      <id>e07fca99-f35f-4dcf-8f93-4f84c5e76d51</id>
-      <name>Distortion</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>181</page>
-    </power>
-    <power>
-      <id>468b08d0-ee40-4205-b947-ec793ad4e320</id>
-      <name>Peak</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>181</page>
-    </power>
-    <power>
-      <id>27525302-faa6-4a2b-a714-9ba74c7b5924</id>
-      <name>Resonance Drain</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>181</page>
-    </power>
-    <power>
-      <id>9ab8f26f-f427-4fd6-ab7c-2dd0b96a8eda</id>
-      <name>Siphon</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>181</page>
-    </power>
-    <power>
-      <id>3c918bc9-de6b-42c4-82b3-52c9c1044078</id>
-      <name>Sparky</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>181</page>
-    </power>
-    <power>
-      <id>ea50163f-5dcf-4306-9ec9-1927bbbecf59</id>
-      <name>Surge</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>181</page>
-    </power>
-    <power>
-      <id>bfaee929-a5f6-4d6c-9512-6fb29d5a8b0a</id>
-      <name>Virulence</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>UN</source>
-      <page>181</page>
-    </power>
-    <power>
       <id>67e02cc6-5099-473d-b185-3cd357af3e6f</id>
       <name>Allergy</name>
       <category>Weakness</category>
@@ -1670,7 +1472,7 @@
       <type>File</type>
       <action>Special</action>
       <range />
-      <duration>F × 10 Combat Turns</duration>
+      <duration>F x 10 Combat Turns</duration>
       <source>SR5</source>
       <page>257</page>
     </power>
@@ -1736,17 +1538,6 @@
       </bonus>
       <source>SR5</source>
       <page>401</page>
-    </power>
-    <power>
-      <id>e6ca8880-91eb-4a09-acee-478bddca145a</id>
-      <name>Vanish</name>
-      <category>Weakness</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>RC</source>
-      <page>85</page>
     </power>
     <power>
       <id>df67deb5-91e4-47bc-9af8-baf60fc2311d</id>
@@ -2515,6 +2306,19 @@
     <!-- End Region -->
     <!-- Region Aetherology -->
     <power>
+      <id>1dcf3b40-9846-44bf-93d5-f70fc47ea975</id>
+      <name>Astral Perception</name>
+      <category>Paranormal</category>
+      <type />
+      <action>Simple</action>
+      <range />
+      <duration />
+      <karma />
+      <source>AET</source>
+      <page>35</page>
+      <hide />
+    </power>
+    <power>
       <id>65dd2042-b786-471b-ac26-d6cc8cd16a58</id>
       <name>Shift</name>
       <category>Free Spirit</category>
@@ -2929,7 +2733,7 @@
     <power>
       <id>9163fb4f-0531-4f11-8894-ed681306ebfd</id>
       <name>Amphibious</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>M</type>
       <action>Auto</action>
       <range>Self</range>
@@ -2946,7 +2750,7 @@
     <power>
       <id>c330495b-c6af-4744-b399-c6e068864a8d</id>
       <name>Astral Brute</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>M</type>
       <action>Auto</action>
       <range>Self</range>
@@ -2963,7 +2767,7 @@
     <power>
       <id>c788063f-8daa-4e32-8017-9562513541a0</id>
       <name>Bacchanal</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Complex</action>
       <range>Self</range>
@@ -2980,7 +2784,7 @@
     <power>
       <id>f79f9ee8-f5db-4673-9225-e6a375aed465</id>
       <name>Bone Spikes</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3003,7 +2807,7 @@
     <power>
       <id>363c3991-5d17-4ca7-963f-e3f2ef395fda</id>
       <name>Calcified Hide</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3025,7 +2829,7 @@
     <power>
       <id>ea3a7442-477a-440f-adcd-4b5050c67b52</id>
       <name>Corrosive Spit (Infected)</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Complex</action>
       <range>Special</range>
@@ -3047,7 +2851,7 @@
     <power>
       <id>090c0194-3ac9-4ed8-8e82-7a60f18853e8</id>
       <name>Deathlock Venom</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3065,7 +2869,7 @@
       <id>6cbf07be-1491-46c1-ab67-d5f1dd4aa709</id>
       <!-- ReSharper disable once MarkupTextTypo -->
       <name>Digitigrade Legs</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3093,7 +2897,7 @@
     <power>
       <id>00461512-b49c-4759-bc91-e41167682f22</id>
       <name>Drag Down</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3110,7 +2914,7 @@
     <power>
       <id>dc0d00da-1d10-42b2-a57a-c336da372df7</id>
       <name>Dread Feast</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3127,7 +2931,7 @@
     <power>
       <id>9a4bde71-3d1b-4852-a613-5a7a8b1898ee</id>
       <name>Dual Concealment</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>M</type>
       <action>Simple</action>
       <range>LOS</range>
@@ -3144,7 +2948,7 @@
     <power>
       <id>a9809219-9291-4efe-8f74-23a58e144d73</id>
       <name>Evolved Reflexes</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3164,7 +2968,7 @@
     <power>
       <id>3f607df5-a2af-4fc7-b1ae-9ae2de40964f</id>
       <name>Feral Dash</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3181,7 +2985,7 @@
     <power>
       <id>cd9ffa1a-d300-4650-8127-4f27fce3a14b</id>
       <name>Gnashing Teeth</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3198,7 +3002,7 @@
     <power>
       <id>4FEE3C62-36E4-41C5-AD87-28256AE53CFC</id>
       <name>Immunity (Cold)</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3216,7 +3020,7 @@
     <power>
       <id>53a990fc-ed69-44eb-98d5-5363bf9139f7</id>
       <name>Metahuman Masque</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>M</type>
       <action>Complex</action>
       <range>Self</range>
@@ -3233,7 +3037,7 @@
     <power>
       <id>67B58736-8BD3-4C88-9310-5051C8683966</id>
       <name>Mimicry</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Simple</action>
       <range>LOS</range>
@@ -3245,7 +3049,7 @@
     <power>
       <id>09fb492d-0aa0-4a2e-8542-53e2cf97f432</id>
       <name>Morningstar Fall</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3263,7 +3067,7 @@
       <id>b1cef6fe-aa5f-4b12-a621-a3eb24568dbf</id>
       <name>Mystic Armor (Infected)</name>
       <rating>True</rating>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>M</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3280,7 +3084,7 @@
     <power>
       <id>53dfd3bb-8c93-4d28-a88f-646c187f7940</id>
       <name>Plague Bearer</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3297,7 +3101,7 @@
     <power>
       <id>CE10BCD4-EDEE-42F4-A5EE-06647D7A8492</id>
       <name>Pounce (Infected)</name>
-      <category>Mundane/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Complex</action>
       <range>Touch</range>
@@ -3314,7 +3118,7 @@
     <power>
       <id>f61e6df3-bd1a-4ce8-9c75-b49df275cfb3</id>
       <name>Predator's Glamour</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>M</type>
       <action>Complex</action>
       <range>Self</range>
@@ -3343,7 +3147,7 @@
     <power>
       <id>80d692d9-6f13-4148-b346-bb8fc7b78d34</id>
       <name>Rat King</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>M</type>
       <action>Auto</action>
       <range>MAG x 25 m</range>
@@ -3360,7 +3164,7 @@
     <power>
       <id>0daa8f5c-f4de-4558-aca8-82354eecb941</id>
       <name>Scythe Claws</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3396,7 +3200,7 @@
     <power>
       <id>CBE25F51-67D5-49EF-BC48-13CB376E6E39</id>
       <name>Silence</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Complex</action>
       <range>Special</range>
@@ -3413,7 +3217,7 @@
     <power>
       <id>F713F6DD-C932-405A-9EA3-A410A1516A92</id>
       <name>Tunneling Claws</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type />
       <action />
       <range />
@@ -3447,7 +3251,7 @@
     <power>
       <id>96ce4db8-74c5-47ea-8305-1096858ba8ee</id>
       <name>Sonic Shriek</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Complex</action>
       <range>Special</range>
@@ -3464,7 +3268,7 @@
     <power>
       <id>a2346acb-c604-4c9d-83b6-e374348f1749</id>
       <name>Spines</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -3481,7 +3285,7 @@
     <power>
       <id>9b2033d3-be97-440e-a5f4-f9d8a230c09c</id>
       <name>Stupefying Miasma</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Simple</action>
       <range>Self</range>
@@ -3498,7 +3302,7 @@
     <power>
       <id>5589e7d4-0573-40c4-9798-eb6b604ef82c</id>
       <name>Terrorscape</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>M</type>
       <action>Complex</action>
       <range>Special</range>
@@ -3516,7 +3320,7 @@
     <power>
       <id>97829992-2433-463d-8df7-d8ef0db20e00</id>
       <name>Traceless Walk</name>
-      <category>Paranormal/Infected</category>
+      <category>Infected</category>
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
@@ -4205,6 +4009,7 @@
           <name>Tail</name>
           <reach>1</reach>
           <damage>({STR}+3)P</damage>
+          <ap>0</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
           <source>HS</source>
@@ -4227,6 +4032,7 @@
           <name>Tusk</name>
           <reach>0</reach>
           <damage>({STR}+2)P</damage>
+          <ap>0</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
           <source>HS</source>
@@ -4485,6 +4291,19 @@
       <hide />
       <notes>Induces intense physical and mental agony by embedding barbed tentacles into the target. Movement increases the pain and further debilitates the victim, feeding off the emotional energy generated by the suffering.</notes>
     </power>
+    <power>
+      <id>7f7c0633-85da-4bfc-8314-bb3c8d7982c6</id>
+      <name>Spell Resistance</name>
+      <category>Paranormal</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <karma />
+      <source>HS</source>
+      <page>118</page>
+      <hide />
+    </power> 
     <!-- End Region -->
   </powers>
 </chummer>

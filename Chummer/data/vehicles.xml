@@ -6167,7 +6167,6 @@
           <maxrating>7</maxrating>
         </gear>
       </gears>
-      <mods />
       <seats>1</seats>
       <weaponmounts>
         <weaponmount>
@@ -9247,6 +9246,7 @@
       <mods>
         <name>Rigger Interface</name>
         <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
+        <name>Manual Controls</name>
       </mods>
       <seats>5</seats>
     </vehicle>
@@ -11135,6 +11135,17 @@
       <slots>10</slots>
     </mod>
     <mod>
+      <id>4e50b2bf-9fe6-42c4-b7f4-292e62c7364c</id>
+      <name>Manual Controls</name>
+      <page>31</page>
+      <source>SFME</source>
+      <avail>0</avail>
+      <category>Powertrain</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+    </mod>
+    <mod>
       <id>ea6ccca2-4294-494c-9fc7-963c3bcca12e</id>
       <name>Secondary Manual Controls</name>
       <page>156</page>
@@ -12063,6 +12074,18 @@
     </mod>
     <!-- End Region -->
     <!-- Region All -->
+    <mod>
+      <id>ee7ae67f-3914-4c10-a7e6-0bbdbb7cc38f</id>
+      <name>Rigger Adaptation</name>
+      <page>12</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
+    </mod>
     <mod>
       <id>356eee5f-1f2d-4ed8-8db1-d0989c69a755</id>
       <name>Micro Weapon Mount (Drone)</name>
@@ -13268,7 +13291,7 @@
       <name>Interchangeable Bed: Custom</name>
       <page>54</page>
       <source>R5</source>
-      <avail></avail>
+      <avail>0</avail>
       <category>All</category>
       <cost>Variable(0-1000000)</cost>
       <rating>0</rating>

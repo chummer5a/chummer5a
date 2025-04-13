@@ -2116,6 +2116,17 @@
       <addweapon>Grenade: Krime Stinger</addweapon>
     </gear>
     <gear>
+      <id>eba4ebc2-f17e-471e-aa1b-4416daba9488</id>
+      <name>Ink Pouch</name>
+      <category>Custom</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>0</avail>
+      <addweapon>Ink Pouch</addweapon>
+      <cost>0</cost>
+    </gear>
+    <gear>
       <id>5768d347-cd1e-454c-b5f7-012266c185a4</id>
       <name>Micro-Torpedo: Chemical</name>
       <category>Ammunition</category>
@@ -8880,6 +8891,17 @@
       <cost>80</cost>
     </gear>
     <gear>
+      <id>9764931f-5d2f-4d2f-a3cc-c3858e95abd1</id>
+      <name>Plasma Torch</name>
+      <category>Breaking and Entering Gear</category>
+      <hide />
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>0</avail>
+      <cost>0</cost>
+    </gear>
+    <gear>
       <id>17a4ed15-a9d3-40a6-b5d4-4a69f6c8b9d3</id>
       <name>Monofilament Chainsaw</name>
       <category>Breaking and Entering Gear</category>
@@ -14223,7 +14245,7 @@
       <avail>0</avail>
       <capacity>0</capacity>
       <requireparent />
-      <cost>Parent Cost * -.5</cost>
+      <cost>Parent Cost * -0.5</cost>
       <required>
         <geardetails>
           <category>Drugs</category>
@@ -18697,7 +18719,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>191</page>
-      <avail>4</avail>
+      <avail>4R</avail>
       <cost>250</cost>
     </gear>
     <gear>
@@ -20294,7 +20316,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>4R</avail>
+      <avail>4V</avail>
       <cost>180</cost>
     </gear>
     <gear>
@@ -20316,7 +20338,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>4</avail>
+      <avail>4R</avail>
       <cost>50</cost>
     </gear>
     <gear>
@@ -20336,7 +20358,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>3R</avail>
+      <avail>3F</avail>
       <cost>360</cost>
     </gear>
     <gear>
