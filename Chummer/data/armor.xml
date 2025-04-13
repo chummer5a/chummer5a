@@ -1615,7 +1615,7 @@
           <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
-      <addmodcategory>Ballistic Mask</addmodcategory>
+      <addmodcategory>Customized Ballistic Mask</addmodcategory>
       <source>RG</source>
       <page>74</page>
     </armor>
@@ -1634,7 +1634,7 @@
           <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
-      <addmodcategory>Ballistic Mask</addmodcategory>
+      <addmodcategory>Customized Ballistic Mask</addmodcategory>
       <source>RG</source>
       <page>74</page>
     </armor>
@@ -3430,7 +3430,7 @@
     <mod>
       <id>142031f9-ab13-4dd0-a5a4-2cc4d06055ea</id>
       <name>(Synth)Leather</name>
-      <category>Clothing</category>
+      <category>General</category>
       <armor>4</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -4255,6 +4255,7 @@
       <name>Parachute (Urban Explorer Daedalus)</name>
       <category>General</category>
       <hide />
+      <armor>0</armor>
       <maxrating>0</maxrating>
       <armorcapacity>[0]</armorcapacity>
       <avail>8</avail>
@@ -4286,6 +4287,7 @@
       <category>General</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
+      <armorcapacity>[0]</armorcapacity>
       <avail>4</avail>
       <cost>0</cost>
       <source>KC</source>

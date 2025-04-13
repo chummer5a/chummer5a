@@ -3849,11 +3849,9 @@
       <mods>
         <name>Submersible (Drone)</name>
         <name>Gecko Grips (Drone)</name>
-      </mods>
-      <modslots>1</modslots>
-      <mods>
         <name>Rigger Interface</name>
       </mods>
+      <modslots>1</modslots>
     </vehicle>
     <vehicle>
       <id>89392969-1d03-4322-9aa8-c0160ba3ee76</id>
@@ -4414,11 +4412,9 @@
       </gears>
       <mods>
         <name select="Storage Compartment">Special Equipment</name>
-      </mods>
-      <modslots>1</modslots>
-      <mods>
         <name>Rigger Interface</name>
       </mods>
+      <modslots>1</modslots>
     </vehicle>
     <vehicle>
       <id>50d4bce4-79f1-48d4-8b38-68969802dec0</id>
@@ -5821,32 +5817,6 @@
       <seats>8</seats>
     </vehicle>
     <vehicle>
-      <id>8a898851-6409-48f0-95f9-62e831835890</id>
-      <name>Conestoga Vista (Bus)</name>
-      <page>110</page>
-      <source>AR</source>
-      <accel>15/25</accel>
-      <armor>4</armor>
-      <avail>0</avail>
-      <body>20</body>
-      <category>Trucks</category>
-      <cost>25000</cost>
-      <handling>-3</handling>
-      <pilot>1</pilot>
-      <sensor>1</sensor>
-      <speed>90</speed>
-      <gears>
-        <gear>
-          <name>Sensor Array</name>
-          <rating>1</rating>
-          <maxrating>7</maxrating>
-        </gear>
-      </gears>
-      <mods>
-        <name>Amenities (Squatter)</name>
-      </mods>
-    </vehicle>
-    <vehicle>
       <id>81505035-7043-4841-a952-3763e9e7ddc5</id>
       <name>Conestoga Trailblazer (Moving Truck)</name>
       <page>186</page>
@@ -6197,7 +6167,6 @@
           <maxrating>7</maxrating>
         </gear>
       </gears>
-      <mods />
       <seats>1</seats>
       <weaponmounts>
         <weaponmount>
@@ -11166,6 +11135,17 @@
       <slots>10</slots>
     </mod>
     <mod>
+      <id>4e50b2bf-9fe6-42c4-b7f4-292e62c7364c</id>
+      <name>Manual Controls</name>
+      <page>31</page>
+      <source>SFME</source>
+      <avail>0</avail>
+      <category>Powertrain</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+    </mod>
+    <mod>
       <id>ea6ccca2-4294-494c-9fc7-963c3bcca12e</id>
       <name>Secondary Manual Controls</name>
       <page>156</page>
@@ -11388,6 +11368,18 @@
     </mod>
     <!-- End Region -->
     <!-- Region Weapons -->
+    <mod>
+      <id>211f9667-0b77-4e06-abeb-984c93668135</id>
+      <name>Flash-Pak</name>
+      <page>?</page>
+      <source>SAG</source>
+      <avail>0</avail>
+      <category>Weapons</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
+    </mod>
     <mod>
       <id>0f5c3fc1-04d6-4cec-9e65-7baca6139e74</id>
       <name>Standard Drone Rack (Micro)</name>
@@ -11922,6 +11914,17 @@
       </bonus>
     </mod>
     <mod>
+      <id>efd78c16-b1d6-46a7-b9a4-10b3eb97feff</id>
+      <name>Amenities (Street)</name>
+      <page>?</page>
+      <source>KK</source>
+      <avail>0</avail>
+      <category>Cosmetic</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+    </mod>
+    <mod>
       <id>8a90457a-ab4d-454e-ba9f-4e3aa5ba0a0b</id>
       <name>Amenities (Low)</name>
       <page>169</page>
@@ -12082,6 +12085,18 @@
     </mod>
     <!-- End Region -->
     <!-- Region All -->
+    <mod>
+      <id>ee7ae67f-3914-4c10-a7e6-0bbdbb7cc38f</id>
+      <name>Rigger Adaptation</name>
+      <page>12</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
+    </mod>
     <mod>
       <id>356eee5f-1f2d-4ed8-8db1-d0989c69a755</id>
       <name>Micro Weapon Mount (Drone)</name>
@@ -13287,7 +13302,7 @@
       <name>Interchangeable Bed: Custom</name>
       <page>54</page>
       <source>R5</source>
-      <avail></avail>
+      <avail>0</avail>
       <category>All</category>
       <cost>Variable(0-1000000)</cost>
       <rating>0</rating>

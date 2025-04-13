@@ -1716,7 +1716,7 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>7</accuracy>
-      <reach>1</reach>
+      <reach>0</reach>
       <damage>2P</damage>
       <ap>0</ap>
       <mode>SS</mode>
@@ -3745,7 +3745,7 @@
       <cost>120</cost>
       <source>SR5</source>
       <page>425</page>
-	  <spec>Holdouts</spec>
+      <spec>Holdouts</spec>
       <spec2>Semi-Automatics</spec2>
     </weapon>
     <weapon>
@@ -7103,15 +7103,9 @@
       <ammo>6(m)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <source>SR5</source>
-      <page>428</page>
-      <accessorymounts>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Under</mount>
-      </accessorymounts>
+      <source>RG</source>
+      <page>36</page>
+      <mount>Under</mount>
       <ammocategory>Grenade Launchers</ammocategory>
       <hide />
       <range>Grenade Launchers</range>
@@ -7135,13 +7129,7 @@
       <cost>0</cost>
       <source>SR5</source>
       <page>428</page>
-      <accessorymounts>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Under</mount>
-      </accessorymounts>
+      <mount>Under</mount>
       <ammocategory>Grenade Launchers</ammocategory>
       <hide />
       <range>Grenade Launchers</range>
@@ -7165,19 +7153,19 @@
       <cost>3500</cost>
       <source>SR5</source>
       <page>428</page>
-      <accessorymounts>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Under</mount>
-      </accessorymounts>
+      <mount>Under</mount>
       <ammocategory>Grenade Launchers</ammocategory>
       <range>Grenade Launchers</range>
       <required>
         <weapondetails>
           <OR>
+            <category>Assault Rifles</category>
+            <category>Sniper Rifles</category>
+            <category>Sporting Rifles</category>
+            <useskill>Longarms</useskill>
+            <useskill>Heavy Weapons</useskill>
             <AND>
+              <useskill NOT="" operation="exists" />
               <OR>
                 <category>Shotguns</category>
                 <category>Sporting Rifles</category>
@@ -7189,13 +7177,7 @@
                 <category>Grenade Launchers</category>
                 <category>Missile Launchers</category>
               </OR>
-              <useskill NOT="" operation="exists" />
             </AND>
-            <category>Assault Rifles</category>
-            <category>Sniper Rifles</category>
-            <category>Sporting Rifles</category>
-            <useskill>Longarms</useskill>
-            <useskill>Heavy Weapons</useskill>
           </OR>
         </weapondetails>
       </required>
@@ -7221,6 +7203,7 @@
       <source>RG</source>
       <page>53</page>
       <range>Heavy Pistols</range>
+      <mount>Under</mount>
       <required>
         <weapondetails>
           <conceal operation="greaterthan">0</conceal>
@@ -7248,6 +7231,7 @@
       <source>SR5</source>
       <page>449</page>
       <range>Light Crossbows</range>
+      <mount>Under</mount>
       <required>
         <weapondetails>
           <conceal operation="greaterthan">0</conceal>
@@ -7286,13 +7270,7 @@
           <name>Smartgun System, Internal</name>
         </accessory>
       </accessories>
-      <accessorymounts>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Under</mount>
-      </accessorymounts>
+      <mount>Under</mount>
       <alternaterange>Shotguns (flechette)</alternaterange>
       <ammocategory>Shotguns</ammocategory>
       <hide />
@@ -8632,6 +8610,7 @@
       <page>182</page>
       <extramount>Side</extramount>
       <mount>Under</mount>
+      <range>Submachine Guns</range>
       <required>
         <OR>
           <category>Assault Rifles</category>
@@ -9177,9 +9156,6 @@
           <name>Laser Sight</name>
         </accessory>
         <accessory>
-          <name>Bayonet</name>
-        </accessory>
-        <accessory>
           <name>Custom Look</name>
         </accessory>
       </accessories>
@@ -9189,6 +9165,9 @@
         <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
+      <underbarrels>
+        <underbarrel>Bayonet</underbarrel>
+      </underbarrels>
       <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
@@ -9249,6 +9228,7 @@
       <cost>45</cost>
       <source>CA</source>
       <page>134</page>
+      <range>Spray Pen</range>
       <spec>Pepper Punch Pen</spec>
       <!-- ReSharper disable once MarkupTextTypo -->
       <weapontype>pepperpunch</weapontype>
@@ -9270,6 +9250,7 @@
       <cost>60</cost>
       <source>CA</source>
       <page>134</page>
+      <range>Spray Pen</range>
       <spec>Modified Spray Pen</spec>
       <!-- ReSharper disable once MarkupTextTypo -->
       <weapontype>spraypen</weapontype>
@@ -9336,7 +9317,7 @@
     <!-- SR5 2050 -->
     <weapon>
       <id>50b36198-aeed-4bcb-af46-5e8c18771c47</id>
-      <name>Hand Razors (fixed) (2050)</name>
+      <name>Hand Razors, Fixed (2050)</name>
       <category>Blades</category>
       <type>Melee</type>
       <conceal>-2</conceal>
@@ -9358,7 +9339,7 @@
     </weapon>
     <weapon>
       <id>c6334eb1-2f37-4f7c-9e5a-1f2255f96a93</id>
-      <name>Hand Razors (retractable) (2050)</name>
+      <name>Hand Razors, Retractable (2050)</name>
       <category>Blades</category>
       <type>Melee</type>
       <conceal>0</conceal>
@@ -10269,6 +10250,7 @@
       <cost>0</cost>
       <source>2050</source>
       <page>185</page>
+      <mount>Under</mount>
       <ammocategory>Grenade Launchers</ammocategory>
       <hide />
       <range>Grenade Launchers</range>
@@ -11542,13 +11524,7 @@
       <cost>0</cost>
       <source>SAG</source>
       <page>27</page>
-      <accessorymounts>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Under</mount>
-      </accessorymounts>
+      <mount>Under</mount>
       <ammocategory>Grenade Launchers</ammocategory>
       <hide />
       <range>Grenade Launchers</range>
@@ -11786,13 +11762,7 @@
       <cost>0</cost>
       <source>SAG</source>
       <page>30</page>
-      <accessorymounts>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Under</mount>
-      </accessorymounts>
+      <mount>Under</mount>
       <ammocategory>Grenade Launchers</ammocategory>
       <hide />
       <range>Grenade Launchers</range>
@@ -12737,7 +12707,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
-      <range>Medium Crossbow</range>
+      <range>Medium Crossbows</range>
       <spec>Crossbow</spec>
     </weapon>
     <weapon>
@@ -13207,9 +13177,6 @@
       <page>33</page>
       <accessories>
         <accessory>
-          <name>Bayonet</name>
-        </accessory>
-        <accessory>
           <name>Melee Hardening</name>
         </accessory>
         <accessory>
@@ -13221,7 +13188,52 @@
         <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
+      <underbarrels>
+        <underbarrel>Bayonet</underbarrel>
+      </underbarrels>
       <spec>Semi-Automatics</spec>
+    </weapon>
+    <weapon>
+      <id>f42e52ce-9bcd-4e24-8b98-2ec695bd5af2</id>
+      <name>Bayonet</name>
+      <category>Underbarrel Weapons</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>5</accuracy>
+      <reach>2</reach>
+      <damage>({STR}+1)P</damage>
+      <ap>-1</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <mount>Under</mount>
+      <avail>4R</avail>
+      <cost>50</cost>
+      <source>RG</source>
+      <page>50</page>
+      <spec>Blades</spec>
+      <useskill>Blades</useskill>
+    </weapon>
+    <weapon>
+      <id>5d845f48-41dc-4944-9d19-f9ab86bcfd94</id>
+      <name>Retractable Bayonet</name>
+      <category>Underbarrel Weapons</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>5</accuracy>
+      <reach>2</reach>
+      <damage>({STR}+1)P</damage>
+      <ap>-1</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <mount>Under</mount>
+      <avail>4R</avail>
+      <cost>50</cost>
+      <source>RG</source>
+      <page>50</page>
+      <spec>Blades</spec>
+      <useskill>Blades</useskill>
     </weapon>
     <weapon>
       <id>bda98b10-6aa3-49d6-a44b-e2feba5683bf</id>
@@ -13808,7 +13820,7 @@
       <ap>0</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>5(m)</ammo>
+      <ammo>0</ammo>
       <avail>12F</avail>
       <cost>2000</cost>
       <source>SL</source>
@@ -14461,7 +14473,7 @@
       <page>133</page>
       <range>Missile Launchers</range>
       <sizecategory>Missile Launchers</sizecategory>
-      <useskill>Exotic Ranged Weapons</useskill>
+      <useskill>Exotic Ranged Weapon</useskill>
       <weapontype>man-catcher</weapontype>
     </weapon>
     <weapon>
@@ -14840,7 +14852,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>7E</avail>
+      <avail>7F</avail>
       <cost>2500</cost>
       <source>SOTG</source>
       <page>7</page>
@@ -14859,7 +14871,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>10E</avail>
+      <avail>10F</avail>
       <cost>8600</cost>
       <source>SOTG</source>
       <page>7</page>
@@ -15001,7 +15013,7 @@
       <page>16</page>
       <range>Machine Pistols</range>
       <sizecategory>Heavy Machine Guns</sizecategory>
-      <useskill>Exotic Ranged Weapons</useskill>
+      <useskill>Exotic Ranged Weapon</useskill>
       <weapontype>firefighting cannons</weapontype>
     </weapon>
     <weapon>
@@ -15024,6 +15036,8 @@
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
+        </accessory>
+        <accessory>
           <name>Trigger Removal</name>
         </accessory>
       </accessories>
@@ -15067,10 +15081,14 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
+      <reach>0</reach>
       <damage>Special</damage>
+      <ap>0</ap>
       <mode>SA</mode>
+      <rc>0</rc>
       <ammo>10(m)</ammo>
       <avail>0</avail>
+      <mount>Under</mount>
       <range>Shuriken</range>
       <cost>150</cost>
       <source>SOTG</source>
@@ -15168,6 +15186,26 @@
       <page>136</page>
       <hide />
       <requireammo>microtorpedo</requireammo>
+    </weapon>
+    <weapon>
+      <id>c16aff73-6209-4cb0-8188-1ba6f1e2ee8f</id>
+      <name>Ink Pouch</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>0</accuracy>
+      <reach>0</reach>
+      <damage>- (5m Radius)</damage>
+      <ap>-</ap>
+      <mode>SA</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>R5</source>
+      <page>136</page>
+      <hide />
+      <range>Net</range>
     </weapon>
     <weapon>
       <id>160389be-8ded-48d5-be10-2f201446cc29</id>
@@ -17865,8 +17903,8 @@
     <accessory>
       <id>b83d5f60-7be2-4991-a518-775f6ae49207</id>
       <name>Underbarrel Laser</name>
-      <mount>Under/Side</mount>
-      <extramount>Under/Side</extramount>
+      <mount>Under</mount>
+      <extramount>Side</extramount>
       <avail>16F</avail>
       <cost>22000</cost>
       <source>HT</source>
@@ -18511,7 +18549,7 @@
         </usegear>
         <usegear>
           <name>Can Make Commcalls</name>
-          <category>Electronic Accessories</category>
+          <category>Electronics Accessories</category>
         </usegear>
       </gears>
       <hide />
@@ -18680,7 +18718,7 @@
       <rating>0</rating>
       <required>
         <weapondetails>
-          <conceal operation="greaterthanequals">4</conceal>
+          <conceal operation="greaterthanorequals">4</conceal>
         </weapondetails>
       </required>
     </accessory>
@@ -19059,7 +19097,6 @@
       <rc>6</rc>
       <rcdeployable>True</rcdeployable>
       <rcgroup>1</rcgroup>
-      <rating>0</rating>
     </accessory>
     <accessory>
       <id>9b09fc1e-cb5b-473f-83a5-6f23a7524012</id>
