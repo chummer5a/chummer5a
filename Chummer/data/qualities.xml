@@ -15070,14 +15070,12 @@
       <required>
         <allof>
           <magenabled />
-        </allof>
-        <oneof>
           <critterpower>Dual Natured</critterpower>
           <skill>
             <name>Astral Combat</name>
             <val>3</val>
           </skill>
-        </oneof>
+        </allof>
       </required>
       <source>FA</source>
       <page>36</page>
