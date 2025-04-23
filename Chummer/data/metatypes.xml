@@ -870,7 +870,6 @@
               <quality>Poor Self Control (Vindictive)</quality>
             </negative>
           </qualities>
-          <karma>5</karma>
           <bonus />
           <source>RF</source>
           <page>104</page>
@@ -928,7 +927,6 @@
               <quality>Ogre Stomach</quality>
             </positive>
           </qualities>
-          <karma>8</karma>
           <bonus />
           <source>RF</source>
           <page>104</page>
@@ -988,7 +986,6 @@
               <quality>Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
-          <karma>4</karma>
           <bonus />
           <source>RF</source>
           <page>104</page>
@@ -996,6 +993,7 @@
         <metavariant>
           <id>cad7a71e-030e-4940-b148-2f340091485c</id>
           <name>Satyr</name>
+          <karma>50</karma>
           <category>Metavariant</category>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
@@ -1048,7 +1046,6 @@
               <quality>Satyr Legs</quality>
             </positive>
           </qualities>
-          <karma>50</karma>
           <bonus />
           <source>RF</source>
           <page>104</page>
@@ -1173,7 +1170,6 @@
               <quality>Cyclopean Eye</quality>
             </negative>
           </qualities>
-          <karma>2</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -1234,7 +1230,6 @@
               <quality>Arcane Arrester</quality>
             </positive>
           </qualities>
-          <karma>12</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -1295,7 +1290,6 @@
               <quality>Dermal Alteration (Bark Skin)</quality>
             </positive>
           </qualities>
-          <karma>2</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -1356,7 +1350,6 @@
               <quality>Goring Horns</quality>
             </positive>
           </qualities>
-          <karma>2</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -1668,7 +1661,6 @@
         <power select="Claws: DV ({STR} + 1)P, AP -, +1 Reach">Natural Weapon</power>
       </powers>
       <addweapon>Claws (Sasquatch)</addweapon>
-      <metavariants />
       <source>RF</source>
       <page>99</page>
     </metatype>
@@ -2607,9 +2599,6 @@
             <enableattribute>
               <name>MAG</name>
             </enableattribute>
-            <enableattribute>
-              <name>MAG</name>
-            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -2680,9 +2669,6 @@
             </negative>
           </qualities>
           <bonus>
-            <enableattribute>
-              <name>MAG</name>
-            </enableattribute>
             <enableattribute>
               <name>MAG</name>
             </enableattribute>
@@ -2921,6 +2907,7 @@
         <metavariant>
           <id>872bb022-8ab7-4ec7-b267-ee91324082d5</id>
           <name>Wakyambi</name>
+          <karma>115</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -2989,7 +2976,6 @@
               <name>critter</name>
             </enabletab>
           </bonus>
-          <karma>115</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -3662,6 +3648,7 @@
         <metavariant>
           <id>ef081e82-36b1-4460-b493-a7818a0f5e63</id>
           <name>Satyr</name>
+          <karma>120</karma>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
           <bodaug>11</bodaug>
@@ -3715,7 +3702,6 @@
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
           </qualities>
-          <karma>120</karma>
           <bonus>
             <enableattribute>
               <name>MAG</name>
@@ -3802,7 +3788,6 @@
           </powers>
           <source>SR5</source>
           <page>50</page>
-          <forms />
         </metavariant>
         <metavariant>
           <id>7235828d-96dd-4347-b290-a58284daed89</id>
@@ -4079,7 +4064,6 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
           </qualities>
-          <karma>2</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -4566,7 +4550,6 @@
               <name>critter</name>
             </enabletab>
           </bonus>
-          <qualities />
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -4657,6 +4640,7 @@
         <metavariant>
           <id>9ba4dea4-ec92-4caa-b6ee-448de9265df8</id>
           <name>Wakyambi</name>
+          <karma>125</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -4733,7 +4717,6 @@
               <name>critter</name>
             </enabletab>
           </bonus>
-          <karma>125</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -5496,13 +5479,13 @@
               <name>critter</name>
             </enabletab>
           </bonus>
-          <karma>4</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
         <metavariant>
           <id>9857c790-b7a7-492a-bc06-bd1b14919e05</id>
           <name>Satyr</name>
+          <karma>130</karma>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
           <bodaug>11</bodaug>
@@ -5578,7 +5561,6 @@
               <name>critter</name>
             </enabletab>
           </bonus>
-          <karma>130</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -6581,7 +6563,6 @@
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
-          <karma>135</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -7168,7 +7149,6 @@
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
-          <karma>8</karma>
           <bonus>
             <enableattribute>
               <name>MAG</name>
@@ -7260,6 +7240,7 @@
         <metavariant>
           <id>c4b8edba-6c67-4e64-ab6f-7eda06f57d46</id>
           <name>Satyr</name>
+          <karma>140</karma>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
           <bodaug>11</bodaug>
@@ -7316,7 +7297,6 @@
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
-          <karma>140</karma>
           <bonus>
             <enableattribute>
               <name>MAG</name>
@@ -7543,7 +7523,6 @@
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
-          <karma>12</karma>
           <bonus>
             <enableattribute>
               <name>MAG</name>
@@ -8330,6 +8309,7 @@
         <metavariant>
           <id>c92f5e79-348b-4edf-8df9-5926bddb8d70</id>
           <name>Wakyambi</name>
+          <karma>125</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -8417,7 +8397,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>125</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -9282,6 +9261,7 @@
         <metavariant>
           <id>1db85cb2-2e9a-42b6-a7bc-72d53336050f</id>
           <name>Satyr</name>
+          <karma>130</karma>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
           <bodaug>11</bodaug>
@@ -9368,7 +9348,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>130</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -10482,6 +10461,7 @@
         <metavariant>
           <id>4dda08c8-20f9-47a1-bda4-342a948a0b48</id>
           <name>Wakyambi</name>
+          <karma>175</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -10570,7 +10550,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>175</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -11445,6 +11424,7 @@
         <metavariant>
           <id>a3c67363-19a6-40f1-a230-ba25de6f29a0</id>
           <name>Satyr</name>
+          <karma>180</karma>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
           <bodaug>11</bodaug>
@@ -11532,7 +11512,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>180</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -12596,6 +12575,7 @@
         <metavariant>
           <id>0b163023-30ee-48b6-a6d6-2d93756f276e</id>
           <name>Wakyambi</name>
+          <karma>135</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -12674,7 +12654,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>135</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -13463,6 +13442,7 @@
         <metavariant>
           <id>166c27db-8b57-423c-a396-802f37529b9d</id>
           <name>Satyr</name>
+          <karma>140</karma>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
           <bodaug>11</bodaug>
@@ -13540,7 +13520,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>140</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -14614,6 +14593,7 @@
         <metavariant>
           <id>a4751f49-e5ca-4051-aed6-c8f02693d108</id>
           <name>Wakyambi</name>
+          <karma>165</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -14702,7 +14682,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>165</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -15383,7 +15362,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>165</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -15580,6 +15558,7 @@
         <metavariant>
           <id>bbd8fffe-a794-4d5c-852a-ee1b0215be72</id>
           <name>Satyr</name>
+          <karma>170</karma>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
           <bodaug>11</bodaug>
@@ -15667,7 +15646,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>170</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -16790,6 +16768,7 @@
         <metavariant>
           <id>039ec906-6cd6-4680-a4ed-e0bcd529596e</id>
           <name>Wakyambi</name>
+          <karma>165</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -16878,7 +16857,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>165</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -17558,7 +17536,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>165</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -17755,6 +17732,7 @@
         <metavariant>
           <id>ff8db8bd-6dcd-4ff0-a8bf-04ad88ef90fe</id>
           <name>Satyr</name>
+          <karma>170</karma>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
           <bodaug>11</bodaug>
@@ -17842,7 +17820,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>170</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -18970,6 +18947,7 @@
         <metavariant>
           <id>1758e939-77a2-4075-b6fe-c5c105d2062d</id>
           <name>Wakyambi</name>
+          <karma>175</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -19060,7 +19038,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>175</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -19559,9 +19536,6 @@
             </naturalweapon>
             <lifestylecost>20</lifestylecost>
           </bonus>
-          <qualities>
-            <positive />
-          </qualities>
           <source>RF</source>
           <page>90</page>
         </metavariant>
@@ -19753,7 +19727,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>175</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -19951,6 +19924,7 @@
         <metavariant>
           <id>b2ff8840-666c-459b-8e90-075bd573267f</id>
           <name>Satyr</name>
+          <karma>180</karma>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
           <bodaug>11</bodaug>
@@ -20040,7 +20014,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>180</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -21112,6 +21085,7 @@
         <metavariant>
           <id>faaaf899-c3f7-40e9-a107-1b607c4debaa</id>
           <name>Wakyambi</name>
+          <karma>115</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -21191,7 +21165,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>115</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -21989,6 +21962,7 @@
         <metavariant>
           <id>48f2afed-bc6b-42f3-9210-d18b0d0bd8c7</id>
           <name>Satyr</name>
+          <karma>120</karma>
           <bodmin>2</bodmin>
           <bodmax>7</bodmax>
           <bodaug>11</bodaug>
@@ -22067,7 +22041,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>120</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -23017,7 +22990,6 @@
           <karma>143</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
-          <karma>103</karma>
           <bodaug>10</bodaug>
           <agimin>2</agimin>
           <agimax>7</agimax>
@@ -23814,7 +23786,6 @@
               <page>147</page>
             </naturalweapon>
           </bonus>
-          <bonus />
           <source>RF</source>
           <page>104</page>
         </metavariant>
