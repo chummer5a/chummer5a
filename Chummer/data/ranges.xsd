@@ -1,44 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
+  <xs:simpleType name="rangeType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="-?\d+|\{(BOD|AGI|REA|STR|CHA|INT|LOG|WIL|EDG|ESS|MAG|RES)\}((\*|/)\d+(\.\d+)?)?"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="modifiers" minOccurs="1" maxOccurs="1">
+
+        <xs:element name="modifiers">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="short" type="xs:string" minOccurs="0" maxOccurs="1" />
-              <xs:element name="medium" type="xs:string" minOccurs="0" maxOccurs="1" />
-              <xs:element name="long" type="xs:string" minOccurs="0" maxOccurs="1" />
-              <xs:element name="extreme" type="xs:string" minOccurs="0" maxOccurs="1" />
+              <xs:element name="short" type="xs:unsignedByte" />
+              <xs:element name="medium" type="xs:byte" />
+              <xs:element name="long" type="xs:byte" />
+              <xs:element name="extreme" type="xs:byte" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="ranges" minOccurs="0" maxOccurs="unbounded">
+
+        <xs:element name="ranges">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="range" minOccurs="1" maxOccurs="unbounded">
+              <xs:element name="range" maxOccurs="unbounded" >
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="min" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="short" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="medium" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="long" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="extreme" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="name" type="xs:string" />
+                    <xs:element name="min" type="xs:unsignedByte" />
+                    <xs:element name="short" type="rangeType" />
+                    <xs:element name="medium" type="rangeType" />
+                    <xs:element name="long" type="rangeType" />
+                    <xs:element name="extreme" type="rangeType" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+
       </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
-    <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="chummer" />
-      </xs:choice>
     </xs:complexType>
   </xs:element>
 </xs:schema>

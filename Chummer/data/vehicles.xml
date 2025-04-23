@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -3849,11 +3849,9 @@
       <mods>
         <name>Submersible (Drone)</name>
         <name>Gecko Grips (Drone)</name>
-      </mods>
-      <modslots>1</modslots>
-      <mods>
         <name>Rigger Interface</name>
       </mods>
+      <modslots>1</modslots>
     </vehicle>
     <vehicle>
       <id>89392969-1d03-4322-9aa8-c0160ba3ee76</id>
@@ -4414,11 +4412,9 @@
       </gears>
       <mods>
         <name select="Storage Compartment">Special Equipment</name>
-      </mods>
-      <modslots>1</modslots>
-      <mods>
         <name>Rigger Interface</name>
       </mods>
+      <modslots>1</modslots>
     </vehicle>
     <vehicle>
       <id>50d4bce4-79f1-48d4-8b38-68969802dec0</id>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -2559,6 +2559,7 @@
       <limit>False</limit>
       <category>Bodyware</category>
       <ess>0.05</ess>
+      <capacity>0</capacity>
       <allowgear>
         <gearcategory>Drugs</gearcategory>
         <gearcategory>Toxins</gearcategory>
@@ -6493,7 +6494,6 @@
     </cyberware>
     <cyberware>
       <id>b5406b3c-44a5-4727-bafc-58ed4cda84b5</id>
-      <inheritattributes />
       <name>Evo Better Than Human</name>
       <category>Cybersuite</category>
       <inheritattributes />
@@ -8661,6 +8661,7 @@
       <limit>False</limit>
       <capacity>0</capacity>
       <avail>0</avail>
+      <cost>0</cost>
       <removalcost>16000</removalcost>
       <forcegrade>None</forcegrade>
       <source>TSG</source>
@@ -8676,6 +8677,7 @@
       <limit>False</limit>
       <category>Headware</category>
       <ess>0.15</ess>
+      <capacity>0</capacity>
       <avail>4</avail>
       <cost>Rating*3500</cost>
       <rating>3</rating>

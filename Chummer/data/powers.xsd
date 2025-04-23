@@ -1,84 +1,85 @@
-<?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="NewDataSet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
   <xs:include schemaLocation="bonuses.xsd" />
   <xs:include schemaLocation="conditions.xsd" />
+  <xs:include schemaLocation="commons.xsd" />
+
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element name="version" type="xs:unsignedByte" />
+      <xs:all>
+
         <xs:element name="powers">
           <xs:complexType>
             <xs:sequence>
-              <xs:element maxOccurs="unbounded" name="power">
+              <xs:element name="power" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="points" type="xs:decimal" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="levels" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="limit" type="xs:unsignedByte" minOccurs="1" maxOccurs="1" />
-                    <xs:element minOccurs="0" name="includeinlimit">
+                  <xs:all>
+                    <xs:group ref="baseGroup" />
+
+                    <!-- required -->
+                    <xs:element name="points" type="xs:decimal" />
+                    <xs:element name="levels" type="xs:string" />
+                    <xs:element name="limit" type="xs:unsignedByte" />
+
+                    <!-- optional -->
+                    <xs:element ref="bonus" minOccurs="0"/>
+                    <xs:element ref="forbidden" minOccurs="0"/>
+                    <xs:element ref="required" minOccurs="0"/>
+
+                    <xs:element name="hide" minOccurs="0" />
+
+                    <xs:element name="action" type="actionEnum" minOccurs="0" />
+                    <xs:element name="adeptway" type="xs:decimal" minOccurs="0" />
+                    <xs:element name="doublecost" type="boolean" minOccurs="0"/>
+                    <xs:element name="extrapointcost" type="xs:decimal" minOccurs="0"/>
+                    <xs:element name="maxlevels" type="xs:unsignedByte" minOccurs="0" />
+
+                    <xs:element name="adeptwayrequires" minOccurs="0">
+                      <xs:complexType>
+                        <xs:all>
+                          <xs:element name="magicianswayforbids" minOccurs="0" />
+                          <xs:element ref="required" minOccurs="0" />
+                        </xs:all>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="includeinlimit" minOccurs="0">
                       <xs:complexType>
                         <xs:sequence>
-                          <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                          <xs:element name="name" type="xs:string" maxOccurs="unbounded"/>
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="page" type="xs:unsignedShort" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="action" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="adeptway" type="xs:decimal" minOccurs="0" maxOccurs="1" />
-                    <xs:element minOccurs="0" name="adeptwayrequires">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="magicianswayforbids" type="xs:string" minOccurs="0" maxOccurs="1" />
-                          <xs:element ref="required" minOccurs="0" maxOccurs="1" />
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
-                    <xs:element minOccurs="0" name="doublecost" type="xs:string" />
-                    <xs:element minOccurs="0" name="extrapointcost" type="xs:decimal" />
-                    <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element minOccurs="0" name="maxlevels" type="xs:unsignedByte" />
-                    <xs:element ref="required" minOccurs="0" maxOccurs="1" />
-                  </xs:sequence>
+
+                  </xs:all>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+
         <xs:element name="enhancements">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="enhancement">
                 <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="power" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="page" type="xs:unsignedByte" minOccurs="1" maxOccurs="1" />
-                    <xs:element minOccurs="0" name="adeptwayrequires">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element ref="required" minOccurs="0" maxOccurs="1" />
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
-                    <xs:element ref="required" minOccurs="0" maxOccurs="1" />
-                  </xs:sequence>
+                  <xs:all>
+                    <xs:group ref="baseGroup" />
+
+                    <!-- required -->
+                    <xs:element name="power" type="xs:string" />
+
+                    <!-- optional -->
+                    <xs:element ref="bonus" minOccurs="0" />
+                    <xs:element ref="required" minOccurs="0" />
+                  </xs:all>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-      </xs:sequence>
+
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

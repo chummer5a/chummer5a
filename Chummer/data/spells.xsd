@@ -1,19 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
   <xs:include schemaLocation="bonuses.xsd" />
   <xs:include schemaLocation="conditions.xsd" />
+  <xs:include schemaLocation="commons.xsd" />
+
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="version" type="xs:string" minOccurs="0" />
-        <xs:element name="categories" minOccurs="0" maxOccurs="unbounded">
+
+        <xs:element name="categories">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="category" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:simpleContent>
                     <xs:extension base="xs:string">
-                      <xs:attribute name="useskill" type="xs:string" use="optional" />
+                      <xs:attribute name="useskill" type="xs:string" use="required" />
                       <xs:attribute name="alchemicalskill" type="xs:string" use="optional" />
                       <xs:attribute name="barehandedadeptskill" type="xs:string" use="optional" />
                     </xs:extension>
@@ -23,42 +25,72 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="spells" minOccurs="0" maxOccurs="unbounded">
+
+        <xs:element name="spells">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="spell" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="spell" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="damage" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="descriptor" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="duration" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="dv" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="range" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
-                    <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
-                    <xs:element ref="required" minOccurs="0" maxOccurs="1" />
-                  </xs:sequence>
+                  <xs:all>
+                    <xs:group ref="baseGroup" />
+
+                    <!-- required -->
+                    <xs:element name="category" type="xs:string" />
+                    <xs:element name="damage">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="0" />
+                          <xs:enumeration value="P" />
+                          <xs:enumeration value="S" />
+                          <xs:enumeration value="Special" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+
+                    <xs:element name="duration">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="E" />
+                          <xs:enumeration value="I" />
+                          <xs:enumeration value="P" />
+                          <xs:enumeration value="S" />
+                          <xs:enumeration value="Special" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+
+                    <xs:element name="dv" type="F_Int" />
+
+                    <xs:element name="range">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="(Self|S|Special|LOS|LOI|Touch|T|MAG)\s*(\(A\))?"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+
+                    <xs:element name="type">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="M" />
+                          <xs:enumeration value="P" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+
+                    <!-- optional -->
+                    <xs:element ref="bonus" minOccurs="0" />
+                    <xs:element ref="required" minOccurs="0" />
+
+                    <xs:element name="descriptor" type="xs:string" minOccurs="0" />
+                  </xs:all>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+
       </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
-    <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="chummer" />
-      </xs:choice>
     </xs:complexType>
   </xs:element>
 </xs:schema>

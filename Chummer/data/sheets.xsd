@@ -1,21 +1,25 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
   <xs:include schemaLocation="commons.xsd" />
-
+  
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="rules">
+        <xs:element name="sheets" maxOccurs="unbounded" >
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="rule" maxOccurs="unbounded" >
+              <xs:element name="sheet" maxOccurs="unbounded" >
                 <xs:complexType>
-                  <xs:all>
-                    <xs:group ref="baseGroup" />
-                  </xs:all>
+                  <xs:sequence>
+                    <xs:element name="id" type="guid" />
+                    <xs:element name="name" type="xs:string" />
+                    <xs:element name="filename" type="xs:string" />
+                  </xs:sequence>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
+
+            <xs:attribute name="lang" type="xs:string" use="required" />
           </xs:complexType>
         </xs:element>
       </xs:sequence>

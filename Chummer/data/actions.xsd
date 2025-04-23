@@ -1,0 +1,65 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
+  <xs:include schemaLocation="commons.xsd" />
+
+  <xs:element name="chummer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="actions">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="action">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:group ref="baseGroup" />
+
+                    <!-- required -->
+                    <xs:element name="type" type="actionEnum" />
+
+                    <!-- optional -->
+                    <xs:element name="category" type="xs:string" minOccurs="0" />
+                    <xs:element name="edgecost" type="xs:unsignedByte" minOccurs="0" />
+                    <xs:element name="initiativecost" type="xs:unsignedByte" minOccurs="0" />
+                    <xs:element name="requireunlock" minOccurs="0" />
+                    <xs:element name="specname" type="xs:string" minOccurs="0" />
+
+                    <xs:element name="boosts" minOccurs="0" >
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="boost" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="name" type="xs:string" />
+                                <xs:element name="duration" type="xs:string" />
+                                <xs:element name="dicebonus" type="xs:string" />
+                                <xs:element name="addlimit" type="xs:string" minOccurs="0" />
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="test" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="dice" type="xs:string" />
+                          <xs:element name="limit" type="xs:string" minOccurs="0" />
+                          <xs:element name="defenselimit" type="xs:string" minOccurs="0" />
+                          <xs:element name="bonusstring" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:all>
+
+                  <!-- Define some place for a few values -->
+                  <xs:assert test="*[1][self::id] and *[2][self::name]"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

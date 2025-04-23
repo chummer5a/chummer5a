@@ -1,0 +1,117 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
+  <!-- Types -->
+  <xs:simpleType name="guid">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="boolean">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="True" />
+      <xs:enumeration value="False" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="movementType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[\d.]+/[\d.]+/[\d.]+" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="F_Int">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(-?\d+|F([+/\-]?\d+)?|Special|\(F\*\d+\)([+/\-]?\d+)?|\(F[+/\-]?\d+\)([+/\-]?\d+)?)"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Int_Rating">
+    <xs:annotation>
+      <xs:documentation>
+        Acceptable Formats:
+
+        1. A non-negative integer.
+          Example: 42
+        
+        2. A math expression optionally containing the word 'Rating'.
+          Example: Rating * 2 + 3
+        
+        3. A vatiable range in the form Variable(min-max). Both min and max must be non-negative integers
+          Example: Variable(20-100000)
+        
+        4. A fixed set of math expressions in the form:
+          FixedValues(exp1, exp2, ..., expN)
+          where each exp is equal to case 2
+          Example: FixedValues(10, Rating * 2, Rating + 2)
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(\d+|[\d+\-*/().\sRating]+|Variable\(\d+-\d+\)|FixedValues\(([\d+\-*/()\[\].\sRating]+\s*,\s*)*[\d+\-*/()\[\].\sRating]+\))" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="availType">
+    <xs:annotation>
+      <xs:documentation>
+        Like Int_Rating, but it can have R or F after each number.
+        5. Number RF? or Gear:
+          Example: 12F or Gear
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(\d+|[\d+\-*/().\sRating]+[RF]?|Variable\(\s*\d+[RF]?\s*-\s*\d+[RF]?\s*\)|FixedValues\(([\d+\-*/().\sRating]+[RF]?\s*,\s*)*[\d+\-*/().\sRating]+[RF]?\)|\d+[RF]?\s+or\s+Gear)" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="costFixType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(\d+|[\d+\-*/().\sRating\s+Parent\s+Gear\s+Cost\s+Children]+|Armor Cost|Weapon Cost|Weapon Cost \* Rating)" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+
+  <xs:simpleType name="actionEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="" />
+      <xs:enumeration value="As ritual" />
+      <xs:enumeration value="Auto" />
+      <xs:enumeration value="Complex" />
+      <xs:enumeration value="Extended" />
+      <xs:enumeration value="Free" />
+      <xs:enumeration value="Interrupt" />
+      <xs:enumeration value="No" />
+      <xs:enumeration value="None" />
+      <xs:enumeration value="Simple" />
+      <xs:enumeration value="Special" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Groups -->
+  <xs:group name="baseGroup">
+    <xs:all>
+      <xs:element name="id" type="guid" />
+      <xs:element name="name" type="xs:string" />
+
+      <xs:element name="source" type="xs:string" minOccurs="0"/>
+      <xs:element name="page" type="xs:string" minOccurs="0" />
+    </xs:all>
+  </xs:group>
+
+  <xs:group name="itemGroup">
+    <xs:all>
+      <xs:group ref="baseGroup" />
+
+      <xs:element name="hide" minOccurs="0" />
+
+      <xs:element name="avail" type="availType"/>
+
+      <xs:element name="cost">
+        <xs:simpleType>
+          <xs:union memberTypes="Int_Rating costFixType" />
+        </xs:simpleType>
+      </xs:element>
+
+    </xs:all>
+  </xs:group>
+</xs:schema>
