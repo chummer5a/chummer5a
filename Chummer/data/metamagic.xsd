@@ -22,7 +22,7 @@
 
                     <!-- optional -->
                     <xs:element ref="bonus" minOccurs="0" />
-                    <xs:element name="required" minOccurs="0" />
+                    <xs:element ref="required" minOccurs="0" />
 
                     <xs:element name="limit" type="boolean" minOccurs="0" />
                   </xs:all>
