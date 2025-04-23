@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -3410,7 +3410,7 @@
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
-      <avail>+2</avail>
+      <avail>2</avail>
       <cost>500</cost>
       <source>SR5</source>
       <page>437</page>
@@ -3562,7 +3562,7 @@
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
-      <avail>+6</avail>
+      <avail>6</avail>
       <cost>6000</cost>
       <required>
         <parentdetails>
@@ -3590,7 +3590,7 @@
           <name>Full Body Armor</name>
         </parentdetails>
       </required>
-      <avail>+3</avail>
+      <avail>3</avail>
       <cost>1000</cost>
       <source>SR5</source>
       <page>437</page>
@@ -4030,7 +4030,7 @@
       <armor>0</armor>
       <maxrating>6</maxrating>
       <armorcapacity>[3]</armorcapacity>
-      <avail>+8R</avail>
+      <avail>8R</avail>
       <cost>Rating * 3000</cost>
       <source>RG</source>
       <page>84</page>
@@ -4066,7 +4066,7 @@
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[-(Capacity * 0.5 + 0.5*(Capacity mod 2))]</armorcapacity>
-      <avail>+4</avail>
+      <avail>4</avail>
       <cost>Armor Cost</cost>
       <source>RG</source>
       <page>84</page>
@@ -4254,6 +4254,7 @@
       <id>0a7930f5-5466-439a-956d-2bba57f25ed9</id>
       <name>Parachute (Urban Explorer Daedalus)</name>
       <category>General</category>
+      <armor>0</armor>
       <hide />
       <maxrating>0</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -4286,6 +4287,7 @@
       <category>General</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
+      <armorcapacity>[0]</armorcapacity>
       <avail>4</avail>
       <cost>0</cost>
       <source>KC</source>

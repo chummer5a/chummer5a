@@ -1,50 +1,70 @@
-<?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-  <xs:element name="skill">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-        <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
-        <xs:element name="attribute" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="default" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="exotic" type="xs:string" minOccurs="0" maxOccurs="1" />
-        <xs:element name="skillgroup" type="xs:string" minOccurs="1" maxOccurs="1" />
-        <xs:element name="requiresgroundmovement" type="xs:string" minOccurs="0" maxOccurs="1" />
-        <xs:element name="requiresswimmovement" type="xs:string" minOccurs="0" maxOccurs="1" />
-        <xs:element name="requiresflymovement" type="xs:string" minOccurs="0" maxOccurs="1" />
-        <xs:element name="specs" minOccurs="1" maxOccurs="1">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="spec" nillable="true" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:simpleContent msdata:ColumnName="spec_Text" msdata:Ordinal="0">
-                    <xs:extension base="xs:string">
-                    </xs:extension>
-                  </xs:simpleContent>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="source" type="xs:string" minOccurs="0" maxOccurs="1" />
-        <xs:element name="page" type="xs:string" minOccurs="0" maxOccurs="1" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
+  <xs:include schemaLocation="commons.xsd" />
+
+  <!-- Define Skill type -->
+  <xs:complexType name="skillType">
+    <xs:all>
+      <xs:group ref="baseGroup" />
+
+      <!-- required -->
+      <xs:element name="attribute">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="AGI" />
+            <xs:enumeration value="BOD" />
+            <xs:enumeration value="CHA" />
+            <xs:enumeration value="INT" />
+            <xs:enumeration value="LOG" />
+            <xs:enumeration value="MAG" />
+            <xs:enumeration value="REA" />
+            <xs:enumeration value="RES" />
+            <xs:enumeration value="STR" />
+            <xs:enumeration value="WIL" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+
+      <xs:element name="category" type="xs:string" />
+      <xs:element name="default" type="boolean" />
+      <xs:element name="skillgroup" type="xs:string" />
+
+      <xs:element name="specs">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="spec" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+
+      <!-- optional -->
+      <xs:element name="exotic" type="boolean" minOccurs="0" />
+      <xs:element name="requiresswimmovement" type="boolean" minOccurs="0" />
+      <xs:element name="requiresgroundmovement" type="boolean" minOccurs="0" />
+      <xs:element name="requiresflymovement" type="boolean" minOccurs="0" />
+    </xs:all>
+  </xs:complexType>
+
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="version" type="xs:string" minOccurs="0" />
-        <xs:element name="skillgroups" minOccurs="0" maxOccurs="unbounded">
+
+        <xs:element name="skillgroups">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="name" nillable="true" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="name" type="xs:string" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="categories">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="category" maxOccurs="unbounded" >
                 <xs:complexType>
-                  <xs:simpleContent msdata:ColumnName="name_Text" msdata:Ordinal="0">
+                  <xs:simpleContent>
                     <xs:extension base="xs:string">
+                      <xs:attribute name="type" type="xs:string" use="required" />
                     </xs:extension>
                   </xs:simpleContent>
                 </xs:complexType>
@@ -52,44 +72,24 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="categories" minOccurs="0" maxOccurs="unbounded">
+
+        <xs:element name="skills">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
-                    <xs:extension base="xs:string">
-            <xs:attribute name="type" type="xs:string" use="required" />
-                    </xs:extension>
-                  </xs:simpleContent>
-                </xs:complexType>
-              </xs:element>
+              <xs:element name="skill" type="skillType" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="skills" minOccurs="0" maxOccurs="unbounded">
+
+        <xs:element name="knowledgeskills">
           <xs:complexType>
             <xs:sequence>
-              <xs:element ref="skill" minOccurs="0" maxOccurs="unbounded" />
+              <xs:element name="skill" type="skillType" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="knowledgeskills" minOccurs="0" maxOccurs="unbounded">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element ref="skill" minOccurs="0" maxOccurs="unbounded" />
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
+
       </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
-    <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="skill" />
-        <xs:element ref="chummer" />
-      </xs:choice>
     </xs:complexType>
   </xs:element>
 </xs:schema>

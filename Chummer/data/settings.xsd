@@ -1,0 +1,209 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
+  <xs:include schemaLocation="commons.xsd" />
+
+  <xs:element name="chummer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="settings">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="setting" maxOccurs="unbounded" >
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="id" type="guid" />
+                    <xs:element name="name" type="xs:string" />
+                    <xs:element name="licenserestricted" type="xs:string" />
+                    <xs:element name="morelethalgameplay" type="xs:string" />
+                    <xs:element name="spiritforcebasedontotalmag" type="xs:string" />
+                    <xs:element name="nuyenperbpwftm" type="xs:unsignedShort" />
+                    <xs:element name="nuyenperbpwftp" type="xs:unsignedShort" />
+                    <xs:element name="unarmedimprovementsapplytoweapons" type="xs:string" />
+                    <xs:element name="allowinitiationincreatemode" type="xs:string" />
+                    <xs:element name="usepointsonbrokengroups" type="xs:string" />
+                    <xs:element name="dontdoublequalities" type="xs:string" />
+                    <xs:element name="dontdoublequalityrefunds" type="xs:string" />
+                    <xs:element name="ignoreart" type="xs:string" />
+                    <xs:element name="cyberlegmovement" type="xs:string" />
+                    <xs:element name="allow2ndmaxattribute" type="xs:string" />
+                    <xs:element name="contactpointsexpression" type="xs:string" />
+                    <xs:element name="knowledgepointsexpression" type="xs:string" />
+                    <xs:element name="chargenkarmatonuyenexpression" type="xs:string" />
+                    <xs:element name="boundspiritexpression" type="xs:string" />
+                    <xs:element minOccurs="0" name="compiledspriteexpression" type="xs:string" />
+                    <xs:element minOccurs="0" name="compiledspiritexpression" type="xs:string" />
+                    <xs:element name="dronearmormultiplierenabled" type="xs:string" />
+                    <xs:element name="dronearmorflatnumber" type="xs:unsignedByte" />
+                    <xs:element name="nosinglearmorencumbrance" type="xs:string" />
+                    <xs:element name="ignorecomplexformlimit" type="xs:string" />
+                    <xs:element name="noarmorencumbrance" type="xs:string" />
+                    <xs:element minOccurs="0" name="uncappedarmoraccessorybonuses" type="xs:string" />
+                    <xs:element name="esslossreducesmaximumonly" type="xs:string" />
+                    <xs:element name="allowskillregrouping" type="xs:string" />
+                    <xs:element name="metatypecostskarma" type="xs:string" />
+                    <xs:element name="metatypecostskarmamultiplier" type="xs:unsignedByte" />
+                    <xs:element name="limbcount" type="xs:unsignedByte" />
+                    <xs:element name="excludelimbslot" type="xs:string" />
+                    <xs:element name="allowcyberwareessdiscounts" type="xs:string" />
+                    <xs:element name="maximumarmormodifications" type="xs:string" />
+                    <xs:element name="armordegredation" type="xs:string" />
+                    <xs:element name="specialkarmacostbasedonshownvalue" type="xs:string" />
+                    <xs:element name="exceedpositivequalities" type="xs:string" />
+                    <xs:element name="exceedpositivequalitiescostdoubled" type="xs:string" />
+                    <xs:element name="mysaddppcareer" type="xs:string" />
+                    <xs:element name="mysadeptsecondmagattribute" type="xs:string" />
+                    <xs:element name="exceednegativequalities" type="xs:string" />
+                    <xs:element minOccurs="0" name="exceednegativequalitieslimit" type="xs:string" />
+                    <xs:element minOccurs="0" name="exceednegativequalitiesnobonus" type="xs:string" />
+                    <xs:element name="multiplyrestrictedcost" type="xs:string" />
+                    <xs:element name="multiplyforbiddencost" type="xs:string" />
+                    <xs:element name="restrictedcostmultiplier" type="xs:unsignedByte" />
+                    <xs:element name="forbiddencostmultiplier" type="xs:unsignedByte" />
+                    <xs:element name="donotroundessenceinternally" type="xs:string" />
+                    <xs:element name="enableenemytracking" type="xs:string" />
+                    <xs:element name="enemykarmaqualitylimit" type="xs:string" />
+                    <xs:element name="nuyenformat" type="xs:string" />
+                    <xs:element name="essenceformat" type="xs:string" />
+                    <xs:element name="enforcecapacity" type="xs:string" />
+                    <xs:element name="restrictrecoil" type="xs:string" />
+                    <xs:element name="unrestrictednuyen" type="xs:string" />
+                    <xs:element name="allowhigherstackedfoci" type="xs:string" />
+                    <xs:element name="alloweditpartofbaseweapon" type="xs:string" />
+                    <xs:element name="breakskillgroupsincreatemode" type="xs:string" />
+                    <xs:element name="allowpointbuyspecializationsonkarmaskills" type="xs:string" />
+                    <xs:element name="extendanydetectionspell" type="xs:string" />
+                    <xs:element minOccurs="0" name="allowskilldicerolling" type="xs:string" />
+                    <xs:element name="dontusecyberlimbcalculation" type="xs:string" />
+                    <xs:element name="alternatemetatypeattributekarma" type="xs:string" />
+                    <xs:element name="reverseattributepriorityorder" type="xs:string" />
+                    <xs:element name="allowbiowaresuites" type="xs:string" />
+                    <xs:element name="freespiritpowerpointsmag" type="xs:string" />
+                    <xs:element name="compensateskillgroupkarmadifference" type="xs:string" />
+                    <xs:element name="autobackstory" type="xs:string" />
+                    <xs:element name="freemartialartspecialization" type="xs:string" />
+                    <xs:element name="priorityspellsasadeptpowers" type="xs:string" />
+                    <xs:element name="usecalculatedpublicawareness" type="xs:string" />
+                    <xs:element name="increasedimprovedabilitymodifier" type="xs:string" />
+                    <xs:element name="allowfreegrids" type="xs:string" />
+                    <xs:element name="allowtechnomancerschooling" type="xs:string" />
+                    <xs:element minOccurs="0" name="cyberlimbattributebonuscapoverride" type="xs:string" />
+                    <xs:element name="cyberlimbattributebonuscap" type="xs:unsignedByte" />
+                    <xs:element name="unclampattributeminimum" type="xs:string" />
+                    <xs:element name="dronemods" type="xs:string" />
+                    <xs:element name="dronemodsmaximumpilot" type="xs:string" />
+                    <xs:element name="dicepenaltysustaining" type="xs:unsignedByte" />
+                    <xs:element name="mininitiativedice" type="xs:unsignedByte" />
+                    <xs:element name="maxinitiativedice" type="xs:unsignedByte" />
+                    <xs:element name="minastralinitiativedice" type="xs:unsignedByte" />
+                    <xs:element name="maxastralinitiativedice" type="xs:unsignedByte" />
+                    <xs:element name="mincoldsiminitiativedice" type="xs:unsignedByte" />
+                    <xs:element name="maxcoldsiminitiativedice" type="xs:unsignedByte" />
+                    <xs:element name="minhotsiminitiativedice" type="xs:unsignedByte" />
+                    <xs:element name="maxhotsiminitiativedice" type="xs:unsignedByte" />
+                    <xs:element name="karmacost">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="karmaattribute" type="xs:unsignedByte" />
+                          <xs:element name="karmaquality" type="xs:unsignedByte" />
+                          <xs:element name="karmaspecialization" type="xs:unsignedByte" />
+                          <xs:element name="karmaknospecialization" type="xs:unsignedByte" />
+                          <xs:element name="karmanewknowledgeskill" type="xs:unsignedByte" />
+                          <xs:element name="karmanewactiveskill" type="xs:unsignedByte" />
+                          <xs:element name="karmanewskillgroup" type="xs:unsignedByte" />
+                          <xs:element name="karmaimproveknowledgeskill" type="xs:unsignedByte" />
+                          <xs:element name="karmaimproveactiveskill" type="xs:unsignedByte" />
+                          <xs:element name="karmaimproveskillgroup" type="xs:unsignedByte" />
+                          <xs:element name="karmaspell" type="xs:unsignedByte" />
+                          <xs:element name="karmaenhancement" type="xs:unsignedByte" />
+                          <xs:element name="karmanewcomplexform" type="xs:unsignedByte" />
+                          <xs:element minOccurs="0" name="karmaimprovecomplexform" type="xs:unsignedByte" />
+                          <xs:element name="karmanewaiprogram" type="xs:unsignedByte" />
+                          <xs:element name="karmanewaiadvancedprogram" type="xs:unsignedByte" />
+                          <xs:element name="karmacontact" type="xs:unsignedByte" />
+                          <xs:element name="karmaenemy" type="xs:unsignedByte" />
+                          <xs:element name="karmacarryover" type="xs:unsignedByte" />
+                          <xs:element name="karmaspirit" type="xs:unsignedByte" />
+                          <xs:element minOccurs="0" name="karmatechnique" type="xs:unsignedByte" />
+                          <xs:element minOccurs="0" name="karmamaneuver" type="xs:unsignedByte" />
+                          <xs:element name="karmainitiation" type="xs:unsignedByte" />
+                          <xs:element name="karmainitiationflat" type="xs:unsignedByte" />
+                          <xs:element name="karmametamagic" type="xs:unsignedByte" />
+                          <xs:element minOccurs="0" name="karmacomplexformoption" type="xs:unsignedByte" />
+                          <xs:element minOccurs="0" name="karmacomplexformskillsoft" type="xs:unsignedByte" />
+                          <xs:element name="karmajoingroup" type="xs:unsignedByte" />
+                          <xs:element name="karmaleavegroup" type="xs:unsignedByte" />
+                          <xs:element name="karmaalchemicalfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmabanishingfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmabindingfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmacenteringfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmacounterspellingfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmadisenchantingfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmaflexiblesignaturefocus" type="xs:unsignedByte" />
+                          <xs:element name="karmamaskingfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmapowerfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmaqifocus" type="xs:unsignedByte" />
+                          <xs:element name="karmaritualspellcastingfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmaspellcastingfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmaspellshapingfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmasummoningfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmasustainingfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmaweaponfocus" type="xs:unsignedByte" />
+                          <xs:element name="karmamysadpp" type="xs:unsignedByte" />
+                          <xs:element name="karmaspiritfettering" type="xs:unsignedByte" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="books">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="book" type="xs:string" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="customdatadirectorynames">
+                      <xs:complexType>
+                        <xs:sequence minOccurs="0">
+                          <xs:element maxOccurs="unbounded" name="customdatadirectoryname">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="directoryname" type="xs:string" />
+                                <xs:element name="order" type="xs:unsignedByte" />
+                                <xs:element name="enabled" type="xs:string" />
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="buildmethod" type="xs:string" />
+                    <xs:element name="buildpoints" type="xs:unsignedShort" />
+                    <xs:element name="qualitykarmalimit" type="xs:unsignedByte" />
+                    <xs:element name="priorityarray" type="xs:string" />
+                    <xs:element name="prioritytable" type="xs:string" />
+                    <xs:element name="sumtoten" type="xs:unsignedByte" />
+                    <xs:element name="availability" type="xs:unsignedByte" />
+                    <xs:element name="nuyenmaxbp" type="xs:unsignedShort" />
+                    <xs:element name="bannedwaregrades">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="grade" type="xs:string" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="redlinerexclusion">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="limb" type="xs:string" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

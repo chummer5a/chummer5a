@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -18,8 +18,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
-
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema mentors.xsd">
   <mentors>
     <mentor>
       <id>136a3dc5-d9c4-45ad-bc24-705f54692590</id>
@@ -3209,8 +3209,6 @@
               <condition>Spirits of Man</condition>
             </specificskill>
           </bonus>
-        </choice>
-        <choice>
         </choice>
         <choice>
           <name>Adept: 1 free level of Mystic Armor</name>

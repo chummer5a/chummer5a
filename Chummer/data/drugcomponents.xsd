@@ -1,25 +1,54 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema id="NewDataSet" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
+  <xs:include schemaLocation="bonuses.xsd" />
+  <xs:include schemaLocation="commons.xsd" />
+
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="categories">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="category" type="xs:string" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="grades">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="grade" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="grade" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="name" type="xs:string" minOccurs="0" />
-                    <xs:element name="ess" type="xs:string" minOccurs="0" />
-                    <xs:element name="cost" type="xs:string" minOccurs="0" />
-                    <xs:element name="addictionthreshold" type="xs:integer" minOccurs="0" />
-                    <xs:element name="avail" type="xs:string" minOccurs="0" />
-                    <xs:element name="source" type="xs:string" minOccurs="0" />
-                    <xs:element name="page" type="xs:string" minOccurs="0" />
+                    <xs:element name="id" type="guid" />
+                    <xs:element name="name" type="xs:string" />
+                    <xs:element name="cost" type="xs:decimal" />
+                    <xs:element name="addictionthreshold" type="xs:byte" minOccurs="0" />
+                    <xs:element name="source" type="xs:string" />
                   </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="drugs">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="drug" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:group ref="itemGroup" />
+
+                    <!-- required -->
+                    <xs:element name="category" type="xs:string" />
+                    <xs:element name="rating" type="xs:unsignedByte" />
+
+                    <!-- optional -->
+                    <xs:element ref="bonus" minOccurs="0"/>
+
+                    <xs:element name="duration" type="xs:string" minOccurs="0"/>
+                    <xs:element name="speed" type="xs:unsignedShort" minOccurs="0"/>
+                    <xs:element name="vectors" type="xs:string" minOccurs="0"/>
+                  </xs:all>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
@@ -28,54 +57,71 @@
         <xs:element name="drugcomponents">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="drugcomponent" maxOccurs="unbounded">
+              <xs:element maxOccurs="unbounded" name="drugcomponent">
                 <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="id" type="xs:string" />
-                    <xs:element name="name" type="xs:string" />
+                  <xs:all>
+                    <xs:group ref="baseGroup" />
+
+                    <!-- required -->
+                    <xs:element name="availability" type="availType" />
                     <xs:element name="category" type="xs:string" />
+                    <xs:element name="cost" type="xs:integer" />
+
+                    <!-- optional -->
+                    <xs:element name="limit" type="xs:integer" minOccurs="0" />
+                    <xs:element name="rating" type="xs:integer" minOccurs="0" />
+                    <xs:element name="threshold" type="xs:integer" minOccurs="0" />
+
+                    <!-- Effects (required) -->
                     <xs:element name="effects">
                       <xs:complexType>
                         <xs:sequence>
-                          <xs:element name="effect" maxOccurs="unbounded">
+                          <xs:element name="effect" maxOccurs="unbounded" >
                             <xs:complexType>
-                              <xs:sequence>
-                                <xs:element name="level" type="xs:int" maxOccurs="1" minOccurs="0" />
-                                <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded">
+                              <xs:all>
+                                <xs:element name="crashdamage" type="xs:integer" minOccurs="0" />
+                                <xs:element name="duration" type="xs:integer" minOccurs="0" />
+                                <xs:element name="info" type="xs:string" minOccurs="0" />
+                                <xs:element name="initiativedice" type="xs:integer" minOccurs="0" />
+                                <xs:element name="level" type="xs:integer" minOccurs="0" />
+                                <xs:element name="speed" type="xs:integer" minOccurs="0" />
+
+                                <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded" >
                                   <xs:complexType>
                                     <xs:sequence>
-                                      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                      <xs:element name="value" type="xs:int" minOccurs="0" maxOccurs="1" />
+                                      <xs:element name="name" type="xs:string" />
+                                      <xs:element name="value" type="xs:integer" />
                                     </xs:sequence>
                                   </xs:complexType>
                                 </xs:element>
-                                <xs:element name="crashdamage" type="xs:int" minOccurs="0" />
-                                <xs:element name="duration" type="xs:int" minOccurs="0" />
-                                <xs:element name="initiativedice" type="xs:int" minOccurs="0" />
-                                <xs:element name="info" type="xs:string" minOccurs="0" />
+
                                 <xs:element name="limit" minOccurs="0" maxOccurs="unbounded">
                                   <xs:complexType>
                                     <xs:sequence>
-                                      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                      <xs:element name="value" type="xs:int" minOccurs="0" maxOccurs="1" />
+                                      <xs:element name="name" type="xs:string" />
+                                      <xs:element name="value" type="xs:integer" />
                                     </xs:sequence>
                                   </xs:complexType>
                                 </xs:element>
-                                <xs:element name="quality" type="xs:string" minOccurs="0" />
-                                <xs:element name="speed" type="xs:int" minOccurs="0" maxOccurs="1" />
-                              </xs:sequence>
+
+                                <xs:element name="quality" minOccurs="0" >
+                                  <xs:complexType>
+                                    <xs:simpleContent>
+                                      <xs:extension base="xs:string">
+                                        <xs:attribute name="rating" type="xs:integer" use="optional" />
+                                      </xs:extension>
+                                    </xs:simpleContent>
+                                  </xs:complexType>
+                                </xs:element>
+
+                              </xs:all>
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="availability" type="xs:string" />
-                    <xs:element name="cost" type="xs:int" />
-                    <xs:element name="rating" type="xs:int" minOccurs="0" />
-                    <xs:element name="threshold" type="xs:int" minOccurs="0" />
-                    <xs:element name="source" type="xs:string" />
-                    <xs:element name="page" type="xs:int" />
-                  </xs:sequence>
+
+                  </xs:all>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

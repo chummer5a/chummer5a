@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -1934,7 +1934,7 @@
       <name>Multiprocessing</name>
       <category>Echoes</category>
       <type>P</type>
-      <action>Special</action>re
+      <action>Special</action>
       <range>Special</range>
       <duration>Special</duration>
       <bonus />

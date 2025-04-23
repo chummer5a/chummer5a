@@ -1,17 +1,25 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
+  <xs:include schemaLocation="conditions.xsd" />
   <xs:include schemaLocation="commons.xsd" />
 
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="rules">
+        <xs:element name="tips">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="rule" maxOccurs="unbounded" >
+              <xs:element maxOccurs="unbounded" name="tip">
                 <xs:complexType>
                   <xs:all>
-                    <xs:group ref="baseGroup" />
+                    <xs:element name="id" type="guid" />
+                    <xs:element name="text" type="xs:string" />
+
+                    <xs:element ref="forbidden" minOccurs="0"/>
+                    <xs:element ref="required" minOccurs="0"/>
+
+                    <xs:element name="careeronly" minOccurs="0"/>
+                    <xs:element name="chargenonly" minOccurs="0"/>
                   </xs:all>
                 </xs:complexType>
               </xs:element>

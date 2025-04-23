@@ -1,0 +1,70 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
+  <xs:include schemaLocation="commons.xsd" />
+
+  <xs:element name="chummer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="limbcounts">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="limb">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="name" type="xs:string" />
+                    <xs:element name="limbcount" type="xs:integer" />
+                    <xs:element name="exclude" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="pdfarguments">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="pdfargument">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="name" type="xs:string" />
+                    <xs:element name="value" type="xs:string" />
+                    <xs:element name="appnames" minOccurs="0" >
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="appname" type="xs:string" maxOccurs="unbounded" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="blackmarketpipelinecategories">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="category" type="xs:string" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="availmap">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="avail" maxOccurs="unbounded" >
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="id" type="guid" />
+                    <xs:element name="value" type="xs:string" />
+                    <xs:element name="duration" type="xs:integer" />
+                    <xs:element name="interval" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

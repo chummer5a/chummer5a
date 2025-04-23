@@ -1,0 +1,46 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
+  <xs:element name="chummer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="improvements">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="improvement" maxOccurs="unbounded" >
+                <xs:complexType>
+                  <xs:all>
+                    <!-- required -->
+                    <xs:element name="name" type="xs:string" />
+                    <xs:element name="id" type="xs:string" />
+                    <xs:element name="internal" type="xs:string" />
+                    <xs:element name="page" type="xs:string" />
+
+                    <xs:element name="xml">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute name="forced" type="xs:string" use="optional" />
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <!-- optional -->
+                    <xs:element name="fields" minOccurs="0" >
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="field" type="xs:string" maxOccurs="unbounded" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

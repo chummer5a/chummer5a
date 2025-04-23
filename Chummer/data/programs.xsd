@@ -1,105 +1,45 @@
-<?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
   <xs:include schemaLocation="bonuses.xsd" />
   <xs:include schemaLocation="conditions.xsd" />
+  <xs:include schemaLocation="commons.xsd" />
+
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="version" type="xs:string" minOccurs="0" />
-        <xs:element name="categories" minOccurs="0" maxOccurs="unbounded">
+
+        <xs:element name="categories">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
-                    <xs:extension base="xs:string">
-                    </xs:extension>
-                  </xs:simpleContent>
-                </xs:complexType>
-              </xs:element>
+              <xs:element name="category" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="programs" minOccurs="0" maxOccurs="unbounded">
+
+        <xs:element name="programs">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="program" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="program" maxOccurs="unbounded" >
                 <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <!-- <xs:element name="skill" type="xs:string" minOccurs="1" maxOccurs="1" />-->
-                    <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <!-- <xs:element name="maxrating" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="capacity" type="xs:string" minOccurs="1" maxOccurs="1" />-->
-                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="tags" minOccurs="0" maxOccurs="1">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="tag" minOccurs="1" maxOccurs="unbounded" />
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                    <xs:element name="rating" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="minrating" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="complexform" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="avail" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="cost" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
-                    <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
-                    <xs:element ref="required" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="options" minOccurs="0" maxOccurs="unbounded">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="option" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="maxrating" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="programtypes" minOccurs="0" maxOccurs="1">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="programtype" minOccurs="1" maxOccurs="unbounded" />
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                    <xs:element name="tags" minOccurs="0" maxOccurs="1">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="tag" minOccurs="1" maxOccurs="unbounded" />
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                    <xs:element name="complexform" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
-                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-                  </xs:sequence>
+                  <xs:all>
+                    <xs:group ref="itemGroup" />
+
+                    <!-- required -->
+                    <xs:element name="category" type="xs:string" />
+
+                    <!-- optional -->
+                    <xs:element ref="bonus" minOccurs="0" />
+                    <xs:element ref="required" minOccurs="0" />
+
+                    <xs:element name="rating" type="xs:integer" minOccurs="0" />
+                    <xs:element name="minrating" type="xs:integer" minOccurs="0" />
+                  </xs:all>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
       </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
-    <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="chummer" />
-      </xs:choice>
     </xs:complexType>
   </xs:element>
 </xs:schema>

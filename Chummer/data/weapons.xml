@@ -8542,27 +8542,29 @@
       <mount>Barrel</mount>
       <range>Medium Crossbows</range>
       <required>
-        <OR>
-          <category>Assault Rifles</category>
-          <category>Sniper Rifles</category>
-          <category>Sporting Rifles</category>
-          <useskill>Longarms</useskill>
-          <useskill>Heavy Weapons</useskill>
-          <AND>
-            <useskill NOT="" operation="exists" />
-            <OR>
-              <category>Shotguns</category>
-              <category>Sporting Rifles</category>
-              <category>Sniper Rifles</category>
-              <category>Light Machine Guns</category>
-              <category>Medium Machine Guns</category>
-              <category>Heavy Machine Guns</category>
-              <category>Assault Cannons</category>
-              <category>Grenade Launchers</category>
-              <category>Missile Launchers</category>
-            </OR>
-          </AND>
-        </OR>
+        <weapondetails>
+          <OR>
+            <category>Assault Rifles</category>
+            <category>Sniper Rifles</category>
+            <category>Sporting Rifles</category>
+            <useskill>Longarms</useskill>
+            <useskill>Heavy Weapons</useskill>
+            <AND>
+              <useskill NOT="" operation="exists" />
+              <OR>
+                <category>Shotguns</category>
+                <category>Sporting Rifles</category>
+                <category>Sniper Rifles</category>
+                <category>Light Machine Guns</category>
+                <category>Medium Machine Guns</category>
+                <category>Heavy Machine Guns</category>
+                <category>Assault Cannons</category>
+                <category>Grenade Launchers</category>
+                <category>Missile Launchers</category>
+              </OR>
+            </AND>
+          </OR>
+        </weapondetails>
       </required>
       <useskill>Archery</useskill>
       <useskillspec>Crossbow</useskillspec>
@@ -8588,27 +8590,29 @@
       <mount>Under</mount>
       <range>Shotguns</range>
       <required>
-        <OR>
-          <category>Assault Rifles</category>
-          <category>Sniper Rifles</category>
-          <category>Sporting Rifles</category>
-          <useskill>Longarms</useskill>
-          <useskill>Heavy Weapons</useskill>
-          <AND>
-            <useskill NOT="" operation="exists" />
-            <OR>
-              <category>Shotguns</category>
-              <category>Sporting Rifles</category>
-              <category>Sniper Rifles</category>
-              <category>Light Machine Guns</category>
-              <category>Medium Machine Guns</category>
-              <category>Heavy Machine Guns</category>
-              <category>Assault Cannons</category>
-              <category>Grenade Launchers</category>
-              <category>Missile Launchers</category>
-            </OR>
-          </AND>
-        </OR>
+        <weapondetails>
+          <OR>
+            <category>Assault Rifles</category>
+            <category>Sniper Rifles</category>
+            <category>Sporting Rifles</category>
+            <useskill>Longarms</useskill>
+            <useskill>Heavy Weapons</useskill>
+            <AND>
+              <useskill NOT="" operation="exists" />
+              <OR>
+                <category>Shotguns</category>
+                <category>Sporting Rifles</category>
+                <category>Sniper Rifles</category>
+                <category>Light Machine Guns</category>
+                <category>Medium Machine Guns</category>
+                <category>Heavy Machine Guns</category>
+                <category>Assault Cannons</category>
+                <category>Grenade Launchers</category>
+                <category>Missile Launchers</category>
+              </OR>
+            </AND>
+          </OR>
+        </weapondetails>
       </required>
       <useskill>Longarms</useskill>
       <useskillspec>Shotguns</useskillspec>
@@ -8633,27 +8637,29 @@
       <extramount>Side</extramount>
       <mount>Under</mount>
       <required>
-        <OR>
-          <category>Assault Rifles</category>
-          <category>Sniper Rifles</category>
-          <category>Sporting Rifles</category>
-          <useskill>Longarms</useskill>
-          <useskill>Heavy Weapons</useskill>
-          <AND>
-            <useskill NOT="" operation="exists" />
-            <OR>
-              <category>Shotguns</category>
-              <category>Sporting Rifles</category>
-              <category>Sniper Rifles</category>
-              <category>Light Machine Guns</category>
-              <category>Medium Machine Guns</category>
-              <category>Heavy Machine Guns</category>
-              <category>Assault Cannons</category>
-              <category>Grenade Launchers</category>
-              <category>Missile Launchers</category>
-            </OR>
-          </AND>
-        </OR>
+        <weapondetails>
+          <OR>
+            <category>Assault Rifles</category>
+            <category>Sniper Rifles</category>
+            <category>Sporting Rifles</category>
+            <useskill>Longarms</useskill>
+            <useskill>Heavy Weapons</useskill>
+            <AND>
+              <useskill NOT="" operation="exists" />
+              <OR>
+                <category>Shotguns</category>
+                <category>Sporting Rifles</category>
+                <category>Sniper Rifles</category>
+                <category>Light Machine Guns</category>
+                <category>Medium Machine Guns</category>
+                <category>Heavy Machine Guns</category>
+                <category>Assault Cannons</category>
+                <category>Grenade Launchers</category>
+                <category>Missile Launchers</category>
+              </OR>
+            </AND>
+          </OR>
+        </weapondetails>
       </required>
       <useskill>Exotic Ranged Weapon</useskill>
       <useskillspec>Laser Weapons</useskillspec>
@@ -15067,8 +15073,11 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
+      <reach>0</reach>
       <damage>Special</damage>
+      <ap>-</ap>
       <mode>SA</mode>
+      <rc>0</rc>
       <ammo>10(m)</ammo>
       <avail>0</avail>
       <range>Shuriken</range>
@@ -17844,8 +17853,8 @@
       <hide />
       <rating>0</rating>
       <required>
-        <OR>
-          <weapondetails>
+        <weapondetails>
+          <OR>
             <category>Assault Rifles</category>
             <category>Sniper Rifles</category>
             <category>Sporting Rifles</category>
@@ -17858,8 +17867,8 @@
                 <category>Sniper Rifles</category>
               </OR>
             </AND>
-          </weapondetails>
-        </OR>
+          </OR>
+        </weapondetails>
       </required>
     </accessory>
     <accessory>
@@ -17888,27 +17897,29 @@
       <hide />
       <rating>0</rating>
       <required>
-        <OR>
-          <category>Assault Rifles</category>
-          <category>Sniper Rifles</category>
-          <category>Sporting Rifles</category>
-          <useskill>Longarms</useskill>
-          <useskill>Heavy Weapons</useskill>
-          <AND>
-            <useskill NOT="" operation="exists" />
-            <OR>
-              <category>Shotguns</category>
-              <category>Sporting Rifles</category>
-              <category>Sniper Rifles</category>
-              <category>Light Machine Guns</category>
-              <category>Medium Machine Guns</category>
-              <category>Heavy Machine Guns</category>
-              <category>Assault Cannons</category>
-              <category>Grenade Launchers</category>
-              <category>Missile Launchers</category>
-            </OR>
-          </AND>
-        </OR>
+        <weapondetails>
+          <OR>
+            <category>Assault Rifles</category>
+            <category>Sniper Rifles</category>
+            <category>Sporting Rifles</category>
+            <useskill>Longarms</useskill>
+            <useskill>Heavy Weapons</useskill>
+            <AND>
+              <useskill NOT="" operation="exists" />
+              <OR>
+                <category>Shotguns</category>
+                <category>Sporting Rifles</category>
+                <category>Sniper Rifles</category>
+                <category>Light Machine Guns</category>
+                <category>Medium Machine Guns</category>
+                <category>Heavy Machine Guns</category>
+                <category>Assault Cannons</category>
+                <category>Grenade Launchers</category>
+                <category>Missile Launchers</category>
+              </OR>
+            </AND>
+          </OR>
+        </weapondetails>
       </required>
     </accessory>
     <accessory>
@@ -19059,7 +19070,6 @@
       <rc>6</rc>
       <rcdeployable>True</rcdeployable>
       <rcgroup>1</rcgroup>
-      <rating>0</rating>
     </accessory>
     <accessory>
       <id>9b09fc1e-cb5b-473f-83a5-6f23a7524012</id>

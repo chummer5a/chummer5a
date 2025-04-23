@@ -1,20 +1,12 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
-  <xs:include schemaLocation="commons.xsd" />
-
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="rules">
+        <xs:element name="licenses">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="rule" maxOccurs="unbounded" >
-                <xs:complexType>
-                  <xs:all>
-                    <xs:group ref="baseGroup" />
-                  </xs:all>
-                </xs:complexType>
-              </xs:element>
+              <xs:element name="license" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
