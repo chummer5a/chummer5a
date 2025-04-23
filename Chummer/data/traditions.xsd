@@ -40,7 +40,7 @@
 
                     <!-- optional -->
                     <xs:element ref="bonus" minOccurs="0"/>
-                    <xs:element name="required" minOccurs="0"/>
+                    <xs:element ref="required" minOccurs="0"/>
 
                     <xs:element name="limitspiritchoices" type="boolean" minOccurs="0"/>
                     <xs:element name="spiritform" type="xs:string" minOccurs="0"/>
