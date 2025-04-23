@@ -10243,7 +10243,7 @@
             <power>Banishing Resistance</power>
             <power>Concealment</power>
             <power>Confusion</power>
-            <power>Devouring</power> <!-- "Devour" in source -->
+            <power>Devouring</power>
             <power rating="6">Hardened Armor</power>
             <power select="Living Vessels">Inhabitation</power>
             <power>Movement</power>
@@ -10257,7 +10257,7 @@
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Running</skill>
-            <skill rating="F">Sneaking</skill>  <!-- "Shadowing" in source -->
+            <skill rating="F">Sneaking</skill>
             <skill rating="F">Unarmed Combat</skill>
          </skills>
          <source>AET</source>
@@ -19476,8 +19476,8 @@
          <powers>
             <power>Astral Form</power>
             <power>Aura Masking</power>
-            <power select="Smell">Enhanced Senses</power> <!-- "Improved Senses" in source -->
-            <power select="Thermal">Enhanced Senses</power> <!-- "Improved Senses" in source -->
+            <power select="Smell">Enhanced Senses</power>
+            <power select="Thermal">Enhanced Senses</power>
             <power>Materialization</power>
             <power>Sapience</power>
             <power select="4">Spell Resistance</power>
