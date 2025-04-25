@@ -178,7 +178,7 @@
 
       <xs:element name="metavariants" minOccurs="0">
         <xs:complexType>
-          <xs:sequence minOccurs="0">
+          <xs:sequence>
             <xs:element name="metavariant" type="metatype" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>

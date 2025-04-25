@@ -1662,7 +1662,6 @@
         <power select="Claws: DV ({STR} + 1)P, AP -, +1 Reach">Natural Weapon</power>
       </powers>
       <addweapon>Claws (Sasquatch)</addweapon>
-      <metavariants />
       <source>RF</source>
       <page>99</page>
     </metatype>

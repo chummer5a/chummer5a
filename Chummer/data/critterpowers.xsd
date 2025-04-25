@@ -10,7 +10,7 @@
         <xs:element name="categories">
           <xs:complexType>
             <xs:sequence>
-              <xs:element maxOccurs="unbounded" name="category">
+              <xs:element name="category" maxOccurs="unbounded" >
                 <xs:complexType>
                   <xs:simpleContent>
                     <xs:extension base="xs:string">
@@ -25,7 +25,7 @@
         <xs:element name="powers">
           <xs:complexType>
             <xs:sequence>
-              <xs:element maxOccurs="unbounded" name="power">
+              <xs:element name="power" maxOccurs="unbounded" >
                 <xs:complexType>
                   <xs:all>
                     <xs:group ref="baseGroup" />
@@ -46,6 +46,9 @@
                     <xs:element name="karma" type="xs:string" minOccurs="0"/>
                     <xs:element name="rating" type="xs:string" minOccurs="0"/>
                     <xs:element name="toxic" type="boolean" minOccurs="0"/>
+
+                    <!-- internal -->
+                    <xs:element name="notes" type="xs:string"/>
                   </xs:all>
   
                   <!-- ordering -->
