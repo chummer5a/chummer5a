@@ -19484,7 +19484,7 @@
             <power select="Thermal">Enhanced Senses</power>
             <power>Materialization</power>
             <power>Sapience</power>
-            <power rating="4">Spell Resistance</power>
+            <power rating="4">Magic Resistance</power>
             <power>Spirit Pact</power>
          </powers>
          <bonus>

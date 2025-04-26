@@ -2201,22 +2201,6 @@
       <page>397</page>
     </power>
     <power>
-      <id>82d8c376-7509-468a-be17-8c9cba4c86c4</id>
-      <name>Spell Resistance</name>
-      <category>Paranormal</category>
-      <rating>True</rating>
-      <type>M</type>
-      <action>Auto</action>
-      <range>Self</range>
-      <duration>Always</duration>
-      <bonus>
-        <spellresistance>Rating</spellresistance>
-      </bonus>
-      <source>SR5</source>
-      <page>311</page>
-      <hide />
-    </power>
-    <power>
       <id>276b92d9-efcd-447d-a86d-8a141058615e</id>
       <name>Vestigial Wings</name>
       <category>Paranormal</category>
