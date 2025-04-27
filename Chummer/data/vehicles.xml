@@ -2136,7 +2136,7 @@
       </gears>
       <mods>
         <name select="Generator">Special Equipment</name>
-        <name>Rigger Adaptation</name>
+        <name>Rigger Interface</name>
         <name>Rigger Cocoon</name>
         <name select="Aeronautics Mechanic">Workshop</name>
         <name>Standard Drone Rack (Medium)</name>
@@ -6908,7 +6908,7 @@
         </mod>
         <name>Drone Leg</name>
         <name>Drone Leg</name>
-        <name>Rigger Adaptation</name>
+        <name>Rigger Interface</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -8600,6 +8600,7 @@
       <sensor>3</sensor>
       <speed>2</speed>
       <gears>
+        <gear>Grenade: Flash-Pak</gear>
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
@@ -8607,7 +8608,6 @@
         </gear>
       </gears>
       <mods>
-        <name>Flash-Pak</name>
         <name>Gecko Grips (Drone)</name>
         <name>Spotlight (Drone)</name>
         <name>Rigger Interface</name>
@@ -8913,6 +8913,7 @@
       <sensor>1</sensor>
       <speed>1</speed>
       <gears>
+        <gear>Grenade: Flash-Pak</gear>
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
@@ -8920,7 +8921,6 @@
         </gear>
       </gears>
       <mods>
-        <name>Flash-Pak</name>
         <name>Rigger Interface</name>
       </mods>
       <modslots>0</modslots>
@@ -9272,7 +9272,6 @@
       </gears>
       <mods>
         <name>Rigger Interface</name>
-        <name>Manual Controls</name>
         <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
       </mods>
       <seats>5</seats>
@@ -11916,6 +11915,18 @@
       <bonus>
         <seats>+Seats * 0.5</seats>
       </bonus>
+    </mod>
+    <mod>
+      <id>cd063735-b801-4587-9d67-a8c35c2e3e3e</id>
+      <name>Amenities (Street)</name>
+      <page>?</page>
+      <source>KK</source>
+      <avail>0</avail>
+      <category>Cosmetic</category>
+      <cost>100</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
     </mod>
     <mod>
       <id>8a90457a-ab4d-454e-ba9f-4e3aa5ba0a0b</id>
