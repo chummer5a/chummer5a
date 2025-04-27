@@ -6,9 +6,9 @@
 
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
+      <xs:all>
 
-        <xs:element name="categories">
+        <xs:element name="categories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="category">
@@ -24,7 +24,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="gears">
+        <xs:element name="gears" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="gear" maxOccurs="unbounded" >
@@ -174,7 +174,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

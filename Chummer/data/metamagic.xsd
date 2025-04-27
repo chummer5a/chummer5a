@@ -6,9 +6,9 @@
 
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
+      <xs:all>
 
-        <xs:element name="metamagics">
+        <xs:element name="metamagics" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="metamagic" maxOccurs="unbounded">
@@ -32,7 +32,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="arts">
+        <xs:element name="arts" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="art" maxOccurs="unbounded" >
@@ -46,7 +46,7 @@
           </xs:complexType>
         </xs:element>
 
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

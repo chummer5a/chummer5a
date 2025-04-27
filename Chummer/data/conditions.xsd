@@ -40,14 +40,12 @@
       <xs:element name="art" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
-          <xs:sequence>
+          <xs:all>
             <xs:element name="name" type="xs:string" />
-            <xs:choice>
-              <xs:element name="total" type="xs:integer" />
-              <xs:element name="val" type="xs:integer" />
-            </xs:choice>
+            <xs:element name="total" type="xs:integer" minOccurs="0" />
+            <xs:element name="val" type="xs:integer" minOccurs="0" />
             <xs:element name="natural" minOccurs="0" />
-          </xs:sequence>
+          </xs:all>
         </xs:complexType>
       </xs:element>
       <xs:element name="attributetotal" minOccurs="0" maxOccurs="unbounded">

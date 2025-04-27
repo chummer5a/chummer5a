@@ -5,15 +5,15 @@
 
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element name="categories">
+      <xs:all>
+        <xs:element name="categories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="category" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="grades">
+        <xs:element name="grades" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="grade" maxOccurs="unbounded">
@@ -30,7 +30,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="drugs">
+        <xs:element name="drugs" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="drug" maxOccurs="unbounded">
@@ -127,7 +127,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

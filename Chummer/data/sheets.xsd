@@ -5,7 +5,7 @@
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="sheets" maxOccurs="unbounded" >
+        <xs:element name="sheets" minOccurs="0" maxOccurs="unbounded" >
           <xs:complexType>
             <xs:sequence>
               <xs:element name="sheet" maxOccurs="unbounded" >

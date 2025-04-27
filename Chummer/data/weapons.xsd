@@ -11,9 +11,9 @@
 
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
+      <xs:all>
 
-        <xs:element name="categories">
+        <xs:element name="categories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="category" maxOccurs="unbounded">
@@ -31,7 +31,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="weapons">
+        <xs:element name="weapons" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="weapon" maxOccurs="unbounded">
@@ -181,7 +181,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="accessories">
+        <xs:element name="accessories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="accessory">
@@ -253,7 +253,7 @@
           </xs:complexType>
         </xs:element>
 
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

@@ -6,8 +6,8 @@
 
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element name="categories">
+      <xs:all>
+        <xs:element name="categories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="category" maxOccurs="unbounded" >
@@ -22,7 +22,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="powers">
+        <xs:element name="powers" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="power" maxOccurs="unbounded" >
@@ -35,20 +35,17 @@
                     <xs:element name="category" type="xs:string" />
                     <xs:element name="duration" type="xs:string" />
                     <xs:element name="type" type="xs:string" />
+                    <xs:element name="range" type="xs:string"/>
 
                     <!-- optional -->
                     <xs:element ref="bonus" minOccurs="0"/>
                     <xs:element ref="required" minOccurs="0"/>
                     <xs:element ref="forbidden" minOccurs="0"/>
-                    <xs:element name="range" type="xs:string"/>
 
                     <xs:element name="hide" minOccurs="0"/>
                     <xs:element name="karma" type="xs:string" minOccurs="0"/>
                     <xs:element name="rating" type="xs:string" minOccurs="0"/>
                     <xs:element name="toxic" type="boolean" minOccurs="0"/>
-
-                    <!-- internal -->
-                    <xs:element name="notes" type="xs:string"/>
                   </xs:all>
   
                   <!-- ordering -->
@@ -58,7 +55,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

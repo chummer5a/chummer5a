@@ -5,8 +5,8 @@
   <xs:include schemaLocation="commons.xsd" />
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element name="grades">
+      <xs:all>
+        <xs:element name="grades" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="grade">
@@ -26,7 +26,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="categories">
+        <xs:element name="categories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="category" maxOccurs="unbounded" >
@@ -41,7 +41,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="biowares">
+        <xs:element name="biowares" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="bioware" maxOccurs="unbounded">
@@ -139,7 +139,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

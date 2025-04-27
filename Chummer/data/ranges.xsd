@@ -8,9 +8,9 @@
   
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
+      <xs:all>
 
-        <xs:element name="modifiers">
+        <xs:element name="modifiers" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="short" type="xs:unsignedByte" />
@@ -21,7 +21,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="ranges">
+        <xs:element name="ranges" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="range" maxOccurs="unbounded" >
@@ -40,7 +40,7 @@
           </xs:complexType>
         </xs:element>
 
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

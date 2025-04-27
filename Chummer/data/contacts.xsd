@@ -2,57 +2,57 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element name="contacts">
+      <xs:all>
+        <xs:element name="contacts" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="contact" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="genders">
+        <xs:element name="genders" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="gender" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="ages">
+        <xs:element name="ages" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="age" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="personallives">
+        <xs:element name="personallives" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="personallife" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="types">
+        <xs:element name="types" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="type" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="preferredpayments">
+        <xs:element name="preferredpayments" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="preferredpayment" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="hobbiesvices">
+        <xs:element name="hobbiesvices" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="hobbyvice" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

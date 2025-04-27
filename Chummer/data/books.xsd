@@ -4,7 +4,7 @@
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="books">
+        <xs:element name="books" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="book">

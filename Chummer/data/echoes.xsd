@@ -7,7 +7,7 @@
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="echoes">
+        <xs:element name="echoes" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="echo" maxOccurs="unbounded">

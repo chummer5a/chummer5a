@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -4555,7 +4555,6 @@
               <name>critter</name>
             </enabletab>
           </bonus>
-          <qualities />
           <source>RF</source>
           <page>104</page>
         </metavariant>

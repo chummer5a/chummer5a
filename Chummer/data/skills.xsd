@@ -47,9 +47,9 @@
 
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
+      <xs:all>
 
-        <xs:element name="skillgroups">
+        <xs:element name="skillgroups" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="name" type="xs:string" maxOccurs="unbounded" />
@@ -57,7 +57,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="categories">
+        <xs:element name="categories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="category" maxOccurs="unbounded" >
@@ -73,7 +73,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="skills">
+        <xs:element name="skills" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="skill" type="skillType" maxOccurs="unbounded" />
@@ -81,7 +81,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="knowledgeskills">
+        <xs:element name="knowledgeskills" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="skill" type="skillType" maxOccurs="unbounded" />
@@ -89,7 +89,7 @@
           </xs:complexType>
         </xs:element>
 
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

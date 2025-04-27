@@ -6,7 +6,7 @@
         <xs:element name="improvements">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="improvement" maxOccurs="unbounded" >
+              <xs:element name="improvement" minOccurs="0" maxOccurs="unbounded" >
                 <xs:complexType>
                   <xs:all>
                     <!-- required -->

@@ -5,7 +5,7 @@
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="rules">
+        <xs:element name="rules" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="rule" maxOccurs="unbounded" >
