@@ -8,7 +8,7 @@
     <xs:complexType>
       <xs:all>
 
-        <xs:element name="powers">
+        <xs:element name="powers" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="power" maxOccurs="unbounded">
@@ -58,7 +58,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="enhancements">
+        <xs:element name="enhancements" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="enhancement">

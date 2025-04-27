@@ -6,8 +6,8 @@
 
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element name="martialarts">
+      <xs:all>
+        <xs:element name="martialarts" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="martialart" maxOccurs="unbounded" >
@@ -42,7 +42,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="techniques">
+        <xs:element name="techniques" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="technique" maxOccurs="unbounded" >
@@ -59,7 +59,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

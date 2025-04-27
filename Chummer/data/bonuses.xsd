@@ -693,12 +693,12 @@
             <xs:sequence>
               <xs:element name="selectpower" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:sequence>
+                  <xs:all>
                     <xs:element name="ignorerating" type="boolean" minOccurs="0"/>
                     <xs:element name="val" type="xs:string"/>
                     <xs:element name="limit" type="xs:string" minOccurs="0"/>
                     <xs:element name="pointsperlevel" type="xs:decimal"  minOccurs="0"/>
-                  </xs:sequence>
+                  </xs:all>
                   <xs:attribute name="limittopowers" type="xs:string" use="optional"/>
                 </xs:complexType>
               </xs:element>

@@ -5,9 +5,9 @@
 
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
+      <xs:all>
 
-        <xs:element name="categories">
+        <xs:element name="categories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="category" type="xs:string" maxOccurs="unbounded" />
@@ -15,7 +15,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="prioritytables">
+        <xs:element name="prioritytables" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="prioritytable" type="xs:string" maxOccurs="unbounded" />
@@ -23,7 +23,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="priortysumtotenvalues">
+        <xs:element name="priortysumtotenvalues" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="A" type="xs:integer" />
@@ -35,7 +35,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="priorities">
+        <xs:element name="priorities" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="priority" maxOccurs="unbounded" >
@@ -164,7 +164,7 @@
           </xs:complexType>
         </xs:element>
 
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

@@ -6,9 +6,9 @@
 
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
+      <xs:all>
 
-        <xs:element name="categories">
+        <xs:element name="categories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="category" type="xs:string" />
@@ -16,7 +16,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="lifestyles">
+        <xs:element name="lifestyles" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="lifestyle">
@@ -61,7 +61,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="comforts">
+        <xs:element name="comforts" minOccurs="0">
           <xs:complexType>
             <xs:all>
               <xs:element name="comfort" maxOccurs="unbounded">
@@ -77,7 +77,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="neighborhoods">
+        <xs:element name="neighborhoods" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="neighborhood" maxOccurs="unbounded" >
@@ -93,7 +93,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="securities">
+        <xs:element name="securities" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="security" maxOccurs="unbounded" >
@@ -109,7 +109,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="qualities">
+        <xs:element name="qualities" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="quality" maxOccurs="unbounded" >
@@ -144,7 +144,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="cities">
+        <xs:element name="cities" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="city" maxOccurs="unbounded">
@@ -173,7 +173,7 @@
           </xs:complexType>
         </xs:element>
 
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

@@ -6,7 +6,7 @@
 
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
+      <xs:all>
 
         <xs:element name="categories" minOccurs="0">
             <xs:complexType>
@@ -16,10 +16,10 @@
             </xs:complexType>
         </xs:element>
 
-        <xs:element name="mentors">
+        <xs:element name="mentors" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
-              <xs:element maxOccurs="unbounded" name="mentor">
+              <xs:element name="mentor" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:all>
                     <xs:group ref="baseGroup" />
@@ -57,7 +57,7 @@
           </xs:complexType>
         </xs:element>
 
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

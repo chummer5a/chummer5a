@@ -4,9 +4,9 @@
 
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
+      <xs:all>
 
-        <xs:element name="traditions">
+        <xs:element name="traditions" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="tradition">
@@ -31,7 +31,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="spirits">
+        <xs:element name="spirits" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="spirit" maxOccurs="unbounded" >
@@ -82,7 +82,7 @@
           </xs:complexType>
         </xs:element>
 
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

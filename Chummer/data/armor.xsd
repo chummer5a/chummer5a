@@ -64,9 +64,9 @@
   <!-- Main-->
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
+      <xs:all>
 
-        <xs:element name="categories">
+        <xs:element name="categories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="category" maxOccurs="unbounded" >
@@ -82,7 +82,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="modcategories">
+        <xs:element name="modcategories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="category" maxOccurs="unbounded" >
@@ -98,7 +98,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="armors">
+        <xs:element name="armors" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="armor" maxOccurs="unbounded">
@@ -162,7 +162,7 @@
           </xs:complexType>
         </xs:element>
  
-        <xs:element name="mods">
+        <xs:element name="mods" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="mod">
@@ -203,7 +203,7 @@
           </xs:complexType>
         </xs:element>
 
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

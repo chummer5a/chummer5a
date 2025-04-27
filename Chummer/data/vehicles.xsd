@@ -11,9 +11,9 @@
 
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
+      <xs:all>
 
-        <xs:element name="categories">
+        <xs:element name="categories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="category" maxOccurs="unbounded" >
@@ -29,7 +29,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="modcategories">
+        <xs:element name="modcategories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="category" maxOccurs="unbounded" >
@@ -45,7 +45,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="weaponmountcategories">
+        <xs:element name="weaponmountcategories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="category" maxOccurs="unbounded" >
@@ -61,7 +61,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="vehicles">
+        <xs:element name="vehicles" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="vehicle">
@@ -224,7 +224,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="mods">
+        <xs:element name="mods" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="mod" maxOccurs="unbounded" >
@@ -294,7 +294,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="weaponmounts">
+        <xs:element name="weaponmounts" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="weaponmount" maxOccurs="unbounded" >
@@ -319,7 +319,7 @@
           </xs:complexType>
         </xs:element>
 
-        <xs:element name="weaponmountmods">
+        <xs:element name="weaponmountmods" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="mod" maxOccurs="unbounded" >
@@ -347,7 +347,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

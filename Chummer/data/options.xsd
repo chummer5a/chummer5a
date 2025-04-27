@@ -4,8 +4,8 @@
 
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element name="limbcounts">
+      <xs:all>
+        <xs:element name="limbcounts" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="limb">
@@ -20,7 +20,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="pdfarguments">
+        <xs:element name="pdfarguments" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="pdfargument">
@@ -41,14 +41,14 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="blackmarketpipelinecategories">
+        <xs:element name="blackmarketpipelinecategories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="category" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="availmap">
+        <xs:element name="availmap" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="avail" maxOccurs="unbounded" >
@@ -64,7 +64,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

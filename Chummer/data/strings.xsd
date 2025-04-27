@@ -2,36 +2,36 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
   <xs:element name="chummer">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element name="matrixattributes">
+      <xs:all>
+        <xs:element name="matrixattributes" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="key" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="elements">
+        <xs:element name="elements" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="element" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="immunities">
+        <xs:element name="immunities" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="immunity" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="spiritcategories">
+        <xs:element name="spiritcategories" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="category" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-      </xs:sequence>
+      </xs:all>
     </xs:complexType>
   </xs:element>
 </xs:schema>

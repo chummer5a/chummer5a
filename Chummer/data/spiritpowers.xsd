@@ -4,7 +4,7 @@
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="powers">
+        <xs:element name="powers" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="power" maxOccurs="unbounded">
