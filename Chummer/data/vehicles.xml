@@ -11917,13 +11917,13 @@
       </bonus>
     </mod>
     <mod>
-      <id>cd063735-b801-4587-9d67-a8c35c2e3e3e</id>
+      <id>b4c0c7d3-25fb-420f-812a-1747c72d2e4d</id>
       <name>Amenities (Street)</name>
       <page>?</page>
       <source>KK</source>
       <avail>0</avail>
       <category>Cosmetic</category>
-      <cost>100</cost>
+      <cost>0</cost>
       <rating>0</rating>
       <slots>0</slots>
       <hide />

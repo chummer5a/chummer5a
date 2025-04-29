@@ -105,7 +105,7 @@
                           <xs:element name="accessory" maxOccurs="unbounded" >
                             <xs:complexType>
                               <xs:sequence>
-                                <xs:element name="name" type="xs:string" maxOccurs="unbounded" />
+                                <xs:element name="name" type="xs:string"/>
                                 <xs:element name="mount" type="xs:string" minOccurs="0" />
                                 <xs:element name="rating" type="xs:integer" minOccurs="0" />
 

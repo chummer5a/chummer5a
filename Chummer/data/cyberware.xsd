@@ -85,7 +85,6 @@
                     <xs:element name="requireparent" minOccurs="0"/>
                     <xs:element name="selectside" minOccurs="0"/>
                     <xs:element name="programs" type="xs:string" minOccurs="0"/>
-                    <xs:element name="notes" type="xs:string" minOccurs="0"/>
 
                     <xs:element name="allowgear" minOccurs="0">
                       <xs:complexType>
