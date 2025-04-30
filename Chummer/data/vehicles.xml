@@ -5817,32 +5817,6 @@
       <seats>8</seats>
     </vehicle>
     <vehicle>
-      <id>8a898851-6409-48f0-95f9-62e831835890</id>
-      <name>Conestoga Vista (Bus)</name>
-      <page>110</page>
-      <source>AR</source>
-      <accel>15/25</accel>
-      <armor>4</armor>
-      <avail>0</avail>
-      <body>20</body>
-      <category>Trucks</category>
-      <cost>25000</cost>
-      <handling>-3</handling>
-      <pilot>1</pilot>
-      <sensor>1</sensor>
-      <speed>90</speed>
-      <gears>
-        <gear>
-          <name>Sensor Array</name>
-          <rating>1</rating>
-          <maxrating>7</maxrating>
-        </gear>
-      </gears>
-      <mods>
-        <name>Amenities (Squatter)</name>
-      </mods>
-    </vehicle>
-    <vehicle>
       <id>81505035-7043-4841-a952-3763e9e7ddc5</id>
       <name>Conestoga Trailblazer (Moving Truck)</name>
       <page>186</page>
