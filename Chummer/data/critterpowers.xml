@@ -2192,7 +2192,7 @@
     </power>
     <power>
       <id>27488146-76d0-454c-b375-a63ccc492b70</id>
-      <name>Enhanced Sense (Low Light Vision)</name>
+      <name>Enhanced Sense (Low-Light Vision)</name>
       <category>Drake</category>
       <type>P</type>
       <action>Auto</action>
@@ -3999,7 +3999,7 @@
     </power>
     <power>
       <id>048c7ca6-d626-415e-baae-80246091b8e1</id>
-      <name>Enhanced Sense (Low Light Vision)</name>
+      <name>Enhanced Sense (Low-Light Vision)</name>
       <category>Chimeric Modification</category>
       <type />
       <action />
