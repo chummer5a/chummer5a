@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -1947,7 +1947,7 @@
       <page>53</page>
       <avail>10R</avail>
       <cost>Rating*20</cost>
-      <addweapon rating="{Rating}">Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
+      <addweapon rating="{Rating}">Grenade: Fuzzy Boom Boom Bunnies</addweapon>
     </gear>
     <gear>
       <id>7470ed31-0d81-4992-bae6-38f9de198020</id>
@@ -18747,7 +18747,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>191</page>
-      <avail>4E</avail>
+      <avail>4</avail>
       <cost>250</cost>
     </gear>
     <gear>
@@ -20344,7 +20344,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>4V</avail>
+      <avail>4R</avail>
       <cost>180</cost>
     </gear>
     <gear>
@@ -20366,7 +20366,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>4E</avail>
+      <avail>4</avail>
       <cost>50</cost>
     </gear>
     <gear>
@@ -20386,7 +20386,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>3V</avail>
+      <avail>3R</avail>
       <cost>360</cost>
     </gear>
     <gear>
