@@ -8765,6 +8765,17 @@
       <avail>6R</avail>
       <cost>250</cost>
     </gear>
+    <gear>
+      <id>e5a91f52-8f6d-4a2e-9b8f-3a087e3d97e4</id>
+      <name>Ink Pouch</name>
+      <category>Security Devices</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
     <!-- End Region -->
     <!-- Region Breaking and Entering Gear -->
     <gear>
@@ -16663,6 +16674,17 @@
       <avail>0</avail>
       <cost>1</cost>
       <costfor>4</costfor>
+    </gear>
+    <gear>
+      <id>9c7f1a63-4b2d-4e19-a9cb-fb8b63b5e3ac</id>
+      <name>Plasma Torch</name>
+      <category>Tools</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>0</avail>
+      <cost>1</cost>
+      <hide />
     </gear>
     <!-- End Region -->
     <!-- Region Housewares -->
