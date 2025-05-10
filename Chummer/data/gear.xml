@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -1415,7 +1415,7 @@
     </gear>
     <gear>
       <id>022bc6c7-1f91-4852-b1ee-0f50433a1b97</id>
-      <name>Grenade: Paint (Radioactive Tracking Dye),  Aerodynamic</name>
+      <name>Grenade: Paint (Radioactive Tracking Dye), Aerodynamic</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>RG</source>
@@ -1947,7 +1947,7 @@
       <page>53</page>
       <avail>10R</avail>
       <cost>Rating*20</cost>
-      <addweapon rating="{Rating}">Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
+      <addweapon rating="{Rating}">Grenade: Fuzzy Boom Boom Bunnies</addweapon>
     </gear>
     <gear>
       <id>7470ed31-0d81-4992-bae6-38f9de198020</id>
@@ -8764,6 +8764,17 @@
       <page>447</page>
       <avail>6R</avail>
       <cost>250</cost>
+    </gear>
+    <gear>
+      <id>e5a91f52-8f6d-4a2e-9b8f-3a087e3d97e4</id>
+      <name>Ink Pouch</name>
+      <category>Security Devices</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
     </gear>
     <!-- End Region -->
     <!-- Region Breaking and Entering Gear -->
@@ -16664,6 +16675,17 @@
       <cost>1</cost>
       <costfor>4</costfor>
     </gear>
+    <gear>
+      <id>9c7f1a63-4b2d-4e19-a9cb-fb8b63b5e3ac</id>
+      <name>Plasma Torch</name>
+      <category>Tools</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>0</avail>
+      <cost>1</cost>
+      <hide />
+    </gear>
     <!-- End Region -->
     <!-- Region Housewares -->
     <gear>
@@ -18747,7 +18769,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>191</page>
-      <avail>4E</avail>
+      <avail>4</avail>
       <cost>250</cost>
     </gear>
     <gear>
@@ -20344,7 +20366,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>4V</avail>
+      <avail>4R</avail>
       <cost>180</cost>
     </gear>
     <gear>
@@ -20366,7 +20388,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>4E</avail>
+      <avail>4</avail>
       <cost>50</cost>
     </gear>
     <gear>
@@ -20386,7 +20408,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>3V</avail>
+      <avail>3R</avail>
       <cost>360</cost>
     </gear>
     <gear>

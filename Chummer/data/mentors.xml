@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -3209,8 +3209,6 @@
               <condition>Spirits of Man</condition>
             </specificskill>
           </bonus>
-        </choice>
-        <choice>
         </choice>
         <choice>
           <name>Adept: 1 free level of Mystic Armor</name>

@@ -11035,8 +11035,8 @@
         <addqualities>
           <addquality>
             <options>
-              <collegeeducation>College Education</collegeeducation>
-              <technicalschooleducation>Technical School Education</technicalschooleducation>
+              <quality>College Education</quality>
+              <quality>Technical School Education</quality>
             </options>
           </addquality>
           <addquality>Common Sense</addquality>

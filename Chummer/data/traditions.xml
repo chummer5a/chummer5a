@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -2617,7 +2617,7 @@
       <agi>F</agi>
       <rea>F</rea>
       <str>F+2</str>
-      <cha>F–1</cha>
+      <cha>F-1</cha>
       <int>F</int>
       <log>F</log>
       <wil>F</wil>
@@ -2660,10 +2660,10 @@
       <id>1b9737c5-f3dc-4ede-acdb-81ad35afcb7e</id>
       <name>Corpse Spirit</name>
       <bod>F+2</bod>
-      <agi>F–1</agi>
+      <agi>F-1</agi>
       <rea>F+2</rea>
-      <str>F–2</str>
-      <cha>F–1</cha>
+      <str>F-2</str>
+      <cha>F-1</cha>
       <int>F+1</int>
       <log>F</log>
       <wil>F</wil>
@@ -2708,12 +2708,12 @@
       <id>eeca5858-c087-4489-9ad9-469f0664726f</id>
       <name>Rot Spirit</name>
       <bod>F+3</bod>
-      <agi>F–2</agi>
+      <agi>F-2</agi>
       <rea>F</rea>
       <str>F+1</str>
-      <cha>F–1</cha>
+      <cha>F-1</cha>
       <int>F</int>
-      <log>F–1</log>
+      <log>F-1</log>
       <wil>F</wil>
       <ini>0</ini>
       <edg>F/2</edg>
@@ -2759,8 +2759,8 @@
       <bod>F+2</bod>
       <agi>F+1</agi>
       <rea>F+3</rea>
-      <str>F–2</str>
-      <cha>F–1</cha>
+      <str>F-2</str>
+      <cha>F-1</cha>
       <int>F+1</int>
       <log>F</log>
       <wil>F</wil>
@@ -2803,12 +2803,12 @@
       <id>8e7d505f-4c97-4dad-ae15-955080c2fbaf</id>
       <name>Detritus Spirit</name>
       <bod>F+5</bod>
-      <agi>F–3</agi>
+      <agi>F-3</agi>
       <rea>F-1</rea>
       <str>F+4</str>
-      <cha>F–1</cha>
+      <cha>F-1</cha>
       <int>F</int>
-      <log>F–1</log>
+      <log>F-1</log>
       <wil>F</wil>
       <ini>0</ini>
       <edg>F/2</edg>
@@ -3412,7 +3412,7 @@
       <id>5b122a59-408e-4634-855a-763b25fbad16</id>
       <name>Master Shedim</name>
       <category>Shedim</category>
-      <bon>F</bon>
+      <bod>F</bod>
       <agi>F</agi>
       <rea>F+2</rea>
       <str>F+1</str>
