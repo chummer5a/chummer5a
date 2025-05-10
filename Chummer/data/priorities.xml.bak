@@ -49,7 +49,7 @@
 							<value>8</value>
 							<karma>0</karma>
 						</metavariant>
-					</metavariants>		  
+					</metavariants>
 				</metatype>
 				<metatype>
 					<name>Elf</name>
@@ -60,7 +60,7 @@
 							<name>Dryad</name>
 							<value>8</value>
 							<karma>0</karma>
-						</metavariant>	
+						</metavariant>
 						<metavariant>
 							<name>Nocturna</name>
 							<value>8</value>
@@ -76,8 +76,8 @@
 							<value>8</value>
 							<karma>0</karma>
 						</metavariant>
-					</metavariants>		  
-				</metatype>				
+					</metavariants>
+				</metatype>
 				<metatype>
 					<name>Dwarf</name>
 					<value>7</value>
@@ -103,7 +103,7 @@
 							<value>7</value>
 							<karma>2</karma>
 						</metavariant>
-					</metavariants>		  
+					</metavariants>
 				</metatype>
 				<metatype>
 					<name>Ork</name>
@@ -114,7 +114,7 @@
 							<name>Hobgoblin</name>
 							<value>7</value>
 							<karma>5</karma>
-						</metavariant>	
+						</metavariant>
 						<metavariant>
 							<name>Ogre</name>
 							<value>7</value>
@@ -130,7 +130,7 @@
 							<value>7</value>
 							<karma>10</karma>
 						</metavariant>
-					</metavariants>		  
+					</metavariants>  
 				</metatype>
 				<metatype>
 					<name>Troll</name>
@@ -157,79 +157,79 @@
 							<value>5</value>
 							<karma>2</karma>
 						</metavariant>
-					</metavariants>		  
+					</metavariants>  
 				</metatype>
 				<metatype>
 					<name>Centaur</name>
 					<value>6</value>
-					<karma>25</karma>					
-				</metatype>		
+					<karma>25</karma>
+				</metatype>
 				<metatype>
 					<name>Naga</name>
 					<value>4</value>
-					<karma>25</karma>					
+					<karma>25</karma>
 				</metatype>
 				<metatype>
 					<name>Pixie</name>
-					<value>6</value>	
-					<karma>15</karma>					
+					<value>6</value>
+					<karma>15</karma>
 				</metatype>
 				<metatype>
 					<name>Sasquatch</name>
-					<value>5</value>	
+					<value>5</value>
 					<karma>20</karma>
-					<metavariants />	
-				</metatype>	
+					<metavariants />
+				</metatype>
 				<metatype>
 					<name>Shapeshifter: Bovine</name>
-					<value>8</value>	
-					<karma>5</karma>		  
+					<value>8</value>
+					<karma>5</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Vulpine</name>
 					<value>8</value>
-					<karma>5</karma>		  
+					<karma>5</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Canine</name>
-					<value>7</value>	
-					<karma>10</karma>		  
+					<value>7</value>
+					<karma>10</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Falconine</name>
-					<value>7</value>	
-					<karma>10</karma>		  
+					<value>7</value>
+					<karma>10</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Lupine</name>
-					<value>6</value>		
-					<karma>15</karma>		  
+					<value>6</value>
+					<karma>15</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Equine</name>
-					<value>6</value>		
-					<karma>15</karma>		  
+					<value>6</value>
+					<karma>15</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Leonine</name>
-					<value>4</value>	
-					<karma>20</karma>		  
+					<value>4</value>
+					<karma>20</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Ursine</name>
-					<value>4</value>	
-					<karma>20</karma>		  
+					<value>4</value>
+					<karma>20</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Pantherine</name>
-					<value>4</value>		  
+					<value>4</value>  
 					<karma>25</karma>
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Tigrine</name>
-					<value>4</value>		  		
+					<value>4</value>  		
 					<karma>25</karma>
-				</metatype> 				
+				</metatype>
 			</metatypes>
 		</priority>
 		<priority>
@@ -248,7 +248,7 @@
 							<value>6</value>
 							<karma>0</karma>
 						</metavariant>
-					</metavariants>		  
+					</metavariants>  
 				</metatype>
 				<metatype>
 					<name>Elf</name>
@@ -275,8 +275,8 @@
 							<value>6</value>
 							<karma>0</karma>
 						</metavariant>
-					</metavariants>		  
-				</metatype>				
+					</metavariants>  
+				</metatype>
 				<metatype>
 					<name>Dwarf</name>
 					<value>4</value>
@@ -302,7 +302,7 @@
 							<value>4</value>
 							<karma>2</karma>
 						</metavariant>
-					</metavariants>		  
+					</metavariants>  
 				</metatype>
 				<metatype>
 					<name>Ork</name>
@@ -328,8 +328,8 @@
 							<name>Hobgoblin</name>
 							<value>4</value>
 							<karma>5</karma>
-						</metavariant>	  
-					</metavariants>		  
+						</metavariant>  
+					</metavariants>  
 				</metatype>
 				<metatype>
 					<name>Troll</name>
@@ -356,79 +356,79 @@
 							<value>0</value>
 							<karma>2</karma>
 						</metavariant>
-					</metavariants>		  
+					</metavariants>  
 				</metatype>
 				<metatype>
 					<name>Centaur</name>
 					<value>3</value>
-					<karma>25</karma>					
-				</metatype>		
+					<karma>25</karma>
+				</metatype>
 				<metatype>
 					<name>Naga</name>
 					<value>2</value>
-					<karma>25</karma>					
+					<karma>25</karma>
 				</metatype>
 				<metatype>
 					<name>Pixie</name>
-					<value>3</value>	
-					<karma>15</karma>					
+					<value>3</value>
+					<karma>15</karma>
 				</metatype>
 				<metatype>
 					<name>Sasquatch</name>
-					<value>2</value>	
+					<value>2</value>
 					<karma>20</karma>
-					<metavariants />					
-				</metatype>	
+					<metavariants />
+				</metatype>
 				<metatype>
 					<name>Shapeshifter: Bovine</name>
-					<value>6</value>	
-					<karma>5</karma>		  
+					<value>6</value>
+					<karma>5</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Vulpine</name>
 					<value>6</value>
-					<karma>5</karma>		  
+					<karma>5</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Canine</name>
-					<value>5</value>	
-					<karma>10</karma>		  
+					<value>5</value>
+					<karma>10</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Falconine</name>
-					<value>5</value>	
-					<karma>10</karma>		  
+					<value>5</value>
+					<karma>10</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Lupine</name>
-					<value>4</value>		
-					<karma>15</karma>		  
+					<value>4</value>
+					<karma>15</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Equine</name>
-					<value>4</value>		
-					<karma>15</karma>		  
+					<value>4</value>
+					<karma>15</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Leonine</name>
-					<value>2</value>	
-					<karma>20</karma>		  
+					<value>2</value>
+					<karma>20</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Ursine</name>
-					<value>2</value>	
-					<karma>20</karma>		  
+					<value>2</value>
+					<karma>20</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Pantherine</name>
-					<value>2</value>		  
+					<value>2</value>  
 					<karma>25</karma>
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Tigrine</name>
-					<value>2</value>		  		
+					<value>2</value>  		
 					<karma>25</karma>
-				</metatype> 				
+				</metatype>
 			</metatypes>
 		</priority>
 		<priority>
@@ -447,7 +447,7 @@
 							<value>4</value>
 							<karma>0</karma>
 						</metavariant>
-					</metavariants>		  
+					</metavariants>  
 				</metatype>
 				<metatype>
 					<name>Elf</name>
@@ -474,7 +474,7 @@
 							<value>3</value>
 							<karma>0</karma>
 						</metavariant>
-					</metavariants>		  
+					</metavariants>  
 				</metatype>
 				<metatype>
 					<name>Dwarf</name>
@@ -506,7 +506,7 @@
 							<value>1</value>
 							<karma>27</karma>
 						</metavariant>
-					</metavariants>		  
+					</metavariants>  
 				</metatype>
 				<metatype>
 					<name>Ork</name>
@@ -532,80 +532,80 @@
 							<name>Hobgoblin</name>
 							<value>0</value>
 							<karma>-5</karma>
-						</metavariant>		  
-					</metavariants>		  
+						</metavariant>  
+					</metavariants>  
 				</metatype>
 				<metatype>
 					<name>Centaur</name>
 					<value>0</value>
-					<karma>25</karma>					
-				</metatype>		
+					<karma>25</karma>
+				</metatype>
 				<metatype>
 					<name>Naga</name>
 					<value>0</value>
-					<karma>25</karma>					
+					<karma>25</karma>
 				</metatype>
 				<metatype>
 					<name>Pixie</name>
-					<value>0</value>	
-					<karma>15</karma>					
+					<value>0</value>
+					<karma>15</karma>
 				</metatype>
 				<metatype>
 					<name>Sasquatch</name>
-					<value>0</value>	
+					<value>0</value>
 					<karma>20</karma>
-					<metavariants />						
-				</metatype>	
+					<metavariants />
+				</metatype>
 				<metatype>
 					<name>Shapeshifter: Bovine</name>
-					<value>4</value>	
-					<karma>5</karma>		  
+					<value>4</value>
+					<karma>5</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Vulpine</name>
 					<value>4</value>
-					<karma>5</karma>		  
+					<karma>5</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Canine</name>
-					<value>3</value>	
-					<karma>10</karma>		  
+					<value>3</value>
+					<karma>10</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Falconine</name>
-					<value>3</value>	
-					<karma>10</karma>		  
+					<value>3</value>
+					<karma>10</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Lupine</name>
-					<value>2</value>		
-					<karma>15</karma>		  
+					<value>2</value>
+					<karma>15</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Equine</name>
-					<value>2</value>		
-					<karma>15</karma>		  
+					<value>2</value>
+					<karma>15</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Leonine</name>
-					<value>0</value>	
-					<karma>20</karma>		  
+					<value>0</value>
+					<karma>20</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Ursine</name>
-					<value>0</value>	
-					<karma>20</karma>		  
+					<value>0</value>
+					<karma>20</karma>  
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Pantherine</name>
-					<value>0</value>		  
+					<value>0</value>  
 					<karma>25</karma>
 				</metatype>
 				<metatype>
 					<name>Shapeshifter: Tigrine</name>
-					<value>0</value>		  		
+					<value>0</value>  		
 					<karma>25</karma>
-				</metatype> 				
+				</metatype>
 			</metatypes>
 		</priority>
 		<priority>
@@ -623,8 +623,8 @@
 							<name>Nartaki</name>
 							<value>2</value>
 							<karma>0</karma>
-						</metavariant>				
-					</metavariants>		  
+						</metavariant>
+					</metavariants>  
 				</metatype>
 				<metatype>
 					<name>Elf</name>
@@ -650,8 +650,8 @@
 							<name>Dryad</name>
 							<value>0</value>
 							<karma>0</karma>
-						</metavariant>		  
-					</metavariants>		  
+						</metavariant>  
+					</metavariants>  
 				</metatype>
 			</metatypes>
 		</priority>
@@ -671,7 +671,7 @@
 							<value>1</value>
 							<karma>0</karma>
 						</metavariant>
-					</metavariants>		  
+					</metavariants>  
 				</metatype>
 			</metatypes>
 		</priority>

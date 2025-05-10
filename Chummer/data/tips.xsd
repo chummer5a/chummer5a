@@ -1,30 +1,25 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" vc:minVersion="1.1">
-  <xs:include schemaLocation="bonuses.xsd" />
   <xs:include schemaLocation="conditions.xsd" />
   <xs:include schemaLocation="commons.xsd" />
 
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="echoes" minOccurs="0">
+        <xs:element name="tips" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="echo" maxOccurs="unbounded">
+              <xs:element maxOccurs="unbounded" name="tip">
                 <xs:complexType>
                   <xs:all>
-                    <xs:group ref="baseGroup" />
+                    <xs:element name="id" type="guid" />
+                    <xs:element name="text" type="xs:string" />
 
-                    <!-- optional -->
-                    <xs:element ref="bonus" minOccurs="0" />
-                    <xs:element name="hide" minOccurs="0" />
+                    <xs:element ref="forbidden" minOccurs="0"/>
+                    <xs:element ref="required" minOccurs="0"/>
 
-                    <xs:element name="limit" minOccurs="0">
-                      <xs:simpleType>
-                        <xs:union memberTypes="boolean xs:integer" />
-                      </xs:simpleType>
-                    </xs:element>
-
+                    <xs:element name="careeronly" minOccurs="0"/>
+                    <xs:element name="chargenonly" minOccurs="0"/>
                   </xs:all>
                 </xs:complexType>
               </xs:element>

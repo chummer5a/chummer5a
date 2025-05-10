@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -2136,7 +2136,7 @@
       </gears>
       <mods>
         <name select="Generator">Special Equipment</name>
-        <name>Rigger Adaptation</name>
+        <name>Rigger Interface</name>
         <name>Rigger Cocoon</name>
         <name select="Aeronautics Mechanic">Workshop</name>
         <name>Standard Drone Rack (Medium)</name>
@@ -3849,11 +3849,9 @@
       <mods>
         <name>Submersible (Drone)</name>
         <name>Gecko Grips (Drone)</name>
-      </mods>
-      <modslots>1</modslots>
-      <mods>
         <name>Rigger Interface</name>
       </mods>
+      <modslots>1</modslots>
     </vehicle>
     <vehicle>
       <id>89392969-1d03-4322-9aa8-c0160ba3ee76</id>
@@ -4414,11 +4412,9 @@
       </gears>
       <mods>
         <name select="Storage Compartment">Special Equipment</name>
-      </mods>
-      <modslots>1</modslots>
-      <mods>
         <name>Rigger Interface</name>
       </mods>
+      <modslots>1</modslots>
     </vehicle>
     <vehicle>
       <id>50d4bce4-79f1-48d4-8b38-68969802dec0</id>
@@ -5821,32 +5817,6 @@
       <seats>8</seats>
     </vehicle>
     <vehicle>
-      <id>8a898851-6409-48f0-95f9-62e831835890</id>
-      <name>Conestoga Vista (Bus)</name>
-      <page>110</page>
-      <source>AR</source>
-      <accel>15/25</accel>
-      <armor>4</armor>
-      <avail>0</avail>
-      <body>20</body>
-      <category>Trucks</category>
-      <cost>25000</cost>
-      <handling>-3</handling>
-      <pilot>1</pilot>
-      <sensor>1</sensor>
-      <speed>90</speed>
-      <gears>
-        <gear>
-          <name>Sensor Array</name>
-          <rating>1</rating>
-          <maxrating>7</maxrating>
-        </gear>
-      </gears>
-      <mods>
-        <name>Amenities (Squatter)</name>
-      </mods>
-    </vehicle>
-    <vehicle>
       <id>81505035-7043-4841-a952-3763e9e7ddc5</id>
       <name>Conestoga Trailblazer (Moving Truck)</name>
       <page>186</page>
@@ -6912,7 +6882,7 @@
         </mod>
         <name>Drone Leg</name>
         <name>Drone Leg</name>
-        <name>Rigger Adaptation</name>
+        <name>Rigger Interface</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -8604,6 +8574,7 @@
       <sensor>3</sensor>
       <speed>2</speed>
       <gears>
+        <gear>Grenade: Flash-Pak</gear>
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
@@ -8611,7 +8582,6 @@
         </gear>
       </gears>
       <mods>
-        <name>Flash-Pak</name>
         <name>Gecko Grips (Drone)</name>
         <name>Spotlight (Drone)</name>
         <name>Rigger Interface</name>
@@ -8917,6 +8887,7 @@
       <sensor>1</sensor>
       <speed>1</speed>
       <gears>
+        <gear>Grenade: Flash-Pak</gear>
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
@@ -8924,7 +8895,6 @@
         </gear>
       </gears>
       <mods>
-        <name>Flash-Pak</name>
         <name>Rigger Interface</name>
       </mods>
       <modslots>0</modslots>
@@ -9276,7 +9246,6 @@
       </gears>
       <mods>
         <name>Rigger Interface</name>
-        <name>Manual Controls</name>
         <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
       </mods>
       <seats>5</seats>
@@ -11920,6 +11889,18 @@
       <bonus>
         <seats>+Seats * 0.5</seats>
       </bonus>
+    </mod>
+    <mod>
+      <id>b4c0c7d3-25fb-420f-812a-1747c72d2e4d</id>
+      <name>Amenities (Street)</name>
+      <page>?</page>
+      <source>KK</source>
+      <avail>0</avail>
+      <category>Cosmetic</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
     </mod>
     <mod>
       <id>8a90457a-ab4d-454e-ba9f-4e3aa5ba0a0b</id>

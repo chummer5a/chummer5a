@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -209,7 +209,6 @@
           <name>Sasquatch</name>
           <value>5</value>
           <karma>20</karma>
-          <metavariants />
         </metatype>
         <metatype>
           <name>Shapeshifter: Bovine</name>
@@ -1667,7 +1666,6 @@
           <name>Sasquatch</name>
           <value>2</value>
           <karma>20</karma>
-          <metavariants />
         </metatype>
         <metatype>
           <name>Shapeshifter: Bovine</name>
@@ -3050,11 +3048,6 @@
               <value>1</value>
               <karma>2</karma>
             </metavariant>
-            <metavariant>
-              <name>Goblin</name>
-              <value>1</value>
-              <karma>27</karma>
-            </metavariant>
           </metavariants>
         </metatype>
         <metatype>
@@ -3103,7 +3096,6 @@
           <name>Sasquatch</name>
           <value>0</value>
           <karma>20</karma>
-          <metavariants />
         </metatype>
         <metatype>
           <name>Shapeshifter: Bovine</name>

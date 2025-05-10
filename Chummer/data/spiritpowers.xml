@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -20,8 +20,7 @@
 -->
 
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critterpowers.xsd">
-
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema spiritpowers.xsd">
   <powers>
     <!--spirit powers corebook-->
     <power>

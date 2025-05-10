@@ -18,7 +18,6 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema actions.xsd">
-  <version>0</version>
   <actions>
     <!-- Region Core Rulebook -->
     <!-- Region Basic Actions  -->
