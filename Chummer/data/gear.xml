@@ -61,6 +61,7 @@
     <category blackmarket="Magic">Formulae</category>
     <category blackmarket="Weapons">Grapple Gun</category>
     <category blackmarket="Software">Hacking Programs</category>
+    <category blackmarket="Nanoware">Hard Nanogear</category>
     <category blackmarket="Electronics">Housewares</category>
     <category>ID/Credsticks</category>
     <category blackmarket="Magic">Magical Compounds</category>
@@ -9366,7 +9367,7 @@
     <gear>
       <id>3772ad51-c689-4e38-8c93-b285e78670b5</id>
       <name>Can Make Commcalls</name>
-      <category>Electronic Accessories</category>
+      <category>Electronics Accessories</category>
       <rating>0</rating>
       <source>SR5</source>
       <page>422</page>
