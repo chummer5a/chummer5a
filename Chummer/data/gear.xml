@@ -61,7 +61,6 @@
     <category blackmarket="Magic">Formulae</category>
     <category blackmarket="Weapons">Grapple Gun</category>
     <category blackmarket="Software">Hacking Programs</category>
-    <category blackmarket="Nanoware">Hard Nanoware</category>
     <category blackmarket="Electronics">Housewares</category>
     <category>ID/Credsticks</category>
     <category blackmarket="Magic">Magical Compounds</category>
@@ -15685,78 +15684,6 @@
       <armorcapacity>[2]</armorcapacity>
       <cost>1000</cost>
       <costfor>5</costfor>
-    </gear>
-    <!-- End Region -->
-    <!-- Region Hard Nanoware -->
-    <gear>
-      <id>6ba6ff51-9dd3-43fa-8d46-e7fedcc68fe4</id>
-      <name>Anti-Rad</name>
-      <category>Hard Nanoware</category>
-      <rating>6</rating>
-      <source>CF</source>
-      <page>147</page>
-      <avail>14F</avail>
-      <cost>Rating * 6000</cost>
-    </gear>
-    <gear>
-      <id>1fb25d10-fa70-4a4e-87c8-b8a5acbb1473</id>
-      <name>Control Rig Booster</name>
-      <category>Hard Nanoware</category>
-      <rating>3</rating>
-      <source>CF</source>
-      <page>147</page>
-      <avail>12F</avail>
-      <cost>Rating * 6000</cost>
-    </gear>
-    <gear>
-      <id>d139c977-eb78-4234-8cfc-2e4ae909ef6f</id>
-      <name>Nanite Hunters</name>
-      <category>Hard Nanoware</category>
-      <rating>6</rating>
-      <source>CF</source>
-      <page>147</page>
-      <avail>16R</avail>
-      <cost>Rating * 5000</cost>
-    </gear>
-    <gear>
-      <id>f317ccfa-a0ab-4e14-8c6f-436b31061e73</id>
-      <name>Markers</name>
-      <category>Hard Nanoware</category>
-      <rating>3</rating>
-      <source>CF</source>
-      <page>148</page>
-      <avail>12</avail>
-      <cost>Rating * 2000</cost>
-    </gear>
-    <gear>
-      <id>044072d3-824c-49f9-91e2-07ae3e01be3c</id>
-      <name>Nanotattoos</name>
-      <category>Hard Nanoware</category>
-      <rating>6</rating>
-      <source>CF</source>
-      <page>148</page>
-      <avail>12F</avail>
-      <cost>Rating * 1000</cost>
-    </gear>
-    <gear>
-      <id>3718b500-b035-40dd-9f5f-c73682fff3ef</id>
-      <name>Taggants</name>
-      <category>Hard Nanoware</category>
-      <rating>3</rating>
-      <source>CF</source>
-      <page>148</page>
-      <avail>12</avail>
-      <cost>Rating * 600</cost>
-    </gear>
-    <gear>
-      <id>071a20a3-0507-43dc-b504-9aeaeb6df09b</id>
-      <name>Trauma Control System</name>
-      <category>Hard Nanoware</category>
-      <rating>6</rating>
-      <source>CF</source>
-      <page>148</page>
-      <avail>12F</avail>
-      <cost>Rating * 4000</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Food -->
