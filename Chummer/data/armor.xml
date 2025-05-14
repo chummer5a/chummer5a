@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -4254,6 +4254,7 @@
       <id>0a7930f5-5466-439a-956d-2bba57f25ed9</id>
       <name>Parachute (Urban Explorer Daedalus)</name>
       <category>General</category>
+      <armor>0</armor>
       <hide />
       <maxrating>0</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -4286,6 +4287,7 @@
       <category>General</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
+      <armorcapacity>[0]</armorcapacity>
       <avail>4</avail>
       <cost>0</cost>
       <source>KC</source>
