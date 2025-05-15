@@ -1971,6 +1971,24 @@ namespace Chummer
             return objReturn;
         }
 
+        public static bool DictionaryValuesEqual<TKey, TValue>(IDictionary<TKey, TValue> first, IDictionary<TKey, TValue> second)
+        {
+            if (ReferenceEquals(first, second))
+                return true;
+            if (first == null || second == null)
+                return false;
+            if (first.Count != second.Count)
+                return false;
+            foreach (var kvp in first)
+            {
+                if (!second.TryGetValue(kvp.Key, out var value))
+                    return false;
+                if (!EqualityComparer<TValue>.Default.Equals(kvp.Value, value))
+                    return false;
+            }
+            return true;
+        }
+
         #region PDF Functions
 
         /// <summary>

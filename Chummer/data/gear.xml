@@ -546,7 +546,7 @@
       <weaponbonus>
         <ap>4</ap>
         <damage>-4</damage>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1615,7 +1615,7 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagereplace>As Drug/Toxin</damagereplace>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype noextra="True">slingshot</ammoforweapontype>
     </gear>
@@ -1765,7 +1765,7 @@
       <cost>FixedValues(20,30,40,50,100,200)</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1780,7 +1780,7 @@
       <cost>FixedValues(30,50)</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1796,7 +1796,7 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagetype>(M)</damagetype>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1815,7 +1815,7 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagetype>(M)</damagetype>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1834,7 +1834,7 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagetype>(M)</damagetype>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1850,7 +1850,7 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagetype>(M)</damagetype>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1869,7 +1869,7 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagetype>(M)</damagetype>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1890,7 +1890,7 @@
         <damage>-4</damage>
         <ap>-4</ap>
         <damagetype>(M)</damagetype>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>

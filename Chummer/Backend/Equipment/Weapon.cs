@@ -2262,7 +2262,11 @@ namespace Chummer.Backend.Equipment
                 }
 
                 Dictionary<string, string> dicRanges =
-                    await GetRangeStringsAsync(objCulture, token: token).ConfigureAwait(false);
+                    await GetRangeStringsAsync(objCulture, true, token: token).ConfigureAwait(false);
+
+                Dictionary<string, string> dicRangesNoAmmo =
+                    await GetRangeStringsAsync(objCulture, false, token).ConfigureAwait(false);
+                bool blnRangeAmmoChange = !CommonFunctions.DictionaryValuesEqual(dicRanges, dicRangesNoAmmo);
 
                 // <ranges>
                 XmlElementWriteHelper objRangesElement =
@@ -2270,10 +2274,10 @@ namespace Chummer.Backend.Equipment
                 try
                 {
                     await objWriter.WriteElementStringAsync("name",
-                            await DisplayRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                            await DisplayRangeAsync(strLanguageToPrint, blnRangeAmmoChange, token).ConfigureAwait(false), token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name_english",
-                            await DisplayRangeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token)
+                            await DisplayRangeAsync(GlobalSettings.DefaultLanguage, false, token).ConfigureAwait(false), token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("short", dicRanges["short"], token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("medium", dicRanges["medium"], token).ConfigureAwait(false);
@@ -2287,85 +2291,88 @@ namespace Chummer.Backend.Equipment
                     await objRangesElement.DisposeAsync().ConfigureAwait(false);
                 }
 
-                // <alternateranges>
-                XmlElementWriteHelper objAlternateRangesElement =
-                    await objWriter.StartElementAsync("alternateranges", token).ConfigureAwait(false);
-                try
-                {
-                    await objWriter.WriteElementStringAsync("name",
-                            await DisplayAlternateRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("name_english",
-                        await DisplayAlternateRangeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false),
-                        token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("short", dicRanges["alternateshort"], token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("medium", dicRanges["alternatemedium"], token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("long", dicRanges["alternatelong"], token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("extreme", dicRanges["alternateextreme"], token)
-                        .ConfigureAwait(false);
-                }
-                finally
-                {
-                    // </alternateranges>
-                    await objAlternateRangesElement.DisposeAsync().ConfigureAwait(false);
-                }
+                    // <alternateranges>
+                    XmlElementWriteHelper objAlternateRangesElement =
+                        await objWriter.StartElementAsync("alternateranges", token).ConfigureAwait(false);
+                    try
+                    {
+                        await objWriter.WriteElementStringAsync("name",
+                                await DisplayAlternateRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("name_english",
+                            await DisplayAlternateRangeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false),
+                            token).ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("short", dicRanges["alternateshort"], token)
+                            .ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("medium", dicRanges["alternatemedium"], token)
+                            .ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("long", dicRanges["alternatelong"], token)
+                            .ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("extreme", dicRanges["alternateextreme"], token)
+                            .ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        // </alternateranges>
+                        await objAlternateRangesElement.DisposeAsync().ConfigureAwait(false);
+                    }
 
-                Dictionary<string, string> dicRangesNoAmmo =
-                    await GetRangeStringsAsync(objCulture, false, token).ConfigureAwait(false);
 
-                // <ranges>
-                XmlElementWriteHelper objRangesNoAmmoElement =
+
+                // Only include the unloaded range numbers if the dictionary values differ
+                if (blnRangeAmmoChange)
+                {
+                    // <ranges>
+                    XmlElementWriteHelper objRangesNoAmmoElement =
                     await objWriter.StartElementAsync("ranges", token).ConfigureAwait(false);
-                try
-                {
-                    await objWriter.WriteElementStringAsync("name",
-                            await DisplayRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("name_english",
-                            await DisplayRangeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("short", dicRangesNoAmmo["short"], token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("medium", dicRangesNoAmmo["medium"], token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("long", dicRangesNoAmmo["long"], token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("extreme", dicRangesNoAmmo["extreme"], token)
-                        .ConfigureAwait(false);
-                }
-                finally
-                {
-                    // </ranges>
-                    await objRangesNoAmmoElement.DisposeAsync().ConfigureAwait(false);
-                }
+                    try
+                    {
+                        await objWriter.WriteElementStringAsync("name",
+                                await DisplayRangeAsync(strLanguageToPrint, false, token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("name_english",
+                                await DisplayRangeAsync(GlobalSettings.DefaultLanguage, true, token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("short", dicRangesNoAmmo["short"], token)
+                            .ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("medium", dicRangesNoAmmo["medium"], token)
+                            .ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("long", dicRangesNoAmmo["long"], token)
+                            .ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("extreme", dicRangesNoAmmo["extreme"], token)
+                            .ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        // </ranges>
+                        await objRangesNoAmmoElement.DisposeAsync().ConfigureAwait(false);
+                    }
 
-                // <alternateranges>
-                XmlElementWriteHelper objAlternateRangesNoAmmoElement =
-                    await objWriter.StartElementAsync("alternateranges", token).ConfigureAwait(false);
-                try
-                {
-                    await objWriter.WriteElementStringAsync("name",
-                            await DisplayAlternateRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("name_english",
-                        await DisplayAlternateRangeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false),
-                        token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("short", dicRangesNoAmmo["alternateshort"], token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("medium", dicRangesNoAmmo["alternatemedium"], token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("long", dicRangesNoAmmo["alternatelong"], token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("extreme", dicRangesNoAmmo["alternateextreme"], token)
-                        .ConfigureAwait(false);
-                }
-                finally
-                {
-                    // </alternateranges>
-                    await objAlternateRangesNoAmmoElement.DisposeAsync().ConfigureAwait(false);
+                    // <alternateranges>
+                    XmlElementWriteHelper objAlternateRangesNoAmmoElement =
+                        await objWriter.StartElementAsync("alternateranges", token).ConfigureAwait(false);
+                    try
+                    {
+                        await objWriter.WriteElementStringAsync("name",
+                                await DisplayAlternateRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("name_english",
+                            await DisplayAlternateRangeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false),
+                            token).ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("short", dicRangesNoAmmo["alternateshort"], token)
+                            .ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("medium", dicRangesNoAmmo["alternatemedium"], token)
+                            .ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("long", dicRangesNoAmmo["alternatelong"], token)
+                            .ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("extreme", dicRangesNoAmmo["alternateextreme"], token)
+                            .ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        // </alternateranges>
+                        await objAlternateRangesNoAmmoElement.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
 
                 await Children.ForEachAsync(async objUnderbarrel =>
@@ -6414,12 +6421,12 @@ namespace Chummer.Backend.Equipment
         public string CurrentDisplayRange => DisplayRange(GlobalSettings.Language);
 
         public Task<string> GetCurrentDisplayRangeAsync(CancellationToken token = default) =>
-            DisplayRangeAsync(GlobalSettings.Language, token);
+            DisplayRangeAsync(GlobalSettings.Language, false, token);
 
         /// <summary>
         /// The string for the Weapon's Range category
         /// </summary>
-        public string DisplayRange(string strLanguage)
+        public string DisplayRange(string strLanguage, bool blnIncludeAmmoName = false)
         {
             string strRange = Range;
             if (string.IsNullOrWhiteSpace(strRange))
@@ -6446,6 +6453,11 @@ namespace Chummer.Backend.Equipment
                         strRange = xmlTranslateNode.Value;
                 }
             }
+            if (!blnIncludeAmmoName || AmmoLoaded == null)
+            {
+                return strRange;
+            }
+            strRange += " (" + AmmoLoaded?.DisplayNameShort(strLanguage) + ')';
 
             return strRange;
         }
@@ -6453,11 +6465,53 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The string for the Weapon's Range category
         /// </summary>
-        public async Task<string> DisplayRangeAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayRangeAsync(string strLanguage, bool blnIncludeAmmoName = false, CancellationToken token = default)
         {
             string strRange = Range;
             if (string.IsNullOrWhiteSpace(strRange))
                 strRange = Category;
+
+            if (blnIncludeAmmoName)
+            {
+                // Check if the Weapon has Ammunition loaded and look for any range replacement.
+                // Look for Ammo on the character.
+                Gear objGear = AmmoLoaded;
+                if (objGear != null)
+                {
+                    string strNewRange = string.Empty;
+
+                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
+                    {
+                        if (objGear.FlechetteWeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                        {
+                            strRange = strNewRange;
+                        }
+                    }
+                    else if (objGear.WeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                    {
+                        strRange = strNewRange;
+                    }
+
+                    // Do the same for any plugins.
+                    foreach (Gear objChild in await objGear.Children
+                                 .DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
+                                 .ConfigureAwait(false))
+                    {
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear"
+                                                   && objChild.FlechetteWeaponBonus != null)
+                        {
+                            if (objChild.FlechetteWeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                            {
+                                strRange = strNewRange;
+                            }
+                        }
+                        else if (objChild.WeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                        {
+                            strRange = strNewRange;
+                        }
+                    }
+                }
+            }
             if (!string.IsNullOrWhiteSpace(strRange) &&
                 !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
@@ -6488,6 +6542,11 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+            if (!blnIncludeAmmoName || AmmoLoaded == null)
+            {
+                return strRange;
+            }
+            strRange += " (" + (await AmmoLoaded?.DisplayNameShortAsync(strLanguage, token: token)) + ')';
 
             return strRange;
         }

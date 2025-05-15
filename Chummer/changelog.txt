@@ -84,6 +84,7 @@ Application Changes:
 - The selection system (required/forbidden) can now evaluate whether a character has an adept power of specific ratings, using the rating, minrating or maxrating attributes. This allows for the use of rating-based requirements on adept powers, ie checking whether a character has two levels of Keratin Control.
 - Fixed a bug in the echo/metamagics selection system that incorrectly showed false if the character had the metamagic or echo.
 - Fixed implementation of the weaponcategorydv bonus node using skill names rather than weapon categories. This caused issues for Unarmed weapons incorrectly looking for the Unarmed Combat skill rather than the Unarmed category. 
+- Weapons that have their Range changed by ammunition will now include the name of the ammunition in the range display, and will only be presented once if there is no change in ranges. Closes #5183
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
@@ -127,6 +128,109 @@ Data Changes:
 - Morgan Cutlass' page reference is now properly p. 464.
 - Added missing Transys Graygul cyberdeck whose stats, cost, and availability were buried in an NPC statblock.
 - Fixed implementation of the Critical Strike power to properly provide the bonus for Unarmed Combat. Closes #5180
+- Fixed Capsule Ammo not using correct range.
+
+Fixes implemented by BM123499
+
+Armor.xml
+
+    Added missing <armor> entry for Parachute.
+    Added missing armor_capacity attribute for Pantheon Quick-Charge Battery Pack.
+
+Critterpowers.xml
+
+    Removed legacy SR4‑only power.
+    Standardized hyphenation: Low-Light, Wire-band using minus signs.
+    Added automotive powers.
+    Added “Fold Perception” and “Agonizing Pain” from Howling Shadows (HS).
+
+Critters.xml
+
+    Renamed Baboon → Ozian Baboon (per source text).
+    Removed “Wyrd Mantis” (SR4‑only).
+    Populated missing <initiative>, <magic>, <resonance>, and <depth> fields for several critters.
+    Remove unintended character across the file.
+    Applied <rating> to skill and automotive powers; replaced stray <select>.
+    Corrected power and quality names:
+        Sillence → Silence
+        Devour → Devouring
+        Substance Extrusion → Secretion/Substance Extrusion
+        Shadowing → Sneaking
+        Improved Senses → Enhanced Senses
+        Spell Resistance → Magic Resistance
+        Banishing → Banishing Resistance
+        Fae Glamour → Fey Glamour
+        Regenerate → Regeneration
+        Throw Weapon → Throwing Weapon
+        Deezz → Derezz
+        Real World Naivete → Real World Naiveté
+    Re-classified:
+        Moved Astral Perception into AdeptPower or Quality (chose Quality).
+        Fixed <power> nesting under <optionalpowers>.
+        Changed Munge to a Quality, Resonance Hosting to a Power, Agony to a Spell.
+
+cyberware.xml
+
+    Added missing <capacity> and <cost> attributes to several implants.
+    Removed duplicated <inheritattributes> tag.
+
+gears.xml
+
+    Removed leftover of a commented sections (removing -->).
+    Updated SR4 avail values to SR5 standards.
+    Added missing gear for vehicle Proteus Krake (Small)
+
+lifemodules.xml
+
+    Replaced non-existent <collegeeducation> and <technicalschooleducation> tags with <quality>.
+
+mentors.xml
+
+    Eliminated empty <choice> tag.
+
+metatypes.xml
+
+    Removed duplicate <karma> tags (now handled in priorities.xml).
+    Deleted redundant <mag> attribution.
+    Cleaned up stray empty tags for consistency.
+
+powers.xml
+
+    Removed residual <selectskill> from Enthralling Performance.
+
+priorities.xml
+
+    Removed Goblin metavariant (SR4‑only).
+    Trimmed blank/empty tags.
+
+skill.xml
+
+    Normalized whitespace (tabs → spaces, trimmed trailing spaces).
+
+traditions.xml
+
+    Standardized minus signs in place of Unicode en-dashes.
+    Corrected spelling: bon → bod.
+
+vehicles.xml
+
+    Renamed Rigger Adaptation → Rigger Interface.
+    Removed duplicate <mods> block.
+    Deleted SR4‑only Conestoga Vista (Bus).
+    Moved Flash-Pak from mod to gear (Grenade: Flash-Pak).
+    Removed nonexistent Manual Control mod.
+    Added Amenities (Street) entries per Krime Katalogue (KK).
+
+weapons.xml
+
+    Fixed whitespace and indentation.
+    Corrected source entry for AK-98 Grenade Launcher.
+    Consolidated underbarrel accessory mounts: removed <accessorymounts> tags and added <mount>Under</mount> where needed, ensuring Trigger Removal is now displayed.
+    Fixed malformed <weapondetails> wrapper.
+    Adjusted structure for Ruhrmetall SFW-30 accessories so that Trigger Removal appears correctly.
+    Added missing stats for Ontario Arms Sling-Shot.
+    Removed duplicate <rating> from Krime Explosive Securing Tripod.
+
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
