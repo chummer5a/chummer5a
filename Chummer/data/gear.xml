@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -1415,7 +1415,7 @@
     </gear>
     <gear>
       <id>022bc6c7-1f91-4852-b1ee-0f50433a1b97</id>
-      <name>Grenade: Paint (Radioactive Tracking Dye),  Aerodynamic</name>
+      <name>Grenade: Paint (Radioactive Tracking Dye), Aerodynamic</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>RG</source>
@@ -1947,7 +1947,7 @@
       <page>53</page>
       <avail>10R</avail>
       <cost>Rating*20</cost>
-      <addweapon rating="{Rating}">Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
+      <addweapon rating="{Rating}">Grenade: Fuzzy Boom Boom Bunnies</addweapon>
     </gear>
     <gear>
       <id>7470ed31-0d81-4992-bae6-38f9de198020</id>
@@ -8765,6 +8765,17 @@
       <avail>6R</avail>
       <cost>250</cost>
     </gear>
+    <gear>
+      <id>e5a91f52-8f6d-4a2e-9b8f-3a087e3d97e4</id>
+      <name>Ink Pouch</name>
+      <category>Security Devices</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
     <!-- End Region -->
     <!-- Region Breaking and Entering Gear -->
     <gear>
@@ -9355,7 +9366,7 @@
     <gear>
       <id>3772ad51-c689-4e38-8c93-b285e78670b5</id>
       <name>Can Make Commcalls</name>
-      <category>Electronic Accessories</category>
+      <category>Electronics Accessories</category>
       <rating>0</rating>
       <source>SR5</source>
       <page>422</page>
@@ -15675,78 +15686,6 @@
       <costfor>5</costfor>
     </gear>
     <!-- End Region -->
-    <!-- Region Hard Nanoware -->
-    <gear>
-      <id>6ba6ff51-9dd3-43fa-8d46-e7fedcc68fe4</id>
-      <name>Anti-Rad</name>
-      <category>Hard Nanoware</category>
-      <rating>6</rating>
-      <source>CF</source>
-      <page>147</page>
-      <avail>14F</avail>
-      <cost>Rating * 6000</cost>
-    </gear>
-    <gear>
-      <id>1fb25d10-fa70-4a4e-87c8-b8a5acbb1473</id>
-      <name>Control Rig Booster</name>
-      <category>Hard Nanoware</category>
-      <rating>3</rating>
-      <source>CF</source>
-      <page>147</page>
-      <avail>12F</avail>
-      <cost>Rating * 6000</cost>
-    </gear>
-    <gear>
-      <id>d139c977-eb78-4234-8cfc-2e4ae909ef6f</id>
-      <name>Nanite Hunters</name>
-      <category>Hard Nanoware</category>
-      <rating>6</rating>
-      <source>CF</source>
-      <page>147</page>
-      <avail>16R</avail>
-      <cost>Rating * 5000</cost>
-    </gear>
-    <gear>
-      <id>f317ccfa-a0ab-4e14-8c6f-436b31061e73</id>
-      <name>Markers</name>
-      <category>Hard Nanoware</category>
-      <rating>3</rating>
-      <source>CF</source>
-      <page>148</page>
-      <avail>12</avail>
-      <cost>Rating * 2000</cost>
-    </gear>
-    <gear>
-      <id>044072d3-824c-49f9-91e2-07ae3e01be3c</id>
-      <name>Nanotattoos</name>
-      <category>Hard Nanoware</category>
-      <rating>6</rating>
-      <source>CF</source>
-      <page>148</page>
-      <avail>12F</avail>
-      <cost>Rating * 1000</cost>
-    </gear>
-    <gear>
-      <id>3718b500-b035-40dd-9f5f-c73682fff3ef</id>
-      <name>Taggants</name>
-      <category>Hard Nanoware</category>
-      <rating>3</rating>
-      <source>CF</source>
-      <page>148</page>
-      <avail>12</avail>
-      <cost>Rating * 600</cost>
-    </gear>
-    <gear>
-      <id>071a20a3-0507-43dc-b504-9aeaeb6df09b</id>
-      <name>Trauma Control System</name>
-      <category>Hard Nanoware</category>
-      <rating>6</rating>
-      <source>CF</source>
-      <page>148</page>
-      <avail>12F</avail>
-      <cost>Rating * 4000</cost>
-    </gear>
-    <!-- End Region -->
     <!-- Region Food -->
     <gear>
       <id>af06a5f9-a010-4e29-95b0-cd3e280d1de3</id>
@@ -16663,6 +16602,17 @@
       <avail>0</avail>
       <cost>1</cost>
       <costfor>4</costfor>
+    </gear>
+    <gear>
+      <id>9c7f1a63-4b2d-4e19-a9cb-fb8b63b5e3ac</id>
+      <name>Plasma Torch</name>
+      <category>Tools</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>0</avail>
+      <cost>1</cost>
+      <hide />
     </gear>
     <!-- End Region -->
     <!-- Region Housewares -->
@@ -18747,7 +18697,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>191</page>
-      <avail>4E</avail>
+      <avail>4</avail>
       <cost>250</cost>
     </gear>
     <gear>
@@ -20344,7 +20294,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>4V</avail>
+      <avail>4R</avail>
       <cost>180</cost>
     </gear>
     <gear>
@@ -20366,7 +20316,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>4E</avail>
+      <avail>4</avail>
       <cost>50</cost>
     </gear>
     <gear>
@@ -20386,7 +20336,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>3V</avail>
+      <avail>3R</avail>
       <cost>360</cost>
     </gear>
     <gear>

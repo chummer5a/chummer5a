@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -23,7 +23,6 @@
 
   <categories>
     <category whitelist="true">Drake</category>
-    <category whitelist="true">Echoes</category>
     <category whitelist="true">Emergent</category>
     <category whitelist="true">Free Spirit</category>
     <category whitelist="true">Infected</category>
@@ -1750,420 +1749,6 @@
       <page>85</page>
     </power>
     <power>
-      <id>9c5bcd33-ef29-487a-8f3d-5c4f3b314723</id>
-      <name>NeuroFilter</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>SR4</source>
-      <page>243</page>
-    </power>
-    <power>
-      <id>16cd3fa6-e4c8-4980-90d5-59bfeb41b5e5</id>
-      <name>Overclocking</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus>
-        <matrixinitiativediceadd>1</matrixinitiativediceadd>
-      </bonus>
-      <source>SR4</source>
-      <page>244</page>
-    </power>
-    <power>
-      <id>a6d7482a-2cef-4ab9-8d45-71c0926003bb</id>
-      <name>Resonance Link</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>SR4</source>
-      <page>244</page>
-    </power>
-    <power>
-      <id>c3306789-1ac8-4162-819b-709457b21470</id>
-      <name>System Upgrade</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus>
-        <livingpersona>
-          <system>1</system>
-        </livingpersona>
-      </bonus>
-      <source>SR4</source>
-      <page>244</page>
-    </power>
-    <power>
-      <id>749f73b1-f131-4a3d-82d9-9d952bc7e16c</id>
-      <name>Amplification</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus>
-        <livingpersona>
-          <signal>1</signal>
-        </livingpersona>
-      </bonus>
-      <source>UN</source>
-      <page>145</page>
-    </power>
-    <power>
-      <id>39e8b6b2-165f-4c3b-ab67-c61166c4d331</id>
-      <name>Biowire</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus>
-        <skillwire>Rating</skillwire>
-      </bonus>
-      <source>UN</source>
-      <page>145</page>
-    </power>
-    <power>
-      <id>b2a4a9b7-fe37-4a03-8fd5-21b497d3bf8e</id>
-      <name>Blur</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>145</page>
-    </power>
-    <power>
-      <id>7fa1db24-93cd-45dd-866a-66bb6940f0a4</id>
-      <name>Coenesthesia</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>145</page>
-    </power>
-    <power>
-      <id>bb21e7d0-0415-4e0e-8ab0-12b866c44d70</id>
-      <name>Defragmentation</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>145</page>
-    </power>
-    <power>
-      <id>3c3c2ac3-9d6a-4a29-8d93-4749dfdde03a</id>
-      <name>E-sensing</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>146</page>
-    </power>
-    <power>
-      <id>d4aaf380-eeae-4ee7-a7c3-6004e0fb52c6</id>
-      <name>Flexible Touch</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>146</page>
-    </power>
-    <power>
-      <id>ce6d38b3-fdb3-4829-979d-381249cc4f18</id>
-      <name>Immersion</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>146</page>
-    </power>
-    <power>
-      <id>32f639a6-4e1a-4077-ad59-965efc42daeb</id>
-      <name>Living ECM</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>146</page>
-    </power>
-    <power>
-      <id>35c92b6e-d409-41f9-aa2e-2dafbfbc184b</id>
-      <name>Macro</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>146</page>
-    </power>
-    <power>
-      <id>94fb2fed-bc9d-4090-b103-7f8b0ea86d24</id>
-      <name>Multiprocessing</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>re
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>146</page>
-    </power>
-    <power>
-      <id>16c51017-0e50-413d-bd17-889f7d35e5a7</id>
-      <name>Sift</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>147</page>
-    </power>
-    <power>
-      <id>b804f306-b023-4431-811f-22825167165e</id>
-      <name>Skinlink</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>147</page>
-    </power>
-    <power>
-      <id>2330af39-6e97-49c0-927a-d23633170e5d</id>
-      <name>Sprite Link</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus>
-        <selectsprite />
-      </bonus>
-      <source>UN</source>
-      <page>147</page>
-    </power>
-    <power>
-      <id>04f8ba5a-2e12-46b7-a032-7e826658dbca</id>
-      <name>Swap</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>147</page>
-    </power>
-    <power>
-      <id>5b3b3212-1ca5-4a82-9ac3-d2a31b8c34c1</id>
-      <name>Widget Crafting</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>147</page>
-    </power>
-    <power>
-      <id>0f0b2ab2-3f71-43e6-b815-d9f6f5c6ed60</id>
-      <name>Acceleration</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus>
-        <initiativepassadd>1</initiativepassadd>
-      </bonus>
-      <source>UN</source>
-      <page>147</page>
-    </power>
-    <power>
-      <id>728df266-8d80-4da5-bcd8-7085958ea083</id>
-      <name>Advanced Overclocking</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus>
-        <matrixinitiativediceadd>1</matrixinitiativediceadd>
-      </bonus>
-      <source>UN</source>
-      <page>147</page>
-    </power>
-    <power>
-      <id>1a192b38-0a18-41b2-9c49-8fa183c9a4c9</id>
-      <name>Enhanced Resonance Link</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>147</page>
-    </power>
-    <power>
-      <id>f8dd2f09-e3e8-417c-a42b-69355f7777ff</id>
-      <name>Mesh Reality</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>147</page>
-    </power>
-    <power>
-      <id>ba6c1006-ab3a-4424-b803-eff2813ba392</id>
-      <name>Mind Over Machine</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>148</page>
-    </power>
-    <power>
-      <id>bfb370b9-0ee7-4107-a87a-0dbc33205851</id>
-      <name>Resonance Exchange</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>148</page>
-    </power>
-    <power>
-      <id>7a9c3d97-22b3-4a74-b19a-490eab195100</id>
-      <name>Resonance Trodes</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>148</page>
-    </power>
-    <power>
-      <id>57538d5d-7355-4a93-8849-c67068af9e73</id>
-      <name>Connectivity</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>WAR</source>
-      <page>179</page>
-    </power>
-    <power>
-      <id>4077198b-f469-4e7d-b16b-1db046378780</id>
-      <name>Feral Resonance</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>WAR</source>
-      <page>179</page>
-    </power>
-    <power>
-      <id>17b23235-76e1-491d-9c8a-b7a043537427</id>
-      <name>Bio-Radar</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>WAR</source>
-      <page>179</page>
-    </power>
-    <power>
-      <id>97e0ae7e-3dce-4782-8d7e-3dfb93bd42ad</id>
-      <name>Contaminate</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>178</page>
-    </power>
-    <power>
-      <id>cd285642-e0db-47fe-8f55-2f85c8a5ec1c</id>
-      <name>Malfunction</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>179</page>
-    </power>
-    <power>
-      <id>80d66ca5-a96a-43de-bad3-84ab78231a57</id>
-      <name>Pryon</name>
-      <category>Echoes</category>
-      <type>P</type>
-      <action>Special</action>
-      <range>Special</range>
-      <duration>Special</duration>
-      <bonus />
-      <source>UN</source>
-      <page>179</page>
-    </power>
-    <power>
       <id>df67deb5-91e4-47bc-9af8-baf60fc2311d</id>
       <name>Concealment (Self Only)</name>
       <category>Paranormal</category>
@@ -2594,7 +2179,7 @@
     </power>
     <power>
       <id>dba6b163-0466-4fa1-998a-0a5ac74edba9</id>
-      <name>Enhanced Sense (Wide Band Hearing)</name>
+      <name>Enhanced Sense (Wide-Band Hearing)</name>
       <category>Drake</category>
       <type>P</type>
       <action>Auto</action>
@@ -2606,7 +2191,7 @@
     </power>
     <power>
       <id>27488146-76d0-454c-b375-a63ccc492b70</id>
-      <name>Enhanced Sense (Low Light Vision)</name>
+      <name>Enhanced Sense (Low-Light Vision)</name>
       <category>Drake</category>
       <type>P</type>
       <action>Auto</action>
@@ -4413,7 +3998,7 @@
     </power>
     <power>
       <id>048c7ca6-d626-415e-baae-80246091b8e1</id>
-      <name>Enhanced Sense (Low Light Vision)</name>
+      <name>Enhanced Sense (Low-Light Vision)</name>
       <category>Chimeric Modification</category>
       <type />
       <action />
@@ -4827,6 +4412,78 @@
       <duration />
       <source>HS</source>
       <page>173</page>
+    </power>
+    <!-- End Region -->
+    <!-- Region Automotive Powers -->
+    <power>
+      <id>e16964a0-5a6e-47ef-8f04-d3ee81ceb411</id>
+      <name>Evasion</name>
+      <category>Paranormal</category>
+      <type />
+      <rating>True</rating>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <source>FA</source>
+      <page>180</page>
+      <notes>These operate similarly to the autosofts of the same name, with a Rating that matches the spirit's Force.</notes>
+      <hide />
+    </power>
+    <power>
+      <id>fe3beeae-0b61-4fd1-9c6d-1b47c98ce20d</id>
+      <name>Maneuvering</name>
+      <category>Paranormal</category>
+      <type />
+      <rating>True</rating>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <source>FA</source>
+      <page>180</page>
+      <notes>These operate similarly to the autosofts of the same name, with a Rating that matches the spirit's Force.</notes>
+      <hide />
+    </power>
+    <power>
+      <id>d3cbc66d-1586-4e86-ab0c-6287506dbd74</id>
+      <name>Stealth</name>
+      <category>Paranormal</category>
+      <type />
+      <rating>True</rating>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <source>FA</source>
+      <page>180</page>
+      <notes>These operate similarly to the autosofts of the same name, with a Rating that matches the spirit's Force.</notes>
+      <hide />
+    </power>
+    <!-- End Region -->
+    <!-- Region Automotive Powers -->
+    <power>
+      <id>93484499-4977-45b7-a722-1b58157d7708</id>
+      <name>Fold Perception</name>
+      <category>Free Spirit</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>120</page>
+      <hide />
+      <notes>Alters how space is perceived, making areas seem larger or distorted without changing physical structure. Can affect both physical and astral senses.</notes>
+    </power>
+    <power>
+      <id>6c915799-73ba-470a-b333-b8808127415e</id>
+      <name>Agonizing Pain</name>
+      <category>Free Spirit</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>132</page>
+      <hide />
+      <notes>Induces intense physical and mental agony by embedding barbed tentacles into the target. Movement increases the pain and further debilitates the victim, feeding off the emotional energy generated by the suffering.</notes>
     </power>
     <!-- End Region -->
   </powers>
