@@ -19,19 +19,12 @@
 -->
 <chummer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critters.xsd">
    <categories>
-      <category>A.I.s</category>
       <category>Dracoforms</category>
-      <category>Entropic Sprites</category>
-      <category>Fey</category>
-      <category>Ghosts and Haunts</category>
-      <category>Harbingers</category>
-      <category>Imps</category>
       <category>Infected</category>
       <category>Insect Spirits</category>
       <category>Mundane Critters</category>
       <category>Mutant Critters</category>
       <category>Paranormal Critters</category>
-      <category>Primordial Spirits</category>
       <category>Protosapients</category>
       <category>Ritual</category>
       <category>Shadow Spirits</category>
