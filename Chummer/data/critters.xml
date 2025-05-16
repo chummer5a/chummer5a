@@ -10209,13 +10209,9 @@
             </enabletab>
             <initiativepass>1</initiativepass>
          </bonus>
-         <qualities>
-            <positive>
-               <quality>Astral Perception</quality>
-            </positive>
-         </qualities>
          <powers>
             <power>Astral Form</power>
+            <power>Astral Perception</power>
             <power>Banishing Resistance</power>
             <power>Concealment</power>
             <power>Confusion</power>

@@ -2116,17 +2116,6 @@
       <addweapon>Grenade: Krime Stinger</addweapon>
     </gear>
     <gear>
-      <id>eba4ebc2-f17e-471e-aa1b-4416daba9488</id>
-      <name>Ink Pouch</name>
-      <category>Custom</category>
-      <rating>0</rating>
-      <source>R5</source>
-      <page>136</page>
-      <avail>0</avail>
-      <addweapon>Ink Pouch</addweapon>
-      <cost>0</cost>
-    </gear>
-    <gear>
       <id>5768d347-cd1e-454c-b5f7-012266c185a4</id>
       <name>Micro-Torpedo: Chemical</name>
       <category>Ammunition</category>
@@ -8785,6 +8774,7 @@
       <page>136</page>
       <avail>0</avail>
       <cost>0</cost>
+      <addweapon>Ink Pouch</addweapon>
       <hide />
     </gear>
     <!-- End Region -->
@@ -8889,17 +8879,6 @@
       <page>448</page>
       <avail>2</avail>
       <cost>80</cost>
-    </gear>
-    <gear>
-      <id>9764931f-5d2f-4d2f-a3cc-c3858e95abd1</id>
-      <name>Plasma Torch</name>
-      <category>Breaking and Entering Gear</category>
-      <hide />
-      <rating>0</rating>
-      <source>R5</source>
-      <page>136</page>
-      <avail>0</avail>
-      <cost>0</cost>
     </gear>
     <gear>
       <id>17a4ed15-a9d3-40a6-b5d4-4a69f6c8b9d3</id>

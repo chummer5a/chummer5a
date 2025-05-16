@@ -12075,18 +12075,6 @@
     <!-- End Region -->
     <!-- Region All -->
     <mod>
-      <id>ee7ae67f-3914-4c10-a7e6-0bbdbb7cc38f</id>
-      <name>Rigger Adaptation</name>
-      <page>12</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>All</category>
-      <cost>0</cost>
-      <rating>0</rating>
-      <slots>0</slots>
-      <hide />
-    </mod>
-    <mod>
       <id>356eee5f-1f2d-4ed8-8db1-d0989c69a755</id>
       <name>Micro Weapon Mount (Drone)</name>
       <page>124</page>
