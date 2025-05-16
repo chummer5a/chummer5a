@@ -260,6 +260,14 @@
       <extreme>-1</extreme>
     </range>
     <range>
+      <name>Spray Pen</name>
+      <min>0</min>
+      <short>2</short>
+      <medium>-1</medium>
+      <long>-1</long>
+      <extreme>-1</extreme>
+    </range>
+    <range>
       <name>Carbines</name>
       <min>0</min>
       <short>10</short>

@@ -2913,8 +2913,6 @@
               <name>Combat</name>
               <val>1</val>
             </spellcategory>
-          </bonus>
-          <bonus>
             <spellcategory>
               <name>Detection</name>
               <val>1</val>
@@ -3024,12 +3022,10 @@
         <choice>
           <name>Magician: +1 die for Counterspelling and Combat Spells</name>
           <bonus>
-            <spellcategory>
+            <specificskill>
               <name>Counterspelling</name>
-              <bonus>1</bonus>
-            </spellcategory>
-          </bonus>
-          <bonus>
+              <val>1</val>
+            </specificskill>
             <spellcategory>
               <name>Combat</name>
               <val>2</val>
