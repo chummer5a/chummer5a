@@ -2316,6 +2316,9 @@
       <karma />
       <source>AET</source>
       <page>35</page>
+      <bonus>
+        <unlockskills name="Assensing">Name</unlockskills>
+      </bonus>
       <hide />
     </power>
     <power>
