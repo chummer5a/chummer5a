@@ -9246,7 +9246,8 @@
       <mods>
         <name>Rigger Interface</name>
         <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
-        <name>Manual Controls</name>
+        <name>Secondary Manual Controls</name>
+        <!-- "Manual Controls" in source -->
       </mods>
       <seats>5</seats>
     </vehicle>
@@ -11133,17 +11134,6 @@
       <cost>number(Body = 0) * 2500 + Body * 5000</cost>
       <rating>0</rating>
       <slots>10</slots>
-    </mod>
-    <mod>
-      <id>4e50b2bf-9fe6-42c4-b7f4-292e62c7364c</id>
-      <name>Manual Controls</name>
-      <page>31</page>
-      <source>SFME</source>
-      <avail>0</avail>
-      <category>Powertrain</category>
-      <cost>0</cost>
-      <rating>0</rating>
-      <slots>0</slots>
     </mod>
     <mod>
       <id>ea6ccca2-4294-494c-9fc7-963c3bcca12e</id>

@@ -668,13 +668,6 @@
       <page>169</page>
       <action>Complex</action>
       <adeptway>0.5</adeptway>
-      <adeptwayrequires>
-        <required>
-          <oneof>
-            <quality>The Beast's Way</quality>
-          </oneof>
-        </required>
-      </adeptwayrequires>
       <required>
         <oneof>
           <power>Berserk</power>
@@ -1421,7 +1414,6 @@
       <limit>1</limit>
       <source>SS</source>
       <page>191</page>
-      <adeptway>0.125</adeptway>
       <adeptwayrequires>
         <required>
           <oneof>

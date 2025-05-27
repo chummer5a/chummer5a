@@ -4844,7 +4844,15 @@
           <qualities>
             <quality>Aspected Magician</quality>
           </qualities>
+          <skillgroupchoices>
+            <skillgroup>Conjuring</skillgroup>
+            <skillgroup>Enchanting</skillgroup>
+            <skillgroup>Sorcery</skillgroup>
+          </skillgroupchoices>
           <magic>2</magic>
+          <skillgroupqty>1</skillgroupqty>
+          <skillgroupval>0</skillgroupval>
+          <skillgrouptype>grouped</skillgrouptype>
           <forbidden>
             <oneof>
               <metatype>A.I.</metatype>
