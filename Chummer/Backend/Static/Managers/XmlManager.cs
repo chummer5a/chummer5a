@@ -1102,8 +1102,21 @@ namespace Chummer
                     }
                 }
 
+                // PACKS always have live custom data via the special packs folder, though entries here don't have GUIDs and so don't need duplicate checking
+                if (strFileName == "packs.xml")
+                {
+                    strPath = Utils.GetPacksFolderPath;
+                    if (Directory.Exists(strPath))
+                    {
+                        _ = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strPath, strFileName, token: token)
+                            : await DoProcessCustomDataFilesAsync(xmlScratchpad, xmlReturn, strPath, strFileName,
+                                token: token).ConfigureAwait(false);
+                    }
+                }
                 // Check for non-unique guids and non-guid formatted ids in the loaded XML file. Ignore improvements.xml since the ids are used in a different way.
-                if (blnHasLiveCustomData || (blnSync
+                else if (blnHasLiveCustomData || (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? !xmlReferenceOfReturn.GetDuplicatesChecked(token)
                         : !await xmlReferenceOfReturn.GetDuplicatesCheckedAsync(token).ConfigureAwait(false)))
@@ -1496,8 +1509,13 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (!Directory.Exists(strLoopPath))
                     continue;
-                if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, StringComparison.OrdinalIgnoreCase) && strFileName != "packs.xml")
-                    continue;
+                if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (strFileName == "packs.xml")
+                        yield return strLoopPath; // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
+                    else
+                        continue;
+                }
                 foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
                                                                         SearchOption.AllDirectories))
                 {
