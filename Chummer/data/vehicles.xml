@@ -6167,7 +6167,6 @@
           <maxrating>7</maxrating>
         </gear>
       </gears>
-      <mods />
       <seats>1</seats>
       <weaponmounts>
         <weaponmount>
@@ -9247,6 +9246,8 @@
       <mods>
         <name>Rigger Interface</name>
         <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
+        <name>Secondary Manual Controls</name>
+        <!-- "Manual Controls" in source -->
       </mods>
       <seats>5</seats>
     </vehicle>
@@ -13268,7 +13269,7 @@
       <name>Interchangeable Bed: Custom</name>
       <page>54</page>
       <source>R5</source>
-      <avail></avail>
+      <avail>0</avail>
       <category>All</category>
       <cost>Variable(0-1000000)</cost>
       <rating>0</rating>

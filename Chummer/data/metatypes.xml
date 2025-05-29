@@ -2600,9 +2600,6 @@
             <enableattribute>
               <name>MAG</name>
             </enableattribute>
-            <enableattribute>
-              <name>MAG</name>
-            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
