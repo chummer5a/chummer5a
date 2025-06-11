@@ -5872,6 +5872,13 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public XPathNavigator LoadDataXPath(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
         {
+            IReadOnlyList<string> lstCustomPaths = Settings.EnabledCustomDataDirectoryPaths;
+            if (strFileName == "packs.xml")
+            {
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
+                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                return XmlManager.LoadXPath(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token);
+            }
             return XmlManager.LoadXPath(strFileName, Settings.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile, token);
         }
 
@@ -5888,8 +5895,14 @@ namespace Chummer
         public async Task<XPathNavigator> LoadDataXPathAsync(string strFileName, string strLanguage = "",
             bool blnLoadFile = false, CancellationToken token = default)
         {
-            return await XmlManager.LoadXPathAsync(strFileName, await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false), strLanguage,
-                blnLoadFile, token).ConfigureAwait(false);
+            IReadOnlyList<string> lstCustomPaths = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
+            if (strFileName == "packs.xml")
+            {
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
+                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                return await XmlManager.LoadXPathAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+            }
+            return await XmlManager.LoadXPathAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -5903,7 +5916,14 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public XmlDocument LoadData(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
         {
-            return XmlManager.Load(strFileName, Settings.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile, token);
+            IReadOnlyList<string> lstCustomPaths = Settings.EnabledCustomDataDirectoryPaths;
+            if (strFileName == "packs.xml")
+            {
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
+                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                return XmlManager.Load(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token);
+            }
+            return XmlManager.Load(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token);
         }
 
         /// <summary>
@@ -5916,7 +5936,14 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public async Task<XmlDocument> LoadDataAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
         {
-            return await XmlManager.LoadAsync(strFileName, await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false), strLanguage, blnLoadFile, token).ConfigureAwait(false);
+            IReadOnlyList<string> lstCustomPaths = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
+            if (strFileName == "packs.xml")
+            {
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
+                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                return await XmlManager.LoadAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+            }
+            return await XmlManager.LoadAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
         }
 
         private int _intIsLoading;

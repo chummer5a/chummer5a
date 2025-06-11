@@ -3559,6 +3559,77 @@ namespace Chummer
                 if (objPower != null)
                     await objPower.SetExtraAsync(strSelectedValue, token).ConfigureAwait(false);
             }
+            else if (bonusNode["selectcategories"] != null)
+            {
+                using (XmlNodeList xmlSelectCategoryList = bonusNode.SelectNodes("selectcategories"))
+                {
+                    if (xmlSelectCategoryList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlSelectCategory in xmlSelectCategoryList)
+                        {
+                            // Display the Select Category window and record which Category was selected.
+                            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                           out List<ListItem> lstGeneralItems))
+                            {
+                                using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
+                                {
+                                    if (xmlCategoryList?.Count > 0)
+                                    {
+                                        foreach (XmlNode objXmlCategory in xmlCategoryList)
+                                        {
+                                            string strInnerText = objXmlCategory.InnerText;
+                                            lstGeneralItems.Add(new ListItem(strInnerText,
+                                                                             await _objCharacter.TranslateExtraAsync(
+                                                                                 strInnerText, GlobalSettings.Language,
+                                                                                 "weapons.xml", token).ConfigureAwait(false)));
+                                        }
+                                    }
+                                }
+
+                                string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
+                                                   ? string.Format(GlobalSettings.CultureInfo,
+                                                       await LanguageManager.GetStringAsync(
+                                                           "String_Improvement_SelectSkillNamed", token: token).ConfigureAwait(false), _strFriendlyName)
+                                                   : await LanguageManager.GetStringAsync("Title_SelectWeaponCategory", token: token).ConfigureAwait(false);
+                                using (ThreadSafeForm<SelectItem> frmPickCategory = await ThreadSafeForm<SelectItem>.GetAsync(() =>
+                                           new SelectItem
+                                           {
+                                               Description = strDescription
+                                           }).ConfigureAwait(false))
+                                {
+                                    frmPickCategory.MyForm.SetGeneralItemsMode(lstGeneralItems);
+
+                                    if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal)
+                                        || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
+                                        ForcedValue = string.Empty;
+
+                                    if (!string.IsNullOrEmpty(ForcedValue))
+                                    {
+                                        frmPickCategory.MyForm.Opacity = 0;
+                                        frmPickCategory.MyForm.ForceItem(ForcedValue);
+                                    }
+
+                                    // Make sure the dialogue window was not canceled.
+                                    if (await frmPickCategory.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
+                                    {
+                                        throw new AbortedException();
+                                    }
+
+                                    SelectedValue = frmPickCategory.MyForm.SelectedItem;
+                                }
+                            }
+
+                            await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).ForEachAsync(async objPower =>
+                            {
+                                if (objPower.InternalId == SourceName)
+                                {
+                                    await objPower.SetExtraAsync(SelectedValue, token).ConfigureAwait(false);
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+            }
             else if (bonusNode["name"] != null)
             {
                 strSelectedValue = bonusNode["name"].InnerText;
