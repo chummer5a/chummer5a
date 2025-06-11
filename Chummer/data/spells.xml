@@ -2940,6 +2940,7 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <useskill>Animal Handling</useskill>
       <bonus>
         <selecttext />
       </bonus>

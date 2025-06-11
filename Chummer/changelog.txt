@@ -85,6 +85,7 @@ Application Changes:
 - Fixed a bug in the echo/metamagics selection system that incorrectly showed false if the character had the metamagic or echo.
 - Fixed implementation of the weaponcategorydv bonus node using skill names rather than weapon categories. This caused issues for Unarmed weapons incorrectly looking for the Unarmed Combat skill rather than the Unarmed category. 
 - Weapons that have their Range changed by ammunition will now include the name of the ammunition in the range display, and will only be presented once if there is no change in ranges. Closes #5183
+- Implemented the UseSkill element for Spells. This allows for overriding a Spell to use a specific skill (ie Attune Animal using Animal Handling) rather than the category default.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
@@ -129,6 +130,8 @@ Data Changes:
 - Added missing Transys Graygul cyberdeck whose stats, cost, and availability were buried in an NPC statblock.
 - Fixed implementation of the Critical Strike power to properly provide the bonus for Unarmed Combat. Closes #5180
 - Fixed Capsule Ammo not using correct range.
+- Fixed Three-Dimensional Memory not being discounted by the Artist's Way.
+- Attune Animal spell now orrectly uses Animal Handling as its skill instead of the Ritual Spellcasting skill.
 
 Fixes implemented by BM123499
 

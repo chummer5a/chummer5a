@@ -57,6 +57,7 @@ namespace Chummer
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strExtra = string.Empty;
+        private string _strUseSkill = string.Empty;
         private bool _blnLimited;
         private bool _blnExtended;
         private bool _blnCustomExtended;
@@ -143,6 +144,7 @@ namespace Chummer
                 objXmlSpellNode.TryGetStringFieldQuickly("damage", ref _strDamage);
                 objXmlSpellNode.TryGetStringFieldQuickly("duration", ref _strDuration);
                 objXmlSpellNode.TryGetStringFieldQuickly("dv", ref _strDV);
+                objXmlSpellNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
                 _blnLimited = blnLimited;
                 _blnAlchemical = blnAlchemical;
                 objXmlSpellNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -237,6 +239,7 @@ namespace Chummer
                 objXmlSpellNode.TryGetStringFieldQuickly("damage", ref _strDamage);
                 objXmlSpellNode.TryGetStringFieldQuickly("duration", ref _strDuration);
                 objXmlSpellNode.TryGetStringFieldQuickly("dv", ref _strDV);
+                objXmlSpellNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
                 _blnLimited = blnLimited;
                 _blnAlchemical = blnAlchemical;
                 objXmlSpellNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -326,6 +329,7 @@ namespace Chummer
                 objWriter.WriteElementString("damage", _strDamage);
                 objWriter.WriteElementString("duration", _strDuration);
                 objWriter.WriteElementString("dv", _strDV);
+                objWriter.WriteElementString("useskill", _strUseSkill);
                 objWriter.WriteElementString("limited", _blnLimited.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("extended", _blnExtended.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("customextended",
@@ -385,6 +389,7 @@ namespace Chummer
 
                 objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
                 objNode.TryGetStringFieldQuickly("dv", ref _strDV);
+                objNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
                 if (objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited) && _blnLimited
                                                                                && _objCharacter.LastSavedVersion
                                                                                <= new ValueVersion(5, 197, 30))
@@ -1898,6 +1903,15 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Active Skill that should be used with this Spell instead of the default one.
+        /// </summary>
+        public string UseSkill
+        {
+            get => _strUseSkill;
+            set => _strUseSkill = value;
+        }
+
         #endregion Properties
 
         #region ComplexProperties
@@ -1911,24 +1925,31 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    XPathNavigator objCategoryNode = _objCharacter.LoadDataXPath("spells.xml")
-                                                                  .SelectSingleNode(
-                                                                      "/chummer/categories/category[. = "
-                                                                      + Category.CleanXPath() + ']');
-                    if (objCategoryNode == null)
-                        return null;
                     string strSkillKey = string.Empty;
-                    objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
-                    strSkillKey =
-                        RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell)
-                            .FirstOrDefault()?.Target ?? strSkillKey;
-                    if (Alchemical)
+                    if (string.IsNullOrEmpty(UseSkill))
                     {
-                        objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
+                        XPathNavigator objCategoryNode = _objCharacter.LoadDataXPath("spells.xml")
+                                              .SelectSingleNode(
+                                                  "/chummer/categories/category[. = "
+                                                  + Category.CleanXPath() + ']');
+                        if (objCategoryNode == null)
+                            return null;
+                        objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
+                        strSkillKey =
+                            RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell)
+                                .FirstOrDefault()?.Target ?? strSkillKey;
+                        if (Alchemical)
+                        {
+                            objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
+                        }
+                        else if (BarehandedAdept)
+                        {
+                            objCategoryNode.TryGetStringFieldQuickly("@barehandedadeptskill", ref strSkillKey);
+                        }
                     }
-                    else if (BarehandedAdept)
+                    else
                     {
-                        objCategoryNode.TryGetStringFieldQuickly("@barehandedadeptskill", ref strSkillKey);
+                        strSkillKey = UseSkill;
                     }
 
                     return string.IsNullOrEmpty(strSkillKey)
@@ -1948,24 +1969,34 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                XPathNavigator objCategoryNode = (await _objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false))
+                string strSkillKey = string.Empty;
+                if (string.IsNullOrEmpty(UseSkill))
+                {
+                    // If UseSkill is not set, we need to look it up in the XML file.
+                    // This is done asynchronously to avoid blocking the UI thread.
+                    XPathNavigator objCategoryNode = (await _objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false))
                     .SelectSingleNode(
                         "/chummer/categories/category[. = "
                         + Category.CleanXPath() + ']');
-                if (objCategoryNode == null)
-                    return null;
-                string strSkillKey = string.Empty;
-                objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
-                strSkillKey =
-                    (await RelevantImprovementsAsync(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell, token: token).ConfigureAwait(false))
-                        .FirstOrDefault()?.Target ?? strSkillKey;
-                if (Alchemical)
-                {
-                    objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
+                    if (objCategoryNode == null)
+                        return null;
+                    objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
+                    strSkillKey =
+                        (await RelevantImprovementsAsync(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell, token: token).ConfigureAwait(false))
+                            .FirstOrDefault()?.Target ?? strSkillKey;
+                    if (Alchemical)
+                    {
+                        objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
+                    }
+                    else if (BarehandedAdept)
+                    {
+                        objCategoryNode.TryGetStringFieldQuickly("@barehandedadeptskill", ref strSkillKey);
+                    }
                 }
-                else if (BarehandedAdept)
+                else
                 {
-                    objCategoryNode.TryGetStringFieldQuickly("@barehandedadeptskill", ref strSkillKey);
+                    // If UseSkill is set, we use that directly.
+                    strSkillKey = UseSkill;
                 }
 
                 return string.IsNullOrEmpty(strSkillKey)
