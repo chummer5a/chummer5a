@@ -1716,7 +1716,7 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>7</accuracy>
-      <reach>1</reach>
+      <reach>0</reach>
       <damage>2P</damage>
       <ap>0</ap>
       <mode>SS</mode>
@@ -8614,6 +8614,7 @@
       <page>182</page>
       <extramount>Side</extramount>
       <mount>Under</mount>
+      <range>Submachine Guns</range>
       <required>
         <weapondetails>
           <OR>
@@ -9233,6 +9234,7 @@
       <cost>45</cost>
       <source>CA</source>
       <page>134</page>
+      <range>Spray Pen</range>
       <spec>Pepper Punch Pen</spec>
       <!-- ReSharper disable once MarkupTextTypo -->
       <weapontype>pepperpunch</weapontype>
@@ -9254,6 +9256,7 @@
       <cost>60</cost>
       <source>CA</source>
       <page>134</page>
+      <range>Spray Pen</range>
       <spec>Modified Spray Pen</spec>
       <!-- ReSharper disable once MarkupTextTypo -->
       <weapontype>spraypen</weapontype>
@@ -9320,7 +9323,7 @@
     <!-- SR5 2050 -->
     <weapon>
       <id>50b36198-aeed-4bcb-af46-5e8c18771c47</id>
-      <name>Hand Razors (fixed) (2050)</name>
+      <name>Hand Razors, Fixed (2050)</name>
       <category>Blades</category>
       <type>Melee</type>
       <conceal>-2</conceal>
@@ -9342,7 +9345,7 @@
     </weapon>
     <weapon>
       <id>c6334eb1-2f37-4f7c-9e5a-1f2255f96a93</id>
-      <name>Hand Razors (retractable) (2050)</name>
+      <name>Hand Razors, Retractable (2050)</name>
       <category>Blades</category>
       <type>Melee</type>
       <conceal>0</conceal>
@@ -12710,7 +12713,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
-      <range>Medium Crossbow</range>
+      <range>Medium Crossbows</range>
       <spec>Crossbow</spec>
     </weapon>
     <weapon>
@@ -13195,6 +13198,50 @@
         <mount>Side</mount>
       </accessorymounts>
       <spec>Semi-Automatics</spec>
+    </weapon>
+    <weapon>
+      <id>f42e52ce-9bcd-4e24-8b98-2ec695bd5af2</id>
+      <name>Bayonet</name>
+      <category>Underbarrel Weapons</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>5</accuracy>
+      <reach>2</reach>
+      <damage>({STR}+1)P</damage>
+      <ap>-1</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <mount>Under</mount>
+      <avail>4R</avail>
+      <cost>50</cost>
+      <source>RG</source>
+      <page>50</page>
+      <spec>Blades</spec>
+      <useskill>Blades</useskill>
+      <hide />
+    </weapon>
+    <weapon>
+      <id>5d845f48-41dc-4944-9d19-f9ab86bcfd94</id>
+      <name>Retractable Bayonet</name>
+      <category>Underbarrel Weapons</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>5</accuracy>
+      <reach>2</reach>
+      <damage>({STR}+1)P</damage>
+      <ap>-1</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <mount>Under</mount>
+      <avail>4R</avail>
+      <cost>50</cost>
+      <source>RG</source>
+      <page>50</page>
+      <spec>Blades</spec>
+      <useskill>Blades</useskill>
+      <hide />
     </weapon>
     <weapon>
       <id>bda98b10-6aa3-49d6-a44b-e2feba5683bf</id>
@@ -13781,7 +13828,7 @@
       <ap>0</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>5(m)</ammo>
+      <ammo>0</ammo>
       <avail>12F</avail>
       <cost>2000</cost>
       <source>SL</source>
@@ -14434,7 +14481,7 @@
       <page>133</page>
       <range>Missile Launchers</range>
       <sizecategory>Missile Launchers</sizecategory>
-      <useskill>Exotic Ranged Weapons</useskill>
+      <useskill>Exotic Ranged Weapon</useskill>
       <weapontype>man-catcher</weapontype>
     </weapon>
     <weapon>
@@ -14813,7 +14860,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>7E</avail>
+      <avail>7F</avail>
       <cost>2500</cost>
       <source>SOTG</source>
       <page>7</page>
@@ -14832,7 +14879,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>10E</avail>
+      <avail>10F</avail>
       <cost>8600</cost>
       <source>SOTG</source>
       <page>7</page>
@@ -14974,7 +15021,7 @@
       <page>16</page>
       <range>Machine Pistols</range>
       <sizecategory>Heavy Machine Guns</sizecategory>
-      <useskill>Exotic Ranged Weapons</useskill>
+      <useskill>Exotic Ranged Weapon</useskill>
       <weapontype>firefighting cannons</weapontype>
     </weapon>
     <weapon>
@@ -15147,6 +15194,26 @@
       <page>136</page>
       <hide />
       <requireammo>microtorpedo</requireammo>
+    </weapon>
+    <weapon>
+      <id>c16aff73-6209-4cb0-8188-1ba6f1e2ee8f</id>
+      <name>Ink Pouch</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>0</accuracy>
+      <reach>0</reach>
+      <damage>- (5m Radius)</damage>
+      <ap>-</ap>
+      <mode>SA</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>R5</source>
+      <page>136</page>
+      <hide />
+      <range>Net</range>
     </weapon>
     <weapon>
       <id>160389be-8ded-48d5-be10-2f201446cc29</id>
@@ -17844,8 +17911,8 @@
     <accessory>
       <id>b83d5f60-7be2-4991-a518-775f6ae49207</id>
       <name>Underbarrel Laser</name>
-      <mount>Under/Side</mount>
-      <extramount>Under/Side</extramount>
+      <mount>Under</mount>
+      <extramount>Side</extramount>
       <avail>16F</avail>
       <cost>22000</cost>
       <source>HT</source>
@@ -18492,7 +18559,7 @@
         </usegear>
         <usegear>
           <name>Can Make Commcalls</name>
-          <category>Electronic Accessories</category>
+          <category>Electronics Accessories</category>
         </usegear>
       </gears>
       <hide />

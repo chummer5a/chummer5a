@@ -1615,7 +1615,7 @@
           <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
-      <addmodcategory>Ballistic Mask</addmodcategory>
+      <addmodcategory>Customized Ballistic Mask</addmodcategory>
       <source>RG</source>
       <page>74</page>
     </armor>
@@ -1634,7 +1634,7 @@
           <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
-      <addmodcategory>Ballistic Mask</addmodcategory>
+      <addmodcategory>Customized Ballistic Mask</addmodcategory>
       <source>RG</source>
       <page>74</page>
     </armor>

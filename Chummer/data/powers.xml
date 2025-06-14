@@ -668,7 +668,6 @@
       <page>169</page>
       <action>Complex</action>
       <adeptway>0.5</adeptway>
-      <adeptwayrequires />
       <required>
         <oneof>
           <power>Berserk</power>
@@ -1462,6 +1461,9 @@
       <source>SSP</source>
       <page>23</page>
       <adeptway>0.25</adeptway>
+      <bonus>
+        <selectskill />
+      </bonus>
     </power>
     <power>
       <id>df257b19-9ef7-4f0b-9aaa-4dbc43372431</id>
