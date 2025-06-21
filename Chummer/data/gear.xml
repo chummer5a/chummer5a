@@ -8774,6 +8774,7 @@
       <page>136</page>
       <avail>0</avail>
       <cost>0</cost>
+      <addweapon>Ink Pouch</addweapon>
       <hide />
     </gear>
     <!-- End Region -->
@@ -14223,7 +14224,7 @@
       <avail>0</avail>
       <capacity>0</capacity>
       <requireparent />
-      <cost>Parent Cost * -.5</cost>
+      <cost>Parent Cost * -0.5</cost>
       <required>
         <geardetails>
           <category>Drugs</category>
@@ -18697,7 +18698,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>191</page>
-      <avail>4</avail>
+      <avail>4R</avail>
       <cost>250</cost>
     </gear>
     <gear>
@@ -20294,7 +20295,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>4R</avail>
+      <avail>4F</avail>
       <cost>180</cost>
     </gear>
     <gear>
@@ -20316,7 +20317,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>4</avail>
+      <avail>4R</avail>
       <cost>50</cost>
     </gear>
     <gear>
@@ -20336,7 +20337,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>3R</avail>
+      <avail>3F</avail>
       <cost>360</cost>
     </gear>
     <gear>

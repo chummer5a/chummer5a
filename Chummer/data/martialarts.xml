@@ -1663,7 +1663,10 @@
       <name>Alpine Wrestling</name>
       <techniques>
         <technique>
-          <name>Oaken Stance</name>
+          <name>Oaken Stance (Defense Against Being Knocked Down)</name>
+        </technique>
+        <technique>
+          <name>Oaken Stance (Defense Against Being Charged)</name>
         </technique>
         <technique>
           <name>Rooted Tree</name>
@@ -1727,7 +1730,10 @@
       <name>Esdo</name>
       <techniques>
         <technique>
-          <name>Oaken Stance</name>
+          <name>Oaken Stance (Defense Against Being Knocked Down)</name>
+        </technique>
+        <technique>
+          <name>Oaken Stance (Defense Against Being Charged)</name>
         </technique>
         <technique>
           <name>Bending of the Reed</name>
@@ -1791,7 +1797,10 @@
       <name>Sternschutz Tactical</name>
       <techniques>
         <technique>
-          <name>Oaken Stance</name>
+          <name>Oaken Stance (Defense Against Being Knocked Down)</name>
+        </technique>
+        <technique>
+          <name>Oaken Stance (Defense Against Being Charged)</name>
         </technique>
         <technique>
           <name>Called Shot (Break Weapon)</name>
@@ -1834,16 +1843,22 @@
           <name>Finishing Move</name>
         </technique>
         <technique>
-          <name>Half-Sword</name>
+          <name>Half Sword</name>
         </technique>
         <technique>
-          <name>Hammer Fist</name>
+          <name>Hammerfist</name>
         </technique>
         <technique>
-          <name>Jiao Di</name>
+          <name>Jiao Di (Charge)</name>
         </technique>
         <technique>
-          <name>Knucklebreaker</name>
+          <name>Jiao Di (Knock Down)</name>
+        </technique>
+        <technique>
+          <name>Knucklebreaker (Disarm)</name>
+        </technique>
+        <technique>
+          <name>Knucklebreaker (Blast Out of Hands)</name>
         </technique>
         <technique>
           <name>Full Offense</name>
@@ -1901,11 +1916,10 @@
       <name>Kreussler Fencing</name>
       <bonus>
         <addskillspecializationoption>
-          <skill>Blades</skill>
-          <spec>Kreussler Fencing</spec>
-        </addskillspecializationoption>
-        <addskillspecializationoption>
-          <skill>Clubs</skill>
+          <skills>
+            <skill>Blades</skill>
+            <skill>Clubs</skill>
+          </skills>
           <spec>Kreussler Fencing</spec>
         </addskillspecializationoption>
       </bonus>
@@ -1920,7 +1934,10 @@
           <name>Iaijutsu</name>
         </technique>
         <technique>
-          <name>Knucklebreaker</name>
+          <name>Knucklebreaker (Disarm)</name>
+        </technique>
+        <technique>
+          <name>Knucklebreaker (Blast Out of Hands)</name>
         </technique>
         <technique>
           <name>Riposte</name>

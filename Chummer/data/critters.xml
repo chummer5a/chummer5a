@@ -795,7 +795,7 @@
             <skill rating="8">Sneaking</skill>
             <skill rating="6">Perception</skill>
             <group rating="3">Athletics</group>
-            <knowledge rating="8" category="Professional">Animal Calls</knowledge>
+            <knowledge rating="8" category="Professional" attribute="LOG">Animal Calls</knowledge>
          </skills>
          <source>SR5</source>
          <page>406</page>
@@ -6650,7 +6650,6 @@
             <power select="Toxins">Immunity</power>
             <power rating="2">Toughness</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="8">Gymnastics</skill>
             <skill rating="4">Intimidation</skill>
@@ -6735,7 +6734,6 @@
             <power select="Toxins">Immunity</power>
             <power rating="2">Toughness</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="8">Gymnastics</skill>
             <skill rating="5">Intimidation</skill>
@@ -6798,7 +6796,6 @@
          <walk>1/0/0</walk>
          <run>4/0/0</run>
          <sprint>1/0/0</sprint>
-         <qualities />
          <bonus>
             <reach>-1</reach>
             <enabletab>
@@ -6815,7 +6812,6 @@
             <power select="Spit">Venom</power>
             <power select="Vector: Contact, Injection, Speed: Instant, Penetration: -6, Power: 12, Effect: Agony, Nausea, Disorientation, Physical Damage">Vulnerability</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="6" spec="Spit">Exotic Ranged Weapon</skill>
             <skill rating="8">Perception</skill>
@@ -6875,7 +6871,6 @@
          <walk>2/0/0</walk>
          <run>8/0/0</run>
          <sprint>4/0/0</sprint>
-         <qualities />
          <bonus>
             <enabletab>
                <name>critter</name>
@@ -6891,7 +6886,6 @@
             <power select="Vector: Injection, Speed: 1 Combat Turn, Penetration: 0, Power: 6, Effect: Malaise, Physical Damage">Venom</power>
             <power select="Sunlight, Mild">Allergy</power>
          </powers>
-         <optionalpowers />
          <skills>
             <group rating="4">Athletics</group>
             <skill rating="3">Locksmith</skill>
@@ -6974,7 +6968,6 @@
             <power select="Claws: (STR+2)P, AP -2">Natural Weapon</power>
             <power rating="3">Toughness</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="6">Perception</skill>
             <skill rating="4">Running</skill>
@@ -7035,7 +7028,6 @@
          <walk>2/0/0</walk>
          <run>8/0/0</run>
          <sprint>4/0/0</sprint>
-         <qualities />
          <bonus>
             <enabletab>
                <name>critter</name>
@@ -7051,7 +7043,6 @@
             <power>Regeneration</power>
             <power select="Radiation">Dietary Requirement</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="5">Gymnastics</skill>
             <skill rating="4">Intimidation</skill>
@@ -7113,7 +7104,6 @@
          <walk>2/0/0</walk>
          <run>8/0/0</run>
          <sprint>4/0/0</sprint>
-         <qualities />
          <bonus>
             <enabletab>
                <name>critter</name>
@@ -7129,7 +7119,6 @@
             <power>Regeneration</power>
             <power select="Radiation">Dietary Requirement</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="5">Gymnastics</skill>
             <skill rating="4">Intimidation</skill>
@@ -7215,7 +7204,6 @@
             <power rating="3">Toughness</power>
             <power select="Sunlight, Severe">Allergy</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="8">Intimidation</skill>
             <skill rating="8">Perception</skill>
@@ -7277,7 +7265,6 @@
          <walk>0/0/1</walk>
          <run>0/0/4</run>
          <sprint>0/0/3</sprint>
-         <qualities />
          <bonus>
             <enabletab>
                <name>critter</name>
@@ -7290,7 +7277,6 @@
             <power select="Toxins, Electricity">Immunity</power>
             <power select="Fire, Cold">Vulnerability</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="4" spec="Electricity">Exotic Ranged Weapon</skill>
             <skill rating="5">Perception</skill>
@@ -7351,7 +7337,6 @@
          <walk>2/0/0</walk>
          <run>5/0/0</run>
          <sprint>3/0/0</sprint>
-         <qualities />
          <bonus>
             <reach>1</reach>
             <enabletab>
@@ -7367,7 +7352,6 @@
             <power select="Silk">Secretion/Substance Extrusion</power>
             <power>Wall Walking</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="6">Gymnastics</skill>
             <skill rating="5">Perception</skill>
@@ -7428,7 +7412,6 @@
          <walk>1/0/0</walk>
          <run>2/0/0</run>
          <sprint>0.5/0/0</sprint>
-         <qualities />
          <bonus>
             <reach>-2</reach>
             <enabletab>
@@ -7444,7 +7427,6 @@
             <power rating="8">Fragile</power>
             <power select="Sight">Reduced Senses</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="6">Perception</skill>
             <skill rating="4">Sneaking</skill>
@@ -7504,7 +7486,6 @@
          <walk>1/0/0</walk>
          <run>3/0/0</run>
          <sprint>2/0/0</sprint>
-         <qualities />
          <bonus>
             <enabletab>
                <name>critter</name>
@@ -7520,7 +7501,6 @@
             <power select="Vector: Injection, Speed: 1 minute, Penetration: -4, Power: 10, Effect: Agony, Arcane Inhibitor, Disorientation, Stun Damage">Venom</power>
             <power rating="8">Fragile</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="4">Assensing</skill>
             <skill rating="10">Flight</skill>
@@ -9790,7 +9770,7 @@
          <walk>2/2/2</walk>
          <run>4/4/4</run>
          <sprint>2/2/2</sprint>
-        <armor>F</armor>
+         <armor>F</armor>
          <bonus>
             <enableattribute>
                <name>MAG</name>
@@ -9878,7 +9858,7 @@
          <walk>2/2/2</walk>
          <run>4/4/4</run>
          <sprint>2/2/2</sprint>
-        <armor>F</armor>
+         <armor>F</armor>
          <bonus>
             <enableattribute>
                <name>MAG</name>
@@ -9961,7 +9941,7 @@
          <walk>2/2/2</walk>
          <run>4/4/4</run>
          <sprint>2/2/2</sprint>
-        <armor>0</armor>
+         <armor>0</armor>
          <bonus>
             <enableattribute>
                <name>MAG</name>
@@ -10045,7 +10025,7 @@
          <walk>2/2/2</walk>
          <run>4/4/4</run>
          <sprint>2/2/2</sprint>
-        <armor>0</armor>
+         <armor>0</armor>
          <bonus>
             <enableattribute>
                <name>MAG</name>
@@ -10059,7 +10039,7 @@
                <optionalpower>Dive Attack</optionalpower>
                <optionalpower>Haunt</optionalpower>
                <optionalpower select="Any Cannon or Launcher">Natural Weapon</optionalpower>
-              <optionalpower>Search</optionalpower>
+               <optionalpower>Search</optionalpower>
             </optionalpowers>
             <unlockskills>Magician</unlockskills>
          </bonus>
@@ -10156,7 +10136,6 @@
             <power>Sapience</power>
             <power>Search</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
@@ -10230,17 +10209,14 @@
             </enabletab>
             <initiativepass>1</initiativepass>
          </bonus>
-         <qualities>
-            <positive>
-               <quality>Astral Perception</quality>
-            </positive>
-         </qualities>
          <powers>
             <power>Astral Form</power>
+            <power>Astral Perception</power>
             <power>Banishing Resistance</power>
             <power>Concealment</power>
             <power>Confusion</power>
             <power>Devouring</power>
+            <!-- "Devour" in source -->
             <power rating="6">Hardened Armor</power>
             <power select="Living Vessels">Inhabitation</power>
             <power>Movement</power>
@@ -10248,13 +10224,13 @@
             <power>Search</power>
             <power rating="F">Skill</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Running</skill>
             <skill rating="F">Sneaking</skill>
+            <!-- "Shadowing" in source -->
             <skill rating="F">Unarmed Combat</skill>
          </skills>
          <source>AET</source>
@@ -10335,7 +10311,6 @@
             <power>Silence</power>
             <power>Vanishing</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
@@ -10425,7 +10400,6 @@
             <power>Transfer Energy (Essence)</power>
             <power>Vanishing</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
@@ -10512,7 +10486,6 @@
             <power select="Inanimate Mechanical Devices Only">Inhabitation</power>
             <power select="Occupied Mechanical Device Only">Psychokinesis</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
@@ -10605,6 +10578,8 @@
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
             <skill rating="F" spec="Dodging">Gymnastics</skill>
+            <!-- "Dodge" in source -->
+            <!-- <skill rating="F">Infiltration</skill> Combined to Sneaking in 5E -->
             <skill rating="F">Perception</skill>
             <skill rating="F">Sneaking</skill>
             <skill rating="F">Unarmed Combat</skill>
@@ -10684,7 +10659,6 @@
             <power>Reinforcement</power>
             <power>Sapience</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
@@ -19474,7 +19448,9 @@
             <power>Astral Form</power>
             <power>Aura Masking</power>
             <power select="Smell">Enhanced Senses</power>
+            <!-- "Improved Senses" in source -->
             <power select="Thermal">Enhanced Senses</power>
+            <!-- "Improved Senses" in source -->
             <power>Materialization</power>
             <power>Sapience</power>
             <power rating="4">Magic Resistance</power>
@@ -19693,10 +19669,13 @@
             <power>Astral Form</power>
             <power>Aura Masking</power>
             <power>Fey Glamour</power>
+            <!-- "Fae Glamour" in source -->
             <power>Flay Touch</power>
             <power>Fold Perception</power>
             <power select="Smell">Enhanced Senses</power>
+            <!-- "Improved Senses" in source -->
             <power select="Thermal">Enhanced Senses</power>
+            <!-- "Improved Senses" in source -->
             <power>Materialization</power>
             <power>Sapience</power>
             <power>Spirit Pact</power>
@@ -19777,8 +19756,10 @@
             <power>Aura Masking</power>
             <power select="Spirit Pact Only">Hidden Life</power>
             <power select="Touch">Enhanced Senses</power>
+            <!-- "Improved Sense" in source -->
             <power>Materialization</power>
             <power select="Spirit Pact Only">Regeneration</power>
+            <!-- Regenerate in source -->
             <power>Sapience</power>
             <power>Spirit Pact</power>
          </powers>
@@ -22222,7 +22203,7 @@
             <skill rating="10">Sneaking</skill>
             <skill rating="7">Unarmed Combat</skill>
             <group rating="4">Athletics</group>
-            <knowledge rating="8" category="Professional">Animal Calls</knowledge>
+            <knowledge rating="8" category="Professional" attribute="LOG">Animal Calls</knowledge>
          </skills>
          <source>HS</source>
          <page>87</page>
@@ -23278,9 +23259,6 @@
             </enabletab>
             <genetechcostmultiplier>80</genetechcostmultiplier>
             <genetechessmultiplier>90</genetechessmultiplier>
-            <enabletab>
-               <name>critter</name>
-            </enabletab>
          </bonus>
          <powers>
             <power>Domesticated</power>
@@ -26052,6 +26030,7 @@
             <power select="Hoof: DV (STR)P, AP 0">Natural Weapon</power>
             <power>Resonance Feed</power>
             <power>Resonance Hosting</power>
+            <!-- Complex form NOT power in source -->
             <power>Blend</power>
             <power>AR-Parallelism</power>
          </powers>
@@ -26149,6 +26128,7 @@
             <skill rating="3">Clubs</skill>
             <skill rating="4">Perception</skill>
             <skill rating="2">Throwing Weapons</skill>
+            <!-- "Thrown Weapons" in source -->
             <skill rating="6">Unarmed Combat</skill>
             <skill rating="6">Computer</skill>
             <skill rating="5">Cybercombat</skill>
@@ -28388,6 +28368,7 @@
          </bonus>
          <powers>
              <power select="Agony">Innate Spell</power>
+             <!-- "Agony" in source-->
              <power rating="6">Armor</power>
              <power>Deathlock</power>
              <power select="Low-Light Vision, Smell">Enhanced Senses</power>
