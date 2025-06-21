@@ -3334,18 +3334,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>No Future Stealth Errata</directoryname>
-          <order>3</order>
-          <enabled>True</enabled>
-        </customdatadirectoryname>
-        <customdatadirectoryname>
           <directoryname>German Data Changes</directoryname>
-          <order>4</order>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3564,18 +3559,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>No Future Stealth Errata</directoryname>
-          <order>3</order>
-          <enabled>True</enabled>
-        </customdatadirectoryname>
-        <customdatadirectoryname>
           <directoryname>German Data Changes</directoryname>
-          <order>4</order>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3794,18 +3784,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>No Future Stealth Errata</directoryname>
-          <order>3</order>
-          <enabled>True</enabled>
-        </customdatadirectoryname>
-        <customdatadirectoryname>
           <directoryname>German Data Changes</directoryname>
-          <order>4</order>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -4024,18 +4009,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>No Future Stealth Errata</directoryname>
-          <order>3</order>
-          <enabled>True</enabled>
-        </customdatadirectoryname>
-        <customdatadirectoryname>
           <directoryname>German Data Changes</directoryname>
-          <order>4</order>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
