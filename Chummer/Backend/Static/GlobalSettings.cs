@@ -963,12 +963,7 @@ namespace Chummer
                 }
 
                 // Save the Custom Data Directory Info.
-                bool blnTemp;
-                using (RegistryKey objKey = objRegistry.OpenSubKey("CustomDataDirectory"))
-                    blnTemp = objKey != null;
-                if (blnTemp)
-                    objRegistry.DeleteSubKeyTree("CustomDataDirectory");
-
+                objRegistry.DeleteSubKeyTree("CustomDataDirectory", false);
                 using (RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory", true))
                 {
                     if (objCustomDataDirectoryRegistry != null)
