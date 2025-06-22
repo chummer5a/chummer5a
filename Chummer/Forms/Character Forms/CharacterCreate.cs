@@ -7003,7 +7003,7 @@ namespace Chummer
                     // Equip all of the Armor in the Armor Bundle.
                     await selectedLocation.Children.ForEachWithSideEffectsAsync(async child =>
                     {
-                        if (child is Armor objArmor && objArmor.Location == selectedLocation)
+                        if (child is Armor objArmor && objArmor.Location == selectedLocation && !objArmor.Equipped)
                         {
                             await objArmor.SetEquippedAsync(true, GenericToken).ConfigureAwait(false);
                         }
@@ -7021,7 +7021,13 @@ namespace Chummer
                 }
                 else
                 {
-                    return;
+                    await CharacterObject.Armor.ForEachWithSideEffectsAsync(async objArmor =>
+                    {
+                        if (!objArmor.Equipped)
+                        {
+                            await objArmor.SetEquippedAsync(true, GenericToken).ConfigureAwait(false);
+                        }
+                    }, GenericToken).ConfigureAwait(false);
                 }
 
                 await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
@@ -7043,7 +7049,7 @@ namespace Chummer
                     // Equip all of the Armor in the Armor Bundle.
                     await selectedLocation.Children.ForEachWithSideEffectsAsync(async child =>
                     {
-                        if (child is Armor objArmor && objArmor.Location == selectedLocation)
+                        if (child is Armor objArmor && objArmor.Location == selectedLocation && objArmor.Equipped)
                         {
                             await objArmor.SetEquippedAsync(false, GenericToken).ConfigureAwait(false);
                         }
@@ -7061,7 +7067,13 @@ namespace Chummer
                 }
                 else
                 {
-                    return;
+                    await CharacterObject.Armor.ForEachWithSideEffectsAsync(async objArmor =>
+                    {
+                        if (objArmor.Equipped)
+                        {
+                            await objArmor.SetEquippedAsync(false, GenericToken).ConfigureAwait(false);
+                        }
+                    }, GenericToken).ConfigureAwait(false);
                 }
 
                 await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
