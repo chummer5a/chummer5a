@@ -132,6 +132,7 @@ Data Changes:
 - Fixed Capsule Ammo not using correct range.
 - Fixed Three-Dimensional Memory not being discounted by the Artist's Way.
 - Attune Animal spell now orrectly uses Animal Handling as its skill instead of the Ritual Spellcasting skill.
+- Armory asset for advanced lifestyles now properly costs 1000. Fixes #5193.
 
 Fixes implemented by BM123499
 
