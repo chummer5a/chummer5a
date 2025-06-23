@@ -316,17 +316,22 @@ namespace Chummer
                                 objNode.Text = objNewNode.Text;
                                 objNode.ToolTipText = objNewNode.ToolTipText;
                                 objNode.ForeColor = objNewNode.ForeColor;
-                                if (objNode.Tag is CharacterCache objOldCache)
+                                if (objNode.Tag is CharacterCache objOldCache && !objOldCache.IsDisposed)
                                     setCachesToDispose.Add(objOldCache);
                                 objNode.Tag = objNewCache;
                             }
                         }, objTokenToUse).ConfigureAwait(false);
-                        foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values)
+                        List<CharacterCache> lstToKeep = new List<CharacterCache>();
+                        foreach (CharacterCache objCache in setCachesToDispose)
+                        {
+                            objTokenToUse.ThrowIfCancellationRequested();
+                            if (!objCache.IsDisposed && _dicSavedCharacterCaches.ContainsKey(objCache.FilePath))
+                                lstToKeep.Add(objCache);
+                        }
+                        foreach (CharacterCache objCache in lstToKeep)
                         {
                             objTokenToUse.ThrowIfCancellationRequested();
                             setCachesToDispose.Remove(objCache);
-                            if (setCachesToDispose.Count == 0)
-                                break;
                         }
                         foreach (CharacterCache objOldCache in setCachesToDispose)
                         {
@@ -502,7 +507,10 @@ namespace Chummer
                                 nodNode.Tag = null;
                                 if (!objCache.IsDisposed)
                                 {
-                                    _dicSavedCharacterCaches.TryRemove(objCache.FilePath, out _);
+                                    if (_dicSavedCharacterCaches.TryRemove(objCache.FilePath, out CharacterCache objCacheToRemove)
+                                        && !ReferenceEquals(objCacheToRemove, objCache)
+                                        && !objCacheToRemove.IsDisposed)
+                                        await objCacheToRemove.DisposeAsync().ConfigureAwait(false);
                                     await objCache.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
@@ -512,10 +520,16 @@ namespace Chummer
                     }
 
                     _objGenericToken.ThrowIfCancellationRequested();
-                    foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values)
+                    if (!_dicSavedCharacterCaches.IsEmpty)
                     {
-                        _objGenericToken.ThrowIfCancellationRequested();
-                        await objCache.DisposeAsync().ConfigureAwait(false);
+                        List<CharacterCache> lstCaches = _dicSavedCharacterCaches.Values.ToList();
+                        _dicSavedCharacterCaches.Clear();
+                        foreach (CharacterCache objCache in lstCaches)
+                        {
+                            _objGenericToken.ThrowIfCancellationRequested();
+                            if (!objCache.IsDisposed)
+                                await objCache.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
 
                     try
@@ -1663,15 +1677,17 @@ namespace Chummer
         private async Task PurgeUnusedCharacterCaches(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            foreach (CharacterCache objCache in _dicSavedCharacterCaches.Select(x => x.Value).ToList())
+            foreach (KeyValuePair<string, CharacterCache> kvpCache in _dicSavedCharacterCaches.ToList())
             {
                 token.ThrowIfCancellationRequested();
+                CharacterCache objCache = kvpCache.Value;
                 if (await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objCache), token).ConfigureAwait(false) != null)
                     continue;
                 token.ThrowIfCancellationRequested();
-                _dicSavedCharacterCaches.TryRemove(objCache.FilePath, out _);
-                if (!objCache.IsDisposed)
-                    await objCache.DisposeAsync().ConfigureAwait(false);
+                if (!_dicSavedCharacterCaches.TryRemove(kvpCache.Key, out CharacterCache objCacheToDelete) || !ReferenceEquals(objCacheToDelete, objCache))
+                    continue;
+                if (!objCacheToDelete.IsDisposed)
+                    await objCacheToDelete.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1695,6 +1711,7 @@ namespace Chummer
                                                             Utils.JoinableTaskFactory);
                         if (blnForceRecache)
                         {
+                            CharacterCache objToDispose = null;
                             objCache = await _dicSavedCharacterCaches
                                              .AddOrUpdateAsync(
                                                  strFile,
@@ -1702,11 +1719,12 @@ namespace Chummer
                                                      .ConfigureAwait(false),
                                                  async (x, y) =>
                                                  {
-                                                     await y.DisposeAsync().ConfigureAwait(false);
-                                                     return objTemp = await objGeneratedCache.GetValueAsync(token)
-                                                         .ConfigureAwait(false);
+                                                     objToDispose = y;
+                                                     return objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false);
                                                  }, token)
                                              .ConfigureAwait(false);
+                            if (objToDispose != null && !objToDispose.IsDisposed)
+                                await objToDispose.DisposeAsync().ConfigureAwait(false);
                         }
                         else
                         {
