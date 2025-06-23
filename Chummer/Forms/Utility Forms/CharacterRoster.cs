@@ -1723,7 +1723,7 @@ namespace Chummer
                                                      return objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false);
                                                  }, token)
                                              .ConfigureAwait(false);
-                            if (objToDispose != null && !objToDispose.IsDisposed)
+                            if (objToDispose != null && !ReferenceEquals(objToDispose, objCache) && !objToDispose.IsDisposed)
                                 await objToDispose.DisposeAsync().ConfigureAwait(false);
                         }
                         else
