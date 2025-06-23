@@ -19986,23 +19986,32 @@ namespace Chummer
         {
             try
             {
-                if (CharacterObject.EdgeUsed
-                    >= await (await CharacterObject.GetAttributeAsync("EDG", token: GenericToken)
-                        .ConfigureAwait(false)).GetTotalValueAsync(
-                        GenericToken).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                try
                 {
-                    await Program.ShowScrollableMessageBoxAsync(
-                        this,
-                        await LanguageManager.GetStringAsync("Message_CannotSpendEdge", token: GenericToken)
-                            .ConfigureAwait(false),
-                        await LanguageManager.GetStringAsync("MessageTitle_CannotSpendEdge", token: GenericToken)
-                            .ConfigureAwait(false),
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information).ConfigureAwait(false);
-                    return;
-                }
+                    GenericToken.ThrowIfCancellationRequested();
+                    if (await CharacterObject.GetEdgeUsedAsync(GenericToken).ConfigureAwait(false)
+                        >= await (await CharacterObject.GetAttributeAsync("EDG", token: GenericToken)
+                            .ConfigureAwait(false)).GetTotalValueAsync(
+                            GenericToken).ConfigureAwait(false))
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(
+                            this,
+                            await LanguageManager.GetStringAsync("Message_CannotSpendEdge", token: GenericToken)
+                                .ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_CannotSpendEdge", token: GenericToken)
+                                .ConfigureAwait(false),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information).ConfigureAwait(false);
+                        return;
+                    }
 
-                ++CharacterObject.EdgeUsed;
+                    await CharacterObject.ModifyEdgeUsedAsync(1, GenericToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
 
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -20016,17 +20025,26 @@ namespace Chummer
         {
             try
             {
-                if (CharacterObject.EdgeUsed <= 0)
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                try
                 {
-                    await Program.ShowScrollableMessageBoxAsync(
-                        this, await LanguageManager.GetStringAsync("Message_CannotRegainEdge", token: GenericToken).ConfigureAwait(false),
-                        await LanguageManager.GetStringAsync("MessageTitle_CannotRegainEdge", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information).ConfigureAwait(false);
-                    return;
-                }
+                    GenericToken.ThrowIfCancellationRequested();
+                    if (await CharacterObject.GetEdgeUsedAsync(GenericToken).ConfigureAwait(false) <= 0)
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(
+                            this, await LanguageManager.GetStringAsync("Message_CannotRegainEdge", token: GenericToken).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_CannotRegainEdge", token: GenericToken).ConfigureAwait(false),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information).ConfigureAwait(false);
+                        return;
+                    }
 
-                --CharacterObject.EdgeUsed;
+                    await CharacterObject.ModifyEdgeUsedAsync(-1, GenericToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
 
                 await SetDirty(true).ConfigureAwait(false);
             }

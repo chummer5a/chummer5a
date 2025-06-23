@@ -7566,7 +7566,12 @@ namespace Chummer
                                             decimal decOldEdgeUsed = 0;
                                             if (objXmlImprovement.TryGetDecFieldQuickly("aug",
                                                     ref decOldEdgeUsed))
-                                                EdgeUsed = (-decOldEdgeUsed).StandardRound();
+                                            {
+                                                if (blnSync)
+                                                    EdgeUsed = (-decOldEdgeUsed).StandardRound();
+                                                else
+                                                    await SetEdgeUsedAsync((-decOldEdgeUsed).StandardRound(), token).ConfigureAwait(false);
+                                            }
                                             continue;
                                         case "EssenceLoss":
                                         case "EssenceLossChargen":
@@ -11094,11 +11099,11 @@ namespace Chummer
                         .WriteElementStringAsync("totalattributes", TotalAttributes.ToString(objCulture),
                             token: token).ConfigureAwait(false);
                     // <edgeused />
-                    await objWriter.WriteElementStringAsync("edgeused", EdgeUsed.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("edgeused", (await GetEdgeUsedAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <edgeremaining />
                     await objWriter
-                        .WriteElementStringAsync("edgeremaining", EdgeRemaining.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("edgeremaining", (await GetEdgeRemainingAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <streetcred />
                     await objWriter.WriteElementStringAsync("streetcred", StreetCred.ToString(objCulture), token: token)
@@ -21685,6 +21690,24 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _intEdgeUsed, value) == value)
                     return;
+                await OnPropertyChangedAsync(nameof(EdgeUsed), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task ModifyEdgeUsedAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Interlocked.Add(ref _intEdgeUsed, value);
                 await OnPropertyChangedAsync(nameof(EdgeUsed), token).ConfigureAwait(false);
             }
             finally
