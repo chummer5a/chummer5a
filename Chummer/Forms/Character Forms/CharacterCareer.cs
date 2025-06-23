@@ -10353,31 +10353,40 @@ namespace Chummer
                                            .ConfigureAwait(false) is string
                         strSelectedId))
                     return;
-                List<Improvement> lstImprovementsEnabled;
-                if (strSelectedId == "Node_SelectedImprovements")
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                try
                 {
-                    lstImprovementsEnabled
-                        = await (await CharacterObject.GetImprovementsAsync(GenericToken).ConfigureAwait(false))
-                                .ToListAsync(objImprovement =>
-                                                 objImprovement.Custom && !objImprovement.Enabled
-                                                                       && string.IsNullOrEmpty(
-                                                                           objImprovement.CustomGroup),
-                                             GenericToken).ConfigureAwait(false);
-                }
-                else
-                {
-                    lstImprovementsEnabled
-                        = await (await CharacterObject.GetImprovementsAsync(GenericToken).ConfigureAwait(false))
-                                .ToListAsync(objImprovement =>
-                                                 objImprovement.Custom && !objImprovement.Enabled
-                                                                       && objImprovement.CustomGroup == strSelectedId,
-                                             GenericToken).ConfigureAwait(false);
-                }
+                    GenericToken.ThrowIfCancellationRequested();
+                    List<Improvement> lstImprovementsEnabled;
+                    if (strSelectedId == "Node_SelectedImprovements")
+                    {
+                        lstImprovementsEnabled
+                            = await (await CharacterObject.GetImprovementsAsync(GenericToken).ConfigureAwait(false))
+                                    .ToListAsync(objImprovement =>
+                                                     objImprovement.Custom && !objImprovement.Enabled
+                                                                           && string.IsNullOrEmpty(
+                                                                               objImprovement.CustomGroup),
+                                                 GenericToken).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        lstImprovementsEnabled
+                            = await (await CharacterObject.GetImprovementsAsync(GenericToken).ConfigureAwait(false))
+                                    .ToListAsync(objImprovement =>
+                                                     objImprovement.Custom && !objImprovement.Enabled
+                                                                           && objImprovement.CustomGroup == strSelectedId,
+                                                 GenericToken).ConfigureAwait(false);
+                    }
 
-                if (lstImprovementsEnabled.Count == 0)
-                    return;
-                await ImprovementManager.EnableImprovementsAsync(CharacterObject, lstImprovementsEnabled, GenericToken)
-                                        .ConfigureAwait(false);
+                    if (lstImprovementsEnabled.Count == 0)
+                        return;
+                    await ImprovementManager.EnableImprovementsAsync(CharacterObject, lstImprovementsEnabled, GenericToken)
+                                            .ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
                 await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView,
                     cmsImprovementLocation,
                     cmsImprovement, lmtControl.LimitContextMenuStrip,
@@ -10399,32 +10408,41 @@ namespace Chummer
                         strSelectedId))
                     return;
                 // Disable all of the Improvements in the Improvement Group.
-                List<Improvement> lstImprovementsDisabled;
-                if (strSelectedId == "Node_SelectedImprovements")
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                try
                 {
-                    lstImprovementsDisabled
-                        = await (await CharacterObject.GetImprovementsAsync(GenericToken).ConfigureAwait(false))
-                                .ToListAsync(objImprovement =>
-                                                 objImprovement.Custom && objImprovement.Enabled
-                                                                       && string.IsNullOrEmpty(
-                                                                           objImprovement.CustomGroup),
-                                             GenericToken).ConfigureAwait(false);
-                }
-                else
-                {
-                    lstImprovementsDisabled
-                        = await (await CharacterObject.GetImprovementsAsync(GenericToken).ConfigureAwait(false))
-                                .ToListAsync(objImprovement =>
-                                                 objImprovement.Custom && objImprovement.Enabled
-                                                                       && objImprovement.CustomGroup == strSelectedId,
-                                             GenericToken).ConfigureAwait(false);
-                }
+                    GenericToken.ThrowIfCancellationRequested();
+                    List<Improvement> lstImprovementsDisabled;
+                    if (strSelectedId == "Node_SelectedImprovements")
+                    {
+                        lstImprovementsDisabled
+                            = await (await CharacterObject.GetImprovementsAsync(GenericToken).ConfigureAwait(false))
+                                    .ToListAsync(objImprovement =>
+                                                     objImprovement.Custom && objImprovement.Enabled
+                                                                           && string.IsNullOrEmpty(
+                                                                               objImprovement.CustomGroup),
+                                                 GenericToken).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        lstImprovementsDisabled
+                            = await (await CharacterObject.GetImprovementsAsync(GenericToken).ConfigureAwait(false))
+                                    .ToListAsync(objImprovement =>
+                                                     objImprovement.Custom && objImprovement.Enabled
+                                                                           && objImprovement.CustomGroup == strSelectedId,
+                                                 GenericToken).ConfigureAwait(false);
+                    }
 
-                if (lstImprovementsDisabled.Count == 0)
-                    return;
-                await ImprovementManager
-                      .DisableImprovementsAsync(CharacterObject, lstImprovementsDisabled, GenericToken)
-                      .ConfigureAwait(false);
+                    if (lstImprovementsDisabled.Count == 0)
+                        return;
+                    await ImprovementManager
+                          .DisableImprovementsAsync(CharacterObject, lstImprovementsDisabled, GenericToken)
+                          .ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
                 await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView,
                     cmsImprovementLocation,
                     cmsImprovement, lmtControl.LimitContextMenuStrip,
@@ -19860,12 +19878,21 @@ namespace Chummer
                 TreeNode nodSelected = await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken).ConfigureAwait(false);
                 if (nodSelected == null || !(nodSelected.Tag is Improvement objImprovement))
                     return;
-                if (await chkImprovementActive.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false))
-                    await ImprovementManager.EnableImprovementsAsync(CharacterObject, objImprovement, GenericToken)
-                                            .ConfigureAwait(false);
-                else
-                    await ImprovementManager.DisableImprovementsAsync(CharacterObject, objImprovement, GenericToken)
-                                            .ConfigureAwait(false);
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                try
+                {
+                    GenericToken.ThrowIfCancellationRequested();
+                    if (await chkImprovementActive.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false))
+                        await ImprovementManager.EnableImprovementsAsync(CharacterObject, objImprovement, GenericToken)
+                                                .ConfigureAwait(false);
+                    else
+                        await ImprovementManager.DisableImprovementsAsync(CharacterObject, objImprovement, GenericToken)
+                                                .ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
                 await treImprovements.DoThreadSafeAsync(() => nodSelected.ForeColor = objImprovement.PreferredColor, GenericToken).ConfigureAwait(false);
                 await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
