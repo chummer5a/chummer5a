@@ -1615,18 +1615,23 @@ namespace Chummer.Backend.Uniques
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None
-                && (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)) &&
-                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Unaug}"))
-                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalBase)) &&
-                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Base}"))
-                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMinimum)) &&
-                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Minimum}"))
-                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMaximum)) &&
-                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Maximum}"))))
+            if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None)
             {
-                await OnPropertyChangedAsync(nameof(DrainValue), token).ConfigureAwait(false);
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+                {
+                    await OnPropertyChangedAsync(nameof(DrainValue), token).ConfigureAwait(false);
+                }
+                else
+                {
+                    string strDrainExpression = await GetDrainExpressionAsync(token).ConfigureAwait(false);
+                    if ((e.PropertyNames.Contains(nameof(CharacterAttrib.Value)) && strDrainExpression.Contains("Unaug}"))
+                        || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalBase)) && strDrainExpression.Contains("Base}"))
+                        || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMinimum)) && strDrainExpression.Contains("Minimum}"))
+                        || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMaximum)) && strDrainExpression.Contains("Maximum}")))
+                    {
+                        await OnPropertyChangedAsync(nameof(DrainValue), token).ConfigureAwait(false);
+                    }
+                }
             }
         }
 
