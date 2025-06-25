@@ -952,8 +952,9 @@ namespace Chummer
                             objSourceRegistry.DeleteValue(strCustomSourcebookKey, false);
 
                         IReadOnlyDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token).ConfigureAwait(false);
-                        foreach (SourcebookInfo objSourcebookInfo in dicSourcebookInfos.Values)
+                        foreach (KeyValuePair<string, SourcebookInfo> kvpSourcebookInfo in dicSourcebookInfos)
                         {
+                            SourcebookInfo objSourcebookInfo = kvpSourcebookInfo.Value; // Set up this way to avoid race condition in underlying SourcebookInfos dictionary
                             objSourceRegistry.SetValue(objSourcebookInfo.Code,
                                 objSourcebookInfo.Path + '|'
                                                        + objSourcebookInfo.Offset.ToString(
@@ -1864,8 +1865,9 @@ namespace Chummer
                 }
 
                 s_DicCustomSourcebookCodes.Clear();
-                foreach (CharacterSettings objCustomSettings in SettingsManager.LoadedCharacterSettings.Values)
+                foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in SettingsManager.LoadedCharacterSettings)
                 {
+                    CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
                     foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml",
                                      objCustomSettings.EnabledCustomDataDirectoryPaths, token: token)
                                  .SelectAndCacheExpression("/chummer/books/book", token: token))
@@ -1984,9 +1986,10 @@ namespace Chummer
                 }
 
                 s_DicCustomSourcebookCodes.Clear();
-                foreach (CharacterSettings objCustomSettings in (await SettingsManager
-                             .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)).Values)
+                foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in (await SettingsManager
+                             .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)))
                 {
+                    CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
                     foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml",
                                  await objCustomSettings.GetEnabledCustomDataDirectoryPathsAsync(token)
                                      .ConfigureAwait(false), token: token).ConfigureAwait(false))
@@ -2063,8 +2066,9 @@ namespace Chummer
                         }
 
                         s_DicCustomSourcebookCodes.Clear();
-                        foreach (CharacterSettings objCustomSettings in SettingsManager.LoadedCharacterSettings.Values)
+                        foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in SettingsManager.LoadedCharacterSettings)
                         {
+                            CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
                             foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml",
                                              objCustomSettings.EnabledCustomDataDirectoryPaths, token: token)
                                          .SelectAndCacheExpression("/chummer/books/book", token: token))
@@ -2146,9 +2150,10 @@ namespace Chummer
                         }
 
                         s_DicCustomSourcebookCodes.Clear();
-                        foreach (CharacterSettings objCustomSettings in (await SettingsManager
-                                     .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)).Values)
+                        foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in (await SettingsManager
+                                     .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)))
                         {
+                            CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
                             foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml",
                                          await objCustomSettings.GetEnabledCustomDataDirectoryPathsAsync(token)
                                              .ConfigureAwait(false), token: token).ConfigureAwait(false))

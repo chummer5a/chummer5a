@@ -153,11 +153,12 @@ namespace Chummer
                 {
                     IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
                         = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
-                    foreach (CharacterSettings objSetting in dicCharacterSettings.Values)
+                    foreach (KeyValuePair<string, CharacterSettings> kvpSettings in dicCharacterSettings)
                     {
+                        CharacterSettings objSettings = kvpSettings.Value; // Set up this way to avoid race condition in underlying dictionary
                         lstCharacterSettings.Add(
-                            new ListItem(objSetting,
-                                await objSetting.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                            new ListItem(objSettings,
+                                await objSettings.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
                     }
 
                     lstCharacterSettings.Sort(CompareListItems.CompareNames);
