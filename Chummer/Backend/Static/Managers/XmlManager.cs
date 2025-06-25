@@ -376,7 +376,11 @@ namespace Chummer
             using (s_objDataDirectoriesLock.EnterWriteLock(token))
             {
                 token.ThrowIfCancellationRequested();
-                foreach (XmlReference objReference in s_DicXmlDocuments.Values)
+                List<XmlReference> lstReferences = s_DicXmlDocuments.Values.ToList();
+                token.ThrowIfCancellationRequested();
+                s_DicXmlDocuments.Clear();
+                token.ThrowIfCancellationRequested();
+                foreach (XmlReference objReference in lstReferences)
                 {
                     token.ThrowIfCancellationRequested();
                     objReference?.Dispose();
@@ -421,7 +425,11 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                foreach (XmlReference objReference in s_DicXmlDocuments.Values)
+                List<XmlReference> lstReferences = s_DicXmlDocuments.Values.ToList();
+                token.ThrowIfCancellationRequested();
+                s_DicXmlDocuments.Clear();
+                token.ThrowIfCancellationRequested();
+                foreach (XmlReference objReference in lstReferences)
                 {
                     token.ThrowIfCancellationRequested();
                     if (objReference != null)

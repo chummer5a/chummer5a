@@ -1759,10 +1759,13 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (blnDisposeOldInfos)
                 {
-                    foreach (SourcebookInfo objInfo in s_DicSourcebookInfos.Values)
+                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.Values.ToList();
+                    s_DicSourcebookInfos.Clear();
+                    foreach (SourcebookInfo objInfo in lstInfos)
                         objInfo.Dispose();
                 }
-                s_DicSourcebookInfos.Clear();
+                else
+                    s_DicSourcebookInfos.Clear();
                 token.ThrowIfCancellationRequested();
                 foreach (SourcebookInfo objSourcebookInfo in dicNewValues.Values)
                 {
@@ -1785,11 +1788,13 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (blnDisposeOldInfos)
                 {
-                    foreach (SourcebookInfo objInfo in s_DicSourcebookInfos.Values)
+                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.Values.ToList();
+                    s_DicSourcebookInfos.Clear();
+                    foreach (SourcebookInfo objInfo in lstInfos)
                         objInfo.Dispose();
                 }
-
-                s_DicSourcebookInfos.Clear();
+                else
+                    s_DicSourcebookInfos.Clear();
                 token.ThrowIfCancellationRequested();
                 foreach (SourcebookInfo objSourcebookInfo in dicNewValues.Values)
                 {
@@ -1809,9 +1814,10 @@ namespace Chummer
                 return;
             try
             {
-                foreach (SourcebookInfo objInfo in s_DicSourcebookInfos.Values)
-                    objInfo.Dispose();
+                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.Values.ToList();
                 s_DicSourcebookInfos.Clear();
+                foreach (SourcebookInfo objInfo in lstInfos)
+                    objInfo.Dispose();
                 foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", token: token)
                              .SelectAndCacheExpression("/chummer/books/book", token: token))
                 {
@@ -1926,9 +1932,10 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                foreach (SourcebookInfo objInfo in s_DicSourcebookInfos.Values)
-                    objInfo.Dispose();
+                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.Values.ToList();
                 s_DicSourcebookInfos.Clear();
+                foreach (SourcebookInfo objInfo in lstInfos)
+                    objInfo.Dispose();
                 foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml", token: token)
                              .ConfigureAwait(false))
                          .SelectAndCacheExpression(

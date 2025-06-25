@@ -45,6 +45,7 @@ namespace Chummer
 
         private readonly FileSystemWatcher _watcherCharacterRosterFolderRawSaves;
         private readonly FileSystemWatcher _watcherCharacterRosterFolderCompressedSaves;
+        private readonly DebuggableSemaphoreSlim _objCharacterRosterFolderWatcherSemaphore = new DebuggableSemaphoreSlim();
         private Task _tskMostRecentlyUsedsRefresh;
         private Task _tskWatchFolderRefresh;
         private CancellationTokenSource _objMostRecentlyUsedsRefreshCancellationTokenSource;
@@ -63,6 +64,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
+                _objCharacterRosterFolderWatcherSemaphore = new DebuggableSemaphoreSlim();
                 _watcherCharacterRosterFolderRawSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5")
                     {
                         IncludeSubdirectories = true
@@ -95,6 +97,7 @@ namespace Chummer
                     _objGenericFormClosingCancellationTokenSource.Dispose();
                     _watcherCharacterRosterFolderRawSaves.Dispose();
                     _watcherCharacterRosterFolderCompressedSaves.Dispose();
+                    _objCharacterRosterFolderWatcherSemaphore.Dispose();
                 };
             }
             else
@@ -260,18 +263,26 @@ namespace Chummer
                         objTemp = objCurrent;
                     }
 
-                    if (_dicSavedCharacterCaches.TryRemove(e.FullPath, out CharacterCache objCacheToRemove))
+                    await _objCharacterRosterFolderWatcherSemaphore.WaitAsync(objTemp.Token).ConfigureAwait(false);
+                    try
                     {
-                        await treCharacterList.DoThreadSafeAsync(x =>
+                        if (_dicSavedCharacterCaches.TryRemove(e.FullPath, out CharacterCache objCacheToRemove))
                         {
-                            foreach (TreeNode objNode in x.Nodes.OfType<TreeNode>()
-                                                          .DeepWhere(y => y.Nodes.OfType<TreeNode>(),
-                                                                     y => y.Tag == objCacheToRemove).ToList())
+                            await treCharacterList.DoThreadSafeAsync(x =>
                             {
-                                objNode.Remove();
-                            }
-                        }, objTemp.Token).ConfigureAwait(false);
-                        await objCacheToRemove.DisposeAsync().ConfigureAwait(false);
+                                foreach (TreeNode objNode in x.Nodes.OfType<TreeNode>()
+                                                              .DeepWhere(y => y.Nodes.OfType<TreeNode>(),
+                                                                         y => y.Tag == objCacheToRemove).ToList())
+                                {
+                                    objNode.Remove();
+                                }
+                            }, objTemp.Token).ConfigureAwait(false);
+                            await objCacheToRemove.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        _objCharacterRosterFolderWatcherSemaphore.Release();
                     }
                 }
             }
@@ -302,41 +313,49 @@ namespace Chummer
                     }
 
                     CancellationToken objTokenToUse = objTemp.Token;
-                    TreeNode objNewNode = await CacheCharacter(e.FullPath, true, objTokenToUse).ConfigureAwait(false);
-                    if (objNewNode.Tag is CharacterCache objNewCache)
+                    await _objCharacterRosterFolderWatcherSemaphore.WaitAsync(objTokenToUse).ConfigureAwait(false);
+                    try
                     {
-                        HashSet<CharacterCache> setCachesToDispose = new HashSet<CharacterCache>(2);
-                        await treCharacterList.DoThreadSafeAsync(x =>
+                        TreeNode objNewNode = await CacheCharacter(e.FullPath, true, objTokenToUse).ConfigureAwait(false);
+                        if (objNewNode.Tag is CharacterCache objNewCache)
                         {
-                            foreach (TreeNode objNode in x.Nodes.OfType<TreeNode>()
-                                                          .DeepWhere(y => y.Nodes.OfType<TreeNode>(),
-                                                                     y => y.Tag is CharacterCache z
-                                                                          && z.FilePath == objNewCache.FilePath))
+                            HashSet<CharacterCache> setCachesToDispose = new HashSet<CharacterCache>(2);
+                            await treCharacterList.DoThreadSafeAsync(x =>
                             {
-                                objNode.Text = objNewNode.Text;
-                                objNode.ToolTipText = objNewNode.ToolTipText;
-                                objNode.ForeColor = objNewNode.ForeColor;
-                                if (objNode.Tag is CharacterCache objOldCache && !objOldCache.IsDisposed)
-                                    setCachesToDispose.Add(objOldCache);
-                                objNode.Tag = objNewCache;
+                                foreach (TreeNode objNode in x.Nodes.OfType<TreeNode>()
+                                                              .DeepWhere(y => y.Nodes.OfType<TreeNode>(),
+                                                                         y => y.Tag is CharacterCache z
+                                                                              && z.FilePath == objNewCache.FilePath))
+                                {
+                                    objNode.Text = objNewNode.Text;
+                                    objNode.ToolTipText = objNewNode.ToolTipText;
+                                    objNode.ForeColor = objNewNode.ForeColor;
+                                    if (objNode.Tag is CharacterCache objOldCache && !objOldCache.IsDisposed)
+                                        setCachesToDispose.Add(objOldCache);
+                                    objNode.Tag = objNewCache;
+                                }
+                            }, objTokenToUse).ConfigureAwait(false);
+                            List<CharacterCache> lstToKeep = new List<CharacterCache>();
+                            foreach (CharacterCache objCache in setCachesToDispose)
+                            {
+                                objTokenToUse.ThrowIfCancellationRequested();
+                                if (!objCache.IsDisposed && _dicSavedCharacterCaches.ContainsKey(objCache.FilePath))
+                                    lstToKeep.Add(objCache);
                             }
-                        }, objTokenToUse).ConfigureAwait(false);
-                        List<CharacterCache> lstToKeep = new List<CharacterCache>();
-                        foreach (CharacterCache objCache in setCachesToDispose)
-                        {
-                            objTokenToUse.ThrowIfCancellationRequested();
-                            if (!objCache.IsDisposed && _dicSavedCharacterCaches.ContainsKey(objCache.FilePath))
-                                lstToKeep.Add(objCache);
+                            foreach (CharacterCache objCache in lstToKeep)
+                            {
+                                objTokenToUse.ThrowIfCancellationRequested();
+                                setCachesToDispose.Remove(objCache);
+                            }
+                            foreach (CharacterCache objOldCache in setCachesToDispose)
+                            {
+                                await objOldCache.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
-                        foreach (CharacterCache objCache in lstToKeep)
-                        {
-                            objTokenToUse.ThrowIfCancellationRequested();
-                            setCachesToDispose.Remove(objCache);
-                        }
-                        foreach (CharacterCache objOldCache in setCachesToDispose)
-                        {
-                            await objOldCache.DisposeAsync().ConfigureAwait(false);
-                        }
+                    }
+                    finally
+                    {
+                        _objCharacterRosterFolderWatcherSemaphore.Release();
                     }
                 }
             }

@@ -842,7 +842,9 @@ namespace Chummer.Backend.Attributes
         {
             using (LockObject.EnterWriteLock())
             {
-                foreach (CharacterAttrib objAttribute in _dicAttributes.Values)
+                List<CharacterAttrib> lstAttributes = _dicAttributes.Values.ToList();
+                _dicAttributes.Clear();
+                foreach (CharacterAttrib objAttribute in lstAttributes)
                 {
                     if (objAttribute == GetAttributeByName(objAttribute.Abbrev))
                     {
@@ -862,7 +864,9 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                foreach (CharacterAttrib objAttribute in _dicAttributes.Values)
+                List<CharacterAttrib> lstAttributes = _dicAttributes.Values.ToList();
+                _dicAttributes.Clear();
+                foreach (CharacterAttrib objAttribute in lstAttributes)
                 {
                     if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev).ConfigureAwait(false))
                     {

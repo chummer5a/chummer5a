@@ -98,7 +98,7 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 _dicSkills.TryRemove(await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false), out _);
-                if (!_dicSkillBackups.Values.Contains(objSkill))
+                if (_dicSkillBackups.All(x => x.Value != objSkill)) // Do not use Values collection to avoid race conditions
                     await objSkill.RemoveAsync(token).ConfigureAwait(false);
             }
             finally
@@ -121,7 +121,8 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 objSkill.MultiplePropertiesChangedAsync -= OnKnowledgeSkillPropertyChanged;
 
-                if (!_dicSkillBackups.Values.Contains(objSkill) && !await KnowsoftSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
+                if (_dicSkillBackups.All(x => x.Value != objSkill) // Do not use Values collection to avoid race conditions
+                    && !await KnowsoftSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
                     await objSkill.RemoveAsync(token).ConfigureAwait(false);
             }
             finally
@@ -142,7 +143,8 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (!_dicSkillBackups.Values.Contains(objSkill) && !await KnowledgeSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
+                if (_dicSkillBackups.All(x => x.Value != objSkill) // Do not use Values collection to avoid race conditions
+                    && !await KnowledgeSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
                     await objSkill.RemoveAsync(token).ConfigureAwait(false);
             }
             finally
@@ -286,17 +288,18 @@ namespace Chummer.Backend.Skills
                             .ForEachAsync(
                                 objSkill => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token),
                                 token: token).ConfigureAwait(false);
-                        foreach (Skill objSkill in _dicSkillBackups.Values)
+                        foreach (KeyValuePair<Guid, Skill> kvpSkill in _dicSkillBackups) // Do not use Values collection to avoid race conditions
                         {
-                            await objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token)
+                            await kvpSkill.Value.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token)
                                 .ConfigureAwait(false);
                         }
                     }
                     else
                     {
-                        foreach (Skill objSkill in _dicSkillBackups.Values)
+                        foreach (KeyValuePair<Guid, Skill> kvpSkill in _dicSkillBackups) // Do not use Values collection to avoid race conditions
                         {
                             token.ThrowIfCancellationRequested();
+                            Skill objSkill = kvpSkill.Value;
                             if (!objSkill.IsKnowledgeSkill)
                                 await objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token)
                                     .ConfigureAwait(false);
@@ -309,8 +312,10 @@ namespace Chummer.Backend.Skills
                         .ForEachAsync(
                             objSkill => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token),
                             token: token).ConfigureAwait(false);
-                    foreach (Skill objSkill in _dicSkillBackups.Values)
+                    foreach (KeyValuePair<Guid, Skill> kvpSkill in _dicSkillBackups) // Do not use Values collection to avoid race conditions
                     {
+                        token.ThrowIfCancellationRequested();
+                        Skill objSkill = kvpSkill.Value;
                         if (objSkill.IsKnowledgeSkill)
                             await objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token)
                                 .ConfigureAwait(false);
@@ -2541,7 +2546,9 @@ namespace Chummer.Backend.Skills
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    foreach (Skill objSkill in _dicSkillBackups.Values)
+                    List<Skill> lstSkillBackups = _dicSkillBackups.Values.ToList();
+                    _dicSkillBackups.Clear();
+                    foreach (Skill objSkill in lstSkillBackups)
                         objSkill.Remove();
                     _lstSkills.ForEach(x => x.Remove(), token);
                     KnowledgeSkills.ForEach(x =>
@@ -2579,7 +2586,9 @@ namespace Chummer.Backend.Skills
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    foreach (Skill objSkill in _dicSkillBackups.Values)
+                    List<Skill> lstSkillBackups = _dicSkillBackups.Values.ToList();
+                    _dicSkillBackups.Clear();
+                    foreach (Skill objSkill in lstSkillBackups)
                         await objSkill.RemoveAsync(token).ConfigureAwait(false);
                     await _lstSkills.ForEachAsync(x => x.RemoveAsync(token), token).ConfigureAwait(false);
                     await KnowledgeSkills.ForEachAsync(objSkill =>
@@ -4093,7 +4102,9 @@ namespace Chummer.Backend.Skills
                     //swallow this
                 }
                 _lstSkillGroups.ForEach(x => x.Dispose());
-                foreach (Skill objSkill in _dicSkillBackups.Values)
+                List<Skill> lstSkillBackups = _dicSkillBackups.Values.ToList();
+                _dicSkillBackups.Clear();
+                foreach (Skill objSkill in lstSkillBackups)
                     objSkill.Dispose();
                 _dicSkillBackups.Clear();
                 _lstSkills.ForEach(x => x.Dispose());
@@ -4149,9 +4160,10 @@ namespace Chummer.Backend.Skills
                     //swallow this
                 }
                 await _lstSkillGroups.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
-                foreach (Skill objSkill in _dicSkillBackups.Values)
-                    await objSkill.DisposeAsync().ConfigureAwait(false);
+                List<Skill> lstSkillBackups = _dicSkillBackups.Values.ToList();
                 _dicSkillBackups.Clear();
+                foreach (Skill objSkill in lstSkillBackups)
+                    await objSkill.DisposeAsync().ConfigureAwait(false);
                 await _lstSkills.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 await _lstSkills.DisposeAsync().ConfigureAwait(false);
                 await _lstKnowledgeSkills.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
