@@ -1,6 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net481</TargetFramework>
     <OutputType>WinExe</OutputType>
     <AssemblyName>Chummer5</AssemblyName>
     <IsWebBootstrapper>false</IsWebBootstrapper>
