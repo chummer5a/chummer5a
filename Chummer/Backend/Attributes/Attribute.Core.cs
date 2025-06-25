@@ -1278,7 +1278,7 @@ namespace Chummer.Backend.Attributes
                              .GetCachedImprovementListForAugmentedValueOf(
                                  _objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token))
                 {
-                    if (objImprovement.Augmented * objImprovement.Rating != 0)
+                    if (objImprovement.Rating != 0 && objImprovement.Augmented != 0)
                         return true;
                     if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
@@ -1293,7 +1293,7 @@ namespace Chummer.Backend.Attributes
                              .GetCachedImprovementListForAugmentedValueOf(
                                  _objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base", token: token))
                 {
-                    if (objImprovement.Augmented * objImprovement.Rating != 0)
+                    if (objImprovement.Rating != 0 && objImprovement.Augmented != 0)
                         return true;
                     if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
@@ -1329,7 +1329,7 @@ namespace Chummer.Backend.Attributes
                                  _objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token)
                              .ConfigureAwait(false))
                 {
-                    if (objImprovement.Augmented * objImprovement.Rating != 0)
+                    if (objImprovement.Rating != 0 && objImprovement.Augmented != 0)
                         return true;
                     if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
@@ -1345,7 +1345,7 @@ namespace Chummer.Backend.Attributes
                                  _objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base", token: token)
                              .ConfigureAwait(false))
                 {
-                    if (objImprovement.Augmented * objImprovement.Rating != 0)
+                    if (objImprovement.Rating != 0 && objImprovement.Augmented != 0)
                         return true;
                     if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
@@ -2422,6 +2422,8 @@ namespace Chummer.Backend.Attributes
                             foreach (Improvement objImprovement in lstUsedImprovements.Where(
                                          objImprovement => !objImprovement.Custom))
                             {
+                                if (objImprovement.Rating == 0 || objImprovement.Augmented == 0)
+                                    continue;
                                 string strUniqueName = objImprovement.UniqueName;
                                 if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute"
                                                                          && objImprovement.ImproveType
@@ -2438,7 +2440,7 @@ namespace Chummer.Backend.Attributes
                                                           _objCharacter.GetObjectName(
                                                               objImprovement, GlobalSettings.Language)));
                                 }
-                                else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
+                                else
                                 {
                                     decimal decValue = objImprovement.Augmented * objImprovement.Rating;
                                     sbdModifier.Append(strSpace).Append('+').Append(strSpace)
@@ -2543,6 +2545,8 @@ namespace Chummer.Backend.Attributes
                             foreach (Improvement objImprovement in lstUsedImprovements.Where(
                                          objImprovement => objImprovement.Custom))
                             {
+                                if (objImprovement.Rating == 0 || objImprovement.Augmented == 0)
+                                    continue;
                                 string strUniqueName = objImprovement.UniqueName;
                                 if (!string.IsNullOrEmpty(strUniqueName))
                                 {
@@ -2657,6 +2661,8 @@ namespace Chummer.Backend.Attributes
                                      objImprovement => !objImprovement.Custom))
                         {
                             token.ThrowIfCancellationRequested();
+                            if (objImprovement.Rating == 0 || objImprovement.Augmented == 0)
+                                continue;
                             string strUniqueName = objImprovement.UniqueName;
                             if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute"
                                                                      && objImprovement.ImproveType
@@ -2673,7 +2679,7 @@ namespace Chummer.Backend.Attributes
                                                       await _objCharacter.GetObjectNameAsync(
                                                           objImprovement, GlobalSettings.Language, token).ConfigureAwait(false)));
                             }
-                            else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
+                            else
                             {
                                 decimal decValue = objImprovement.Augmented * objImprovement.Rating;
                                 sbdModifier.Append(strSpace).Append('+').Append(strSpace)
@@ -2783,6 +2789,8 @@ namespace Chummer.Backend.Attributes
                                      objImprovement => objImprovement.Custom))
                         {
                             token.ThrowIfCancellationRequested();
+                            if (objImprovement.Rating == 0 || objImprovement.Augmented == 0)
+                                continue;
                             string strUniqueName = objImprovement.UniqueName;
                             if (!string.IsNullOrEmpty(strUniqueName))
                             {

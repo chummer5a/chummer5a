@@ -951,6 +951,9 @@ namespace Chummer
                                                                     out HashSet<string>
                                                                         setAttributePropertiesChanged))
                     {
+                        // Always refresh these, just in case (because we cannot appropriately detect when augmented values might be set or unset)
+                        setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeModifiers));
+                        setAttributePropertiesChanged.Add(nameof(CharacterAttrib.HasModifiers));
                         if (AugmentedMaximum != 0)
                             setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AugmentedMaximumModifiers));
                         if (Maximum != 0)
@@ -965,26 +968,6 @@ namespace Chummer
                             }
                         }
                         strTargetAttribute = strTargetAttribute.TrimEndOnce("Base");
-                        if (Augmented != 0)
-                        {
-                            setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeModifiers));
-                            setAttributePropertiesChanged.Add(nameof(CharacterAttrib.HasModifiers));
-                        }
-                        else if ((ImproveSource == ImprovementSource.EssenceLoss ||
-                                  ImproveSource == ImprovementSource.EssenceLossChargen ||
-                                  ImproveSource == ImprovementSource.CyberadeptDaemon)
-                                 && (_objCharacter.MAGEnabled && (strTargetAttribute == "MAG"
-                                                                  || strTargetAttribute == "MAGAdept"
-                                                                  || (lstExtraImprovedName != null
-                                                                      && (lstExtraImprovedName.Contains("MAG")
-                                                                          || lstExtraImprovedName
-                                                                              .Contains("MAGAdept")))) ||
-                                     _objCharacter.RESEnabled && (strTargetAttribute == "RES"
-                                                                  || lstExtraImprovedName?.Contains("RES") == true) ||
-                                     _objCharacter.DEPEnabled && (strTargetAttribute == "DEP"
-                                                                  || lstExtraImprovedName?.Contains("DEP") == true)))
-                            setAttributePropertiesChanged.Add(nameof(CharacterAttrib.HasModifiers));
-
                         if (setAttributePropertiesChanged.Count > 0)
                         {
                             foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
@@ -3469,6 +3452,9 @@ namespace Chummer
                                                                         out HashSet<string>
                                                                             setAttributePropertiesChanged))
                         {
+                            // Always refresh these, just in case (because we cannot appropriately detect when augmented values might be set or unset)
+                            setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeModifiers));
+                            setAttributePropertiesChanged.Add(nameof(CharacterAttrib.HasModifiers));
                             if (AugmentedMaximum != 0)
                                 setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AugmentedMaximumModifiers));
                             if (Maximum != 0)
@@ -3484,29 +3470,9 @@ namespace Chummer
                                 }
                             }
                             strTargetAttribute = strTargetAttribute.TrimEndOnce("Base");
-                            if (Augmented != 0)
-                            {
-                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeModifiers));
-                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.HasModifiers));
-                            }
-                            else if ((ImproveSource == ImprovementSource.EssenceLoss ||
-                                      ImproveSource == ImprovementSource.EssenceLossChargen ||
-                                      ImproveSource == ImprovementSource.CyberadeptDaemon)
-                                     && (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false) && (strTargetAttribute == "MAG"
-                                                                      || strTargetAttribute == "MAGAdept"
-                                                                      || (lstExtraImprovedName != null
-                                                                          && (lstExtraImprovedName.Contains("MAG")
-                                                                              || lstExtraImprovedName
-                                                                                  .Contains("MAGAdept")))) ||
-                                         await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false) && (strTargetAttribute == "RES"
-                                                                               || lstExtraImprovedName?.Contains("RES") == true) ||
-                                         await _objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false) && (strTargetAttribute == "DEP"
-                                                                               || lstExtraImprovedName?.Contains("DEP") == true)))
-                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.HasModifiers));
-
                             if (setAttributePropertiesChanged.Count > 0)
                             {
-                                foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(token))
+                                foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(token).ConfigureAwait(false))
                                 {
                                     if (objCharacterAttrib.Abbrev != strTargetAttribute && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
                                         continue;
@@ -3526,7 +3492,7 @@ namespace Chummer
                 case ImprovementType.AttributeMaxClamp:
                     {
                         string strTargetAttribute = ImprovedName;
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(token))
+                        foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(token).ConfigureAwait(false))
                         {
                             if (objCharacterAttrib.Abbrev != strTargetAttribute && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
                                 continue;
@@ -4000,7 +3966,7 @@ namespace Chummer
 
                 case ImprovementType.EssenceMax:
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(token))
+                        foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(token).ConfigureAwait(false))
                         {
                             if (objCharacterAttrib.Abbrev == "ESS")
                             {
@@ -4127,7 +4093,7 @@ namespace Chummer
 
                 case ImprovementType.Attributelevel:
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(token))
+                        foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(token).ConfigureAwait(false))
                         {
                             if (objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
                             {
@@ -4650,7 +4616,7 @@ namespace Chummer
 
                 case ImprovementType.ReplaceAttribute:
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(token))
+                        foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(token).ConfigureAwait(false))
                         {
                             if ((objCharacterAttrib.Abbrev != ImprovedName && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
                                 || objCharacterAttrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
