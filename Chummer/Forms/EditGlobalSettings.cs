@@ -80,7 +80,7 @@ namespace Chummer
                 = new HashSet<CustomDataDirectoryInfo>(GlobalSettings.CustomDataDirectoryInfos);
             Disposed += (sender, args) =>
             {
-                Stack<HashSet<string>> stkToReturn = new Stack<HashSet<string>>(_dicCachedPdfAppNames.Values);
+                Stack<HashSet<string>> stkToReturn = new Stack<HashSet<string>>(_dicCachedPdfAppNames.GetValuesToListSafe());
                 _dicCachedPdfAppNames.Clear();
                 while (stkToReturn.Count > 0)
                 {
@@ -2529,7 +2529,7 @@ namespace Chummer
                 }
 
                 token.ThrowIfCancellationRequested();
-                List<string> lstKeysToLoop = new List<string>(dicPatternsToMatch.Keys);
+                List<string> lstKeysToLoop = dicPatternsToMatch.GetKeysToListSafe();
                 //Search the first 15 pages for all the text
                 for (int intPage = 1; intPage <= 15; intPage++)
                 {

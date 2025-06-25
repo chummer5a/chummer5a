@@ -1760,7 +1760,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (blnDisposeOldInfos)
                 {
-                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.Values.ToList();
+                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
                     s_DicSourcebookInfos.Clear();
                     foreach (SourcebookInfo objInfo in lstInfos)
                         objInfo.Dispose();
@@ -1789,7 +1789,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (blnDisposeOldInfos)
                 {
-                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.Values.ToList();
+                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
                     s_DicSourcebookInfos.Clear();
                     foreach (SourcebookInfo objInfo in lstInfos)
                         objInfo.Dispose();
@@ -1815,7 +1815,7 @@ namespace Chummer
                 return;
             try
             {
-                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.Values.ToList();
+                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
                 s_DicSourcebookInfos.Clear();
                 foreach (SourcebookInfo objInfo in lstInfos)
                     objInfo.Dispose();
@@ -1934,7 +1934,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.Values.ToList();
+                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
                 s_DicSourcebookInfos.Clear();
                 foreach (SourcebookInfo objInfo in lstInfos)
                     objInfo.Dispose();

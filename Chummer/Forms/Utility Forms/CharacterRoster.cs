@@ -541,7 +541,7 @@ namespace Chummer
                     _objGenericToken.ThrowIfCancellationRequested();
                     if (!_dicSavedCharacterCaches.IsEmpty)
                     {
-                        List<CharacterCache> lstCaches = _dicSavedCharacterCaches.Values.ToList();
+                        List<CharacterCache> lstCaches = _dicSavedCharacterCaches.GetValuesToListSafe();
                         _dicSavedCharacterCaches.Clear();
                         foreach (CharacterCache objCache in lstCaches)
                         {

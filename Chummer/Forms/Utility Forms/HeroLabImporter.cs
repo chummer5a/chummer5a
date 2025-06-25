@@ -44,7 +44,7 @@ namespace Chummer
             Disposed += (sender, args) =>
             {
                 _lstCharacterCache.Dispose();
-                List<Bitmap> lstImages = _dicImages.Values.ToList();
+                List<Bitmap> lstImages = _dicImages.GetValuesToListSafe();
                 _dicImages.Clear();
                 foreach (Bitmap objImage in lstImages)
                     objImage.Dispose();
