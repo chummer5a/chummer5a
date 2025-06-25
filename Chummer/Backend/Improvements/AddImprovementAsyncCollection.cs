@@ -3595,7 +3595,7 @@ namespace Chummer
                                            new SelectItem
                                            {
                                                Description = strDescription
-                                           }).ConfigureAwait(false))
+                                           }, token).ConfigureAwait(false))
                                 {
                                     frmPickCategory.MyForm.SetGeneralItemsMode(lstGeneralItems);
 

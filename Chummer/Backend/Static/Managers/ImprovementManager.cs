@@ -2143,7 +2143,7 @@ namespace Chummer
 
                         if ((blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
-                                ? frmPickSkill.ShowDialogSafe(objCharacter)
+                                ? frmPickSkill.ShowDialogSafe(objCharacter, token)
                                 : await frmPickSkill.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false)) ==
                             DialogResult.Cancel)
                         {

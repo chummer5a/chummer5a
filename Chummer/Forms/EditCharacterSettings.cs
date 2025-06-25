@@ -1340,12 +1340,13 @@ namespace Chummer
                                 x => x.CharacterSettingsSaveKey == kvpKeyAndEnabled.Key);
                             int i1 = i;
                             TreeNode objNode = await treCustomDataDirectories
-                                .DoThreadSafeFuncAsync(x => x.Nodes[i1], token)
+                                .DoThreadSafeFuncAsync(x =>
+                                {
+                                    TreeNode objReturn = x.Nodes[i1];
+                                    objReturn.Checked = kvpKeyAndEnabled.Value;
+                                    return objReturn;
+                                }, token)
                                 .ConfigureAwait(false);
-                            await treCustomDataDirectories.DoThreadSafeAsync(() =>
-                            {
-                                objNode.Checked = kvpKeyAndEnabled.Value;
-                            }, token: token).ConfigureAwait(false);
                             if (objInfo != null)
                             {
                                 string strText = await objInfo.GetDisplayNameAsync(token).ConfigureAwait(false);

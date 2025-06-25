@@ -2291,33 +2291,31 @@ namespace Chummer.Backend.Equipment
                     await objRangesElement.DisposeAsync().ConfigureAwait(false);
                 }
 
-                    // <alternateranges>
-                    XmlElementWriteHelper objAlternateRangesElement =
-                        await objWriter.StartElementAsync("alternateranges", token).ConfigureAwait(false);
-                    try
-                    {
-                        await objWriter.WriteElementStringAsync("name",
-                                await DisplayAlternateRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
-                            .ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("name_english",
-                            await DisplayAlternateRangeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false),
-                            token).ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("short", dicRanges["alternateshort"], token)
-                            .ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("medium", dicRanges["alternatemedium"], token)
-                            .ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("long", dicRanges["alternatelong"], token)
-                            .ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("extreme", dicRanges["alternateextreme"], token)
-                            .ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        // </alternateranges>
-                        await objAlternateRangesElement.DisposeAsync().ConfigureAwait(false);
-                    }
-
-
+                // <alternateranges>
+                XmlElementWriteHelper objAlternateRangesElement =
+                    await objWriter.StartElementAsync("alternateranges", token).ConfigureAwait(false);
+                try
+                {
+                    await objWriter.WriteElementStringAsync("name",
+                            await DisplayAlternateRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                        .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name_english",
+                        await DisplayAlternateRangeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false),
+                        token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("short", dicRanges["alternateshort"], token)
+                        .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("medium", dicRanges["alternatemedium"], token)
+                        .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("long", dicRanges["alternatelong"], token)
+                        .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("extreme", dicRanges["alternateextreme"], token)
+                        .ConfigureAwait(false);
+                }
+                finally
+                {
+                    // </alternateranges>
+                    await objAlternateRangesElement.DisposeAsync().ConfigureAwait(false);
+                }
 
                 // Only include the unloaded range numbers if the dictionary values differ
                 if (blnRangeAmmoChange)
