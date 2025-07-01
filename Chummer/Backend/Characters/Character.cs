@@ -5872,14 +5872,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public XPathNavigator LoadDataXPath(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
         {
-            IReadOnlyList<string> lstCustomPaths = Settings.EnabledCustomDataDirectoryPaths;
-            if (strFileName == "packs.xml")
-            {
-                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
-                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
-                return XmlManager.LoadXPath(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token);
-            }
-            return XmlManager.LoadXPath(strFileName, Settings.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile, token);
+            return Settings.LoadDataXPath(strFileName, strLanguage, blnLoadFile, token);
         }
 
         /// <summary>
@@ -5895,14 +5888,7 @@ namespace Chummer
         public async Task<XPathNavigator> LoadDataXPathAsync(string strFileName, string strLanguage = "",
             bool blnLoadFile = false, CancellationToken token = default)
         {
-            IReadOnlyList<string> lstCustomPaths = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
-            if (strFileName == "packs.xml")
-            {
-                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
-                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
-                return await XmlManager.LoadXPathAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
-            }
-            return await XmlManager.LoadXPathAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+            return await (await GetSettingsAsync(token).ConfigureAwait(false)).LoadDataXPathAsync(strFileName, strLanguage, blnLoadFile, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -5916,14 +5902,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public XmlDocument LoadData(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
         {
-            IReadOnlyList<string> lstCustomPaths = Settings.EnabledCustomDataDirectoryPaths;
-            if (strFileName == "packs.xml")
-            {
-                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
-                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
-                return XmlManager.Load(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token);
-            }
-            return XmlManager.Load(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token);
+            return Settings.LoadData(strFileName, strLanguage, blnLoadFile, token);
         }
 
         /// <summary>
@@ -5936,14 +5915,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public async Task<XmlDocument> LoadDataAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
         {
-            IReadOnlyList<string> lstCustomPaths = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
-            if (strFileName == "packs.xml")
-            {
-                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
-                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
-                return await XmlManager.LoadAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
-            }
-            return await XmlManager.LoadAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+            return await (await GetSettingsAsync(token).ConfigureAwait(false)).LoadDataAsync(strFileName, strLanguage, blnLoadFile, token).ConfigureAwait(false);
         }
 
         private int _intIsLoading;
@@ -15582,7 +15554,7 @@ namespace Chummer
         /// <param name="strLanguage">Language to load.</param>
         public string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "")
         {
-            return CommonFunctions.LanguageBookCodeFromAltCode(strAltCode, strLanguage, this);
+            return CommonFunctions.LanguageBookCodeFromAltCode(strAltCode, strLanguage, this.Settings);
         }
 
         /// <summary>
@@ -15591,9 +15563,9 @@ namespace Chummer
         /// <param name="strAltCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public Task<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", CancellationToken token = default)
+        public async Task<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", CancellationToken token = default)
         {
-            return CommonFunctions.LanguageBookCodeFromAltCodeAsync(strAltCode, strLanguage, this, token);
+            return await CommonFunctions.LanguageBookCodeFromAltCodeAsync(strAltCode, strLanguage, await this.GetSettingsAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -15603,7 +15575,7 @@ namespace Chummer
         /// <param name="strLanguage">Language to load.</param>
         public string LanguageBookShort(string strCode, string strLanguage = "")
         {
-            return CommonFunctions.LanguageBookShort(strCode, strLanguage, this);
+            return CommonFunctions.LanguageBookShort(strCode, strLanguage, this.Settings);
         }
 
         /// <summary>
@@ -15612,9 +15584,9 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public Task<string> LanguageBookShortAsync(string strCode, string strLanguage = "", CancellationToken token = default)
+        public async Task<string> LanguageBookShortAsync(string strCode, string strLanguage = "", CancellationToken token = default)
         {
-            return CommonFunctions.LanguageBookShortAsync(strCode, strLanguage, this, token);
+            return await CommonFunctions.LanguageBookShortAsync(strCode, strLanguage, await this.GetSettingsAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -15624,7 +15596,7 @@ namespace Chummer
         /// <param name="strLanguage">Language to load.</param>
         public string LanguageBookLong(string strCode, string strLanguage = "")
         {
-            return CommonFunctions.LanguageBookLong(strCode, strLanguage, this);
+            return CommonFunctions.LanguageBookLong(strCode, strLanguage, this.Settings);
         }
 
         /// <summary>
@@ -15633,9 +15605,9 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public Task<string> LanguageBookLongAsync(string strCode, string strLanguage = "", CancellationToken token = default)
+        public async Task<string> LanguageBookLongAsync(string strCode, string strLanguage = "", CancellationToken token = default)
         {
-            return CommonFunctions.LanguageBookLongAsync(strCode, strLanguage, this, token);
+            return await CommonFunctions.LanguageBookLongAsync(strCode, strLanguage, await this.GetSettingsAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>

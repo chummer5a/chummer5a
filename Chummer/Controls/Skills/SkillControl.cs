@@ -1230,10 +1230,13 @@ namespace Chummer.UI.Skills
                     = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
                 try
                 {
+                    Character objCharacter = _objSkill.CharacterObject;
                     await CommonFunctions.OpenPdf(
                         _objSkill.Source + ' ' + await _objSkill.DisplayPageAsync(GlobalSettings.Language, _objMyToken)
                                                                 .ConfigureAwait(false),
-                        _objSkill.CharacterObject, token: _objMyToken).ConfigureAwait(false);
+                        objCharacter != null
+                            ? await objCharacter.GetSettingsAsync(_objMyToken).ConfigureAwait(false)
+                            : null, token: _objMyToken).ConfigureAwait(false);
                 }
                 finally
                 {

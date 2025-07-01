@@ -1384,15 +1384,15 @@ namespace Chummer
         /// Book code (using the translated version if applicable).
         /// </summary>
         /// <param name="strAltCode">Book code to search for.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
+        public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "", CharacterSettings objSettings = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strAltCode))
                 return string.Empty;
-            XPathNavigator xmlOriginalCode = objCharacter != null
-                ? objCharacter.LoadDataXPath("books.xml", strLanguage, token: token)
+            XPathNavigator xmlOriginalCode = objSettings != null
+                ? objSettings.LoadDataXPath("books.xml", strLanguage, token: token)
                 : XmlManager.LoadXPath("books.xml", null, strLanguage, token: token);
             xmlOriginalCode = xmlOriginalCode?.SelectSingleNodeAndCacheExpression("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code", token);
             return xmlOriginalCode?.Value ?? strAltCode;
@@ -1402,15 +1402,15 @@ namespace Chummer
         /// Book code (using the translated version if applicable).
         /// </summary>
         /// <param name="strAltCode">Book code to search for.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
+        public static async Task<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", CharacterSettings objSettings = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strAltCode))
                 return string.Empty;
-            XPathNavigator xmlOriginalCode = objCharacter != null
-                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
+            XPathNavigator xmlOriginalCode = objSettings != null
+                ? await objSettings.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
                 : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
             xmlOriginalCode = xmlOriginalCode?.SelectSingleNodeAndCacheExpression(
                 "/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code", token: token);
@@ -1421,17 +1421,17 @@ namespace Chummer
         /// Book code (using the translated version if applicable).
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static string LanguageBookShort(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
+        public static string LanguageBookShort(string strCode, string strLanguage = "", CharacterSettings objSettings = null, CancellationToken token = default)
         {
             if (GlobalSettings.Language == GlobalSettings.DefaultLanguage)
                 return strCode;
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
-            XPathNavigator xmlAltCode = objCharacter != null
-                ? objCharacter.LoadDataXPath("books.xml", strLanguage, token: token)
+            XPathNavigator xmlAltCode = objSettings != null
+                ? objSettings.LoadDataXPath("books.xml", strLanguage, token: token)
                 : XmlManager.LoadXPath("books.xml", null, strLanguage, token: token);
             xmlAltCode = xmlAltCode?.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode", token);
             return xmlAltCode?.Value ?? strCode;
@@ -1441,18 +1441,18 @@ namespace Chummer
         /// Book code (using the translated version if applicable).
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<string> LanguageBookShortAsync(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
+        public static async Task<string> LanguageBookShortAsync(string strCode, string strLanguage = "", CharacterSettings objSettings = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (GlobalSettings.Language == GlobalSettings.DefaultLanguage)
                 return strCode;
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
-            XPathNavigator xmlAltCode = objCharacter != null
-                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
+            XPathNavigator xmlAltCode = objSettings != null
+                ? await objSettings.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
                 : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
             xmlAltCode = xmlAltCode?.SelectSingleNodeAndCacheExpression(
                 "/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode", token: token);
@@ -1463,15 +1463,15 @@ namespace Chummer
         /// Book name (using the translated version if applicable).
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static string LanguageBookLong(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
+        public static string LanguageBookLong(string strCode, string strLanguage = "", CharacterSettings objSettings = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
-            XPathNavigator xmlBook = objCharacter != null
-                ? objCharacter.LoadDataXPath("books.xml", strLanguage, token: token)
+            XPathNavigator xmlBook = objSettings != null
+                ? objSettings.LoadDataXPath("books.xml", strLanguage, token: token)
                 : XmlManager.LoadXPath("books.xml", null, strLanguage, token: token);
             xmlBook = xmlBook?.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strCode.CleanXPath() + ']', token);
             if (xmlBook != null)
@@ -1489,15 +1489,15 @@ namespace Chummer
         /// Book name (using the translated version if applicable).
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<string> LanguageBookLongAsync(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
+        public static async Task<string> LanguageBookLongAsync(string strCode, string strLanguage = "", CharacterSettings objSettings = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
-            XPathNavigator xmlBook = objCharacter != null
-                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
+            XPathNavigator xmlBook = objSettings != null
+                ? await objSettings.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
                 : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
             if (xmlBook != null)
             {
@@ -1520,6 +1520,14 @@ namespace Chummer
         /// </summary>
         public static string GetBookNotes(XmlNode objNode, string strName, string strDisplayName, string strSource, string strPage, string strDisplayPage, Character objCharacter, CancellationToken token = default)
         {
+            return GetBookNotes(objNode, strName, strDisplayName, strSource, strPage, strDisplayPage, objCharacter?.Settings, token);
+        }
+
+        /// <summary>
+        /// Fetch the in-book description of a given object.
+        /// </summary>
+        public static string GetBookNotes(XmlNode objNode, string strName, string strDisplayName, string strSource, string strPage, string strDisplayPage, CharacterSettings objSettings, CancellationToken token = default)
+        {
             string strEnglishNameOnPage = strName;
             string strNameOnPage = string.Empty;
             // make sure we have something and not just an empty tag
@@ -1527,9 +1535,9 @@ namespace Chummer
                 !string.IsNullOrEmpty(strNameOnPage))
                 strEnglishNameOnPage = strNameOnPage;
 
-            using (objCharacter.LockObject.EnterReadLock(token))
+            using (objSettings.LockObject.EnterReadLock(token))
             {
-                string strNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter, token);
+                string strNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objSettings, token);
 
                 if (!string.IsNullOrEmpty(strNotes)
                     || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -1547,7 +1555,7 @@ namespace Chummer
                     strTranslatedNameOnPage = strNameOnPage;
 
                 return GetTextFromPdf(strSource + ' ' + strDisplayPage,
-                                      strTranslatedNameOnPage, objCharacter, token);
+                                      strTranslatedNameOnPage, objSettings, token);
             }
         }
 
@@ -1555,6 +1563,14 @@ namespace Chummer
         /// Fetch the in-book description of a given object.
         /// </summary>
         public static async Task<string> GetBookNotesAsync(XmlNode objNode, string strName, string strDisplayName, string strSource, string strPage, string strDisplayPage, Character objCharacter, CancellationToken token = default)
+        {
+            return await GetBookNotesAsync(objNode, strName, strDisplayName, strSource, strPage, strDisplayPage, objCharacter != null ? await objCharacter.GetSettingsAsync(token).ConfigureAwait(false) : null, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Fetch the in-book description of a given object.
+        /// </summary>
+        public static async Task<string> GetBookNotesAsync(XmlNode objNode, string strName, string strDisplayName, string strSource, string strPage, string strDisplayPage, CharacterSettings objSettings, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strEnglishNameOnPage = strName;
@@ -1564,12 +1580,12 @@ namespace Chummer
                 !string.IsNullOrEmpty(strNameOnPage))
                 strEnglishNameOnPage = strNameOnPage;
 
-            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterReadLockAsync(token)
+            IAsyncDisposable objLocker = await objSettings.LockObject.EnterReadLockAsync(token)
                 .ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strNotes = await GetTextFromPdfAsync(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter, token).ConfigureAwait(false);
+                string strNotes = await GetTextFromPdfAsync(strSource + ' ' + strPage, strEnglishNameOnPage, objSettings, token).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(strNotes)
                     || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -1587,7 +1603,7 @@ namespace Chummer
                     strTranslatedNameOnPage = strNameOnPage;
 
                 return await GetTextFromPdfAsync(strSource + ' ' + strDisplayPage,
-                                                 strTranslatedNameOnPage, objCharacter, token).ConfigureAwait(false);
+                                                 strTranslatedNameOnPage, objSettings, token).ConfigureAwait(false);
             }
             finally
             {
@@ -2001,23 +2017,39 @@ namespace Chummer
             if (!(sender is Control objControl))
                 return;
             Control objLoopControl = objControl;
-            Character objCharacter = null;
+            CharacterSettings objSettings = null;
             while (objLoopControl != null)
             {
                 if (objLoopControl is CharacterShared objShared)
                 {
-                    objCharacter = objShared.CharacterObject;
+                    Character objCharacter = objShared.CharacterObject;
+                    if (objCharacter != null)
+                        objSettings = await objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                    else
+                        objSettings = null;
                     break;
                 }
 
                 objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent, token: token).ConfigureAwait(false);
             }
+            await OpenPdfFromControl(sender, objSettings, token).ConfigureAwait(false);
+        }
 
+        /// <summary>
+        /// Opens a PDF file using the provided source information.
+        /// </summary>
+        /// <param name="sender">Control from which this method was called.</param>
+        /// <param name="objSettings">Settings to use for custom data. If null, no custom data will be used.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task OpenPdfFromControl(object sender, CharacterSettings objSettings, CancellationToken token = default)
+        {
+            if (!(sender is Control objControl))
+                return;
             CursorWait objCursorWait
                 = await CursorWait.NewAsync(await objControl.DoThreadSafeFuncAsync(x => x.FindForm(), token: token).ConfigureAwait(false) ?? objControl, token: token).ConfigureAwait(false);
             try
             {
-                await OpenPdf(await objControl.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false), objCharacter, string.Empty,
+                await OpenPdf(await objControl.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false), objSettings, string.Empty,
                               string.Empty, true, token).ConfigureAwait(false);
             }
             finally
@@ -2030,12 +2062,12 @@ namespace Chummer
         /// Opens a PDF file using the provided source information.
         /// </summary>
         /// <param name="strSource">Book code and page number to open.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPdfParameters">PDF parameters to use. If empty, use GlobalSettings.PdfParameters.</param>
         /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalSettings.PdfAppPath.</param>
         /// <param name="blnOpenOptions">If set to True, the user will be prompted whether they wish to link a PDF if no PDF is found.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false, CancellationToken token = default)
+        public static async Task OpenPdf(string strSource, CharacterSettings objSettings = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
@@ -2102,7 +2134,7 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objCharacter, token).ConfigureAwait(false);
+            string strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objSettings, token).ConfigureAwait(false);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             if (!(await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false))
@@ -2175,11 +2207,11 @@ namespace Chummer
         /// </summary>
         /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
         /// <param name="strText">String to search for as an opener</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objSettings">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static string GetTextFromPdf(string strSource, string strText, Character objCharacter = null, CancellationToken token = default)
+        public static string GetTextFromPdf(string strSource, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => GetTextFromPdfCoreAsync(true, strSource, strText, objCharacter, token), token);
+            return Utils.SafelyRunSynchronously(() => GetTextFromPdfCoreAsync(true, strSource, strText, objSettings, token), token);
         }
 
         /// <summary>
@@ -2187,11 +2219,11 @@ namespace Chummer
         /// </summary>
         /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
         /// <param name="strText">String to search for as an opener</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static Task<string> GetTextFromPdfAsync(string strSource, string strText, Character objCharacter = null, CancellationToken token = default)
+        public static Task<string> GetTextFromPdfAsync(string strSource, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
         {
-            return GetTextFromPdfCoreAsync(false, strSource, strText, objCharacter, token);
+            return GetTextFromPdfCoreAsync(false, strSource, strText, objSettings, token);
         }
 
         private static readonly ConcurrentHashSet<PdfDocument> _setDocumentsProcessing = new ConcurrentHashSet<PdfDocument>();
@@ -2256,9 +2288,9 @@ namespace Chummer
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
         /// <param name="strText">String to search for as an opener</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strSource, string strText, Character objCharacter, CancellationToken token = default)
+        private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strSource, string strText, CharacterSettings objSettings, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
@@ -2279,8 +2311,8 @@ namespace Chummer
             // Revert the sourcebook code to the one from the XML file if necessary.
             string strBook = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
-                ? LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter, token)
-                : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objCharacter, token).ConfigureAwait(false);
+                ? LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objSettings, token)
+                : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objSettings, token).ConfigureAwait(false);
 
             token.ThrowIfCancellationRequested();
 
