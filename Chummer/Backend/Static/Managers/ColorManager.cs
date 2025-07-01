@@ -214,7 +214,7 @@ namespace Chummer
         {
             return IsLightMode
                 ? s_DicDimmedColors.GetOrAdd(objColor, GetDimmedVersion)
-                : s_DicBrightenedColors.GetOrAdd(objColor, GetBrightenedVersion);
+                : GetDarkModeVersion(s_DicDimmedColors.GetOrAdd(objColor, GetDimmedVersion));
         }
 
         /// <summary>
@@ -298,12 +298,12 @@ namespace Chummer
         private static Color SplitterColorDark { get; } = GenerateDarkModeColor(SplitterColorLight);
 
         public static Color HasNotesColor => IsLightMode ? HasNotesColorLight : HasNotesColorDark;
-        private static Color HasNotesColorLight { get; } = Color.Chocolate;
-        private static Color HasNotesColorDark { get; } = GenerateDarkModeColor(HasNotesColorLight);
+        public static Color HasNotesColorLight => GlobalSettings.DefaultHasNotesColor;
+        public static Color HasNotesColorDark => GenerateDarkModeColor(HasNotesColorLight);
 
         public static Color GrayHasNotesColor => IsLightMode ? GrayHasNotesColorLight : GrayHasNotesColorDark;
-        private static Color GrayHasNotesColorLight { get; } = Color.Tan;
-        private static Color GrayHasNotesColorDark { get; } = GenerateDarkModeColor(GrayHasNotesColorLight);
+        private static Color GrayHasNotesColorLight => s_DicDimmedColors.GetOrAdd(HasNotesColorLight, GetDimmedVersion);
+        private static Color GrayHasNotesColorDark => GenerateDarkModeColor(GrayHasNotesColorLight);
 
         public static Color ErrorColor { get; } = Color.Red;
 
@@ -439,7 +439,7 @@ namespace Chummer
             float fltHue = objColor.GetHue() / 360.0f;
             float fltBrightness = objColor.GetBrightness();
             float fltSaturation = objColor.GetSaturation();
-            fltSaturation = Math.Min(fltSaturation * 1.15f, 1);
+            fltSaturation = Math.Min(fltSaturation * 1.6f, 1);
             return FromHsva(fltHue, fltBrightness, fltSaturation, objColor.A);
         }
 
@@ -449,7 +449,7 @@ namespace Chummer
             float fltHue = objColor.GetHue() / 360.0f;
             float fltBrightness = objColor.GetBrightness();
             float fltSaturation = objColor.GetSaturation();
-            fltSaturation = Math.Max(0, fltSaturation * 0.85f);
+            fltSaturation = Math.Max(0, fltSaturation * 0.625f);
             return FromHsva(fltHue, fltBrightness, fltSaturation, objColor.A);
         }
 
