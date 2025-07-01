@@ -13427,21 +13427,7 @@ namespace Chummer
 
         #region Other Control Events
 
-        private async void tabCharacterTabs_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing || SkipUpdate)
-                return;
-            try
-            {
-                await RefreshPasteStatus(GenericToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
-        private async void tabStreetGearTabs_SelectedIndexChanged(object sender, EventArgs e)
+        private async void OnTabsIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
