@@ -57,7 +57,7 @@ namespace Chummer
 
         public static async Task<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage, CultureInfo objCultureInfo, Character objCharacter, CancellationToken token = default)
         {
-            return await GetSourceStringAsync(strSourceString, strLanguage, objCultureInfo, await objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).ConfigureAwait(false);
+            return await GetSourceStringAsync(strSourceString, strLanguage, objCultureInfo, await objCharacter.GetSettingsAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         public static Task<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage = "",
@@ -91,7 +91,7 @@ namespace Chummer
 
         public static async Task<SourceString> GetSourceStringAsync(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo, Character objCharacter, CancellationToken token = default)
         {
-            return await GetSourceStringAsync(strSource, strPage, strLanguage, objCultureInfo, await objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).ConfigureAwait(false);
+            return await GetSourceStringAsync(strSource, strPage, strLanguage, objCultureInfo, await objCharacter.GetSettingsAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         public static Task<SourceString> GetSourceStringAsync(string strSource, string strPage, string strLanguage = "",
@@ -118,7 +118,7 @@ namespace Chummer
 
         public static async Task<SourceString> GetSourceStringAsync(string strSource, int intPage, string strLanguage, CultureInfo objCultureInfo, Character objCharacter, CancellationToken token = default)
         {
-            return await GetSourceStringAsync(strSource, intPage, strLanguage, objCultureInfo, await objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).ConfigureAwait(false);
+            return await GetSourceStringAsync(strSource, intPage, strLanguage, objCultureInfo, await objCharacter.GetSettingsAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         public static async Task<SourceString> GetSourceStringAsync(string strSource, int intPage, string strLanguage = "",

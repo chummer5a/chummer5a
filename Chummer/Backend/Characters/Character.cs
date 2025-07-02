@@ -2653,18 +2653,18 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                     blnDoRefreshPenalties =
-                        await e.NewItems.OfType<SustainedObject>().AnyAsync(objItem => objItem.GetHasSustainingPenaltyAsync(token)).ConfigureAwait(false);
+                        await e.NewItems.OfType<SustainedObject>().AnyAsync(objItem => objItem.GetHasSustainingPenaltyAsync(token), token).ConfigureAwait(false);
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
                     blnDoRefreshPenalties =
-                        await e.OldItems.OfType<SustainedObject>().AnyAsync(objItem => objItem.GetHasSustainingPenaltyAsync(token)).ConfigureAwait(false);
+                        await e.OldItems.OfType<SustainedObject>().AnyAsync(objItem => objItem.GetHasSustainingPenaltyAsync(token), token).ConfigureAwait(false);
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
                     blnDoRefreshPenalties =
-                        await e.OldItems.OfType<SustainedObject>().AnyAsync(objItem => objItem.GetHasSustainingPenaltyAsync(token)).ConfigureAwait(false) ||
-                        await e.NewItems.OfType<SustainedObject>().AnyAsync(objItem => objItem.GetHasSustainingPenaltyAsync(token)).ConfigureAwait(false);
+                        await e.OldItems.OfType<SustainedObject>().AnyAsync(objItem => objItem.GetHasSustainingPenaltyAsync(token), token).ConfigureAwait(false) ||
+                        await e.NewItems.OfType<SustainedObject>().AnyAsync(objItem => objItem.GetHasSustainingPenaltyAsync(token), token).ConfigureAwait(false);
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
