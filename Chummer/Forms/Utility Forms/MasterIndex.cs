@@ -750,7 +750,7 @@ namespace Chummer
         {
             try
             {
-                await CommonFunctions.OpenPdfFromControl(sender, _objGenericToken).ConfigureAwait(false);
+                await CommonFunctions.OpenPdfFromControl(sender, _objSelectedSetting, _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -897,11 +897,11 @@ namespace Chummer
                                     {
                                         string strReturn = await CommonFunctions.GetTextFromPdfAsync(
                                             x.Source.ToString(),
-                                            x.EnglishNameOnPage, token: token).ConfigureAwait(false);
+                                            x.EnglishNameOnPage, _objSelectedSetting, token).ConfigureAwait(false);
                                         if (string.IsNullOrEmpty(strReturn))
                                             strReturn = await CommonFunctions.GetTextFromPdfAsync(
                                                                                  x.DisplaySource.ToString(),
-                                                                                 x.TranslatedNameOnPage, token: token)
+                                                                                 x.TranslatedNameOnPage, _objSelectedSetting, token)
                                                                              .ConfigureAwait(false);
                                         return strReturn;
                                     }, token);
@@ -909,7 +909,7 @@ namespace Chummer
                                 return Task.Run(() =>
                                                     CommonFunctions.GetTextFromPdfAsync(
                                                         x.Source.ToString(),
-                                                        x.EnglishNameOnPage, token: token), token);
+                                                        x.EnglishNameOnPage, _objSelectedSetting, token), token);
                             }).ConfigureAwait(false);
                             await txtNotes.DoThreadSafeAsync(x =>
                             {

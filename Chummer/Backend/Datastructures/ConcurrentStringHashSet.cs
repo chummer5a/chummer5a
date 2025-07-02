@@ -18,6 +18,7 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Chummer
 {
@@ -28,11 +29,24 @@ namespace Chummer
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setOther))
             {
                 setOther.AddRange(other);
-                foreach (string item in DicInternal.Keys)
+                bool blnRemovalHappened;
+                List<string> lstKeysToDelete = new List<string>(Count);
+                do
                 {
-                    if (!setOther.Contains(item))
-                        DicInternal.TryRemove(item, out bool _);
+                    blnRemovalHappened = false;
+                    lstKeysToDelete.Clear();
+                    foreach (KeyValuePair<string, bool> kvpItem in DicInternal) // Set up this way because working with Keys directly does not lock the dictionary
+                    {
+                        if (!setOther.Contains(kvpItem.Key))
+                            lstKeysToDelete.Add(kvpItem.Key);
+                    }
+                    foreach (string item in lstKeysToDelete)
+                    {
+                        if (!setOther.Contains(item)) // Double check
+                            blnRemovalHappened = DicInternal.TryRemove(item, out _) || blnRemovalHappened;
+                    }
                 }
+                while (blnRemovalHappened);
             }
         }
     }

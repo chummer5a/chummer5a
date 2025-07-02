@@ -7375,6 +7375,10 @@
       <text>Color Mode:</text>
     </string>
     <string>
+      <key>Label_Options_HasNotesColor</key>
+      <text>Default Color for Items with Notes:</text>
+    </string>
+    <string>
       <key>Checkbox_Options_AutomaticUpdates</key>
       <text>Automatically download updates</text>
     </string>

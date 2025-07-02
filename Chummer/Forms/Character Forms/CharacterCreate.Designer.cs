@@ -4391,7 +4391,7 @@ namespace Chummer
             this.tabCharacterTabs.SelectedIndex = 0;
             this.tabCharacterTabs.Size = new System.Drawing.Size(985, 657);
             this.tabCharacterTabs.TabIndex = 33;
-            this.tabCharacterTabs.SelectedIndexChanged += new System.EventHandler(this.tabCharacterTabs_SelectedIndexChanged);
+            this.tabCharacterTabs.SelectedIndexChanged += new System.EventHandler(this.OnTabsIndexChanged);
             // 
             // tabCommon
             // 
@@ -8470,7 +8470,7 @@ namespace Chummer
             this.tabStreetGearTabs.SelectedIndex = 0;
             this.tabStreetGearTabs.Size = new System.Drawing.Size(977, 631);
             this.tabStreetGearTabs.TabIndex = 87;
-            this.tabStreetGearTabs.SelectedIndexChanged += new System.EventHandler(this.tabStreetGearTabs_SelectedIndexChanged);
+            this.tabStreetGearTabs.SelectedIndexChanged += new System.EventHandler(this.OnTabsIndexChanged);
             // 
             // tabGear
             // 

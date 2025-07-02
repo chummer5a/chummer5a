@@ -2546,7 +2546,7 @@ namespace Chummer.Backend.Skills
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    List<Skill> lstSkillBackups = _dicSkillBackups.Values.ToList();
+                    List<Skill> lstSkillBackups = _dicSkillBackups.GetValuesToListSafe();
                     _dicSkillBackups.Clear();
                     foreach (Skill objSkill in lstSkillBackups)
                         objSkill.Remove();
@@ -2586,7 +2586,7 @@ namespace Chummer.Backend.Skills
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    List<Skill> lstSkillBackups = _dicSkillBackups.Values.ToList();
+                    List<Skill> lstSkillBackups = _dicSkillBackups.GetValuesToListSafe();
                     _dicSkillBackups.Clear();
                     foreach (Skill objSkill in lstSkillBackups)
                         await objSkill.RemoveAsync(token).ConfigureAwait(false);
@@ -4102,7 +4102,7 @@ namespace Chummer.Backend.Skills
                     //swallow this
                 }
                 _lstSkillGroups.ForEach(x => x.Dispose());
-                List<Skill> lstSkillBackups = _dicSkillBackups.Values.ToList();
+                List<Skill> lstSkillBackups = _dicSkillBackups.GetValuesToListSafe();
                 _dicSkillBackups.Clear();
                 foreach (Skill objSkill in lstSkillBackups)
                     objSkill.Dispose();
@@ -4160,7 +4160,7 @@ namespace Chummer.Backend.Skills
                     //swallow this
                 }
                 await _lstSkillGroups.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
-                List<Skill> lstSkillBackups = _dicSkillBackups.Values.ToList();
+                List<Skill> lstSkillBackups = _dicSkillBackups.GetValuesToListSafe();
                 _dicSkillBackups.Clear();
                 foreach (Skill objSkill in lstSkillBackups)
                     await objSkill.DisposeAsync().ConfigureAwait(false);

@@ -33,8 +33,13 @@ namespace Chummer
 
         public static readonly SourceString Blank = GetSourceString(string.Empty, 0, GlobalSettings.DefaultLanguage, GlobalSettings.InvariantCultureInfo);
 
+        public static SourceString GetSourceString(string strSourceString, string strLanguage, CultureInfo objCultureInfo, Character objCharacter)
+        {
+            return GetSourceString(strSourceString, strLanguage, objCultureInfo, objCharacter.Settings);
+        }
+
         public static SourceString GetSourceString(string strSourceString, string strLanguage = "",
-                                                   CultureInfo objCultureInfo = null, Character objCharacter = null)
+                                                   CultureInfo objCultureInfo = null, CharacterSettings objSettings = null)
         {
             string strCode = strSourceString ?? string.Empty;
             int intPage = 0;
@@ -47,11 +52,16 @@ namespace Chummer
                     int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
                 }
             }
-            return GetSourceString(strCode, intPage, strLanguage, objCultureInfo, objCharacter);
+            return GetSourceString(strCode, intPage, strLanguage, objCultureInfo, objSettings);
+        }
+
+        public static async Task<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage, CultureInfo objCultureInfo, Character objCharacter, CancellationToken token = default)
+        {
+            return await GetSourceStringAsync(strSourceString, strLanguage, objCultureInfo, await objCharacter.GetSettingsAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         public static Task<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage = "",
-                                                                         CultureInfo objCultureInfo = null, Character objCharacter = null, CancellationToken token = default)
+                                                                         CultureInfo objCultureInfo = null, CharacterSettings objSettings = null, CancellationToken token = default)
         {
             string strCode = strSourceString ?? string.Empty;
             int intPage = 0;
@@ -64,40 +74,60 @@ namespace Chummer
                     int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
                 }
             }
-            return GetSourceStringAsync(strCode, intPage, strLanguage, objCultureInfo, objCharacter, token);
+            return GetSourceStringAsync(strCode, intPage, strLanguage, objCultureInfo, objSettings, token);
+        }
+
+        public static SourceString GetSourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo, Character objCharacter)
+        {
+            return GetSourceString(strSource, strPage, strLanguage, objCultureInfo, objCharacter.Settings);
         }
 
         public static SourceString GetSourceString(string strSource, string strPage, string strLanguage = "",
-                                                   CultureInfo objCultureInfo = null, Character objCharacter = null)
+                                                   CultureInfo objCultureInfo = null, CharacterSettings objSettings = null)
         {
             int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
-            return GetSourceString(strSource, intPage, strLanguage, objCultureInfo, objCharacter);
+            return GetSourceString(strSource, intPage, strLanguage, objCultureInfo, objSettings);
+        }
+
+        public static async Task<SourceString> GetSourceStringAsync(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo, Character objCharacter, CancellationToken token = default)
+        {
+            return await GetSourceStringAsync(strSource, strPage, strLanguage, objCultureInfo, await objCharacter.GetSettingsAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         public static Task<SourceString> GetSourceStringAsync(string strSource, string strPage, string strLanguage = "",
-                                                                   CultureInfo objCultureInfo = null, Character objCharacter = null, CancellationToken token = default)
+                                                                   CultureInfo objCultureInfo = null, CharacterSettings objSettings = null, CancellationToken token = default)
         {
             int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
-            return GetSourceStringAsync(strSource, intPage, strLanguage, objCultureInfo, objCharacter, token);
+            return GetSourceStringAsync(strSource, intPage, strLanguage, objCultureInfo, objSettings, token);
+        }
+
+        public static SourceString GetSourceString(string strSource, int intPage, string strLanguage, CultureInfo objCultureInfo, Character objCharacter)
+        {
+            return GetSourceString(strSource, intPage, strLanguage, objCultureInfo, objCharacter.Settings);
         }
 
         public static SourceString GetSourceString(string strSource, int intPage, string strLanguage = "",
-                                                   CultureInfo objCultureInfo = null, Character objCharacter = null)
+                                                   CultureInfo objCultureInfo = null, CharacterSettings objSettings = null)
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            return new SourceString(CommonFunctions.LanguageBookShort(strSource, strLanguage, objCharacter),
-                                    CommonFunctions.LanguageBookLong(strSource, strLanguage, objCharacter), intPage,
+            return new SourceString(CommonFunctions.LanguageBookShort(strSource, strLanguage, objSettings),
+                                    CommonFunctions.LanguageBookLong(strSource, strLanguage, objSettings), intPage,
                                     strLanguage, objCultureInfo);
         }
 
+        public static async Task<SourceString> GetSourceStringAsync(string strSource, int intPage, string strLanguage, CultureInfo objCultureInfo, Character objCharacter, CancellationToken token = default)
+        {
+            return await GetSourceStringAsync(strSource, intPage, strLanguage, objCultureInfo, await objCharacter.GetSettingsAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+        }
+
         public static async Task<SourceString> GetSourceStringAsync(string strSource, int intPage, string strLanguage = "",
-                                                                         CultureInfo objCultureInfo = null, Character objCharacter = null, CancellationToken token = default)
+                                                                         CultureInfo objCultureInfo = null, CharacterSettings objSettings = null, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            return new SourceString(await CommonFunctions.LanguageBookShortAsync(strSource, strLanguage, objCharacter, token).ConfigureAwait(false),
-                                    await CommonFunctions.LanguageBookLongAsync(strSource, strLanguage, objCharacter, token).ConfigureAwait(false), intPage,
+            return new SourceString(await CommonFunctions.LanguageBookShortAsync(strSource, strLanguage, objSettings, token).ConfigureAwait(false),
+                                    await CommonFunctions.LanguageBookLongAsync(strSource, strLanguage, objSettings, token).ConfigureAwait(false), intPage,
                                     strLanguage, objCultureInfo);
         }
 

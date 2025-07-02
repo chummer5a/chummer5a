@@ -21,6 +21,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -56,6 +57,7 @@ namespace Chummer
         private string _strSelectedLanguage = GlobalSettings.Language;
         private CultureInfo _objSelectedCultureInfo = GlobalSettings.CultureInfo;
         private ColorMode _eSelectedColorModeSetting = GlobalSettings.ColorModeSetting;
+        private Color _objSelectedHasNotesColor = GlobalSettings.DefaultHasNotesColor;
 
         private readonly ConcurrentDictionary<string, HashSet<string>> _dicCachedPdfAppNames
             = new ConcurrentDictionary<string, HashSet<string>>();
@@ -75,12 +77,12 @@ namespace Chummer
             tabOptions.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode(token: token);
             this.TranslateWinForm(token: token);
-
+            pnlHasNotesColorPreview.BackColor = _objSelectedHasNotesColor;
             _setCustomDataDirectoryInfos
                 = new HashSet<CustomDataDirectoryInfo>(GlobalSettings.CustomDataDirectoryInfos);
             Disposed += (sender, args) =>
             {
-                Stack<HashSet<string>> stkToReturn = new Stack<HashSet<string>>(_dicCachedPdfAppNames.Values);
+                Stack<HashSet<string>> stkToReturn = new Stack<HashSet<string>>(_dicCachedPdfAppNames.GetValuesToListSafe());
                 _dicCachedPdfAppNames.Clear();
                 while (stkToReturn.Count > 0)
                 {
@@ -559,16 +561,19 @@ namespace Chummer
                     switch (eNewColorMode)
                     {
                         case ColorMode.Automatic:
-                            await this.UpdateLightDarkModeAsync(!ColorManager.DoesRegistrySayDarkMode())
-                                      .ConfigureAwait(false);
+                            bool blnLightMode = !ColorManager.DoesRegistrySayDarkMode();
+                            await this.UpdateLightDarkModeAsync(blnLightMode).ConfigureAwait(false);
+                            pnlHasNotesColorPreview.BackColor = blnLightMode ? _objSelectedHasNotesColor : ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
                             break;
 
                         case ColorMode.Light:
                             await this.UpdateLightDarkModeAsync(true).ConfigureAwait(false);
+                            pnlHasNotesColorPreview.BackColor = _objSelectedHasNotesColor;
                             break;
 
                         case ColorMode.Dark:
                             await this.UpdateLightDarkModeAsync(false).ConfigureAwait(false);
+                            pnlHasNotesColorPreview.BackColor = ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
                             break;
                     }
                 }
@@ -579,6 +584,28 @@ namespace Chummer
             }
 
             OptionsChanged(sender, e);
+        }
+
+        private async void btnHasNotesColorSelect_Click(object sender, EventArgs e)
+        {
+            Color objOldColor = _objSelectedHasNotesColor;
+            if (_eSelectedColorModeSetting == ColorMode.Dark || (_eSelectedColorModeSetting == ColorMode.Automatic && ColorManager.DoesRegistrySayDarkMode()))
+                objOldColor = ColorManager.GenerateDarkModeColor(objOldColor);
+            await this.DoThreadSafeAsync(() => dlgColor.Color = objOldColor).ConfigureAwait(false);
+            if (await this.DoThreadSafeFuncAsync(x => dlgColor.ShowDialog(x)).ConfigureAwait(false) != DialogResult.OK)
+                return;
+            Color objNewColor = await this.DoThreadSafeFuncAsync(() => dlgColor.Color).ConfigureAwait(false);
+            if (_eSelectedColorModeSetting == ColorMode.Dark || (_eSelectedColorModeSetting == ColorMode.Automatic && ColorManager.DoesRegistrySayDarkMode()))
+                objNewColor = ColorManager.GenerateInverseDarkModeColor(objNewColor);
+            if (objNewColor != _objSelectedHasNotesColor)
+            {
+                _objSelectedHasNotesColor = objNewColor;
+                if (_eSelectedColorModeSetting == ColorMode.Dark || (_eSelectedColorModeSetting == ColorMode.Automatic && ColorManager.DoesRegistrySayDarkMode()))
+                    pnlHasNotesColorPreview.BackColor = ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
+                else
+                    pnlHasNotesColorPreview.BackColor = _objSelectedHasNotesColor;
+                OptionsChanged(sender, e);
+            }
         }
 
         private void chkPrintExpenses_CheckedChanged(object sender, EventArgs e)
@@ -1545,6 +1572,7 @@ namespace Chummer
 
             await GlobalSettings.SetLanguageAsync(_strSelectedLanguage, token).ConfigureAwait(false);
             await GlobalSettings.SetColorModeSettingAsync(_eSelectedColorModeSetting, token).ConfigureAwait(false);
+            GlobalSettings.DefaultHasNotesColor = _objSelectedHasNotesColor;
             GlobalSettings.DpiScalingMethodSetting = await cboDpiScalingMethod.DoThreadSafeFuncAsync(
                 x => x.SelectedIndex >= 0
                     ? (DpiScalingMethod) Enum.Parse(typeof(DpiScalingMethod), x.SelectedValue.ToString())
@@ -2529,7 +2557,7 @@ namespace Chummer
                 }
 
                 token.ThrowIfCancellationRequested();
-                List<string> lstKeysToLoop = new List<string>(dicPatternsToMatch.Keys);
+                List<string> lstKeysToLoop = dicPatternsToMatch.GetKeysToListSafe();
                 //Search the first 15 pages for all the text
                 for (int intPage = 1; intPage <= 15; intPage++)
                 {

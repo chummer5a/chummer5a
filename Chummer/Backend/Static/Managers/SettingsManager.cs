@@ -178,7 +178,7 @@ namespace Chummer
         private static void LoadCharacterSettings()
         {
             _intDicLoadedCharacterSettingsLoadedStatus = 0;
-            List<CharacterSettings> lstSettings = s_DicLoadedCharacterSettings.Values.ToList();
+            List<CharacterSettings> lstSettings = s_DicLoadedCharacterSettings.GetValuesToListSafe();
             s_DicLoadedCharacterSettings.Clear();
             foreach (CharacterSettings objSettings in lstSettings)
                 objSettings.Dispose();
@@ -264,7 +264,7 @@ namespace Chummer
         private static async Task LoadCharacterSettingsAsync(CancellationToken token = default)
         {
             _intDicLoadedCharacterSettingsLoadedStatus = 0;
-            List<CharacterSettings> lstSettings = s_DicLoadedCharacterSettings.Values.ToList();
+            List<CharacterSettings> lstSettings = s_DicLoadedCharacterSettings.GetValuesToListSafe();
             s_DicLoadedCharacterSettings.Clear();
             foreach (CharacterSettings objSettings in lstSettings)
                 await objSettings.DisposeAsync().ConfigureAwait(false);

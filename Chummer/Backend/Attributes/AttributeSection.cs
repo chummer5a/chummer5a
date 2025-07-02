@@ -842,7 +842,8 @@ namespace Chummer.Backend.Attributes
         {
             using (LockObject.EnterWriteLock())
             {
-                List<CharacterAttrib> lstAttributes = _dicAttributes.Values.ToList();
+                // Set up this way because working with Values directly does not lock the dictionary
+                List<CharacterAttrib> lstAttributes = _dicAttributes.GetValuesToListSafe();
                 _dicAttributes.Clear();
                 foreach (CharacterAttrib objAttribute in lstAttributes)
                 {
@@ -864,7 +865,7 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                List<CharacterAttrib> lstAttributes = _dicAttributes.Values.ToList();
+                List<CharacterAttrib> lstAttributes = _dicAttributes.GetValuesToListSafe();
                 _dicAttributes.Clear();
                 foreach (CharacterAttrib objAttribute in lstAttributes)
                 {

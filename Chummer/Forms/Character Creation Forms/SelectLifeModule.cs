@@ -174,7 +174,7 @@ namespace Chummer
                 string strSource = (await SourceString.GetSourceStringAsync(xmlSelectedNodeInfo["source"]?.InnerText,
                                                                             strPage: xmlSelectedNodeInfo["altpage"]?.InnerText
                                                                             ?? xmlSelectedNodeInfo["page"]?.InnerText,
-                                                                            objCharacter: _objCharacter).ConfigureAwait(false))
+                                                                            objSettings: await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).ConfigureAwait(false))
                                                .ToString();
                 string strStage = xmlSelectedNodeInfo["stage"]?.InnerText
                                   ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);

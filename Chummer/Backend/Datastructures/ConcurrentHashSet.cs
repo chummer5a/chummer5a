@@ -126,7 +126,8 @@ namespace Chummer
         /// <inheritdoc />
         public T[] ToArray()
         {
-            return DicInternal.Keys.ToArray();
+            // Don't use Keys collection directly because iterating over it does not lock the main dictionary against changes
+            return DicInternal.GetKeysToListSafe().ToArray();
         }
 
         /// <inheritdoc />
@@ -149,11 +150,24 @@ namespace Chummer
         public virtual void IntersectWith(IEnumerable<T> other)
         {
             HashSet<T> setOther = new HashSet<T>(other);
-            foreach (T item in DicInternal.Keys)
+            bool blnRemovalHappened;
+            List<T> lstKeysToDelete = new List<T>(Count);
+            do
             {
-                if (!setOther.Contains(item))
-                    DicInternal.TryRemove(item, out bool _);
+                blnRemovalHappened = false;
+                lstKeysToDelete.Clear();
+                foreach (KeyValuePair<T, bool> kvpItem in DicInternal) // Set up this way because working with Keys directly does not lock the dictionary
+                {
+                    if (!setOther.Contains(kvpItem.Key))
+                        lstKeysToDelete.Add(kvpItem.Key);
+                }
+                foreach (T item in lstKeysToDelete)
+                {
+                    if (!setOther.Contains(item)) // Double check
+                        blnRemovalHappened = DicInternal.TryRemove(item, out _) || blnRemovalHappened;
+                }
             }
+            while (blnRemovalHappened);
         }
 
         /// <inheritdoc />

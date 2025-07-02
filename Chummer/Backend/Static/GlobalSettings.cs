@@ -268,6 +268,7 @@ namespace Chummer
         private static string _strDefaultMasterIndexSetting = DefaultMasterIndexSettingDefaultValue;
         private static int _intSavedImageQuality = -1; // Jpeg compression with automatic quality
         private static ColorMode _eColorMode;
+        private static Color _objDefaultHasNotesColor = Color.Chocolate;
         private static bool _blnConfirmDelete = true;
         private static bool _blnConfirmKarmaExpense = true;
         private static bool _blnHideItemsOverAvailLimit = true;
@@ -539,6 +540,12 @@ namespace Chummer
             // In order to not throw off veteran users, forced Light mode is the default for them instead of Automatic
             else if (!blnFirstEverLaunch)
                 _eColorMode = ColorMode.Light;
+
+            int intColor = -1;
+            if (LoadInt32FromRegistry(ref intColor, "defaulthasnotescolor"))
+                _objDefaultHasNotesColor = Color.FromArgb(intColor);
+            else
+                _objDefaultHasNotesColor = Color.Chocolate;
 
             // Whether dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
@@ -897,6 +904,7 @@ namespace Chummer
                 objRegistry.SetValue("useloggingApplicationInsights", UseLoggingApplicationInsights.ToString());
                 objRegistry.SetValue("useloggingApplicationInsightsResetCounter", UseLoggingResetCounter);
                 objRegistry.SetValue("colormode", ColorModeSetting.ToString());
+                objRegistry.SetValue("defaulthasnotescolor", DefaultHasNotesColor.ToArgb().ToString(InvariantCultureInfo));
                 objRegistry.SetValue("language", Language);
                 objRegistry.SetValue("startupfullscreen", StartupFullscreen.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("singlediceroller", SingleDiceRoller.ToString(InvariantCultureInfo));
@@ -1255,6 +1263,16 @@ namespace Chummer
             }
 
             return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Default (light mode) color to use for if/when an item has notes.
+        /// If you are requesting this directly, you are probably doing something wrong. What you want is ColorManager.HasNotesColor instead.
+        /// </summary>
+        public static Color DefaultHasNotesColor
+        {
+            get => _objDefaultHasNotesColor;
+            set => _objDefaultHasNotesColor = value;
         }
 
         /// <summary>
@@ -1760,7 +1778,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (blnDisposeOldInfos)
                 {
-                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.Values.ToList();
+                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
                     s_DicSourcebookInfos.Clear();
                     foreach (SourcebookInfo objInfo in lstInfos)
                         objInfo.Dispose();
@@ -1789,7 +1807,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (blnDisposeOldInfos)
                 {
-                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.Values.ToList();
+                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
                     s_DicSourcebookInfos.Clear();
                     foreach (SourcebookInfo objInfo in lstInfos)
                         objInfo.Dispose();
@@ -1815,7 +1833,7 @@ namespace Chummer
                 return;
             try
             {
-                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.Values.ToList();
+                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
                 s_DicSourcebookInfos.Clear();
                 foreach (SourcebookInfo objInfo in lstInfos)
                     objInfo.Dispose();
@@ -1934,7 +1952,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.Values.ToList();
+                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
                 s_DicSourcebookInfos.Clear();
                 foreach (SourcebookInfo objInfo in lstInfos)
                     objInfo.Dispose();

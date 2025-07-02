@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Chummer.Annotations;
@@ -396,6 +397,32 @@ namespace Chummer
                 else
                     return objReturn;
             }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for getting the keys of a ConcurrentDictionary in a new list in a way where the original dictionary's keys are locked against changes until the list is complete.
+        /// </summary>
+        public static List<TKey> GetKeysToListSafe<TKey, TValue>([NotNull] this ConcurrentDictionary<TKey, TValue> dicThis)
+        {
+            List<TKey> lstReturn = new List<TKey>(dicThis.Count);
+            foreach (KeyValuePair<TKey, TValue> kvpLoop in dicThis)
+            {
+                lstReturn.Add(kvpLoop.Key);
+            }
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for getting the values of a ConcurrentDictionary in a new list in a way where the original dictionary's values are locked against changes until the list is complete.
+        /// </summary>
+        public static List<TValue> GetValuesToListSafe<TKey, TValue>([NotNull] this ConcurrentDictionary<TKey, TValue> dicThis)
+        {
+            List<TValue> lstReturn = new List<TValue>(dicThis.Count);
+            foreach (KeyValuePair<TKey, TValue> kvpLoop in dicThis)
+            {
+                lstReturn.Add(kvpLoop.Value);
+            }
+            return lstReturn;
         }
     }
 }

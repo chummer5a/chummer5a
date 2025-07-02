@@ -251,9 +251,10 @@ namespace Chummer
             else
             {
                 List<ImprovementDictionaryKey> lstTempOuter = new List<ImprovementDictionaryKey>(Math.Max(s_DictionaryCachedValues.Count, s_DictionaryCachedAugmentedValues.Count));
-                foreach (ImprovementDictionaryKey objCachedValueKey in s_DictionaryCachedValues.Keys)
+                foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> kvpLoop in s_DictionaryCachedValues)
                 {
                     token.ThrowIfCancellationRequested();
+                    ImprovementDictionaryKey objCachedValueKey = kvpLoop.Key; // Set up this way to make sure main dictionary stays locked during enumeration
                     if (objCachedValueKey.CharacterObject == objCharacter && objCachedValueKey.ImprovementType == eImprovementType)
                         lstTempOuter.Add(objCachedValueKey);
                 }
@@ -274,9 +275,10 @@ namespace Chummer
                 }
 
                 lstTempOuter.Clear();
-                foreach (ImprovementDictionaryKey objCachedValueKey in s_DictionaryCachedAugmentedValues.Keys)
+                foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> kvpLoop in s_DictionaryCachedAugmentedValues)
                 {
                     token.ThrowIfCancellationRequested();
+                    ImprovementDictionaryKey objCachedValueKey = kvpLoop.Key; // Set up this way to make sure main dictionary stays locked during enumeration
                     if (objCachedValueKey.CharacterObject == objCharacter && objCachedValueKey.ImprovementType == eImprovementType)
                         lstTempOuter.Add(objCachedValueKey);
                 }
@@ -302,9 +304,10 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<ImprovementDictionaryKey> lstToRemove = new List<ImprovementDictionaryKey>(Math.Max(s_DictionaryCachedValues.Count, s_DictionaryCachedAugmentedValues.Count));
-            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys)
+            foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> kvpLoop in s_DictionaryCachedValues)
             {
                 token.ThrowIfCancellationRequested();
+                ImprovementDictionaryKey objKey = kvpLoop.Key; // Set up this way to make sure main dictionary stays locked during enumeration
                 if (objKey.CharacterObject == objCharacter)
                     lstToRemove.Add(objKey);
             }
@@ -316,9 +319,10 @@ namespace Chummer
             }
 
             lstToRemove.Clear();
-            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys)
+            foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> kvpLoop in s_DictionaryCachedAugmentedValues)
             {
                 token.ThrowIfCancellationRequested();
+                ImprovementDictionaryKey objKey = kvpLoop.Key; // Set up this way to make sure main dictionary stays locked during enumeration
                 if (objKey.CharacterObject == objCharacter)
                     lstToRemove.Add(objKey);
             }
@@ -2139,7 +2143,7 @@ namespace Chummer
 
                         if ((blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
-                                ? frmPickSkill.ShowDialogSafe(objCharacter)
+                                ? frmPickSkill.ShowDialogSafe(objCharacter, token)
                                 : await frmPickSkill.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false)) ==
                             DialogResult.Cancel)
                         {

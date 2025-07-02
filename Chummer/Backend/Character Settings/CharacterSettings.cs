@@ -6302,6 +6302,92 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Syntactic sugar for XmlManager.LoadXPath() where we use the current enabled custom data directory list from our options file.
+        /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
+        /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
+        /// </summary>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public XPathNavigator LoadDataXPath(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
+        {
+            IReadOnlyList<string> lstCustomPaths = EnabledCustomDataDirectoryPaths;
+            if (strFileName == "packs.xml")
+            {
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
+                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                return XmlManager.LoadXPath(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token);
+            }
+            return XmlManager.LoadXPath(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for XmlManager.LoadXPathAsync() where we use the current enabled custom data directory list from our options file.
+        /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
+        /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
+        /// </summary>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public async Task<XPathNavigator> LoadDataXPathAsync(string strFileName, string strLanguage = "",
+            bool blnLoadFile = false, CancellationToken token = default)
+        {
+            IReadOnlyList<string> lstCustomPaths = await GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
+            if (strFileName == "packs.xml")
+            {
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
+                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                return await XmlManager.LoadXPathAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+            }
+            return await XmlManager.LoadXPathAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for XmlManager.Load() where we use the current enabled custom data directory list from our options file.
+        /// </summary>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [NotNull]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public XmlDocument LoadData(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
+        {
+            IReadOnlyList<string> lstCustomPaths = EnabledCustomDataDirectoryPaths;
+            if (strFileName == "packs.xml")
+            {
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
+                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                return XmlManager.Load(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token);
+            }
+            return XmlManager.Load(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for XmlManager.LoadAsync() where we use the current enabled custom data directory list from our options file.
+        /// </summary>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public async Task<XmlDocument> LoadDataAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
+        {
+            IReadOnlyList<string> lstCustomPaths = await GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
+            if (strFileName == "packs.xml")
+            {
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
+                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                return await XmlManager.LoadAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+            }
+            return await XmlManager.LoadAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+        }
+
         public Guid SourceId
         {
             get
