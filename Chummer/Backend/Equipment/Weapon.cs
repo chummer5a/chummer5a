@@ -125,6 +125,7 @@ namespace Chummer.Backend.Equipment
         private string _strRatingLabel = "String_Rating";
 
         private XmlNode _nodWirelessBonus;
+        private XmlNode _nodWirelessWeaponBonus;
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
         private FiringMode _eFiringMode = FiringMode.DogBrain;
@@ -559,6 +560,7 @@ namespace Chummer.Backend.Equipment
                 objXmlWeapon.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             _nodWirelessBonus = objXmlWeapon["wirelessbonus"];
+            _nodWirelessWeaponBonus = objXmlWeapon["wirelessweaponbonus"];
             objXmlWeapon.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn);
             objXmlWeapon.TryGetStringFieldQuickly("ammocategory", ref _strAmmoCategory);
             if (!objXmlWeapon.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots))
@@ -1166,6 +1168,10 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
             else
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
+            if (_nodWirelessWeaponBonus != null)
+                objWriter.WriteRaw(_nodWirelessWeaponBonus.OuterXml);
+            else
+                objWriter.WriteElementString("wirelessweaponbonus", string.Empty);
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("weapontype", _strWeaponType);
@@ -1606,6 +1612,12 @@ namespace Chummer.Backend.Equipment
             }
 
             _nodWirelessBonus = objNode["wirelessbonus"];
+            _nodWirelessWeaponBonus = objNode["wirelessweaponbonus"];
+            // Legacy sweep
+            if (_objCharacter.LastSavedVersion < new ValueVersion(5, 225, 933) && _nodWirelessWeaponBonus == null)
+            {
+                _nodWirelessWeaponBonus = objMyNode.Value?["wirelessweaponbonus"];
+            }
             objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn);
 
             //#1544 Ammunition not loading or available.
@@ -3658,6 +3670,11 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Wireless Weapon Bonus node from the XML file.
+        /// </summary>
+        public XmlNode WirelessWeaponBonus => _nodWirelessWeaponBonus;
+
+        /// <summary>
         /// Whether the Weapon's wireless bonus is enabled
         /// </summary>
         public bool WirelessOn
@@ -3957,6 +3974,28 @@ namespace Chummer.Backend.Equipment
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                        out StringBuilder sbdBonusDamage))
             {
+                // First look at any changes caused by the weapon being wireless
+                if (WirelessOn && WirelessWeaponBonus != null)
+                {
+                    // Change the Weapon's Damage Type.
+                    if (WirelessWeaponBonus["damagetype"] != null)
+                    {
+                        strDamageType = string.Empty;
+                        strDamageExtra = WirelessWeaponBonus["damagetype"].InnerText;
+                    }
+
+                    // Adjust the Weapon's Damage.
+                    string strTemp = WirelessWeaponBonus["damage"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        sbdBonusDamage.Append(" + ").Append(strTemp.TrimStartOnce('+'));
+                    strTemp = WirelessWeaponBonus["damagereplace"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                    {
+                        blnDamageReplaced = true;
+                        strDamage = strTemp;
+                    }
+                }
+
                 // Add in the DV bonus from any Weapon Mods.
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
@@ -4763,6 +4802,43 @@ namespace Chummer.Backend.Equipment
             {
                 setModes.AddRange(_strMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
 
+                // First look at any changes caused by the weapon being wireless
+                if (WirelessOn && WirelessWeaponBonus != null)
+                {
+                    string strFireMode = WirelessWeaponBonus["firemode"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strFireMode))
+                    {
+                        if (strFireMode.Contains('/'))
+                        {
+                            // Move the contents of the array to a list so it's easier to work with.
+                            foreach (string strMode in strFireMode.SplitNoAlloc(
+                                         '/', StringSplitOptions.RemoveEmptyEntries))
+                                setNewModes.Add(strMode);
+                        }
+                        else
+                        {
+                            setNewModes.Add(strFireMode);
+                        }
+                    }
+
+                    strFireMode = WirelessWeaponBonus["modereplace"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strFireMode))
+                    {
+                        setModes.Clear();
+                        if (strFireMode.Contains('/'))
+                        {
+                            // Move the contents of the array to a list so it's easier to work with.
+                            foreach (string strMode in strFireMode.SplitNoAlloc(
+                                         '/', StringSplitOptions.RemoveEmptyEntries))
+                                setModes.Add(strMode);
+                        }
+                        else
+                        {
+                            setModes.Add(strFireMode);
+                        }
+                    }
+                }
+
                 if (blnIncludeAmmo)
                 {
                     // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
@@ -5292,6 +5368,19 @@ namespace Chummer.Backend.Equipment
             int intImprove = 0;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBonusAP))
             {
+                // First look at any changes caused by the weapon being wireless
+                if (WirelessOn && WirelessWeaponBonus != null)
+                {
+                    // Change the Weapon's Damage Type.
+                    string strAPReplace = WirelessWeaponBonus["apreplace"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strAPReplace))
+                        strAP = strAPReplace;
+                    // Adjust the Weapon's Damage.
+                    string strAPAdd = WirelessWeaponBonus["ap"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strAPAdd))
+                        sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
+                }
+
                 if (blnIncludeAmmo)
                 {
                     // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
@@ -5608,6 +5697,27 @@ namespace Chummer.Backend.Equipment
                 int.TryParse(strRCBase, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intRCBase);
                 int.TryParse(strRCFull.Trim('(', ')'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                     out int intRCFull);
+
+                // First look at any changes caused by the weapon being wireless
+                if (WirelessOn && WirelessWeaponBonus != null)
+                {
+                    string strRCBonus = WirelessWeaponBonus["rc"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strRCBonus) && int.TryParse(strRCBonus, out int intLoopRCBonus))
+                    {
+                        intRCBase += intLoopRCBonus;
+                        intRCFull += intLoopRCBonus;
+
+                        if (blnRefreshRCToolTip)
+                            sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
+                                .Append(blnSync
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    ? LanguageManager.GetString("String_Wireless", strLanguage, token: token)
+                                    : await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token)
+                                        .ConfigureAwait(false))
+                                .Append(strSpace)
+                                .Append('(').Append(strRCBonus).Append(')');
+                    }
+                }
 
                 if (blnIncludeAmmo)
                 {
@@ -6027,10 +6137,23 @@ namespace Chummer.Backend.Equipment
         {
             int intAccuracy = 0;
             string strAccuracy = Accuracy;
-            if (blnIncludeAmmo)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdBonusAccuracy))
+            {
+                // First look at any changes caused by the weapon being wireless
+                if (WirelessOn && WirelessWeaponBonus != null)
+                {
+                    // Change the Weapon's Damage Type.
+                    string strAccuracyReplace = WirelessWeaponBonus["accuracyreplace"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strAccuracyReplace))
+                        strAccuracy = strAccuracyReplace;
+                    // Adjust the Weapon's Damage.
+                    string strAccuracyAdd = WirelessWeaponBonus["accuracy"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strAccuracyAdd))
+                        sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                }
+
+                if (blnIncludeAmmo)
                 {
                     // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
                     // Look for Ammo on the character.
@@ -6193,10 +6316,23 @@ namespace Chummer.Backend.Equipment
         {
             int intAccuracy = 0;
             string strAccuracy = Accuracy;
-            if (blnIncludeAmmo)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdBonusAccuracy))
+            {
+                // First look at any changes caused by the weapon being wireless
+                if (WirelessOn && WirelessWeaponBonus != null)
+                {
+                    // Change the Weapon's Damage Type.
+                    string strAccuracyReplace = WirelessWeaponBonus["accuracyreplace"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strAccuracyReplace))
+                        strAccuracy = strAccuracyReplace;
+                    // Adjust the Weapon's Damage.
+                    string strAccuracyAdd = WirelessWeaponBonus["accuracy"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strAccuracyAdd))
+                        sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                }
+
+                if (blnIncludeAmmo)
                 {
                     // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
                     // Look for Ammo on the character.
@@ -6469,6 +6605,16 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrWhiteSpace(strRange))
                 strRange = Category;
 
+            // First look at any changes caused by the weapon being wireless
+            if (WirelessOn && WirelessWeaponBonus != null)
+            {
+                string strNewRange = string.Empty;
+                if (WirelessWeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                {
+                    strRange = strNewRange;
+                }
+            }
+
             if (blnIncludeAmmoName)
             {
                 // Check if the Weapon has Ammunition loaded and look for any range replacement.
@@ -6644,6 +6790,16 @@ namespace Chummer.Backend.Equipment
             else if (!string.IsNullOrEmpty(Range))
                 strRangeCategory = Range;
 
+            // First look at any changes caused by the weapon being wireless
+            if (WirelessOn && WirelessWeaponBonus != null)
+            {
+                string strNewRange = string.Empty;
+                if (WirelessWeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                {
+                    strRangeCategory = strNewRange;
+                }
+            }
+
             if (blnIncludeAmmo)
             {
                 // Check if the Weapon has Ammunition loaded and look for any range replacement.
@@ -6734,6 +6890,16 @@ namespace Chummer.Backend.Equipment
             }
             else if (!string.IsNullOrEmpty(Range))
                 strRangeCategory = Range;
+
+            // First look at any changes caused by the weapon being wireless
+            if (WirelessOn && WirelessWeaponBonus != null)
+            {
+                string strNewRange = string.Empty;
+                if (WirelessWeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                {
+                    strRangeCategory = strNewRange;
+                }
+            }
 
             if (blnIncludeAmmo)
             {
@@ -6834,6 +7000,16 @@ namespace Chummer.Backend.Equipment
             // Weapon Mods.
             int intRangeBonus = WeaponAccessories.Sum(x => x.Equipped, x => x.RangeBonus);
 
+            // First look at any changes caused by the weapon being wireless
+            if (WirelessOn && WirelessWeaponBonus != null)
+            {
+                int intWeaponBonusRange = 0;
+                if (WirelessWeaponBonus.TryGetInt32FieldQuickly("rangebonus", ref intWeaponBonusRange))
+                {
+                    intRangeBonus += intWeaponBonusRange;
+                }
+            }
+
             if (blnIncludeAmmo)
             {
                 // Check if the Weapon has Ammunition loaded and look for any Range bonus.
@@ -6858,6 +7034,16 @@ namespace Chummer.Backend.Equipment
             // Weapon Mods.
             int intRangeBonus = await WeaponAccessories.SumAsync(x => x.Equipped, x => x.RangeBonus, token: token)
                 .ConfigureAwait(false);
+
+            // First look at any changes caused by the weapon being wireless
+            if (WirelessOn && WirelessWeaponBonus != null)
+            {
+                int intWeaponBonusRange = 0;
+                if (WirelessWeaponBonus.TryGetInt32FieldQuickly("rangebonus", ref intWeaponBonusRange))
+                {
+                    intRangeBonus += intWeaponBonusRange;
+                }
+            }
 
             if (blnIncludeAmmo)
             {
@@ -7435,6 +7621,22 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            // First look at any changes caused by the weapon being wireless
+            if (WirelessOn && WirelessWeaponBonus != null)
+            {
+                string strWeaponBonusPool = WirelessWeaponBonus["pool"]?.InnerText;
+                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                    decDicePoolModifier +=
+                        Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                if (HasWirelessSmartgun)
+                {
+                    strWeaponBonusPool = WirelessWeaponBonus["smartlinkpool"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                        decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool,
+                            GlobalSettings.InvariantCultureInfo);
+                }
+            }
+
             if (blnIncludeAmmo)
             {
                 Gear objAmmo = AmmoLoaded;
@@ -7742,6 +7944,22 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            // First look at any changes caused by the weapon being wireless
+            if (WirelessOn && WirelessWeaponBonus != null)
+            {
+                string strWeaponBonusPool = WirelessWeaponBonus["pool"]?.InnerText;
+                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                    decDicePoolModifier +=
+                        Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                if (HasWirelessSmartgun)
+                {
+                    strWeaponBonusPool = WirelessWeaponBonus["smartlinkpool"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                        decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool,
+                            GlobalSettings.InvariantCultureInfo);
+                }
+            }
+
             if (blnIncludeAmmo)
             {
                 Gear objAmmo = AmmoLoaded;
@@ -8003,6 +8221,60 @@ namespace Chummer.Backend.Equipment
                     {
                         sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
                             strSpace, wa.CurrentDisplayName, wa.DicePool);
+                    }
+
+                    // First look at any changes caused by the weapon being wireless
+                    if (WirelessOn && WirelessWeaponBonus != null)
+                    {
+                        string strWeaponBonusPool = WirelessWeaponBonus["pool"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                        {
+                            string strWireless = LanguageManager.GetString("String_Wireless");
+                            if (HasWirelessSmartgun)
+                            {
+                                string strInner = WirelessWeaponBonus["smartlinkpool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strInner))
+                                {
+                                    if (decimal.TryParse(strWeaponBonusPool, out decimal decTemp)
+                                        && decimal.TryParse(strInner, out decimal decTemp2))
+                                    {
+                                        sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                            .Append(strWireless).Append(strSpace)
+                                            .Append('(')
+                                            .Append((decTemp + decTemp2).StandardRound()
+                                                .ToString(GlobalSettings.CultureInfo)).Append(')');
+                                    }
+                                    else
+                                        sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                            .Append(strWireless).Append(strSpace)
+                                            .Append('(')
+                                            .Append(strWeaponBonusPool).Append(strSpace).Append('+')
+                                            .Append(strSpace).Append(strInner).Append(')');
+                                }
+                                else
+                                {
+                                    sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                        .Append(strWireless).Append(strSpace).Append('(')
+                                        .Append(strWeaponBonusPool).Append(')');
+                                }
+                            }
+                            else
+                            {
+                                sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                    .Append(strWireless).Append(strSpace).Append('(')
+                                    .Append(strWeaponBonusPool).Append(')');
+                            }
+                        }
+                        else if (HasWirelessSmartgun)
+                        {
+                            strWeaponBonusPool = WirelessWeaponBonus["smartlinkpool"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                            {
+                                sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                    .Append(LanguageManager.GetString("String_Wireless")).Append(strSpace).Append('(')
+                                    .Append(strWeaponBonusPool).Append(')');
+                            }
+                        }
                     }
 
                     Gear objLoadedAmmo = AmmoLoaded;
@@ -8485,6 +8757,60 @@ namespace Chummer.Backend.Equipment
                             await wa.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), wa.DicePool);
                     }
                 }, token).ConfigureAwait(false);
+
+                // First look at any changes caused by the weapon being wireless
+                if (WirelessOn && WirelessWeaponBonus != null)
+                {
+                    string strWeaponBonusPool = WirelessWeaponBonus["pool"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                    {
+                        string strWireless = await LanguageManager.GetStringAsync("String_Wireless", token: token).ConfigureAwait(false);
+                        if (HasWirelessSmartgun)
+                        {
+                            string strInner = WirelessWeaponBonus["smartlinkpool"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strInner))
+                            {
+                                if (decimal.TryParse(strWeaponBonusPool, out decimal decTemp)
+                                    && decimal.TryParse(strInner, out decimal decTemp2))
+                                {
+                                    sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                        .Append(strWireless).Append(strSpace)
+                                        .Append('(')
+                                        .Append((decTemp + decTemp2).StandardRound()
+                                            .ToString(GlobalSettings.CultureInfo)).Append(')');
+                                }
+                                else
+                                    sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                        .Append(strWireless).Append(strSpace)
+                                        .Append('(')
+                                        .Append(strWeaponBonusPool).Append(strSpace).Append('+')
+                                        .Append(strSpace).Append(strInner).Append(')');
+                            }
+                            else
+                            {
+                                sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                    .Append(strWireless).Append(strSpace).Append('(')
+                                    .Append(strWeaponBonusPool).Append(')');
+                            }
+                        }
+                        else
+                        {
+                            sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                .Append(strWireless).Append(strSpace).Append('(')
+                                .Append(strWeaponBonusPool).Append(')');
+                        }
+                    }
+                    else if (HasWirelessSmartgun)
+                    {
+                        strWeaponBonusPool = WirelessWeaponBonus["smartlinkpool"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                        {
+                            sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                .Append(await LanguageManager.GetStringAsync("String_Wireless", token: token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                                .Append(strWeaponBonusPool).Append(')');
+                        }
+                    }
+                }
 
                 Gear objLoadedAmmo = AmmoLoaded;
                 if (objLoadedAmmo != null)

@@ -153,6 +153,26 @@
                     <xs:element name="useskill" minOccurs="0" maxOccurs="1" />
                     <xs:element name="useskillspec" minOccurs="0" maxOccurs="1" />
                     <xs:element name="weapontype" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="wirelessweaponbonus" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="accuracy" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="accuracyreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="ap" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="apreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="damage" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="damagereplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="damagetype" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="mode" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="modereplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="pool" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="rangebonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="rc" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="smartlinkpool" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="userange" type="xs:string" minOccurs="0" maxOccurs="1" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
