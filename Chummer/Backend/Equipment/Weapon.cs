@@ -5444,7 +5444,7 @@ namespace Chummer.Backend.Equipment
                     {
                         // Change the Weapon's AP value.
                         string strAPReplace = objAccessory.APReplacement;
-                        if (!string.IsNullOrEmpty(strTemp))
+                        if (!string.IsNullOrEmpty(strAPReplace))
                         {
                             strAPReplace = strAPReplace
                                 .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
