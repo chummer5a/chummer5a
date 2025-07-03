@@ -69,7 +69,7 @@ namespace Chummer.Backend.Equipment
         private Color _colNotes = ColorManager.HasNotesColor;
         private string _strDicePool = string.Empty;
         private string _strRatingLabel = "String_Rating";
-        private int _intAccuracy;
+        private string _strAccuracy;
         private int _intMaxRating;
         private int _intRating;
         private int _intRCGroup;
@@ -95,6 +95,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
         private bool _blnWirelessOn = true;
         private XmlElement _nodWirelessBonus;
+        private XmlNode _nodWirelessWeaponBonus;
         private bool _blnStolen;
         private string _strParentID;
 
@@ -324,7 +325,9 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
             objXmlAccessory.TryGetStringFieldQuickly("modifyammocapacity", ref _strModifyAmmoCapacity);
             objXmlAccessory.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
-            objXmlAccessory.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
+            objXmlAccessory.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
+            if (_strAccuracy == "0" || _strAccuracy == "+0" || _strAccuracy == "-0")
+                _strAccuracy = string.Empty;
             objXmlAccessory.TryGetStringFieldQuickly("dicepool", ref _strDicePool);
             objXmlAccessory.TryGetStringFieldQuickly("damagetype", ref _strDamageType);
             objXmlAccessory.TryGetStringFieldQuickly("damage", ref _strDamage);
@@ -443,6 +446,7 @@ namespace Chummer.Backend.Equipment
             }
 
             _nodWirelessBonus = objXmlAccessory["wirelessbonus"];
+            _nodWirelessWeaponBonus = objXmlAccessory["wirelessweaponbonus"];
         }
 
         private SourceString _objCachedSourceDetail;
@@ -501,7 +505,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodAllowGear.OuterXml);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("accuracy", _intAccuracy.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("accuracy", _strAccuracy);
             if (_lstGear.Count > 0)
             {
                 objWriter.WriteStartElement("gears");
@@ -539,6 +543,10 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
             else
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
+            if (_nodWirelessWeaponBonus != null)
+                objWriter.WriteRaw(_nodWirelessWeaponBonus.OuterXml);
+            else
+                objWriter.WriteElementString("wirelessweaponbonus", string.Empty);
             objWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("parentid", _strParentID);
@@ -565,7 +573,7 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXPathNode = null;
             }
 
-            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+            Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(() => this.GetNode());
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -576,7 +584,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
-            objNode.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
+            objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
+            if (_strAccuracy == "0" || _strAccuracy == "+0" || _strAccuracy == "-0")
+                _strAccuracy = string.Empty;
             if (!objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating))
             {
                 // Loading older save before maxrating was tracked for Weapon Accessories
@@ -663,6 +673,16 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("ammobonus", ref _strAmmoBonus);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+            _nodWirelessBonus = objNode["wirelessbonus"];
+            _nodWirelessWeaponBonus = objNode["wirelessweaponbonus"];
+            // Legacy sweep
+            if (_objCharacter.LastSavedVersion < new ValueVersion(5, 225, 933))
+            {
+                if (_nodWirelessBonus == null)
+                    _nodWirelessBonus = objMyNode.Value?["wirelessbonus"];
+                if (_nodWirelessWeaponBonus == null)
+                    _nodWirelessWeaponBonus = objMyNode.Value?["wirelessweaponbonus"];
+            }
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
             if (blnCopy)
@@ -698,7 +718,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("mount", Mount, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("extramount", ExtraMount, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc", RC, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("conceal", TotalConcealability.ToString("+#,0;-#,0;0", objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("conceal", (await GetTotalConcealabilityAsync(token).ConfigureAwait(false)).ToString("+#,0;-#,0;0", objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
@@ -708,7 +728,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("included", IncludedInWeapon.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("accuracy", Accuracy.ToString("+#,0;-#,0;0", objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("accuracy", (await GetTotalAccuracyAsync(token).ConfigureAwait(false)).ToString("+#,0;-#,0;0", objCulture), token).ConfigureAwait(false);
                 if (GearChildren.Count > 0)
                 {
                     // <gears>
@@ -779,6 +799,11 @@ namespace Chummer.Backend.Equipment
         /// XmlNode for the wireless bonuses (if any) this accessory provides.
         /// </summary>
         public XmlNode WirelessBonus => _nodWirelessBonus;
+
+        /// <summary>
+        /// XmlNode for the wireless bonuses (if any) this accessory provides specifically to its parent weapon.
+        /// </summary>
+        public XmlNode WirelessWeaponBonus => _nodWirelessWeaponBonus;
 
         /// <summary>
         /// Name.
@@ -866,7 +891,143 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Accuracy.
         /// </summary>
-        public int Accuracy => _intAccuracy;
+        public string Accuracy => _strAccuracy;
+
+        public int TotalAccuracy
+        {
+            get
+            {
+                int intReturn = 0;
+                string strAccuracy = Accuracy;
+                if (strAccuracy.Contains("Rating") || strAccuracy.Contains('{'))
+                {
+                    string strToEvaluate;
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+                    {
+                        // If the cost is determined by the Rating, evaluate the expression.
+                        sbdAccuracy.Append(strAccuracy);
+                        sbdAccuracy.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        Func<string> funcPhysicalLimitString;
+                        if (Parent != null)
+                        {
+                            Parent.ProcessAttributesInXPath(sbdAccuracy, strAccuracy);
+                            if (Parent.ParentVehicle != null)
+                            {
+                                funcPhysicalLimitString = () =>
+                                {
+                                    string strHandling = Parent.ParentVehicle.TotalHandling;
+                                    int intSlashIndex = strHandling.IndexOf('/');
+                                    if (intSlashIndex != -1)
+                                        strHandling = strHandling.Substring(0, intSlashIndex);
+                                    return strHandling;
+                                };
+                            }
+                            else
+                                funcPhysicalLimitString = () => _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);
+                        }
+                        else
+                        {
+                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAccuracy, strAccuracy);
+                            funcPhysicalLimitString = () => _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);
+                        }
+                        sbdAccuracy.CheapReplace(strAccuracy, "Physical", funcPhysicalLimitString)
+                                .CheapReplace(strAccuracy, "Missile", funcPhysicalLimitString);
+                        // Replace the division sign with "div" since we're using XPath.
+                        sbdAccuracy.Replace("/", " div ");
+                        strToEvaluate = sbdAccuracy.ToString();
+                    }
+                    try
+                    {
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strToEvaluate);
+                        if (blnIsSuccess)
+                            intReturn = ((double)objProcess).StandardRound();
+                    }
+                    catch (OverflowException)
+                    {
+                        // swallow this
+                    }
+                    catch (InvalidCastException)
+                    {
+                        // swallow this
+                    }
+                }
+                else if (!string.IsNullOrEmpty(strAccuracy) && !int.TryParse(strAccuracy, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
+                {
+                    intReturn = 0;
+                }
+                return intReturn;
+            }
+        }
+
+        public async Task<int> GetTotalAccuracyAsync(CancellationToken token = default)
+        {
+            int intReturn = 0;
+            string strAccuracy = Accuracy;
+            if (strAccuracy.Contains("Rating") || strAccuracy.Contains('{'))
+            {
+                string strToEvaluate;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+                {
+                    // If the cost is determined by the Rating, evaluate the expression.
+                    sbdAccuracy.Append(strAccuracy);
+                    await sbdAccuracy.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdAccuracy.CheapReplaceAsync("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    Func<Task<string>> funcPhysicalLimitString;
+                    if (Parent != null)
+                    {
+                        await Parent.ProcessAttributesInXPathAsync(sbdAccuracy, strAccuracy, token: token).ConfigureAwait(false);
+                        if (Parent.ParentVehicle != null)
+                        {
+                            funcPhysicalLimitString = async () =>
+                            {
+                                string strHandling = await Parent.ParentVehicle.GetTotalHandlingAsync(token).ConfigureAwait(false);
+                                int intSlashIndex = strHandling.IndexOf('/');
+                                if (intSlashIndex != -1)
+                                    strHandling = strHandling.Substring(0, intSlashIndex);
+                                return strHandling;
+                            };
+                        }
+                        else
+                            funcPhysicalLimitString = async () =>
+                                (await _objCharacter.GetLimitPhysicalAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
+                                    .InvariantCultureInfo);
+                    }
+                    else
+                    {
+                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAccuracy, strAccuracy, token: token).ConfigureAwait(false);
+                        funcPhysicalLimitString = async () =>
+                                (await _objCharacter.GetLimitPhysicalAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
+                                    .InvariantCultureInfo);
+                    }
+                    await sbdAccuracy.CheapReplaceAsync(strAccuracy, "Physical", funcPhysicalLimitString, token: token).ConfigureAwait(false);
+                    await sbdAccuracy.CheapReplaceAsync(strAccuracy, "Missile", funcPhysicalLimitString, token: token).ConfigureAwait(false);
+                    // Replace the division sign with "div" since we're using XPath.
+                    sbdAccuracy.Replace("/", " div ");
+                    strToEvaluate = sbdAccuracy.ToString();
+                }
+                try
+                {
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strToEvaluate, token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        intReturn = ((double)objProcess).StandardRound();
+                }
+                catch (OverflowException)
+                {
+                    // swallow this
+                }
+                catch (InvalidCastException)
+                {
+                    // swallow this
+                }
+            }
+            else if (!string.IsNullOrEmpty(strAccuracy) && !int.TryParse(strAccuracy, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
+            {
+                intReturn = 0;
+            }
+
+            return intReturn;
+        }
 
         /// <summary>
         /// Accessory modifies Reach by this value.
