@@ -2716,7 +2716,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                     if (blnIsSuccess)
-                        decCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                        decCost = Convert.ToDecimal((double)objProcess);
                 }
 
                 if (DiscountCost)
@@ -2743,7 +2743,7 @@ namespace Chummer.Backend.Equipment
                 (bool blnIsSuccess, object objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
                 if (blnIsSuccess)
-                    decCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                    decCost = Convert.ToDecimal((double)objProcess);
             }
 
             if (DiscountCost)

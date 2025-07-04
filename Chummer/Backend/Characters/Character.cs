@@ -21089,7 +21089,7 @@ namespace Chummer
 
                     // Need this to make sure our division doesn't go haywire
                     if (decReturn <= 0)
-                        decReturn = Convert.ToDecimal(double.Epsilon);
+                        decReturn = DecimalExtensions.DoubleEpsilon;
 
                     return _decCachedEncumbranceInterval = decReturn;
                 }
@@ -21130,7 +21130,7 @@ namespace Chummer
 
                 // Need this to make sure our division doesn't go haywire
                 if (decReturn <= 0)
-                    decReturn = Convert.ToDecimal(double.Epsilon);
+                    decReturn = DecimalExtensions.DoubleEpsilon;
 
                 return _decCachedEncumbranceInterval = decReturn;
             }

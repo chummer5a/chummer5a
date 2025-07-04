@@ -738,7 +738,7 @@ namespace Chummer
                         (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token)
                                                                           .ConfigureAwait(false);
                         if (blnIsSuccess)
-                            decItemCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                            decItemCost = Convert.ToDecimal((double)objProcess);
 
                         // Apply any markup.
                         decItemCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)

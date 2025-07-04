@@ -5283,7 +5283,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                     if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                        decReturn = Convert.ToDecimal((double)objProcess);
                 }
 
                 if (DiscountCost)
@@ -5332,7 +5332,7 @@ namespace Chummer.Backend.Equipment
                     = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token)
                         .ConfigureAwait(false);
                 if (blnIsSuccess)
-                    decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                    decReturn = Convert.ToDecimal((double)objProcess);
             }
 
             if (DiscountCost)
@@ -5384,7 +5384,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess) =
                         CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
                     if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                        decReturn = Convert.ToDecimal((double)objProcess);
                 }
 
                 return decReturn;
@@ -7332,27 +7332,31 @@ namespace Chummer.Backend.Equipment
                 return -1;
             }
 
+            decimal decRange = 0;
             string strRange = objXmlCategoryNode.SelectSingleNode(strFindRange)?.Value ?? string.Empty;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRange))
             {
                 sbdRange.Append(strRange);
+                sbdRange.CheapReplace(strRange, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                    .CheapReplace(strRange, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                 ProcessAttributesInXPath(sbdRange, strRange, true);
-
-                if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")
-                    sbdRange.Append(" + ").Append(ImprovementManager
-                        .ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange)
-                        .ToString(GlobalSettings.InvariantCultureInfo));
 
                 // Replace the division sign with "div" since we're using XPath.
                 sbdRange.Replace("/", " div ");
 
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(sbdRange.ToString());
-
-                return blnIsSuccess
-                    ? (Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * _decRangeMultiplier)
-                    .StandardRound()
-                    : -1;
+                if (blnIsSuccess)
+                    decRange = Convert.ToDecimal((double)objProcess);
+                else
+                    return -1;
             }
+
+            if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")
+            {
+                decRange += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange);
+            }
+
+            return (decRange * _decRangeMultiplier).StandardRound();
         }
 
         /// <summary>
@@ -7436,31 +7440,14 @@ namespace Chummer.Backend.Equipment
                 return -1;
             }
 
+            decimal decRange = 0;
             string strRange = objXmlCategoryNode.SelectSingleNode(strFindRange)?.Value ?? string.Empty;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRange))
             {
                 sbdRange.Append(strRange);
+                await sbdRange.CheapReplaceAsync(strRange, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                    .CheapReplaceAsync(strRange, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 await ProcessAttributesInXPathAsync(sbdRange, strRange, true, token).ConfigureAwait(false);
-
-                if (Category == "Throwing Weapons")
-                    sbdRange.Append(" + ").Append((await ImprovementManager
-                            .ValueOfAsync(_objCharacter,
-                                Improvement.ImprovementType.ThrowRange,
-                                token: token).ConfigureAwait(false))
-                        .ToString(GlobalSettings.InvariantCultureInfo));
-                else
-                {
-                    Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
-                    string strSkillDictionaryKey = objSkill != null
-                        ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
-                        : string.Empty;
-                    if (strSkillDictionaryKey == "Throwing Weapons")
-                        sbdRange.Append(" + ").Append((await ImprovementManager
-                                .ValueOfAsync(_objCharacter,
-                                    Improvement.ImprovementType.ThrowRange,
-                                    token: token).ConfigureAwait(false))
-                            .ToString(GlobalSettings.InvariantCultureInfo));
-                }
 
                 // Replace the division sign with "div" since we're using XPath.
                 sbdRange.Replace("/", " div ");
@@ -7469,11 +7456,28 @@ namespace Chummer.Backend.Equipment
                     .EvaluateInvariantXPathAsync(sbdRange.ToString(), token)
                     .ConfigureAwait(false);
 
-                return blnIsSuccess
-                    ? (Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * _decRangeMultiplier)
-                    .StandardRound()
-                    : -1;
+                if (blnIsSuccess)
+                    decRange = Convert.ToDecimal((double)objProcess);
+                else
+                    return -1;
             }
+
+            bool blnAddImprovements = Category == "Throwing Weapons";
+            if (!blnAddImprovements)
+            {
+                Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                string strSkillDictionaryKey = objSkill != null
+                    ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                    : string.Empty;
+                blnAddImprovements = strSkillDictionaryKey == "Throwing Weapons";
+            }
+            if (blnAddImprovements)
+            {
+                decRange += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.ThrowRange, token: token)
+                    .ConfigureAwait(false);
+            }
+
+            return (decRange * _decRangeMultiplier).StandardRound();
         }
 
         /// <summary>

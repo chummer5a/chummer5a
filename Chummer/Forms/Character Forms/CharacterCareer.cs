@@ -24201,7 +24201,7 @@ namespace Chummer
                                     = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token)
                                         .ConfigureAwait(false);
                                 decCost = blnIsSuccess
-                                    ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo)
+                                    ? Convert.ToDecimal((double)objProcess)
                                     : await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
                             }
                             else

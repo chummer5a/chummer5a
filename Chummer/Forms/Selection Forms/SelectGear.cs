@@ -910,7 +910,7 @@ namespace Chummer
                                         strCost.Replace(
                                             "Rating", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
                                     decimal decCost = blnIsSuccess
-                                        ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * decMultiplier
+                                        ? Convert.ToDecimal((double)objProcess) * decMultiplier
                                         : 0;
                                     decCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
                                     if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))

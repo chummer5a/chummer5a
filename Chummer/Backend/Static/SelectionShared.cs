@@ -3982,7 +3982,7 @@ namespace Chummer
 
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)));
                 if (blnIsSuccess)
-                    decCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                    decCost = Convert.ToDecimal((double)objProcess);
             }
             return decMaxNuyen >= decCost * decCostMultiplier;
         }
@@ -4043,7 +4043,7 @@ namespace Chummer
 
                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
                 if (blnIsSuccess)
-                    decCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                    decCost = Convert.ToDecimal((double)objProcess);
             }
             return decMaxNuyen >= decCost * decCostMultiplier;
         }

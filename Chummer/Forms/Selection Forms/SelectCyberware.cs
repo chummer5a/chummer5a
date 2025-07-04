@@ -1180,7 +1180,7 @@ namespace Chummer
                                         = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);
                                     if (blnIsSuccess)
                                     {
-                                        decItemCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo)
+                                        decItemCost = Convert.ToDecimal((double)objProcess)
                                                       * _decCostMultiplier * decGenetechCostModifier;
                                         decItemCost *= 1 + nudMarkup.Value / 100.0m;
 
@@ -1261,7 +1261,7 @@ namespace Chummer
                                                     decCharacterESSModifier.ToString(GlobalSettings.InvariantCultureInfo)),
                                                 token).ConfigureAwait(false);
                                         if (blnIsSuccess2)
-                                            decCharacterESSModifier = Convert.ToDecimal(objProcess2, GlobalSettings.InvariantCultureInfo);
+                                            decCharacterESSModifier = Convert.ToDecimal((double)objProcess2);
                                     }
                                 }
 
@@ -1286,7 +1286,7 @@ namespace Chummer
                                 if (blnIsSuccess)
                                 {
                                     decESS = decCharacterESSModifier
-                                             * Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                                             * Convert.ToDecimal((double)objProcess);
                                     if (!_objCharacter.Settings.DontRoundEssenceInternally)
                                     {
                                         decESS = decimal.Round(decESS, _objCharacter.Settings.EssenceDecimals,
@@ -1891,7 +1891,7 @@ namespace Chummer
                     {
                         (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
                         if (blnIsSuccess)
-                            decCapacity = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                            decCapacity = Convert.ToDecimal((double)objProcess);
                     }
 
                     Cyberware objGrandparent = _objParentObject is Cyberware objCyberwareParent

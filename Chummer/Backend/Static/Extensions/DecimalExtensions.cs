@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Runtime.CompilerServices;
 
 namespace Chummer
@@ -27,6 +28,11 @@ namespace Chummer
         /// Smallest positive number supported by the decimal type
         /// </summary>
         internal const decimal Epsilon = 0.000000000000000000000000001M;
+
+        /// <summary>
+        /// Smallest positive number supported by the double type expressed in the decimal type
+        /// </summary>
+        internal const decimal DoubleEpsilon = (decimal)double.Epsilon;
 
         /// <summary>
         /// Syntactic sugar for rounding a decimal away from zero and then converting it to an integer.
