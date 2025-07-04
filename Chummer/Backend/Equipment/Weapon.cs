@@ -57,7 +57,7 @@ namespace Chummer.Backend.Equipment
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strType = string.Empty;
-        private int _intReach;
+        private string _strReach;
         private int _intAmmoSlots = 1;
         private string _strDamage = string.Empty;
         private string _strAP = "0";
@@ -492,7 +492,7 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("name", ref _strName);
             objXmlWeapon.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlWeapon.TryGetStringFieldQuickly("type", ref _strType);
-            objXmlWeapon.TryGetInt32FieldQuickly("reach", ref _intReach);
+            objXmlWeapon.TryGetStringFieldQuickly("reach", ref _strReach);
             objXmlWeapon.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             objXmlWeapon.TryGetStringFieldQuickly("damage", ref _strDamage);
             objXmlWeapon.TryGetStringFieldQuickly("ap", ref _strAP);
@@ -1049,7 +1049,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("type", _strType);
             objWriter.WriteElementString("spec", _strSpec);
             objWriter.WriteElementString("spec2", _strSpec2);
-            objWriter.WriteElementString("reach", _intReach.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("reach", _strReach);
             objWriter.WriteElementString("damage", _strDamage);
             objWriter.WriteElementString("ap", _strAP);
             objWriter.WriteElementString("mode", _strMode);
@@ -1359,7 +1359,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("type", ref _strType);
             objNode.TryGetStringFieldQuickly("spec", ref _strSpec);
             objNode.TryGetStringFieldQuickly("spec2", ref _strSpec2);
-            objNode.TryGetInt32FieldQuickly("reach", ref _intReach);
+            objNode.TryGetStringFieldQuickly("reach", ref _strReach);
             objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
             // Legacy catch for if a damage expression is not empty but has no attributes associated with it.
@@ -2803,10 +2803,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Reach.
         /// </summary>
-        public int Reach
+        public string Reach
         {
-            get => _intReach;
-            set => _intReach = value;
+            get => _strReach;
+            set => _strReach = value;
         }
 
         /// <summary>
@@ -6242,7 +6242,45 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decReach = Reach + WeaponAccessories.Sum(x => x.Equipped, i => i.Reach);
+                string strReach = Reach;
+                string strToEvaluate;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
+                {
+                    if (!string.IsNullOrEmpty(strReach))
+                        sbdReach.Append('(').Append(strReach).Append(')');
+                    foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                    {
+                        if (objAccessory.Equipped && !string.IsNullOrEmpty(objAccessory.Reach))
+                        {
+                            string strLoopReach = objAccessory.Reach
+                                .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdReach.Append(" + (").Append(strLoopReach).Append(')');
+                        }
+                    }
+
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    sbdReach.CheapReplace("{Rating}", strReach, () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    ProcessAttributesInXPath(sbdReach);
+                    sbdReach.Replace("/", " div ");
+                    strToEvaluate = sbdReach.ToString();
+                }
+                decimal decReach = 0;
+                try
+                {
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strToEvaluate);
+                    if (blnIsSuccess)
+                        decReach = Convert.ToDecimal((double)objProcess);
+                }
+                catch (OverflowException)
+                {
+                    // swallow this
+                }
+                catch (InvalidCastException)
+                {
+                    // swallow this
+                }
                 if (RangeType == "Melee")
                 {
                     // Run through the Character's Improvements and add any Reach Improvements.
@@ -6265,8 +6303,43 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<int> GetTotalReachAsync(CancellationToken token = default)
         {
-            decimal decReach = Reach + await WeaponAccessories.SumAsync(x => x.Equipped, i => i.Reach, token: token)
-                .ConfigureAwait(false);
+            string strReach = Reach;
+            string strToEvaluate;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
+            {
+                if (!string.IsNullOrEmpty(strReach))
+                    sbdReach.Append('(').Append(strReach).Append(')');
+                await WeaponAccessories.ForEachAsync(objAccessory =>
+                {
+                    if (objAccessory.Equipped && !string.IsNullOrEmpty(objAccessory.Reach))
+                    {
+                        string strLoopReach = objAccessory.Reach
+                            .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdReach.Append(" + (").Append(strLoopReach).Append(')');
+                    }
+                }, token).ConfigureAwait(false);
+
+                await sbdReach.CheapReplaceAsync("{Rating}", strReach, () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await ProcessAttributesInXPathAsync(sbdReach, token: token).ConfigureAwait(false);
+                sbdReach.Replace("/", " div ");
+                strToEvaluate = sbdReach.ToString();
+            }
+            decimal decReach = 0;
+            try
+            {
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strToEvaluate, token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decReach = Convert.ToDecimal((double)objProcess);
+            }
+            catch (OverflowException)
+            {
+                // swallow this
+            }
+            catch (InvalidCastException)
+            {
+                // swallow this
+            }
             if (RangeType == "Melee")
             {
                 // Run through the Character's Improvements and add any Reach Improvements.

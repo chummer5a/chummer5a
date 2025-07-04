@@ -19584,22 +19584,23 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            if (objAccessory.Parent.RangeType == "Melee")
-                            {
-                                await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                                .ConfigureAwait(false);
-                                await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
-                                {
-                                    x.Text = objAccessory.Reach.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
-                                    x.Visible = true;
-                                }, token).ConfigureAwait(false);
-                            }
-                            else
+                            if (string.IsNullOrEmpty(objAccessory.Reach)) 
                             {
                                 await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                 .ConfigureAwait(false);
                                 await lblVehicleWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                           .ConfigureAwait(false);
+                                                            .ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                string strReachText = (await objAccessory.GetTotalReachAsync(token).ConfigureAwait(false)).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                                        .ConfigureAwait(false);
+                                await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
+                                {
+                                    x.Text = strReachText;
+                                    x.Visible = true;
+                                }, token).ConfigureAwait(false);
                             }
 
                             token.ThrowIfCancellationRequested();

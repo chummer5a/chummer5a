@@ -1902,7 +1902,7 @@ namespace Chummer
                 Name = bonusNode["name"]?.InnerText ?? _strFriendlyName,
                 Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false),
                 RangeType = "Melee",
-                Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText ?? "0", GlobalSettings.InvariantCultureInfo),
+                Reach = bonusNode["reach"]?.InnerText ?? "0",
                 Accuracy = bonusNode["accuracy"]?.InnerText ?? "Physical",
                 Damage = bonusNode["damage"]?.InnerText ?? "({STR})S",
                 AP = bonusNode["ap"]?.InnerText ?? "0",

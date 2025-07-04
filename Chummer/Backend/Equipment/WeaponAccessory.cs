@@ -23,6 +23,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -73,7 +74,7 @@ namespace Chummer.Backend.Equipment
         private int _intMaxRating;
         private int _intRating;
         private int _intRCGroup;
-        private int _intReach;
+        private string _strReach;
         private int _intAmmoSlots;
         private string _strModifyAmmoCapacity;
         private bool _blnDeployable;
@@ -334,7 +335,9 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("damagereplace", ref _strDamageReplace);
             objXmlAccessory.TryGetStringFieldQuickly("firemode", ref _strFireMode);
             objXmlAccessory.TryGetStringFieldQuickly("firemodereplace", ref _strFireModeReplace);
-            objXmlAccessory.TryGetInt32FieldQuickly("reach", ref _intReach);
+            objXmlAccessory.TryGetStringFieldQuickly("reach", ref _strReach);
+            if (_strReach == "0" || _strReach == "+0" || _strReach == "-0")
+                _strReach = string.Empty;
             objXmlAccessory.TryGetStringFieldQuickly("ap", ref _strAP);
             objXmlAccessory.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
             string strTemp = string.Empty;
@@ -520,7 +523,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("modifyammocapacity", _strModifyAmmoCapacity);
             objWriter.WriteElementString("damagetype", _strDamageType);
             objWriter.WriteElementString("damage", _strDamage);
-            objWriter.WriteElementString("reach", _intReach.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("reach", _strReach);
             objWriter.WriteElementString("damagereplace", _strDamageReplace);
             objWriter.WriteElementString("firemode", _strFireMode);
             objWriter.WriteElementString("firemodereplace", _strFireModeReplace);
@@ -653,7 +656,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("firemodereplace", ref _strFireModeReplace);
             objNode.TryGetStringFieldQuickly("ap", ref _strAP);
             objNode.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
-            objNode.TryGetInt32FieldQuickly("reach", ref _intReach);
+            objNode.TryGetStringFieldQuickly("reach", ref _strReach);
+            if (_strReach == "0" || _strReach == "+0" || _strReach == "-0")
+                _strReach = string.Empty;
             objNode.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
             string strTemp = string.Empty;
             if (objNode.TryGetStringFieldQuickly("addmode", ref strTemp))
@@ -904,7 +909,6 @@ namespace Chummer.Backend.Equipment
                     string strToEvaluate;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
                     {
-                        // If the cost is determined by the Rating, evaluate the expression.
                         sbdAccuracy.Append(strAccuracy);
                         sbdAccuracy.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
                             .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -969,7 +973,6 @@ namespace Chummer.Backend.Equipment
                 string strToEvaluate;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
                 {
-                    // If the cost is determined by the Rating, evaluate the expression.
                     sbdAccuracy.Append(strAccuracy);
                     await sbdAccuracy.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await sbdAccuracy.CheapReplaceAsync("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
@@ -1032,7 +1035,90 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Accessory modifies Reach by this value.
         /// </summary>
-        public int Reach => _intReach;
+        public string Reach => _strReach;
+
+        public int TotalReach
+        {
+            get
+            {
+                int intReturn = 0;
+                string strReach = Reach;
+                if (strReach.Contains("Rating") || strReach.Contains('{'))
+                {
+                    string strToEvaluate;
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
+                    {
+                        if (!string.IsNullOrEmpty(strReach))
+                            sbdReach.Append('(').Append(strReach).Append(')');
+                        sbdReach.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        // Replace the division sign with "div" since we're using XPath.
+                        sbdReach.Replace("/", " div ");
+                        strToEvaluate = sbdReach.ToString();
+                    }
+                    try
+                    {
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strToEvaluate);
+                        if (blnIsSuccess)
+                            intReturn = ((double)objProcess).StandardRound();
+                    }
+                    catch (OverflowException)
+                    {
+                        // swallow this
+                    }
+                    catch (InvalidCastException)
+                    {
+                        // swallow this
+                    }
+                }
+                else if (!string.IsNullOrEmpty(strReach) && !int.TryParse(strReach, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
+                {
+                    intReturn = 0;
+                }
+                return intReturn;
+            }
+        }
+
+        public async Task<int> GetTotalReachAsync(CancellationToken token = default)
+        {
+            int intReturn = 0;
+            string strReach = Reach;
+            if (strReach.Contains("Rating") || strReach.Contains('{'))
+            {
+                string strToEvaluate;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
+                {
+                    // If the cost is determined by the Rating, evaluate the expression.
+                    if (!string.IsNullOrEmpty(strReach))
+                        sbdReach.Append('(').Append(strReach).Append(')');
+                    await sbdReach.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdReach.CheapReplaceAsync("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    // Replace the division sign with "div" since we're using XPath.
+                    sbdReach.Replace("/", " div ");
+                    strToEvaluate = sbdReach.ToString();
+                }
+                try
+                {
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strToEvaluate, token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        intReturn = ((double)objProcess).StandardRound();
+                }
+                catch (OverflowException)
+                {
+                    // swallow this
+                }
+                catch (InvalidCastException)
+                {
+                    // swallow this
+                }
+            }
+            else if (!string.IsNullOrEmpty(strReach) && !int.TryParse(strReach, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
+            {
+                intReturn = 0;
+            }
+
+            return intReturn;
+        }
 
         /// <summary>
         /// Accessory replaces the AP of the parent weapon with this value.

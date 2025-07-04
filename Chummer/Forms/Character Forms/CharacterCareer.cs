@@ -26033,7 +26033,7 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                             }
 
-                            if (objAccessory.Reach == 0)
+                            if (string.IsNullOrEmpty(objAccessory.Reach))
                             {
                                 await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                 .ConfigureAwait(false);
@@ -26042,11 +26042,12 @@ namespace Chummer
                             }
                             else
                             {
+                                string strReachText = (await objAccessory.GetTotalReachAsync(token).ConfigureAwait(false)).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                                 await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                 .ConfigureAwait(false);
                                 await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
                                 {
-                                    x.Text = objAccessory.Reach.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    x.Text = strReachText;
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
                             }

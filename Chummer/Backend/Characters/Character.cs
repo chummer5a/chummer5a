@@ -2857,13 +2857,14 @@ namespace Chummer
                 //Load any natural weapons the character has.
                 foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("naturalweapons/naturalweapon"))
                 {
+                    string strReach = objXmlNaturalWeapon["reach"]?.InnerText ?? "0";
+                    string strForce = intForce.ToString(GlobalSettings.InvariantCultureInfo);
                     Weapon objWeapon = new Weapon(this)
                     {
                         Name = objXmlNaturalWeapon["name"].InnerText,
                         Category = LanguageManager.GetString("Tab_Critter", GlobalSettings.DefaultLanguage, token: token),
                         RangeType = "Melee",
-                        Reach =
-                            CommonFunctions.ExpressionToInt(objXmlNaturalWeapon["reach"]?.InnerText ?? "0", intForce, 0, 0, token),
+                        Reach = strReach.Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce),
                         Damage = objXmlNaturalWeapon["damage"]?.InnerText ?? "({STR})S",
                         Accuracy = objXmlNaturalWeapon["accuracy"]?.InnerText ?? "Physical",
                         AP = objXmlNaturalWeapon["ap"]?.InnerText ?? "0",
@@ -3557,16 +3558,15 @@ namespace Chummer
                 //Load any natural weapons the character has.
                 foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("naturalweapons/naturalweapon"))
                 {
+                    string strReach = objXmlNaturalWeapon["reach"]?.InnerText ?? "0";
+                    string strForce = intForce.ToString(GlobalSettings.InvariantCultureInfo);
                     Weapon objWeapon = new Weapon(this)
                     {
                         Name = objXmlNaturalWeapon["name"].InnerText,
                         Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage,
                             token: token).ConfigureAwait(false),
                         RangeType = "Melee",
-                        Reach =
-                            await CommonFunctions.ExpressionToIntAsync(objXmlNaturalWeapon["reach"]?.InnerText ?? "0",
-                                intForce, 0,
-                                0, token).ConfigureAwait(false),
+                        Reach = strReach.Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce),
                         Damage = objXmlNaturalWeapon["damage"]?.InnerText ?? "({STR})S",
                         Accuracy = objXmlNaturalWeapon["accuracy"]?.InnerText ?? "Physical",
                         AP = objXmlNaturalWeapon["ap"]?.InnerText ?? "0",

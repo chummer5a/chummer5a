@@ -158,7 +158,7 @@ namespace Chummer
                     Name = txtName.Text,
                     Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false),
                     RangeType = "Melee",
-                    Reach = await nudReach.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false),
+                    Reach = (await nudReach.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                     Accuracy = "Physical",
                     Damage = strDamage,
                     AP = strAP,
