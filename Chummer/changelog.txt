@@ -91,6 +91,7 @@ Application Changes:
 - Weapon accessories can now modify their parent weapon's accuracy in a more dynamic way similar to how AP modifiers work.
 - Ammunition that alters that stats of a weapon into which it is loaded in a way that depends on its rating now properly uses the rating of the ammunition instead of the rating of the weapon into which it is loaded.
 - Weapon and weapon accessory reach and concealability entries can now work off of character attributes and/or ratings.
+- The rating entry in the Weapons tab has been changed to a dial in Create mode, allowing users to alter the ratings of eligible weapons, weapon accessories, and gear loaded into weapon accessories more easily.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
