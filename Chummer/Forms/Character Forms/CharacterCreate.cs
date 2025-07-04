@@ -8920,7 +8920,7 @@ namespace Chummer
                                = await ThreadSafeForm<SelectCyberware>.GetAsync(() => new SelectCyberware(
                                    CharacterObject,
                                    Improvement.ImprovementSource.Cyberware,
-                                   objCyberwareParent ?? (object) objMod), GenericToken).ConfigureAwait(false))
+                                   objCyberwareParent ?? (object)objMod), GenericToken).ConfigureAwait(false))
                         {
                             if (objCyberwareParent == null)
                             {
@@ -9974,7 +9974,7 @@ namespace Chummer
             {
                 if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
                                       .ConfigureAwait(false) is Gear objSensor))
-                    // Make sure the Gear was found.
+                // Make sure the Gear was found.
                 {
                     await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear", token: GenericToken).ConfigureAwait(false),
@@ -13278,7 +13278,7 @@ namespace Chummer
             if (!e.Control || e.KeyCode != Keys.A)
                 return;
             e.SuppressKeyPress = true;
-            ((TextBox) sender)?.SelectAll();
+            ((TextBox)sender)?.SelectAll();
         }
 
         #endregion Additional Initiation Tab Control Events

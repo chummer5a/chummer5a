@@ -366,37 +366,37 @@ namespace Chummer
                         await lblWeaponReachLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strReach), token: token)
                                 .ConfigureAwait(false);
-                        string strDamage = objSelectedWeapon.DisplayDamage;
+                        string strDamage = await objSelectedWeapon.GetDisplayDamageAsync(token).ConfigureAwait(false);
                         await lblWeaponDamage.DoThreadSafeAsync(x => x.Text = strDamage, token: token)
                                                 .ConfigureAwait(false);
                         await lblWeaponDamageLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDamage), token: token)
                                 .ConfigureAwait(false);
-                        string strAP = objSelectedWeapon.DisplayTotalAP;
+                        string strAP = await objSelectedWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
                         await lblWeaponAP.DoThreadSafeAsync(x => x.Text = strAP, token: token).ConfigureAwait(false);
                         await lblWeaponAPLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAP), token: token)
                                 .ConfigureAwait(false);
-                        string strMode = objSelectedWeapon.DisplayMode;
+                        string strMode = await objSelectedWeapon.GetDisplayModeAsync(token).ConfigureAwait(false);
                         await lblWeaponMode.DoThreadSafeAsync(x => x.Text = strMode, token: token)
                                             .ConfigureAwait(false);
                         await lblWeaponModeLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strMode), token: token)
                                 .ConfigureAwait(false);
-                        string strRC = objSelectedWeapon.DisplayTotalRC;
+                        string strRC = await objSelectedWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
                         await lblWeaponRC.DoThreadSafeAsync(x => x.Text = strRC, token: token).ConfigureAwait(false);
                         await lblWeaponRC.SetToolTipAsync(objSelectedWeapon.RCToolTip, token: token)
                                             .ConfigureAwait(false);
                         await lblWeaponRCLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strRC), token: token)
                                 .ConfigureAwait(false);
-                        string strAmmo = objSelectedWeapon.DisplayAmmo;
+                        string strAmmo = await objSelectedWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
                         await lblWeaponAmmo.DoThreadSafeAsync(x => x.Text = strAmmo, token: token)
                                             .ConfigureAwait(false);
                         await lblWeaponAmmoLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAmmo), token: token)
                                 .ConfigureAwait(false);
-                        string strAccuracy = objSelectedWeapon.DisplayAccuracy;
+                        string strAccuracy = await objSelectedWeapon.GetDisplayAccuracyAsync(token).ConfigureAwait(false);
                         await lblWeaponAccuracy.DoThreadSafeAsync(x => x.Text = strAccuracy, token: token)
                                                 .ConfigureAwait(false);
                         await lblWeaponAccuracyLabel
@@ -603,14 +603,14 @@ namespace Chummer
                                 string strDice =
                                     (await objWeapon.GetDicePoolAsync(token: token).ConfigureAwait(false)).ToString(
                                         GlobalSettings.CultureInfo);
-                                string strAccuracy = objWeapon.DisplayAccuracy;
-                                string strDamage = objWeapon.DisplayDamage;
-                                string strAP = objWeapon.DisplayTotalAP;
+                                string strAccuracy = await objWeapon.GetDisplayAccuracyAsync(token).ConfigureAwait(false);
+                                string strDamage = await objWeapon.GetDisplayDamageAsync(token).ConfigureAwait(false);
+                                string strAP = await objWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
                                 if (strAP == "-")
                                     strAP = "0";
-                                string strRC = objWeapon.DisplayTotalRC;
-                                string strAmmo = objWeapon.DisplayAmmo;
-                                string strMode = objWeapon.DisplayMode;
+                                string strRC = await objWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
+                                string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
+                                string strMode = await objWeapon.GetDisplayModeAsync(token).ConfigureAwait(false);
                                 string strReach =
                                     (await objWeapon.GetTotalReachAsync(token).ConfigureAwait(false)).ToString(
                                         GlobalSettings.CultureInfo);
@@ -618,11 +618,11 @@ namespace Chummer
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdAccessories))
                                 {
-                                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                    await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                                     {
                                         sbdAccessories.AppendLine(await objAccessory.GetCurrentDisplayNameAsync(token)
                                             .ConfigureAwait(false));
-                                    }
+                                    }, token).ConfigureAwait(false);
 
                                     if (sbdAccessories.Length > 0)
                                         sbdAccessories.Length -= Environment.NewLine.Length;

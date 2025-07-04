@@ -515,7 +515,10 @@ namespace Chummer.Backend.Equipment
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
             }
 
-            _intRating = Math.Max(Math.Min(intRating, MaxRatingValue), MinRatingValue);
+            _intRating = blnSync
+                ? Math.Max(Math.Min(intRating, MaxRatingValue), MinRatingValue)
+                : Math.Max(Math.Min(intRating, await GetMaxRatingAsync(token).ConfigureAwait(false)),
+                           await GetMinRatingAsync(token).ConfigureAwait(false));
             if (objXmlWeapon["accessorymounts"] != null)
             {
                 XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
@@ -2596,7 +2599,85 @@ namespace Chummer.Backend.Equipment
         public int Rating
         {
             get => _intRating;
-            set => _intRating = value;
+            set
+            {
+                value = Math.Max(Math.Min(value, MaxRatingValue), MinRatingValue);
+                if (Interlocked.Exchange(ref _intRating, value) == value)
+                    return;
+                if (Equipped && ParentVehicle == null
+                    && (Weight.ContainsAny("FixedValues", "Rating")
+                        || Children.DeepAny(x => x.Children, x => x.Equipped && x.Weight.Contains("Parent Rating"))
+                        || WeaponAccessories.Any(x => x.Equipped && x.Weight.Contains("Parent Rating"))))
+                {
+                    bool blnDoPropertyChange = true;
+                    Weapon objWeapon = Parent;
+                    for (Weapon objParent = objWeapon.Parent; objParent != null; objParent = objWeapon.Parent)
+                    {
+                        objWeapon = objParent;
+                        if (!objWeapon.Equipped || objWeapon.ParentVehicle != null)
+                        {
+                            blnDoPropertyChange = false;
+                            break;
+                        }
+                    }
+                    if (blnDoPropertyChange)
+                    {
+                        _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                    }
+                }
+                if (Children.Count > 0)
+                {
+                    foreach (Weapon objChild in Children)
+                    {
+                        if (!objChild.MaxRating.Contains("Parent") && objChild.MinRating.Contains("Parent"))
+                            continue;
+                        // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                        int intCurrentRating = objChild.Rating;
+                        objChild.Rating = intCurrentRating;
+                    }
+                }
+            }
+        }
+
+        public async Task SetRatingAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            value = Math.Max(Math.Min(value, await GetMaxRatingAsync(token).ConfigureAwait(false)),
+                           await GetMinRatingAsync(token).ConfigureAwait(false));
+            if (Interlocked.Exchange(ref _intRating, value) == value)
+                return;
+            if (Equipped && ParentVehicle == null
+                && (Weight.ContainsAny("FixedValues", "Rating")
+                    || await Children.DeepAnyAsync(x => x.Children, x => x.Equipped && x.Weight.Contains("Parent Rating"), token).ConfigureAwait(false)
+                    || await WeaponAccessories.AnyAsync(x => x.Equipped && x.Weight.Contains("Parent Rating"), token).ConfigureAwait(false)))
+            {
+                bool blnDoPropertyChange = true;
+                Weapon objWeapon = Parent;
+                for (Weapon objParent = objWeapon.Parent; objParent != null; objParent = objWeapon.Parent)
+                {
+                    objWeapon = objParent;
+                    if (!objWeapon.Equipped || objWeapon.ParentVehicle != null)
+                    {
+                        blnDoPropertyChange = false;
+                        break;
+                    }
+                }
+                if (blnDoPropertyChange)
+                {
+                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
+                }
+            }
+            if (await Children.CountAsync(token).ConfigureAwait(false) > 0)
+            {
+                await Children.ForEachAsync(async objChild =>
+                {
+                    if (!objChild.MaxRating.Contains("Parent") && objChild.MinRating.Contains("Parent"))
+                        return;
+                    // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                    int intCurrentRating = objChild.Rating;
+                    await objChild.SetRatingAsync(intCurrentRating).ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+            }
         }
 
         public string RatingLabel
@@ -2650,6 +2731,28 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Minimum Rating (value form).
+        /// </summary>
+        public Task<int> GetMinRatingAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<int>(token);
+            string strExpression = MinRating;
+            return string.IsNullOrEmpty(strExpression) ? Task.FromResult(0) : ProcessRatingStringAsync(strExpression, token);
+        }
+
+        /// <summary>
+        /// Maximum Rating (value form).
+        /// </summary>
+        public Task<int> GetMaxRatingAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<int>(token);
+            string strExpression = MaxRating;
+            return string.IsNullOrEmpty(strExpression) ? Task.FromResult(int.MaxValue) : ProcessRatingStringAsync(strExpression, token);
+        }
+
+        /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
         /// <param name="strExpression"></param>
@@ -2675,6 +2778,42 @@ namespace Chummer.Backend.Equipment
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
+                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                }
+            }
+
+            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
+
+            return intReturn;
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        /// <param name="strExpression"></param>
+        /// <returns></returns>
+        private async Task<int> ProcessRatingStringAsync(string strExpression, CancellationToken token = default)
+        {
+            if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
+            }
+
+            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            {
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                {
+                    sbdValue.Append(strExpression);
+                    sbdValue.Replace("{Rating}", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    // Replace the division sign with "div" since we're using XPath.
+                    sbdValue.Replace("/", " div ");
+                    await ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
                     return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                 }
             }
@@ -3822,6 +3961,11 @@ namespace Chummer.Backend.Equipment
         public string DisplayDamage => CalculatedDamage(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
+        /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition in the program's current language.
+        /// </summary>
+        public Task<string> GetDisplayDamageAsync(CancellationToken token = default) => CalculatedDamageAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token);
+
+        /// <summary>
         /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition.
         /// </summary>
         public string CalculatedDamage(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true)
@@ -4535,6 +4679,11 @@ namespace Chummer.Backend.Equipment
         public string DisplayAmmo => CalculatedAmmo(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
+        /// Calculated Ammo capacity in the program's current language.
+        /// </summary>
+        public Task<string> GetDisplayAmmoAsync(CancellationToken token = default) => CalculatedAmmoAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
+        /// <summary>
         /// Calculated Ammo capacity.
         /// </summary>
         public string CalculatedAmmo(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
@@ -4854,6 +5003,11 @@ namespace Chummer.Backend.Equipment
         public string DisplayMode => CalculatedMode(GlobalSettings.Language);
 
         /// <summary>
+        /// The Weapon's Firing Mode including Modifications in the program's current language.
+        /// </summary>
+        public Task<string> GetDisplayModeAsync(CancellationToken token = default) => GetCalculatedModeAsync(GlobalSettings.Language, token: token);
+
+        /// <summary>
         /// The Weapon's Firing Mode including Modifications.
         /// </summary>
         public string CalculatedMode(string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
@@ -4923,76 +5077,153 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Do the same for any accessories/modifications.
-                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                if (blnSync)
                 {
-                    if (!objAccessory.Equipped)
-                        continue;
-                    if (!string.IsNullOrEmpty(objAccessory.FireMode))
+                    WeaponAccessories.ForEach(objAccessory =>
                     {
-                        if (objAccessory.FireMode.Contains('/'))
+                        if (!objAccessory.Equipped)
+                            return;
+                        if (!string.IsNullOrEmpty(objAccessory.FireMode))
                         {
-                            // Move the contents of the array to a list so it's easier to work with.
-                            foreach (string strMode in objAccessory.FireMode.SplitNoAlloc(
-                                         '/', StringSplitOptions.RemoveEmptyEntries))
-                                setNewModes.Add(strMode);
-                        }
-                        else
-                        {
-                            setNewModes.Add(objAccessory.FireMode);
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(objAccessory.FireModeReplacement))
-                    {
-                        setModes.Clear();
-                        if (objAccessory.FireModeReplacement.Contains('/'))
-                        {
-                            // Move the contents of the array to a list so it's easier to work with.
-                            foreach (string strMode in objAccessory.FireModeReplacement.SplitNoAlloc(
-                                         '/', StringSplitOptions.RemoveEmptyEntries))
-                                setModes.Add(strMode);
-                        }
-                        else
-                        {
-                            setModes.Add(objAccessory.FireModeReplacement);
-                        }
-                    }
-
-                    if (WirelessOn && objAccessory.WirelessOn && objAccessory.WirelessWeaponBonus != null)
-                    {
-                        string strFireMode = objAccessory.WirelessWeaponBonus["firemode"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strFireMode))
-                        {
-                            if (strFireMode.Contains('/'))
+                            if (objAccessory.FireMode.Contains('/'))
                             {
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strFireMode.SplitNoAlloc(
+                                foreach (string strMode in objAccessory.FireMode.SplitNoAlloc(
                                              '/', StringSplitOptions.RemoveEmptyEntries))
                                     setNewModes.Add(strMode);
                             }
                             else
                             {
-                                setNewModes.Add(strFireMode);
+                                setNewModes.Add(objAccessory.FireMode);
                             }
                         }
 
-                        strFireMode = objAccessory.WirelessWeaponBonus["modereplace"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strFireMode))
+                        if (!string.IsNullOrEmpty(objAccessory.FireModeReplacement))
                         {
                             setModes.Clear();
-                            if (strFireMode.Contains('/'))
+                            if (objAccessory.FireModeReplacement.Contains('/'))
                             {
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strFireMode.SplitNoAlloc(
+                                foreach (string strMode in objAccessory.FireModeReplacement.SplitNoAlloc(
                                              '/', StringSplitOptions.RemoveEmptyEntries))
                                     setModes.Add(strMode);
                             }
                             else
                             {
-                                setModes.Add(strFireMode);
+                                setModes.Add(objAccessory.FireModeReplacement);
                             }
                         }
-                    }
+
+                        if (WirelessOn && objAccessory.WirelessOn && objAccessory.WirelessWeaponBonus != null)
+                        {
+                            string strFireMode = objAccessory.WirelessWeaponBonus["firemode"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strFireMode))
+                            {
+                                if (strFireMode.Contains('/'))
+                                {
+                                    // Move the contents of the array to a list so it's easier to work with.
+                                    foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                 '/', StringSplitOptions.RemoveEmptyEntries))
+                                        setNewModes.Add(strMode);
+                                }
+                                else
+                                {
+                                    setNewModes.Add(strFireMode);
+                                }
+                            }
+
+                            strFireMode = objAccessory.WirelessWeaponBonus["modereplace"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strFireMode))
+                            {
+                                setModes.Clear();
+                                if (strFireMode.Contains('/'))
+                                {
+                                    // Move the contents of the array to a list so it's easier to work with.
+                                    foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                 '/', StringSplitOptions.RemoveEmptyEntries))
+                                        setModes.Add(strMode);
+                                }
+                                else
+                                {
+                                    setModes.Add(strFireMode);
+                                }
+                            }
+                        }
+                    }, token);
+                }
+                else
+                {
+                    await WeaponAccessories.ForEachAsync(objAccessory =>
+                    {
+                        if (!objAccessory.Equipped)
+                            return;
+                        if (!string.IsNullOrEmpty(objAccessory.FireMode))
+                        {
+                            if (objAccessory.FireMode.Contains('/'))
+                            {
+                                // Move the contents of the array to a list so it's easier to work with.
+                                foreach (string strMode in objAccessory.FireMode.SplitNoAlloc(
+                                             '/', StringSplitOptions.RemoveEmptyEntries))
+                                    setNewModes.Add(strMode);
+                            }
+                            else
+                            {
+                                setNewModes.Add(objAccessory.FireMode);
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(objAccessory.FireModeReplacement))
+                        {
+                            setModes.Clear();
+                            if (objAccessory.FireModeReplacement.Contains('/'))
+                            {
+                                // Move the contents of the array to a list so it's easier to work with.
+                                foreach (string strMode in objAccessory.FireModeReplacement.SplitNoAlloc(
+                                             '/', StringSplitOptions.RemoveEmptyEntries))
+                                    setModes.Add(strMode);
+                            }
+                            else
+                            {
+                                setModes.Add(objAccessory.FireModeReplacement);
+                            }
+                        }
+
+                        if (WirelessOn && objAccessory.WirelessOn && objAccessory.WirelessWeaponBonus != null)
+                        {
+                            string strFireMode = objAccessory.WirelessWeaponBonus["firemode"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strFireMode))
+                            {
+                                if (strFireMode.Contains('/'))
+                                {
+                                    // Move the contents of the array to a list so it's easier to work with.
+                                    foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                 '/', StringSplitOptions.RemoveEmptyEntries))
+                                        setNewModes.Add(strMode);
+                                }
+                                else
+                                {
+                                    setNewModes.Add(strFireMode);
+                                }
+                            }
+
+                            strFireMode = objAccessory.WirelessWeaponBonus["modereplace"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strFireMode))
+                            {
+                                setModes.Clear();
+                                if (strFireMode.Contains('/'))
+                                {
+                                    // Move the contents of the array to a list so it's easier to work with.
+                                    foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                 '/', StringSplitOptions.RemoveEmptyEntries))
+                                        setModes.Add(strMode);
+                                }
+                                else
+                                {
+                                    setModes.Add(strFireMode);
+                                }
+                            }
+                        }
+                    }, token).ConfigureAwait(false);
                 }
 
                 if (blnIncludeAmmo)
@@ -5460,6 +5691,11 @@ namespace Chummer.Backend.Equipment
         public string DisplayTotalAP => TotalAP(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
+        /// The Weapon's total AP including Ammunition in the program's current language.
+        /// </summary>
+        public Task<string> GetDisplayTotalAPAsync(CancellationToken token = default) => TotalAPAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token);
+
+        /// <summary>
         /// The Weapon's total AP including Ammunition.
         /// </summary>
         public string TotalAP(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true)
@@ -5810,6 +6046,8 @@ namespace Chummer.Backend.Equipment
         }
 
         public string DisplayTotalRC => TotalRC(GlobalSettings.CultureInfo, GlobalSettings.Language, true);
+
+        public Task<string> GetDisplayTotalRCAsync(CancellationToken token = default) => TotalRCAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, token: token);
 
         /// <summary>
         /// The Weapon's total RC including Accessories and Modifications.
@@ -7049,6 +7287,11 @@ namespace Chummer.Backend.Equipment
         /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks in the program's current language.
         /// </summary>
         public string DisplayAccuracy => GetAccuracy(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        /// <summary>
+        /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks in the program's current language.
+        /// </summary>
+        public Task<string> GetDisplayAccuracyAsync(CancellationToken token = default) => GetAccuracyAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token);
 
         /// <summary>
         /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks.
