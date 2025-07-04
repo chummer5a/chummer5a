@@ -1052,6 +1052,14 @@ namespace Chummer.Backend.Equipment
                             sbdReach.Append('(').Append(strReach).Append(')');
                         sbdReach.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
                             .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        if (Parent != null)
+                        {
+                            Parent.ProcessAttributesInXPath(sbdReach, strReach);
+                        }
+                        else
+                        {
+                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdReach, strReach);
+                        }
                         // Replace the division sign with "div" since we're using XPath.
                         sbdReach.Replace("/", " div ");
                         strToEvaluate = sbdReach.ToString();
@@ -1093,6 +1101,14 @@ namespace Chummer.Backend.Equipment
                         sbdReach.Append('(').Append(strReach).Append(')');
                     await sbdReach.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await sbdReach.CheapReplaceAsync("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    if (Parent != null)
+                    {
+                        await Parent.ProcessAttributesInXPathAsync(sbdReach, strReach, token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdReach, strReach, token: token).ConfigureAwait(false);
+                    }
                     // Replace the division sign with "div" since we're using XPath.
                     sbdReach.Replace("/", " div ");
                     strToEvaluate = sbdReach.ToString();
@@ -1264,13 +1280,29 @@ namespace Chummer.Backend.Equipment
                 int intReturn = 0;
 
                 string strConceal = Concealability;
-                if (strConceal.Contains("Rating"))
+                if (strConceal.Contains("Rating") || strConceal.Contains('{'))
                 {
-                    // If the cost is determined by the Rating, evaluate the expression.
-                    strConceal = strConceal.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    string strToEvaluate;
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
+                    {
+                        // If the cost is determined by the Rating, evaluate the expression.
+                        sbdConceal.Append(strConceal);
+                        sbdConceal.CheapReplace("{Rating}", strConceal, () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("Rating", strConceal, () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        if (Parent != null)
+                        {
+                            Parent.ProcessAttributesInXPath(sbdConceal, strConceal);
+                        }
+                        else
+                        {
+                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdConceal, strConceal);
+                        }
+                        sbdConceal.Replace("/", " div ");
+                        strToEvaluate = sbdConceal.ToString();
+                    }
                     try
                     {
-                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strConceal);
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strToEvaluate);
                         if (blnIsSuccess)
                             intReturn = ((double)objProcess).StandardRound();
                     }
@@ -1296,13 +1328,29 @@ namespace Chummer.Backend.Equipment
             int intReturn = 0;
 
             string strConceal = Concealability;
-            if (strConceal.Contains("Rating"))
+            if (strConceal.Contains("Rating") || strConceal.Contains('{'))
             {
-                // If the cost is determined by the Rating, evaluate the expression.
-                strConceal = strConceal.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                string strToEvaluate;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
+                {
+                    // If the cost is determined by the Rating, evaluate the expression.
+                    sbdConceal.Append(strConceal);
+                    await sbdConceal.CheapReplaceAsync("{Rating}", strConceal, () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdConceal.CheapReplaceAsync("Rating", strConceal, () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    if (Parent != null)
+                    {
+                        await Parent.ProcessAttributesInXPathAsync(sbdConceal, strConceal, token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdConceal, strConceal, token: token).ConfigureAwait(false);
+                    }
+                    sbdConceal.Replace("/", " div ");
+                    strToEvaluate = sbdConceal.ToString();
+                }
                 try
                 {
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strConceal, token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strToEvaluate, token).ConfigureAwait(false);
                     if (blnIsSuccess)
                         intReturn = ((double) objProcess).StandardRound();
                 }

@@ -21689,12 +21689,13 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
+                            string strConcealText = await objWeapon.GetDisplayConcealabilityAsync(token).ConfigureAwait(false);
                             await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                       .ConfigureAwait(false);
+                                                    .ConfigureAwait(false);
                             await lblWeaponConceal.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objWeapon.DisplayConcealability;
+                                x.Text = strConcealText;
                             }, token).ConfigureAwait(false);
                             bool blnVisible = blnDeleteWeaponEnabled && await CharacterObject.Vehicles.GetCountAsync(token).ConfigureAwait(false) > 0;
                             await cmdWeaponMoveToVehicle

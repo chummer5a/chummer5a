@@ -164,7 +164,7 @@ namespace Chummer
                     AP = strAP,
                     Mode = "0",
                     RC = "0",
-                    Concealability = 0,
+                    Concealability = "0",
                     Avail = "0",
                     Cost = "0",
                     Ammo = "0",

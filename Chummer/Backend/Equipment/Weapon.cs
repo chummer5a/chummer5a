@@ -66,7 +66,7 @@ namespace Chummer.Backend.Equipment
         private string _strAmmo = string.Empty;
         private string _strAmmoCategory = string.Empty;
         private string _strWeaponType = string.Empty;
-        private int _intConceal;
+        private string _strConceal = "0";
         private readonly List<Clip> _lstAmmo = new List<Clip>(1);
 
         //private int _intAmmoRemaining = 0;
@@ -566,7 +566,7 @@ namespace Chummer.Backend.Equipment
             if (!objXmlWeapon.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots))
                 _intAmmoSlots = 1;
             objXmlWeapon.TryGetStringFieldQuickly("rc", ref _strRC);
-            objXmlWeapon.TryGetInt32FieldQuickly("conceal", ref _intConceal);
+            objXmlWeapon.TryGetStringFieldQuickly("conceal", ref _strConceal);
             objXmlWeapon.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlWeapon.TryGetStringFieldQuickly("cost", ref _strCost);
             objXmlWeapon.TryGetStringFieldQuickly("weight", ref _strWeight);
@@ -1078,7 +1078,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteEndElement();
             }
 
-            objWriter.WriteElementString("conceal", _intConceal.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("conceal", _strConceal);
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
             objWriter.WriteElementString("weight", _strWeight);
@@ -1399,7 +1399,7 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots))
                 _intAmmoSlots = 1;
             objNode.TryGetStringFieldQuickly("sizecategory", ref _strSizeCategory);
-            objNode.TryGetInt32FieldQuickly("conceal", ref _intConceal);
+            objNode.TryGetStringFieldQuickly("conceal", ref _strConceal);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             if (!objNode.TryGetStringFieldQuickly("weight", ref _strWeight))
@@ -2089,6 +2089,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("reach",
                         (await GetTotalReachAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                     .ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rawreach", Reach, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("accuracy",
                         await GetAccuracyAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false),
                         token)
@@ -2162,8 +2163,9 @@ namespace Chummer.Backend.Equipment
                         token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("maxammo", Ammo, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("conceal",
-                        await CalculatedConcealabilityAsync(objCulture, token).ConfigureAwait(false), token)
+                        (await CalculatedConcealabilityAsync(token).ConfigureAwait(false)).ToString("+0;-0;0", objCulture), token)
                     .ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rawconceal", Concealability, token).ConfigureAwait(false);
                 if (objGear != null)
                 {
                     await objWriter.WriteElementStringAsync("avail",
@@ -2964,10 +2966,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Concealability.
         /// </summary>
-        public int Concealability
+        public string Concealability
         {
-            get => _intConceal;
-            set => _intConceal = value;
+            get => _strConceal;
+            set => _strConceal = value;
         }
 
         /// <summary>
@@ -3720,37 +3722,97 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon's total Concealability including all Accessories and Modifications in the program's current language.
         /// </summary>
-        public string DisplayConcealability => CalculatedConcealability(GlobalSettings.CultureInfo);
+        public string DisplayConcealability => CalculatedConcealability().ToString("+0;-0;0", GlobalSettings.CultureInfo);
 
         /// <summary>
-        /// Weapon's total Concealability including all Accessories and Modifications.
+        /// Weapon's total Concealability including all Accessories and Modifications in the program's current language.
         /// </summary>
-        public string CalculatedConcealability(CultureInfo objCulture)
+        public async Task<string> GetDisplayConcealabilityAsync(CancellationToken token = default)
         {
-            int intReturn = Concealability + WeaponAccessories.Sum(x => x.Equipped, x => x.TotalConcealability)
-                                           // Factor in the character's Concealability modifiers.
-                                           + ImprovementManager
-                                               .ValueOf(_objCharacter, Improvement.ImprovementType.Concealability)
-                                               .StandardRound();
-
-            return intReturn >= 0 ? '+' + intReturn.ToString(objCulture) : intReturn.ToString(objCulture);
+            decimal decConceal = await CalculatedConcealabilityAsync(token).ConfigureAwait(false);
+            return decConceal.ToString("+0;-0;0", GlobalSettings.CultureInfo);
         }
 
         /// <summary>
         /// Weapon's total Concealability including all Accessories and Modifications.
         /// </summary>
-        public async Task<string> CalculatedConcealabilityAsync(CultureInfo objCulture,
-            CancellationToken token = default)
+        public decimal CalculatedConcealability()
         {
-            int intReturn = Concealability
-                            + await WeaponAccessories
-                                .SumAsync(x => x.Equipped, x => x.GetTotalConcealabilityAsync(token),
-                                    token: token).ConfigureAwait(false)
-                            // Factor in the character's Concealability modifiers.
-                            + (await ImprovementManager
-                                .ValueOfAsync(_objCharacter, Improvement.ImprovementType.Concealability,
-                                    token: token).ConfigureAwait(false)).StandardRound();
-            return intReturn >= 0 ? '+' + intReturn.ToString(objCulture) : intReturn.ToString(objCulture);
+            decimal decReturn = 0;
+            string strConceal = Concealability;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
+            {
+                if (!string.IsNullOrEmpty(strConceal))
+                    sbdConceal.Append('(').Append(strConceal).Append(')');
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                {
+                    if (!objAccessory.Equipped)
+                        continue;
+                    string strLoopConceal = objAccessory.Concealability;
+                    if (!string.IsNullOrEmpty(strLoopConceal))
+                    {
+                        strLoopConceal = strLoopConceal
+                            .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdConceal.Append(" + (").Append(strLoopConceal).Append(')');
+                    }
+                }
+
+                sbdConceal.CheapReplace(strConceal, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdConceal.CheapReplace(strConceal, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                ProcessAttributesInXPath(sbdConceal);
+
+                // Replace the division sign with "div" since we're using XPath.
+                sbdConceal.Replace("/", " div ");
+                (bool blnIsSuccess, object objProcess)
+                    = CommonFunctions.EvaluateInvariantXPath(sbdConceal.ToString());
+                if (blnIsSuccess)
+                    decReturn = Convert.ToDecimal((double)objProcess);
+            }
+            // Factor in the character's Concealability modifiers.
+            decReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Concealability);
+            return decReturn;
+        }
+
+        /// <summary>
+        /// Weapon's total Concealability including all Accessories and Modifications.
+        /// </summary>
+        public async Task<decimal> CalculatedConcealabilityAsync(CancellationToken token = default)
+        {
+            decimal decReturn = 0;
+            string strConceal = Concealability;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
+            {
+                if (!string.IsNullOrEmpty(strConceal))
+                    sbdConceal.Append('(').Append(strConceal).Append(')');
+                await WeaponAccessories.ForEachAsync(objAccessory =>
+                {
+                    if (!objAccessory.Equipped)
+                        return;
+                    string strLoopConceal = objAccessory.Concealability;
+                    if (!string.IsNullOrEmpty(strLoopConceal))
+                    {
+                        strLoopConceal = strLoopConceal
+                            .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdConceal.Append(" + (").Append(strLoopConceal).Append(')');
+                    }
+                }, token).ConfigureAwait(false);
+
+                await sbdConceal.CheapReplaceAsync(strConceal, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await sbdConceal.CheapReplaceAsync(strConceal, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await ProcessAttributesInXPathAsync(sbdConceal, token: token).ConfigureAwait(false);
+
+                // Replace the division sign with "div" since we're using XPath.
+                sbdConceal.Replace("/", " div ");
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdConceal.ToString(), token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decReturn = Convert.ToDecimal((double)objProcess);
+            }
+            // Factor in the character's Concealability modifiers.
+            decReturn += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Concealability, token: token).ConfigureAwait(false);
+            return decReturn;
         }
 
         /// <summary>

@@ -402,7 +402,7 @@ namespace Chummer
                         await lblWeaponAccuracyLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAccuracy), token: token)
                                 .ConfigureAwait(false);
-                        string strConceal = objSelectedWeapon.DisplayConcealability;
+                        string strConceal = await objSelectedWeapon.GetDisplayConcealabilityAsync(token).ConfigureAwait(false);
                         await lblWeaponConceal.DoThreadSafeAsync(x => x.Text = strConceal, token: token)
                                                 .ConfigureAwait(false);
                         await lblWeaponConcealLabel
@@ -614,7 +614,7 @@ namespace Chummer
                                 string strReach =
                                     (await objWeapon.GetTotalReachAsync(token).ConfigureAwait(false)).ToString(
                                         GlobalSettings.CultureInfo);
-                                string strConceal = objWeapon.DisplayConcealability;
+                                string strConceal = await objWeapon.GetDisplayConcealabilityAsync(token).ConfigureAwait(false);
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdAccessories))
                                 {

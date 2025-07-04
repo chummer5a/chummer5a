@@ -15642,12 +15642,13 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
+                            string strConcealText = await objWeapon.GetDisplayConcealabilityAsync(token).ConfigureAwait(false);
                             await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                       .ConfigureAwait(false);
+                                                    .ConfigureAwait(false);
                             await lblWeaponConceal.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objWeapon.DisplayConcealability;
+                                x.Text = strConcealText;
                             }, token).ConfigureAwait(false);
                             string strText2 = await LanguageManager.GetStringAsync(objWeapon.Parent == null
                                 ? "Checkbox_Equipped"

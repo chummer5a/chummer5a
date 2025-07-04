@@ -1836,7 +1836,7 @@ namespace Chummer
                 AP = bonusNode["ap"]?.InnerText ?? "0",
                 Mode = "0",
                 RC = "0",
-                Concealability = 0,
+                Concealability = "0",
                 Avail = "0",
                 Cost = "0",
                 Ammo = "0",
