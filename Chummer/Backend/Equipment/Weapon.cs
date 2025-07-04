@@ -57,7 +57,7 @@ namespace Chummer.Backend.Equipment
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strType = string.Empty;
-        private string _strReach;
+        private string _strReach = "0";
         private int _intAmmoSlots = 1;
         private string _strDamage = string.Empty;
         private string _strAP = "0";
@@ -7445,8 +7445,8 @@ namespace Chummer.Backend.Equipment
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRange))
             {
                 sbdRange.Append(strRange);
-                await sbdRange.CheapReplaceAsync(strRange, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                    .CheapReplaceAsync(strRange, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await sbdRange.CheapReplaceAsync(strRange, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await sbdRange.CheapReplaceAsync(strRange, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 await ProcessAttributesInXPathAsync(sbdRange, strRange, true, token).ConfigureAwait(false);
 
                 // Replace the division sign with "div" since we're using XPath.
