@@ -12220,9 +12220,8 @@ namespace Chummer
                     }
                     case WeaponAccessory objAccessory:
                     {
-                        objAccessory.Rating
-                            = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
-                                                    .ConfigureAwait(false);
+                        await objAccessory.SetRatingAsync(await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                    .ConfigureAwait(false), token).ConfigureAwait(false);
                         string strText = await objAccessory.GetCurrentDisplayNameAsync(GenericToken)
                                                            .ConfigureAwait(false);
                         await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)

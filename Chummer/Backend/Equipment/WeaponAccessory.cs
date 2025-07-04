@@ -1380,6 +1380,7 @@ namespace Chummer.Backend.Equipment
             get => _intRating;
             set
             {
+                value = Math.Min(value, _intMaxRating);
                 if (Interlocked.Exchange(ref _intRating, value) == value)
                     return;
                 if (Parent.Equipped && Parent.ParentVehicle == null && (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating"))))
@@ -1413,20 +1414,50 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Maximum Rating of the Weapon Accessory
+        /// Rating.
         /// </summary>
-        public int MaxRating
+        public async Task SetRatingAsync(int value, CancellationToken token = default)
         {
-            get => _intMaxRating;
-            set
+            value = Math.Min(value, _intMaxRating);
+            if (Interlocked.Exchange(ref _intRating, value) == value)
+                return;
+            if (Parent.Equipped && Parent.ParentVehicle == null
+                && (Weight.ContainsAny("FixedValues", "Rating")
+                    || await GearChildren.AnyAsync(x => x.Equipped && x.Weight.Contains("Parent Rating"), token).ConfigureAwait(false)))
             {
-                _intMaxRating = value;
-                if (Rating > value)
+                bool blnDoPropertyChange = true;
+                Weapon objWeapon = Parent;
+                for (Weapon objParent = objWeapon.Parent; objParent != null; objParent = objWeapon.Parent)
                 {
-                    Rating = value;
+                    objWeapon = objParent;
+                    if (!objWeapon.Equipped || objWeapon.ParentVehicle != null)
+                    {
+                        blnDoPropertyChange = false;
+                        break;
+                    }
+                }
+                if (blnDoPropertyChange)
+                {
+                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
                 }
             }
+            if (await GearChildren.CountAsync(token).ConfigureAwait(false) > 0)
+            {
+                await GearChildren.ForEachAsync(async objChild =>
+                {
+                    if (!objChild.MaxRating.Contains("Parent") && objChild.MinRating.Contains("Parent"))
+                        return;
+                    // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                    int intCurrentRating = await objChild.GetRatingAsync(token).ConfigureAwait(false);
+                    await objChild.SetRatingAsync(intCurrentRating).ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+            }
         }
+
+        /// <summary>
+        /// Maximum Rating of the Weapon Accessory
+        /// </summary>
+        public int MaxRating => _intMaxRating;
 
         public string RatingLabel
         {
