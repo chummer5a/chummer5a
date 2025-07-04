@@ -806,7 +806,7 @@ namespace Chummer.Backend.Equipment
                 {
                     (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strDuration);
                     if (blnIsSuccess)
-                        decDuration = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                        decDuration = Convert.ToDecimal((double)objProcess);
                 }
 
                 decDuration += Components.Sum(d => d.ActiveDrugEffect != null, d => d.ActiveDrugEffect.Duration) +
@@ -1978,7 +1978,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                     if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                        decReturn = Convert.ToDecimal((double)objProcess);
                 }
 
                 return decReturn;
@@ -2013,7 +2013,7 @@ namespace Chummer.Backend.Equipment
                 (bool blnIsSuccess, object objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
                 if (blnIsSuccess)
-                    decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                    decReturn = Convert.ToDecimal((double)objProcess);
             }
 
             return decReturn;

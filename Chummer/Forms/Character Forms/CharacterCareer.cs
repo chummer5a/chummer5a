@@ -21689,12 +21689,13 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
+                            string strConcealText = await objWeapon.GetDisplayConcealabilityAsync(token).ConfigureAwait(false);
                             await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                       .ConfigureAwait(false);
+                                                    .ConfigureAwait(false);
                             await lblWeaponConceal.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objWeapon.DisplayConcealability;
+                                x.Text = strConcealText;
                             }, token).ConfigureAwait(false);
                             bool blnVisible = blnDeleteWeaponEnabled && await CharacterObject.Vehicles.GetCountAsync(token).ConfigureAwait(false) > 0;
                             await cmdWeaponMoveToVehicle
@@ -21726,22 +21727,25 @@ namespace Chummer
                                                   .ConfigureAwait(false);
                             await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
+                            string strDamage = await objWeapon.GetDisplayDamageAsync(token).ConfigureAwait(false);
                             await lblWeaponDamage.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                            await lblWeaponDamage.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayDamage, token)
+                            await lblWeaponDamage.DoThreadSafeAsync(x => x.Text = strDamage, token)
                                                  .ConfigureAwait(false);
+                            string strAP = await objWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
                             await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                  .ConfigureAwait(false);
+                                                .ConfigureAwait(false);
                             await lblWeaponAP.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objWeapon.DisplayTotalAP;
+                                x.Text = strAP;
                             }, token).ConfigureAwait(false);
+                            string strAccuracy = await objWeapon.GetDisplayAccuracyAsync(token).ConfigureAwait(false);
                             await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                        .ConfigureAwait(false);
+                                                    .ConfigureAwait(false);
                             await lblWeaponAccuracy.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objWeapon.DisplayAccuracy;
+                                x.Text = strAccuracy;
                             }, token).ConfigureAwait(false);
                             await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
@@ -21761,27 +21765,30 @@ namespace Chummer
                                                          .ConfigureAwait(false);
                                 await lblWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token)
                                                     .ConfigureAwait(false);
+                                string strRC = await objWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
                                 await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                      .ConfigureAwait(false);
+                                                    .ConfigureAwait(false);
                                 await lblWeaponRC.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objWeapon.DisplayTotalRC;
+                                    x.Text = strRC;
                                 }, token).ConfigureAwait(false);
                                 await lblWeaponRC.SetToolTipAsync(objWeapon.RCToolTip, token).ConfigureAwait(false);
+                                string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
                                 await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                        .ConfigureAwait(false);
+                                                    .ConfigureAwait(false);
                                 await lblWeaponAmmo.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objWeapon.DisplayAmmo;
+                                    x.Text = strAmmo;
                                 }, token).ConfigureAwait(false);
+                                string strMode = await objWeapon.GetDisplayModeAsync(token).ConfigureAwait(false);
                                 await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                        .ConfigureAwait(false);
+                                                    .ConfigureAwait(false);
                                 await lblWeaponMode.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objWeapon.DisplayMode;
+                                    x.Text = strMode;
                                 }, token).ConfigureAwait(false);
                                 await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
@@ -21853,12 +21860,13 @@ namespace Chummer
                                                  .ConfigureAwait(false);
                                 if (objWeapon.Ammo != "0")
                                 {
+                                    string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
                                     await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                            .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                     await lblWeaponAmmo.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
-                                        x.Text = objWeapon.DisplayAmmo;
+                                        x.Text = strAmmo;
                                     }, token).ConfigureAwait(false);
                                 }
                                 else
@@ -22304,7 +22312,7 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
-                            if (objSelectedAccessory.Accuracy == 0)
+                            if (string.IsNullOrEmpty(objSelectedAccessory.Accuracy))
                             {
                                 await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                             .ConfigureAwait(false);
@@ -22313,13 +22321,14 @@ namespace Chummer
                             }
                             else
                             {
+                                string strAccuracyText = (await objSelectedAccessory.GetTotalAccuracyAsync(token).ConfigureAwait(false))
+                                        .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                                 await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                            .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                 await lblWeaponAccuracy.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objSelectedAccessory.Accuracy.ToString(
-                                        "+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    x.Text = strAccuracyText;
                                 }, token).ConfigureAwait(false);
                             }
 
@@ -24200,7 +24209,7 @@ namespace Chummer
                                     = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token)
                                         .ConfigureAwait(false);
                                 decCost = blnIsSuccess
-                                    ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo)
+                                    ? Convert.ToDecimal((double)objProcess)
                                     : await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
                             }
                             else
@@ -25483,25 +25492,28 @@ namespace Chummer
                                 x.Checked = objWeapon.IncludedInWeapon;
                             }, token).ConfigureAwait(false);
                             // gpbVehiclesWeapon
+                            string strDamage = await objWeapon.GetDisplayDamageAsync(token).ConfigureAwait(false);
                             await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                             .ConfigureAwait(false);
+                                                            .ConfigureAwait(false);
                             await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
                             {
-                                x.Text = objWeapon.DisplayDamage;
+                                x.Text = strDamage;
                                 x.Visible = true;
                             }, token).ConfigureAwait(false);
+                            string strAP = await objWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
                             await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                         .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                             await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
                             {
-                                x.Text = objWeapon.DisplayTotalAP;
+                                x.Text = strAP;
                                 x.Visible = true;
                             }, token).ConfigureAwait(false);
+                            string strAccuracy = await objWeapon.GetDisplayAccuracyAsync(token).ConfigureAwait(false);
                             await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                               .ConfigureAwait(false);
+                                                            .ConfigureAwait(false);
                             await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
                             {
-                                x.Text = objWeapon.DisplayAccuracy;
+                                x.Text = strAccuracy;
                                 x.Visible = true;
                             }, token).ConfigureAwait(false);
                             await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token)
@@ -25518,19 +25530,21 @@ namespace Chummer
                                                           .ConfigureAwait(false);
                             if (objWeapon.RangeType == "Ranged")
                             {
+                                string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
                                 await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                               .ConfigureAwait(false);
+                                                            .ConfigureAwait(false);
                                 await lblVehicleWeaponAmmo.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objWeapon.DisplayAmmo;
+                                    x.Text = strAmmo;
                                 }, token).ConfigureAwait(false);
+                                string strMode = await objWeapon.GetDisplayModeAsync(token).ConfigureAwait(false);
                                 await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                               .ConfigureAwait(false);
+                                                            .ConfigureAwait(false);
                                 await lblVehicleWeaponMode.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objWeapon.DisplayMode;
+                                    x.Text = strMode;
                                 }, token).ConfigureAwait(false);
                                 await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = true, token)
                                                              .ConfigureAwait(false);
@@ -25583,15 +25597,17 @@ namespace Chummer
                                 await lblVehicleWeaponAlternateRangeExtreme
                                       .DoThreadSafeAsync(x => x.Text = dicRanges["alternateextreme"], token)
                                       .ConfigureAwait(false);
+                                string strRC = await objWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
                                 await lblVehicleWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                             .ConfigureAwait(false);
+                                                            .ConfigureAwait(false);
                                 await lblVehicleWeaponRC.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objWeapon.DisplayTotalRC;
+                                    x.Text = strRC;
                                 }, token).ConfigureAwait(false);
+                                await lblVehicleWeaponRC.SetToolTipAsync(objWeapon.RCToolTip, token).ConfigureAwait(false);
                                 await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                                .ConfigureAwait(false);
+                                                            .ConfigureAwait(false);
                                 await lblVehicleWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token)
                                                            .ConfigureAwait(false);
                             }
@@ -25599,12 +25615,13 @@ namespace Chummer
                             {
                                 if (objWeapon.Ammo != "0")
                                 {
+                                    string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
                                     await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                                   .ConfigureAwait(false);
+                                                                .ConfigureAwait(false);
                                     await lblVehicleWeaponAmmo.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
-                                        x.Text = objWeapon.DisplayAmmo;
+                                        x.Text = strAmmo;
                                     }, token).ConfigureAwait(false);
                                 }
                                 else
@@ -26032,7 +26049,7 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                             }
 
-                            if (objAccessory.Reach == 0)
+                            if (string.IsNullOrEmpty(objAccessory.Reach))
                             {
                                 await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                 .ConfigureAwait(false);
@@ -26041,11 +26058,12 @@ namespace Chummer
                             }
                             else
                             {
+                                string strReachText = (await objAccessory.GetTotalReachAsync(token).ConfigureAwait(false)).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                                 await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                 .ConfigureAwait(false);
                                 await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
                                 {
-                                    x.Text = objAccessory.Reach.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    x.Text = strReachText;
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
                             }
@@ -26070,7 +26088,7 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                             }
 
-                            if (objAccessory.Accuracy == 0)
+                            if (string.IsNullOrEmpty(objAccessory.Accuracy))
                             {
                                 await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                    .ConfigureAwait(false);
@@ -26079,13 +26097,14 @@ namespace Chummer
                             }
                             else
                             {
+                                string strAccuracyText = (await objAccessory.GetTotalAccuracyAsync(token).ConfigureAwait(false))
+                                        .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                                 await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                                   .ConfigureAwait(false);
+                                                                .ConfigureAwait(false);
                                 await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text
-                                        = objAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    x.Text = strAccuracyText;
                                 }, token).ConfigureAwait(false);
                             }
 

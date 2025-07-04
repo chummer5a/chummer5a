@@ -8459,7 +8459,7 @@ namespace Chummer.Backend.Equipment
                                     "Rating",
                                     intRating.ToString(GlobalSettings.InvariantCultureInfo)), token)
                             .ConfigureAwait(false);
-                    decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) : 0;
+                    decReturn = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                 }
                 else
                 {
@@ -8656,7 +8656,7 @@ namespace Chummer.Backend.Equipment
                                             GlobalSettings.InvariantCultureInfo)), token)
                                 .ConfigureAwait(false);
                         if (blnIsSuccess)
-                            decTotalModifier = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                            decTotalModifier = Convert.ToDecimal((double)objProcess);
                     }
                 }
 
@@ -9006,7 +9006,7 @@ namespace Chummer.Backend.Equipment
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
                     (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                     if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                        decReturn = Convert.ToDecimal((double)objProcess);
                 }
 
                 return decReturn;
@@ -9162,7 +9162,7 @@ namespace Chummer.Backend.Equipment
                     await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
                     if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                        decReturn = Convert.ToDecimal((double)objProcess);
                 }
 
                 return decReturn;
@@ -9560,7 +9560,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
                     if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                        decReturn = Convert.ToDecimal((double)objProcess);
                 }
 
                 return decReturn;

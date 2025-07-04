@@ -8920,7 +8920,7 @@ namespace Chummer
                                = await ThreadSafeForm<SelectCyberware>.GetAsync(() => new SelectCyberware(
                                    CharacterObject,
                                    Improvement.ImprovementSource.Cyberware,
-                                   objCyberwareParent ?? (object) objMod), GenericToken).ConfigureAwait(false))
+                                   objCyberwareParent ?? (object)objMod), GenericToken).ConfigureAwait(false))
                         {
                             if (objCyberwareParent == null)
                             {
@@ -9974,7 +9974,7 @@ namespace Chummer
             {
                 if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
                                       .ConfigureAwait(false) is Gear objSensor))
-                    // Make sure the Gear was found.
+                // Make sure the Gear was found.
                 {
                     await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear", token: GenericToken).ConfigureAwait(false),
@@ -11380,6 +11380,84 @@ namespace Chummer
             }
         }
 
+        private async void nudWeaponRating_ValueChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+
+            try
+            {
+                TreeNode objSelectedNode = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                            .ConfigureAwait(false);
+                switch (objSelectedNode?.Tag)
+                {
+                    case Gear objGear:
+                        {
+                            if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci"
+                                                           || objGear.Category == "Stacked Focus")
+                            {
+                                if (!await objGear.RefreshSingleFocusRating(
+                                        treFoci,
+                                        await nudWeaponRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                              .ConfigureAwait(false), GenericToken).ConfigureAwait(false))
+                                {
+                                    int intRating = await objGear.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                                    IsRefreshing = true;
+                                    try
+                                    {
+                                        await nudWeaponRating.DoThreadSafeAsync(
+                                            x => x.ValueAsInt = intRating, GenericToken).ConfigureAwait(false);
+                                    }
+                                    finally
+                                    {
+                                        IsRefreshing = false;
+                                    }
+
+                                    return;
+                                }
+                            }
+                            else
+                                await objGear.SetRatingAsync(await nudWeaponRating
+                                    .DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                    .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+
+                            string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                            await treWeapons.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                             .ConfigureAwait(false);
+                            break;
+                        }
+                    case WeaponAccessory objAccessory:
+                        {
+                            await objAccessory.SetRatingAsync(await nudWeaponRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                            string strText = await objAccessory.GetCurrentDisplayNameAsync(GenericToken)
+                                                               .ConfigureAwait(false);
+                            await treWeapons.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                             .ConfigureAwait(false);
+                            break;
+                        }
+                    case Weapon objWeapon:
+                        {
+                            await objWeapon.SetRatingAsync(await nudWeaponRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                            string strText = await objWeapon.GetCurrentDisplayNameAsync(GenericToken)
+                                                               .ConfigureAwait(false);
+                            await treWeapons.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                             .ConfigureAwait(false);
+                            break;
+                        }
+                    default:
+                        return;
+                }
+
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async void chkWeaponEquipped_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
@@ -12220,9 +12298,8 @@ namespace Chummer
                     }
                     case WeaponAccessory objAccessory:
                     {
-                        objAccessory.Rating
-                            = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
-                                                    .ConfigureAwait(false);
+                        await objAccessory.SetRatingAsync(await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                    .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                         string strText = await objAccessory.GetCurrentDisplayNameAsync(GenericToken)
                                                            .ConfigureAwait(false);
                         await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
@@ -13279,7 +13356,7 @@ namespace Chummer
             if (!e.Control || e.KeyCode != Keys.A)
                 return;
             e.SuppressKeyPress = true;
-            ((TextBox) sender)?.SelectAll();
+            ((TextBox)sender)?.SelectAll();
         }
 
         #endregion Additional Initiation Tab Control Events
@@ -15351,15 +15428,14 @@ namespace Chummer
                                 await nudCyberwareRating.DoThreadSafeAsync(x =>
                                 {
                                     if (intGearMinRatingValue > 0)
-                                        x.Minimum = intGearMinRatingValue;
+                                        x.MinimumAsInt = intGearMinRatingValue;
                                     else if (intGearMinRatingValue == 0 && objGear.Name.Contains("Credstick,"))
-                                        x.Minimum = Math.Min(0, intGearMaxRatingValue);
+                                        x.MinimumAsInt = Math.Min(0, intGearMaxRatingValue);
                                     else
-                                        x.Minimum = Math.Min(1, intGearMaxRatingValue);
-                                    x.Maximum = intGearMaxRatingValue;
-                                    x.Value = intRating;
-                                    x.Enabled = x.Minimum != x.Maximum
-                                                && string.IsNullOrEmpty(objGear.ParentID);
+                                        x.MinimumAsInt = Math.Min(1, intGearMaxRatingValue);
+                                    x.MaximumAsInt = intGearMaxRatingValue;
+                                    x.ValueAsInt = intRating;
+                                    x.Enabled = x.Maximum > x.Minimum && string.IsNullOrEmpty(objGear.ParentID);
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
                                 await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
@@ -15585,12 +15661,37 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                             await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                    .ConfigureAwait(false);
-                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                      .ConfigureAwait(false);
-                            await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                 .ConfigureAwait(false);
+                            int intMaxRating = await objWeapon.GetMaxRatingValueAsync(token).ConfigureAwait(false);
+                            if (intMaxRating > 0)
+                            {
+                                await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                    .ConfigureAwait(false);
+                                int intRating = objWeapon.Rating;
+                                await nudWeaponRating.DoThreadSafeAsync(x =>
+                                {
+                                    x.Maximum = intMaxRating;
+                                    x.Minimum = Math.Min(1, intMaxRating);
+                                    x.Visible = true;
+                                    x.Value = intRating;
+                                    x.Increment = 1;
+                                    x.Enabled = string.IsNullOrEmpty(objWeapon.ParentID);
+                                }, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
+                                    .ConfigureAwait(false);
+                                await nudWeaponRating.DoThreadSafeAsync(x =>
+                                {
+                                    x.Minimum = 0;
+                                    x.Increment = 1;
+                                    x.Maximum = 0;
+                                    x.Enabled = false;
+                                    x.Visible = false;
+                                }, token).ConfigureAwait(false);
+                            }
                             await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                        .ConfigureAwait(false);
+                                                    .ConfigureAwait(false);
                             await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false, token)
                                                    .ConfigureAwait(false);
                             string strAvail = await objWeapon.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
@@ -15642,12 +15743,13 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
+                            string strConcealText = await objWeapon.GetDisplayConcealabilityAsync(token).ConfigureAwait(false);
                             await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                       .ConfigureAwait(false);
+                                                    .ConfigureAwait(false);
                             await lblWeaponConceal.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objWeapon.DisplayConcealability;
+                                x.Text = strConcealText;
                             }, token).ConfigureAwait(false);
                             string strText2 = await LanguageManager.GetStringAsync(objWeapon.Parent == null
                                 ? "Checkbox_Equipped"
@@ -15930,23 +16032,34 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                    .ConfigureAwait(false);
-                            if (objSelectedAccessory.MaxRating > 0)
+                            int intMaxRating = objSelectedAccessory.MaxRating;
+                            if (intMaxRating > 0)
                             {
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                          .ConfigureAwait(false);
-                                await lblWeaponRating.DoThreadSafeAsync(x =>
+                                    .ConfigureAwait(false);
+                                int intRating = objSelectedAccessory.Rating;
+                                await nudWeaponRating.DoThreadSafeAsync(x =>
                                 {
+                                    x.Maximum = intMaxRating;
+                                    x.Minimum = Math.Min(1, intMaxRating);
                                     x.Visible = true;
-                                    lblWeaponRating.Text
-                                        = objSelectedAccessory.Rating.ToString(GlobalSettings.CultureInfo);
+                                    x.Value = intRating;
+                                    x.Increment = 1;
+                                    x.Enabled = intMaxRating > 1 && !objSelectedAccessory.IncludedInWeapon;
                                 }, token).ConfigureAwait(false);
                             }
                             else
                             {
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                          .ConfigureAwait(false);
-                                await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                     .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
+                                await nudWeaponRating.DoThreadSafeAsync(x =>
+                                {
+                                    x.Minimum = 0;
+                                    x.Increment = 1;
+                                    x.Maximum = 0;
+                                    x.Enabled = false;
+                                    x.Visible = false;
+                                }, token).ConfigureAwait(false);
                             }
 
                             token.ThrowIfCancellationRequested();
@@ -16124,7 +16237,7 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
-                            if (objSelectedAccessory.Accuracy == 0)
+                            if (string.IsNullOrEmpty(objSelectedAccessory.Accuracy))
                             {
                                 await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                             .ConfigureAwait(false);
@@ -16133,14 +16246,14 @@ namespace Chummer
                             }
                             else
                             {
+                                string strAccuracyText = (await objSelectedAccessory.GetTotalAccuracyAsync(token).ConfigureAwait(false))
+                                    .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                                 await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                            .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                 await lblWeaponAccuracy.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text
-                                        = objSelectedAccessory.Accuracy.ToString(
-                                            "+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    x.Text = strAccuracyText;
                                 }, token).ConfigureAwait(false);
                             }
 
@@ -16251,23 +16364,39 @@ namespace Chummer
                                   .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language),
                                                      token).ConfigureAwait(false);
                             int intGearMaxRatingValue = await objGear.GetMaxRatingValueAsync(token).ConfigureAwait(false);
-                            if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
+                            if (intGearMaxRatingValue > 0)
                             {
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                          .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
+                                int intGearMinRatingValue = await objGear.GetMinRatingValueAsync(token).ConfigureAwait(false);
                                 int intRating = await objGear.GetRatingAsync(token).ConfigureAwait(false);
-                                await lblWeaponRating.DoThreadSafeAsync(x =>
+                                await nudWeaponRating.DoThreadSafeAsync(x =>
                                 {
+                                    if (intGearMinRatingValue > 0)
+                                        x.MinimumAsInt = intGearMinRatingValue;
+                                    else if (intGearMinRatingValue == 0 && objGear.Name.Contains("Credstick,"))
+                                        x.MinimumAsInt = Math.Min(0, intGearMaxRatingValue);
+                                    else
+                                        x.MinimumAsInt = Math.Min(1, intGearMaxRatingValue);
+                                    x.Maximum = intGearMaxRatingValue;
+                                    x.ValueAsInt = intRating;
+                                    x.Increment = 1;
+                                    x.Enabled = x.Maximum > x.Minimum && !objGear.IncludedInParent;
                                     x.Visible = true;
-                                    x.Text = intRating.ToString(GlobalSettings.CultureInfo);
                                 }, token).ConfigureAwait(false);
                             }
                             else
                             {
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                          .ConfigureAwait(false);
-                                await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                     .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
+                                await nudWeaponRating.DoThreadSafeAsync(x =>
+                                {
+                                    x.Minimum = 0;
+                                    x.Increment = 1;
+                                    x.Maximum = 0;
+                                    x.Enabled = false;
+                                    x.Visible = false;
+                                }, token).ConfigureAwait(false);
                             }
 
                             token.ThrowIfCancellationRequested();
@@ -17129,7 +17258,7 @@ namespace Chummer
                                     x.Minimum = Math.Min(1, intGearMaxRatingValue);
                                 x.Maximum = intGearMaxRatingValue;
                                 x.Value = intRating;
-                                x.Enabled = x.Minimum != x.Maximum && string.IsNullOrEmpty(objGear.ParentID);
+                                x.Enabled = x.Maximum > x.Minimum && string.IsNullOrEmpty(objGear.ParentID);
                             }, token).ConfigureAwait(false);
                         }
                         else
@@ -19218,10 +19347,36 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                             await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                     .ConfigureAwait(false);
-                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                       .ConfigureAwait(false);
-                            await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                  .ConfigureAwait(false);
+                            int intMaxRating = await objWeapon.GetMaxRatingValueAsync(token).ConfigureAwait(false);
+                            if (intMaxRating > 0)
+                            {
+                                await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                    .ConfigureAwait(false);
+                                int intRating = objWeapon.Rating;
+                                int intMinRating = await objWeapon.GetMinRatingValueAsync(token).ConfigureAwait(false);
+                                await nudVehicleRating.DoThreadSafeAsync(x =>
+                                {
+                                    x.Maximum = intMaxRating;
+                                    x.Minimum = Math.Min(intMinRating, intMaxRating);
+                                    x.Visible = true;
+                                    x.Value = intRating;
+                                    x.Increment = 1;
+                                    x.Enabled = intMaxRating > intMinRating && string.IsNullOrEmpty(objWeapon.ParentID);
+                                }, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
+                                    .ConfigureAwait(false);
+                                await nudVehicleRating.DoThreadSafeAsync(x =>
+                                {
+                                    x.Minimum = 0;
+                                    x.Increment = 1;
+                                    x.Maximum = 0;
+                                    x.Enabled = false;
+                                    x.Visible = false;
+                                }, token).ConfigureAwait(false);
+                            }
                             await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                         .ConfigureAwait(false);
                             await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false, token)
@@ -19584,22 +19739,23 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            if (objAccessory.Parent.RangeType == "Melee")
-                            {
-                                await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                                .ConfigureAwait(false);
-                                await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
-                                {
-                                    x.Text = objAccessory.Reach.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
-                                    x.Visible = true;
-                                }, token).ConfigureAwait(false);
-                            }
-                            else
+                            if (string.IsNullOrEmpty(objAccessory.Reach)) 
                             {
                                 await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                 .ConfigureAwait(false);
                                 await lblVehicleWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                           .ConfigureAwait(false);
+                                                            .ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                string strReachText = (await objAccessory.GetTotalReachAsync(token).ConfigureAwait(false)).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                                        .ConfigureAwait(false);
+                                await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
+                                {
+                                    x.Text = strReachText;
+                                    x.Visible = true;
+                                }, token).ConfigureAwait(false);
                             }
 
                             token.ThrowIfCancellationRequested();
@@ -19754,7 +19910,7 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
-                            if (objAccessory.Accuracy == 0)
+                            if (string.IsNullOrEmpty(objAccessory.Accuracy))
                             {
                                 await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                    .ConfigureAwait(false);
@@ -19763,12 +19919,13 @@ namespace Chummer
                             }
                             else
                             {
+                                string strAccuracyText = (await objAccessory.GetTotalAccuracyAsync(token).ConfigureAwait(false))
+                                        .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                                 await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                                   .ConfigureAwait(false);
+                                                                .ConfigureAwait(false);
                                 await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
                                 {
-                                    x.Text
-                                        = objAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    x.Text = strAccuracyText;
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
                             }
@@ -19873,7 +20030,7 @@ namespace Chummer
                                     x.Maximum = intMaxRating;
                                     x.Minimum = intMinRating;
                                     x.Value = intRating;
-                                    x.Enabled = intMaxRating == intMinRating
+                                    x.Enabled = intMaxRating > intMinRating
                                                 && string.IsNullOrEmpty(objCyberware.ParentID);
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
@@ -20000,12 +20157,19 @@ namespace Chummer
                                 await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                            .ConfigureAwait(false);
                                 int intRating = await objGear.GetRatingAsync(token).ConfigureAwait(false);
+                                int intGearMinRatingValue = await objGear.GetMinRatingValueAsync(token).ConfigureAwait(false);
                                 await nudVehicleRating.DoThreadSafeAsync(x =>
                                 {
+                                    if (intGearMinRatingValue > 0)
+                                        x.MinimumAsInt = intGearMinRatingValue;
+                                    else if (intGearMinRatingValue == 0 && objGear.Name.Contains("Credstick,"))
+                                        x.MinimumAsInt = Math.Min(0, intGearMaxRatingValue);
+                                    else
+                                        x.MinimumAsInt = Math.Min(1, intGearMaxRatingValue);
+                                    x.MaximumAsInt = intGearMaxRatingValue;
+                                    x.ValueAsInt = intRating;
+                                    x.Enabled = x.Maximum > x.Minimum && string.IsNullOrEmpty(objGear.ParentID);
                                     x.Visible = true;
-                                    x.Enabled = string.IsNullOrEmpty(objGear.ParentID);
-                                    x.Maximum = intGearMaxRatingValue;
-                                    x.Value = intRating;
                                 }, token).ConfigureAwait(false);
                             }
                             else
@@ -24132,7 +24296,7 @@ namespace Chummer
 
             if (destination != null)
             {
-                TransportWrapper wrapper = (TransportWrapper) e.Data.GetData(typeof(TransportWrapper));
+                TransportWrapper wrapper = (TransportWrapper)e.Data.GetData(typeof(TransportWrapper));
                 Control source = wrapper.Control;
 
                 int indexDestination = panContacts.Controls.IndexOf(destination);
@@ -25092,7 +25256,7 @@ namespace Chummer
                 await panContacts.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken).ConfigureAwait(false);
                 try
                 {
-                    bool toggle = await ((ContactControl) lstControls[0]).GetExpandedAsync(GenericToken)
+                    bool toggle = await ((ContactControl)lstControls[0]).GetExpandedAsync(GenericToken)
                                                                          .ConfigureAwait(false);
 
                     foreach (ContactControl c in lstControls)
@@ -25405,7 +25569,7 @@ namespace Chummer
                         objWeapon))
                     return;
                 objWeapon.FireMode = await cboVehicleWeaponFiringMode.DoThreadSafeFuncAsync(x => x.SelectedIndex >= 0
-                    ? (Weapon.FiringMode) x.SelectedValue
+                    ? (Weapon.FiringMode)x.SelectedValue
                     : Weapon.FiringMode.DogBrain, GenericToken).ConfigureAwait(false);
                 await RefreshSelectedVehicle(GenericToken).ConfigureAwait(false);
 

@@ -87,6 +87,11 @@ Application Changes:
 - Weapons that have their Range changed by ammunition will now include the name of the ammunition in the range display, and will only be presented once if there is no change in ranges. Closes #5183
 - Implemented the UseSkill element for Spells. This allows for overriding a Spell to use a specific skill (ie Attune Animal using Animal Handling) rather than the category default.
 - The default color to use for items with notes attached to them can now be modified as a global setting.
+- Added the ability for weapons to alter their own stats when wireless is turned on via a `wirelessweaponbonus` node that works identically to `weaponbonus` nodes in gear items. Added identical functionality to weapon accessories, though they will alter their parent's stats when wireless intead.
+- Weapon accessories can now modify their parent weapon's accuracy in a more dynamic way similar to how AP modifiers work.
+- Ammunition that alters that stats of a weapon into which it is loaded in a way that depends on its rating now properly uses the rating of the ammunition instead of the rating of the weapon into which it is loaded.
+- Weapon and weapon accessory reach and concealability entries can now work off of character attributes and/or ratings.
+- The rating entry in the Weapons tab has been changed to a dial in Create mode, allowing users to alter the ratings of eligible weapons, weapon accessories, and gear loaded into weapon accessories more easily.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
@@ -134,6 +139,7 @@ Data Changes:
 - Fixed Three-Dimensional Memory not being discounted by the Artist's Way.
 - Attune Animal spell now orrectly uses Animal Handling as its skill instead of the Ritual Spellcasting skill.
 - Armory asset for advanced lifestyles now properly costs 1000. Fixes #5193.
+- Monofilament Whips now properly increase their Accuracy by 2 when they are wirelessly enabled.
 
 Fixes implemented by BM123499
 

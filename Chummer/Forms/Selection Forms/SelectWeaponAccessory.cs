@@ -610,7 +610,7 @@ namespace Chummer
                                                                    .EvaluateInvariantXPathAsync(strCost, token)
                                                                    .ConfigureAwait(false);
                     decimal decCost = blnIsSuccess
-                        ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo)
+                        ? Convert.ToDecimal((double)objProcess)
                         : 0;
 
                     // Apply any markup.

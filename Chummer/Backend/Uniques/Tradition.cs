@@ -1457,7 +1457,7 @@ namespace Chummer.Backend.Uniques
                     {
                         (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strDrain);
                         if (blnIsSuccess)
-                            decDrain = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                            decDrain = Convert.ToDecimal((double)objProcess);
                     }
 
                     // Add any Improvements for Drain Resistance.
@@ -1501,7 +1501,7 @@ namespace Chummer.Backend.Uniques
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions
                         .EvaluateInvariantXPathAsync(strDrain, token).ConfigureAwait(false);
                     if (blnIsSuccess)
-                        decDrain = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                        decDrain = Convert.ToDecimal((double)objProcess);
                 }
 
                 // Add any Improvements for Drain Resistance.

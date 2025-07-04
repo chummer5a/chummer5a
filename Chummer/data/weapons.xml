@@ -2130,6 +2130,9 @@
       <cost>10000</cost>
       <source>SR5</source>
       <page>423</page>
+      <wirelessweaponbonus>
+        <accuracy>2</accuracy>
+      </wirelessweaponbonus>
     </weapon>
     <weapon>
       <id>dc18811b-eb07-43d8-8d95-d5c468f048f4</id>
