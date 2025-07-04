@@ -2637,7 +2637,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Maximum Rating (string form).
+        /// Maximum Rating (value form).
         /// </summary>
         public int MaxRatingValue
         {
@@ -2669,8 +2669,9 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdValue.Append(strExpression);
                     sbdValue.Replace("{Rating}", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
-
+                    ProcessAttributesInXPath(sbdValue, strExpression);
+                    // Replace the division sign with "div" since we're using XPath.
+                    sbdValue.Replace("/", " div ");
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());

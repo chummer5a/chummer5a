@@ -904,7 +904,7 @@ namespace Chummer.Backend.Equipment
             {
                 int intReturn = 0;
                 string strAccuracy = Accuracy;
-                if (strAccuracy.Contains("Rating") || strAccuracy.Contains('{'))
+                if (strAccuracy.Contains("Rating") || strAccuracy.IndexOfAny('{', '+', '-', '*', ',') != -1)
                 {
                     string strToEvaluate;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
@@ -968,7 +968,7 @@ namespace Chummer.Backend.Equipment
         {
             int intReturn = 0;
             string strAccuracy = Accuracy;
-            if (strAccuracy.Contains("Rating") || strAccuracy.Contains('{'))
+            if (strAccuracy.Contains("Rating") || strAccuracy.IndexOfAny('{', '+', '-', '*', ',') != -1)
             {
                 string strToEvaluate;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
@@ -1043,7 +1043,7 @@ namespace Chummer.Backend.Equipment
             {
                 int intReturn = 0;
                 string strReach = Reach;
-                if (strReach.Contains("Rating") || strReach.Contains('{'))
+                if (strReach.Contains("Rating") || strReach.IndexOfAny('{', '+', '-', '*', ',') != -1)
                 {
                     string strToEvaluate;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
@@ -1091,7 +1091,7 @@ namespace Chummer.Backend.Equipment
         {
             int intReturn = 0;
             string strReach = Reach;
-            if (strReach.Contains("Rating") || strReach.Contains('{'))
+            if (strReach.Contains("Rating") || strReach.IndexOfAny('{', '+', '-', '*', ',') != -1)
             {
                 string strToEvaluate;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
@@ -1280,7 +1280,7 @@ namespace Chummer.Backend.Equipment
                 int intReturn = 0;
 
                 string strConceal = Concealability;
-                if (strConceal.Contains("Rating") || strConceal.Contains('{'))
+                if (strConceal.Contains("Rating") || strConceal.IndexOfAny('{', '+', '-', '*', ',') != -1)
                 {
                     string strToEvaluate;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
@@ -1328,7 +1328,7 @@ namespace Chummer.Backend.Equipment
             int intReturn = 0;
 
             string strConceal = Concealability;
-            if (strConceal.Contains("Rating") || strConceal.Contains('{'))
+            if (strConceal.Contains("Rating") || strConceal.IndexOfAny('{', '+', '-', '*', ',') != -1)
             {
                 string strToEvaluate;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))

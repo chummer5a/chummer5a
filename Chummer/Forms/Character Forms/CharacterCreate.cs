@@ -24134,7 +24134,7 @@ namespace Chummer
 
             if (destination != null)
             {
-                TransportWrapper wrapper = (TransportWrapper) e.Data.GetData(typeof(TransportWrapper));
+                TransportWrapper wrapper = (TransportWrapper)e.Data.GetData(typeof(TransportWrapper));
                 Control source = wrapper.Control;
 
                 int indexDestination = panContacts.Controls.IndexOf(destination);
@@ -25094,7 +25094,7 @@ namespace Chummer
                 await panContacts.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken).ConfigureAwait(false);
                 try
                 {
-                    bool toggle = await ((ContactControl) lstControls[0]).GetExpandedAsync(GenericToken)
+                    bool toggle = await ((ContactControl)lstControls[0]).GetExpandedAsync(GenericToken)
                                                                          .ConfigureAwait(false);
 
                     foreach (ContactControl c in lstControls)
@@ -25407,7 +25407,7 @@ namespace Chummer
                         objWeapon))
                     return;
                 objWeapon.FireMode = await cboVehicleWeaponFiringMode.DoThreadSafeFuncAsync(x => x.SelectedIndex >= 0
-                    ? (Weapon.FiringMode) x.SelectedValue
+                    ? (Weapon.FiringMode)x.SelectedValue
                     : Weapon.FiringMode.DogBrain, GenericToken).ConfigureAwait(false);
                 await RefreshSelectedVehicle(GenericToken).ConfigureAwait(false);
 
