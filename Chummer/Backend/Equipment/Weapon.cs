@@ -517,8 +517,8 @@ namespace Chummer.Backend.Equipment
 
             _intRating = blnSync
                 ? Math.Max(Math.Min(intRating, MaxRatingValue), MinRatingValue)
-                : Math.Max(Math.Min(intRating, await GetMaxRatingAsync(token).ConfigureAwait(false)),
-                           await GetMinRatingAsync(token).ConfigureAwait(false));
+                : Math.Max(Math.Min(intRating, await GetMaxRatingValueAsync(token).ConfigureAwait(false)),
+                           await GetMinRatingValueAsync(token).ConfigureAwait(false));
             if (objXmlWeapon["accessorymounts"] != null)
             {
                 XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
@@ -2642,8 +2642,8 @@ namespace Chummer.Backend.Equipment
         public async Task SetRatingAsync(int value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = Math.Max(Math.Min(value, await GetMaxRatingAsync(token).ConfigureAwait(false)),
-                           await GetMinRatingAsync(token).ConfigureAwait(false));
+            value = Math.Max(Math.Min(value, await GetMaxRatingValueAsync(token).ConfigureAwait(false)),
+                           await GetMinRatingValueAsync(token).ConfigureAwait(false));
             if (Interlocked.Exchange(ref _intRating, value) == value)
                 return;
             if (Equipped && ParentVehicle == null
@@ -2733,7 +2733,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Minimum Rating (value form).
         /// </summary>
-        public Task<int> GetMinRatingAsync(CancellationToken token = default)
+        public Task<int> GetMinRatingValueAsync(CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<int>(token);
@@ -2744,7 +2744,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Maximum Rating (value form).
         /// </summary>
-        public Task<int> GetMaxRatingAsync(CancellationToken token = default)
+        public Task<int> GetMaxRatingValueAsync(CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<int>(token);
@@ -5005,7 +5005,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's Firing Mode including Modifications in the program's current language.
         /// </summary>
-        public Task<string> GetDisplayModeAsync(CancellationToken token = default) => GetCalculatedModeAsync(GlobalSettings.Language, token: token);
+        public Task<string> GetDisplayModeAsync(CancellationToken token = default) => CalculatedModeAsync(GlobalSettings.Language, token: token);
 
         /// <summary>
         /// The Weapon's Firing Mode including Modifications.
