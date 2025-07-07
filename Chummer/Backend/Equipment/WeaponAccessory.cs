@@ -84,8 +84,8 @@ namespace Chummer.Backend.Equipment
         private bool _blnEquipped = true;
         private int _intAccessoryCostMultiplier = 1;
         private string _strExtra = string.Empty;
-        private int _intRangeBonus;
-        private int _intRangeModifier;
+        private string _strRangeBonus = "0";
+        private string _strRangeModifier = "0";
         private int _intSingleShot;
         private int _intShortBurst;
         private int _intLongBurst;
@@ -353,8 +353,8 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
             objXmlAccessory.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objXmlAccessory.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
-            objXmlAccessory.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
-            objXmlAccessory.TryGetInt32FieldQuickly("rangemodifier", ref _intRangeModifier);
+            objXmlAccessory.TryGetStringFieldQuickly("rangebonus", ref _strRangeBonus);
+            objXmlAccessory.TryGetStringFieldQuickly("rangemodifier", ref _strRangeModifier);
             objXmlAccessory.TryGetStringFieldQuickly("extra", ref _strExtra);
             objXmlAccessory.TryGetStringFieldQuickly("ammobonus", ref _strAmmoBonus);
             objXmlAccessory.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
@@ -537,8 +537,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("longburst", _intLongBurst.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("fullburst", _intFullBurst.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("suppressive", _intSuppressive.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("rangebonus", _intRangeBonus.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("rangemodifier", _intRangeModifier.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("rangebonus", _strRangeBonus);
+            objWriter.WriteElementString("rangemodifier", _strRangeModifier);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("ammobonus", _strAmmoBonus);
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
@@ -673,8 +673,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
-            objNode.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
-            objNode.TryGetInt32FieldQuickly("rangemodifier", ref _intRangeModifier);
+            objNode.TryGetStringFieldQuickly("rangebonus", ref _strRangeBonus);
+            objNode.TryGetStringFieldQuickly("rangemodifier", ref _strRangeModifier);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("ammobonus", ref _strAmmoBonus);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
@@ -2155,12 +2155,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Range bonus granted by the Accessory.
         /// </summary>
-        public int RangeBonus => _intRangeBonus;
+        public string RangeBonus => _strRangeBonus;
 
         /// <summary>
         /// Range Dicepool modifier granted by the Accessory.
         /// </summary>
-        public int RangeModifier => _intRangeModifier;
+        public string RangeModifier => _strRangeModifier;
 
         /// <summary>
         /// Value that was selected during an ImprovementManager dialogue.
