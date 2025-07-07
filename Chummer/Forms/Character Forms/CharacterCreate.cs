@@ -15873,17 +15873,21 @@ namespace Chummer
                                 Dictionary<string, string> dicRanges
                                     = await objWeapon.GetRangeStringsAsync(GlobalSettings.CultureInfo, token: token)
                                                      .ConfigureAwait(false);
+                                string strModifierShort = await objWeapon.RangeModifierAsync("Short", token).ConfigureAwait(false);
+                                string strModifierMedium = await objWeapon.RangeModifierAsync("Medium", token).ConfigureAwait(false);
+                                string strModifierLong = await objWeapon.RangeModifierAsync("Long", token).ConfigureAwait(false);
+                                string strModifierExtreme = await objWeapon.RangeModifierAsync("Extreme", token).ConfigureAwait(false);
                                 await lblWeaponRangeShortLabel
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Short"), token)
+                                      .DoThreadSafeAsync(x => x.Text = strModifierShort, token)
                                       .ConfigureAwait(false);
                                 await lblWeaponRangeMediumLabel
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Medium"), token)
+                                      .DoThreadSafeAsync(x => x.Text = strModifierMedium, token)
                                       .ConfigureAwait(false);
                                 await lblWeaponRangeLongLabel
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Long"), token)
+                                      .DoThreadSafeAsync(x => x.Text = strModifierLong, token)
                                       .ConfigureAwait(false);
                                 await lblWeaponRangeExtremeLabel
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Extreme"), token)
+                                      .DoThreadSafeAsync(x => x.Text = strModifierExtreme, token)
                                       .ConfigureAwait(false);
                                 await lblWeaponRangeShort
                                       .DoThreadSafeAsync(x => x.Text = dicRanges["short"], token)
@@ -19554,17 +19558,21 @@ namespace Chummer
                                 Dictionary<string, string> dicRanges
                                     = await objWeapon.GetRangeStringsAsync(GlobalSettings.CultureInfo, token: token)
                                                      .ConfigureAwait(false);
+                                string strModifierShort = await objWeapon.RangeModifierAsync("Short", token).ConfigureAwait(false);
+                                string strModifierMedium = await objWeapon.RangeModifierAsync("Medium", token).ConfigureAwait(false);
+                                string strModifierLong = await objWeapon.RangeModifierAsync("Long", token).ConfigureAwait(false);
+                                string strModifierExtreme = await objWeapon.RangeModifierAsync("Extreme", token).ConfigureAwait(false);
                                 await lblVehicleWeaponRangeShortLabel
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Short"), token)
+                                      .DoThreadSafeAsync(x => x.Text = strModifierShort, token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponRangeMediumLabel
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Medium"), token)
+                                      .DoThreadSafeAsync(x => x.Text = strModifierMedium, token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponRangeLongLabel
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Long"), token)
+                                      .DoThreadSafeAsync(x => x.Text = strModifierLong, token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponRangeExtremeLabel
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Extreme"), token)
+                                      .DoThreadSafeAsync(x => x.Text = strModifierExtreme, token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponRangeShort
                                       .DoThreadSafeAsync(x => x.Text = dicRanges["short"], token)

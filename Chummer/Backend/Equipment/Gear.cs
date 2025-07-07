@@ -2011,9 +2011,9 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("weaponbonusap", await WeaponBonusAPAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weaponbonusap_english", await WeaponBonusAPAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weaponbonusacc", WeaponBonusAcc, token: token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("weaponbonusrange", WeaponBonusRange.ToString(objCulture), token: token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("weaponbonuspool", WeaponBonusPool.ToString(objCulture), token: token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("weaponbonussmartlinkpool", WeaponBonusSmartlinkPool.ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weaponbonusrange", WeaponBonusRange, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weaponbonuspool", WeaponBonusPool, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weaponbonussmartlinkpool", WeaponBonusSmartlinkPool, token: token).ConfigureAwait(false);
             }
 
             if (FlechetteWeaponBonus != null || blnForcePrintAllBlocks)
@@ -2025,9 +2025,9 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("flechetteweaponbonusap", await FlechetteWeaponBonusAPAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("flechetteweaponbonusap_english", await FlechetteWeaponBonusAPAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("flechetteweaponbonusacc", FlechetteWeaponBonusAcc, token: token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("flechetteweaponbonusrange", FlechetteWeaponBonusRange.ToString(objCulture), token: token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("flechetteweaponbonuspool", FlechetteWeaponBonusPool.ToString(objCulture), token: token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("flechetteweaponbonussmartlinkpool", FlechetteWeaponBonusSmartlinkPool.ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("flechetteweaponbonusrange", FlechetteWeaponBonusRange, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("flechetteweaponbonuspool", FlechetteWeaponBonusPool, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("flechetteweaponbonussmartlinkpool", FlechetteWeaponBonusSmartlinkPool, token: token).ConfigureAwait(false);
             }
         }
 
@@ -4508,39 +4508,57 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Bonus Range.
         /// </summary>
-        public int WeaponBonusRange
+        public string WeaponBonusRange
         {
             get
             {
-                int intReturn = 0;
-                WeaponBonus?.TryGetInt32FieldQuickly("rangebonus", ref intReturn);
-                return intReturn;
+                if (WeaponBonus == null)
+                    return string.Empty;
+                string strReturn = string.Empty;
+                WeaponBonus.TryGetStringFieldQuickly("rangebonus", ref strReturn);
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-', '+'))
+                    strReturn = '+' + strReturn;
+
+                return strReturn;
             }
         }
 
         /// <summary>
         /// Weapon Bonus Dice pool.
         /// </summary>
-        public int WeaponBonusPool
+        public string WeaponBonusPool
         {
             get
             {
-                int intReturn = 0;
-                WeaponBonus?.TryGetInt32FieldQuickly("pool", ref intReturn);
-                return intReturn;
+                if (WeaponBonus == null)
+                    return string.Empty;
+                string strReturn = string.Empty;
+                WeaponBonus.TryGetStringFieldQuickly("pool", ref strReturn);
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-', '+'))
+                    strReturn = '+' + strReturn;
+
+                return strReturn;
             }
         }
 
         /// <summary>
         /// Weapon Bonus Dice pool for smartlink only.
         /// </summary>
-        public int WeaponBonusSmartlinkPool
+        public string WeaponBonusSmartlinkPool
         {
             get
             {
-                int intReturn = 0;
-                WeaponBonus?.TryGetInt32FieldQuickly("smartlinkpool", ref intReturn);
-                return intReturn;
+                if (WeaponBonus == null)
+                    return string.Empty;
+                string strReturn = string.Empty;
+                WeaponBonus.TryGetStringFieldQuickly("smartlinkpool", ref strReturn);
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-', '+'))
+                    strReturn = '+' + strReturn;
+
+                return strReturn;
             }
         }
 
@@ -4686,39 +4704,57 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Bonus Range.
         /// </summary>
-        public int FlechetteWeaponBonusRange
+        public string FlechetteWeaponBonusRange
         {
             get
             {
-                int intReturn = 0;
-                FlechetteWeaponBonus?.TryGetInt32FieldQuickly("rangebonus", ref intReturn);
-                return intReturn;
+                if (FlechetteWeaponBonus == null)
+                    return string.Empty;
+                string strReturn = string.Empty;
+                FlechetteWeaponBonus.TryGetStringFieldQuickly("rangebonus", ref strReturn);
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-', '+'))
+                    strReturn = '+' + strReturn;
+
+                return strReturn;
             }
         }
 
         /// <summary>
         /// Weapon Bonus Dice pool.
         /// </summary>
-        public int FlechetteWeaponBonusPool
+        public string FlechetteWeaponBonusPool
         {
             get
             {
-                int intReturn = 0;
-                FlechetteWeaponBonus?.TryGetInt32FieldQuickly("pool", ref intReturn);
-                return intReturn;
+                if (WeaponBonus == null)
+                    return string.Empty;
+                string strReturn = string.Empty;
+                FlechetteWeaponBonus.TryGetStringFieldQuickly("pool", ref strReturn);
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-', '+'))
+                    strReturn = '+' + strReturn;
+
+                return strReturn;
             }
         }
 
         /// <summary>
         /// Weapon Bonus Dice pool for smartlink only.
         /// </summary>
-        public int FlechetteWeaponBonusSmartlinkPool
+        public string FlechetteWeaponBonusSmartlinkPool
         {
             get
             {
-                int intReturn = 0;
-                FlechetteWeaponBonus?.TryGetInt32FieldQuickly("smartlinkpool", ref intReturn);
-                return intReturn;
+                if (WeaponBonus == null)
+                    return string.Empty;
+                string strReturn = string.Empty;
+                FlechetteWeaponBonus.TryGetStringFieldQuickly("smartlinkpool", ref strReturn);
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-', '+'))
+                    strReturn = '+' + strReturn;
+
+                return strReturn;
             }
         }
 
