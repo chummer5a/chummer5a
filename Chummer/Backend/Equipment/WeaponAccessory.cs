@@ -71,7 +71,7 @@ namespace Chummer.Backend.Equipment
         private string _strDicePool = string.Empty;
         private string _strRatingLabel = "String_Rating";
         private string _strAccuracy;
-        private int _intMaxRating;
+        private string _strMaxRating;
         private int _intRating;
         private int _intRCGroup;
         private string _strReach;
@@ -214,8 +214,9 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("name", ref _strName);
             _strMount = strMount?.Item1 ?? string.Empty;
             _strExtraMount = strMount?.Item2 ?? string.Empty;
-            _intRating = intRating;
-            objXmlAccessory.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+            objXmlAccessory.TryGetStringFieldQuickly("rating", ref _strMaxRating);
+            _intRating = intRating; // Set first to make MaxRatingValue work properly
+            _intRating = Math.Min(intRating, blnSync ? MaxRatingValue : await GetMaxRatingValueAsync(token).ConfigureAwait(false));
             objXmlAccessory.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objXmlAccessory.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlAccessory.TryGetStringFieldQuickly("weight", ref _strWeight);
@@ -490,7 +491,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("mount", _strMount);
             objWriter.WriteElementString("extramount", _strExtraMount);
             objWriter.WriteElementString("rc", _strRC);
-            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("maxrating", _strMaxRating);
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("ratinglabel", _strRatingLabel);
             objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(GlobalSettings.InvariantCultureInfo));
@@ -590,11 +591,13 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             if (_strAccuracy == "0" || _strAccuracy == "+0" || _strAccuracy == "-0")
                 _strAccuracy = string.Empty;
-            if (!objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating))
+            if (!objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating))
             {
                 // Loading older save before maxrating was tracked for Weapon Accessories
-                objMyNode.Value?.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+                objMyNode.Value?.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             }
+            // Needed for legacy reasons
+            _intRating = Math.Min(_intRating, MaxRatingValue);
             objNode.TryGetStringFieldQuickly("conceal", ref _strConceal);
             objNode.TryGetBoolFieldQuickly("rcdeployable", ref _blnDeployable);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -1377,10 +1380,10 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Rating
         {
-            get => _intRating;
+            get => Math.Min(_intRating, MaxRatingValue);
             set
             {
-                value = Math.Min(value, _intMaxRating);
+                value = Math.Min(value, MaxRatingValue);
                 if (Interlocked.Exchange(ref _intRating, value) == value)
                     return;
                 if (Parent.Equipped && Parent.ParentVehicle == null && (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating"))))
@@ -1416,9 +1419,18 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Rating.
         /// </summary>
+        public async Task<int> GetRatingAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return Math.Min(_intRating, await GetMaxRatingValueAsync(token).ConfigureAwait(false));
+        }
+
+        /// <summary>
+        /// Rating.
+        /// </summary>
         public async Task SetRatingAsync(int value, CancellationToken token = default)
         {
-            value = Math.Min(value, _intMaxRating);
+            value = Math.Min(value, await GetMaxRatingValueAsync(token).ConfigureAwait(false));
             if (Interlocked.Exchange(ref _intRating, value) == value)
                 return;
             if (Parent.Equipped && Parent.ParentVehicle == null
@@ -1457,7 +1469,130 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Maximum Rating of the Weapon Accessory
         /// </summary>
-        public int MaxRating => _intMaxRating;
+        public string MaxRating
+        {
+            get => _strMaxRating;
+            set => _strMaxRating = value;
+        }
+
+        /// <summary>
+        /// Maximum Rating (value form).
+        /// </summary>
+        public int MaxRatingValue
+        {
+            get
+            {
+                string strExpression = MaxRating;
+                if (string.IsNullOrEmpty(strExpression))
+                    return int.MaxValue;
+                return string.IsNullOrEmpty(strExpression) ? int.MaxValue : ProcessRatingString(strExpression, _intRating);
+            }
+            set => MaxRating = value.ToString(GlobalSettings.InvariantCultureInfo);
+        }
+
+        /// <summary>
+        /// Maximum Rating (value form).
+        /// </summary>
+        public Task<int> GetMaxRatingValueAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<int>(token);
+            string strExpression = MaxRating;
+            return string.IsNullOrEmpty(strExpression) ? Task.FromResult(int.MaxValue) : ProcessRatingStringAsync(strExpression, _intRating, token);
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        /// <param name="strExpression"></param>
+        /// <returns></returns>
+        private int ProcessRatingString(string strExpression, int intRating)
+        {
+            if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strExpression = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)].Trim('[', ']');
+            }
+
+            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            {
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                {
+                    sbdValue.Append(strExpression);
+                    sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                    Weapon objParent = Parent;
+                    if (objParent != null)
+                    {
+                        sbdValue.CheapReplace(strExpression, "{Parent Rating}", () => objParent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        objParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                    }
+                    else
+                    {
+                        sbdValue.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                    }
+                    // Replace the division sign with "div" since we're using XPath.
+                    sbdValue.Replace("/", " div ");
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
+                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                }
+            }
+
+            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
+
+            return intReturn;
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        /// <param name="strExpression"></param>
+        /// <returns></returns>
+        private async Task<int> ProcessRatingStringAsync(string strExpression, int intRating, CancellationToken token = default)
+        {
+            if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strExpression = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)].Trim('[', ']');
+            }
+
+            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            {
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                {
+                    sbdValue.Append(strExpression);
+                    sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                    Weapon objParent = Parent;
+                    if (objParent != null)
+                    {
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
+                            async () => (await objParent.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await objParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        sbdValue.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                    }
+                    // Replace the division sign with "div" since we're using XPath.
+                    sbdValue.Replace("/", " div ");
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
+                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                }
+            }
+
+            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
+
+            return intReturn;
+        }
 
         public string RatingLabel
         {

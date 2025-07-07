@@ -726,7 +726,7 @@ namespace Chummer
                                                 token)
                                             .ConfigureAwait(false);
                                         NuyenString strCost =
-                                            new NuyenString(objArmor.DisplayCost(out decimal _, false));
+                                            new NuyenString((await objArmor.DisplayCost(false, token: token).ConfigureAwait(false)).Item1);
 
                                         tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail,
                                             sbdAccessories.ToString(), strSource, strCost);
@@ -943,8 +943,8 @@ namespace Chummer
                     }
                     else
                     {
-                        strCost = objSelectedArmor.DisplayCost(out decItemCost, true,
-                            await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m);
+                        (strCost, decItemCost) = await objSelectedArmor.DisplayCost(true,
+                            await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m, token).ConfigureAwait(false);
                     }
                     await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token).ConfigureAwait(false);
 

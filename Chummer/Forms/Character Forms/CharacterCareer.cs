@@ -5289,7 +5289,7 @@ namespace Chummer
                                             await ImprovementManager.CreateImprovementsAsync(
                                                 CharacterObject, Improvement.ImprovementSource.Armor,
                                                 objArmor.InternalId,
-                                                objArmor.Bonus, objArmor.Rating,
+                                                objArmor.Bonus, await objArmor.GetRatingAsync(token).ConfigureAwait(false),
                                                 await objArmor.GetCurrentDisplayNameShortAsync(token)
                                                               .ConfigureAwait(false),
                                                 token: token).ConfigureAwait(false);
@@ -5332,7 +5332,7 @@ namespace Chummer
                                                                             CharacterObject,
                                                                             Improvement.ImprovementSource.ArmorMod,
                                                                             objMod.InternalId, objMod.Bonus,
-                                                                            objMod.Rating,
+                                                                            await objMod.GetRatingAsync(GenericToken).ConfigureAwait(false),
                                                                             await objMod
                                                                                 .GetCurrentDisplayNameShortAsync(token)
                                                                                 .ConfigureAwait(false), token: token)
@@ -18449,6 +18449,7 @@ namespace Chummer
                             }
                         }
 
+                        List<string> lstActiveIds = new List<string>();
                         await treViewToUse.DoThreadSafeAsync(y =>
                         {
                             // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
@@ -18458,15 +18459,19 @@ namespace Chummer
                                 {
                                     string strNodeId = objNode.Tag.ToString();
                                     ++intFociCount;
-                                    intFociTotal += CharacterObject
-                                        .Gear.FirstOrDefault(x => x.InternalId == strNodeId && x.Bonded)
-                                        ?.Rating ?? 0;
-                                    intFociTotal += CharacterObject.StackedFoci
-                                        .Find(x => x.InternalId == strNodeId && x.Bonded)
-                                        ?.TotalForce ?? 0;
+                                    lstActiveIds.Add(strNodeId);
                                 }
                             }
                         }, GenericToken).ConfigureAwait(false);
+
+                        foreach (string strNodeId in lstActiveIds)
+                        {
+                            Gear objGear = await CharacterObject.Gear.FindByIdAsync(strNodeId, GenericToken).ConfigureAwait(false);
+                            if (objGear?.Bonded == true)
+                                intFociTotal += await objGear.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                            StackedFocus objFocus = await CharacterObject.StackedFoci.FindAsync(x => x.InternalId == strNodeId && x.Bonded, GenericToken).ConfigureAwait(false);
+                            intFociTotal += await objFocus.GetTotalForceAsync(GenericToken).ConfigureAwait(false);
+                        }
 
                         if (!CharacterObject.IgnoreRules)
                         {
@@ -22149,14 +22154,16 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                    .ConfigureAwait(false);
-                            if (objSelectedAccessory.MaxRating > 0)
+                            int intMaxRating = await objSelectedAccessory.GetMaxRatingValueAsync(token).ConfigureAwait(false);
+                            if (intMaxRating > 0)
                             {
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
+                                int intRating = await objSelectedAccessory.GetRatingAsync(GenericToken).ConfigureAwait(false);
                                 await lblWeaponRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objSelectedAccessory.Rating.ToString(GlobalSettings.CultureInfo);
+                                    x.Text = intRating.ToString(GlobalSettings.CultureInfo);
                                 }, token).ConfigureAwait(false);
                             }
                             else
@@ -22823,14 +22830,15 @@ namespace Chummer
 
                             await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token)
                                                   .ConfigureAwait(false);
-                            if (objArmorMod.MaximumRating > 1)
+                            int intRating = await objArmorMod.GetRatingAsync(token).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
                                 await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                          .ConfigureAwait(false);
                                 await lblArmorRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objArmorMod.Rating.ToString(GlobalSettings.CultureInfo);
+                                    x.Text = intRating.ToString(GlobalSettings.CultureInfo);
                                 }, token).ConfigureAwait(false);
                             }
                             else
@@ -25913,14 +25921,16 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                     .ConfigureAwait(false);
-                            if (objAccessory.MaxRating > 0)
+                            int intMaxRating = await objAccessory.GetMaxRatingValueAsync(token).ConfigureAwait(false);
+                            if (intMaxRating > 0)
                             {
                                 await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                            .ConfigureAwait(false);
+                                int intRating = await objAccessory.GetRatingAsync(GenericToken).ConfigureAwait(false);
                                 await lblVehicleRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objAccessory.Rating.ToString(GlobalSettings.CultureInfo);
+                                    x.Text = intRating.ToString(GlobalSettings.CultureInfo);
                                 }, token).ConfigureAwait(false);
                             }
                             else

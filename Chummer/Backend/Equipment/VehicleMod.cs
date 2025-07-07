@@ -597,7 +597,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("limit", Limit);
             objWriter.WriteElementString("slots", Slots);
-            objWriter.WriteElementString("rating", Rating.ToString(objCulture));
+            objWriter.WriteElementString("rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(objCulture));
             objWriter.WriteElementString("ratinglabel", RatingLabel);
             objWriter.WriteElementString("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false));
             objWriter.WriteElementString("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture));
@@ -1354,9 +1354,10 @@ namespace Chummer.Backend.Equipment
                         string strAvailCode = astrValue[1].Trim('[', ']');
                         int.TryParse(astrValue[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                             out int intMax);
-                        if (Rating > intMax)
+                        int intRating = Rating;
+                        if (intRating > intMax)
                             continue;
-                        strAvail = Rating.ToString(GlobalSettings.InvariantCultureInfo) + strAvailCode;
+                        strAvail = intRating.ToString(GlobalSettings.InvariantCultureInfo) + strAvailCode;
                         break;
                     }
                 }
@@ -1372,7 +1373,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
-                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdAvail.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
                     // If the availability is determined by the Rating, evaluate the expression.
                     sbdAvail.CheapReplace(strAvail, "Vehicle Cost",
@@ -1453,7 +1454,7 @@ namespace Chummer.Backend.Equipment
                 if (strAvail.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                    strAvail = strValues[Math.Max(Math.Min((await GetRatingAsync(token).ConfigureAwait(false)), strValues.Length) - 1, 0)];
                 }
 
                 if (strAvail.StartsWith("Range(", StringComparison.Ordinal))
@@ -1470,9 +1471,10 @@ namespace Chummer.Backend.Equipment
                         string strAvailCode = astrValue[1].Trim('[', ']');
                         int.TryParse(astrValue[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                             out int intMax);
-                        if (Rating > intMax)
+                        int intRating = await GetRatingAsync(token).ConfigureAwait(false);
+                        if (intRating > intMax)
                             continue;
-                        strAvail = Rating.ToString(GlobalSettings.InvariantCultureInfo) + strAvailCode;
+                        strAvail = intRating.ToString(GlobalSettings.InvariantCultureInfo) + strAvailCode;
                         break;
                     }
                 }
@@ -1488,7 +1490,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
-                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token);
 
                     await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
 
@@ -1590,7 +1592,7 @@ namespace Chummer.Backend.Equipment
 
                         try
                         {
-                            (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                            (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                             strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strFirstHalf;
                         }
                         catch (OverflowException) // Result is text and not a double
@@ -1611,7 +1613,7 @@ namespace Chummer.Backend.Equipment
                         strSecondHalf = strSecondHalf.Trim('[', ']');
                         try
                         {
-                            (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                            (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strSecondHalf.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                             strSecondHalf = '[' + (blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strSecondHalf) + ']';
                         }
                         catch (OverflowException) // Result is text and not a double
@@ -1634,7 +1636,7 @@ namespace Chummer.Backend.Equipment
                     string strCapacity = strReturn;
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                     strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
@@ -1975,7 +1977,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                 {
                     sbdCost.Append(strCostExpr.TrimStart('+'));
-                    sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdCost.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpr);
                     sbdCost.CheapReplace(strCostExpr, "Vehicle Cost",
                                          () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
@@ -2110,7 +2112,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
                     sbdReturn.Append(strSlotsExpression.TrimStart('+'));
-                    sbdReturn.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdReturn.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdReturn, strSlotsExpression);
                     sbdReturn.CheapReplace(strSlotsExpression, "Vehicle Cost",
                                            () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");

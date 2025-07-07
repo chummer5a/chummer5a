@@ -2042,13 +2042,14 @@ namespace Chummer.Backend.Equipment
                             continue;
 
                         string strLoop = objMod.Bonus?["sensor"]?.InnerText;
+                        int intRating = objMod.Rating;
                         intTotalSensor = Math.Max(intTotalSensor,
-                            ParseBonus(strLoop, objMod.Rating, intTotalSensor, "Sensor", false));
+                            ParseBonus(strLoop, intRating, intTotalSensor, "Sensor", false));
                         if (!objMod.WirelessOn || objMod.WirelessBonus == null)
                             continue;
                         strLoop = objMod.WirelessBonus?["sensor"]?.InnerText;
                         intTotalSensor = Math.Max(intTotalSensor,
-                            ParseBonus(strLoop, objMod.Rating, intTotalSensor, "Sensor", false));
+                            ParseBonus(strLoop, intRating, intTotalSensor, "Sensor", false));
                     }
 
                     // Then check for mods that modify the sensor value (needs separate loop in case of % modifiers on top of stat-overriding mods)
@@ -2057,12 +2058,13 @@ namespace Chummer.Backend.Equipment
                     {
                         if (objMod.IncludedInVehicle || !objMod.Equipped)
                             continue;
-                        intTotalBonusSensor += ParseBonus(objMod.Bonus?["sensor"]?.InnerText, objMod.Rating,
+                        int intRating = objMod.Rating;
+                        intTotalBonusSensor += ParseBonus(objMod.Bonus?["sensor"]?.InnerText, intRating,
                             intTotalSensor, "Sensor");
 
                         if (objMod.WirelessOn)
                         {
-                            intTotalBonusSensor += ParseBonus(objMod.WirelessBonus?["sensor"]?.InnerText, objMod.Rating,
+                            intTotalBonusSensor += ParseBonus(objMod.WirelessBonus?["sensor"]?.InnerText, intRating,
                                 intTotalSensor, "Sensor");
                         }
                     }
@@ -2090,14 +2092,15 @@ namespace Chummer.Backend.Equipment
                         return;
 
                     string strLoop = objMod.Bonus?["sensor"]?.InnerText;
+                    int intRating = await objMod.GetRatingAsync(token).ConfigureAwait(false);
                     intTotalSensor = Math.Max(intTotalSensor,
-                        await ParseBonusAsync(strLoop, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalSensor, "Sensor", false, token)
+                        await ParseBonusAsync(strLoop, intRating, intTotalSensor, "Sensor", false, token)
                             .ConfigureAwait(false));
                     if (!objMod.WirelessOn || objMod.WirelessBonus == null)
                         return;
                     strLoop = objMod.WirelessBonus?["sensor"]?.InnerText;
                     intTotalSensor = Math.Max(intTotalSensor,
-                        await ParseBonusAsync(strLoop, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalSensor, "Sensor", false, token)
+                        await ParseBonusAsync(strLoop, intRating, intTotalSensor, "Sensor", false, token)
                             .ConfigureAwait(false));
                 }, token).ConfigureAwait(false);
 
@@ -2107,13 +2110,14 @@ namespace Chummer.Backend.Equipment
                     if (objMod.IncludedInVehicle || !objMod.Equipped)
                         return 0;
 
+                    int intRating = await objMod.GetRatingAsync(token);
                     string strLoop = objMod.Bonus?["sensor"]?.InnerText;
-                    int intTemp = await ParseBonusAsync(strLoop, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalSensor, "Sensor", token: token)
+                    int intTemp = await ParseBonusAsync(strLoop, intRating, intTotalSensor, "Sensor", token: token)
                         .ConfigureAwait(false);
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
                         strLoop = objMod.WirelessBonus?["sensor"]?.InnerText;
-                        intTemp += await ParseBonusAsync(strLoop, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalSensor, "Sensor", token: token)
+                        intTemp += await ParseBonusAsync(strLoop, intRating, intTotalSensor, "Sensor", token: token)
                             .ConfigureAwait(false);
                     }
 
@@ -2931,23 +2935,25 @@ namespace Chummer.Backend.Equipment
                             continue;
                         if (objMod.Bonus != null)
                         {
-                            intTotalBonusSpeed += ParseBonus(objMod.Bonus["speed"]?.InnerText, objMod.Rating,
+                            int intRating = objMod.Rating;
+                            intTotalBonusSpeed += ParseBonus(objMod.Bonus["speed"]?.InnerText, intRating,
                                 intTotalSpeed, "Speed");
                             intTotalBonusOffroadSpeed += ParseBonus(objMod.Bonus["offroadspeed"]?.InnerText,
-                                objMod.Rating, intTotalSpeed, "OffroadSpeed");
+                                intRating, intTotalSpeed, "OffroadSpeed");
                             if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, objMod.Rating,
+                                intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, intRating,
                                     intTotalArmor, "Armor");
                         }
 
                         if (objMod.WirelessOn && objMod.WirelessBonus != null)
                         {
-                            intTotalBonusSpeed += ParseBonus(objMod.WirelessBonus["speed"]?.InnerText, objMod.Rating,
+                            int intRating = objMod.Rating;
+                            intTotalBonusSpeed += ParseBonus(objMod.WirelessBonus["speed"]?.InnerText, intRating,
                                 intTotalSpeed, "Speed");
                             intTotalBonusOffroadSpeed += ParseBonus(objMod.WirelessBonus["offroadspeed"]?.InnerText,
-                                objMod.Rating, intTotalSpeed, "OffroadSpeed");
+                                intRating, intTotalSpeed, "OffroadSpeed");
                             if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, objMod.Rating,
+                                intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, intRating,
                                     intTotalArmor, "Armor");
                         }
                     }
@@ -3157,23 +3163,25 @@ namespace Chummer.Backend.Equipment
                             continue;
                         if (objMod.Bonus != null)
                         {
-                            intTotalBonusAccel += ParseBonus(objMod.Bonus["accel"]?.InnerText, objMod.Rating,
+                            int intRating = objMod.Rating;
+                            intTotalBonusAccel += ParseBonus(objMod.Bonus["accel"]?.InnerText, intRating,
                                 intTotalAccel, "Accel");
                             intTotalBonusOffroadAccel += ParseBonus(objMod.Bonus["offroadaccel"]?.InnerText,
-                                objMod.Rating, intTotalAccel, "OffroadAccel");
+                                intRating, intTotalAccel, "OffroadAccel");
                             if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, objMod.Rating,
+                                intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, intRating,
                                     intTotalArmor, "Armor");
                         }
 
                         if (objMod.WirelessOn && objMod.WirelessBonus != null)
                         {
-                            intTotalBonusAccel += ParseBonus(objMod.WirelessBonus["accel"]?.InnerText, objMod.Rating,
+                            int intRating = objMod.Rating;
+                            intTotalBonusAccel += ParseBonus(objMod.WirelessBonus["accel"]?.InnerText, intRating,
                                 intTotalAccel, "Accel");
                             intTotalBonusOffroadAccel += ParseBonus(objMod.WirelessBonus["offroadaccel"]?.InnerText,
-                                objMod.Rating, intTotalAccel, "OffroadAccel");
+                                intRating, intTotalAccel, "OffroadAccel");
                             if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, objMod.Rating,
+                                intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, intRating,
                                     intTotalArmor, "Armor");
                         }
                     }
@@ -3266,25 +3274,27 @@ namespace Chummer.Backend.Equipment
                     int intTemp = 0;
                     if (objMod.Bonus != null)
                     {
-                        intTotalBonusAccel += await ParseBonusAsync(objMod.Bonus["accel"]?.InnerText, await objMod.GetRatingAsync(token).ConfigureAwait(false),
+                        int intRating = await objMod.GetRatingAsync(token).ConfigureAwait(false);
+                        intTotalBonusAccel += await ParseBonusAsync(objMod.Bonus["accel"]?.InnerText, intRating,
                             intTotalAccel, "Accel", token: token).ConfigureAwait(false);
                         intTotalBonusOffroadAccel += await ParseBonusAsync(objMod.Bonus["offroadaccel"]?.InnerText,
-                            await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
+                            intRating, intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
                         if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
-                            intTemp += await ParseBonusAsync(objMod.Bonus["armor"]?.InnerText, await objMod.GetRatingAsync(token).ConfigureAwait(false),
+                            intTemp += await ParseBonusAsync(objMod.Bonus["armor"]?.InnerText, intRating,
                                 intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
 
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
+                        int intRating = await objMod.GetRatingAsync(token).ConfigureAwait(false);
                         intTotalBonusAccel += await ParseBonusAsync(objMod.WirelessBonus["accel"]?.InnerText,
-                            await objMod.GetRatingAsync(token).ConfigureAwait(false),
+                            intRating,
                             intTotalAccel, "Accel", token: token).ConfigureAwait(false);
                         intTotalBonusOffroadAccel += await ParseBonusAsync(
                             objMod.WirelessBonus["offroadaccel"]?.InnerText,
-                            await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
+                            intRating, intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
                         if (IsDrone && _objCharacter.Settings.DroneMods)
-                            intTemp += await ParseBonusAsync(objMod.WirelessBonus["armor"]?.InnerText, await objMod.GetRatingAsync(token).ConfigureAwait(false),
+                            intTemp += await ParseBonusAsync(objMod.WirelessBonus["armor"]?.InnerText, intRating,
                                 intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
 

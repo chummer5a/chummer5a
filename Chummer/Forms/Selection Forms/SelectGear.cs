@@ -1104,13 +1104,18 @@ namespace Chummer
                                        Utils.StringBuilderPool, out StringBuilder sbdValue))
                             {
                                 sbdValue.Append(strExpression);
+                                await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
+                                                                 async () =>
+                                                                 {
+                                                                     if (_objGearParent is IHasRating objParentCast)
+                                                                     {
+                                                                         return (await objParentCast.GetRatingAsync(token).ConfigureAwait(false))
+                                                                            .ToString(GlobalSettings.InvariantCultureInfo);
+                                                                     }
+                                                                     return "0";
+                                                                 }, token: token).ConfigureAwait(false);
                                 sbdValue.Replace(
                                     "{Rating}", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
-                                await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
-                                                                 () => (_objGearParent as IHasRating)?.Rating.ToString(
-                                                                           GlobalSettings.InvariantCultureInfo)
-                                                                       ?? int.MaxValue.ToString(
-                                                                           GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
 
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -1149,13 +1154,17 @@ namespace Chummer
                                                Utils.StringBuilderPool, out StringBuilder sbdValue))
                                     {
                                         sbdValue.Append(strExpression);
-                                        sbdValue.Replace(
-                                            "{Rating}", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
                                         await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
-                                                                         () => (_objGearParent as IHasRating)?.Rating
-                                                                               .ToString(
-                                                                                   GlobalSettings.InvariantCultureInfo)
-                                                                               ?? "0", token: token).ConfigureAwait(false);
+                                                                         async () =>
+                                                                         {
+                                                                             if (_objGearParent is IHasRating objParentCast)
+                                                                             {
+                                                                                 return (await objParentCast.GetRatingAsync(token).ConfigureAwait(false))
+                                                                                    .ToString(GlobalSettings.InvariantCultureInfo);
+                                                                             }
+                                                                             return "0";
+                                                                         }, token: token).ConfigureAwait(false);
+                                        sbdValue.Replace("{Rating}", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
                                         await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
 
                                         // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.

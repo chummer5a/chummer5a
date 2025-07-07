@@ -190,6 +190,24 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The Stacked Focus' total Force.
+        /// </summary>
+        public async Task<int> GetTotalForceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await Gear.SumAsync(x => x.GetRatingAsync(token), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+        }
+
+        /// <summary>
         /// The cost in Karma to bind this Stacked Focus.
         /// </summary>
         public int BindingCost

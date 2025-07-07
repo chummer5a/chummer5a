@@ -984,7 +984,7 @@ namespace Chummer.Backend.Equipment
                                 : await strRating
                                     .CheapReplaceAsync(
                                         "{Rating}",
-                                        () => Rating.ToString(
+                                        async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(
                                             GlobalSettings
                                                 .InvariantCultureInfo), token: token).ConfigureAwait(false),
                             GlobalSettings.InvariantCultureInfo);
@@ -1376,6 +1376,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
             objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            // Needed for legacy reasons
+            _intRating = Math.Max(Math.Min(_intRating, MaxRatingValue), MinRatingValue);
             if (objNode["firingmode"] != null)
                 _eFiringMode = ConvertToFiringMode(objNode["firingmode"].InnerText);
             // Legacy shim
@@ -2552,9 +2554,10 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            if (Rating > 0)
+            int intRating = Rating;
+            if (intRating > 0)
                 strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace +
-                             Rating.ToString(objCulture) + ')';
+                             intRating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(CustomName))
                 strReturn += strSpace + "(\"" + CustomName + "\")";
             return strReturn;
@@ -2569,10 +2572,11 @@ namespace Chummer.Backend.Equipment
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                 .ConfigureAwait(false);
-            if (Rating > 0)
+            int intRating = await GetRatingAsync(token).ConfigureAwait(false);
+            if (intRating > 0)
                 strReturn += strSpace + '(' +
                              await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
-                                 .ConfigureAwait(false) + strSpace + Rating.ToString(objCulture) + ')';
+                                 .ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(CustomName))
                 strReturn += strSpace + "(\"" + CustomName + "\")";
             return strReturn;
@@ -2598,7 +2602,7 @@ namespace Chummer.Backend.Equipment
 
         public int Rating
         {
-            get => _intRating;
+            get => Math.Max(Math.Min(_intRating, MaxRatingValue), MinRatingValue);
             set
             {
                 value = Math.Max(Math.Min(value, MaxRatingValue), MinRatingValue);
@@ -2639,6 +2643,16 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Rating.
+        /// </summary>
+        public async Task<int> GetRatingAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return Math.Max(Math.Min(_intRating, await GetMaxRatingValueAsync(token).ConfigureAwait(false)),
+                await GetMinRatingValueAsync(token).ConfigureAwait(false));
+        }
+
         public async Task SetRatingAsync(int value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -2674,7 +2688,7 @@ namespace Chummer.Backend.Equipment
                     if (!objChild.MaxRating.Contains("Parent") && objChild.MinRating.Contains("Parent"))
                         return;
                     // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                    int intCurrentRating = objChild.Rating;
+                    int intCurrentRating = await objChild.GetRatingAsync(token).ConfigureAwait(false);
                     await objChild.SetRatingAsync(intCurrentRating).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
             }
@@ -2712,7 +2726,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strExpression = MinRating;
-                return string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression);
+                return string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression, _intRating);
             }
             set => MinRating = value.ToString(GlobalSettings.InvariantCultureInfo);
         }
@@ -2725,7 +2739,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strExpression = MaxRating;
-                return string.IsNullOrEmpty(strExpression) ? int.MaxValue : ProcessRatingString(strExpression);
+                return string.IsNullOrEmpty(strExpression) ? int.MaxValue : ProcessRatingString(strExpression, _intRating);
             }
             set => MaxRating = value.ToString(GlobalSettings.InvariantCultureInfo);
         }
@@ -2738,7 +2752,7 @@ namespace Chummer.Backend.Equipment
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<int>(token);
             string strExpression = MinRating;
-            return string.IsNullOrEmpty(strExpression) ? Task.FromResult(0) : ProcessRatingStringAsync(strExpression, token);
+            return string.IsNullOrEmpty(strExpression) ? Task.FromResult(0) : ProcessRatingStringAsync(strExpression, _intRating, token);
         }
 
         /// <summary>
@@ -2749,7 +2763,7 @@ namespace Chummer.Backend.Equipment
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<int>(token);
             string strExpression = MaxRating;
-            return string.IsNullOrEmpty(strExpression) ? Task.FromResult(int.MaxValue) : ProcessRatingStringAsync(strExpression, token);
+            return string.IsNullOrEmpty(strExpression) ? Task.FromResult(int.MaxValue) : ProcessRatingStringAsync(strExpression, _intRating, token);
         }
 
         /// <summary>
@@ -2757,13 +2771,13 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="strExpression"></param>
         /// <returns></returns>
-        private int ProcessRatingString(string strExpression)
+        private int ProcessRatingString(string strExpression, int intRating)
         {
             if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
                 string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
                     .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
+                strExpression = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)].Trim('[', ']');
             }
 
             if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
@@ -2771,7 +2785,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
-                    sbdValue.Replace("{Rating}", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     ProcessAttributesInXPath(sbdValue, strExpression);
                     // Replace the division sign with "div" since we're using XPath.
                     sbdValue.Replace("/", " div ");
@@ -2792,13 +2806,13 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="strExpression"></param>
         /// <returns></returns>
-        private async Task<int> ProcessRatingStringAsync(string strExpression, CancellationToken token = default)
+        private async Task<int> ProcessRatingStringAsync(string strExpression, int intRating, CancellationToken token = default)
         {
             if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
                 string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
                     .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
+                strExpression = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)].Trim('[', ']');
             }
 
             if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
@@ -2806,11 +2820,10 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
-                    sbdValue.Replace("{Rating}", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                    await ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                     // Replace the division sign with "div" since we're using XPath.
                     sbdValue.Replace("/", " div ");
-                    await ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
@@ -3939,8 +3952,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }, token).ConfigureAwait(false);
 
-                await sbdConceal.CheapReplaceAsync(strConceal, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                await sbdConceal.CheapReplaceAsync(strConceal, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await sbdConceal.CheapReplaceAsync(strConceal, "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await sbdConceal.CheapReplaceAsync(strConceal, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 await ProcessAttributesInXPathAsync(sbdConceal, token: token).ConfigureAwait(false);
 
                 // Replace the division sign with "div" since we're using XPath.
@@ -4008,7 +4021,7 @@ namespace Chummer.Backend.Equipment
                 {
                     await ProcessAttributesInXPathAsync(sbdDamage, Damage, token: token).ConfigureAwait(false);
                     await sbdDamage.CheapReplaceAsync(Damage,
-                            "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                            "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
                 }
 
@@ -5617,7 +5630,7 @@ namespace Chummer.Backend.Equipment
                     .ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
 
                 await sbdCost
-                    .CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo),
+                    .CheapReplaceAsync(strCostExpression, "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                         token: token).ConfigureAwait(false);
 
                 // Replace the division sign with "div" since we're using XPath.
@@ -6087,7 +6100,7 @@ namespace Chummer.Backend.Equipment
             strRC = blnSync
                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 ? strRC.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                : await strRC.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo),
+                : await strRC.CheapReplaceAsync("{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                     token: token).ConfigureAwait(false);
             int intPos = strRC.IndexOf('(');
             if (intPos != -1)
@@ -6610,18 +6623,18 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrEmpty(strReach))
                     sbdReach.Append('(').Append(strReach).Append(')');
-                await WeaponAccessories.ForEachAsync(objAccessory =>
+                await WeaponAccessories.ForEachAsync(async objAccessory =>
                 {
                     if (objAccessory.Equipped && !string.IsNullOrEmpty(objAccessory.Reach))
                     {
-                        string strLoopReach = objAccessory.Reach
-                            .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        string strLoopReach = await objAccessory.Reach
+                            .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo));
                         sbdReach.Append(" + (").Append(strLoopReach).Append(')');
                     }
                 }, token).ConfigureAwait(false);
 
-                await sbdReach.CheapReplaceAsync("{Rating}", strReach, () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await sbdReach.CheapReplaceAsync("{Rating}", strReach, async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 await ProcessAttributesInXPathAsync(sbdReach, token: token).ConfigureAwait(false);
                 sbdReach.Replace("/", " div ");
                 strToEvaluate = sbdReach.ToString();
@@ -7751,8 +7764,8 @@ namespace Chummer.Backend.Equipment
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRange))
             {
                 sbdRange.Append(strRange);
-                await sbdRange.CheapReplaceAsync(strRange, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                await sbdRange.CheapReplaceAsync(strRange, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await sbdRange.CheapReplaceAsync(strRange, "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await sbdRange.CheapReplaceAsync(strRange, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 await ProcessAttributesInXPathAsync(sbdRange, strRange, true, token).ConfigureAwait(false);
 
                 // Replace the division sign with "div" since we're using XPath.
@@ -7938,9 +7951,9 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                await sbdRangeBonus.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                await sbdRangeBonus.CheapReplaceAsync("{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                     .ConfigureAwait(false);
-                await sbdRangeBonus.CheapReplaceAsync("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                await sbdRangeBonus.CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                     .ConfigureAwait(false);
                 await ProcessAttributesInXPathAsync(sbdRangeBonus, blnForRange: true, token: token).ConfigureAwait(false);
 
@@ -8037,8 +8050,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }, token).ConfigureAwait(false);
 
-                await sbdBaseModifier.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                await sbdBaseModifier.CheapReplaceAsync("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await sbdBaseModifier.CheapReplaceAsync("{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await sbdBaseModifier.CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 await ProcessAttributesInXPathAsync(sbdBaseModifier, blnForRange: true, token: token).ConfigureAwait(false);
 
                 // Replace the division sign with "div" since we're using XPath.
@@ -9170,8 +9183,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                await sbdExtraModifier.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                await sbdExtraModifier.CheapReplaceAsync("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await sbdExtraModifier.CheapReplaceAsync("{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await sbdExtraModifier.CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 await ProcessAttributesInXPathAsync(sbdExtraModifier, token: token).ConfigureAwait(false);
                 // Replace the division sign with "div" since we're using XPath.
                 sbdExtraModifier.Replace("/", " div ");
@@ -10771,7 +10784,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
-                    await sbdAvail.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdAvail.CheapReplaceAsync(strAvail, "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
 
                     if (blnCheckUnderbarrels && strAvail.Contains("{Children Avail}"))
                     {
