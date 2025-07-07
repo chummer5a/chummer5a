@@ -77,7 +77,6 @@
       <id>f5ec713c-98cd-41f6-a0a4-4a8eaed55b66</id>
       <name>Shadowrun 5th Edition</name>
       <code>SR5</code>
-      <permanent />
       <matches>
         <match>
           <language>en-us</language>
@@ -92,6 +91,30 @@
       </matches>
     </book>
     <book>
+      <id>8e46b49e-b9b2-414a-8d64-fdc6263f10b8</id>
+      <name>Shadowrun 6th Edition</name>
+      <code>SR6</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Welcome to Shadowrun, Sixth Edition. Welcome to the</text>
+          <page>8</page>
+        </match>        
+      </matches>
+    </book>
+      <book>
+        <id>5b10e18f-b180-4d25-8e92-5ce7790b1d25</id>
+        <name>Shadowrun Sixth World Companion</name>
+        <code>SWC</code>
+        <matches>
+          <match>
+            <language>en-us</language>
+            <text>So Dive in and get running!</text>
+            <page>5</page>
+          </match>
+        </matches>
+      </book>
+      <book>
       <id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
       <name>Street Grimoire</name>
       <code>SG</code>

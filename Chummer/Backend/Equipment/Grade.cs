@@ -35,11 +35,11 @@ namespace Chummer.Backend.Equipment
         private readonly Character _objCharacter;
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
-        private string _strName = "Standard";
+        private string _strName = "Standard - Shadowrun 6th Edition";
         private decimal _decEss = 1.0m;
         private decimal _decCost = 1.0m;
         private int _intAvail;
-        private string _strSource = "SR5";
+        private string _strSource = "SR6";
         private int _intDeviceRating = 2;
         private int _intAddictionThreshold;
         private readonly Improvement.ImprovementSource _eSource;

@@ -37,6 +37,7 @@
     <name>Sorcery</name>
     <name>Stealth</name>
     <name>Tasking</name>
+    <name>All skills</name>
   </skillgroups>
   <categories>
     <category type="active">Combat Active</category>
@@ -47,6 +48,7 @@
     <category type="active">Resonance Active</category>
     <category type="active">Technical Active</category>
     <category type="active">Vehicle Active</category>
+    <category type="active">All Active</category>
     <category type="knowledge">Academic</category>
     <category type="knowledge">Interest</category>
     <category type="knowledge">Language</category>
@@ -54,6 +56,52 @@
     <category type="knowledge">Street</category>
   </categories>
   <skills>
+    <skill>
+      <id>7d7e3193-d603-4934-9595-ffec7abd31b7</id>
+      <name>Engineering</name>
+      <attribute>LOG</attribute>
+      <category>All Active</category>
+      <default>False</default>
+      <skillgroup>All Skills</skillgroup>
+      <specs>
+        <spec>Aeronautics Mechanic</spec>
+        <spec>Armorer</spec>
+        <spec>Automotive Mechanic</spec>
+        <spec>Demolitions</spec>
+        <spec>Gunnery</spec>
+        <spec>Industrial Mechanic</spec>
+        <spec>lock picking</spec>
+        <spec>Nautical Mechanic</spec>
+      </specs>
+      <source>SR6</source>
+      <page>95</page>
+    </skill>
+    <skill>
+    <id>2477ed00-a119-4002-8afb-20aa1fb32901</id>
+    <name>Engineering - INT</name>
+    <attribute>INT</attribute>
+    <category>All Active</category>
+    <default>False</default>
+    <skillgroup>All Skills</skillgroup>
+    <specs>
+      <spec>Juryrigging</spec>
+    </specs>
+    <source>SR6</source>
+    <page>95</page>
+    </skill>
+    <skill>
+      <id>1998d20a-8669-4e48-9d0b-3533440af0b2</id>
+      <name>Engineering - AGI</name>
+      <attribute>AGI</attribute>
+      <category>All Active</category>
+      <default>False</default>
+      <skillgroup>All Skills</skillgroup>
+      <specs>
+        <spec>Lock Picking</spec>
+      </specs>
+      <source>SR6</source>
+      <page>95</page>
+    </skill>
     <skill>
       <id>b52f7575-eebf-41c4-938d-df3397b5ee68</id>
       <name>Aeronautics Mechanic</name>

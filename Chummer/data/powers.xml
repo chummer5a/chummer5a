@@ -28,7 +28,7 @@
       <points>0.25</points>
       <levels>True</levels>
       <limit>1</limit>
-      <source>SR5</source>
+      <source>SR6</source>
       <page>309</page>
       <action>Free</action>
     </power>
@@ -61,7 +61,7 @@
       <points>0.25</points>
       <levels>True</levels>
       <limit>4</limit>
-      <source>SR5</source>
+      <source>SR6</source>
       <page>309</page>
       <action>Simple</action>
       <bonus>

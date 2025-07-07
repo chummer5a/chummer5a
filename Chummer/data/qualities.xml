@@ -26,7 +26,7 @@
     <category>Negative</category>
   </categories>
   <qualities>
-    <!--Region Shadowrun Core Positive Qualities -->
+    <!--Region Shadowrun 5th edition Core Positive Qualities -->
     <quality>
       <id>68cfe94a-fa7e-4129-a9b9-b5d73e3ced99</id>
       <name>Ambidextrous</name>
@@ -36,44 +36,44 @@
       <bonus>
         <ambidextrous />
       </bonus>
-      <source>SR5</source>
-      <page>71</page>
+      <source>SR6</source>
+      <page>70</page>
     </quality>
     <quality>
       <id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
       <name>Analytical Mind</name>
-      <karma>5</karma>
+      <karma>3</karma>
       <category>Positive</category>
       <bonus>
         <skillattribute>
           <name>LOG</name>
-          <bonus>2</bonus>
+          <bonus>0</bonus>
           <condition>Involving pattern recognition, evidence analysis, clue hunting, or solving puzzles</condition>
         </skillattribute>
       </bonus>
-      <source>SR5</source>
-      <page>72</page>
+      <source>SR6</source>
+      <page>70</page>
     </quality>
     <quality>
       <id>58e3d62a-2073-4af5-b8e0-00c446b3a5ab</id>
       <name>Aptitude</name>
-      <karma>14</karma>
+      <karma>12</karma>
       <category>Positive</category>
       <bonus>
         <selectskill>
           <max>1</max>
         </selectskill>
       </bonus>
-      <source>SR5</source>
-      <page>72</page>
+      <source>SR6</source>
+      <page>70</page>
     </quality>
     <quality>
       <id>7d81f676-e523-4ec6-ae98-8d801f90b031</id>
       <name>Astral Chameleon</name>
-      <karma>10</karma>
+      <karma>9</karma>
       <category>Positive</category>
       <bonus />
-      <required>
+     <!-- <required>
         <oneof>
           <metatype>Centaur</metatype>
           <metatype>Naga</metatype>
@@ -92,16 +92,16 @@
           <quality>Infected: Wendigo</quality>
           <magenabled />
         </oneof>
-      </required>
-      <forbidden>
+      </required>-->
+      <!--<forbidden>
         <oneof>
           <quality>Astral Beacon</quality>
         </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>72</page>
+      </forbidden>-->
+      <source>SR6</source>
+      <page>70</page>
     </quality>
-    <quality>
+    <!--<quality>
       <id>c734e46a-d391-45a6-b022-6f18db5019f1</id>
       <name>Bilingual</name>
       <karma>5</karma>
@@ -112,39 +112,51 @@
       </bonus>
       <source>SR5</source>
       <page>72</page>
-    </quality>
+    </quality>-->
     <quality>
       <id>9cffd452-8489-48d5-888c-ac35459d9174</id>
       <name>Blandness</name>
       <karma>8</karma>
       <category>Positive</category>
       <bonus>
-        <notoriety>-1</notoriety>
+        <notoriety>-2</notoriety>
       </bonus>
       <forbidden>
         <oneof>
           <quality>Distinctive Style</quality>
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>72</page>
+      <source>SR6</source>
+      <page>70</page>
+    </quality>
+    <quality>
+      <id>c61706bd-9eeb-45fc-8768-e5940dcadfc5</id>
+      <name>Built Tough (1 to 4)</name>
+      <karma>4</karma>
+      <category>Positive</category>
+      <limit>4</limit>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+      </bonus>
+      <forbidden>
+        <oneof>
+        </oneof>
+      </forbidden>
+      <source>SR6</source>
+      <page>70</page>
     </quality>
     <quality>
       <id>84305e09-f8d5-4a82-8257-0119b8c3f926</id>
       <name>Catlike</name>
-      <karma>7</karma>
+      <karma>12</karma>
       <category>Positive</category>
       <mutant>True</mutant>
-      <bonus>
-        <specificskill>
-          <name>Sneaking</name>
-          <bonus>2</bonus>
-        </specificskill>
-      </bonus>
-      <source>SR5</source>
-      <page>72</page>
+      <source>SR6</source>
+      <page>71</page>
     </quality>
-    <quality>
+    <!--<quality>
       <id>41cc3e26-ae55-4e28-bd6a-b08866c21424</id>
       <name>Codeslinger</name>
       <karma>10</karma>
@@ -155,25 +167,43 @@
       </bonus>
       <source>SR5</source>
       <page>72</page>
+    </quality>-->
+    <quality>
+      <id>33cdfc52-1dc3-45b7-aa63-1cb6b2930bf7</id>
+      <name>Dermal Deposits</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <bonus>
+        <armor>1</armor>
+      </bonus>
+      <source>SR6</source>
+      <page>71</page>
     </quality>
+   
     <quality>
       <id>db579224-99c7-48e0-84ab-77a987a84f4a</id>
       <name>Double Jointed</name>
-      <karma>6</karma>
+      <karma>12</karma>
       <category>Positive</category>
       <bonus>
-        <specificskill>
-          <name>Escape Artist</name>
-          <bonus>2</bonus>
-        </specificskill>
       </bonus>
-      <source>SR5</source>
-      <page>72</page>
-    </quality>
+      <source>SR6</source>
+      <page>71</page>
+    </quality>    
+      <quality>
+        <id>9a11e353-996e-4029-8f68-f9bab8e56b40</id>
+        <name>(Elemental) Resistance</name>
+        <karma>12</karma>
+        <category>Positive</category>
+        <bonus>
+        </bonus>
+        <source>SR6</source>
+        <page>71</page>
+      </quality>
     <quality>
       <id>2ac8a95a-a4d0-4bef-a2f2-dcde020258cf</id>
       <name>Exceptional Attribute</name>
-      <karma>14</karma>
+      <karma>12</karma>
       <category>Positive</category>
       <bonus>
         <selectattributes>
@@ -188,77 +218,63 @@
           <quality>Lucky</quality>
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>72</page>
+      <source>SR6</source>
+      <page>71</page>
     </quality>
     <quality>
       <id>9f25cc0a-c47c-49dd-953c-8fe60628bae8</id>
       <name>First Impression</name>
-      <karma>11</karma>
+      <karma>12</karma>
       <category>Positive</category>
       <bonus>
-        <notoriety>-1</notoriety>
-        <skillcategory>
-          <name>Social Active</name>
-          <bonus>2</bonus>
-          <condition>Meeting people the first time</condition>
-        </skillcategory>
       </bonus>
-      <source>SR5</source>
-      <page>74</page>
+      <source>SR6</source>
+      <page>71</page>
     </quality>
     <quality>
       <id>4d5c22b9-4908-493d-a6f7-4ccc3066888c</id>
-      <name>Focused Concentration</name>
-      <karma>4</karma>
+      <name>Focused Concentration ( 1 to 3)</name>
+      <karma>12</karma>
       <category>Positive</category>
-      <limit>6</limit>
+      <limit>3</limit>
       <!-- TODO: penaltyfreesustain done in a way that works well with quality ratings -->
       <bonus />
       <required>
         <oneof>
           <power>Adept Spell</power>
-          <quality>Barehanded Adept</quality>
-          <quality>Aware</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
-          <quality>Apprentice</quality>
           <quality>Aspected Magician</quality>
-          <quality>Enchanter</quality>
-          <quality>Explorer</quality>
           <quality>Technomancer</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
-      <source>SR5</source>
-      <page>74</page>
+      <source>SR6</source>
+      <page>71</page>
     </quality>
     <quality>
       <id>5c18a150-8e38-4f6d-b4f5-b1b674a3581e</id>
       <name>Gearhead</name>
-      <karma>11</karma>
+      <karma>10</karma>
       <category>Positive</category>
       <bonus />
-      <source>SR5</source>
-      <page>74</page>
+      <source>SR6</source>
+      <page>71</page>
     </quality>
     <quality>
       <id>0d0cb0fc-c79d-418e-9216-8a197369e52d</id>
       <name>Guts</name>
-      <karma>10</karma>
+      <karma>12</karma>
       <category>Positive</category>
       <bonus />
-      <source>SR5</source>
-      <page>74</page>
+      <source>SR6</source>
+      <page>71</page>
     </quality>
     <quality>
       <id>b7866fb4-3747-4caf-9240-69cbdd79ce78</id>
       <name>High Pain Tolerance</name>
       <karma>7</karma>
       <category>Positive</category>
-      <limit>3</limit>
+      <limit>1</limit>
       <bonus>
         <conditionmonitor>
           <thresholdoffset>1</thresholdoffset>
@@ -266,13 +282,10 @@
       </bonus>
       <forbidden>
         <oneof>
-          <bioware>Damage Compensators</bioware>
-          <bioware>Damage Compensators (2050)</bioware>
-          <power>Pain Resistance</power>
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>74</page>
+      <source>SR6</source>
+      <page>72</page>
     </quality>
     <quality>
       <id>823eb204-c155-45a9-bb9a-98dcbe17a707</id>
@@ -283,13 +296,13 @@
       <bonus>
         <selecttext />
       </bonus>
-      <source>SR5</source>
-      <page>74</page>
+      <source>SR6</source>
+      <page>72</page>
     </quality>
     <quality>
       <id>2844e64e-f271-4ca7-bd58-0860b2db56c9</id>
       <name>Human-Looking</name>
-      <karma>6</karma>
+      <karma>8</karma>
       <category>Positive</category>
       <bonus />
       <required>
@@ -299,26 +312,20 @@
           <metatype>Ork</metatype>
         </oneof>
       </required>
-      <source>SR5</source>
-      <page>75</page>
+      <source>SR6</source>
+      <page>72</page>
     </quality>
     <quality>
       <id>0f3a0971-1cc5-47d6-a32d-d098ecdfb4d9</id>
-      <name>Indomitable (Mental)</name>
-      <karma>8</karma>
+      <name>Indomitable</name>
+      <karma>12</karma>
       <category>Positive</category>
-      <includeinlimit>
-        <name>Indomitable (Physical)</name>
-        <name>Indomitable (Social)</name>
-      </includeinlimit>
-      <limit>3</limit>
       <bonus>
-        <mentallimit>1</mentallimit>
       </bonus>
-      <source>SR5</source>
-      <page>75</page>
+      <source>SR6</source>
+      <page>72</page>
     </quality>
-    <quality>
+   <!-- <quality>
       <id>58e6a651-cdd7-4144-a2cc-4cee24526e92</id>
       <name>Indomitable (Physical)</name>
       <karma>8</karma>
@@ -349,17 +356,17 @@
       </bonus>
       <source>SR5</source>
       <page>75</page>
-    </quality>
+    </quality>-->
     <quality>
       <id>27c7ea84-bfe4-47e1-8382-38d9a5c8e680</id>
       <name>Juryrigger</name>
-      <karma>10</karma>
+      <karma>12</karma>
       <category>Positive</category>
       <bonus />
-      <source>SR5</source>
-      <page>75</page>
+      <source>SR6</source>
+      <page>72</page>
     </quality>
-    <quality>
+   <!-- <quality>
       <id>78f7456d-78b8-461e-a2b2-bd0d63c48712</id>
       <name>Lucky</name>
       <karma>12</karma>
@@ -378,43 +385,43 @@
       </forbidden>
       <source>SR5</source>
       <page>76</page>
+    </quality>-->
+    <quality>
+      <id>fe67d618-6975-461f-8cee-f74b98476d55</id>
+      <name>Long Reach</name>
+      <karma>12</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>SR6</source>
+      <page>72</page>
+    </quality>
+    <quality>
+      <id>57c19f61-bd60-43e2-88f4-a7a607be7ad9</id>
+      <name>Low-Light Vision</name>
+      <karma>6</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>SR6</source>
+      <page>72</page>
     </quality>
     <quality>
       <id>f80ef6fc-e844-441c-81e3-b1264b34a4e7</id>
       <name>Magic Resistance</name>
-      <karma>6</karma>
+      <karma>8</karma>
       <category>Positive</category>
-      <limit>4</limit>
       <bonus>
-        <spellresistance>1</spellresistance>
       </bonus>
       <forbidden>
         <oneof>
-          <metatype>Naga</metatype>
-          <metatype>Pixie</metatype>
-          <metatype>Centaur</metatype>
-          <metatype>Sasquatch</metatype>
-          <metatypecategory>Shapeshifter</metatypecategory>
-          <quality>Adept</quality>
-          <quality>Aware</quality>
-          <quality>Magician</quality>
-          <quality>Mystic Adept</quality>
-          <quality>Aspected Magician</quality>
-          <quality>Enchanter</quality>
-          <quality>Explorer</quality>
-          <quality>Apprentice</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>76</page>
+      <source>SR6</source>
+      <page>72</page>
     </quality>
     <quality>
       <id>ced3fecf-2277-4b20-b1e0-894162ca9ae2</id>
       <name>Mentor Spirit</name>
-      <karma>5</karma>
+      <karma>10</karma>
       <category>Positive</category>
       <bonus>
         <selectmentorspirit />
@@ -423,18 +430,14 @@
         <oneof>
           <quality>Adept</quality>
           <quality>Aspected Magician</quality>
-          <quality>Aware</quality>
-          <quality>Enchanter</quality>
-          <quality>Explorer</quality>
-          <quality>Apprentice</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
         </oneof>
       </required>
-      <source>SR5</source>
-      <page>76</page>
+      <source>SR6</source>
+      <page>73</page>
     </quality>
-    <quality>
+    <!--<quality>
       <id>225f0d31-8c03-4283-9a22-558ab01a6c47</id>
       <name>Natural Athlete</name>
       <karma>7</karma>
@@ -494,49 +497,38 @@
       </forbidden>
       <source>SR5</source>
       <page>76</page>
-    </quality>
+    </quality>-->
     <quality>
       <id>9d3be1d9-1309-45e7-8bd9-1f5a3ede3522</id>
       <name>Photographic Memory</name>
-      <karma>6</karma>
+      <karma>12</karma>
       <category>Positive</category>
       <bonus>
-        <memory>2</memory>
       </bonus>
-      <source>SR5</source>
-      <page>76</page>
+      <source>SR6</source>
+      <page>73</page>
     </quality>
     <quality>
       <id>291efdb6-a8b8-49ce-b2be-72f9d3f8a243</id>
       <name>Quick Healer</name>
-      <karma>3</karma>
+      <karma>8</karma>
       <category>Positive</category>
       <bonus>
-        <physicalcmrecovery>2</physicalcmrecovery>
-        <spelldicepool>
-          <name>Heal</name>
-          <val>2</val>
-        </spelldicepool>
-        <stuncmrecovery>2</stuncmrecovery>
       </bonus>
       <forbidden>
         <oneof>
           <quality>Uncanny Healer</quality>
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>77</page>
+      <source>SR6</source>
+      <page>73</page>
     </quality>
     <quality>
       <id>e160111a-5fe3-4154-9d5a-82330c9b32fc</id>
       <name>Resistance to Pathogens</name>
-      <karma>4</karma>
+      <karma>12</karma>
       <category>Positive</category>
       <bonus>
-        <pathogencontactresist>1</pathogencontactresist>
-        <pathogeningestionresist>1</pathogeningestionresist>
-        <pathogeninhalationresist>1</pathogeninhalationresist>
-        <pathogeninjectionresist>1</pathogeninjectionresist>
       </bonus>
       <forbidden>
         <oneof>
@@ -544,10 +536,10 @@
           <quality>Weak Immune System</quality>
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>77</page>
+      <source>SR6</source>
+      <page>73</page>
     </quality>
-    <quality>
+   <!-- <quality>
       <id>c74c9ed8-a917-4809-9e8a-5717dd16619b</id>
       <name>Resistance to Toxins</name>
       <karma>4</karma>
@@ -610,11 +602,11 @@
       </forbidden>
       <source>SR5</source>
       <page>77</page>
-    </quality>
+    </quality>-->
     <quality>
       <id>c067baa6-0dfa-4783-a0c8-0873564f0308</id>
       <name>Spirit Affinity</name>
-      <karma>7</karma>
+      <karma>14</karma>
       <category>Positive</category>
       <limit>False</limit>
       <bonus>
@@ -622,36 +614,38 @@
       </bonus>
       <required>
         <oneof>
-          <quality>Aware</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
-          <quality>Enchanter</quality>
-          <quality>Explorer</quality>
-          <quality>Apprentice</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
-      <source>SR5</source>
-      <page>77</page>
+      <source>SR6</source>
+      <page>73</page>
     </quality>
     <quality>
       <id>00cc6499-db13-447e-8116-278d317a9e31</id>
       <name>Toughness</name>
-      <karma>9</karma>
+      <karma>12</karma>
       <category>Positive</category>
       <bonus>
-        <damageresistance>1</damageresistance>
       </bonus>
-      <source>SR5</source>
-      <page>77</page>
+      <source>SR6</source>
+      <page>73</page>
+    </quality>
+    <quality>
+      <id>f9016979-66c3-4397-9576-4d60df562357</id>
+      <name>Toxin Resistance</name>
+      <karma>12</karma>
+      <category>Positive</category>
+      <bonus>
+      </bonus>
+      <source>SR6</source>
+      <page>73</page>
     </quality>
     <quality>
       <id>18d2a522-6460-4654-916b-a96631f11323</id>
       <name>Will to Live</name>
-      <karma>3</karma>
+      <karma>8</karma>
       <category>Positive</category>
       <limit>3</limit>
       <bonus>
@@ -659,10 +653,10 @@
           <overflow>1</overflow>
         </conditionmonitor>
       </bonus>
-      <source>SR5</source>
-      <page>77</page>
+      <source>SR6</source>
+      <page>74</page>
     </quality>
-    <quality>
+   <!-- <quality>
       <id>fb9eab85-ae9a-4d03-8c3f-70b6a32d5e17</id>
       <name>Deus Vult!</name>
       <karma>4</karma>
@@ -838,7 +832,7 @@
       <bonus />
       <source>SR5</source>
       <page>66</page>
-    </quality>
+    </quality>-->
     <quality>
       <id>0e741331-d776-4be8-abc5-4101228abdef</id>
       <name>Magician</name>
@@ -860,16 +854,16 @@
           <quality>Adept</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
-          <quality>Enchanter</quality>
+          <!--<quality>Enchanter</quality>
           <quality>Explorer</quality>
           <quality>Aware</quality>
-          <quality>Apprentice</quality>
+          <quality>Apprentice</quality>-->
           <resenabled />
           <depenabled />
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>69</page>
+      <source>SR6</source>
+      <page>127</page>
       <nameonpage>Magicians</nameonpage>
     </quality>
     <quality>
@@ -903,8 +897,8 @@
           <depenabled />
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>69</page>
+      <source>SR6</source>
+      <page>156</page>
       <nameonpage>Adepts</nameonpage>
     </quality>
     <quality>
@@ -937,8 +931,8 @@
           <depenabled />
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>69</page>
+      <source>SR6</source>
+      <page>158</page>
       <nameonpage>Mystic Adepts</nameonpage>
     </quality>
     <quality>
@@ -973,8 +967,8 @@
           <depenabled />
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>69</page>
+      <source>SR6</source>
+      <page>158</page>
     </quality>
     <quality>
       <id>4adeb2d4-e42e-4b7a-9a5d-3df325ae59a5</id>
@@ -1005,8 +999,8 @@
           <depenabled />
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>69</page>
+      <source>SR6</source>
+      <page>159</page>
       <nameonpage>Aspected Magicians</nameonpage>
     </quality>
     <quality>
@@ -1041,18 +1035,16 @@
     <!--Region Shadowrun Core Negative Qualities -->
     <quality>
       <id>ea7cced4-a201-44a2-9a1b-e10180b1df81</id>
-      <name>Addiction (Mild)</name>
-      <karma>-4</karma>
+      <name>Addiction (Substance 1 to 6)</name>
+      <karma>-2</karma>
       <category>Negative</category>
-      <limit>False</limit>
+      <limit>6</limit>
       <bonus>
-        <notoriety>1</notoriety>
-        <selecttext />
       </bonus>
-      <source>SR5</source>
-      <page>77</page>
+      <source>SR6</source>
+      <page>74</page>
     </quality>
-    <quality>
+   <!-- <quality>
       <id>9a52a300-4d90-4b1f-a113-d0e40a410063</id>
       <name>Addiction (Moderate)</name>
       <karma>-9</karma>
@@ -1094,7 +1086,7 @@
       </bonus>
       <source>SR5</source>
       <page>78</page>
-    </quality>
+    </quality> -->
     <quality>
       <id>b7841930-0c7b-4be4-b1cf-86debc41aa95</id>
       <name>Allergy (Uncommon, Mild)</name>
@@ -1104,92 +1096,198 @@
       <bonus>
         <selecttext />
       </bonus>
-      <source>SR5</source>
-      <page>78</page>
+      <source>SR6</source>
+      <page>74</page>
     </quality>
     <quality>
       <id>f3ad08be-a7a4-4965-bb38-f8db9016c94e</id>
       <name>Allergy (Uncommon, Moderate)</name>
-      <karma>-10</karma>
+      <karma>-8</karma>
       <category>Negative</category>
       <limit>False</limit>
       <bonus>
         <selecttext />
       </bonus>
-      <source>SR5</source>
+      <source>SR6</source>
       <page>78</page>
     </quality>
     <quality>
       <id>84a43000-9ae4-4391-b156-d5fbc9a092de</id>
       <name>Allergy (Uncommon, Severe)</name>
-      <karma>-15</karma>
+      <karma>-11</karma>
       <category>Negative</category>
       <limit>False</limit>
       <bonus>
         <selecttext />
       </bonus>
-      <source>SR5</source>
-      <page>78</page>
+      <source>SR6</source>
+      <page>74</page>
     </quality>
     <quality>
       <id>cfdc255a-bb46-4d9c-8960-e4181455f4e3</id>
       <name>Allergy (Uncommon, Extreme)</name>
-      <karma>-20</karma>
+      <karma>-14</karma>
       <category>Negative</category>
       <limit>False</limit>
       <bonus>
         <selecttext />
       </bonus>
-      <source>SR5</source>
-      <page>78</page>
+      <source>SR6</source>
+      <page>74</page>
     </quality>
     <quality>
       <id>e89db285-8db9-4a9c-80cb-94d87b86a80b</id>
       <name>Allergy (Common, Mild)</name>
-      <karma>-10</karma>
+      <karma>-11</karma>
       <category>Negative</category>
       <limit>False</limit>
       <bonus>
         <selecttext />
       </bonus>
-      <source>SR5</source>
-      <page>78</page>
+      <source>SR6</source>
+      <page>74</page>
     </quality>
     <quality>
       <id>90188ca7-0ccb-4198-b199-dcf33e029d74</id>
       <name>Allergy (Common, Moderate)</name>
-      <karma>-15</karma>
+      <karma>-14</karma>
       <category>Negative</category>
       <limit>False</limit>
       <bonus>
         <selecttext />
       </bonus>
-      <source>SR5</source>
-      <page>78</page>
+      <source>SR6</source>
+      <page>74</page>
     </quality>
     <quality>
       <id>df14fb6e-456d-4d24-83e8-b1c97576dce2</id>
       <name>Allergy (Common, Severe)</name>
+      <karma>-17</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SR6</source>
+      <page>74</page>
+    </quality>
+    <quality>
+      <id>8a40007a-9876-4998-a7c9-047248cfbc52</id>
+      <name>Allergy (Common, Extreme)</name>
       <karma>-20</karma>
       <category>Negative</category>
       <limit>False</limit>
       <bonus>
         <selecttext />
       </bonus>
-      <source>SR5</source>
-      <page>78</page>
+      <source>SR6</source>
+      <page>74</page>
     </quality>
     <quality>
-      <id>8a40007a-9876-4998-a7c9-047248cfbc52</id>
-      <name>Allergy (Common, Extreme)</name>
-      <karma>-25</karma>
+      <id>348fe0c7-4123-4391-b73d-8ba768fc74c2</id>
+      <name>Allergy (Seasonal, Mild)</name>
+      <karma>-8</karma>
       <category>Negative</category>
       <limit>False</limit>
       <bonus>
         <selecttext />
       </bonus>
-      <source>SR5</source>
-      <page>78</page>
+      <source>SR6</source>
+      <page>74</page>
+    </quality>
+    <quality>
+      <id>2e1f8b41-04c9-4b53-b8f0-0cf4347d9c0e</id>
+      <name>Allergy (Seasonal, Moderate)</name>
+      <karma>-11</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SR6</source>
+      <page>74</page>
+    </quality>
+    <quality>
+      <id>d7c63388-add6-45ae-af7d-3d93bb344132</id>
+      <name>Allergy (Seasonal, Severe)</name>
+      <karma>-14</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SR6</source>
+      <page>74</page>
+    </quality>
+    <quality>
+      <id>7545ab71-6ecd-475a-b6e7-d5e37760d7fd</id>
+      <name>Allergy (Seasonal, Extreme)</name>
+      <karma>-17</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SR6</source>
+      <page>74</page>
+    </quality>
+    <quality>
+      <id>1eeed7e1-c30b-44fd-b718-2a8082c6b419</id>
+      <name>Allergy (Rare, Mild)</name>
+      <karma>-2</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SR6</source>
+      <page>74</page>
+    </quality>
+    <quality>
+      <id>b4f58fca-7db5-448f-8778-f6c77b18438a</id>
+      <name>Allergy (Rare, Moderate)</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SR6</source>
+      <page>74</page>
+    </quality>
+    <quality>
+      <id>dc2c80ad-b457-4661-b5ee-ccb0a402d911</id>
+      <name>Allergy (Rare, Severe)</name>
+      <karma>-8</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SR6</source>
+      <page>74</page>
+    </quality>
+    <quality>
+      <id>d07c5104-8a09-422a-b361-9ce243925a22</id>
+      <name>Allergy (Rare, Extreme)</name>
+      <karma>-11</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SR6</source>
+      <page>74</page>
+    </quality>
+    <quality>
+      <id>ab5b7677-6c85-43d9-bd4d-de4de8942af9</id>
+      <name>AR Vertigo</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus>
+      </bonus>
+      <source>SR6</source>
+      <page>75</page>
     </quality>
     <quality>
       <id>94a09a8d-d582-44f0-9f2c-71f7ba94e767</id>
@@ -1197,33 +1295,8 @@
       <karma>-10</karma>
       <category>Negative</category>
       <bonus />
-      <forbidden>
-        <oneof>
-          <quality>Astral Chameleon</quality>
-        </oneof>
-      </forbidden>
-      <required>
-        <oneof>
-          <metatype>Centaur</metatype>
-          <metatype>Naga</metatype>
-          <metatype>Pixie</metatype>
-          <metatype>Sasquatch</metatype>
-          <quality>Adept</quality>
-          <quality>Aware</quality>
-          <quality>Aspected Magician</quality>
-          <quality>Enchanter</quality>
-          <quality>Explorer</quality>
-          <quality>Apprentice</quality>
-          <quality>Magician</quality>
-          <quality>Mystic Adept</quality>
-          <quality>Infected: Mutaqua</quality>
-          <quality>Infected: Nosferatu</quality>
-          <quality>Infected: Wendigo</quality>
-          <magenabled />
-        </oneof>
-      </required>
-      <source>SR5</source>
-      <page>78</page>
+      <source>SR6</source>
+      <page>75</page>
     </quality>
     <quality>
       <id>bc5f41ca-1549-4367-9c12-afa403182f8c</id>
@@ -6613,7 +6686,7 @@
       <source>RF</source>
       <page>118</page>
     </quality>
-    <quality>
+    <!--<quality>
       <id>51ba5e67-f2fd-4149-b24c-9b502ed0e7c7</id>
       <name>Shiva Arms (Pair)</name>
       <karma>8</karma>
@@ -6635,7 +6708,7 @@
       </required>
       <source>RF</source>
       <page>118</page>
-    </quality>
+    </quality>-->
     <quality>
       <id>9b205e4a-66c7-45d9-b87b-d0c743944d60</id>
       <name>Thermal Sensitivity</name>
@@ -7179,7 +7252,7 @@
       <source>RF</source>
       <page>122</page>
     </quality>
-    <quality>
+   <!-- <quality>
       <id>c57c9407-7ac6-4061-abab-7735c8bd69b4</id>
       <name>Striking Skin Pigmentation</name>
       <karma>-4</karma>
@@ -7188,7 +7261,7 @@
       <bonus />
       <source>RF</source>
       <page>122</page>
-    </quality>
+    </quality>-->
     <quality>
       <id>73ded55c-3f96-4efa-bd03-cd9bdebeb303</id>
       <name>Stubby Arms</name>
@@ -19322,5 +19395,33 @@
       <page>177</page>
     </quality>
     <!-- End Region -->
+    <!--Region Shadowrun 5th edition Core Positive Qualities -->
+   
+    <quality>
+      <id>419069f4-3320-4a24-a717-b6fed4bece47</id>
+      <name>Shiva Arms (Pair)</name>
+      <karma>8</karma>
+      <category>Positive</category>
+      <limit>3</limit>
+      <metagenic>True</metagenic>
+      <bonus>
+        <addlimb>
+          <limbslot>arm</limbslot>
+          <val>2</val>
+        </addlimb>
+      </bonus>      
+      <source>SWC</source>
+      <page>127</page>
+    </quality>
+    <quality>
+      <id>c603a8f6-30a5-4d07-994e-dc8f9cef13eb</id>
+      <name>Striking Skin Pigmentation</name>
+      <karma>-4</karma>
+      <category>Negative</category>
+      <metagenic>True</metagenic>
+      <bonus />
+      <source>SWC</source>
+      <page>129</page>
+    </quality>
   </qualities>
 </chummer>
