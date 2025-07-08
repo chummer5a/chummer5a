@@ -1719,45 +1719,53 @@ namespace Chummer
                     //TODO: Probably a better way to handle minrating/rating/maxrating but eh, YAGNI.
 
                     XPathNavigator objExactRatingNode = xmlNode.SelectSingleNodeAndCacheExpression("@rating", token);
-                    if (objExactRatingNode != null)
-                    {
-                        int intRating = objExactRatingNode.ValueAsInt;
-                        objGear = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.Gear.FirstOrDefault(
-                                x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                         StringComparison.OrdinalIgnoreCase))
-                                     && x.Rating == intRating)
-                            : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                                    async x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
-                                                   strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                               && await x.GetRatingAsync(token).ConfigureAwait(false) == intRating,
-                                    token)
-                                .ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        XPathNavigator objMinRatingNode =
-                            xmlNode.SelectSingleNodeAndCacheExpression("@minrating", token);
-                        XPathNavigator objMaxRatingNode =
-                            xmlNode.SelectSingleNodeAndCacheExpression("@maxrating", token);
-                        if (objMinRatingNode != null || objMaxRatingNode != null)
+                        if (objExactRatingNode != null)
                         {
-                            int intMinRating = objMinRatingNode?.ValueAsInt ?? 0;
-                            int intMaxRating = objMaxRatingNode?.ValueAsInt ?? int.MaxValue;
+                            int intRating = objExactRatingNode.ValueAsInt;
                             objGear = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? objCharacter.Gear.FirstOrDefault(
-                                    x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
-                                             strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                         && x.Rating >= intMinRating && x.Rating <= intMaxRating)
-                                : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false))
-                                    .FirstOrDefaultAsync(
+                                    x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                             StringComparison.OrdinalIgnoreCase))
+                                         && x.Rating == intRating)
+                                : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
                                         async x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
                                                        strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                                   && await x.GetRatingAsync(token).ConfigureAwait(false) >=
-                                                   intMinRating &&
-                                                   await x.GetRatingAsync(token).ConfigureAwait(false) <= intMaxRating,
+                                                   && await x.GetRatingAsync(token).ConfigureAwait(false) == intRating,
+                                        token)
+                                    .ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            XPathNavigator objMinRatingNode =
+                                xmlNode.SelectSingleNodeAndCacheExpression("@minrating", token);
+                            XPathNavigator objMaxRatingNode =
+                                xmlNode.SelectSingleNodeAndCacheExpression("@maxrating", token);
+                            if (objMinRatingNode != null || objMaxRatingNode != null)
+                            {
+                                int intMinRating = objMinRatingNode?.ValueAsInt ?? 0;
+                                int intMaxRating = objMaxRatingNode?.ValueAsInt ?? int.MaxValue;
+                                objGear = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? objCharacter.Gear.FirstOrDefault(
+                                        x =>
+                                        {
+                                            if (x.Name != strNodeInnerText
+                                                && !string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                                return false;
+                                            int intMyRating = x.Rating;
+                                            return intMyRating >= intMinRating && intMyRating <= intMaxRating;
+                                        })
+                                : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false))
+                                    .FirstOrDefaultAsync(
+                                        async x =>
+                                        {
+                                            if (x.Name != strNodeInnerText
+                                                && !string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                                return false;
+                                            int intMyRating = await x.GetRatingAsync(token).ConfigureAwait(false);
+                                            return intMyRating >= intMinRating && intMyRating <= intMaxRating;
+                                        },
                                         token).ConfigureAwait(false);
                         }
                         else

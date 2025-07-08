@@ -3938,16 +3938,16 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrEmpty(strConceal))
                     sbdConceal.Append('(').Append(strConceal).Append(')');
-                await WeaponAccessories.ForEachAsync(objAccessory =>
+                await WeaponAccessories.ForEachAsync(async objAccessory =>
                 {
                     if (!objAccessory.Equipped)
                         return;
                     string strLoopConceal = objAccessory.Concealability;
                     if (!string.IsNullOrEmpty(strLoopConceal))
                     {
-                        strLoopConceal = strLoopConceal
-                            .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strLoopConceal = await strLoopConceal
+                            .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                            .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         sbdConceal.Append(" + (").Append(strLoopConceal).Append(')');
                     }
                 }, token).ConfigureAwait(false);
@@ -5583,7 +5583,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdCost.Append(strCostExpression.TrimStart('+'));
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
-                    sbdCost.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdCost.CheapReplace(strCostExpression, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
                     // Replace the division sign with "div" since we're using XPath.
                     sbdCost.Replace("/", " div ");
@@ -5684,7 +5684,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdWeight.Append(strWeightExpression.TrimStart('+'));
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
-                    sbdWeight.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.CheapReplace(strWeightExpression, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
                     // Replace the division sign with "div" since we're using XPath.
                     sbdWeight.Replace("/", " div ");
@@ -5749,34 +5749,17 @@ namespace Chummer.Backend.Equipment
                         sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
                 }
 
-                foreach (WeaponAccessory objAccessory in WeaponAccessories.Where(objAccessory => objAccessory.Equipped))
+                if (blnSync)
                 {
-                    // Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
-                    if (!(objAccessory.DamageType.Contains("(f)") && Damage.Contains("(f)")))
+                    foreach (WeaponAccessory objAccessory in WeaponAccessories)
                     {
-                        // Change the Weapon's AP value.
-                        string strAPReplace = objAccessory.APReplacement;
-                        if (!string.IsNullOrEmpty(strAPReplace))
+                        if (!objAccessory.Equipped)
+                            continue;
+                        // Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
+                        if (!(objAccessory.DamageType.Contains("(f)") && Damage.Contains("(f)")))
                         {
-                            strAPReplace = strAPReplace
-                                .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                            strAP = strAPReplace;
-                        }
-                        // Adjust the Weapon's AP value.
-                        string strAPAdd = objAccessory.AP;
-                        if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
-                        {
-                            strAPAdd = strAPAdd
-                                .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
-                        }
-
-                        if (objAccessory.WirelessOn && WirelessOn && objAccessory.WirelessWeaponBonus != null)
-                        {
-                            // Change the Weapon's Damage Type.
-                            strAPReplace = objAccessory.WirelessWeaponBonus["apreplace"]?.InnerText;
+                            // Change the Weapon's AP value.
+                            string strAPReplace = objAccessory.APReplacement;
                             if (!string.IsNullOrEmpty(strAPReplace))
                             {
                                 strAPReplace = strAPReplace
@@ -5784,17 +5767,91 @@ namespace Chummer.Backend.Equipment
                                     .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                 strAP = strAPReplace;
                             }
-                            // Adjust the Weapon's Damage.
-                            strAPAdd = objAccessory.WirelessWeaponBonus["ap"]?.InnerText;
+                            // Adjust the Weapon's AP value.
+                            string strAPAdd = objAccessory.AP;
                             if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
                             {
                                 strAPAdd = strAPAdd
                                     .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                        .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                 sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
+                            }
+
+                            if (objAccessory.WirelessOn && WirelessOn && objAccessory.WirelessWeaponBonus != null)
+                            {
+                                // Change the Weapon's Damage Type.
+                                strAPReplace = objAccessory.WirelessWeaponBonus["apreplace"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAPReplace))
+                                {
+                                    strAPReplace = strAPReplace
+                                        .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    strAP = strAPReplace;
+                                }
+                                // Adjust the Weapon's Damage.
+                                strAPAdd = objAccessory.WirelessWeaponBonus["ap"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
+                                {
+                                    strAPAdd = strAPAdd
+                                        .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
+                                }
                             }
                         }
                     }
+                }
+                else
+                {
+                    await WeaponAccessories.ForEachAsync(async objAccessory =>
+                    {
+                        if (!objAccessory.Equipped)
+                            return;
+                        // Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
+                        if (!(objAccessory.DamageType.Contains("(f)") && Damage.Contains("(f)")))
+                        {
+                            // Change the Weapon's AP value.
+                            string strAPReplace = objAccessory.APReplacement;
+                            if (!string.IsNullOrEmpty(strAPReplace))
+                            {
+                                strAPReplace = await strAPReplace
+                                    .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                    .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                strAP = strAPReplace;
+                            }
+                            // Adjust the Weapon's AP value.
+                            string strAPAdd = objAccessory.AP;
+                            if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
+                            {
+                                strAPAdd = await strAPAdd
+                                    .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                    .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
+                            }
+
+                            if (objAccessory.WirelessOn && WirelessOn && objAccessory.WirelessWeaponBonus != null)
+                            {
+                                // Change the Weapon's Damage Type.
+                                strAPReplace = objAccessory.WirelessWeaponBonus["apreplace"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAPReplace))
+                                {
+                                    strAPReplace = await strAPReplace
+                                        .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                    strAP = strAPReplace;
+                                }
+                                // Adjust the Weapon's Damage.
+                                strAPAdd = objAccessory.WirelessWeaponBonus["ap"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
+                                {
+                                    strAPAdd = await strAPAdd
+                                        .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                    sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
+                                }
+                            }
+                        }
+                    }, token).ConfigureAwait(false);
                 }
 
                 if (blnIncludeAmmo)
@@ -5810,18 +5867,26 @@ namespace Chummer.Backend.Equipment
                             string strAPReplace = objGear.FlechetteWeaponBonus["apreplace"]?.InnerText;
                             if (!string.IsNullOrEmpty(strAPReplace))
                             {
-                                strAPReplace = strAPReplace
-                                    .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                strAPReplace = blnSync
+                                    ? strAPReplace
+                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                    : await strAPReplace
+                                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 strAP = strAPReplace;
                             }
                             // Adjust the Weapon's Damage.
                             string strAPAdd = objGear.FlechetteWeaponBonus["ap"]?.InnerText;
                             if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
                             {
-                                strAPAdd = strAPAdd
-                                    .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                strAPAdd = blnSync
+                                    ? strAPAdd
+                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                    : await strAPAdd
+                                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
                             }
                         }
@@ -5831,18 +5896,26 @@ namespace Chummer.Backend.Equipment
                             string strAPReplace = objGear.WeaponBonus["apreplace"]?.InnerText;
                             if (!string.IsNullOrEmpty(strAPReplace))
                             {
-                                strAPReplace = strAPReplace
-                                    .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                strAPReplace = blnSync
+                                    ? strAPReplace
+                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                    : await strAPReplace
+                                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 strAP = strAPReplace;
                             }
                             // Adjust the Weapon's Damage.
                             string strAPAdd = objGear.WeaponBonus["ap"]?.InnerText;
                             if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
                             {
-                                strAPAdd = strAPAdd
-                                    .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                strAPAdd = blnSync
+                                    ? strAPAdd
+                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                    : await strAPAdd
+                                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
                             }
                         }
@@ -5860,18 +5933,26 @@ namespace Chummer.Backend.Equipment
                                 string strAPReplace = objChild.FlechetteWeaponBonus["apreplace"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strAPReplace))
                                 {
-                                    strAPReplace = strAPReplace
-                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    strAPReplace = blnSync
+                                        ? strAPReplace
+                                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        : await strAPReplace
+                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     strAP = strAPReplace;
                                 }
                                 // Adjust the Weapon's Damage.
                                 string strAPAdd = objChild.FlechetteWeaponBonus["ap"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
                                 {
-                                    strAPAdd = strAPAdd
-                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    strAPAdd = blnSync
+                                        ? strAPAdd
+                                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        : await strAPAdd
+                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
                                 }
                             }
@@ -5881,18 +5962,26 @@ namespace Chummer.Backend.Equipment
                                 string strAPReplace = objChild.WeaponBonus["apreplace"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strAPReplace))
                                 {
-                                    strAPReplace = strAPReplace
-                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    strAPReplace = blnSync
+                                        ? strAPReplace
+                                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        : await strAPReplace
+                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     strAP = strAPReplace;
                                 }
                                 // Adjust the Weapon's Damage.
                                 string strAPAdd = objChild.WeaponBonus["ap"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
                                 {
-                                    strAPAdd = strAPAdd
-                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    strAPAdd = blnSync
+                                        ? strAPAdd
+                                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        : await strAPAdd
+                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
                                 }
                             }
@@ -5955,14 +6044,14 @@ namespace Chummer.Backend.Equipment
                 if (blnSync)
                 {
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    sbdAP.CheapReplace("{Rating}", strAP, () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdAP.CheapReplace(strAP, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     ProcessAttributesInXPath(sbdAP, strAP);
                 }
                 else
                 {
                     await sbdAP.CheapReplaceAsync(strAP, "{Rating}",
-                        () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await ProcessAttributesInXPathAsync(sbdAP, strAP, token: token).ConfigureAwait(false);
                 }
 
@@ -7250,7 +7339,7 @@ namespace Chummer.Backend.Equipment
             {
                 sbdAccuracy.Append(strAccuracy);
                 await sbdAccuracy.CheapReplaceAsync(strAccuracy, "{Rating}",
-                    () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 await ProcessAttributesInXPathAsync(sbdAccuracy, strAccuracy, token: token).ConfigureAwait(false);
                 await (await sbdAccuracy.CheapReplaceAsync(strAccuracy, "Physical", funcPhysicalLimitString,
                         token: token).ConfigureAwait(false))
@@ -7899,16 +7988,16 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Weapon Mods.
-                await WeaponAccessories.ForEachAsync(x =>
+                await WeaponAccessories.ForEachAsync(async x =>
                 {
                     if (!x.Equipped)
                         return;
                     string strInnerBonus = x.RangeBonus;
                     if (!string.IsNullOrEmpty(strInnerBonus) && strInnerBonus != "0" && strInnerBonus != "+0" && strInnerBonus != "-0")
                     {
-                        strInnerBonus = strInnerBonus.TrimStartOnce('+')
-                                .CheapReplace("{Rating}", () => x.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                .CheapReplace("Rating", () => x.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strInnerBonus = await strInnerBonus.TrimStartOnce('+')
+                            .CheapReplaceAsync("{Rating}", async () => (await x.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                            .CheapReplaceAsync("Rating", async () => (await x.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         sbdRangeBonus.Append(sbdRangeBonus.Length > 0 ? " + (" : "(").Append(strInnerBonus).Append(')');
                     }
                     if (WirelessOn && x.WirelessOn && x.WirelessWeaponBonus != null)
@@ -7917,9 +8006,9 @@ namespace Chummer.Backend.Equipment
                         if (x.WirelessWeaponBonus.TryGetStringFieldQuickly("rangebonus", ref strInnerBonus)
                             && !string.IsNullOrEmpty(strInnerBonus) && strInnerBonus != "0" && strInnerBonus != "+0" && strInnerBonus != "-0")
                         {
-                            strInnerBonus = strInnerBonus.TrimStartOnce('+')
-                                .CheapReplace("{Rating}", () => x.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                .CheapReplace("Rating", () => x.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                            strInnerBonus = await strInnerBonus.TrimStartOnce('+')
+                                .CheapReplaceAsync("{Rating}", async () => (await x.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                .CheapReplaceAsync("Rating", async () => (await x.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             sbdRangeBonus.Append(sbdRangeBonus.Length > 0 ? " + (" : "(").Append(strInnerBonus).Append(')');
                         }
                     }
@@ -7943,8 +8032,8 @@ namespace Chummer.Backend.Equipment
                         if (!string.IsNullOrEmpty(strInnerBonus) && strInnerBonus != "0" && strInnerBonus != "+0" && strInnerBonus != "-0")
                         {
                             strInnerBonus = await strInnerBonus
-                                .CheapReplaceAsync("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                .CheapReplaceAsync("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                 .ConfigureAwait(false);
                             sbdRangeBonus.Append(sbdRangeBonus.Length > 0 ? " + (" : "(").Append(strInnerBonus).Append(')');
                         }
@@ -9033,7 +9122,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                intDicePool += await WeaponAccessories.SumAsync(a => a.Equipped, a =>
+                intDicePool += await WeaponAccessories.SumAsync(a => a.Equipped, async a =>
                 {
                     if (WirelessOn && a.WirelessOn && a.WirelessWeaponBonus != null)
                     {
@@ -9041,9 +9130,9 @@ namespace Chummer.Backend.Equipment
                         if (!string.IsNullOrEmpty(strWeaponBonusPool)
                             && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                         {
-                            strWeaponBonusPool = strWeaponBonusPool.TrimStartOnce('+')
-                                .CheapReplace("{Rating}", () => a.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                .CheapReplace("Rating", () => a.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                            strWeaponBonusPool = await strWeaponBonusPool.TrimStartOnce('+')
+                                .CheapReplaceAsync("{Rating}", async () => (await a.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                .CheapReplaceAsync("Rating", async () => (await a.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             sbdExtraModifier.Append(sbdExtraModifier.Length > 0 ? " + (" : "(")
                                 .Append(strWeaponBonusPool).Append(')');
                         }
@@ -9053,9 +9142,9 @@ namespace Chummer.Backend.Equipment
                             if (!string.IsNullOrEmpty(strWeaponBonusPool)
                                 && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                             {
-                                strWeaponBonusPool = strWeaponBonusPool.TrimStartOnce('+')
-                                    .CheapReplace("{Rating}", () => a.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    .CheapReplace("Rating", () => a.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                strWeaponBonusPool = await strWeaponBonusPool.TrimStartOnce('+')
+                                    .CheapReplaceAsync("{Rating}", async () => (await a.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                    .CheapReplaceAsync("Rating", async () => (await a.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 sbdExtraModifier.Append(sbdExtraModifier.Length > 0 ? " + (" : "(")
                                     .Append(strWeaponBonusPool).Append(')');
                             }
@@ -9076,9 +9165,9 @@ namespace Chummer.Backend.Equipment
                             if (!string.IsNullOrEmpty(strWeaponBonusPool)
                                 && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                             {
-                                strWeaponBonusPool = strWeaponBonusPool.TrimStartOnce('+')
-                                    .CheapReplace("{Rating}", () => objAmmo.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    .CheapReplace("Rating", () => objAmmo.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                strWeaponBonusPool = await strWeaponBonusPool.TrimStartOnce('+')
+                                    .CheapReplaceAsync("{Rating}", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                    .CheapReplaceAsync("Rating", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 sbdExtraModifier.Append(sbdExtraModifier.Length > 0 ? " + (" : "(")
                                     .Append(strWeaponBonusPool).Append(')');
                             }
@@ -9088,9 +9177,9 @@ namespace Chummer.Backend.Equipment
                                 if (!string.IsNullOrEmpty(strWeaponBonusPool)
                                     && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                                 {
-                                    strWeaponBonusPool = strWeaponBonusPool.TrimStartOnce('+')
-                                        .CheapReplace("{Rating}", () => objAmmo.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        .CheapReplace("Rating", () => objAmmo.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    strWeaponBonusPool = await strWeaponBonusPool.TrimStartOnce('+')
+                                        .CheapReplaceAsync("{Rating}", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     sbdExtraModifier.Append(sbdExtraModifier.Length > 0 ? " + (" : "(")
                                         .Append(strWeaponBonusPool).Append(')');
                                 }
@@ -9102,9 +9191,9 @@ namespace Chummer.Backend.Equipment
                             if (!string.IsNullOrEmpty(strWeaponBonusPool)
                                 && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                             {
-                                strWeaponBonusPool = strWeaponBonusPool.TrimStartOnce('+')
-                                    .CheapReplace("{Rating}", () => objAmmo.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    .CheapReplace("Rating", () => objAmmo.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                strWeaponBonusPool = await strWeaponBonusPool.TrimStartOnce('+')
+                                    .CheapReplaceAsync("{Rating}", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                    .CheapReplaceAsync("Rating", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 sbdExtraModifier.Append(sbdExtraModifier.Length > 0 ? " + (" : "(")
                                     .Append(strWeaponBonusPool).Append(')');
                             }
@@ -9114,9 +9203,9 @@ namespace Chummer.Backend.Equipment
                                 if (!string.IsNullOrEmpty(strWeaponBonusPool)
                                     && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                                 {
-                                    strWeaponBonusPool = strWeaponBonusPool.TrimStartOnce('+')
-                                        .CheapReplace("{Rating}", () => objAmmo.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        .CheapReplace("Rating", () => objAmmo.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    strWeaponBonusPool = await strWeaponBonusPool.TrimStartOnce('+')
+                                        .CheapReplaceAsync("{Rating}", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     sbdExtraModifier.Append(sbdExtraModifier.Length > 0 ? " + (" : "(")
                                         .Append(strWeaponBonusPool).Append(')');
                                 }
@@ -9133,9 +9222,9 @@ namespace Chummer.Backend.Equipment
                                 if (!string.IsNullOrEmpty(strWeaponBonusPool)
                                     && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                                 {
-                                    strWeaponBonusPool = strWeaponBonusPool.TrimStartOnce('+')
-                                        .CheapReplace("{Rating}", () => objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        .CheapReplace("Rating", () => objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    strWeaponBonusPool = await strWeaponBonusPool.TrimStartOnce('+')
+                                        .CheapReplaceAsync("{Rating}", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     sbdExtraModifier.Append(sbdExtraModifier.Length > 0 ? " + (" : "(")
                                         .Append(strWeaponBonusPool).Append(')');
                                 }
@@ -9145,9 +9234,9 @@ namespace Chummer.Backend.Equipment
                                     if (!string.IsNullOrEmpty(strWeaponBonusPool)
                                         && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                                     {
-                                        strWeaponBonusPool = strWeaponBonusPool.TrimStartOnce('+')
-                                            .CheapReplace("{Rating}", () => objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                            .CheapReplace("Rating", () => objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                        strWeaponBonusPool = await strWeaponBonusPool.TrimStartOnce('+')
+                                            .CheapReplaceAsync("{Rating}", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                            .CheapReplaceAsync("Rating", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                         sbdExtraModifier.Append(sbdExtraModifier.Length > 0 ? " + (" : "(")
                                             .Append(strWeaponBonusPool).Append(')');
                                     }
@@ -9159,9 +9248,9 @@ namespace Chummer.Backend.Equipment
                                 if (!string.IsNullOrEmpty(strWeaponBonusPool)
                                     && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                                 {
-                                    strWeaponBonusPool = strWeaponBonusPool.TrimStartOnce('+')
-                                        .CheapReplace("{Rating}", () => objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        .CheapReplace("Rating", () => objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    strWeaponBonusPool = await strWeaponBonusPool.TrimStartOnce('+')
+                                        .CheapReplaceAsync("{Rating}", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     sbdExtraModifier.Append(sbdExtraModifier.Length > 0 ? " + (" : "(")
                                         .Append(strWeaponBonusPool).Append(')');
                                 }
@@ -9171,9 +9260,9 @@ namespace Chummer.Backend.Equipment
                                     if (!string.IsNullOrEmpty(strWeaponBonusPool)
                                         && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                                     {
-                                        strWeaponBonusPool = strWeaponBonusPool.TrimStartOnce('+')
-                                            .CheapReplace("{Rating}", () => objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                            .CheapReplace("Rating", () => objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                        strWeaponBonusPool = await strWeaponBonusPool.TrimStartOnce('+')
+                                            .CheapReplaceAsync("{Rating}", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                            .CheapReplaceAsync("Rating", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                         sbdExtraModifier.Append(sbdExtraModifier.Length > 0 ? " + (" : "(")
                                             .Append(strWeaponBonusPool).Append(')');
                                     }
@@ -10684,7 +10773,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
-                    sbdAvail.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdAvail.CheapReplace(strAvail, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
                     if (blnCheckUnderbarrels && strAvail.Contains("{Children Avail}"))
                     {

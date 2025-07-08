@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using iText.StyledXmlParser.Jsoup.Parser;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -977,8 +978,8 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
                 {
                     sbdAccuracy.Append(strAccuracy);
-                    await sbdAccuracy.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await sbdAccuracy.CheapReplaceAsync("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdAccuracy.CheapReplaceAsync(strAccuracy, "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdAccuracy.CheapReplaceAsync(strAccuracy, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     Func<Task<string>> funcPhysicalLimitString;
                     if (Parent != null)
                     {
@@ -1102,8 +1103,8 @@ namespace Chummer.Backend.Equipment
                     // If the cost is determined by the Rating, evaluate the expression.
                     if (!string.IsNullOrEmpty(strReach))
                         sbdReach.Append('(').Append(strReach).Append(')');
-                    await sbdReach.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await sbdReach.CheapReplaceAsync("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdReach.CheapReplaceAsync(strReach, "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdReach.CheapReplaceAsync(strReach, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     if (Parent != null)
                     {
                         await Parent.ProcessAttributesInXPathAsync(sbdReach, strReach, token: token).ConfigureAwait(false);
@@ -1290,8 +1291,9 @@ namespace Chummer.Backend.Equipment
                     {
                         // If the cost is determined by the Rating, evaluate the expression.
                         sbdConceal.Append(strConceal);
-                        sbdConceal.CheapReplace("{Rating}", strConceal, () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("Rating", strConceal, () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdConceal
+                            .CheapReplace(strConceal, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace(strConceal, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                         if (Parent != null)
                         {
                             Parent.ProcessAttributesInXPath(sbdConceal, strConceal);
@@ -1338,8 +1340,8 @@ namespace Chummer.Backend.Equipment
                 {
                     // If the cost is determined by the Rating, evaluate the expression.
                     sbdConceal.Append(strConceal);
-                    await sbdConceal.CheapReplaceAsync("{Rating}", strConceal, () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await sbdConceal.CheapReplaceAsync("Rating", strConceal, () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdConceal.CheapReplaceAsync(strConceal, "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdConceal.CheapReplaceAsync(strConceal, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     if (Parent != null)
                     {
                         await Parent.ProcessAttributesInXPathAsync(sbdConceal, strConceal, token: token).ConfigureAwait(false);
@@ -1826,10 +1828,10 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
-                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdAvail.CheapReplace(strAvail, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
-
+                    sbdAvail.Replace("/", " div ");
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
@@ -1890,10 +1892,11 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
-                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
 
                     await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
 
+                    sbdAvail.Replace("/", " div ");
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
                     if (blnIsSuccess)
@@ -2096,7 +2099,8 @@ namespace Chummer.Backend.Equipment
             {
                 sbdCost.Append(strCostExpr.TrimStart('+'));
                 await sbdCost.CheapReplaceAsync(strCostExpr, "Rating",
-                                                () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                                token: token).ConfigureAwait(false);
                 await sbdCost.CheapReplaceAsync(strCostExpr, "Weapon Cost",
                                                 async () => (Parent != null
                                                     ? await Parent.GetOwnCostAsync(token).ConfigureAwait(false)
@@ -2457,7 +2461,7 @@ namespace Chummer.Backend.Equipment
 
                     await ImprovementManager.CreateImprovementsAsync(_objCharacter,
                                                                      Improvement.ImprovementSource.WeaponAccessory,
-                                                                     InternalId + "Wireless", WirelessBonus, Rating,
+                                                                     InternalId + "Wireless", WirelessBonus, await GetRatingAsync(token).ConfigureAwait(false),
                                                                      await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
                                                                      token: token).ConfigureAwait(false);
 

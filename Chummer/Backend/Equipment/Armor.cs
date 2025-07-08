@@ -1589,7 +1589,7 @@ namespace Chummer.Backend.Equipment
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                    await strCapacity.CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
+                    await strCapacity.CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 string strReturn = blnIsSuccess
                     ? ((double)objProcess).ToString("#,0.##", objCultureInfo)
                     : objProcess.ToString();
@@ -2782,7 +2782,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strReturn) || strReturn == "0")
                 strReturn = 0.0m.ToString("#,0.##", objCultureInfo);
             else if (strReturn == "Rating")
-                strReturn = Rating.ToString(objCultureInfo);
+                strReturn = (await GetRatingAsync(token).ConfigureAwait(false)).ToString(objCultureInfo);
             else if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decReturn))
                 strReturn = decReturn.ToString("#,0.##", objCultureInfo);
 

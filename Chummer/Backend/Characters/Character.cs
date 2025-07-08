@@ -26132,13 +26132,14 @@ namespace Chummer
                     = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
                 if (objAntiHole != null)
                 {
-                    if (objAntiHole.Rating > intCentiessence)
+                    int intRating = objAntiHole.Rating;
+                    if (intRating > intCentiessence)
                     {
-                        objAntiHole.Rating -= intCentiessence;
+                        objAntiHole.Rating = intRating - intCentiessence;
                         return;
                     }
 
-                    intCentiessence -= objAntiHole.Rating;
+                    intCentiessence -= intRating;
                     objAntiHole.DeleteCyberware();
                 }
 
@@ -26309,13 +26310,14 @@ namespace Chummer
 
                 if (objHole != null)
                 {
-                    if (objHole.Rating > intCentiessence)
+                    int intRating = objHole.Rating;
+                    if (intRating > intCentiessence)
                     {
-                        objHole.Rating -= intCentiessence;
+                        objHole.Rating = intRating - intCentiessence;
                         return;
                     }
 
-                    intCentiessence -= objHole.Rating;
+                    intCentiessence -= intRating;
                     objHole.DeleteCyberware();
                 }
 

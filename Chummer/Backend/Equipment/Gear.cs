@@ -1608,11 +1608,12 @@ namespace Chummer.Backend.Equipment
                     .SelectSingleNode("/chummer/gears/gear[contains(name, \"Nuyen\") and category = \"Currency\"]");
                 if (objNuyenNode != null)
                 {
-                    if (Rating > 0)
+                    int intMyRating = Rating;
+                    if (intMyRating > 0)
                     {
                         Gear objNuyenGear = new Gear(_objCharacter);
                         objNuyenGear.Create(objNuyenNode, 0, new List<Weapon>(1));
-                        objNuyenGear.Quantity = Rating;
+                        objNuyenGear.Quantity = intMyRating;
                         _lstChildren.Add(objNuyenGear);
                     }
 
@@ -1791,7 +1792,7 @@ namespace Chummer.Backend.Equipment
                                 ImprovementManager.CreateImprovements(_objCharacter,
                                                                       Improvement.ImprovementSource.StackedFocus,
                                                                       objStack.InternalId,
-                                                                      objFociGear.WirelessBonus, Rating,
+                                                                      objFociGear.WirelessBonus, objFociGear.Rating,
                                                                       objFociGear.CurrentDisplayNameShort);
                             }
                         });
@@ -3546,7 +3547,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
-                            strFirstHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                            strFirstHalf.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                         strReturn = blnIsSuccess
                             ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
                             : strFirstHalf;
@@ -3714,7 +3715,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
-                            strFirstHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                            strFirstHalf.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                         strReturn = blnIsSuccess
                             ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
                             : strFirstHalf;
@@ -3733,7 +3734,7 @@ namespace Chummer.Backend.Equipment
                         strReturn = strReturn.Substring(1, strReturn.Length - 2);
 
                     (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
-                        strReturn.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                        strReturn.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                     if (blnIsSuccess)
                         strReturn = ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo);
                     if (blnSquareBrackets)
@@ -3857,10 +3858,10 @@ namespace Chummer.Backend.Equipment
                     sbdCost.Replace("Gear Cost", decGearCost.ToString(GlobalSettings.InvariantCultureInfo));
                     sbdCost.Replace("Children Cost",
                                     decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdCost.Replace("Parent Rating",
-                                    (Parent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo)
-                                    ?? "0");
-                    sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdCost.CheapReplace(strCostExpression, "Parent Rating",
+                                    () => (Parent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo)
+                                        ?? "0");
+                    sbdCost.CheapReplace(strCostExpression, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     sbdCost.Replace("Parent Cost", decParentCost.ToString(GlobalSettings.InvariantCultureInfo));
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -3928,7 +3929,7 @@ namespace Chummer.Backend.Equipment
                                                                      }
                                                                      return "0";
                                                                  }, token: token).ConfigureAwait(false);
-                sbdCost.Replace("Rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo));
+                await sbdCost.CheapReplaceAsync(strCostExpression, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 sbdCost.Replace("Parent Cost", decParentCost.ToString(GlobalSettings.InvariantCultureInfo));
                 await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -4085,10 +4086,10 @@ namespace Chummer.Backend.Equipment
                     sbdWeight.Replace("Gear Weight", decGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
                     sbdWeight.Replace("Children Weight",
                                       decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdWeight.Replace("Parent Rating",
-                                      (Parent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo)
+                    sbdWeight.CheapReplace(strWeightExpression, "Parent Rating",
+                                      () => (Parent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo)
                                       ?? "0");
-                    sbdWeight.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.CheapReplace(strWeightExpression, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     sbdWeight.Replace("Parent Weight", decParentWeight.ToString(GlobalSettings.InvariantCultureInfo));
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
                     (bool blnIsSuccess, object objProcess)
@@ -4347,13 +4348,13 @@ namespace Chummer.Backend.Equipment
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (!string.IsNullOrEmpty(strQuantity))
                 strReturn = strQuantity + strSpace + strReturn;
-
-            if (Rating > 0)
+            int intRating = Rating;
+            if (intRating > 0)
                 strReturn += strSpace + '('
                                       + string.Format(
                                           objCulture, LanguageManager.GetString("Label_RatingFormat", strLanguage),
                                           LanguageManager.GetString(RatingLabel, strLanguage)) + strSpace
-                                      + Rating.ToString(objCulture) + ')';
+                                      + intRating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             if (!string.IsNullOrEmpty(GearName))
@@ -5439,7 +5440,8 @@ namespace Chummer.Backend.Equipment
                             ImprovementManager.SetForcedValue(Extra, _objCharacter);
                             if (await ImprovementManager.CreateImprovementsAsync(
                                     _objCharacter, eSource, InternalId, WirelessBonus,
-                                    Rating, await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                    await GetRatingAsync(token).ConfigureAwait(false),
+                                    await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
                                     token: token).ConfigureAwait(false))
                             {
                                 string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);

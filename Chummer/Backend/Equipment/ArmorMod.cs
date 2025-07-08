@@ -1387,7 +1387,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
-                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdAvail.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
@@ -1449,7 +1449,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
-                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    await sbdAvail.CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
@@ -1506,7 +1506,7 @@ namespace Chummer.Backend.Equipment
                                                    GlobalSettings.InvariantCultureInfo)
                                                .ToString(GlobalSettings.InvariantCultureInfo)
                                       : "0")
-                              .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                              .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity);
@@ -1530,7 +1530,7 @@ namespace Chummer.Backend.Equipment
                 strCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
             }
 
-            strCapacity = (await strCapacity
+            strCapacity = await (await strCapacity
                     .CheapReplaceAsync(
                         "Capacity",
                         async () => Parent != null
@@ -1539,7 +1539,7 @@ namespace Chummer.Backend.Equipment
                                     GlobalSettings.InvariantCultureInfo)
                                 .ToString(GlobalSettings.InvariantCultureInfo)
                             : "0", token: token).ConfigureAwait(false))
-                .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                .CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
 
             //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
             (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
@@ -1649,7 +1649,7 @@ namespace Chummer.Backend.Equipment
                                                    GlobalSettings.InvariantCultureInfo)
                                                .ToString(GlobalSettings.InvariantCultureInfo)
                                       : "0")
-                              .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                              .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                 bool blnSquareBrackets = strCapacity.StartsWith('[');
                 if (blnSquareBrackets)
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
@@ -1680,7 +1680,7 @@ namespace Chummer.Backend.Equipment
                 strCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
             }
 
-            strCapacity = (await strCapacity
+            strCapacity = await (await strCapacity
                     .CheapReplaceAsync(
                         "Capacity",
                         async () => Parent != null
@@ -1689,7 +1689,7 @@ namespace Chummer.Backend.Equipment
                                     GlobalSettings.InvariantCultureInfo)
                                 .ToString(GlobalSettings.InvariantCultureInfo)
                             : "0", token: token).ConfigureAwait(false))
-                .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                .CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
             bool blnSquareBrackets = strCapacity.StartsWith('[');
             if (blnSquareBrackets)
                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
@@ -1846,7 +1846,7 @@ namespace Chummer.Backend.Equipment
             {
                 sbdCost.Append(strCostExpr.TrimStart('+'));
                 await sbdCost.CheapReplaceAsync(strCostExpr, "Rating",
-                                                () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 await sbdCost.CheapReplaceAsync(strCostExpr, "Armor Cost",
                                                 async () => (Parent != null
                                                     ? await Parent.GetOwnCostAsync(token).ConfigureAwait(false)
@@ -2132,7 +2132,7 @@ namespace Chummer.Backend.Equipment
 
                     await ImprovementManager.CreateImprovementsAsync(_objCharacter,
                                                                      Improvement.ImprovementSource.ArmorMod,
-                                                                     InternalId + "Wireless", WirelessBonus, Rating,
+                                                                     InternalId + "Wireless", WirelessBonus, await GetRatingAsync(token).ConfigureAwait(false),
                                                                      await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
                                                                      token: token).ConfigureAwait(false);
 

@@ -8023,8 +8023,8 @@ namespace Chummer.Backend.Equipment
                         {
                             (bool blnIsSuccess, object objProcess) =
                                 CommonFunctions.EvaluateInvariantXPath(
-                                    strFirstHalf.Replace(
-                                        "Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                                    strFirstHalf.CheapReplace(
+                                        "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                             strReturn = blnIsSuccess
                                 ? ((double) objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
                                 : strFirstHalf;
@@ -8076,8 +8076,8 @@ namespace Chummer.Backend.Equipment
                         {
                             (bool blnIsSuccess, object objProcess) =
                                 CommonFunctions.EvaluateInvariantXPath(
-                                    strSecondHalf.Replace(
-                                        "Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                                    strSecondHalf.CheapReplace(
+                                        "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                             strSecondHalf =
                                 '[' + (blnIsSuccess
                                     ? ((double) objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
@@ -8136,7 +8136,7 @@ namespace Chummer.Backend.Equipment
 
                         (bool blnIsSuccess, object objProcess) =
                             CommonFunctions.EvaluateInvariantXPath(
-                                strCapacity.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                                strCapacity.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                         strReturn = blnIsSuccess
                             ? ((double) objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
                             : strCapacity;
@@ -8750,7 +8750,7 @@ namespace Chummer.Backend.Equipment
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
                         sbdValue.Append(strExpression);
-                        sbdValue.Replace("{Rating}", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                         foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                         {
                             sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}',
