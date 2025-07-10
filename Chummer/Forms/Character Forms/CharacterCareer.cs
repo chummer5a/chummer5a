@@ -22154,12 +22154,11 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                    .ConfigureAwait(false);
-                            int intMaxRating = await objSelectedAccessory.GetMaxRatingValueAsync(token).ConfigureAwait(false);
-                            if (intMaxRating > 0)
+                            int intRating = await objSelectedAccessory.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
-                                int intRating = await objSelectedAccessory.GetRatingAsync(GenericToken).ConfigureAwait(false);
                                 await lblWeaponRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
@@ -25921,12 +25920,11 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                     .ConfigureAwait(false);
-                            int intMaxRating = await objAccessory.GetMaxRatingValueAsync(token).ConfigureAwait(false);
-                            if (intMaxRating > 0)
+                            int intRating = await objAccessory.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
                                 await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                            .ConfigureAwait(false);
-                                int intRating = await objAccessory.GetRatingAsync(GenericToken).ConfigureAwait(false);
                                 await lblVehicleRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;

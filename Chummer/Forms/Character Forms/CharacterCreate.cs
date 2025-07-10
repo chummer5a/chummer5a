@@ -15666,19 +15666,20 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                             await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                    .ConfigureAwait(false);
-                            int intMaxRating = await objWeapon.GetMaxRatingValueAsync(token).ConfigureAwait(false);
-                            if (intMaxRating > 0)
+                            int intRating = await objWeapon.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
+                                int intMaxRating = await objWeapon.GetMaxRatingValueAsync(token).ConfigureAwait(false);
+                                int intMinRating = await objWeapon.GetMinRatingValueAsync(token).ConfigureAwait(false);
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                     .ConfigureAwait(false);
-                                int intRating = await objWeapon.GetRatingAsync(GenericToken).ConfigureAwait(false);
                                 await nudWeaponRating.DoThreadSafeAsync(x =>
                                 {
-                                    x.Minimum = Math.Min(1, intMaxRating);
+                                    x.Minimum = Math.Min(intMinRating, intMaxRating);
                                     x.Maximum = intMaxRating;
                                     x.Value = intRating;
                                     x.Increment = 1;
-                                    x.Enabled = string.IsNullOrEmpty(objWeapon.ParentID);
+                                    x.Enabled = intMaxRating > intMinRating && string.IsNullOrEmpty(objWeapon.ParentID);
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
                             }
@@ -15688,15 +15689,15 @@ namespace Chummer
                                     .ConfigureAwait(false);
                                 await nudWeaponRating.DoThreadSafeAsync(x =>
                                 {
-                                    x.Minimum = 0;
-                                    x.Increment = 1;
-                                    x.Maximum = 0;
-                                    x.Enabled = false;
                                     x.Visible = false;
+                                    x.Minimum = 0;
+                                    x.Maximum = 0;
+                                    x.Increment = 1;
+                                    x.Enabled = false;
                                 }, token).ConfigureAwait(false);
                             }
                             await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                    .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                             await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false, token)
                                                    .ConfigureAwait(false);
                             string strAvail = await objWeapon.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
@@ -16041,12 +16042,12 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                    .ConfigureAwait(false);
-                            int intMaxRating = await objSelectedAccessory.GetMaxRatingValueAsync(token).ConfigureAwait(false);
-                            if (intMaxRating > 0)
+                            int intRating = await objSelectedAccessory.GetRatingAsync(token).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
+                                int intMaxRating = await objSelectedAccessory.GetMaxRatingValueAsync(token).ConfigureAwait(false);
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                     .ConfigureAwait(false);
-                                int intRating = await objSelectedAccessory.GetRatingAsync(token).ConfigureAwait(false);
                                 await nudWeaponRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Maximum = intMaxRating;
@@ -16373,7 +16374,7 @@ namespace Chummer
                                   .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language),
                                                      token).ConfigureAwait(false);
                             int intGearMaxRatingValue = await objGear.GetMaxRatingValueAsync(token).ConfigureAwait(false);
-                            if (intGearMaxRatingValue > 0)
+                            if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                             {
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                     .ConfigureAwait(false);
@@ -16788,10 +16789,10 @@ namespace Chummer
                                                       .ConfigureAwait(false);
                             }
 
-                            int intMaxRating = await objArmorMod.GetMaxRatingValueAsync(token).ConfigureAwait(false);
-                            if (intMaxRating > 1)
+                            int intRating = await objArmorMod.GetRatingAsync(token).ConfigureAwait(false);
+                            if (intRating > 1)
                             {
-                                int intRating = await objArmorMod.GetRatingAsync(token).ConfigureAwait(false);
+                                int intMaxRating = await objArmorMod.GetMaxRatingValueAsync(token).ConfigureAwait(false);
                                 await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                          .ConfigureAwait(false);
                                 await nudArmorRating.DoThreadSafeAsync(x =>
@@ -19358,21 +19359,21 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                             await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                     .ConfigureAwait(false);
-                            int intMaxRating = await objWeapon.GetMaxRatingValueAsync(token).ConfigureAwait(false);
-                            if (intMaxRating > 0)
+                            int intRating = await objWeapon.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
+                                int intMaxRating = await objWeapon.GetMaxRatingValueAsync(token).ConfigureAwait(false);
+                                int intMinRating = await objWeapon.GetMinRatingValueAsync(token).ConfigureAwait(false);
                                 await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                     .ConfigureAwait(false);
-                                int intRating = await objWeapon.GetRatingAsync(GenericToken).ConfigureAwait(false);
-                                int intMinRating = await objWeapon.GetMinRatingValueAsync(token).ConfigureAwait(false);
                                 await nudVehicleRating.DoThreadSafeAsync(x =>
                                 {
-                                    x.Maximum = intMaxRating;
                                     x.Minimum = Math.Min(intMinRating, intMaxRating);
-                                    x.Visible = true;
+                                    x.Maximum = intMaxRating;
                                     x.Value = intRating;
                                     x.Increment = 1;
                                     x.Enabled = intMaxRating > intMinRating && string.IsNullOrEmpty(objWeapon.ParentID);
+                                    x.Visible = true;
                                 }, token).ConfigureAwait(false);
                             }
                             else
@@ -19381,11 +19382,11 @@ namespace Chummer
                                     .ConfigureAwait(false);
                                 await nudVehicleRating.DoThreadSafeAsync(x =>
                                 {
-                                    x.Minimum = 0;
-                                    x.Increment = 1;
-                                    x.Maximum = 0;
-                                    x.Enabled = false;
                                     x.Visible = false;
+                                    x.Minimum = 0;
+                                    x.Maximum = 0;
+                                    x.Increment = 1;
+                                    x.Enabled = false;
                                 }, token).ConfigureAwait(false);
                             }
                             await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token)
@@ -19712,12 +19713,12 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                     .ConfigureAwait(false);
-                            int intMaxRating = await objAccessory.GetMaxRatingValueAsync(token).ConfigureAwait(false);
-                            if (intMaxRating > 0)
+                            int intRating = await objAccessory.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
+                                int intMaxRating = await objAccessory.GetMaxRatingValueAsync(token).ConfigureAwait(false);
                                 await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                           .ConfigureAwait(false);
-                                int intRating = await objAccessory.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                 await nudVehicleRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
