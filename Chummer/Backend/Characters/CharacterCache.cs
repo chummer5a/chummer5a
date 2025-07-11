@@ -801,17 +801,18 @@ namespace Chummer
                 if (blnAddMarkerIfOpen && Program.MainForm != null)
                 {
                     string strMarker = string.Empty;
+                    string strFilePath = FilePath;
                     if (Program.MainForm.OpenCharacterEditorForms?.Any(
-                            x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, FilePath,
+                            x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
                                 StringComparison.Ordinal)) == true)
                         strMarker += '*';
                     if (Program.MainForm.OpenCharacterSheetViewers?.Any(
                             x => x.CharacterObjects.Any(y =>
-                                !y.IsDisposed && string.Equals(y.FileName, FilePath,
+                                !y.IsDisposed && string.Equals(y.FileName, strFilePath,
                                     StringComparison.Ordinal))) == true)
                         strMarker += '^';
                     if (Program.MainForm.OpenCharacterExportForms?.Any(
-                            x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, FilePath,
+                            x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
                                 StringComparison.Ordinal)) == true)
                         strMarker += '\'';
                     if (!string.IsNullOrEmpty(strMarker))
@@ -867,6 +868,7 @@ namespace Chummer
                 if (blnAddMarkerIfOpen && Program.MainForm != null)
                 {
                     string strMarker = string.Empty;
+                    string strFilePath = await GetFilePathAsync(token).ConfigureAwait(false);
                     ThreadSafeObservableCollection<CharacterShared> lstToProcess1
                         = Program.MainForm.OpenCharacterEditorForms;
                     if (lstToProcess1 != null && await lstToProcess1
@@ -874,7 +876,7 @@ namespace Chummer
                                 async x => !x.CharacterObject.IsDisposed &&
                                            string.Equals(
                                                await x.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false),
-                                               FilePath, StringComparison.Ordinal), token)
+                                               strFilePath, StringComparison.Ordinal), token)
                             .ConfigureAwait(false))
                         strMarker += '*';
                     ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
@@ -883,7 +885,7 @@ namespace Chummer
                             .AnyAsync(
                                 x => x.CharacterObjects.AnyAsync(
                                     async y => !y.IsDisposed && string.Equals(
-                                        await y.GetFileNameAsync(token).ConfigureAwait(false), FilePath,
+                                        await y.GetFileNameAsync(token).ConfigureAwait(false), strFilePath,
                                         StringComparison.Ordinal), token), token).ConfigureAwait(false))
                         strMarker += '^';
                     ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
@@ -893,7 +895,7 @@ namespace Chummer
                                 async x => !x.CharacterObject.IsDisposed &&
                                            string.Equals(
                                                await x.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false),
-                                               FilePath, StringComparison.Ordinal), token)
+                                               strFilePath, StringComparison.Ordinal), token)
                             .ConfigureAwait(false))
                         strMarker += '\'';
                     if (!string.IsNullOrEmpty(strMarker))
