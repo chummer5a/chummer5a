@@ -304,7 +304,11 @@ namespace Chummer
             private set
             {
                 using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _imgMugshot, value)?.Dispose();
+                {
+                    Image objOldMugshot = Interlocked.Exchange(ref _imgMugshot, value);
+                    if (objOldMugshot != null && !ReferenceEquals(objOldMugshot, value))
+                        objOldMugshot.Dispose();
+                }
             }
         }
 
@@ -768,7 +772,9 @@ namespace Chummer
                                 imgNewMugshot = await imgMugshot.GetCompressedImageAsync(token: token)
                                                                 .ConfigureAwait(false);
                         }
-                        Interlocked.Exchange(ref _imgMugshot, imgNewMugshot)?.Dispose();
+                        Image objOldMugshot = Interlocked.Exchange(ref _imgMugshot, imgNewMugshot);
+                        if (objOldMugshot != null && !ReferenceEquals(objOldMugshot, imgNewMugshot))
+                            objOldMugshot.Dispose();
                     }
                 }
                 else
