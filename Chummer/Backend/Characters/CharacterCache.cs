@@ -74,10 +74,19 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return _strFilePath;
             }
-            set
+        }
+
+        public async Task<string> GetFilePathAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strFilePath, value);
+                token.ThrowIfCancellationRequested();
+                return _strFilePath;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -88,10 +97,19 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return _strFileName;
             }
-            set
+        }
+
+        public async Task<string> GetFileNameAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strFileName, value);
+                token.ThrowIfCancellationRequested();
+                return _strFileName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -102,11 +120,6 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return _strErrorText;
             }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strErrorText, value);
-            }
         }
 
         public string Description
@@ -115,11 +128,6 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _strDescription;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strDescription, value);
             }
         }
 
@@ -130,11 +138,6 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return _strBackground;
             }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strBackground, value);
-            }
         }
 
         public string GameNotes
@@ -143,11 +146,6 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _strGameNotes;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strGameNotes, value);
             }
         }
 
@@ -158,11 +156,6 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return _strCharacterNotes;
             }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strCharacterNotes, value);
-            }
         }
 
         public string Concept
@@ -171,11 +164,6 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _strConcept;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strConcept, value);
             }
         }
 
@@ -186,11 +174,6 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return _strKarma;
             }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strKarma, value);
-            }
         }
 
         public string Metatype
@@ -199,11 +182,6 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _strMetatype;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strMetatype, value);
             }
         }
 
@@ -214,11 +192,6 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return _strMetavariant;
             }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strMetavariant, value);
-            }
         }
 
         public string PlayerName
@@ -227,11 +200,6 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _strPlayerName;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strPlayerName, value);
             }
         }
 
@@ -242,11 +210,6 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return _strCharacterName;
             }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strCharacterName, value);
-            }
         }
 
         public string CharacterAlias
@@ -255,11 +218,6 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _strCharacterAlias;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strCharacterAlias, value);
             }
         }
 
@@ -270,11 +228,6 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return _strBuildMethod;
             }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strBuildMethod, value);
-            }
         }
 
         public string Essence
@@ -283,11 +236,6 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _strEssence;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strEssence, value);
             }
         }
 
@@ -319,12 +267,6 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return _intCreated > 0;
             }
-            set
-            {
-                int intNewValue = value.ToInt32();
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _intCreated, intNewValue);
-            }
         }
 
         public string SettingsFile
@@ -333,11 +275,6 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _strSettingsFile;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _strSettingsFile, value);
             }
         }
 
@@ -454,7 +391,7 @@ namespace Chummer
                     _strEssence = objExistingCache.Essence;
                     _strGameNotes = objExistingCache.GameNotes;
                     _strKarma = objExistingCache.Karma;
-                    _strFileName = objExistingCache.FileName;
+                    _strFileName = await objExistingCache.GetFileNameAsync(token).ConfigureAwait(false);
                     _strMetatype = objExistingCache.Metatype;
                     _strMetavariant = objExistingCache.Metavariant;
                     _strPlayerName = objExistingCache.PlayerName;
@@ -552,20 +489,22 @@ namespace Chummer
 
         public async void OnDefaultDoubleClick(object sender, EventArgs e)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
             try
             {
+                string strFileName = await GetFileNameAsync().ConfigureAwait(false);
                 Character objOpenCharacter = await Program.OpenCharacters
-                    .FirstOrDefaultAsync(x => string.Equals(x.FileName, FileName, StringComparison.Ordinal))
+                    .FirstOrDefaultAsync(x => string.Equals(x.FileName, strFileName, StringComparison.Ordinal))
                     .ConfigureAwait(false);
                 if (objOpenCharacter == null)
                 {
+                    string strFilePath = await GetFilePathAsync().ConfigureAwait(false);
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program
                                .CreateAndShowProgressBarAsync(
-                                   FilePath, Character.NumLoadingSections)
+                                   strFilePath, Character.NumLoadingSections)
                                .ConfigureAwait(false))
                         objOpenCharacter = await Program
-                            .LoadCharacterAsync(FilePath, frmLoadingBar: frmLoadingBar.MyForm)
+                            .LoadCharacterAsync(strFilePath, frmLoadingBar: frmLoadingBar.MyForm)
                             .ConfigureAwait(false);
                 }
 
@@ -578,20 +517,30 @@ namespace Chummer
             }
         }
 
-        public void OnDefaultContextMenuDeleteClick(object sender, EventArgs e)
+        public async void OnDefaultContextMenuDeleteClick(object sender, EventArgs e)
         {
-            if (sender is TreeNode t)
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
+            try
             {
-                switch (t.Parent.Tag?.ToString())
+                if (sender is TreeNode t)
                 {
-                    case "Recent":
-                        GlobalSettings.MostRecentlyUsedCharacters.Remove(FilePath);
-                        break;
+                    switch (t.Parent.Tag?.ToString())
+                    {
+                        case "Recent":
+                            await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync().ConfigureAwait(false))
+                                .ConfigureAwait(false);
+                            break;
 
-                    case "Favorite":
-                        GlobalSettings.FavoriteCharacters.Remove(FilePath);
-                        break;
+                        case "Favorite":
+                            await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync().ConfigureAwait(false))
+                                .ConfigureAwait(false);
+                            break;
+                    }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -890,9 +839,8 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (!string.IsNullOrEmpty(ErrorText))
                 {
-                    strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + '(' +
-                                await LanguageManager.GetStringAsync("String_Error", token: token)
-                                    .ConfigureAwait(false) + ')';
+                    strReturn = Path.GetFileNameWithoutExtension(await GetFileNameAsync(token).ConfigureAwait(false))
+                        + strSpace + '(' + await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) + ')';
                 }
                 else
                 {
@@ -960,20 +908,28 @@ namespace Chummer
             return strReturn;
         }
 
-        public void OnDefaultKeyDown(object sender, Tuple<KeyEventArgs, TreeNode> args)
+        public async void OnDefaultKeyDown(object sender, Tuple<KeyEventArgs, TreeNode> args)
         {
-            if (args?.Item1.KeyCode == Keys.Delete)
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
+            try
             {
-                switch (args.Item2.Parent.Tag.ToString())
+                if (args?.Item1.KeyCode == Keys.Delete)
                 {
-                    case "Recent":
-                        GlobalSettings.MostRecentlyUsedCharacters.Remove(FilePath);
-                        break;
+                    switch (args.Item2.Parent.Tag.ToString())
+                    {
+                        case "Recent":
+                            await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                            break;
 
-                    case "Favorite":
-                        GlobalSettings.FavoriteCharacters.Remove(FilePath);
-                        break;
+                        case "Favorite":
+                            await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                            break;
+                    }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
