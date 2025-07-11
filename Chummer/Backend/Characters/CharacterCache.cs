@@ -779,9 +779,24 @@ namespace Chummer
                 }
                 else
                 {
-                    _strErrorText = strErrorText;
+                    _strDescription = string.Empty;
+                    _strBuildMethod = string.Empty;
+                    _strBackground = string.Empty;
+                    _strCharacterNotes = string.Empty;
+                    _strGameNotes = string.Empty;
+                    _strConcept = string.Empty;
+                    _strKarma = string.Empty;
+                    _strMetatype = string.Empty;
+                    _strMetavariant = string.Empty;
+                    _strPlayerName = string.Empty;
+                    _strCharacterName = string.Empty;
+                    _strCharacterAlias = string.Empty;
+                    _intCreated = 0;
+                    _strEssence = string.Empty;
+                    _strSettingsFile = string.Empty;
+                    Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
                 }
-
+                _strErrorText = strErrorText;
                 _strFilePath = strFile;
                 if (!string.IsNullOrEmpty(strFile))
                 {

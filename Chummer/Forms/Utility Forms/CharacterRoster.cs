@@ -1738,8 +1738,12 @@ namespace Chummer
                                                      .ConfigureAwait(false),
                                                  async (x, y) =>
                                                  {
-                                                     objToDispose = y;
-                                                     return objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false);
+                                                     if (!await y.LoadFromFileAsync(strFile).ConfigureAwait(false))
+                                                     {
+                                                         objToDispose = y;
+                                                         return objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false);
+                                                     }
+                                                     return y;
                                                  }, token)
                                              .ConfigureAwait(false);
                             if (objToDispose != null && !ReferenceEquals(objToDispose, objCache) && !objToDispose.IsDisposed)
