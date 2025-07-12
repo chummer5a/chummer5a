@@ -1123,7 +1123,7 @@ namespace Chummer
                         strMarker += '*';
                     ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
                         = Program.MainForm.OpenCharacterSheetViewers;
-                    if (lstToProcess1 != null && await lstToProcess2
+                    if (lstToProcess2 != null && await lstToProcess2
                             .AnyAsync(
                                 x => x.CharacterObjects.AnyAsync(
                                     async y => !y.IsDisposed && string.Equals(
@@ -1132,7 +1132,7 @@ namespace Chummer
                         strMarker += '^';
                     ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
                         = Program.MainForm.OpenCharacterExportForms;
-                    if (lstToProcess1 != null && await lstToProcess3
+                    if (lstToProcess3 != null && await lstToProcess3
                             .AnyAsync(
                                 async x => !x.CharacterObject.IsDisposed &&
                                            string.Equals(
