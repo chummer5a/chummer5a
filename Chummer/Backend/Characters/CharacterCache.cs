@@ -30,6 +30,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.Xml.XPath;
 using Newtonsoft.Json;
+using static Chummer.EventHandlerExtensions;
 
 namespace Chummer
 {
@@ -60,10 +61,10 @@ namespace Chummer
         private string _strSettingsFile;
         private readonly ConcurrentDictionary<string, object> _dicMyPluginData = new ConcurrentDictionary<string, object>();
         private Task<string> _tskRunningDownloadTask;
-        private EventHandler _onMyDoubleClick;
-        private EventHandler _onMyContextMenuDeleteClick;
-        private EventHandler<TreeViewEventArgs> _onMyAfterSelect;
-        private EventHandler<Tuple<KeyEventArgs, TreeNode>> _onMyKeyDown;
+        private SafeAsyncEventHandler _onMyDoubleClick;
+        private SafeAsyncEventHandler _onMyContextMenuDeleteClick;
+        private SafeAsyncEventHandler<TreeViewEventArgs> _onMyAfterSelect;
+        private SafeAsyncEventHandler<Tuple<KeyEventArgs, TreeNode>> _onMyKeyDown;
 
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
@@ -661,94 +662,76 @@ namespace Chummer
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler OnMyDoubleClick
+        public SafeAsyncEventHandler OnMyDoubleClick
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return _onMyDoubleClick;
             }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _onMyDoubleClick, value);
-            }
         }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler OnMyContextMenuDeleteClick
+        public SafeAsyncEventHandler OnMyContextMenuDeleteClick
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return _onMyContextMenuDeleteClick;
             }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _onMyContextMenuDeleteClick, value);
-            }
         }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler<TreeViewEventArgs> OnMyAfterSelect
+        public SafeAsyncEventHandler<TreeViewEventArgs> OnMyAfterSelect
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return _onMyAfterSelect;
             }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _onMyAfterSelect, value);
-            }
         }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown
+        public SafeAsyncEventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return _onMyKeyDown;
             }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                    Interlocked.Exchange(ref _onMyKeyDown, value);
-            }
         }
 
-        public async void OnDefaultDoubleClick(object sender, EventArgs e)
+        public async Task OnDefaultDoubleClick(object sender, EventArgs e, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
-                string strFileName = await GetFileNameAsync().ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                string strFileName = await GetFileNameAsync(token).ConfigureAwait(false);
                 Character objOpenCharacter = await Program.OpenCharacters
-                    .FirstOrDefaultAsync(x => string.Equals(x.FileName, strFileName, StringComparison.Ordinal))
+                    .FirstOrDefaultAsync(x => string.Equals(x.FileName, strFileName, StringComparison.Ordinal), token)
                     .ConfigureAwait(false);
                 if (objOpenCharacter == null)
                 {
-                    string strFilePath = await GetFilePathAsync().ConfigureAwait(false);
+                    string strFilePath = await GetFilePathAsync(token).ConfigureAwait(false);
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program
                                .CreateAndShowProgressBarAsync(
-                                   strFilePath, Character.NumLoadingSections)
+                                   strFilePath, Character.NumLoadingSections, token)
                                .ConfigureAwait(false))
                         objOpenCharacter = await Program
-                            .LoadCharacterAsync(strFilePath, frmLoadingBar: frmLoadingBar.MyForm)
+                            .LoadCharacterAsync(strFilePath, frmLoadingBar: frmLoadingBar.MyForm, token: token)
                             .ConfigureAwait(false);
                 }
 
-                if (!await Program.SwitchToOpenCharacter(objOpenCharacter).ConfigureAwait(false))
-                    await Program.OpenCharacter(objOpenCharacter).ConfigureAwait(false);
+                if (!await Program.SwitchToOpenCharacter(objOpenCharacter, token).ConfigureAwait(false))
+                    await Program.OpenCharacter(objOpenCharacter, token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -756,22 +739,24 @@ namespace Chummer
             }
         }
 
-        public async void OnDefaultContextMenuDeleteClick(object sender, EventArgs e)
+        public async Task OnDefaultContextMenuDeleteClick(object sender, EventArgs e, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (sender is TreeNode t)
                 {
                     switch (t.Parent.Tag?.ToString())
                     {
                         case "Recent":
-                            await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync().ConfigureAwait(false))
+                            await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
                             break;
 
                         case "Favorite":
-                            await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync().ConfigureAwait(false))
+                            await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
                             break;
                     }
@@ -1152,21 +1137,23 @@ namespace Chummer
             return strReturn;
         }
 
-        public async void OnDefaultKeyDown(object sender, Tuple<KeyEventArgs, TreeNode> args)
+        public async Task OnDefaultKeyDown(object sender, Tuple<KeyEventArgs, TreeNode> args, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (args?.Item1.KeyCode == Keys.Delete)
                 {
                     switch (args.Item2.Parent.Tag.ToString())
                     {
                         case "Recent":
-                            await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                            await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                             break;
 
                         case "Favorite":
-                            await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                            await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                             break;
                     }
                 }
