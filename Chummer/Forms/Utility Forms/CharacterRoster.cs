@@ -1799,14 +1799,15 @@ namespace Chummer
                     .CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false),
                 Tag = objCache
             };
-            if (!string.IsNullOrEmpty(objCache.ErrorText))
+            string strErrorText = await objCache.GetErrorTextAsync(token).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strErrorText))
             {
                 objNode.ForeColor = ColorManager.ErrorColor;
                 if (!string.IsNullOrEmpty(objNode.ToolTipText))
                     objNode.ToolTipText += Environment.NewLine + Environment.NewLine;
                 objNode.ToolTipText += await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) +
                                        await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false) + Environment.NewLine +
-                                       objCache.ErrorText;
+                                       strErrorText;
             }
 
             return objNode;
@@ -1841,97 +1842,100 @@ namespace Chummer
                         if (objCache != null)
                         {
                             string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                            string strTemp1 = await objCache.Description.RtfToPlainTextAsync(token).ConfigureAwait(false);
+                            string strTemp1 = await (await objCache.GetDescriptionAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
                             await txtCharacterBio.DoThreadSafeAsync(x => x.Text = strTemp1, token).ConfigureAwait(false);
-                            string strTemp2 = await objCache.Background.RtfToPlainTextAsync(token).ConfigureAwait(false);
+                            string strTemp2 = await (await objCache.GetBackgroundAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
                             await txtCharacterBackground.DoThreadSafeAsync(x => x.Text = strTemp2, token).ConfigureAwait(false);
-                            string strTemp3 = await objCache.CharacterNotes.RtfToPlainTextAsync(token).ConfigureAwait(false);
+                            string strTemp3 = await (await objCache.GetCharacterNotesAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
                             await txtCharacterNotes.DoThreadSafeAsync(x => x.Text = strTemp3, token).ConfigureAwait(false);
-                            string strTemp4 = await objCache.GameNotes.RtfToPlainTextAsync(token).ConfigureAwait(false);
+                            string strTemp4 = await (await objCache.GetGameNotesAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
                             await txtGameNotes.DoThreadSafeAsync(x => x.Text = strTemp4, token).ConfigureAwait(false);
-                            string strTemp5 = await objCache.Concept.RtfToPlainTextAsync(token).ConfigureAwait(false);
+                            string strTemp5 = await (await objCache.GetConceptAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
                             await txtCharacterConcept.DoThreadSafeAsync(x => x.Text = strTemp5, token).ConfigureAwait(false);
-                            string strText = objCache.Karma;
+                            string strText = await objCache.GetKarmaAsync(token).ConfigureAwait(false);
                             if (string.IsNullOrEmpty(strText) || strText == 0.ToString(GlobalSettings.CultureInfo))
                                 strText = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
                             await lblCareerKarma.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                            string strPlayerName = await objCache.GetPlayerNameAsync(token).ConfigureAwait(false);
                             await lblPlayerName.DoThreadSafeAsync(x =>
                             {
-                                string strInnerText = objCache.PlayerName;
-                                if (string.IsNullOrEmpty(strInnerText))
+                                if (string.IsNullOrEmpty(strPlayerName))
                                     x.Text = strUnknown;
                                 else
-                                    x.Text = strInnerText;
+                                    x.Text = strPlayerName;
                             }, token).ConfigureAwait(false);
+                            string strCharacterName = await objCache.GetCharacterNameAsync(token).ConfigureAwait(false);
                             await lblCharacterName.DoThreadSafeAsync(x =>
                             {
-                                string strInnerText = objCache.CharacterName;
-                                if (string.IsNullOrEmpty(strInnerText))
+                                if (string.IsNullOrEmpty(strCharacterName))
                                     x.Text = strUnknown;
                                 else
-                                    x.Text = strInnerText;
+                                    x.Text = strCharacterName;
                             }, token).ConfigureAwait(false);
+                            string strCharacterAlias = await objCache.GetCharacterAliasAsync(token).ConfigureAwait(false);
                             await lblCharacterAlias.DoThreadSafeAsync(x =>
                             {
-                                string strInnerText = objCache.CharacterAlias;
-                                if (string.IsNullOrEmpty(strInnerText))
+                                if (string.IsNullOrEmpty(strCharacterAlias))
                                     x.Text = strUnknown;
                                 else
-                                    x.Text = strInnerText;
+                                    x.Text = strCharacterAlias;
                             }, token).ConfigureAwait(false);
+                            string strEssence = await objCache.GetEssenceAsync(token).ConfigureAwait(false);
                             await lblEssence.DoThreadSafeAsync(x =>
                             {
-                                string strInnerText = objCache.Essence;
-                                if (string.IsNullOrEmpty(strInnerText))
+                                if (string.IsNullOrEmpty(strEssence))
                                     x.Text = strUnknown;
                                 else
-                                    x.Text = strInnerText;
+                                    x.Text = strEssence;
                             }, token).ConfigureAwait(false);
                             string strText2 = await objCache.GetFileNameAsync(token).ConfigureAwait(false);
                             if (string.IsNullOrEmpty(strText2))
                                 strText2 = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false);
                             await lblFilePath.DoThreadSafeAsync(x => x.Text = strText2, token).ConfigureAwait(false);
+                            string strSettingsFile = await objCache.GetSettingsFileAsync(token).ConfigureAwait(false);
                             await lblSettings.DoThreadSafeAsync(x =>
                             {
-                                string strInnerText = objCache.SettingsFile;
-                                if (string.IsNullOrEmpty(strInnerText))
+                                if (string.IsNullOrEmpty(strSettingsFile))
                                     x.Text = strUnknown;
                                 else
-                                    x.Text = strInnerText;
+                                    x.Text = strSettingsFile;
                             }, token).ConfigureAwait(false);
                             await lblFilePath.SetToolTipAsync(
                                 await (await objCache.GetFilePathAsync(token).ConfigureAwait(false))
                                     .CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false),
                                 token).ConfigureAwait(false);
-                            await picMugshot.DoThreadSafeAsync(x => x.Image = objCache.Mugshot, token).ConfigureAwait(false);
+                            Image objMugshot = await objCache.GetMugshotAsync(token).ConfigureAwait(false);
+                            await picMugshot.DoThreadSafeAsync(x => x.Image = objMugshot, token).ConfigureAwait(false);
                             // Populate character information fields.
-                            if (objCache.Metatype != null)
+                            string strMetatype = await objCache.GetMetatypeAsync(token).ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strMetatype))
                             {
                                 XPathNavigator objMetatypeDoc
                                     = await XmlManager.LoadXPathAsync("metatypes.xml", token: token).ConfigureAwait(false);
                                 XPathNavigator objMetatypeNode
                                     = objMetatypeDoc.SelectSingleNode(
-                                        "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
+                                        "/chummer/metatypes/metatype[name = " + strMetatype.CleanXPath() + ']');
                                 if (objMetatypeNode == null)
                                 {
                                     objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml", token: token).ConfigureAwait(false);
                                     objMetatypeNode = objMetatypeDoc.SelectSingleNode(
-                                        "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
+                                        "/chummer/metatypes/metatype[name = " + strMetatype.CleanXPath() + ']');
                                 }
 
                                 token.ThrowIfCancellationRequested();
-                                string strMetatype = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objCache.Metatype;
-
-                                if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
+                                string strMetatypeText = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                    ?? strMetatype;
+                                string strMetavariant = await objCache.GetMetavariantAsync(token).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strMetavariant) && strMetavariant != "None")
                                 {
                                     objMetatypeNode = objMetatypeNode?.SelectSingleNode(
-                                        "metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + ']');
+                                        "metavariants/metavariant[name = " + strMetavariant.CleanXPath() + ']');
 
-                                    strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
-                                        + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objCache.Metavariant) + ')';
+                                    strMetatypeText += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
+                                        + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strMetavariant) + ')';
                                 }
 
-                                await lblMetatype.DoThreadSafeAsync(x => x.Text = strMetatype, token).ConfigureAwait(false);
+                                await lblMetatype.DoThreadSafeAsync(x => x.Text = strMetatypeText, token).ConfigureAwait(false);
                             }
                             else
                             {
@@ -1940,7 +1944,7 @@ namespace Chummer
                             }
 
                             await tabCharacterText.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                            string strErrorText = objCache.ErrorText;
+                            string strErrorText = await objCache.GetErrorTextAsync(token).ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(strErrorText))
                             {
                                 await txtCharacterBio.DoThreadSafeAsync(x =>
@@ -2259,9 +2263,10 @@ namespace Chummer
                     CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                     try
                     {
+                        string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                         Character objCharacter
                             = await Program.OpenCharacters.FirstOrDefaultAsync(
-                                x => x.FileName == objCache.FileName, _objGenericToken).ConfigureAwait(false);
+                                x => x.FileName == strFileName, _objGenericToken).ConfigureAwait(false);
                         if (objCharacter == null)
                         {
                             string strFilePath = await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false);
@@ -2305,9 +2310,10 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
+                    string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                     Character objCharacter
                         = await Program.OpenCharacters.FirstOrDefaultAsync(
-                            x => x.FileName == objCache.FileName, _objGenericToken).ConfigureAwait(false);
+                            x => x.FileName == strFileName, _objGenericToken).ConfigureAwait(false);
                     if (objCharacter == null)
                     {
                         string strFilePath = await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false);
@@ -2350,9 +2356,10 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
+                    string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                     Character objCharacter
                         = await Program.OpenCharacters.FirstOrDefaultAsync(
-                            x => x.FileName == objCache.FileName, _objGenericToken).ConfigureAwait(false);
+                            x => x.FileName == strFileName, _objGenericToken).ConfigureAwait(false);
                     if (objCharacter == null)
                     {
                         string strFilePath = await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false);

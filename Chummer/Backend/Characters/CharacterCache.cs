@@ -122,12 +122,40 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetErrorTextAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strErrorText;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string Description
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return _strDescription;
+            }
+        }
+
+        public async Task<string> GetDescriptionAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strDescription;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -140,12 +168,40 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetBackgroundAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strBackground;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string GameNotes
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return _strGameNotes;
+            }
+        }
+
+        public async Task<string> GetGameNotesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strGameNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -158,12 +214,40 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetCharacterNotesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strCharacterNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string Concept
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return _strConcept;
+            }
+        }
+
+        public async Task<string> GetConceptAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strConcept;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -176,12 +260,40 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetKarmaAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strKarma;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string Metatype
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return _strMetatype;
+            }
+        }
+
+        public async Task<string> GetMetatypeAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strMetatype;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -194,12 +306,40 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetMetavariantAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strMetavariant;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string PlayerName
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return _strPlayerName;
+            }
+        }
+
+        public async Task<string> GetPlayerNameAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPlayerName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -212,12 +352,40 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetCharacterNameAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strCharacterName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string CharacterAlias
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return _strCharacterAlias;
+            }
+        }
+
+        public async Task<string> GetCharacterAliasAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strCharacterAlias;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -230,12 +398,40 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetBuildMethodAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strBuildMethod;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string Essence
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return _strEssence;
+            }
+        }
+
+        public async Task<string> GetEssenceAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strEssence;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -260,6 +456,20 @@ namespace Chummer
             }
         }
 
+        public async Task<Image> GetMugshotAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _imgMugshot;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool Created
         {
             get
@@ -269,12 +479,40 @@ namespace Chummer
             }
         }
 
+        public async Task<bool> GetCreatedAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intCreated > 0;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string SettingsFile
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return _strSettingsFile;
+            }
+        }
+
+        public async Task<string> GetSettingsFileAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strSettingsFile;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -380,23 +618,24 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    _strBackground = objExistingCache.Background;
-                    _strBuildMethod = objExistingCache.BuildMethod;
-                    _strCharacterAlias = objExistingCache.CharacterAlias;
-                    _strCharacterName = objExistingCache.CharacterName;
-                    _strCharacterNotes = objExistingCache.CharacterNotes;
-                    _strConcept = objExistingCache.Concept;
-                    _intCreated = objExistingCache.Created.ToInt32();
-                    _strDescription = objExistingCache.Description;
-                    _strEssence = objExistingCache.Essence;
-                    _strGameNotes = objExistingCache.GameNotes;
-                    _strKarma = objExistingCache.Karma;
+                    _strBackground = await objExistingCache.GetBackgroundAsync(token).ConfigureAwait(false);
+                    _strBuildMethod = await objExistingCache.GetBuildMethodAsync(token).ConfigureAwait(false);
+                    _strCharacterAlias = await objExistingCache.GetCharacterAliasAsync(token).ConfigureAwait(false);
+                    _strCharacterName = await objExistingCache.GetCharacterNameAsync(token).ConfigureAwait(false);
+                    _strCharacterNotes = await objExistingCache.GetCharacterNotesAsync(token).ConfigureAwait(false);
+                    _strConcept = await objExistingCache.GetConceptAsync(token).ConfigureAwait(false);
+                    _intCreated = (await objExistingCache.GetCreatedAsync(token).ConfigureAwait(false)).ToInt32();
+                    _strDescription = await objExistingCache.GetDescriptionAsync(token).ConfigureAwait(false);
+                    _strEssence = await objExistingCache.GetEssenceAsync(token).ConfigureAwait(false);
+                    _strGameNotes = await objExistingCache.GetGameNotesAsync(token).ConfigureAwait(false);
+                    _strKarma = await objExistingCache.GetKarmaAsync(token).ConfigureAwait(false);
                     _strFileName = await objExistingCache.GetFileNameAsync(token).ConfigureAwait(false);
-                    _strMetatype = objExistingCache.Metatype;
-                    _strMetavariant = objExistingCache.Metavariant;
-                    _strPlayerName = objExistingCache.PlayerName;
-                    _strSettingsFile = objExistingCache.SettingsFile;
-                    Interlocked.Exchange(ref _imgMugshot, objExistingCache.Mugshot.Clone() as Image)?.Dispose();
+                    _strMetatype = await objExistingCache.GetMetatypeAsync(token).ConfigureAwait(false);
+                    _strMetavariant = await objExistingCache.GetMetavariantAsync(token).ConfigureAwait(false);
+                    _strPlayerName = await objExistingCache.GetPlayerNameAsync(token).ConfigureAwait(false);
+                    _strSettingsFile = await objExistingCache.GetSettingsFileAsync(token).ConfigureAwait(false);
+                    Image objMugshot = await objExistingCache.GetMugshotAsync(token).ConfigureAwait(false);
+                    Interlocked.Exchange(ref _imgMugshot, objMugshot.Clone() as Image)?.Dispose();
                 }
                 finally
                 {
@@ -838,30 +1077,33 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (!string.IsNullOrEmpty(ErrorText))
+                string strErrorText = await GetErrorTextAsync(token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strErrorText))
                 {
                     strReturn = Path.GetFileNameWithoutExtension(await GetFileNameAsync(token).ConfigureAwait(false))
                         + strSpace + '(' + await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) + ')';
                 }
                 else
                 {
-                    strReturn = CharacterAlias;
+                    strReturn = await GetCharacterAliasAsync(token).ConfigureAwait(false);
                     if (string.IsNullOrEmpty(strReturn))
                     {
-                        strReturn = CharacterName;
+                        strReturn = await GetCharacterNameAsync(token).ConfigureAwait(false);
                         if (string.IsNullOrEmpty(strReturn))
                             strReturn = await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token)
                                 .ConfigureAwait(false);
                     }
 
-                    string strBuildMethod = await LanguageManager.GetStringAsync("String_" + BuildMethod, false, token)
+                    string strBuildMethod = await LanguageManager.GetStringAsync("String_" + await GetBuildMethodAsync(token).ConfigureAwait(false), false, token)
                         .ConfigureAwait(false);
                     if (string.IsNullOrEmpty(strBuildMethod))
                         strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token)
                             .ConfigureAwait(false);
                     strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
                                  + await LanguageManager
-                                     .GetStringAsync(Created ? "Title_CareerMode" : "Title_CreateMode", token: token)
+                                     .GetStringAsync(await GetCreatedAsync(token).ConfigureAwait(false)
+                                        ? "Title_CareerMode"
+                                        : "Title_CreateMode", token: token)
                                      .ConfigureAwait(false) + ')';
                 }
 
