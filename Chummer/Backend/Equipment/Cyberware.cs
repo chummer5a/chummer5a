@@ -8657,19 +8657,22 @@ namespace Chummer.Backend.Equipment
                         .EssenceModifierPostExpression;
                     if (!string.IsNullOrEmpty(strPostModifierExpression) && strPostModifierExpression != "{Modifier}")
                     {
-                        (bool blnIsSuccess, object objProcess) = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? CommonFunctions.EvaluateInvariantXPath(
-                                strPostModifierExpression.Replace("{Modifier}",
-                                    decTotalModifier.ToString(
-                                        GlobalSettings.InvariantCultureInfo)), token)
-                            : await CommonFunctions.EvaluateInvariantXPathAsync(
-                                    strPostModifierExpression.Replace("{Modifier}",
-                                        decTotalModifier.ToString(
-                                            GlobalSettings.InvariantCultureInfo)), token)
-                                .ConfigureAwait(false);
-                        if (blnIsSuccess)
-                            decTotalModifier = Convert.ToDecimal((double)objProcess);
+                        strPostModifierExpression = strPostModifierExpression.Replace("{Modifier}",
+                                        decTotalModifier.ToString(GlobalSettings.InvariantCultureInfo));
+                        if (strPostModifierExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decTotalModifier))
+                        {
+                            if (blnSync)
+                                _objCharacter.AttributeSection.ProcessAttributesInXPath(strPostModifierExpression, token: token);
+                            else
+                                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strPostModifierExpression, token: token).ConfigureAwait(false);
+                            (bool blnIsSuccess, object objProcess) = blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? CommonFunctions.EvaluateInvariantXPath(strPostModifierExpression, token)
+                                : await CommonFunctions.EvaluateInvariantXPathAsync(strPostModifierExpression, token)
+                                    .ConfigureAwait(false);
+                            if (blnIsSuccess)
+                                decTotalModifier = Convert.ToDecimal((double)objProcess);
+                        }
                     }
                 }
 

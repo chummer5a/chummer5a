@@ -1274,14 +1274,17 @@ namespace Chummer
                                         .GetEssenceModifierPostExpressionAsync(token).ConfigureAwait(false);
                                     if (!string.IsNullOrEmpty(strPostModifierExpression) && strPostModifierExpression != "{Modifier}")
                                     {
-                                        (bool blnIsSuccess2, object objProcess2)
-                                            = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                                strPostModifierExpression.Replace(
-                                                    "{Modifier}",
-                                                    decCharacterESSModifier.ToString(GlobalSettings.InvariantCultureInfo)),
-                                                token).ConfigureAwait(false);
-                                        if (blnIsSuccess2)
-                                            decCharacterESSModifier = Convert.ToDecimal((double)objProcess2);
+                                        strPostModifierExpression = strPostModifierExpression.Replace("{Modifier}",
+                                                        decCharacterESSModifier.ToString(GlobalSettings.InvariantCultureInfo));
+                                        if (strPostModifierExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decCharacterESSModifier))
+                                        {
+                                            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strPostModifierExpression, token: token).ConfigureAwait(false);
+                                            (bool blnIsSuccess2, object objProcess2) =
+                                                await CommonFunctions.EvaluateInvariantXPathAsync(strPostModifierExpression, token)
+                                                    .ConfigureAwait(false);
+                                            if (blnIsSuccess2)
+                                                decCharacterESSModifier = Convert.ToDecimal((double)objProcess2);
+                                        }
                                     }
                                 }
 
