@@ -1270,9 +1270,9 @@ namespace Chummer
                                     decCharacterESSModifier *= CharacterTotalESSMultiplier;
 
                                     string strPostModifierExpression
-                                        = (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
-                                        .EssenceModifierPostExpression;
-                                    if (strPostModifierExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decCharacterESSModifier))
+                                        = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                                        .GetEssenceModifierPostExpressionAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strPostModifierExpression) && strPostModifierExpression != "{Modifier}")
                                     {
                                         (bool blnIsSuccess2, object objProcess2)
                                             = await CommonFunctions.EvaluateInvariantXPathAsync(

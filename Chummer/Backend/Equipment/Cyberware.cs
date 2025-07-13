@@ -8655,7 +8655,7 @@ namespace Chummer.Backend.Equipment
                             ? _objCharacter.Settings
                             : await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
                         .EssenceModifierPostExpression;
-                    if (strPostModifierExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decTotalModifier))
+                    if (!string.IsNullOrEmpty(strPostModifierExpression) && strPostModifierExpression != "{Modifier}")
                     {
                         (bool blnIsSuccess, object objProcess) = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
