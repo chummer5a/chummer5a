@@ -60,7 +60,7 @@ namespace Chummer
         private static readonly ReadOnlyCollection<char> s_LstInvariantXPathLegalChars = Array.AsReadOnly("1234567890+-*abcdefghilmnorstuvw()[]{}!=<>&;,. ".ToCharArray());
 
         // Treat as ReadOnlyCollection please, it's only not that because string.IndexOfAny() cannot use a ReadOnlyCollection as its argument
-        private static readonly char[] s_LstCharsMarkingNeedOfProcessing = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ()[]{}!=<>&;+*/\\÷×∙".ToCharArray();
+        private static readonly char[] s_LstCharsMarkingNeedOfProcessing = "abcdfghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVWXYZ()[]{}!=<>&;+*/\\÷×∙".ToCharArray();
 
         /// <summary>
         /// Check if a string needs to be processed by an invariant XPath processor to be conveerted into a number.
