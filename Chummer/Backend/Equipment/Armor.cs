@@ -1543,7 +1543,7 @@ namespace Chummer.Backend.Equipment
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
-                string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", objCultureInfo) : objProcess.ToString();
+                string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", objCultureInfo) : strCapacity;
                 if (blnSquareBrackets)
                     strReturn = '[' + strReturn + ']';
 
@@ -1581,7 +1581,7 @@ namespace Chummer.Backend.Equipment
                     await strCapacity.CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 string strReturn = blnIsSuccess
                     ? ((double)objProcess).ToString("#,0.##", objCultureInfo)
-                    : objProcess.ToString();
+                    : strCapacity;
                 if (blnSquareBrackets)
                     strReturn = '[' + strReturn + ']';
 
@@ -1665,7 +1665,7 @@ namespace Chummer.Backend.Equipment
                 {
                     string strCost = await strReturn.CheapReplaceAsync("Rating", async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token);
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);
-                    decTotalCost = blnIsSuccess ? Convert.ToDecimal(objProcess.ToString(), GlobalSettings.InvariantCultureInfo) : 0;
+                    decTotalCost = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                 }
 
                 decTotalCost *= 1.0m + decMarkup;
@@ -1935,7 +1935,6 @@ namespace Chummer.Backend.Equipment
             string strArmorExpression = blnUseOverrideValue ? ArmorOverrideValue : ArmorValue;
             if (string.IsNullOrEmpty(strArmorExpression))
                 return 0;
-            int intReturn = 0;
             if (strArmorExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
                 string[] strValues = strArmorExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')

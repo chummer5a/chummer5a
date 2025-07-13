@@ -16758,11 +16758,7 @@ namespace Chummer
                                     (!blnKeepAdeptEligible || objToRemove.Category != "Rituals" ||
                                      objToRemove.Descriptors.Contains("Spell")))
                                 {
-                                    // Remove the Improvements created by the Spell.
-                                    ImprovementManager.RemoveImprovements(this,
-                                        Improvement.ImprovementSource.Spell,
-                                        objToRemove.InternalId, token: token);
-                                    Spells.RemoveAt(i);
+                                    objToRemove.Remove(false);
                                 }
                             }
                         }
@@ -16837,11 +16833,7 @@ namespace Chummer
                                     (!blnKeepAdeptEligible || objToRemove.Category != "Rituals" ||
                                      objToRemove.Descriptors.Contains("Spell")))
                                 {
-                                    // Remove the Improvements created by the Spell.
-                                    await ImprovementManager.RemoveImprovementsAsync(this,
-                                        Improvement.ImprovementSource.Spell,
-                                        objToRemove.InternalId, token: token).ConfigureAwait(false);
-                                    await lstSpells.RemoveAtAsync(i, token).ConfigureAwait(false);
+                                    await objToRemove.RemoveAsync(false, token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -16999,10 +16991,7 @@ namespace Chummer
                         ComplexForm objToRemove = ComplexForms[i];
                         if (objToRemove.Grade == 0)
                         {
-                            // Remove the Improvements created by the Spell.
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ComplexForm,
-                                objToRemove.InternalId, token: token);
-                            ComplexForms.RemoveAt(i);
+                            objToRemove.Remove(false);
                         }
                     }
                 }
@@ -17039,31 +17028,16 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 ThreadSafeObservableCollection<ComplexForm> lstComplexForms = await GetComplexFormsAsync(token).ConfigureAwait(false);
                 // Run through all of the Complex Forms and remove their Improvements.
-                if (await lstComplexForms.AllAsync(x => x.Grade == 0, token).ConfigureAwait(false))
+                for (int i = await lstComplexForms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                 {
-                    List<string> lstIds = new List<string>();
-                    await lstComplexForms.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
-                    await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.ComplexForm,
-                        lstIds,
-                        token: token).ConfigureAwait(false);
-                    await lstComplexForms.ClearAsync(token).ConfigureAwait(false);
-                }
-                else
-                {
-                    for (int i = await lstComplexForms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                    if (i < await lstComplexForms.GetCountAsync(token).ConfigureAwait(false))
                     {
-                        if (i < await lstComplexForms.GetCountAsync(token).ConfigureAwait(false))
+                        ComplexForm objToRemove =
+                            await lstComplexForms.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objToRemove.Grade == 0)
                         {
-                            ComplexForm objToRemove =
-                                await lstComplexForms.GetValueAtAsync(i, token).ConfigureAwait(false);
-                            if (objToRemove.Grade == 0)
-                            {
-                                // Remove the Improvements created by the Spell.
-                                await ImprovementManager.RemoveImprovementsAsync(this,
-                                    Improvement.ImprovementSource.ComplexForm,
-                                    objToRemove.InternalId, token: token).ConfigureAwait(false);
-                                await lstComplexForms.RemoveAtAsync(i, token).ConfigureAwait(false);
-                            }
+                            // Remove the Improvements created by the Spell.
+                            await objToRemove.RemoveAsync(false, token).ConfigureAwait(false);
                         }
                     }
                 }
@@ -17101,32 +17075,17 @@ namespace Chummer
         {
             using (LockObject.EnterUpgradeableReadLock(token))
             {
-                if (AIPrograms.All(x => x.CanDelete, token))
+                using (LockObject.EnterWriteLock(token))
                 {
-                    List<string> lstIds = AIPrograms.Select(x => x.InternalId).ToList();
-                    using (LockObject.EnterWriteLock(token))
+                    // Run through all advanced programs and remove the ones not added by improvements
+                    for (int i = AIPrograms.Count - 1; i >= 0; --i)
                     {
-                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram, lstIds, token: token);
-                        AIPrograms.Clear();
-                    }
-                }
-                else
-                {
-                    using (LockObject.EnterWriteLock(token))
-                    {
-                        // Run through all advanced programs and remove the ones not added by improvements
-                        for (int i = AIPrograms.Count - 1; i >= 0; --i)
+                        if (i < AIPrograms.Count)
                         {
-                            if (i < AIPrograms.Count)
+                            AIProgram objToRemove = AIPrograms[i];
+                            if (objToRemove.CanDelete)
                             {
-                                AIProgram objToRemove = AIPrograms[i];
-                                if (objToRemove.CanDelete)
-                                {
-                                    // Remove the Improvements created by the Program.
-                                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram,
-                                        objToRemove.InternalId, token: token);
-                                    AIPrograms.RemoveAt(i);
-                                }
+                                objToRemove.Remove(false);
                             }
                         }
                     }
@@ -17143,52 +17102,29 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (await AIPrograms.AllAsync(x => x.CanDelete, token: token).ConfigureAwait(false))
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    List<string> lstIds = new List<string>();
-                    await AIPrograms.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    token.ThrowIfCancellationRequested();
+                    ThreadSafeObservableCollection<AIProgram> lstAIPrograms =
+                        await GetAIProgramsAsync(token).ConfigureAwait(false);
+                    for (int i = await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                     {
-                        token.ThrowIfCancellationRequested();
-                        await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.AIProgram, lstIds,
-                            token: token).ConfigureAwait(false);
-                        await AIPrograms.ClearAsync(token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                else
-                {
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        ThreadSafeObservableCollection<AIProgram> lstAIPrograms =
-                            await GetAIProgramsAsync(token).ConfigureAwait(false);
-                        for (int i = await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                        if (i < await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false))
                         {
-                            if (i < await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false))
+                            AIProgram objToRemove =
+                                await lstAIPrograms.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (objToRemove.CanDelete)
                             {
-                                AIProgram objToRemove =
-                                    await lstAIPrograms.GetValueAtAsync(i, token).ConfigureAwait(false);
-                                if (objToRemove.CanDelete)
-                                {
-                                    // Remove the Improvements created by the Program.
-                                    await ImprovementManager.RemoveImprovementsAsync(this,
-                                        Improvement.ImprovementSource.AIProgram,
-                                        objToRemove.InternalId, token: token).ConfigureAwait(false);
-                                    await lstAIPrograms.RemoveAtAsync(i, token).ConfigureAwait(false);
-                                }
+                                // Remove the Improvements created by the Program.
+                                await objToRemove.RemoveAsync(false, token).ConfigureAwait(false);
                             }
                         }
                     }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -34515,13 +34451,12 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock())
             {
-                decimal decFromKarma = 0.0m;
                 string strExpression = Settings.ChargenKarmaToNuyenExpression
                                                .Replace("{Karma}",
                                                         decKarma.ToString(GlobalSettings.InvariantCultureInfo))
                                                .Replace("{PriorityNuyen}",
                                                         decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
-                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decFromKarma))
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decFromKarma))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
@@ -34546,13 +34481,12 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                decimal decFromKarma = 0.0m;
                 string strExpression = (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetChargenKarmaToNuyenExpressionAsync(token).ConfigureAwait(false))
                                        .Replace("{Karma}",
                                                 decKarma.ToString(GlobalSettings.InvariantCultureInfo))
                                        .Replace("{PriorityNuyen}",
                                                 decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
-                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decFromKarma))
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decFromKarma))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
