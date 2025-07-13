@@ -140,6 +140,7 @@ Data Changes:
 - Attune Animal spell now orrectly uses Animal Handling as its skill instead of the Ritual Spellcasting skill.
 - Armory asset for advanced lifestyles now properly costs 1000. Fixes #5193.
 - Monofilament Whips now properly increase their Accuracy by 2 when they are wirelessly enabled.
+- Registered sprite limits are now equal to a character's Charisma in all English pre-made settings to match the entry in the fifth printing of the CRB. German settings are unaffected because it is still Logic-based in the German CRB.
 
 Fixes implemented by BM123499
 

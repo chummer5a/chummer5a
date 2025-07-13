@@ -109,7 +109,7 @@ namespace Chummer
         private string _strKnowledgePointsExpression = "({INTUnaug} + {LOGUnaug}) * 2";
         private string _strChargenKarmaToNuyenExpression = "{Karma} * 2000 + {PriorityNuyen}";
         private string _strBoundSpiritExpression = "{CHA}";
-        private string _strRegisteredSpriteExpression = "{LOG}";
+        private string _strRegisteredSpriteExpression = "{CHA}";
         private string _strEssenceModifierPostExpression = "{Modifier}";
         private string _strLiftLimitExpression = "{STR} * 15";
         private string _strCarryLimitExpression = "{STR} * 10";
