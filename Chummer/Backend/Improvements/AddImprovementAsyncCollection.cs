@@ -5678,10 +5678,15 @@ namespace Chummer
             if (string.IsNullOrEmpty(strForcePower) && bonusNode.Attributes?["count"] != null)
             {
                 string strCount = bonusNode.Attributes?["count"]?.InnerText;
-                strCount = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strCount, token: token).ConfigureAwait(false);
+                if (strCount.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                {
+                    strCount = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strCount, token: token).ConfigureAwait(false);
 
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCount, token).ConfigureAwait(false);
-                powerCount = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCount, token).ConfigureAwait(false);
+                    powerCount = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
+                }
+                else
+                    powerCount = Math.Max(decValue.StandardRound(), 1);
             }
 
             for (int i = 0; i < powerCount; i++)

@@ -541,7 +541,7 @@ namespace Chummer
                     {
                         // Calculate the Complex Form's Fading for the current Level.
                         (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(
-                            strFv.Replace("L", i.ToString(GlobalSettings.InvariantCultureInfo)).Replace("/", " div "));
+                            strFv.Replace("L", i.ToString(GlobalSettings.InvariantCultureInfo)));
 
                         if (blnIsSuccess && strFv != "Special")
                         {

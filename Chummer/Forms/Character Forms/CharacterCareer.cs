@@ -27122,7 +27122,7 @@ namespace Chummer
                         string strText4 = await objSpell.DisplayRangeAsync(GlobalSettings.Language, token)
                                                         .ConfigureAwait(false);
                         await lblSpellRange.DoThreadSafeAsync(x => x.Text = strText4, token).ConfigureAwait(false);
-                        string strText5 = await objSpell.DisplayDamageAsync(GlobalSettings.Language, token)
+                        string strText5 = await objSpell.DisplayDamageAsync(GlobalSettings.Language, GlobalSettings.CultureInfo, token)
                                                         .ConfigureAwait(false);
                         await lblSpellDamage.DoThreadSafeAsync(x => x.Text = strText5, token).ConfigureAwait(false);
                         string strText6 = await objSpell.DisplayDurationAsync(GlobalSettings.Language, token)

@@ -66,13 +66,45 @@ namespace Chummer
 
         public AvailabilityValue(int intRating, string strInput, int intBonus = 0, bool blnIncludedInParent = false)
         {
-            if (!string.IsNullOrEmpty(strInput))
+            decimal decValue = 0;
+            if (strInput.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
             {
-                if (decimal.TryParse(strInput, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decInput))
+                string strAvailExpr = strInput;
+                if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    Suffix = 'Z';
-                    AddToParent = strInput.StartsWith('+') || strInput.StartsWith('-');
-                    int intValue = decInput.StandardRound() + intBonus;
+                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                }
+
+                Suffix = strAvailExpr[strAvailExpr.Length - 1];
+                if (Suffix == 'F' || Suffix == 'R')
+                {
+                    if (strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-'))
+                    {
+                        AddToParent = true;
+                        strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 2);
+                    }
+                    else
+                    {
+                        AddToParent = false;
+                        strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                    }
+                }
+                else if (strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-'))
+                {
+                    AddToParent = true;
+                    strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
+                }
+                else
+                    AddToParent = false;
+                if (strAvailExpr.Contains("Rating"))
+                {
+                    string strRating = intRating.ToString(GlobalSettings.InvariantCultureInfo);
+                    strAvailExpr = strAvailExpr.Replace("Rating", strRating).Replace("{Rating}", strRating);
+                }
+                if (decimal.TryParse(strAvailExpr, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decProcessedInput))
+                {
+                    int intValue = decProcessedInput.StandardRound() + intBonus;
                     if (intValue < 0)
                         intValue = 0;
                     _objValueInitializer = new Lazy<int>(() => intValue);
@@ -80,73 +112,29 @@ namespace Chummer
                 }
                 else
                 {
-                    string strAvailExpr = strInput;
-                    if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
+                    _objValueInitializer = new Lazy<int>(() =>
                     {
-                        string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                        strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                    }
-
-                    Suffix = strAvailExpr[strAvailExpr.Length - 1];
-                    if (Suffix == 'F' || Suffix == 'R')
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAvailExpr);
+                        int intValue = blnIsSuccess ? ((double)objProcess).StandardRound() + intBonus : intBonus;
+                        return Math.Max(intValue, 0);
+                    });
+                    _objAsyncValueInitializer = new AsyncLazy<int>(async () =>
                     {
-                        if (strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-'))
-                        {
-                            AddToParent = true;
-                            strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 2);
-                        }
-                        else
-                        {
-                            AddToParent = false;
-                            strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                        }
-                    }
-                    else if (strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-'))
-                    {
-                        AddToParent = true;
-                        strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
-                    }
-                    else
-                        AddToParent = false;
-                    if (strAvailExpr.Contains("Rating"))
-                    {
-                        string strRating = intRating.ToString(GlobalSettings.InvariantCultureInfo);
-                        strAvailExpr = strAvailExpr.Replace("Rating", strRating).Replace("{Rating}", strRating);
-                    }
-                    strAvailExpr = strAvailExpr.Replace("/", " div ");
-                    if (decimal.TryParse(strAvailExpr, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decProcessedInput))
-                    {
-                        int intValue = decProcessedInput.StandardRound() + intBonus;
-                        if (intValue < 0)
-                            intValue = 0;
-                        _objValueInitializer = new Lazy<int>(() => intValue);
-                        _objAsyncValueInitializer = new AsyncLazy<int>(() => Task.FromResult(intValue), Utils.JoinableTaskFactory);
-                    }
-                    else
-                    {
-                        _objValueInitializer = new Lazy<int>(() =>
-                        {
-                            (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAvailExpr);
-                            int intValue = blnIsSuccess ? ((double)objProcess).StandardRound() + intBonus : intBonus;
-                            return Math.Max(intValue, 0);
-                        });
-                        _objAsyncValueInitializer = new AsyncLazy<int>(async () =>
-                        {
-                            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr);
-                            int intValue = blnIsSuccess ? ((double)objProcess).StandardRound() + intBonus : intBonus;
-                            return Math.Max(intValue, 0);
-                        }, Utils.JoinableTaskFactory);
-                    }
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr);
+                        int intValue = blnIsSuccess ? ((double)objProcess).StandardRound() + intBonus : intBonus;
+                        return Math.Max(intValue, 0);
+                    }, Utils.JoinableTaskFactory);
                 }
             }
             else
             {
                 Suffix = 'Z';
-                AddToParent = false;
-                if (intBonus < 0)
-                    intBonus = 0;
-                _objValueInitializer = new Lazy<int>(() => intBonus);
-                _objAsyncValueInitializer = new AsyncLazy<int>(() => Task.FromResult(intBonus), Utils.JoinableTaskFactory);
+                AddToParent = !string.IsNullOrEmpty(strInput) && (strInput.StartsWith('+') || strInput.StartsWith('-'));
+                int intValue = decValue.StandardRound() + intBonus;
+                if (intValue < 0)
+                    intValue = 0;
+                _objValueInitializer = new Lazy<int>(() => intValue);
+                _objAsyncValueInitializer = new AsyncLazy<int>(() => Task.FromResult(intValue), Utils.JoinableTaskFactory);
             }
             IncludedInParent = blnIncludedInParent;
         }

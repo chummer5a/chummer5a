@@ -483,7 +483,7 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("range_english", Range, token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
-                            "damage", await DisplayDamageAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            "damage", await DisplayDamageAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                             token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("damage_english", Damage, token).ConfigureAwait(false);
@@ -1063,8 +1063,7 @@ namespace Chummer
                         {
                             // Calculate the Spell's Drain for the current Force.
                             (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(
-                                strDV.Replace("F", i.ToString(GlobalSettings.InvariantCultureInfo))
-                                     .Replace("/", " div "));
+                                strDV.Replace("F", i.ToString(GlobalSettings.InvariantCultureInfo)));
 
                             if (blnIsSuccess && strDV != "Special")
                             {
@@ -1273,7 +1272,7 @@ namespace Chummer
         /// <summary>
         /// Translated Damage.
         /// </summary>
-        public string DisplayDamage(string strLanguage)
+        public string DisplayDamage(string strLanguage, CultureInfo objCultureInfo)
         {
             using (LockObject.EnterReadLock())
             {
@@ -1288,12 +1287,19 @@ namespace Chummer
                                       || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage))
                         sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, " + {0:0;-0;0}", improvement.Value);
                     string output = sbdReturn.ToString();
-
-                    (bool blnIsSuccess, object xprResult)
-                        = CommonFunctions.EvaluateInvariantXPath(output.TrimStart('+'));
-                    sbdReturn.Clear();
-                    if (blnIsSuccess)
-                        sbdReturn.Append(xprResult);
+                    if (output.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        (bool blnIsSuccess, object xprResult)
+                            = CommonFunctions.EvaluateInvariantXPath(output.TrimStart('+'));
+                        sbdReturn.Clear();
+                        if (blnIsSuccess)
+                            sbdReturn.Append(((double)xprResult).ToString("#,0.##", objCultureInfo));
+                    }
+                    else
+                    {
+                        sbdReturn.Clear();
+                        sbdReturn.Append(decValue.ToString("#,0.##", objCultureInfo));
+                    }
 
                     switch (Damage)
                     {
@@ -1314,7 +1320,7 @@ namespace Chummer
         /// <summary>
         /// Translated Damage.
         /// </summary>
-        public async Task<string> DisplayDamageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayDamageAsync(string strLanguage, CultureInfo objCultureInfo, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -1333,15 +1339,21 @@ namespace Chummer
                                       || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage))
                         sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, " + {0:0;-0;0}", improvement.Value);
                     string output = sbdReturn.ToString();
-
-                    (bool blnIsSuccess, object xprResult) = await CommonFunctions
+                    if (output.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        (bool blnIsSuccess, object xprResult) = await CommonFunctions
                                                                   .EvaluateInvariantXPathAsync(
                                                                       output.TrimStart('+'), token)
                                                                   .ConfigureAwait(false);
-                    sbdReturn.Clear();
-                    if (blnIsSuccess)
-                        sbdReturn.Append(xprResult);
-
+                        sbdReturn.Clear();
+                        if (blnIsSuccess)
+                            sbdReturn.Append(((double)xprResult).ToString("#,0.##", objCultureInfo));
+                    }
+                    else
+                    {
+                        sbdReturn.Clear();
+                        sbdReturn.Append(decValue.ToString("#,0.##", objCultureInfo));
+                    }
                     switch (Damage)
                     {
                         case "P":

@@ -10192,14 +10192,15 @@ namespace Chummer
                     .CountAsync(
                         async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit &&
                                    await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) >=
-                CharacterObject.BoundSpiritLimit)
+                await CharacterObject.GetBoundSpiritLimitAsync(token).ConfigureAwait(false))
             {
                 await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync("Message_BoundSpiritLimit", token: token)
                             .ConfigureAwait(false),
-                        await CharacterObject.Settings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false), CharacterObject.BoundSpiritLimit),
+                        await CharacterObject.Settings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false),
+                        await CharacterObject.GetBoundSpiritLimitAsync(token).ConfigureAwait(false)),
                     await LanguageManager.GetStringAsync("MessageTitle_BoundSpiritLimit", token: token)
                         .ConfigureAwait(false),
                     MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
@@ -10224,7 +10225,7 @@ namespace Chummer
                     .CountAsync(
                         async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Sprite &&
                                    await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) >=
-                CharacterObject.RegisteredSpriteLimit)
+                await CharacterObject.GetRegisteredSpriteLimitAsync(token).ConfigureAwait(false))
             {
                 await Program.ShowScrollableMessageBoxAsync(
                     this,
@@ -10232,7 +10233,7 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit", token: token)
                             .ConfigureAwait(false),
                         await CharacterObject.Settings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false),
-                        CharacterObject.RegisteredSpriteLimit),
+                        await CharacterObject.GetRegisteredSpriteLimitAsync(token).ConfigureAwait(false)),
                     await LanguageManager.GetStringAsync("MessageTitle_RegisteredSpriteLimit", token: token)
                         .ConfigureAwait(false),
                     MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);

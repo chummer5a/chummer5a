@@ -20690,14 +20690,13 @@ namespace Chummer
                     if (_intCachedContactPoints == int.MinValue)
                     {
                         string strExpression = Settings.ContactPointsExpression;
-                        if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                        if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdValue))
                             {
                                 sbdValue.Append(strExpression);
                                 AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
-
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                                 (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
@@ -20706,8 +20705,7 @@ namespace Chummer
                             }
                         }
                         else
-                            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out _intCachedContactPoints);
+                            _intCachedContactPoints = decValue.StandardRound();
                     }
 
                     return _intCachedContactPoints;
@@ -20724,14 +20722,13 @@ namespace Chummer
                 if (_intCachedContactPoints == int.MinValue)
                 {
                     string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetContactPointsExpressionAsync(token).ConfigureAwait(false);
-                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
                         {
                             sbdValue.Append(strExpression);
                             await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-
                             // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                             (bool blnIsSuccess, object objProcess)
                                 = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
@@ -20739,8 +20736,7 @@ namespace Chummer
                         }
                     }
                     else
-                        int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                     out _intCachedContactPoints);
+                        _intCachedContactPoints = decValue.StandardRound();
                 }
 
                 return _intCachedContactPoints;
@@ -20875,7 +20871,7 @@ namespace Chummer
                     if (decReturn != decimal.MinValue)
                         return decReturn;
                     string strExpression = Settings.CarryLimitExpression;
-                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
@@ -20889,13 +20885,7 @@ namespace Chummer
                             return _decCachedBaseCarryLimit = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                         }
                     }
-                    else if (decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                              out decReturn))
-                    {
-                        return _decCachedBaseCarryLimit = decReturn;
-                    }
-
-                    return _decCachedBaseCarryLimit = 0;
+                    return _decCachedBaseCarryLimit = decReturn;
                 }
             }
         }
@@ -20915,7 +20905,7 @@ namespace Chummer
                     return decReturn;
                 string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false))
                     .GetCarryLimitExpressionAsync(token).ConfigureAwait(false);
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdValue))
@@ -20930,13 +20920,7 @@ namespace Chummer
                         return _decCachedBaseCarryLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                     }
                 }
-                else if (decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                             out decReturn))
-                {
-                    return _decCachedBaseCarryLimit = decReturn;
-                }
-
-                return _decCachedBaseCarryLimit = 0;
+                return _decCachedBaseCarryLimit = decReturn;
             }
             finally
             {
@@ -20987,7 +20971,7 @@ namespace Chummer
                     if (decReturn != decimal.MinValue)
                         return decReturn;
                     string strExpression = Settings.LiftLimitExpression;
-                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
@@ -21001,13 +20985,7 @@ namespace Chummer
                             return _decCachedBaseLiftLimit = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                         }
                     }
-                    else if (decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                              out decReturn))
-                    {
-                        return _decCachedBaseLiftLimit = decReturn;
-                    }
-
-                    return _decCachedBaseLiftLimit = 0;
+                    return _decCachedBaseLiftLimit = decReturn;
                 }
             }
         }
@@ -21027,7 +21005,7 @@ namespace Chummer
                     return decReturn;
                 string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false))
                     .GetCarryLimitExpressionAsync(token).ConfigureAwait(false);
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdValue))
@@ -21042,13 +21020,7 @@ namespace Chummer
                         return _decCachedBaseLiftLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                     }
                 }
-                else if (decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                             out decReturn))
-                {
-                    return _decCachedBaseLiftLimit = decReturn;
-                }
-
-                return _decCachedBaseLiftLimit = 0;
+                return _decCachedBaseLiftLimit = decReturn;
             }
             finally
             {
@@ -21069,7 +21041,7 @@ namespace Chummer
                     if (decReturn != decimal.MinValue)
                         return decReturn;
                     string strExpression = Settings.EncumbranceIntervalExpression;
-                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
@@ -21083,9 +21055,6 @@ namespace Chummer
                             decReturn = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                         }
                     }
-                    else
-                        decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out decReturn);
 
                     // Need this to make sure our division doesn't go haywire
                     if (decReturn <= 0)
@@ -21110,7 +21079,7 @@ namespace Chummer
                 if (decReturn != decimal.MinValue)
                     return decReturn;
                 string strExpression = Settings.EncumbranceIntervalExpression;
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdValue))
@@ -21124,9 +21093,6 @@ namespace Chummer
                         decReturn = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                     }
                 }
-                else
-                    decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                        out decReturn);
 
                 // Need this to make sure our division doesn't go haywire
                 if (decReturn <= 0)
@@ -23255,7 +23221,7 @@ namespace Chummer
                     if (_intBoundSpiritLimit == int.MinValue)
                     {
                         string strExpression = Settings.BoundSpiritExpression;
-                        if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                        if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdValue))
@@ -23271,12 +23237,48 @@ namespace Chummer
                             }
                         }
                         else
-                            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out _intBoundSpiritLimit);
+                            _intBoundSpiritLimit = decValue.StandardRound();
                     }
 
                     return _intBoundSpiritLimit;
                 }
+            }
+        }
+
+        public async Task<int> GetBoundSpiritLimitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intBoundSpiritLimit == int.MinValue)
+                {
+                    string strExpression = await Settings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false);
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdValue))
+                        {
+                            sbdValue.Append(strExpression);
+                            await AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            (bool blnIsSuccess, object objProcess)
+                                = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                    sbdValue.ToString(), token).ConfigureAwait(false);
+                            _intBoundSpiritLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                        }
+                    }
+                    else
+                        _intBoundSpiritLimit = decValue.StandardRound();
+                }
+
+                return _intBoundSpiritLimit;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -23336,7 +23338,7 @@ namespace Chummer
                     if (_intRegisteredSpriteLimit == int.MinValue)
                     {
                         string strExpression = Settings.RegisteredSpriteExpression;
-                        if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                        if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdValue))
@@ -23352,12 +23354,48 @@ namespace Chummer
                             }
                         }
                         else
-                            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out _intRegisteredSpriteLimit);
+                            _intRegisteredSpriteLimit = decValue.StandardRound();
                     }
 
                     return _intRegisteredSpriteLimit;
                 }
+            }
+        }
+
+        public async Task<int> GetRegisteredSpriteLimitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intRegisteredSpriteLimit == int.MinValue)
+                {
+                    string strExpression = await Settings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false);
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdValue))
+                        {
+                            sbdValue.Append(strExpression);
+                            await AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            (bool blnIsSuccess, object objProcess)
+                                = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                    sbdValue.ToString(), token).ConfigureAwait(false);
+                            _intRegisteredSpriteLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                        }
+                    }
+                    else
+                        _intRegisteredSpriteLimit = decValue.StandardRound();
+                }
+
+                return _intRegisteredSpriteLimit;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -34483,7 +34521,7 @@ namespace Chummer
                                                         decKarma.ToString(GlobalSettings.InvariantCultureInfo))
                                                .Replace("{PriorityNuyen}",
                                                         decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decFromKarma))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
@@ -34497,9 +34535,6 @@ namespace Chummer
                             decFromKarma = Convert.ToDecimal((double)objProcess);
                     }
                 }
-                else
-                    decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                     out decFromKarma);
 
                 return decFromKarma;
             }
@@ -34517,7 +34552,7 @@ namespace Chummer
                                                 decKarma.ToString(GlobalSettings.InvariantCultureInfo))
                                        .Replace("{PriorityNuyen}",
                                                 decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decFromKarma))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
@@ -34531,9 +34566,6 @@ namespace Chummer
                             decFromKarma = Convert.ToDecimal((double)objProcess);
                     }
                 }
-                else
-                    decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                     out decFromKarma);
 
                 return decFromKarma;
             }
@@ -34561,7 +34593,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return '=' + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) +
-                       (await GetTotalStartingNuyenAsync(token).ConfigureAwait(false)).ToString(Settings.NuyenFormat,
+                       (await GetTotalStartingNuyenAsync(token).ConfigureAwait(false)).ToString(await Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
                            GlobalSettings.CultureInfo) +
                        await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             }

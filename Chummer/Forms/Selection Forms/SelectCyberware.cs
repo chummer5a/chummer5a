@@ -587,21 +587,25 @@ namespace Chummer
 
                             int intMinRating = 1;
                             // Not a simple integer, so we need to start mucking around with strings
-                            if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
+                            if (strMinRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                             {
                                 strMinRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMinRating, dicVehicleValues, token).ConfigureAwait(false);
                                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strMinRating, token).ConfigureAwait(false);
                                 intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                             }
+                            else
+                                intMinRating = decValue.StandardRound();
                             await nudRating.DoThreadSafeAsync(x => x.Minimum = intMinRating, token: token).ConfigureAwait(false);
                             int intMaxRating = 0;
                             // Not a simple integer, so we need to start mucking around with strings
-                            if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating))
+                            if (strMaxRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                             {
                                 strMaxRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMaxRating, dicVehicleValues, token).ConfigureAwait(false);
                                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strMaxRating, token).ConfigureAwait(false);
                                 intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                             }
+                            else
+                                intMaxRating = decValue.StandardRound();
                             if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                             {
                                 while (intMaxRating > intMinRating
@@ -1155,10 +1159,13 @@ namespace Chummer
 
                                     decItemCost = decMin;
                                 }
-                                else
+                                else if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decItemCost))
                                 {
                                     strCost = (await strCost
-                                                     .CheapReplaceAsync("Parent Cost", () => CyberwareParent?.Cost ?? "0",
+                                                     .CheapReplaceAsync("Parent Cost", async () => CyberwareParent != null
+                                                                            ? (await CyberwareParent.GetTotalCostAsync(token).ConfigureAwait(false))
+                                                                            .ToString(GlobalSettings.InvariantCultureInfo)
+                                                                            : "0",
                                                                         token: token)
                                                      .CheapReplaceAsync("Parent Gear Cost",
                                                                         async () => CyberwareParent != null
@@ -1196,6 +1203,19 @@ namespace Chummer
                                     {
                                         strCost += await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                                     }
+                                }
+                                else
+                                {
+                                    decItemCost *= _decCostMultiplier * decGenetechCostModifier;
+                                    decItemCost *= 1 + nudMarkup.Value / 100.0m;
+
+                                    if (chkBlackMarketDiscount.Checked)
+                                    {
+                                        decItemCost *= 0.9m;
+                                    }
+
+                                    strCost = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                                        + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                                 }
                             }
                             else
@@ -1252,7 +1272,7 @@ namespace Chummer
                                     string strPostModifierExpression
                                         = (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
                                         .EssenceModifierPostExpression;
-                                    if (!string.IsNullOrEmpty(strPostModifierExpression) && strPostModifierExpression != "{Modifier}")
+                                    if (strPostModifierExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decCharacterESSModifier))
                                     {
                                         (bool blnIsSuccess2, object objProcess2)
                                             = await CommonFunctions.EvaluateInvariantXPathAsync(
@@ -1281,15 +1301,27 @@ namespace Chummer
                                     strEss += strSuffix;
                                 }
 
-                                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                    strEss.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
-                                if (blnIsSuccess)
+                                if (strEss.DoesNeedXPathProcessingToBeConvertedToNumber(out decESS))
                                 {
-                                    decESS = decCharacterESSModifier
-                                             * Convert.ToDecimal((double)objProcess);
-                                    if (!_objCharacter.Settings.DontRoundEssenceInternally)
+                                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                        strEss.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                                    if (blnIsSuccess)
                                     {
-                                        decESS = decimal.Round(decESS, _objCharacter.Settings.EssenceDecimals,
+                                        decESS = decCharacterESSModifier
+                                                 * Convert.ToDecimal((double)objProcess);
+                                        if (!await _objCharacter.Settings.GetDontRoundEssenceInternallyAsync(token).ConfigureAwait(false))
+                                        {
+                                            decESS = decimal.Round(decESS, await _objCharacter.Settings.GetEssenceDecimalsAsync(token).ConfigureAwait(false),
+                                                                   MidpointRounding.AwayFromZero);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    decESS *= decCharacterESSModifier;
+                                    if (!await _objCharacter.Settings.GetDontRoundEssenceInternallyAsync(token).ConfigureAwait(false))
+                                    {
+                                        decESS = decimal.Round(decESS, await _objCharacter.Settings.GetEssenceDecimalsAsync(token).ConfigureAwait(false),
                                                                MidpointRounding.AwayFromZero);
                                     }
                                 }
@@ -1347,30 +1379,45 @@ namespace Chummer
                                     blnSquareBrackets = strFirstHalf.StartsWith('[');
                                     if (blnSquareBrackets && strFirstHalf.Length > 1)
                                         strFirstHalf = strFirstHalf.Substring(1, strCapacity.Length - 2);
-
-                                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                        strFirstHalf.Replace(
-                                            "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
-
-                                    await lblCapacity.DoThreadSafeAsync(x =>
+                                    if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                                     {
-                                        x.Text = blnIsSuccess
-                                            ? objProcess.ToString()
-                                            : strFirstHalf;
-                                        if (blnSquareBrackets)
-                                            x.Text = '[' + x.Text + ']';
-                                    }, token: token).ConfigureAwait(false);
+                                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                            strFirstHalf.Replace(
+                                                "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                                        await lblCapacity.DoThreadSafeAsync(x =>
+                                        {
+                                            x.Text = blnIsSuccess
+                                                ? ((double)objProcess).ToString("#,0.##", GlobalSettings.InvariantCultureInfo)
+                                                : strFirstHalf;
+                                            if (blnSquareBrackets)
+                                                x.Text = '[' + x.Text + ']';
+                                        }, token: token).ConfigureAwait(false);
+                                    }
+                                    else
+                                    {
+                                        await lblCapacity.DoThreadSafeAsync(x =>
+                                        {
+                                            x.Text = decValue.ToString("#,0.##", GlobalSettings.InvariantCultureInfo);
+                                            if (blnSquareBrackets)
+                                                x.Text = '[' + x.Text + ']';
+                                        }, token: token).ConfigureAwait(false);
+                                    }
 
                                     strSecondHalf = strSecondHalf.Trim('[', ']');
-                                    (bool blnIsSuccess2, object objProcess2) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                        strSecondHalf.Replace(
-                                            "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
-                                    strSecondHalf = (blnAddToParentCapacity ? "+[" : "[")
-                                                    + (blnIsSuccess2 ? objProcess2.ToString() : strSecondHalf) + ']';
-
+                                    if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
+                                    {
+                                        (bool blnIsSuccess2, object objProcess2) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                            strSecondHalf.Replace(
+                                                "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                                        strSecondHalf = (blnAddToParentCapacity ? "+[" : "[")
+                                                        + (blnIsSuccess2 ? ((double)objProcess2).ToString("#,0.##", GlobalSettings.InvariantCultureInfo) : strSecondHalf) + ']';
+                                    }
+                                    else
+                                        strSecondHalf = (blnAddToParentCapacity ? "+[" : "[")
+                                                        + decValue.ToString("#,0.##", GlobalSettings.InvariantCultureInfo) + ']';
                                     await lblCapacity.DoThreadSafeAsync(x => x.Text += '/' + strSecondHalf, token: token).ConfigureAwait(false);
                                 }
-                                else
+                                else if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                                 {
                                     (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
                                         strCapacity.Replace(
@@ -1378,7 +1425,7 @@ namespace Chummer
                                     await lblCapacity.DoThreadSafeAsync(x =>
                                     {
                                         x.Text = blnIsSuccess
-                                            ? objProcess.ToString()
+                                            ? ((double)objProcess).ToString("#,0.##", GlobalSettings.InvariantCultureInfo)
                                             : strCapacity;
                                         if (blnSquareBrackets)
                                         {
@@ -1387,6 +1434,17 @@ namespace Chummer
                                                 : '[' + x.Text + ']';
                                         }
                                     }, token: token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    string strText = decValue.ToString("#,0.##", GlobalSettings.InvariantCultureInfo);
+                                    if (blnSquareBrackets)
+                                    {
+                                        strText = blnAddToParentCapacity
+                                            ? "+[" + strText + ']'
+                                            : '[' + strText + ']';
+                                    }
+                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -1698,18 +1756,26 @@ namespace Chummer
                             }
 
                             strMinRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMinRating, dicVehicleValues, token).ConfigureAwait(false);
-
-                            (bool blnIsSuccess, object objProcess)
-                                = await CommonFunctions.EvaluateInvariantXPathAsync(strMinRating, token)
-                                                       .ConfigureAwait(false);
-                            intMinRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
+                            if (strMinRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                            {
+                                (bool blnIsSuccess, object objProcess)
+                                    = await CommonFunctions.EvaluateInvariantXPathAsync(strMinRating, token)
+                                                           .ConfigureAwait(false);
+                                intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
+                            }
+                            else
+                                intMinRating = decValue.StandardRound();
 
                             strMaxRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMaxRating, dicVehicleValues, token).ConfigureAwait(false);
-
-                            (blnIsSuccess, objProcess)
-                                = await CommonFunctions.EvaluateInvariantXPathAsync(strMaxRating, token)
-                                                       .ConfigureAwait(false);
-                            intMaxRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
+                            if (strMaxRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
+                            {
+                                (bool blnIsSuccess, object objProcess)
+                                    = await CommonFunctions.EvaluateInvariantXPathAsync(strMaxRating, token)
+                                                           .ConfigureAwait(false);
+                                intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
+                            }
+                            else
+                                intMaxRating = decValue.StandardRound();
                             if (intMaxRating < intMinRating)
                                 continue;
                         }
@@ -1886,8 +1952,7 @@ namespace Chummer
                     }
 
                     decimal decCapacity = 0;
-
-                    if (strCapacity != "*")
+                    if (strCapacity != "*" && strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decCapacity))
                     {
                         (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
                         if (blnIsSuccess)

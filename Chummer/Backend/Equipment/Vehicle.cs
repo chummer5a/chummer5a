@@ -1854,15 +1854,20 @@ namespace Chummer.Backend.Equipment
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    sbdAvail.Append(strAvail.TrimStart('+'));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
-                    if (blnIsSuccess)
-                        intAvail += ((double)objProcess).StandardRound();
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    {
+                        sbdAvail.Append(strAvail.TrimStart('+'));
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
+                        (bool blnIsSuccess, object objProcess)
+                            = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
+                        if (blnIsSuccess)
+                            intAvail += ((double)objProcess).StandardRound();
+                    }
                 }
+                else
+                    intAvail += decValue.StandardRound();
             }
 
             if (blnIncludeChildren)
@@ -1941,17 +1946,22 @@ namespace Chummer.Backend.Equipment
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    sbdAvail.Append(strAvail.TrimStart('+'));
-                    await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
-                        .ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token)
-                        .ConfigureAwait(false);
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        intAvail += ((double)objProcess).StandardRound();
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    {
+                        sbdAvail.Append(strAvail.TrimStart('+'));
+                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                            .ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token)
+                            .ConfigureAwait(false);
+                        (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            intAvail += ((double)objProcess).StandardRound();
+                    }
                 }
+                else
+                    intAvail += decValue.StandardRound();
             }
 
             if (blnIncludeChildren)
@@ -2143,7 +2153,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         private static int ParseBonus(string strBonus, int intModRating, int intTotalRating, string strReplaceRating, bool blnBonus = true)
         {
-            if (!string.IsNullOrEmpty(strBonus))
+            if (strBonus.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 char chrFirstCharacter = strBonus[0];
                 //Value is a bonus
@@ -2166,7 +2176,7 @@ namespace Chummer.Backend.Equipment
                         return ((double)objProcess).StandardRound();
                 }
             }
-            return 0;
+            return decValue.StandardRound();
         }
 
         /// <summary>
@@ -2181,7 +2191,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         private static async Task<int> ParseBonusAsync(string strBonus, int intModRating, int intTotalRating, string strReplaceRating, bool blnBonus = true, CancellationToken token = default)
         {
-            if (!string.IsNullOrEmpty(strBonus))
+            if (strBonus.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 char chrFirstCharacter = strBonus[0];
                 //Value is a bonus
@@ -2204,7 +2214,7 @@ namespace Chummer.Backend.Equipment
                         return ((double)objProcess).StandardRound();
                 }
             }
-            return 0;
+            return decValue.StandardRound();
         }
 
         /// <summary>
@@ -2711,16 +2721,18 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decCost = 0;
                 string strCost = Cost;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
                 {
-                    sbdCost.Append(strCost);
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCost);
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
-                    if (blnIsSuccess)
-                        decCost = Convert.ToDecimal((double)objProcess);
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                    {
+                        sbdCost.Append(strCost);
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCost);
+                        (bool blnIsSuccess, object objProcess)
+                            = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
+                        if (blnIsSuccess)
+                            decCost = Convert.ToDecimal((double)objProcess);
+                    }
                 }
 
                 if (DiscountCost)
@@ -2738,16 +2750,18 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<decimal> GetOwnCostAsync(CancellationToken token = default)
         {
-            decimal decCost = 0;
             string strCost = Cost;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+            if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
             {
-                sbdCost.Append(strCost);
-                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
-                (bool blnIsSuccess, object objProcess)
-                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
-                if (blnIsSuccess)
-                    decCost = Convert.ToDecimal((double)objProcess);
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                {
+                    sbdCost.Append(strCost);
+                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        decCost = Convert.ToDecimal((double)objProcess);
+                }
             }
 
             if (DiscountCost)
@@ -5074,7 +5088,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
@@ -5109,7 +5123,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            return !int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn) ? 0 : intReturn;
+            return decValue.StandardRound();
         }
 
         public async Task<int> GetBaseMatrixAttributeAsync(string strAttributeName, CancellationToken token = default)
@@ -5136,7 +5150,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
@@ -5172,7 +5186,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            return !int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn) ? 0 : intReturn;
+            return decValue.StandardRound();
         }
 
         public int GetBonusMatrixAttribute(string strAttributeName)

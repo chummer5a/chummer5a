@@ -3047,8 +3047,7 @@ namespace Chummer.Backend.Skills
                     using (_objCachedKnowledgePointsLock.EnterWriteLock())
                     {
                         string strExpression = _objCharacter.Settings.KnowledgePointsExpression;
-                        if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1
-                            || strExpression.Contains("div"))
+                        if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                        out StringBuilder sbdValue))
@@ -3066,8 +3065,7 @@ namespace Chummer.Backend.Skills
                             }
                         }
                         else
-                            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                out _intCachedKnowledgePoints);
+                            _intCachedKnowledgePoints = decValue.StandardRound();
 
                         _intCachedKnowledgePoints += ImprovementManager
                             .ValueOf(_objCharacter,
@@ -3112,8 +3110,7 @@ namespace Chummer.Backend.Skills
                 {
                     token.ThrowIfCancellationRequested();
                     string strExpression = _objCharacter.Settings.KnowledgePointsExpression;
-                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1
-                        || strExpression.Contains("div"))
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdValue))
@@ -3131,8 +3128,7 @@ namespace Chummer.Backend.Skills
                         }
                     }
                     else
-                        int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                            out _intCachedKnowledgePoints);
+                        _intCachedKnowledgePoints = decValue.StandardRound();
 
                     _intCachedKnowledgePoints += (await ImprovementManager
                             .ValueOfAsync(_objCharacter,

@@ -1863,7 +1863,7 @@ namespace Chummer.Backend.Attributes
             try
             {
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
-                    objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ")
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value
                                     .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
                 if (blnIsSuccess)
                     intMinValue = ((double)objProcess).StandardRound();
@@ -1874,7 +1874,7 @@ namespace Chummer.Backend.Attributes
             try
             {
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
-                    objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ")
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value
                                     .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
                 if (blnIsSuccess)
                     intMaxValue = ((double)objProcess).StandardRound();
@@ -1885,7 +1885,7 @@ namespace Chummer.Backend.Attributes
             try
             {
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
-                    objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ")
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value
                                     .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
                 if (blnIsSuccess)
                     intAugValue = ((double)objProcess).StandardRound();
@@ -1918,7 +1918,7 @@ namespace Chummer.Backend.Attributes
             try
             {
                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                    objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ")
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value
                                     .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     intMinValue = ((double)objProcess).StandardRound();
@@ -1929,7 +1929,7 @@ namespace Chummer.Backend.Attributes
             try
             {
                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                    objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ")
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value
                                     .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     intMaxValue = ((double)objProcess).StandardRound();
@@ -1940,7 +1940,7 @@ namespace Chummer.Backend.Attributes
             try
             {
                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                    objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ")
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value
                                     .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     intAugValue = ((double)objProcess).StandardRound();

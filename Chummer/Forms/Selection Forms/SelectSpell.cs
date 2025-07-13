@@ -806,18 +806,28 @@ namespace Chummer
             {
                 strDV += " + 2";
             }
-            (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(strDV.TrimStart('+'), token).ConfigureAwait(false);
-            if (blnIsSuccess)
+            if (strDV.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                if (force)
+                (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(strDV.TrimStart('+'), token).ConfigureAwait(false);
+                if (blnIsSuccess)
                 {
-                    strDV = string.Format(GlobalSettings.CultureInfo, "F{0:+0;-0;}", xprResult);
-                }
-                else if (xprResult.ToString() != "0")
-                {
-                    strDV += xprResult;
+                    double dblResult = (double)xprResult;
+                    if (force)
+                    {
+                        strDV = string.Format(GlobalSettings.CultureInfo, "F{0:+0;-0;}", dblResult);
+                    }
+                    else if (dblResult != 0)
+                    {
+                        strDV += dblResult.ToString("+0;-0;0", GlobalSettings.CultureInfo);
+                    }
                 }
             }
+            else if (force)
+            {
+                strDV = string.Format(GlobalSettings.CultureInfo, "F{0:+0;-0;}", decValue);
+            }
+            else if (decValue != 0)
+                strDV += decValue.ToString("+0;-0;0", GlobalSettings.CultureInfo);
 
             await lblDV.DoThreadSafeAsync(x => x.Text = strDV, token: token).ConfigureAwait(false);
             await lblDVLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDV), token: token).ConfigureAwait(false);
