@@ -2707,7 +2707,7 @@ namespace Chummer.Backend.Equipment
                                     chrLastAvailChar = 'F';
                                 else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                                     chrLastAvailChar = 'R';
-                                return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+                                return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
                             }, token).ConfigureAwait(false)
                             // Run through gear children and increase the Avail by any Mod whose Avail starts with "+" or "-".
                             + await GearChildren.SumAsync(async objChild =>
@@ -2719,7 +2719,7 @@ namespace Chummer.Backend.Equipment
                                     chrLastAvailChar = 'F';
                                 else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                                     chrLastAvailChar = 'R';
-                                return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+                                return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
                             }, token).ConfigureAwait(false);
             }
 
@@ -3576,9 +3576,9 @@ namespace Chummer.Backend.Equipment
         public async Task<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
         {
             AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token).ConfigureAwait(false);
-            int intAvailInt = objTotalAvail.Value;
+            int intAvailInt = await objTotalAvail.GetValueAsync(token).ConfigureAwait(false);
             int intRestrictedCount = 0;
-            if (intAvailInt > _objCharacter.Settings.MaximumAvailability)
+            if (intAvailInt > await _objCharacter.Settings.GetMaximumAvailabilityAsync(token).ConfigureAwait(false))
             {
                 int intLowestValidRestrictedGearAvail = -1;
                 foreach (int intValidAvail in dicRestrictedGearLimits.Keys)

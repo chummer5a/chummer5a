@@ -21,6 +21,7 @@ using System;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Threading;
 
 namespace Chummer
 {
@@ -28,13 +29,22 @@ namespace Chummer
     {
         public bool AddToParent { get; }
         public bool IncludedInParent { get; }
-        public int Value { get; }
-
         public char Suffix { get; }
+
+        public int Value => _objValueInitializer.Value;
+        public Task<int> GetValueAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<int>(token);
+            return _objValueInitializer.IsValueCreated
+                ? Task.FromResult(_objValueInitializer.Value)
+                : _objAsyncValueInitializer.GetValueAsync(token);
+        }
+        private readonly Lazy<int> _objValueInitializer;
+        private readonly AsyncLazy<int> _objAsyncValueInitializer;
 
         public AvailabilityValue(int intValue, char chrSuffix, bool blnAddToParent, bool blnIncludedInParent = false)
         {
-            Value = intValue;
             AddToParent = blnAddToParent;
             IncludedInParent = blnIncludedInParent;
             switch (chrSuffix)
@@ -48,36 +58,97 @@ namespace Chummer
                     Suffix = 'Z';
                     break;
             }
+            if (intValue < 0)
+                intValue = 0;
+            _objValueInitializer = new Lazy<int>(() => intValue);
+            _objAsyncValueInitializer = new AsyncLazy<int>(() => Task.FromResult(intValue), Utils.JoinableTaskFactory);
         }
 
         public AvailabilityValue(int intRating, string strInput, int intBonus = 0, bool blnIncludedInParent = false)
         {
             if (!string.IsNullOrEmpty(strInput))
             {
-                string strAvailExpr = strInput;
-                if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
+                if (decimal.TryParse(strInput, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decInput))
                 {
-                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                    Suffix = 'Z';
+                    AddToParent = strInput.StartsWith('+') || strInput.StartsWith('-');
+                    int intValue = decInput.StandardRound() + intBonus;
+                    if (intValue < 0)
+                        intValue = 0;
+                    _objValueInitializer = new Lazy<int>(() => intValue);
+                    _objAsyncValueInitializer = new AsyncLazy<int>(() => Task.FromResult(intValue), Utils.JoinableTaskFactory);
                 }
+                else
+                {
+                    string strAvailExpr = strInput;
+                    if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
+                    {
+                        string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                        strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                    }
 
-                Suffix = strAvailExpr[strAvailExpr.Length - 1];
-                AddToParent = strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-');
-                if (Suffix == 'F' || Suffix == 'R')
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)));
-                Value = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                    Suffix = strAvailExpr[strAvailExpr.Length - 1];
+                    if (Suffix == 'F' || Suffix == 'R')
+                    {
+                        if (strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-'))
+                        {
+                            AddToParent = true;
+                            strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 2);
+                        }
+                        else
+                        {
+                            AddToParent = false;
+                            strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                        }
+                    }
+                    else if (strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-'))
+                    {
+                        AddToParent = true;
+                        strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
+                    }
+                    else
+                        AddToParent = false;
+                    if (strAvailExpr.Contains("Rating"))
+                    {
+                        string strRating = intRating.ToString(GlobalSettings.InvariantCultureInfo);
+                        strAvailExpr = strAvailExpr.Replace("Rating", strRating).Replace("{Rating}", strRating);
+                    }
+                    strAvailExpr = strAvailExpr.Replace("/", " div ");
+                    if (decimal.TryParse(strAvailExpr, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decProcessedInput))
+                    {
+                        int intValue = decProcessedInput.StandardRound() + intBonus;
+                        if (intValue < 0)
+                            intValue = 0;
+                        _objValueInitializer = new Lazy<int>(() => intValue);
+                        _objAsyncValueInitializer = new AsyncLazy<int>(() => Task.FromResult(intValue), Utils.JoinableTaskFactory);
+                    }
+                    else
+                    {
+                        _objValueInitializer = new Lazy<int>(() =>
+                        {
+                            (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAvailExpr);
+                            int intValue = blnIsSuccess ? ((double)objProcess).StandardRound() + intBonus : intBonus;
+                            return Math.Max(intValue, 0);
+                        });
+                        _objAsyncValueInitializer = new AsyncLazy<int>(async () =>
+                        {
+                            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr);
+                            int intValue = blnIsSuccess ? ((double)objProcess).StandardRound() + intBonus : intBonus;
+                            return Math.Max(intValue, 0);
+                        }, Utils.JoinableTaskFactory);
+                    }
+                }
             }
             else
             {
-                Value = 0;
                 Suffix = 'Z';
                 AddToParent = false;
+                if (intBonus < 0)
+                    intBonus = 0;
+                _objValueInitializer = new Lazy<int>(() => intBonus);
+                _objAsyncValueInitializer = new AsyncLazy<int>(() => Task.FromResult(intBonus), Utils.JoinableTaskFactory);
             }
             IncludedInParent = blnIncludedInParent;
-            Value += intBonus;
-            if (Value < 0)
-                Value = 0;
         }
 
         public override string ToString()
@@ -87,8 +158,9 @@ namespace Chummer
 
         public string ToString(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            string strBaseAvail = Value.ToString(objCulture);
-            if (AddToParent && Value >= 0)
+            int intValue = Value;
+            string strBaseAvail = intValue.ToString(objCulture);
+            if (AddToParent && intValue >= 0)
                 strBaseAvail = '+' + strBaseAvail;
             switch (Suffix)
             {
@@ -108,8 +180,10 @@ namespace Chummer
 
         public async Task<string> ToStringAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            string strBaseAvail = Value.ToString(objCulture);
-            if (AddToParent && Value >= 0)
+            token.ThrowIfCancellationRequested();
+            int intValue = await GetValueAsync(token).ConfigureAwait(false);
+            string strBaseAvail = intValue.ToString(objCulture);
+            if (AddToParent && intValue >= 0)
                 strBaseAvail = '+' + strBaseAvail;
             switch (Suffix)
             {
@@ -141,6 +215,26 @@ namespace Chummer
             return intCompareResult;
         }
 
+        public Task<int> CompareToAsync(object obj, CancellationToken token = default)
+        {
+            return CompareToAsync((AvailabilityValue)obj, token);
+        }
+
+        public async Task<int> CompareToAsync(AvailabilityValue objOther, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intCompareResult = (await GetValueAsync(token).ConfigureAwait(false)).CompareTo(await objOther.GetValueAsync(token).ConfigureAwait(false));
+            if (intCompareResult == 0)
+            {
+                intCompareResult = Suffix.CompareTo(objOther.Suffix);
+                if (intCompareResult == 0)
+                {
+                    intCompareResult = AddToParent.CompareTo(objOther.AddToParent);
+                }
+            }
+            return intCompareResult;
+        }
+
         public bool Equals(AvailabilityValue other)
         {
             return Value.Equals(other.Value) && Suffix.Equals(other.Suffix) && AddToParent.Equals(other.AddToParent);
@@ -153,6 +247,22 @@ namespace Chummer
                 return Equals(objOther);
             }
             return false;
+        }
+
+        public async Task<bool> EqualsAsync(AvailabilityValue other, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await GetValueAsync(token).ConfigureAwait(false)).Equals(await other.GetValueAsync(token).ConfigureAwait(false))
+                && Suffix.Equals(other.Suffix) && AddToParent.Equals(other.AddToParent);
+        }
+
+        public Task<bool> EqualsAsync(object obj, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<bool>(token);
+            if (obj is AvailabilityValue objOther)
+                return EqualsAsync(objOther, token);
+            return Task.FromResult(false);
         }
 
         public override int GetHashCode()

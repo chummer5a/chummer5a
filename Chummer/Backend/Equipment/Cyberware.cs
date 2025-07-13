@@ -7846,7 +7846,7 @@ namespace Chummer.Backend.Equipment
                         if (blnCheckChildren)
                         {
                             if (objLoopAvailTuple.AddToParent)
-                                intAvail += objLoopAvailTuple.Value;
+                                intAvail += await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false);
                             if (objLoopAvailTuple.Suffix == 'F')
                                 chrLastAvailChar = 'F';
                             else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
@@ -7938,7 +7938,7 @@ namespace Chummer.Backend.Equipment
                             chrLastAvailChar = 'F';
                         else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                             chrLastAvailChar = 'R';
-                        return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+                        return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
                     }, token).ConfigureAwait(false);
                 }
 
@@ -7951,14 +7951,14 @@ namespace Chummer.Backend.Equipment
                     AvailabilityValue objLoopAvailTuple =
                         await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (!objLoopAvailTuple.AddToParent)
-                        intLoopAvail = Math.Max(intLoopAvail, objLoopAvailTuple.Value);
+                        intLoopAvail = Math.Max(intLoopAvail, await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false));
                     if (blnCheckChildren)
                     {
                         if (objLoopAvailTuple.Suffix == 'F')
                             chrLastAvailChar = 'F';
                         else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                             chrLastAvailChar = 'R';
-                        return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+                        return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
                     }
 
                     if (blnOrGear)
@@ -11147,7 +11147,7 @@ namespace Chummer.Backend.Equipment
                     AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (!objTotalAvail.AddToParent)
                     {
-                        int intAvailInt = objTotalAvail.Value;
+                        int intAvailInt = await objTotalAvail.GetValueAsync(token).ConfigureAwait(false);
                         if (intAvailInt > await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaximumAvailabilityAsync(token).ConfigureAwait(false))
                         {
                             int intLowestValidRestrictedGearAvail = -1;

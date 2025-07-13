@@ -39355,14 +39355,14 @@ namespace Chummer
         /// <param name="decCost">Item's cost.</param>
         /// <param name="objAvailability">Item's Availability.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public Task<string> AvailTestAsync(decimal decCost, AvailabilityValue objAvailability, CancellationToken token = default)
+        public async Task<string> AvailTestAsync(decimal decCost, AvailabilityValue objAvailability, CancellationToken token = default)
         {
-            if (objAvailability.Value != 0 || objAvailability.Suffix == 'R' || objAvailability.Suffix == 'F')
+            if (objAvailability.Suffix == 'R' || objAvailability.Suffix == 'F' || await objAvailability.GetValueAsync(token).ConfigureAwait(false) != 0)
             {
-                return GetAvailTestStringAsync(decCost, objAvailability.Value, token);
+                return await GetAvailTestStringAsync(decCost, await objAvailability.GetValueAsync(token).ConfigureAwait(false), token);
             }
 
-            return LanguageManager.GetStringAsync("String_None", token: token);
+            return await LanguageManager.GetStringAsync("String_None", token: token);
         }
 
         private readonly AsyncFriendlyReaderWriterLock _objAvailabilityMapLock;

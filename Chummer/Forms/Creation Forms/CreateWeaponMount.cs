@@ -831,7 +831,7 @@ namespace Chummer
                         chrAvailSuffix = 'F';
                     else if (chrAvailSuffix != 'F' && chrLoopAvailSuffix == 'R')
                         chrAvailSuffix = 'R';
-                    intAvail += objLoopAvail.Value;
+                    intAvail += await objLoopAvail.GetValueAsync(token).ConfigureAwait(false);
                     return await x.GetCalculatedSlotsAsync(token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
                 if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
