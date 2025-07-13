@@ -536,13 +536,15 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return _tskRunningDownloadTask;
             }
-            set
+            private set
             {
                 Task<string> tskOld;
                 using (LockObject.EnterUpgradeableReadLock())
+                {
                     tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, value);
-                if (tskOld != null && tskOld != value)
-                    Utils.SafelyRunSynchronously(() => tskOld);
+                    if (tskOld != null && tskOld != value)
+                        Utils.SafelyRunSynchronously(() => tskOld);
+                }
             }
         }
 
@@ -710,7 +712,7 @@ namespace Chummer
         public async Task OnDefaultDoubleClick(object sender, EventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -742,7 +744,7 @@ namespace Chummer
         public async Task OnDefaultContextMenuDeleteClick(object sender, EventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -1140,7 +1142,7 @@ namespace Chummer
         public async Task OnDefaultKeyDown(object sender, Tuple<KeyEventArgs, TreeNode> args, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();

@@ -23,12 +23,30 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.VisualStudio.Threading;
 
 namespace Chummer
 {
     public readonly struct SourceString : IComparable, IEquatable<SourceString>, IComparable<SourceString>
     {
         private static readonly ConcurrentDictionary<string, Tuple<string, string>> s_DicCachedStrings = new ConcurrentDictionary<string, Tuple<string, string>>();
+
+        private static Tuple<string, string> GetSpaceAndPageStrings(string strLanguage)
+        {
+            return s_DicCachedStrings.GetOrAdd(
+                strLanguage,
+                x => new Tuple<string, string>(LanguageManager.GetString("String_Space", x),
+                                               LanguageManager.GetString("String_Page", x)));
+        }
+
+        private static Task<Tuple<string, string>> GetSpaceAndPageStringsAsync(string strLanguage, CancellationToken token = default)
+        {
+            return s_DicCachedStrings.GetOrAddAsync(
+                strLanguage,
+                async x => new Tuple<string, string>(await LanguageManager.GetStringAsync("String_Space", x, token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("String_Page", x, token: token).ConfigureAwait(false)), token);
+        }
+
         private readonly int _intHashCode;
 
         public static readonly SourceString Blank = GetSourceString(string.Empty, 0, GlobalSettings.DefaultLanguage, GlobalSettings.InvariantCultureInfo);
@@ -133,28 +151,43 @@ namespace Chummer
 
         private SourceString(string strBookCodeShort, string strBookCodeLong, int intPage, string strLanguage, CultureInfo objCultureInfo)
         {
-            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalSettings.Language;
-            CultureInfo = objCultureInfo ?? GlobalSettings.CultureInfo;
+            strLanguage = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalSettings.Language;
+            if (objCultureInfo == null)
+                objCultureInfo = GlobalSettings.CultureInfo;
+            Language = strLanguage;
+            CultureInfo = objCultureInfo;
             Page = intPage;
-
             Code = strBookCodeShort;
             _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
-            (string strSpace, string strPage) = s_DicCachedStrings.GetOrAdd(
-                Language,
-                x => new Tuple<string, string>(LanguageManager.GetString("String_Space", x),
-                                               LanguageManager.GetString("String_Page", x)));
-            LanguageBookTooltip = strBookCodeLong + strSpace + strPage + strSpace + Page.ToString(CultureInfo);
+            _objTooltipInitializer = new Lazy<string>(() =>
+            {
+                (string strSpace, string strPage) = GetSpaceAndPageStrings(strLanguage);
+                return strBookCodeLong + strSpace + strPage + strSpace + intPage.ToString(objCultureInfo);
+            });
+            _objAsyncTooltipInitializer = new AsyncLazy<string>(async () =>
+            {
+                (string strSpace, string strPage) = await GetSpaceAndPageStringsAsync(strLanguage).ConfigureAwait(false);
+                return strBookCodeLong + strSpace + strPage + strSpace + intPage.ToString(objCultureInfo);
+            }, Utils.JoinableTaskFactory);
         }
 
         public override string ToString()
         {
-            string strSpace = s_DicCachedStrings.GetOrAdd(
-                Language,
-                x => new Tuple<string, string>(LanguageManager.GetString("String_Space", x),
-                                               LanguageManager.GetString("String_Page", x))).Item1;
-            return string.IsNullOrEmpty(Code)
-                ? string.Empty
-                : Code + strSpace + Page.ToString(CultureInfo);
+            string strCode = Code;
+            if (string.IsNullOrEmpty(strCode))
+                return string.Empty;
+            string strSpace = GetSpaceAndPageStrings(Language).Item1;
+            return strCode + strSpace + Page.ToString(CultureInfo);
+        }
+
+        public async Task<string> ToStringAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strCode = Code;
+            if (string.IsNullOrEmpty(strCode))
+                return string.Empty;
+            string strSpace = (await GetSpaceAndPageStringsAsync(Language, token).ConfigureAwait(false)).Item1;
+            return strCode + strSpace + Page.ToString(CultureInfo);
         }
 
         /// <summary>
@@ -180,7 +213,22 @@ namespace Chummer
         /// <summary>
         /// Provides the long-form name of the object's sourcebook and page reference.
         /// </summary>
-        public string LanguageBookTooltip { get; }
+        public string LanguageBookTooltip => _objTooltipInitializer.Value;
+
+        /// <summary>
+        /// Provides the long-form name of the object's sourcebook and page reference.
+        /// </summary>
+        public Task<string> GetLanguageBookTooltipAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return _objTooltipInitializer.IsValueCreated
+                ? Task.FromResult(_objTooltipInitializer.Value)
+                : _objAsyncTooltipInitializer.GetValueAsync(token);
+        }
+
+        private readonly Lazy<string> _objTooltipInitializer;
+        private readonly AsyncLazy<string> _objAsyncTooltipInitializer;
 
         public int CompareTo(object obj)
         {
@@ -223,9 +271,9 @@ namespace Chummer
         {
             if (source == null)
                 return;
-            string strText = ToString();
+            string strText = await ToStringAsync(token).ConfigureAwait(false);
             await source.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-            await source.SetToolTipAsync(LanguageBookTooltip, token).ConfigureAwait(false);
+            await source.SetToolTipAsync(await GetLanguageBookTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         public bool Equals(SourceString other)

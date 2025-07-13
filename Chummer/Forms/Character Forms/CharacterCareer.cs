@@ -5547,7 +5547,7 @@ namespace Chummer
                                 }
 
                                 // Load the Spirit's save file into a new Merge character.
-                                frmLoadingBar.MyForm.CharacterFile = await objMerge.GetFileNameAsync(GenericToken).ConfigureAwait(false);
+                                await frmLoadingBar.MyForm.SetCharacterFileAsync(await objMerge.GetFileNameAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                                 blnSuccess = await objMerge
                                                    .LoadAsync(frmLoadingForm: frmLoadingBar.MyForm, token: GenericToken)
                                                    .ConfigureAwait(false);

@@ -178,12 +178,10 @@ namespace Chummer
                 SourceString objSource = await SourceString.GetSourceStringAsync(
                     strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
-                string strSourceText = objSource.ToString();
-                await lblSource.DoThreadSafeAsync(x => x.Text = strSourceText).ConfigureAwait(false);
-                await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip).ConfigureAwait(false);
+                await objSource.SetControlAsync(lblSource).ConfigureAwait(false);
                 await lblTargetLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTarget)).ConfigureAwait(false);
                 await lblDurationLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDuration)).ConfigureAwait(false);
-                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSourceText)).ConfigureAwait(false);
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblSource.Text)).ConfigureAwait(false);
                 await lblFVLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strFv)).ConfigureAwait(false);
                 await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
             }
