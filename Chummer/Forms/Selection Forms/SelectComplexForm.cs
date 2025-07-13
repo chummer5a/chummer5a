@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -168,7 +169,76 @@ namespace Chummer
                                                          "String_SpellRadiationPower")).ConfigureAwait(false);
                 }
 
+                bool blnForce = strFv.StartsWith('L');
+                strFv = blnForce ? strFv.TrimStartOnce("L", true) : strFv;
+                //Navigator can't do math on a single value, so inject a mathable value.
+                if (string.IsNullOrEmpty(strFv))
+                {
+                    strFv = "0";
+                }
+                else
+                {
+                    int intPos = strFv.IndexOf('-');
+                    if (intPos != -1)
+                    {
+                        strFv = strFv.Substring(intPos);
+                    }
+                    else
+                    {
+                        intPos = strFv.IndexOf('+');
+                        if (intPos != -1)
+                        {
+                            strFv = strFv.Substring(intPos);
+                        }
+                    }
+                }
+
+                string strToAppend = string.Empty;
+                int intFadingDv = 0;
+                string strSelectedComplexFormName = xmlComplexForm.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+                if (strFv.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdReturn))
+                    {
+                        sbdReturn.Append(strFv);
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                            _objCharacter, Improvement.ImprovementType.FadingValue, strSelectedComplexFormName, true).ConfigureAwait(false))
+                        {
+                            sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
+                                               objImprovement.Value);
+                        }
+
+                        (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdReturn.ToString()).ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            intFadingDv = ((double)xprResult).StandardRound();
+                        else
+                            strToAppend = sbdReturn.ToString();
+                    }
+                }
+                else
+                {
+                    int intDv = decValue.StandardRound();
+                }
+
+                // Fading always minimum 2
+                if (!blnForce && string.IsNullOrEmpty(strToAppend))
+                    intFadingDv = Math.Max(intFadingDv, 2);
+
+                if (blnForce)
+                {
+                    if (!string.IsNullOrEmpty(strToAppend))
+                        strFv += "L" + strToAppend;
+                    else
+                        strFv = string.Format(GlobalSettings.InvariantCultureInfo, "L{0:+0;-0;}", intFadingDv);
+                }
+                else if (!string.IsNullOrEmpty(strToAppend))
+                    strFv += strToAppend;
+                else
+                    strFv = intFadingDv.ToString(GlobalSettings.InvariantCultureInfo);
+
                 await lblFV.DoThreadSafeAsync(x => x.Text = strFv).ConfigureAwait(false);
+                await lblFVLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strFv)).ConfigureAwait(false);
 
                 string strSource = xmlComplexForm.SelectSingleNodeAndCacheExpression("source")?.Value ??
                                    await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
@@ -182,7 +252,6 @@ namespace Chummer
                 await lblTargetLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTarget)).ConfigureAwait(false);
                 await lblDurationLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDuration)).ConfigureAwait(false);
                 await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblSource.Text)).ConfigureAwait(false);
-                await lblFVLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strFv)).ConfigureAwait(false);
                 await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
             }
             finally

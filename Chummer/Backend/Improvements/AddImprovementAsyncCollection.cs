@@ -1727,7 +1727,10 @@ namespace Chummer
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
             await objComplexform.CreateAsync(node, token: token).ConfigureAwait(false);
             if (objComplexform.InternalId.IsEmptyGuid())
+            {
+                await objComplexform.DisposeAsync().ConfigureAwait(false);
                 throw new AbortedException();
+            }
             objComplexform.Grade = -1;
 
             await _objCharacter.ComplexForms.AddAsync(objComplexform, token).ConfigureAwait(false);
@@ -1748,15 +1751,18 @@ namespace Chummer
 
             XmlNode node = objXmlComplexFormDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", bonusNode.InnerText) ?? throw new AbortedException();
 
-            ComplexForm objComplexform = new ComplexForm(_objCharacter);
-            await objComplexform.CreateAsync(node, token: token).ConfigureAwait(false);
-            if (objComplexform.InternalId.IsEmptyGuid())
+            ComplexForm objComplexForm = new ComplexForm(_objCharacter);
+            await objComplexForm.CreateAsync(node, token: token).ConfigureAwait(false);
+            if (objComplexForm.InternalId.IsEmptyGuid())
+            {
+                await objComplexForm.DisposeAsync().ConfigureAwait(false);
                 throw new AbortedException();
-            objComplexform.Grade = -1;
+            }
+            objComplexForm.Grade = -1;
 
-            await _objCharacter.ComplexForms.AddAsync(objComplexform, token).ConfigureAwait(false);
+            await _objCharacter.ComplexForms.AddAsync(objComplexForm, token).ConfigureAwait(false);
 
-            await CreateImprovementAsync(objComplexform.InternalId, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(objComplexForm.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.ComplexForm,
                 _strUnique, token: token).ConfigureAwait(false);
         }

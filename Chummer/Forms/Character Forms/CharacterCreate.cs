@@ -5347,7 +5347,10 @@ namespace Chummer
                         ComplexForm objComplexForm = new ComplexForm(CharacterObject);
                         await objComplexForm.CreateAsync(objXmlComplexForm, token: GenericToken).ConfigureAwait(false);
                         if (objComplexForm.InternalId.IsEmptyGuid())
+                        {
+                            await objComplexForm.DisposeAsync().ConfigureAwait(false);
                             continue;
+                        }
 
                         await CharacterObject.ComplexForms.AddAsync(objComplexForm, GenericToken).ConfigureAwait(false);
                     } while (blnAddAgain);
@@ -20510,7 +20513,7 @@ namespace Chummer
                         string strText7 = await objSpell.DisplayDvAsync(GlobalSettings.Language, token)
                                                         .ConfigureAwait(false);
                         await lblSpellDV.DoThreadSafeAsync(x => x.Text = strText7, token).ConfigureAwait(false);
-                        await lblSpellDV.SetToolTipAsync(objSpell.DvTooltip, token).ConfigureAwait(false);
+                        await lblSpellDV.SetToolTipAsync(await objSpell.GetDvTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objSpell.SetSourceDetailAsync(lblSpellSource, token).ConfigureAwait(false);
                         // Determine the size of the Spellcasting Dice Pool.
                         int intPool = await objSpell.GetDicePoolAsync(token).ConfigureAwait(false);
@@ -20567,7 +20570,7 @@ namespace Chummer
                         string strText3 = await objComplexForm.DisplayFvAsync(GlobalSettings.Language, token)
                                                               .ConfigureAwait(false);
                         await lblFV.DoThreadSafeAsync(x => x.Text = strText3, token).ConfigureAwait(false);
-                        await lblFV.SetToolTipAsync(objComplexForm.FvTooltip, token).ConfigureAwait(false);
+                        await lblFV.SetToolTipAsync(await objComplexForm.GetFvTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objComplexForm.SetSourceDetailAsync(lblComplexFormSource, token).ConfigureAwait(false);
                         // Determine the size of the Threading Dice Pool.
                         await lblComplexFormDicePool
@@ -22457,6 +22460,11 @@ namespace Chummer
                                     ComplexForm objComplexForm = new ComplexForm(CharacterObject);
                                     await objComplexForm.CreateAsync(objXmlComplexFormNode, token: token)
                                         .ConfigureAwait(false);
+                                    if (objComplexForm.InternalId.IsEmptyGuid())
+                                    {
+                                        await objComplexForm.DisposeAsync().ConfigureAwait(false);
+                                        continue;
+                                    }
                                     await CharacterObject.ComplexForms.AddAsync(objComplexForm, token)
                                         .ConfigureAwait(false);
                                 }

@@ -1659,7 +1659,10 @@ namespace Chummer
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
             objComplexform.Create(node);
             if (objComplexform.InternalId.IsEmptyGuid())
+            {
+                objComplexform.Dispose();
                 throw new AbortedException();
+            }
             objComplexform.Grade = -1;
 
             _objCharacter.ComplexForms.Add(objComplexform);
@@ -1682,7 +1685,10 @@ namespace Chummer
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
             objComplexform.Create(node);
             if (objComplexform.InternalId.IsEmptyGuid())
+            {
+                objComplexform.Dispose();
                 throw new AbortedException();
+            }
             objComplexform.Grade = -1;
 
             _objCharacter.ComplexForms.Add(objComplexform);

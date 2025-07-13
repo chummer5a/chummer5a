@@ -3074,18 +3074,21 @@ namespace Chummer
                     if (xmlComplexFormData == null)
                         continue;
 
-                    ComplexForm objComplexform = new ComplexForm(this);
-                    objComplexform.Create(xmlComplexFormData);
-                    if (objComplexform.InternalId.IsEmptyGuid())
+                    ComplexForm objComplexForm = new ComplexForm(this);
+                    objComplexForm.Create(xmlComplexFormData);
+                    if (objComplexForm.InternalId.IsEmptyGuid())
+                    {
+                        objComplexForm.Dispose();
                         continue;
-                    objComplexform.Grade = -1;
+                    }
+                    objComplexForm.Grade = -1;
 
-                    ComplexForms.Add(objComplexform);
+                    ComplexForms.Add(objComplexForm);
 
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        ImprovementManager.CreateImprovement(this, objComplexform.InternalId,
+                        ImprovementManager.CreateImprovement(this, objComplexForm.InternalId,
                                                              Improvement.ImprovementSource.Metatype, string.Empty,
                                                              Improvement.ImprovementType.ComplexForm,
                                                              string.Empty, token: token);
@@ -3789,18 +3792,21 @@ namespace Chummer
                     if (xmlComplexFormData == null)
                         continue;
 
-                    ComplexForm objComplexform = new ComplexForm(this);
-                    await objComplexform.CreateAsync(xmlComplexFormData, token: token).ConfigureAwait(false);
-                    if (objComplexform.InternalId.IsEmptyGuid())
+                    ComplexForm objComplexForm = new ComplexForm(this);
+                    await objComplexForm.CreateAsync(xmlComplexFormData, token: token).ConfigureAwait(false);
+                    if (objComplexForm.InternalId.IsEmptyGuid())
+                    {
+                        await objComplexForm.DisposeAsync().ConfigureAwait(false);
                         continue;
-                    objComplexform.Grade = -1;
+                    }
+                    objComplexForm.Grade = -1;
 
-                    await ComplexForms.AddAsync(objComplexform, token).ConfigureAwait(false);
+                    await ComplexForms.AddAsync(objComplexForm, token).ConfigureAwait(false);
 
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        await ImprovementManager.CreateImprovementAsync(this, objComplexform.InternalId,
+                        await ImprovementManager.CreateImprovementAsync(this, objComplexForm.InternalId,
                             Improvement.ImprovementSource.Metatype, string.Empty,
                             Improvement.ImprovementType.ComplexForm,
                             string.Empty, token: token).ConfigureAwait(false);
@@ -12499,6 +12505,8 @@ namespace Chummer
                 foreach (MartialArt objItem in _lstMartialArts)
                     objItem.Dispose();
                 _lstMartialArts.Dispose();
+                foreach (ComplexForm objItem in _lstComplexForms)
+                    objItem.Dispose();
                 _lstComplexForms.Dispose();
                 _lstAIPrograms.Dispose();
                 _lstPowers.Dispose();
@@ -12749,6 +12757,7 @@ namespace Chummer
                 _lstVehicles.ForEach(x => x.Dispose(), token);
                 _lstLifestyles.ForEach(x => x.Dispose(), token);
                 _lstSpells.ForEach(x => x.Dispose(), token);
+                _lstComplexForms.ForEach(x => x.Dispose(), token);
                 _lstPowers.ForEach(x => x.Dispose(), token);
                 _lstMartialArts.ForEach(x => x.Dispose(), token);
                 _lstStackedFoci.ForEach(x => x.Dispose(), token);
@@ -29974,6 +29983,51 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _lstStackedFoci;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Method to check we are only applying the highest focus to the spell dicepool
+        /// </summary>
+        public async Task<Improvement> GetBestFocusPowerAsync(Improvement objImprovement, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                List<Focus> list
+                    = await Foci.FindAllAsync(
+                            x => x.GearObject?.Bonded == true && x.GearObject.Bonus.InnerText == "MAGRating", token)
+                        .ConfigureAwait(false);
+                if (list.Count > 0)
+                {
+                    // get any bonded foci that add to the base magic stat and return the highest rated one's rating
+                    int powerFocusRating = list.Max(x => x.Rating);
+
+                    // If our focus is higher, add in a partial bonus
+                    if (powerFocusRating > 0)
+                    {
+                        // This is hackz -- because we don't want to lose the original improvement's value
+                        // we instantiate a fake version of the improvement that isn't saved to represent the diff
+                        if (powerFocusRating < objImprovement.Value)
+                            return new Improvement(this)
+                            {
+                                Value = objImprovement.Value - powerFocusRating,
+                                SourceName = objImprovement.SourceName,
+                                ImprovedName = objImprovement.ImprovedName,
+                                ImproveSource = objImprovement.ImproveSource,
+                                ImproveType = objImprovement.ImproveType
+                            };
+                        return null;
+                    }
+                }
+
+                return objImprovement;
             }
             finally
             {

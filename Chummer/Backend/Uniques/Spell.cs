@@ -461,6 +461,11 @@ namespace Chummer
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
                     await objWriter
+                        .WriteElementStringAsync(
+                            "fullname_english", await DisplayNameAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                            token)
+                        .ConfigureAwait(false);
+                    await objWriter
                         .WriteElementStringAsync("descriptors",
                             await DisplayDescriptorsAsync(strLanguageToPrint, token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
@@ -496,7 +501,7 @@ namespace Chummer
                         .WriteElementStringAsync(
                             "dv", await DisplayDvAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("dv_english", CalculatedDv, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("dv_english", await GetCalculatedDvAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("alchemy", Alchemical.ToString(GlobalSettings.InvariantCultureInfo),
                             token).ConfigureAwait(false);
@@ -997,7 +1002,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strReturn = CalculatedDv.Replace('/', '÷').Replace('*', '×');
+                string strReturn = (await GetCalculatedDvAsync(token).ConfigureAwait(false)).Replace('/', '÷').Replace('*', '×');
                 if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     strReturn = await strReturn
@@ -1043,97 +1048,101 @@ namespace Chummer
         /// <summary>
         /// Drain Tooltip.
         /// </summary>
-        public string DvTooltip
+        public async Task<string> GetDvTooltipAsync(CancellationToken token = default)
         {
-            get
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                string strSpace = LanguageManager.GetString("String_Space");
-                using (LockObject.EnterReadLock())
+                token.ThrowIfCancellationRequested();
+                int intMag = await (await _objCharacter.GetAttributeAsync("MAG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
+                // Barehanded Adept is limited to a Force of MAG/3 rounded up
+                int intHighestForce = BarehandedAdept
+                    ? (intMag + 2) / 3
+                    : intMag * 2;
+                string strDV = await GetCalculatedDvAsync(token).ConfigureAwait(false);
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdTip))
                 {
-                    // Barehanded Adept is limited to a Force of MAG/3 rounded up
-                    int intHighestForce = BarehandedAdept
-                        ? (_objCharacter.MAG.TotalValue + 2) / 3
-                        : _objCharacter.MAG.TotalValue * 2;
-                    string strDV = CalculatedDv;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdTip))
+                    sbdTip.Append(await LanguageManager.GetStringAsync("Tip_SpellDrain", token: token).ConfigureAwait(false));
+                    for (int i = 1; i <= intHighestForce; i++)
                     {
-                        sbdTip.Append(LanguageManager.GetString("Tip_SpellDrain"));
-                        for (int i = 1; i <= intHighestForce; i++)
+                        token.ThrowIfCancellationRequested();
+                        // Calculate the Spell's Drain for the current Force.
+                        (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                            strDV.Replace("F", i.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
+
+                        if (blnIsSuccess && strDV != "Special")
                         {
-                            // Calculate the Spell's Drain for the current Force.
-                            (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(
-                                strDV.Replace("F", i.ToString(GlobalSettings.InvariantCultureInfo)));
-
-                            if (blnIsSuccess && strDV != "Special")
-                            {
-                                int intDV = ((double) xprResult).StandardRound();
-
-                                // Drain cannot be lower than 2 (4 for Barehanded Adept).
-                                int intMinDv = BarehandedAdept ? 4 : 2;
-                                if (intDV < intMinDv)
-                                    intDV = intMinDv;
-                                sbdTip.AppendLine().Append(LanguageManager.GetString("String_Force"))
-                                      .Append(strSpace).Append(i.ToString(GlobalSettings.CultureInfo))
-                                      .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
-                                      .Append(intDV.ToString(GlobalSettings.CultureInfo));
-                            }
-                            else
-                            {
-                                sbdTip.Clear();
-                                sbdTip.Append(LanguageManager.GetString("Tip_SpellDrainSeeDescription"));
-                                break;
-                            }
+                            // Drain is always minimum 2 (doubled for Barehanded Adept)
+                            int intDV = Math.Max(((double)xprResult).StandardRound(), BarehandedAdept ? 4 : 2);
+                            sbdTip.AppendLine().Append(await LanguageManager.GetStringAsync("String_Force", token: token).ConfigureAwait(false))
+                                  .Append(strSpace).Append(i.ToString(GlobalSettings.CultureInfo))
+                                  .Append(await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append(intDV.ToString(GlobalSettings.CultureInfo));
                         }
-
-                        sbdTip.AppendLine();
-                        if (BarehandedAdept)
-                            sbdTip.Append('(');
-                        sbdTip.Append(LanguageManager.GetString("Tip_SpellDrainBase")).Append(strSpace).Append('(')
-                              .Append(DvBase).Append(')');
-                        if (Limited)
+                        else
                         {
-                            sbdTip.Append(strSpace).Append('+').Append(strSpace)
-                                  .Append(LanguageManager.GetString("String_SpellLimited")).Append(strSpace)
-                                  .Append("(-2)");
+                            sbdTip.Clear();
+                            sbdTip.Append(await LanguageManager.GetStringAsync("Tip_SpellDrainSeeDescription", token: token).ConfigureAwait(false));
+                            break;
                         }
-
-                        if (Extended && _blnCustomExtended)
-                        {
-                            sbdTip.Append(strSpace).Append('+').Append(strSpace)
-                                  .Append(LanguageManager.GetString("String_SpellExtended")).Append(strSpace)
-                                  .Append("(+2)");
-                        }
-
-                        foreach (Improvement objLoopImprovement in RelevantImprovements(o =>
-                                     o.ImproveType == Improvement.ImprovementType.DrainValue
-                                     || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
-                                     || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
-                        {
-                            sbdTip.Append(strSpace).Append('+').Append(strSpace)
-                                  .Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
-                                  .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
-                        }
-
-                        if (BarehandedAdept)
-                        {
-                            Improvement objBarehandedAdeptImprovement = ImprovementManager
-                                                                        .GetCachedImprovementListForValueOf(
-                                                                            _objCharacter,
-                                                                            Improvement.ImprovementType.AllowSpellRange)
-                                                                        .Find(x => x.ImprovedName == "T"
-                                                                                  || x.ImprovedName == "T (A)");
-                            string strBarehandedAdeptName = objBarehandedAdeptImprovement != null
-                                ? _objCharacter.GetObjectName(objBarehandedAdeptImprovement)
-                                : _objCharacter.TranslateExtra("Barehanded Adept", GlobalSettings.Language,
-                                                               "qualities.xml");
-                            sbdTip.Append(')').Append(strSpace).Append('×').Append(strSpace)
-                                  .Append(strBarehandedAdeptName).Append(strSpace).Append("(×2)");
-                        }
-
-                        return sbdTip.ToString();
                     }
+
+                    sbdTip.AppendLine();
+                    if (BarehandedAdept)
+                        sbdTip.Append('(');
+                    sbdTip.Append(await LanguageManager.GetStringAsync("Tip_SpellDrainBase", token: token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                          .Append(DvBase).Append(')');
+                    if (Limited)
+                    {
+                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
+                              .Append(await LanguageManager.GetStringAsync("String_SpellLimited", token: token).ConfigureAwait(false)).Append(strSpace)
+                              .Append("(-2)");
+                    }
+
+                    if (Extended && _blnCustomExtended)
+                    {
+                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
+                              .Append(await LanguageManager.GetStringAsync("String_SpellExtended", token: token).ConfigureAwait(false)).Append(strSpace)
+                              .Append("(+2)");
+                    }
+
+                    foreach (Improvement objLoopImprovement in await RelevantImprovementsAsync(o =>
+                                 o.ImproveType == Improvement.ImprovementType.DrainValue
+                                 || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                                 || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, token: token).ConfigureAwait(false))
+                    {
+                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
+                              .Append(await _objCharacter.GetObjectNameAsync(objLoopImprovement, token: token).ConfigureAwait(false)).Append(strSpace)
+                              .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0", GlobalSettings.CultureInfo)).Append(')');
+                    }
+
+                    // Minimum drain of 2
+                    sbdTip.AppendLine().AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_MinimumAttribute", token: token).ConfigureAwait(false), 2);
+
+                    if (BarehandedAdept)
+                    {
+                        Improvement objBarehandedAdeptImprovement = (await ImprovementManager
+                                                                    .GetCachedImprovementListForValueOfAsync(
+                                                                        _objCharacter,
+                                                                        Improvement.ImprovementType.AllowSpellRange, token: token).ConfigureAwait(false))
+                                                                    .Find(x => x.ImprovedName == "T"
+                                                                              || x.ImprovedName == "T (A)");
+                        string strBarehandedAdeptName = objBarehandedAdeptImprovement != null
+                            ? await _objCharacter.GetObjectNameAsync(objBarehandedAdeptImprovement, token: token).ConfigureAwait(false)
+                            : await _objCharacter.TranslateExtraAsync("Barehanded Adept", GlobalSettings.Language,
+                                                           "qualities.xml", token).ConfigureAwait(false);
+                        sbdTip.Append(')').Append(strSpace).Append('×').Append(strSpace)
+                              .Append(strBarehandedAdeptName).Append(strSpace).Append("(×2)");
+                    }
+
+                    return sbdTip.ToString();
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1459,38 +1468,165 @@ namespace Chummer
                             || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true).Any())
                         return strReturn;
                     bool blnForce = strReturn.StartsWith('F');
-                    string strDV = strReturn.TrimStartOnce('F');
+                    string strDv = blnForce ? strReturn.TrimStartOnce("F", true) : strReturn;
                     //Navigator can't do math on a single value, so inject a mathable value.
-                    if (string.IsNullOrEmpty(strDV))
+                    if (string.IsNullOrEmpty(strDv))
                     {
-                        strDV = "0";
+                        strDv = "0";
                     }
                     else
                     {
                         int intPos = strReturn.IndexOf('-');
                         if (intPos != -1)
                         {
-                            strDV = strReturn.Substring(intPos);
+                            strDv = strReturn.Substring(intPos);
                         }
                         else
                         {
                             intPos = strReturn.IndexOf('+');
                             if (intPos != -1)
                             {
-                                strDV = strReturn.Substring(intPos);
+                                strDv = strReturn.Substring(intPos);
                             }
                         }
                     }
 
-                    object xprResult;
+                    string strToAppend = string.Empty;
+                    int intDrainDv = 0;
+                    if (strDv.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdReturn))
+                        {
+                            sbdReturn.Append(strDv);
+                            foreach (Improvement objImprovement in RelevantImprovements(i =>
+                                         i.ImproveType == Improvement.ImprovementType.DrainValue
+                                         || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                                         || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
+                            {
+                                sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
+                                                       objImprovement.Value);
+                            }
+
+                            if (Limited)
+                            {
+                                sbdReturn.Append("-2");
+                            }
+
+                            if (Extended && _blnCustomExtended)
+                            {
+                                sbdReturn.Append("+2");
+                            }
+
+                            if (BarehandedAdept && !blnForce)
+                            {
+                                sbdReturn.Insert(0, "2 * (").Append(')');
+                            }
+
+                            (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(sbdReturn.ToString());
+                            if (blnIsSuccess)
+                                intDrainDv = ((double)xprResult).StandardRound();
+                            else
+                                strToAppend = sbdReturn.ToString();
+                        }
+                    }
+                    else
+                    {
+                        foreach (Improvement objImprovement in RelevantImprovements(i =>
+                                         i.ImproveType == Improvement.ImprovementType.DrainValue
+                                         || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                                         || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
+                        {
+                            decValue += objImprovement.Value;
+                        }
+                        if (Limited)
+                            decValue -= 2;
+                        if (Extended && _blnCustomExtended)
+                            decValue += 2;
+                        if (BarehandedAdept && !blnForce)
+                            decValue *= 2;
+                        intDrainDv = decValue.StandardRound();
+                    }
+
+                    if (blnForce)
+                    {
+                        if (!string.IsNullOrEmpty(strToAppend))
+                        {
+                            strReturn += 'F' + strToAppend;
+                            if (BarehandedAdept)
+                                strReturn = "2 * (" + strReturn + ')';
+                        }
+                        else
+                            strReturn = string.Format(GlobalSettings.InvariantCultureInfo,
+                                                  BarehandedAdept ? "2 * (F{0:+0;-0;})" : "F{0:+0;-0;}", intDrainDv);
+                    }
+                    else if (!string.IsNullOrEmpty(strToAppend))
+                    {
+                        strReturn += strToAppend;
+                        if (BarehandedAdept)
+                            strReturn = "2 * (" + strReturn + ')';
+                    }
+                    else
+                        // Drain always minimum 2 (doubled for Barehanded Adept)
+                        strReturn = Math.Max(intDrainDv, BarehandedAdept ? 4 : 2).ToString(GlobalSettings.InvariantCultureInfo);
+
+                    return strReturn;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Spell's drain value.
+        /// </summary>
+        public async Task<string> GetCalculatedDvAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strReturn = DvBase;
+                if (!Limited && !(Extended && _blnCustomExtended) && !BarehandedAdept && (await RelevantImprovementsAsync(o =>
+                        o.ImproveType == Improvement.ImprovementType.DrainValue
+                        || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                        || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true, token).ConfigureAwait(false)).Count == 0)
+                    return strReturn;
+                bool blnForce = strReturn.StartsWith('F');
+                string strDv = blnForce ? strReturn.TrimStartOnce("F", true) : strReturn;
+                //Navigator can't do math on a single value, so inject a mathable value.
+                if (string.IsNullOrEmpty(strDv))
+                {
+                    strDv = "0";
+                }
+                else
+                {
+                    int intPos = strReturn.IndexOf('-');
+                    if (intPos != -1)
+                    {
+                        strDv = strReturn.Substring(intPos);
+                    }
+                    else
+                    {
+                        intPos = strReturn.IndexOf('+');
+                        if (intPos != -1)
+                        {
+                            strDv = strReturn.Substring(intPos);
+                        }
+                    }
+                }
+
+                string strToAppend = string.Empty;
+                int intDrainDv = 0;
+                if (strDv.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdReturn))
                     {
-                        sbdReturn.Append(strDV);
-                        foreach (Improvement objImprovement in RelevantImprovements(i =>
+                        sbdReturn.Append(strDv);
+                        foreach (Improvement objImprovement in await RelevantImprovementsAsync(i =>
                                      i.ImproveType == Improvement.ImprovementType.DrainValue
                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
-                                     || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
+                                     || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, token: token).ConfigureAwait(false))
                         {
                             sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
                                                    objImprovement.Value);
@@ -1511,24 +1647,58 @@ namespace Chummer
                             sbdReturn.Insert(0, "2 * (").Append(')');
                         }
 
-                        bool blnIsSuccess;
-                        (blnIsSuccess, xprResult) = CommonFunctions.EvaluateInvariantXPath(sbdReturn.ToString());
-                        if (!blnIsSuccess)
-                            return strReturn;
+                        (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdReturn.ToString(), token).ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            intDrainDv = ((double)xprResult).StandardRound();
+                        else
+                            strToAppend = sbdReturn.ToString();
                     }
-
-                    if (blnForce)
-                    {
-                        strReturn = string.Format(GlobalSettings.InvariantCultureInfo,
-                                                  BarehandedAdept ? "2 * (F{0:+0;-0;})" : "F{0:+0;-0;}", xprResult);
-                    }
-                    else if (xprResult.ToString() != "0")
-                    {
-                        strReturn += xprResult;
-                    }
-
-                    return strReturn;
                 }
+                else
+                {
+                    foreach (Improvement objImprovement in await RelevantImprovementsAsync(i =>
+                                     i.ImproveType == Improvement.ImprovementType.DrainValue
+                                     || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                                     || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, token: token).ConfigureAwait(false))
+                    {
+                        decValue += objImprovement.Value;
+                    }
+                    if (Limited)
+                        decValue -= 2;
+                    if (Extended && _blnCustomExtended)
+                        decValue += 2;
+                    if (BarehandedAdept && !blnForce)
+                        decValue *= 2;
+                    intDrainDv = decValue.StandardRound();
+                }
+
+                if (blnForce)
+                {
+                    if (!string.IsNullOrEmpty(strToAppend))
+                    {
+                        strReturn += "F" + strToAppend;
+                        if (BarehandedAdept)
+                            strReturn = "2 * (" + strReturn + ')';
+                    }
+                    else
+                        strReturn = string.Format(GlobalSettings.InvariantCultureInfo,
+                                              BarehandedAdept ? "2 * (F{0:+0;-0;})" : "F{0:+0;-0;}", intDrainDv);
+                }
+                else if (!string.IsNullOrEmpty(strToAppend))
+                {
+                    strReturn += strToAppend;
+                    if (BarehandedAdept)
+                        strReturn = "2 * (" + strReturn + ')';
+                }
+                else
+                    // Drain always minimum 2 (doubled for Barehanded Adept)
+                    strReturn = Math.Max(intDrainDv, BarehandedAdept ? 4 : 2).ToString(GlobalSettings.InvariantCultureInfo);
+
+                return strReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2431,7 +2601,7 @@ namespace Chummer
                                 {
                                     //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
                                     // we are returning either the original improvement, null or a newly instantiated improvement
-                                    Improvement bestFocus = await CompareFocusPowerAsync(objImprovement, token).ConfigureAwait(false);
+                                    Improvement bestFocus = await _objCharacter.GetBestFocusPowerAsync(objImprovement, token).ConfigureAwait(false);
                                     if (bestFocus != null)
                                     {
                                         lstReturn.Add(bestFocus);
@@ -2550,51 +2720,6 @@ namespace Chummer
                 }
 
                 return objImprovement;
-            }
-        }
-
-        /// <summary>
-        /// Method to check we are only applying the highest focus to the spell dicepool
-        /// </summary>
-        private async Task<Improvement> CompareFocusPowerAsync(Improvement objImprovement, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                List<Focus> list
-                    = await _objCharacter.Foci.FindAllAsync(
-                            x => x.GearObject?.Bonded == true && x.GearObject.Bonus.InnerText == "MAGRating", token)
-                        .ConfigureAwait(false);
-                if (list.Count > 0)
-                {
-                    // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-                    int powerFocusRating = list.Max(x => x.Rating);
-
-                    // If our focus is higher, add in a partial bonus
-                    if (powerFocusRating > 0)
-                    {
-                        // This is hackz -- because we don't want to lose the original improvement's value
-                        // we instantiate a fake version of the improvement that isn't saved to represent the diff
-                        if (powerFocusRating < objImprovement.Value)
-                            return new Improvement(_objCharacter)
-                            {
-                                Value = objImprovement.Value - powerFocusRating,
-                                SourceName = objImprovement.SourceName,
-                                ImprovedName = objImprovement.ImprovedName,
-                                ImproveSource = objImprovement.ImproveSource,
-                                ImproveType = objImprovement.ImproveType
-                            };
-                        return null;
-                    }
-                }
-
-                return objImprovement;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
