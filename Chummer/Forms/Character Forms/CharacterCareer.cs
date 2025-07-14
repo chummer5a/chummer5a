@@ -18473,7 +18473,8 @@ namespace Chummer
                             if (objGear?.Bonded == true)
                                 intFociTotal += await objGear.GetRatingAsync(GenericToken).ConfigureAwait(false);
                             StackedFocus objFocus = await CharacterObject.StackedFoci.FindAsync(x => x.InternalId == strNodeId && x.Bonded, GenericToken).ConfigureAwait(false);
-                            intFociTotal += await objFocus.GetTotalForceAsync(GenericToken).ConfigureAwait(false);
+                            if (objFocus != null)
+                                intFociTotal += await objFocus.GetTotalForceAsync(GenericToken).ConfigureAwait(false);
                         }
 
                         if (!CharacterObject.IgnoreRules)
