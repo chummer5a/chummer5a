@@ -424,8 +424,8 @@ namespace Chummer
                     await lblMaxNuyen.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.NuyenMaximumBP.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
                     await lblQualityKarma.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
 
-                    string strBookList = await _objCharacter.TranslatedBookListAsync(string.Join(";",
-                        objSelectedGameplayOption.Books), token: token).ConfigureAwait(false);
+                    string strBookList = await objSelectedGameplayOption.TranslatedBookListAsync(string.Join(";",
+                        await objSelectedGameplayOption.GetBooksAsync(token).ConfigureAwait(false)), token: token).ConfigureAwait(false);
                     await lblBooks.DoThreadSafeAsync(x =>
                     {
                         x.Text = strBookList;
