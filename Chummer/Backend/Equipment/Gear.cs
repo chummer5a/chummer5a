@@ -2421,7 +2421,7 @@ namespace Chummer.Backend.Equipment
                     return await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false);
                 }
 
-                return Math.Max(Math.Min(_intRating, MaxRatingValue), MinRatingValue);
+                return Math.Max(Math.Min(_intRating, await GetMaxRatingValueAsync(token).ConfigureAwait(false)), await GetMinRatingValueAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -3049,7 +3049,9 @@ namespace Chummer.Backend.Equipment
             {
                 if (Interlocked.Exchange(ref _objParent, value) == value)
                     return;
-                Rating = Math.Max(MinRatingValue, Math.Min(MaxRatingValue, Rating));
+                // Refresh rating if it would exceed new minima or maxima
+                int intRating = Rating;
+                Rating = intRating;
                 OnPropertyChanged();
             }
         }
@@ -3059,7 +3061,8 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (Interlocked.Exchange(ref _objParent, value) == value)
                 return;
-            await SetRatingAsync(Math.Max(await GetMinRatingValueAsync(token).ConfigureAwait(false), Math.Min(await GetMaxRatingValueAsync(token).ConfigureAwait(false), await GetRatingAsync(token).ConfigureAwait(false))), token).ConfigureAwait(false);
+            // Refresh rating if it would exceed new minima or maxima
+            await SetRatingAsync(await GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             await OnPropertyChangedAsync(nameof(Parent), token).ConfigureAwait(false);
         }
 
