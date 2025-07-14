@@ -2994,6 +2994,19 @@ namespace Chummer
             }
         }
 
+        private async void mnuDataExporter_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataExporter frmExporter = await this.DoThreadSafeFuncAsync(() => new DataExporter(), token: _objGenericToken).ConfigureAwait(false);
+                await frmExporter.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private void tabForms_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)

@@ -135,6 +135,9 @@
     <Compile Update="Controls\Shared\Components\NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="Forms\Utility Forms\DataExporter.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>
@@ -25746,6 +25749,9 @@
     <PackageReference Include="XoshiroPRNG.Net" Version="1.6.0" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Forms\Utility Forms\DataExporter.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
