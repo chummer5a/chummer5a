@@ -8650,11 +8650,10 @@ namespace Chummer.Backend.Equipment
                 decimal decTotalModifier = Math.Max(0, decESSMultiplier * decTotalESSMultiplier);
                 if (_objCharacter != null)
                 {
-                    string strPostModifierExpression
-                        = (blnSync
-                            ? _objCharacter.Settings
-                            : await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
-                        .EssenceModifierPostExpression;
+                    string strPostModifierExpression = blnSync
+                        ? _objCharacter.Settings.EssenceModifierPostExpression
+                        : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                            .GetEssenceModifierPostExpressionAsync(token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strPostModifierExpression) && strPostModifierExpression != "{Modifier}")
                     {
                         strPostModifierExpression = strPostModifierExpression.Replace("{Modifier}",

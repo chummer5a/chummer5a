@@ -43072,23 +43072,23 @@ namespace Chummer
                 CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
                 if (!await GetCreatedAsync(token).ConfigureAwait(false))
                 {
-                    if (objSettings.ContactPointsExpression.Contains(strExpressionToFind))
+                    if ((await objSettings.GetContactPointsExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                         lstPropertyChangedHolder.Add(nameof(ContactPoints));
-                    if (objSettings.ChargenKarmaToNuyenExpression.Contains(strExpressionToFind))
+                    if ((await objSettings.GetChargenKarmaToNuyenExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                         lstPropertyChangedHolder.Add(nameof(TotalStartingNuyen));
                 }
 
-                if (objSettings.CarryLimitExpression.Contains(strExpressionToFind))
+                if ((await objSettings.GetCarryLimitExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(BaseCarryLimit));
-                if (objSettings.LiftLimitExpression.Contains(strExpressionToFind))
+                if ((await objSettings.GetLiftLimitExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(BaseLiftLimit));
-                if (objSettings.BoundSpiritExpression.Contains(strExpressionToFind))
+                if ((await objSettings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(BoundSpiritLimit));
-                if (objSettings.RegisteredSpriteExpression.Contains(strExpressionToFind))
+                if ((await objSettings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(RegisteredSpriteLimit));
-                if (objSettings.EncumbranceIntervalExpression.Contains(strExpressionToFind))
+                if ((await objSettings.GetEncumbranceIntervalExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(EncumbranceInterval));
-                if (objSettings.EssenceModifierPostExpression.Contains(strExpressionToFind))
+                if ((await objSettings.GetEssenceModifierPostExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                 {
                     lstPropertyChangedHolder.Add(nameof(PrototypeTranshumanEssenceUsed));
                     lstPropertyChangedHolder.Add(nameof(BiowareEssence));
@@ -43154,9 +43154,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{BOD}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{BOD}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{BODUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43198,9 +43198,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{AGI}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{AGI}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{AGIUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43248,9 +43248,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{REA}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{REA}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{REAUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43299,9 +43299,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{STR}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{STR}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{STRUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43349,9 +43349,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{CHA}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{CHA}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{CHAUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43405,9 +43405,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{INT}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{INT}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{INTUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43459,9 +43459,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{LOG}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{LOG}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{LOGUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43530,9 +43530,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{WIL}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{WIL}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{WILUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43579,9 +43579,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{EDG}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{EDG}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{EDGUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43646,9 +43646,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{MAG}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{MAG}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{MAGUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43694,9 +43694,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{MAGAdept}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{MAGAdept}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{MAGAdeptUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43739,9 +43739,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{RES}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{RES}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{RESUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43787,9 +43787,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{DEP}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{DEP}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{DEPUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43847,9 +43847,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{ESS}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{ESS}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{ESSUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
