@@ -4826,7 +4826,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 int intAmmo = ((double)objProcess).StandardRound() + intAmmoBonusFlat;
 
-                                intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
+                                intAmmo += (intAmmo * intAmmoBonus).DivAwayFromZero(100);
 
                                 if (decAmmoBonusPercent != 1.0m)
                                 {
@@ -4842,7 +4842,7 @@ namespace Chummer.Backend.Equipment
                         {
                             int intAmmo = decValue.StandardRound() + intAmmoBonusFlat;
 
-                            intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
+                            intAmmo += (intAmmo * intAmmoBonus).DivAwayFromZero(100);
 
                             if (decAmmoBonusPercent != 1.0m)
                             {
@@ -6620,7 +6620,7 @@ namespace Chummer.Backend.Equipment
                                 Improvement.ImprovementType.ThrowSTR, token: token).ConfigureAwait(false))
                         .StandardRound();
 
-                int intStrRC = (intUseSTR + 2) / 3;
+                int intStrRC = intUseSTR.DivAwayFromZero(3);
 
                 intRCBase += intStrRC + 1;
                 intRCFull += intStrRC + 1;
@@ -11373,7 +11373,7 @@ namespace Chummer.Backend.Equipment
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
                 if (objThis != null)
                     return objThis.MatrixCM;
-                return BaseMatrixBoxes + (this.GetTotalMatrixAttribute("Device Rating") + 1) / 2 + TotalBonusMatrixBoxes;
+                return BaseMatrixBoxes + this.GetTotalMatrixAttribute("Device Rating").DivAwayFromZero(2) + TotalBonusMatrixBoxes;
             }
         }
 

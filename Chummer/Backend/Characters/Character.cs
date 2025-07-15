@@ -33470,12 +33470,12 @@ namespace Chummer
 
                         if (DEP != null)
                             // A.I.s use Core Condition Monitors instead of Physical Condition Monitors if they are not in a vehicle or drone.
-                            intCMPhysical += (DEP.TotalValue + 1) / 2;
+                            intCMPhysical += DEP.TotalValue.DivAwayFromZero(2);
                     }
                     else
                     {
                         if (BOD != null)
-                            intCMPhysical += (BOD.TotalValue + 1) / 2;
+                            intCMPhysical += BOD.TotalValue.DivAwayFromZero(2);
                     }
 
                     // Include Improvements in the Condition Monitor values.
@@ -33507,13 +33507,13 @@ namespace Chummer
                     CharacterAttrib objDepth = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
                     if (objDepth != null)
                         // A.I.s use Core Condition Monitors instead of Physical Condition Monitors if they are not in a vehicle or drone.
-                        intCMPhysical += (await objDepth.GetTotalValueAsync(token).ConfigureAwait(false) + 1) / 2;
+                        intCMPhysical += (await objDepth.GetTotalValueAsync(token)).DivAwayFromZero(2);
                 }
                 else
                 {
                     CharacterAttrib objBody = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
                     if (objBody != null)
-                        intCMPhysical += (await objBody.GetTotalValueAsync(token).ConfigureAwait(false) + 1) / 2;
+                        intCMPhysical += (await objBody.GetTotalValueAsync(token).ConfigureAwait(false)).DivAwayFromZero(2);
                 }
 
                 // Include Improvements in the Condition Monitor values.
@@ -33580,7 +33580,7 @@ namespace Chummer
                                 '+' + strSpace + '(' + BOD.DisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo)
                                 +
                                 ')' + strSpace + '(' +
-                                ((objVehicleHomeNode.TotalBody + 1) / 2).ToString(GlobalSettings.CultureInfo) + ')';
+                                (objVehicleHomeNode.TotalBody.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
 
                             intBonus = objVehicleHomeNode.Mods.Sum(objMod => objMod.ConditionMonitor);
                             if (intBonus != 0)
@@ -33592,7 +33592,7 @@ namespace Chummer
                             strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
                                     DEP.DisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace
                                     + '(' +
-                                    ((DEP.TotalValue + 1) / 2).ToString(GlobalSettings.CultureInfo) + ')';
+                                    (DEP.TotalValue.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
 
                             intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM)
                                                          .StandardRound();
@@ -33606,7 +33606,7 @@ namespace Chummer
                         strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
                                 BOD.DisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
                                 +
-                                ((BOD.TotalValue + 1) / 2).ToString(GlobalSettings.CultureInfo) + ')';
+                                (BOD.TotalValue.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
 
                         intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM)
                                                      .StandardRound();
@@ -33640,7 +33640,7 @@ namespace Chummer
                                 '+' + strSpace + '(' + await BOD.GetDisplayAbbrevAsync(GlobalSettings.Language, token)
                                     .ConfigureAwait(false) +
                                 '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '(' +
-                                ((await objVehicleHomeNode.GetTotalBodyAsync(token).ConfigureAwait(false) + 1) / 2).ToString(GlobalSettings.CultureInfo) + ')';
+                                ((await objVehicleHomeNode.GetTotalBodyAsync(token).ConfigureAwait(false)).DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
 
                         intBonus = await objVehicleHomeNode.Mods.SumAsync(objMod => objMod.ConditionMonitor,
                             token: token).ConfigureAwait(false);
@@ -33655,7 +33655,7 @@ namespace Chummer
                                 await objDep.GetDisplayAbbrevAsync(GlobalSettings.Language, token)
                                     .ConfigureAwait(false) + '÷' +
                                 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace
-                                + '(' + ((await objDep.GetTotalValueAsync(token).ConfigureAwait(false) + 1) / 2)
+                                + '(' + ((await objDep.GetTotalValueAsync(token).ConfigureAwait(false)).DivAwayFromZero(2))
                                 .ToString(
                                     GlobalSettings.CultureInfo) + ')';
 
@@ -33673,7 +33673,7 @@ namespace Chummer
                     strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
                             await objBod.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) +
                             '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
-                            + ((await objBod.GetTotalValueAsync(token).ConfigureAwait(false) + 1) / 2).ToString(
+                            + ((await objBod.GetTotalValueAsync(token).ConfigureAwait(false)).DivAwayFromZero(2)).ToString(
                                 GlobalSettings.CultureInfo) + ')';
 
                     intBonus = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PhysicalCM,
@@ -33747,7 +33747,7 @@ namespace Chummer
                     }
                     else
                     {
-                        intCMStun = 8 + (WIL.TotalValue + 1) / 2;
+                        intCMStun = 8 + WIL.TotalValue.DivAwayFromZero(2);
                         // Include Improvements in the Condition Monitor values.
                         intCMStun += ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM)
                                                        .StandardRound();
@@ -33782,7 +33782,7 @@ namespace Chummer
                     intCMStun = 8;
                     CharacterAttrib objWillpower = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
                     if (objWillpower != null)
-                        intCMStun += (await objWillpower.GetTotalValueAsync(token).ConfigureAwait(false) + 1) / 2;
+                        intCMStun += (await objWillpower.GetTotalValueAsync(token).ConfigureAwait(false)).DivAwayFromZero(2);
                     // Include Improvements in the Condition Monitor values.
                     intCMStun += (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.StunCM, token: token).ConfigureAwait(false))
                                                    .StandardRound();
@@ -33851,7 +33851,7 @@ namespace Chummer
                         strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
                                 LanguageManager.GetString("String_DeviceRating") + '÷' +
                                 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '(' +
-                                ((HomeNode.GetTotalMatrixAttribute("Device Rating") + 1) / 2).ToString(GlobalSettings
+                                ((HomeNode.GetTotalMatrixAttribute("Device Rating")).DivAwayFromZero(2)).ToString(GlobalSettings
                                     .CultureInfo) + ')';
 
                         intBonus = HomeNode.TotalBonusMatrixBoxes;
@@ -33864,7 +33864,7 @@ namespace Chummer
                         strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
                                 WIL.DisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
                                 +
-                                ((WIL.TotalValue + 1) / 2).ToString(GlobalSettings.CultureInfo) + ')';
+                                (WIL.TotalValue.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
 
                         intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM).StandardRound();
                         if (intBonus != 0)
@@ -33897,7 +33897,7 @@ namespace Chummer
                             + await LanguageManager.GetStringAsync("String_DeviceRating", token: token)
                                                    .ConfigureAwait(false) + '÷' + 2.ToString(GlobalSettings.CultureInfo)
                             + ')' + strSpace + '('
-                            + ((await objHomeNode.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false) + 1) / 2).ToString(
+                            + ((await objHomeNode.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false)).DivAwayFromZero(2)).ToString(
                                 GlobalSettings.CultureInfo) + ')';
                     intBonus = objHomeNode.TotalBonusMatrixBoxes;
                     if (intBonus != 0)
@@ -33910,7 +33910,7 @@ namespace Chummer
                     strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '('
                             + await objWil.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)
                             + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
-                            + ((await objWil.GetTotalValueAsync(token).ConfigureAwait(false) + 1) / 2).ToString(
+                            + ((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).DivAwayFromZero(2)).ToString(
                                 GlobalSettings.CultureInfo) + ')';
                     intBonus = (await ImprovementManager
                                       .ValueOfAsync(this, Improvement.ImprovementType.StunCM, token: token)
@@ -35012,7 +35012,7 @@ namespace Chummer
                         return objHomeNodeVehicle?.Handling ?? 0;
                     }
 
-                    int intLimit = (STR.TotalValue * 2 + BOD.TotalValue + REA.TotalValue + 2) / 3;
+                    int intLimit = (STR.TotalValue * 2 + BOD.TotalValue + REA.TotalValue).DivAwayFromZero(3);
                     return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalLimit)
                                                         .StandardRound();
                 }
@@ -35038,7 +35038,7 @@ namespace Chummer
                 int intStr = await STR.GetTotalValueAsync(token).ConfigureAwait(false);
                 int intBod = await BOD.GetTotalValueAsync(token).ConfigureAwait(false);
                 int intRea = await REA.GetTotalValueAsync(token).ConfigureAwait(false);
-                int intLimit = (intStr * 2 + intBod + intRea + 2) / 3;
+                int intLimit = (intStr * 2 + intBod + intRea).DivAwayFromZero(3);
                 return intLimit + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PhysicalLimit, token: token).ConfigureAwait(false))
                     .StandardRound();
             }
@@ -35158,7 +35158,7 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
+                    int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue).DivAwayFromZero(3);
                     if (IsAI && HomeNode != null)
                     {
                         if (HomeNode is Vehicle objHomeNodeVehicle)
@@ -35196,7 +35196,7 @@ namespace Chummer
                 int intLog = await LOG.GetTotalValueAsync(token).ConfigureAwait(false);
                 int intInt = await INT.GetTotalValueAsync(token).ConfigureAwait(false);
                 int intWil = await WIL.GetTotalValueAsync(token).ConfigureAwait(false);
-                int intLimit = (intLog * 2 + intInt + intWil + 2) / 3;
+                int intLimit = (intLog * 2 + intInt + intWil).DivAwayFromZero(3);
                 if (await GetIsAIAsync(token).ConfigureAwait(false) && await GetHomeNodeAsync(token).ConfigureAwait(false) is IHasMatrixAttributes objHomeNode)
                 {
                     if (objHomeNode is Vehicle objHomeNodeVehicle)
@@ -35249,7 +35249,7 @@ namespace Chummer
 
                         if (IsAI && HomeNode != null)
                         {
-                            int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
+                            int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue).DivAwayFromZero(3);
                             if (HomeNode is Vehicle objHomeNodeVehicle)
                             {
                                 int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
@@ -35319,7 +35319,7 @@ namespace Chummer
 
                     if (await GetIsAIAsync(token).ConfigureAwait(false) && await GetHomeNodeAsync(token).ConfigureAwait(false) is IHasMatrixAttributes objHomeNode)
                     {
-                        int intLimit = (intLog * 2 + intInt + intWil + 2) / 3;
+                        int intLimit = (intLog * 2 + intInt + intWil).DivAwayFromZero(3);
                         if (objHomeNode is Vehicle objHomeNodeVehicle)
                         {
                             int intHomeNodeSensor = await objHomeNodeVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false);
@@ -35389,7 +35389,7 @@ namespace Chummer
                     else
                         intLimit *= 2;
 
-                    intLimit = (intLimit + WIL.TotalValue + Essence().StandardRound() + 2) / 3;
+                    intLimit = (intLimit + WIL.TotalValue + Essence().StandardRound()).DivAwayFromZero(3);
 
                     return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SocialLimit)
                         .StandardRound();
@@ -35428,7 +35428,7 @@ namespace Chummer
                 else
                     intLimit *= 2;
 
-                intLimit = (intLimit + intWil + intEss + 2) / 3;
+                intLimit = (intLimit + intWil + intEss).DivAwayFromZero(3);
 
                 return intLimit + (await ImprovementManager
                         .ValueOfAsync(this, Improvement.ImprovementType.SocialLimit, token: token)
@@ -44773,7 +44773,7 @@ namespace Chummer
                 {
                     int intAttValue = GetAttribute(imp.ImprovedName).TotalValue;
                     if (imp.UniqueName.Contains("half"))
-                        intAttValue = (intAttValue + 1) / 2;
+                        intAttValue = intAttValue.DivAwayFromZero(2);
                     if (imp.UniqueName.Contains("touchonly"))
                         intFreeTouchOnlySpells += intAttValue;
                     else
@@ -44786,7 +44786,7 @@ namespace Chummer
                     Skill skill = SkillsSection.GetActiveSkill(imp.ImprovedName);
                     int intSkillValue = SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
                     if (imp.UniqueName.Contains("half"))
-                        intSkillValue = (intSkillValue + 1) / 2;
+                        intSkillValue = intSkillValue.DivAwayFromZero(2);
                     if (imp.UniqueName.Contains("touchonly"))
                         intFreeTouchOnlySpells += intSkillValue;
                     else
@@ -44825,7 +44825,7 @@ namespace Chummer
                 {
                     int intAttValue = await (await GetAttributeAsync(imp.ImprovedName, token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
                     if (imp.UniqueName.Contains("half"))
-                        intAttValue = (intAttValue + 1) / 2;
+                        intAttValue = intAttValue.DivAwayFromZero(2);
                     if (imp.UniqueName.Contains("touchonly"))
                         intFreeTouchOnlySpells += intAttValue;
                     else
@@ -44840,7 +44840,7 @@ namespace Chummer
                     Skill skill = await objSkillsSection.GetActiveSkillAsync(imp.ImprovedName, token).ConfigureAwait(false);
                     int intSkillValue = (await objSkillsSection.GetActiveSkillAsync(imp.ImprovedName, token).ConfigureAwait(false)).TotalBaseRating;
                     if (imp.UniqueName.Contains("half"))
-                        intSkillValue = (intSkillValue + 1) / 2;
+                        intSkillValue = intSkillValue.DivAwayFromZero(2);
                     if (imp.UniqueName.Contains("touchonly"))
                         intFreeTouchOnlySpells += intSkillValue;
                     else

@@ -698,11 +698,10 @@ namespace Chummer
 
                                     await splitMagician.DoThreadSafeAsync(x => x.SplitterDistance
                                         = Math.Max(x.SplitterDistance,
-                                            ((x.Height - x.SplitterWidth) * 2 + 2)
-                                            / 3), GenericToken).ConfigureAwait(false);
+                                            ((x.Height - x.SplitterWidth) * 2).DivAwayFromZero(3)), GenericToken).ConfigureAwait(false);
                                     await splitTechnomancer.DoThreadSafeAsync(
                                         x => x.SplitterDistance
-                                            = Math.Max(x.SplitterDistance, ((x.Height - x.SplitterWidth) * 2 + 2) / 3),
+                                            = Math.Max(x.SplitterDistance, ((x.Height - x.SplitterWidth) * 2).DivAwayFromZero(3)),
                                         GenericToken).ConfigureAwait(false);
 
                                     Tradition objTradition = await CharacterObject
@@ -14104,7 +14103,7 @@ namespace Chummer
                                     .ConfigureAwait(false)).GetTotalValueAsync(token)
                                 .ConfigureAwait(false);
                         if (imp.UniqueName.Contains("half"))
-                            intAttValue = (intAttValue + 1) / 2;
+                            intAttValue = intAttValue.DivAwayFromZero(2);
                         if (imp.UniqueName.Contains("touchonly"))
                             intLimitModTouchOnly += intAttValue;
                         else
@@ -14124,7 +14123,7 @@ namespace Chummer
                         int intSkillValue = await skill.GetTotalBaseRatingAsync(token).ConfigureAwait(false);
 
                         if (imp.UniqueName.Contains("half"))
-                            intSkillValue = (intSkillValue + 1) / 2;
+                            intSkillValue = intSkillValue.DivAwayFromZero(2);
                         if (imp.UniqueName.Contains("touchonly"))
                             intLimitModTouchOnly += intSkillValue;
                         else
@@ -21839,7 +21838,7 @@ namespace Chummer
                                         .ConfigureAwait(false)).GetTotalValueAsync(token)
                                     .ConfigureAwait(false);
                             if (imp.UniqueName.Contains("half"))
-                                intAttValue = (intAttValue + 1) / 2;
+                                intAttValue = intAttValue.DivAwayFromZero(2);
                             if (imp.UniqueName.Contains("touchonly"))
                                 intLimitModTouchOnly += intAttValue;
                             else
@@ -21860,7 +21859,7 @@ namespace Chummer
                             int intSkillValue = await skill.GetTotalBaseRatingAsync(token).ConfigureAwait(false);
 
                             if (imp.UniqueName.Contains("half"))
-                                intSkillValue = (intSkillValue + 1) / 2;
+                                intSkillValue = intSkillValue.DivAwayFromZero(2);
                             if (imp.UniqueName.Contains("touchonly"))
                                 intLimitModTouchOnly += intSkillValue;
                             else

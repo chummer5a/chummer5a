@@ -666,15 +666,14 @@ namespace Chummer
 
                                     await splitKarmaNuyen.DoThreadSafeAsync(
                                         x => x.SplitterDistance
-                                            = Math.Max(x.SplitterDistance, (x.Width - x.SplitterWidth + 1) / 2),
+                                            = Math.Max(x.SplitterDistance, (x.Width - x.SplitterWidth).DivAwayFromZero(2)),
                                         GenericToken).ConfigureAwait(false);
                                     await splitMagician.DoThreadSafeAsync(x => x.SplitterDistance
-                                        = Math.Max(x.SplitterDistance,
-                                            ((x.Height - x.SplitterWidth) * 2 + 2)
-                                            / 3), GenericToken).ConfigureAwait(false);
+                                        = Math.Max(x.SplitterDistance, ((x.Height - x.SplitterWidth) * 2).DivAwayFromZero(3)),
+                                            GenericToken).ConfigureAwait(false);
                                     await splitTechnomancer.DoThreadSafeAsync(
                                         x => x.SplitterDistance
-                                            = Math.Max(x.SplitterDistance, ((x.Height - x.SplitterWidth) * 2 + 2) / 3),
+                                            = Math.Max(x.SplitterDistance, ((x.Height - x.SplitterWidth) * 2).DivAwayFromZero(3)),
                                         GenericToken).ConfigureAwait(false);
 
                                     Tradition objTradition = await CharacterObject
