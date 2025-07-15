@@ -1012,37 +1012,6 @@
       <xs:enumeration value="TableDirect" />
     </xs:restriction>
   </xs:simpleType>
-  <xs:simpleType name="System.Data.DbType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="AnsiString" />
-      <xs:enumeration value="Binary" />
-      <xs:enumeration value="Byte" />
-      <xs:enumeration value="Boolean" />
-      <xs:enumeration value="Currency" />
-      <xs:enumeration value="Date" />
-      <xs:enumeration value="DateTime" />
-      <xs:enumeration value="Decimal" />
-      <xs:enumeration value="Double" />
-      <xs:enumeration value="Guid" />
-      <xs:enumeration value="Int16" />
-      <xs:enumeration value="Int32" />
-      <xs:enumeration value="Int64" />
-      <xs:enumeration value="Object" />
-      <xs:enumeration value="SByte" />
-      <xs:enumeration value="Single" />
-      <xs:enumeration value="String" />
-      <xs:enumeration value="Time" />
-      <xs:enumeration value="UInt16" />
-      <xs:enumeration value="UInt32" />
-      <xs:enumeration value="UInt64" />
-      <xs:enumeration value="VarNumeric" />
-      <xs:enumeration value="AnsiStringFixedLength" />
-      <xs:enumeration value="StringFixedLength" />
-      <xs:enumeration value="Xml" />
-      <xs:enumeration value="DateTime2" />
-      <xs:enumeration value="DateTimeOffset" />
-    </xs:restriction>
-  </xs:simpleType>
   <xs:simpleType name="System.Data.IsolationLevel">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Unspecified" />
@@ -1130,7 +1099,6 @@
       <xs:element name="format" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="culture" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="allowDbNull" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-      <xs:element name="dbTypeEnum" type="System.Data.DbType" minOccurs="0" maxOccurs="1" default="AnsiString" />
     </xs:choice>
     <xs:attribute name="name" type="xs:string">
       <xs:annotation>
@@ -1185,11 +1153,6 @@
     <xs:attribute name="allowDbNull" type="xs:boolean">
       <xs:annotation>
         <xs:documentation>Whether empty value should translate into DbNull. Requires database column to allow NULL values.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="dbTypeEnum" type="System.Data.DbType">
-      <xs:annotation>
-        <xs:documentation>Database parameter DbType (without reflection logic)</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>
@@ -4392,7 +4355,7 @@
           <xs:element name="indentJson" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="maxRecursionLimit" type="xs:integer" minOccurs="0" maxOccurs="1" default="1" />
           <xs:element name="renderEmptyObject" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
-          <xs:element name="suppressSpaces" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="suppressSpaces" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
           <xs:element name="includeScopes" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="state" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.JsonAttribute" />
           <xs:element name="timestampFormat" type="xs:string" minOccurs="0" maxOccurs="1" default="o" />
@@ -4580,8 +4543,8 @@
   </xs:complexType>
   <xs:complexType name="NLog.Web.Layouts.W3CExtendedLogField">
     <xs:choice minOccurs="0" maxOccurs="unbounded">
-      <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1" />
-      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="layout" type="Layout" minOccurs="1" maxOccurs="1" />
+      <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
     </xs:choice>
     <xs:attribute name="layout" type="SimpleLayoutAttribute">
       <xs:annotation>

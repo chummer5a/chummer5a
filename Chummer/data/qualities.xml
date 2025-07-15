@@ -44,6 +44,7 @@
       <name>Analytical Mind</name>
       <karma>3</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
         <skillattribute>
           <name>LOG</name>
@@ -59,6 +60,7 @@
       <name>Aptitude</name>
       <karma>12</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
         <selectskill>
           <max>1</max>
@@ -72,6 +74,7 @@
       <name>Astral Chameleon</name>
       <karma>9</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus />
      <!-- <required>
         <oneof>
@@ -118,6 +121,7 @@
       <name>Blandness</name>
       <karma>8</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
         <notoriety>-2</notoriety>
       </bonus>
@@ -152,6 +156,7 @@
       <name>Catlike</name>
       <karma>12</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <mutant>True</mutant>
       <source>SR6</source>
       <page>71</page>
@@ -173,18 +178,19 @@
       <name>Dermal Deposits</name>
       <karma>7</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
         <armor>1</armor>
       </bonus>
       <source>SR6</source>
       <page>71</page>
-    </quality>
-   
+    </quality>   
     <quality>
       <id>db579224-99c7-48e0-84ab-77a987a84f4a</id>
       <name>Double Jointed</name>
       <karma>12</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
       </bonus>
       <source>SR6</source>
@@ -195,6 +201,7 @@
         <name>(Elemental) Resistance</name>
         <karma>12</karma>
         <category>Positive</category>
+        <limit>False</limit>
         <bonus>
         </bonus>
         <source>SR6</source>
@@ -205,6 +212,7 @@
       <name>Exceptional Attribute</name>
       <karma>12</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
         <selectattributes>
           <selectattribute>
@@ -226,6 +234,7 @@
       <name>First Impression</name>
       <karma>12</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
       </bonus>
       <source>SR6</source>
@@ -256,6 +265,7 @@
       <name>Gearhead</name>
       <karma>10</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus />
       <source>SR6</source>
       <page>71</page>
@@ -265,6 +275,7 @@
       <name>Guts</name>
       <karma>12</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus />
       <source>SR6</source>
       <page>71</page>
@@ -304,6 +315,7 @@
       <name>Human-Looking</name>
       <karma>8</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus />
       <required>
         <oneof>
@@ -320,6 +332,7 @@
       <name>Indomitable</name>
       <karma>12</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
       </bonus>
       <source>SR6</source>
@@ -362,6 +375,7 @@
       <name>Juryrigger</name>
       <karma>12</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus />
       <source>SR6</source>
       <page>72</page>
@@ -391,6 +405,7 @@
       <name>Long Reach</name>
       <karma>12</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus />
       <source>SR6</source>
       <page>72</page>
@@ -400,6 +415,7 @@
       <name>Low-Light Vision</name>
       <karma>6</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus />
       <source>SR6</source>
       <page>72</page>
@@ -409,6 +425,7 @@
       <name>Magic Resistance</name>
       <karma>8</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
       </bonus>
       <forbidden>
@@ -423,6 +440,7 @@
       <name>Mentor Spirit</name>
       <karma>10</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
         <selectmentorspirit />
       </bonus>
@@ -503,6 +521,7 @@
       <name>Photographic Memory</name>
       <karma>12</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
       </bonus>
       <source>SR6</source>
@@ -513,6 +532,7 @@
       <name>Quick Healer</name>
       <karma>8</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
       </bonus>
       <forbidden>
@@ -528,6 +548,7 @@
       <name>Resistance to Pathogens</name>
       <karma>12</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
       </bonus>
       <forbidden>
@@ -627,6 +648,7 @@
       <name>Toughness</name>
       <karma>12</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
       </bonus>
       <source>SR6</source>
@@ -637,6 +659,7 @@
       <name>Toxin Resistance</name>
       <karma>12</karma>
       <category>Positive</category>
+      <limit>False</limit>
       <bonus>
       </bonus>
       <source>SR6</source>
@@ -1284,6 +1307,7 @@
       <name>AR Vertigo</name>
       <karma>-10</karma>
       <category>Negative</category>
+      <limit>False</limit>
       <bonus>
       </bonus>
       <source>SR6</source>
@@ -1294,6 +1318,7 @@
       <name>Astral Beacon</name>
       <karma>-10</karma>
       <category>Negative</category>
+      <limit>False</limit>
       <bonus />
       <source>SR6</source>
       <page>75</page>
@@ -1301,26 +1326,26 @@
     <quality>
       <id>bc5f41ca-1549-4367-9c12-afa403182f8c</id>
       <name>Bad Luck</name>
-      <karma>-12</karma>
+      <karma>-10</karma>
       <category>Negative</category>
+      <limit>False</limit>
       <bonus>
-        <notoriety>1</notoriety>
       </bonus>
-      <source>SR5</source>
-      <page>79</page>
+      <source>SR6</source>
+      <page>75</page>
     </quality>
     <quality>
       <id>25356bae-efcc-46c6-9c4f-66909b9b7233</id>
       <name>Bad Rep</name>
-      <karma>-7</karma>
+      <karma>-8</karma>
       <category>Negative</category>
+      <limit>False</limit>
       <bonus>
-        <notoriety>3</notoriety>
       </bonus>
-      <source>SR5</source>
-      <page>79</page>
+      <source>SR6</source>
+      <page>75</page>
     </quality>
-    <quality>
+   <!-- <quality>
       <id>dda02333-10e3-4295-9392-691ff3a7bd4a</id>
       <name>Code of Honor</name>
       <karma>-15</karma>
@@ -1343,111 +1368,170 @@
       </bonus>
       <source>SR5</source>
       <page>80</page>
-    </quality>
+    </quality>-->
     <quality>
       <id>62c7ed8f-b534-41e3-84ac-29534826d476</id>
       <name>Combat Paralysis</name>
-      <karma>-12</karma>
+      <karma>-8</karma>
       <category>Negative</category>
+      <limit>False</limit>
       <bonus>
-        <notoriety>1</notoriety>
-        <surprise>-3</surprise>
       </bonus>
-      <source>SR5</source>
-      <page>80</page>
+      <source>SR6</source>
+      <page>75</page>
     </quality>
     <quality>
       <id>2b9a495d-b735-416b-a000-f648c3b4191a</id>
       <name>Dependent (Nuisance)</name>
-      <karma>-3</karma>
+      <karma>-4</karma>
       <category>Negative</category>
+      <limit>False</limit>
       <bonus>
         <lifestylecost>10</lifestylecost>
       </bonus>
       <forbidden>
         <oneof>
-          <quality>Dependent (Inconvenience)</quality>
-          <quality>Dependent (Demanding)</quality>
+         <!-- <quality>Dependent (Inconvenience)</quality>
+          <quality>Dependent (Demanding)</quality>-->
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>80</page>
+      <source>SR6</source>
+      <page>76</page>
     </quality>
     <quality>
       <id>cc857826-3bb2-466d-987b-7d56a337bc08</id>
       <name>Dependent (Inconvenience)</name>
-      <karma>-6</karma>
+      <karma>-8</karma>
       <category>Negative</category>
+      <limit>False</limit>
       <bonus>
         <lifestylecost>20</lifestylecost>
       </bonus>
       <forbidden>
         <oneof>
-          <quality>Dependent (Nuisance)</quality>
-          <quality>Dependent (Demanding)</quality>
+          <!--<quality>Dependent (Nuisance)</quality>
+          <quality>Dependent (Demanding)</quality>-->
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>80</page>
+      <source>SR6</source>
+      <page>76</page>
     </quality>
     <quality>
       <id>066a2de9-1717-44ca-a8c6-90366890574a</id>
       <name>Dependent (Demanding)</name>
-      <karma>-9</karma>
+      <karma>-12</karma>
       <category>Negative</category>
+      <limit>False</limit>
       <bonus>
         <lifestylecost>30</lifestylecost>
       </bonus>
       <forbidden>
         <oneof>
-          <quality>Dependent (Nuisance)</quality>
-          <quality>Dependent (Inconvenience)</quality>
+          <!--<quality>Dependent (Nuisance)</quality>
+          <quality>Dependent (Inconvenience)</quality>-->
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>80</page>
+      <source>SR6</source>
+      <page>76</page>
     </quality>
     <quality>
       <id>a030d7e2-755b-4f71-b848-ad9772fba242</id>
       <name>Distinctive Style</name>
-      <karma>-5</karma>
+      <karma>-6</karma>
       <category>Negative</category>
+      <limit>False</limit>
       <bonus />
       <forbidden>
         <oneof>
-          <quality>Blandness</quality>
+          <!--<quality>Blandness</quality>-->
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>80</page>
+      <source>SR6</source>
+      <page>76</page>
     </quality>
     <quality>
       <id>7036225b-d0f0-4c86-85b7-cc4d46943113</id>
       <name>Elf Poser</name>
       <karma>-6</karma>
       <category>Negative</category>
+      <limit>False</limit>
       <bonus>
-        <notoriety>1</notoriety>
+        <!--<notoriety>1</notoriety>-->
       </bonus>
       <required>
-        <allof>
+        <oneof>
           <metatype>Human</metatype>
-        </allof>
+          <metatype>Ork</metatype>
+        </oneof>
       </required>
-      <source>SR5</source>
-      <page>81</page>
+      <source>SR6</source>
+      <page>76</page>
+    </quality>
+    <quality>
+      <id>7776a029-bd54-4043-afc4-26a35edb2f7f</id>
+      <name>Glass Jaw</name>
+      <karma>-4</karma>     
+      <category>Negative</category>
+      <limit>4</limit>
+      <bonus>
+        <conditionmonitor>
+          <stun>-1</stun>
+        </conditionmonitor>
+      </bonus>
+      <forbidden>
+        <oneof>
+        </oneof>
+      </forbidden>
+      <source>SR6</source>
+      <page>76</page>
     </quality>
     <quality>
       <id>de12b672-f60a-486d-85f6-b94a80a058da</id>
       <name>Gremlins</name>
-      <karma>-4</karma>
+      <karma>-6</karma>
       <category>Negative</category>
       <limit>4</limit>
       <firstlevelbonus>
-        <notoriety>1</notoriety>
+        <!--<notoriety>1</notoriety>-->
       </firstlevelbonus>
-      <source>SR5</source>
-      <page>81</page>
+      <source>SR6</source>
+      <page>76</page>
+    </quality>
+    <quality>
+      <id>aab1da70-363b-4472-998e-b6fcc62b0199</id>
+      <name>Honour Bound</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <firstlevelbonus>
+      </firstlevelbonus>
+      <source>SR6</source>
+      <page>76</page>
+    </quality>
+    <quality>
+      <id>21757773-02c2-41f1-a714-3fb3efeb0e83</id>
+      <name>Impaired Attribute (Body)</name>
+      <karma>-8</karma>
+      <category>Negative</category>
+      <limit>10</limit>  
+      <bonus>
+        <selectattribute>
+          <excludeattribute>EDG</excludeattribute>
+          <val>-1</val>
+        </selectattribute>       
+      </bonus>
+      <required>
+        <allof> <attribute>
+          <name>BOD</name>
+          <total>3</total>
+          <natural />
+        </attribute>
+          </allof>
+        <oneof>
+        </oneof>       
+      </required>    
+      <source>SR6</source>
+      <page>76</page>     
     </quality>
     <quality>
       <id>216290b9-053d-4f6d-81c9-d1fe8ae346be</id>
