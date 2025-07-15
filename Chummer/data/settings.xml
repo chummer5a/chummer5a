@@ -40,7 +40,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -197,7 +197,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -354,7 +354,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -511,7 +511,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -668,7 +668,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -825,7 +825,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -982,7 +982,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1140,7 +1140,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1304,7 +1304,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1462,7 +1462,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1620,7 +1620,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1783,7 +1783,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1947,7 +1947,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -2116,7 +2116,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -2280,7 +2280,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -2498,7 +2498,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -2716,7 +2716,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -2939,7 +2939,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -3157,7 +3157,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -3382,7 +3382,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -3607,7 +3607,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -3832,7 +3832,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -4057,7 +4057,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -4221,7 +4221,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -4390,7 +4390,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -4605,7 +4605,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -4820,7 +4820,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5040,7 +5040,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{CHA}</compiledspriteexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5262,7 +5262,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5481,7 +5481,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5700,7 +5700,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5919,7 +5919,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -6138,7 +6138,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -6357,7 +6357,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>

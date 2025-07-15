@@ -1557,8 +1557,8 @@ namespace Chummer
                                                      _strChargenKarmaToNuyenExpression);
                         // <boundspiritexpression />
                         objWriter.WriteElementString("boundspiritexpression", _strBoundSpiritExpression);
-                        // <compiledspriteexpression />
-                        objWriter.WriteElementString("compiledspriteexpression", _strRegisteredSpriteExpression);
+                        // <registeredspriteexpression />
+                        objWriter.WriteElementString("registeredspriteexpression", _strRegisteredSpriteExpression);
                         // <essencemodifierpostexpression />
                         objWriter.WriteElementString("essencemodifierpostexpression", _strEssenceModifierPostExpression);
                         // <liftlimitexpression />
@@ -2306,9 +2306,9 @@ namespace Chummer
                         await objWriter
                             .WriteElementStringAsync("boundspiritexpression", _strBoundSpiritExpression, token: token)
                             .ConfigureAwait(false);
-                        // <compiledspriteexpression />
+                        // <registeredspriteexpression />
                         await objWriter
-                            .WriteElementStringAsync("compiledspriteexpression", _strRegisteredSpriteExpression,
+                            .WriteElementStringAsync("registeredspriteexpression", _strRegisteredSpriteExpression,
                                 token: token).ConfigureAwait(false);
                         // <essencemodifierpostexpression />
                         await objWriter
@@ -3259,7 +3259,8 @@ namespace Chummer
                 }
 
                 // Various expressions used to determine certain character stats
-                objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
+                if (!objXmlNode.TryGetStringFieldQuickly("registeredspriteexpression", ref _strRegisteredSpriteExpression))
+                    objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression); // Legacy shim
                 objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
                 objXmlNode.TryGetStringFieldQuickly("essencemodifierpostexpression", ref _strEssenceModifierPostExpression);
                 objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
@@ -4027,7 +4028,8 @@ namespace Chummer
                 }
 
                 // Various expressions used to determine certain character stats
-                objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
+                if (!objXmlNode.TryGetStringFieldQuickly("registeredspriteexpression", ref _strRegisteredSpriteExpression))
+                    objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression); // Legacy shim
                 objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
                 objXmlNode.TryGetStringFieldQuickly("essencemodifierpostexpression", ref _strEssenceModifierPostExpression);
                 objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
