@@ -10194,12 +10194,14 @@ namespace Chummer
                                    await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) >=
                 await CharacterObject.GetBoundSpiritLimitAsync(token).ConfigureAwait(false))
             {
+                string strExpression = await CharacterObject.AttributeSection.ProcessAttributesInXPathForTooltipAsync(
+                    await CharacterObject.Settings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync("Message_BoundSpiritLimit", token: token)
                             .ConfigureAwait(false),
-                        await CharacterObject.Settings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false),
+                        strExpression,
                         await CharacterObject.GetBoundSpiritLimitAsync(token).ConfigureAwait(false)),
                     await LanguageManager.GetStringAsync("MessageTitle_BoundSpiritLimit", token: token)
                         .ConfigureAwait(false),
@@ -10227,12 +10229,14 @@ namespace Chummer
                                    await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) >=
                 await CharacterObject.GetRegisteredSpriteLimitAsync(token).ConfigureAwait(false))
             {
+                string strExpression = await CharacterObject.AttributeSection.ProcessAttributesInXPathForTooltipAsync(
+                    await CharacterObject.Settings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit", token: token)
                             .ConfigureAwait(false),
-                        await CharacterObject.Settings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false),
+                        strExpression,
                         await CharacterObject.GetRegisteredSpriteLimitAsync(token).ConfigureAwait(false)),
                     await LanguageManager.GetStringAsync("MessageTitle_RegisteredSpriteLimit", token: token)
                         .ConfigureAwait(false),

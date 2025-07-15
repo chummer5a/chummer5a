@@ -23311,23 +23311,18 @@ namespace Chummer
                   .SetToolTipAsync(
                       await LanguageManager.GetStringAsync("Tip_CommonAttributesMetatypeLimits", token: token)
                                            .ConfigureAwait(false), token).ConfigureAwait(false);
-            await lblNuyen.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo,
+            string strNuyenTooltip = await (await CharacterObjectSettings.GetChargenKarmaToNuyenExpressionAsync(token).ConfigureAwait(false))
+                                        .CheapReplaceAsync("{Karma}", () => LanguageManager.GetStringAsync("String_Karma", token: token), token: token)
+                                        .CheapReplaceAsync("{PriorityNuyen}", () => LanguageManager.GetStringAsync("Checkbox_CreatePACKSKit_StartingNuyen", token: token), token: token)
+                                        .ConfigureAwait(false);
+            strNuyenTooltip = await CharacterObject.AttributeSection.ProcessAttributesInXPathForTooltipAsync(
+                                                                  strNuyenTooltip, token: token).ConfigureAwait(false);
+            strNuyenTooltip = string.Format(GlobalSettings.CultureInfo,
                                                          await LanguageManager
                                                                .GetStringAsync("Tip_CommonNuyen", token: token)
                                                                .ConfigureAwait(false),
-                                                         (await CharacterObjectSettings
-                                                                .GetChargenKarmaToNuyenExpressionAsync(token)
-                                                                .ConfigureAwait(false))
-                                                         .Replace("{Karma}",
-                                                                  await LanguageManager
-                                                                        .GetStringAsync("String_Karma", token: token)
-                                                                        .ConfigureAwait(false))
-                                                         .Replace("{PriorityNuyen}",
-                                                                  await LanguageManager
-                                                                        .GetStringAsync(
-                                                                            "Checkbox_CreatePACKSKit_StartingNuyen",
-                                                                            token: token).ConfigureAwait(false))),
-                                           token).ConfigureAwait(false);
+                                                         strNuyenTooltip);
+            await lblNuyen.SetToolTipAsync(strNuyenTooltip, token).ConfigureAwait(false);
             // Armor Tab.
             await chkArmorEquipped
                   .SetToolTipAsync(
@@ -23405,24 +23400,7 @@ namespace Chummer
                   .SetToolTipAsync(
                       await LanguageManager.GetStringAsync("Tip_CommonEnemies", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
-            await lblBuildNuyen.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo,
-                                                              await LanguageManager
-                                                                    .GetStringAsync("Tip_CommonNuyen", token: token)
-                                                                    .ConfigureAwait(false),
-                                                              (await CharacterObjectSettings
-                                                                     .GetChargenKarmaToNuyenExpressionAsync(token)
-                                                                     .ConfigureAwait(false))
-                                                              .Replace("{Karma}",
-                                                                       await LanguageManager
-                                                                             .GetStringAsync(
-                                                                                 "String_Karma", token: token)
-                                                                             .ConfigureAwait(false))
-                                                              .Replace("{PriorityNuyen}",
-                                                                       await LanguageManager
-                                                                             .GetStringAsync(
-                                                                                 "Checkbox_CreatePACKSKit_StartingNuyen",
-                                                                                 token: token).ConfigureAwait(false))),
-                                                token).ConfigureAwait(false);
+            await lblBuildNuyen.SetToolTipAsync(strNuyenTooltip, token).ConfigureAwait(false);
             await lblBuildSkillGroups.SetToolTipAsync(
                 string.Format(GlobalSettings.CultureInfo,
                               await LanguageManager.GetStringAsync("Tip_SkillsSkillGroups", token: token)
