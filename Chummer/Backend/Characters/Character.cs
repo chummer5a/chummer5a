@@ -11000,9 +11000,9 @@ namespace Chummer
                         .WriteElementStringAsync("notes", await Notes.RtfToHtmlAsync(token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     // <alias />
-                    await objWriter.WriteElementStringAsync("alias", Alias, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("alias", await GetAliasAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     // <playername />
-                    await objWriter.WriteElementStringAsync("playername", PlayerName, token: token)
+                    await objWriter.WriteElementStringAsync("playername", await GetPlayerNameAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     // <gamenotes />
                     await objWriter
@@ -21706,6 +21706,36 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether the character is a Critter.
+        /// </summary>
+        public async Task SetIsCritterAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnIsCritter == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnIsCritter = value;
+                    await OnPropertyChangedAsync(nameof(IsCritter), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Whether the character is a changeling.
         /// </summary>
         [HubTag]
@@ -21793,6 +21823,36 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _blnPossessed;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether the character is possessed by a Spirit.
+        /// </summary>
+        public async Task SetPossessedAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnPossessed == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnPossessed = value;
+                    await OnPropertyChangedAsync(nameof(Possessed), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {

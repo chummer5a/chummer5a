@@ -4336,9 +4336,12 @@ namespace Chummer
                 try
                 {
                     Character[] lstClones = new Character[intClones];
+                    string strAlias = await CharacterObject.GetAliasAsync(GenericToken).ConfigureAwait(false);
+                    string strFileName = await CharacterObject.GetFileNameAsync(GenericToken).ConfigureAwait(false);
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar
                            = await Program.CreateAndShowProgressBarAsync(
-                                              CharacterObject.Alias, Character.NumLoadingSections * intClones,
+                                              strAlias,
+                                              Character.NumLoadingSections * intClones,
                                               GenericToken)
                                           .ConfigureAwait(false))
                     {
@@ -4346,12 +4349,11 @@ namespace Chummer
                         Task<Character>[] tskLoadingTasks = new Task<Character>[intClones];
                         for (int i = 0; i < intClones; ++i)
                         {
-                            string strNewName = CharacterObject.Alias + strSpace
-                                                                      + i.ToString(GlobalSettings.CultureInfo);
+                            string strNewName = strAlias + strSpace + i.ToString(GlobalSettings.CultureInfo);
                             tskLoadingTasks[i]
                                 // ReSharper disable once AccessToDisposedClosure
                                 = Task.Run(
-                                    () => Program.LoadCharacterAsync(CharacterObject.FileName, strNewName, true,
+                                    () => Program.LoadCharacterAsync(strFileName, strNewName, true,
                                                                      // ReSharper disable once AccessToDisposedClosure
                                                                      frmLoadingBar: frmLoadingBar.MyForm,
                                                                      token: GenericToken), GenericToken);
@@ -5562,12 +5564,12 @@ namespace Chummer
                                     return;
                                 }
 
-                                objMerge.Possessed = true;
-                                objMerge.Alias = await objVessel.GetCharacterNameAsync(GenericToken).ConfigureAwait(false)
+                                await objMerge.SetPossessedAsync(true, GenericToken).ConfigureAwait(false);
+                                await objMerge.SetAliasAsync(await objVessel.GetCharacterNameAsync(GenericToken).ConfigureAwait(false)
                                                  + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
                                                                         .ConfigureAwait(false) + '('
                                                  + await LanguageManager.GetStringAsync("String_Possessed", token: GenericToken)
-                                                                        .ConfigureAwait(false) + ')';
+                                                                        .ConfigureAwait(false) + ')', GenericToken).ConfigureAwait(false);
 
                                 // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
                                 bool blnHasImmunity =
@@ -5811,218 +5813,228 @@ namespace Chummer
                 try
                 {
                     // Load the Spirit's save file into a new Merge character.
-                    Character objMerge = new Character {FileName = CharacterObject.FileName};
+                    Character objMerge = new Character();
                     try
                     {
-                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                               = await Program.CreateAndShowProgressBarAsync(
-                                                  objMerge.FileName, Character.NumLoadingSections + 1, GenericToken)
-                                              .ConfigureAwait(false))
+                        IAsyncDisposable objMergeLocker = await objMerge.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                        try
                         {
-                            await objMerge.LoadAsync(frmLoadingForm: frmLoadingBar.MyForm, token: GenericToken)
-                                          .ConfigureAwait(false);
-                            await frmLoadingBar.MyForm.PerformStepAsync(
-                                await LanguageManager.GetStringAsync("String_UI", token: GenericToken).ConfigureAwait(false),
-                                token: GenericToken).ConfigureAwait(false);
-                            objMerge.Possessed = true;
-                            objMerge.Alias = strSelectedVessel
-                                             + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
-                                                                    .ConfigureAwait(false)
-                                             + '('
-                                             + await LanguageManager.GetStringAsync(
-                                                 "String_Possessed", token: GenericToken).ConfigureAwait(false) + ')';
-
-                            int intHalfMAGRoundedUp
-                                = (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
-                                                               .ConfigureAwait(false))
-                                         .GetTotalValueAsync(GenericToken).ConfigureAwait(false)).DivAwayFromZero(2);
-                            try
+                            GenericToken.ThrowIfCancellationRequested();
+                            await objMerge.SetFileNameAsync(await CharacterObject.GetFileNameAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                            using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                                    = await Program.CreateAndShowProgressBarAsync(
+                                                        await objMerge.GetFileNameAsync(GenericToken).ConfigureAwait(false),
+                                                        Character.NumLoadingSections + 1, GenericToken)
+                                                    .ConfigureAwait(false))
                             {
-                                await ImprovementManager.CreateImprovementAsync(
-                                                            objMerge, "BOD", Improvement.ImprovementSource.Metatype,
-                                                            "Possession",
-                                                            Improvement.ImprovementType.Attribute, string.Empty,
-                                                            intHalfMAGRoundedUp, 1, 0, 0,
-                                                            intHalfMAGRoundedUp, intHalfMAGRoundedUp,
-                                                            token: GenericToken)
-                                                        .ConfigureAwait(false);
-                                await ImprovementManager.CreateImprovementAsync(
-                                                            objMerge, "AGI", Improvement.ImprovementSource.Metatype,
-                                                            "Possession",
-                                                            Improvement.ImprovementType.Attribute, string.Empty,
-                                                            intHalfMAGRoundedUp, 1, 0, 0,
-                                                            intHalfMAGRoundedUp, intHalfMAGRoundedUp,
-                                                            token: GenericToken)
-                                                        .ConfigureAwait(false);
-                                await ImprovementManager.CreateImprovementAsync(
-                                                            objMerge, "STR", Improvement.ImprovementSource.Metatype,
-                                                            "Possession",
-                                                            Improvement.ImprovementType.Attribute, string.Empty,
-                                                            intHalfMAGRoundedUp, 1, 0, 0,
-                                                            intHalfMAGRoundedUp, intHalfMAGRoundedUp,
-                                                            token: GenericToken)
-                                                        .ConfigureAwait(false);
-                                await ImprovementManager.CreateImprovementAsync(
-                                                            objMerge, "REA", Improvement.ImprovementSource.Metatype,
-                                                            "Possession",
-                                                            Improvement.ImprovementType.Attribute, string.Empty,
-                                                            intHalfMAGRoundedUp, 1, 0, 0,
-                                                            intHalfMAGRoundedUp, intHalfMAGRoundedUp,
-                                                            token: GenericToken)
-                                                        .ConfigureAwait(false);
-                                CharacterAttrib objInt = await CharacterObject.GetAttributeAsync("INT", token: GenericToken)
-                                    .ConfigureAwait(false);
-                                await ImprovementManager.CreateImprovementAsync(
-                                                            objMerge, "INT", Improvement.ImprovementSource.Metatype,
-                                                            "Possession",
-                                                            Improvement.ImprovementType.ReplaceAttribute, string.Empty,
-                                                            0,
-                                                            1,
-                                                            await objInt.GetMetatypeMinimumAsync(GenericToken).ConfigureAwait(false),
-                                                            await objInt.GetMetatypeMaximumAsync(GenericToken).ConfigureAwait(false), 0,
-                                                            await objInt.GetMetatypeAugmentedMaximumAsync(GenericToken).ConfigureAwait(false),
-                                                            token: GenericToken)
-                                                        .ConfigureAwait(false);
-                                CharacterAttrib objWil = await CharacterObject.GetAttributeAsync("WIL", token: GenericToken)
-                                    .ConfigureAwait(false);
-                                await ImprovementManager.CreateImprovementAsync(
-                                                            objMerge, "WIL", Improvement.ImprovementSource.Metatype,
-                                                            "Possession",
-                                                            Improvement.ImprovementType.ReplaceAttribute, string.Empty,
-                                                            0,
-                                                            1,
-                                                            await objWil.GetMetatypeMinimumAsync(GenericToken).ConfigureAwait(false),
-                                                            await objWil.GetMetatypeMaximumAsync(GenericToken).ConfigureAwait(false), 0,
-                                                            await objWil.GetMetatypeAugmentedMaximumAsync(GenericToken).ConfigureAwait(false),
-                                                            token: GenericToken)
-                                                        .ConfigureAwait(false);
-                                CharacterAttrib objLog = await CharacterObject.GetAttributeAsync("LOG", token: GenericToken)
-                                    .ConfigureAwait(false);
-                                await ImprovementManager.CreateImprovementAsync(
-                                                            objMerge, "LOG", Improvement.ImprovementSource.Metatype,
-                                                            "Possession",
-                                                            Improvement.ImprovementType.ReplaceAttribute, string.Empty,
-                                                            0,
-                                                            1,
-                                                            await objLog.GetMetatypeMinimumAsync(GenericToken).ConfigureAwait(false),
-                                                            await objLog.GetMetatypeMaximumAsync(GenericToken).ConfigureAwait(false), 0,
-                                                            await objLog.GetMetatypeAugmentedMaximumAsync(GenericToken).ConfigureAwait(false),
-                                                            token: GenericToken)
-                                                        .ConfigureAwait(false);
-                                CharacterAttrib objCha = await CharacterObject.GetAttributeAsync("CHA", token: GenericToken)
-                                    .ConfigureAwait(false);
-                                await ImprovementManager.CreateImprovementAsync(
-                                                            objMerge, "CHA", Improvement.ImprovementSource.Metatype,
-                                                            "Possession",
-                                                            Improvement.ImprovementType.ReplaceAttribute, string.Empty,
-                                                            0,
-                                                            1,
-                                                            await objCha.GetMetatypeMinimumAsync(GenericToken).ConfigureAwait(false),
-                                                            await objCha.GetMetatypeMaximumAsync(GenericToken).ConfigureAwait(false), 0,
-                                                            await objCha.GetMetatypeAugmentedMaximumAsync(GenericToken).ConfigureAwait(false),
-                                                            token: GenericToken)
-                                                        .ConfigureAwait(false);
-                            }
-                            catch
-                            {
-                                await ImprovementManager.RollbackAsync(CharacterObject, CancellationToken.None).ConfigureAwait(false);
-                                throw;
-                            }
+                                await objMerge.LoadAsync(frmLoadingForm: frmLoadingBar.MyForm, token: GenericToken)
+                                                .ConfigureAwait(false);
+                                await frmLoadingBar.MyForm.PerformStepAsync(
+                                    await LanguageManager.GetStringAsync("String_UI", token: GenericToken).ConfigureAwait(false),
+                                    token: GenericToken).ConfigureAwait(false);
+                                await objMerge.SetPossessedAsync(true, GenericToken).ConfigureAwait(false);
+                                await objMerge.SetAliasAsync(strSelectedVessel
+                                                    + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
+                                                                        .ConfigureAwait(false) + '('
+                                                    + await LanguageManager.GetStringAsync("String_Possessed", token: GenericToken)
+                                                                        .ConfigureAwait(false) + ')', GenericToken).ConfigureAwait(false);
 
-                            await ImprovementManager.CommitAsync(objMerge, GenericToken).ConfigureAwait(false);
-                            XmlDocument xmlPowerDoc
-                                = await CharacterObject.LoadDataAsync("critterpowers.xml", token: GenericToken)
-                                                       .ConfigureAwait(false);
-
-                            // Update the Movement if the Vessel has one.
-                            string strMovement = objSelected["movement"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strMovement))
-                                objMerge.Movement = strMovement;
-
-                            // Add any additional Critter Powers the Vessel grants.
-                            XmlElement xmlPowersNode = objSelected["powers"];
-                            if (xmlPowersNode != null)
-                            {
-                                using (XmlNodeList xmlPowerList = xmlPowersNode.SelectNodes("power"))
+                                int intHalfMAGRoundedUp
+                                    = (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
+                                                                    .ConfigureAwait(false))
+                                                .GetTotalValueAsync(GenericToken).ConfigureAwait(false)).DivAwayFromZero(2);
+                                try
                                 {
-                                    if (xmlPowerList?.Count > 0)
+                                    await ImprovementManager.CreateImprovementAsync(
+                                                                objMerge, "BOD", Improvement.ImprovementSource.Metatype,
+                                                                "Possession",
+                                                                Improvement.ImprovementType.Attribute, string.Empty,
+                                                                intHalfMAGRoundedUp, 1, 0, 0,
+                                                                intHalfMAGRoundedUp, intHalfMAGRoundedUp,
+                                                                token: GenericToken)
+                                                            .ConfigureAwait(false);
+                                    await ImprovementManager.CreateImprovementAsync(
+                                                                objMerge, "AGI", Improvement.ImprovementSource.Metatype,
+                                                                "Possession",
+                                                                Improvement.ImprovementType.Attribute, string.Empty,
+                                                                intHalfMAGRoundedUp, 1, 0, 0,
+                                                                intHalfMAGRoundedUp, intHalfMAGRoundedUp,
+                                                                token: GenericToken)
+                                                            .ConfigureAwait(false);
+                                    await ImprovementManager.CreateImprovementAsync(
+                                                                objMerge, "STR", Improvement.ImprovementSource.Metatype,
+                                                                "Possession",
+                                                                Improvement.ImprovementType.Attribute, string.Empty,
+                                                                intHalfMAGRoundedUp, 1, 0, 0,
+                                                                intHalfMAGRoundedUp, intHalfMAGRoundedUp,
+                                                                token: GenericToken)
+                                                            .ConfigureAwait(false);
+                                    await ImprovementManager.CreateImprovementAsync(
+                                                                objMerge, "REA", Improvement.ImprovementSource.Metatype,
+                                                                "Possession",
+                                                                Improvement.ImprovementType.Attribute, string.Empty,
+                                                                intHalfMAGRoundedUp, 1, 0, 0,
+                                                                intHalfMAGRoundedUp, intHalfMAGRoundedUp,
+                                                                token: GenericToken)
+                                                            .ConfigureAwait(false);
+                                    CharacterAttrib objInt = await CharacterObject.GetAttributeAsync("INT", token: GenericToken)
+                                        .ConfigureAwait(false);
+                                    await ImprovementManager.CreateImprovementAsync(
+                                                                objMerge, "INT", Improvement.ImprovementSource.Metatype,
+                                                                "Possession",
+                                                                Improvement.ImprovementType.ReplaceAttribute, string.Empty,
+                                                                0,
+                                                                1,
+                                                                await objInt.GetMetatypeMinimumAsync(GenericToken).ConfigureAwait(false),
+                                                                await objInt.GetMetatypeMaximumAsync(GenericToken).ConfigureAwait(false), 0,
+                                                                await objInt.GetMetatypeAugmentedMaximumAsync(GenericToken).ConfigureAwait(false),
+                                                                token: GenericToken)
+                                                            .ConfigureAwait(false);
+                                    CharacterAttrib objWil = await CharacterObject.GetAttributeAsync("WIL", token: GenericToken)
+                                        .ConfigureAwait(false);
+                                    await ImprovementManager.CreateImprovementAsync(
+                                                                objMerge, "WIL", Improvement.ImprovementSource.Metatype,
+                                                                "Possession",
+                                                                Improvement.ImprovementType.ReplaceAttribute, string.Empty,
+                                                                0,
+                                                                1,
+                                                                await objWil.GetMetatypeMinimumAsync(GenericToken).ConfigureAwait(false),
+                                                                await objWil.GetMetatypeMaximumAsync(GenericToken).ConfigureAwait(false), 0,
+                                                                await objWil.GetMetatypeAugmentedMaximumAsync(GenericToken).ConfigureAwait(false),
+                                                                token: GenericToken)
+                                                            .ConfigureAwait(false);
+                                    CharacterAttrib objLog = await CharacterObject.GetAttributeAsync("LOG", token: GenericToken)
+                                        .ConfigureAwait(false);
+                                    await ImprovementManager.CreateImprovementAsync(
+                                                                objMerge, "LOG", Improvement.ImprovementSource.Metatype,
+                                                                "Possession",
+                                                                Improvement.ImprovementType.ReplaceAttribute, string.Empty,
+                                                                0,
+                                                                1,
+                                                                await objLog.GetMetatypeMinimumAsync(GenericToken).ConfigureAwait(false),
+                                                                await objLog.GetMetatypeMaximumAsync(GenericToken).ConfigureAwait(false), 0,
+                                                                await objLog.GetMetatypeAugmentedMaximumAsync(GenericToken).ConfigureAwait(false),
+                                                                token: GenericToken)
+                                                            .ConfigureAwait(false);
+                                    CharacterAttrib objCha = await CharacterObject.GetAttributeAsync("CHA", token: GenericToken)
+                                        .ConfigureAwait(false);
+                                    await ImprovementManager.CreateImprovementAsync(
+                                                                objMerge, "CHA", Improvement.ImprovementSource.Metatype,
+                                                                "Possession",
+                                                                Improvement.ImprovementType.ReplaceAttribute, string.Empty,
+                                                                0,
+                                                                1,
+                                                                await objCha.GetMetatypeMinimumAsync(GenericToken).ConfigureAwait(false),
+                                                                await objCha.GetMetatypeMaximumAsync(GenericToken).ConfigureAwait(false), 0,
+                                                                await objCha.GetMetatypeAugmentedMaximumAsync(GenericToken).ConfigureAwait(false),
+                                                                token: GenericToken)
+                                                            .ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await ImprovementManager.RollbackAsync(CharacterObject, CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
+
+                                await ImprovementManager.CommitAsync(objMerge, GenericToken).ConfigureAwait(false);
+                                XmlDocument xmlPowerDoc
+                                    = await CharacterObject.LoadDataAsync("critterpowers.xml", token: GenericToken)
+                                                            .ConfigureAwait(false);
+
+                                // Update the Movement if the Vessel has one.
+                                string strMovement = objSelected["movement"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strMovement))
+                                    objMerge.Movement = strMovement;
+
+                                // Add any additional Critter Powers the Vessel grants.
+                                XmlElement xmlPowersNode = objSelected["powers"];
+                                if (xmlPowersNode != null)
+                                {
+                                    using (XmlNodeList xmlPowerList = xmlPowersNode.SelectNodes("power"))
                                     {
-                                        foreach (XmlNode objXmlPower in xmlPowerList)
+                                        if (xmlPowerList?.Count > 0)
                                         {
-                                            XmlNode objXmlCritterPower
-                                                = xmlPowerDoc.TryGetNodeByNameOrId(
-                                                    "/chummer/powers/power", objXmlPower.InnerText);
-                                            CritterPower objPower = new CritterPower(objMerge);
-                                            string strSelect = objXmlPower.Attributes?["select"]?.InnerText
-                                                               ?? string.Empty;
-                                            int intRating = Convert.ToInt32(
-                                                objXmlPower.Attributes?["rating"]?.InnerText,
-                                                GlobalSettings.InvariantCultureInfo);
+                                            foreach (XmlNode objXmlPower in xmlPowerList)
+                                            {
+                                                XmlNode objXmlCritterPower
+                                                    = xmlPowerDoc.TryGetNodeByNameOrId(
+                                                        "/chummer/powers/power", objXmlPower.InnerText);
+                                                CritterPower objPower = new CritterPower(objMerge);
+                                                string strSelect = objXmlPower.Attributes?["select"]?.InnerText
+                                                                    ?? string.Empty;
+                                                int intRating = Convert.ToInt32(
+                                                    objXmlPower.Attributes?["rating"]?.InnerText,
+                                                    GlobalSettings.InvariantCultureInfo);
 
-                                            await objPower.CreateAsync(objXmlCritterPower, intRating, strSelect, GenericToken).ConfigureAwait(false);
+                                                await objPower.CreateAsync(objXmlCritterPower, intRating, strSelect, GenericToken).ConfigureAwait(false);
 
-                                            await objMerge.CritterPowers.AddAsync(objPower, GenericToken)
-                                                          .ConfigureAwait(false);
+                                                await objMerge.CritterPowers.AddAsync(objPower, GenericToken)
+                                                                .ConfigureAwait(false);
+                                            }
                                         }
                                     }
                                 }
+
+                                // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
+                                if (!await objMerge.CritterPowers.AnyAsync(objCritterPower =>
+                                                                                objCritterPower.Name == "Immunity"
+                                                                                && objCritterPower.Extra == "Normal Weapons",
+                                                                            GenericToken).ConfigureAwait(false))
+                                {
+                                    XmlNode objPower
+                                        = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+
+                                    CritterPower objCritterPower = new CritterPower(objMerge);
+                                    await objCritterPower.CreateAsync(objPower, 0, "Normal Weapons", token: GenericToken).ConfigureAwait(false);
+                                    await objMerge.CritterPowers.AddAsync(objCritterPower, GenericToken)
+                                                    .ConfigureAwait(false);
+                                }
+
+                                // Add any Improvements the Vessel grants.
+                                if (objSelected["bonus"] != null)
+                                {
+                                    await ImprovementManager.CreateImprovementsAsync(
+                                        objMerge, Improvement.ImprovementSource.Metatype, strSelectedVessel,
+                                        objSelected["bonus"], 1, strSelectedVessel, token: GenericToken).ConfigureAwait(false);
+                                }
                             }
 
-                            // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
-                            if (!await objMerge.CritterPowers.AnyAsync(objCritterPower =>
-                                                                           objCritterPower.Name == "Immunity"
-                                                                           && objCritterPower.Extra == "Normal Weapons",
-                                                                       GenericToken).ConfigureAwait(false))
-                            {
-                                XmlNode objPower
-                                    = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+                            // Now that everything is done, save the merged character and open them.
+                            string strShowFileName = Path.GetFileName(await objMerge.GetFileNameAsync(GenericToken).ConfigureAwait(false));
 
-                                CritterPower objCritterPower = new CritterPower(objMerge);
-                                await objCritterPower.CreateAsync(objPower, 0, "Normal Weapons", token: GenericToken).ConfigureAwait(false);
-                                await objMerge.CritterPowers.AddAsync(objCritterPower, GenericToken)
-                                              .ConfigureAwait(false);
+                            if (string.IsNullOrEmpty(strShowFileName))
+                            {
+                                strShowFileName = (await objMerge.GetCharacterNameAsync(GenericToken).ConfigureAwait(false)).CleanForFileName();
                             }
 
-                            // Add any Improvements the Vessel grants.
-                            if (objSelected["bonus"] != null)
+                            strShowFileName = strShowFileName.TrimEndOnce(".chum5").TrimEndOnce(".chum5lz");
+
+                            strShowFileName += await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false)
+                                                + '('
+                                                + await LanguageManager.GetStringAsync("String_Possessed", token: GenericToken)
+                                                                        .ConfigureAwait(false) + ')';
+                            dlgSaveFile.FileName = strShowFileName;
+                            if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), GenericToken)
+                                            .ConfigureAwait(false)
+                                != DialogResult.OK)
+                                return;
+                            using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                                    = await Program.CreateAndShowProgressBarAsync(token: GenericToken).ConfigureAwait(false))
                             {
-                                await ImprovementManager.CreateImprovementsAsync(
-                                    objMerge, Improvement.ImprovementSource.Metatype, strSelectedVessel,
-                                    objSelected["bonus"], 1, strSelectedVessel, token: GenericToken).ConfigureAwait(false);
+                                await frmLoadingBar.MyForm.PerformStepAsync(objMerge.CharacterName,
+                                                                            LoadingBar.ProgressBarTextPatterns.Saving,
+                                                                            token: GenericToken).ConfigureAwait(false);
+                                await objMerge.SetFileNameAsync(dlgSaveFile.FileName, GenericToken).ConfigureAwait(false);
+                                if (await objMerge.SaveAsync(token: GenericToken).ConfigureAwait(false))
+                                {
+                                    // Get the name of the file and destroy the references to the Vessel and the merged character.
+                                    strOpenFile = await objMerge.GetFileNameAsync(GenericToken).ConfigureAwait(false);
+                                }
                             }
                         }
-
-                        // Now that everything is done, save the merged character and open them.
-                        string strShowFileName = Path.GetFileName(objMerge.FileName);
-
-                        if (string.IsNullOrEmpty(strShowFileName))
+                        finally
                         {
-                            strShowFileName = objMerge.CharacterName.CleanForFileName();
-                        }
-
-                        strShowFileName = strShowFileName.TrimEndOnce(".chum5").TrimEndOnce(".chum5lz");
-
-                        strShowFileName += await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false)
-                                           + '('
-                                           + await LanguageManager.GetStringAsync("String_Possessed", token: GenericToken)
-                                                                  .ConfigureAwait(false) + ')';
-                        dlgSaveFile.FileName = strShowFileName;
-                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), GenericToken)
-                                      .ConfigureAwait(false)
-                            != DialogResult.OK)
-                            return;
-                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                               = await Program.CreateAndShowProgressBarAsync(token: GenericToken).ConfigureAwait(false))
-                        {
-                            await frmLoadingBar.MyForm.PerformStepAsync(objMerge.CharacterName,
-                                                                        LoadingBar.ProgressBarTextPatterns.Saving,
-                                                                        token: GenericToken).ConfigureAwait(false);
-                            objMerge.FileName = dlgSaveFile.FileName;
-                            if (await objMerge.SaveAsync(token: GenericToken).ConfigureAwait(false))
-                            {
-                                // Get the name of the file and destroy the references to the Vessel and the merged character.
-                                strOpenFile = objMerge.FileName;
-                            }
+                            await objMergeLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally

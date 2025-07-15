@@ -1925,8 +1925,8 @@ namespace Chummer
                         }
 
                         // Override the defaults for the setting.
-                        objCharacter.IgnoreRules = true;
-                        objCharacter.IsCritter = true;
+                        await objCharacter.SetIgnoreRulesAsync(true, _objGenericToken).ConfigureAwait(false);
+                        await objCharacter.SetIsCritterAsync(true, _objGenericToken).ConfigureAwait(false);
                         await objCharacter.SetCreatedAsync(true, token: _objGenericToken).ConfigureAwait(false);
 
                         // Show the Metatype selection window.
