@@ -1150,30 +1150,34 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    sbdAvail.Append(strAvail.TrimStart('+'));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
-                    sbdAvail.CheapReplace(strAvail, "Vehicle Cost",
-                                          () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-                    // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-                    sbdAvail.CheapReplace(strAvail, "Body",
-                                          () => Parent?.Body > 0
-                                              ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
-                                              : "0.5");
-                    sbdAvail.CheapReplace(strAvail, "Speed",
-                                          () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-                    sbdAvail.CheapReplace(strAvail, "Acceleration",
-                                          () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-                    sbdAvail.CheapReplace(strAvail, "Handling",
-                                          () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    {
+                        sbdAvail.Append(strAvail.TrimStart('+'));
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
+                        sbdAvail.CheapReplace(strAvail, "Vehicle Cost",
+                                              () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                        // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                        sbdAvail.CheapReplace(strAvail, "Body",
+                                              () => Parent?.Body > 0
+                                                  ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
+                                                  : "0.5");
+                        sbdAvail.CheapReplace(strAvail, "Speed",
+                                              () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                        sbdAvail.CheapReplace(strAvail, "Acceleration",
+                                              () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                        sbdAvail.CheapReplace(strAvail, "Handling",
+                                              () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
 
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
-                    if (blnIsSuccess)
-                        intAvail += ((double)objProcess).StandardRound();
+                        (bool blnIsSuccess, object objProcess)
+                            = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
+                        if (blnIsSuccess)
+                            intAvail += ((double)objProcess).StandardRound();
+                    }
                 }
+                else
+                    intAvail += decValue.StandardRound();
             }
 
             // Run through the Accessories and add in their availability.
@@ -1226,31 +1230,35 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    sbdAvail.Append(strAvail.TrimStart('+'));
-                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    {
+                        sbdAvail.Append(strAvail.TrimStart('+'));
+                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
 
-                    await sbdAvail.CheapReplaceAsync(strAvail, "Vehicle Cost",
-                                                     () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
-                    // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-                    await sbdAvail.CheapReplaceAsync(strAvail, "Body",
-                                                     () => Parent?.Body > 0
-                                                         ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
-                                                         : "0.5", token: token).ConfigureAwait(false);
-                    await sbdAvail.CheapReplaceAsync(strAvail, "Speed",
-                                                     () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
-                    await sbdAvail.CheapReplaceAsync(strAvail, "Acceleration",
-                                                     () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
-                    await sbdAvail.CheapReplaceAsync(strAvail, "Handling",
-                                                     () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
+                        await sbdAvail.CheapReplaceAsync(strAvail, "Vehicle Cost",
+                                                         () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
+                        // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                        await sbdAvail.CheapReplaceAsync(strAvail, "Body",
+                                                         () => Parent?.Body > 0
+                                                             ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
+                                                             : "0.5", token: token).ConfigureAwait(false);
+                        await sbdAvail.CheapReplaceAsync(strAvail, "Speed",
+                                                         () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
+                        await sbdAvail.CheapReplaceAsync(strAvail, "Acceleration",
+                                                         () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
+                        await sbdAvail.CheapReplaceAsync(strAvail, "Handling",
+                                                         () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
 
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        intAvail += ((double)objProcess).StandardRound();
+                        (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            intAvail += ((double)objProcess).StandardRound();
+                    }
                 }
+                else
+                    intAvail += decValue.StandardRound();
             }
 
             // Run through the Accessories and add in their availability.
@@ -1259,7 +1267,7 @@ namespace Chummer.Backend.Equipment
                 AvailabilityValue objLoopAvailTuple
                     = await objLoopOption.GetTotalAvailTupleAsync(token).ConfigureAwait(false);
                 //if (objLoopAvailTuple.Item3)
-                intAvail += objLoopAvailTuple.Value;
+                intAvail += await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false);
                 if (objLoopAvailTuple.Suffix == 'F')
                     chrLastAvailChar = 'F';
                 else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
@@ -1279,7 +1287,7 @@ namespace Chummer.Backend.Equipment
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+                    return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
                 }, token).ConfigureAwait(false);
             }
 
@@ -1410,38 +1418,40 @@ namespace Chummer.Backend.Equipment
             {
                 if (FreeCost)
                     return 0;
-                decimal decReturn = 0;
                 // If the cost is determined by the Rating, evaluate the expression.
                 string strCost = Cost;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
-                    sbdCost.Append(strCost);
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCost);
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                    {
+                        sbdCost.Append(strCost);
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCost);
 
-                    sbdCost.CheapReplace(strCost, "Vehicle Cost",
-                                         () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-                    // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-                    sbdCost.CheapReplace(strCost, "Body",
-                                         () => Parent?.Body > 0
-                                             ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
-                                             : "0.5");
-                    sbdCost.CheapReplace(strCost, "Armor",
-                                         () => Parent?.Armor.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-                    sbdCost.CheapReplace(strCost, "Speed",
-                                         () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-                    sbdCost.CheapReplace(strCost, "Acceleration",
-                                         () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-                    sbdCost.CheapReplace(strCost, "Handling",
-                                         () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-                    sbdCost.CheapReplace(strCost, "Sensor",
-                                         () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-                    sbdCost.CheapReplace(strCost, "Pilot",
-                                         () => Parent?.Pilot.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                        sbdCost.CheapReplace(strCost, "Vehicle Cost",
+                                             () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                        // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                        sbdCost.CheapReplace(strCost, "Body",
+                                             () => Parent?.Body > 0
+                                                 ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
+                                                 : "0.5");
+                        sbdCost.CheapReplace(strCost, "Armor",
+                                             () => Parent?.Armor.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                        sbdCost.CheapReplace(strCost, "Speed",
+                                             () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                        sbdCost.CheapReplace(strCost, "Acceleration",
+                                             () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                        sbdCost.CheapReplace(strCost, "Handling",
+                                             () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                        sbdCost.CheapReplace(strCost, "Sensor",
+                                             () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                        sbdCost.CheapReplace(strCost, "Pilot",
+                                             () => Parent?.Pilot.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
 
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
-                    if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal((double)objProcess);
+                        (bool blnIsSuccess, object objProcess)
+                            = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
+                        if (blnIsSuccess)
+                            decReturn = Convert.ToDecimal((double)objProcess);
+                    }
                 }
 
                 if (DiscountCost)
@@ -1464,48 +1474,50 @@ namespace Chummer.Backend.Equipment
         {
             if (FreeCost)
                 return 0;
-            decimal decReturn = 0;
             // If the cost is determined by the Rating, evaluate the expression.
             string strCost = Cost;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+            if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
-                sbdCost.Append(strCost);
-                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                {
+                    sbdCost.Append(strCost);
+                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
 
-                await sbdCost.CheapReplaceAsync(strCost, "Vehicle Cost",
-                                                async () => Parent != null
-                                                    ? (await Parent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
-                                                        GlobalSettings.InvariantCultureInfo)
-                                                    : "0", token: token).ConfigureAwait(false);
-                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-                await sbdCost.CheapReplaceAsync(strCost, "Body",
-                                                () => Parent?.Body > 0
-                                                    ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
-                                                    : "0.5", token: token).ConfigureAwait(false);
-                await sbdCost.CheapReplaceAsync(strCost, "Armor",
-                                                () => Parent?.Armor.ToString(GlobalSettings.InvariantCultureInfo)
-                                                      ?? "0", token: token).ConfigureAwait(false);
-                await sbdCost.CheapReplaceAsync(strCost, "Speed",
-                                                () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo)
-                                                      ?? "0", token: token).ConfigureAwait(false);
-                await sbdCost.CheapReplaceAsync(strCost, "Acceleration",
-                                                () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo)
-                                                      ?? "0", token: token).ConfigureAwait(false);
-                await sbdCost.CheapReplaceAsync(strCost, "Handling",
-                                                () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo)
-                                                      ?? "0", token: token).ConfigureAwait(false);
-                await sbdCost.CheapReplaceAsync(strCost, "Sensor",
-                                                () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo)
-                                                      ?? "0", token: token).ConfigureAwait(false);
-                await sbdCost.CheapReplaceAsync(strCost, "Pilot",
-                    async () => Parent != null
-                        ? (await Parent.GetPilotAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)
-                        : "0", token: token).ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCost, "Vehicle Cost",
+                                                    async () => Parent != null
+                                                        ? (await Parent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
+                                                            GlobalSettings.InvariantCultureInfo)
+                                                        : "0", token: token).ConfigureAwait(false);
+                    // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                    await sbdCost.CheapReplaceAsync(strCost, "Body",
+                                                    () => Parent?.Body > 0
+                                                        ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
+                                                        : "0.5", token: token).ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCost, "Armor",
+                                                    () => Parent?.Armor.ToString(GlobalSettings.InvariantCultureInfo)
+                                                          ?? "0", token: token).ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCost, "Speed",
+                                                    () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo)
+                                                          ?? "0", token: token).ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCost, "Acceleration",
+                                                    () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo)
+                                                          ?? "0", token: token).ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCost, "Handling",
+                                                    () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo)
+                                                          ?? "0", token: token).ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCost, "Sensor",
+                                                    () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo)
+                                                          ?? "0", token: token).ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCost, "Pilot",
+                        async () => Parent != null
+                            ? (await Parent.GetPilotAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)
+                            : "0", token: token).ConfigureAwait(false);
 
-                (bool blnIsSuccess, object objProcess)
-                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
-                if (blnIsSuccess)
-                    decReturn = Convert.ToDecimal((double)objProcess);
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        decReturn = Convert.ToDecimal((double)objProcess);
+                }
             }
 
             if (DiscountCost)
@@ -1770,8 +1782,8 @@ namespace Chummer.Backend.Equipment
                 AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                 if (!objTotalAvail.AddToParent)
                 {
-                    int intAvailInt = objTotalAvail.Value;
-                    if (intAvailInt > _objCharacter.Settings.MaximumAvailability)
+                    int intAvailInt = await objTotalAvail.GetValueAsync(token).ConfigureAwait(false);
+                    if (intAvailInt > await _objCharacter.Settings.GetMaximumAvailabilityAsync(token).ConfigureAwait(false))
                     {
                         int intLowestValidRestrictedGearAvail = -1;
                         foreach (int intValidAvail in dicRestrictedGearLimits.Keys)
@@ -2322,15 +2334,19 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strCost = _strCost;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    sbdCost.Append(strCost);
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCost);
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                    {
+                        sbdCost.Append(strCost);
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCost);
 
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
-                    return blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                        (bool blnIsSuccess, object objProcess)
+                            = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
+                        return blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                    }
                 }
+                return decValue;
             }
         }
 
@@ -2340,15 +2356,19 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetCostAsync(CancellationToken token = default)
         {
             string strCost = _strCost;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+            if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                sbdCost.Append(strCost);
-                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                {
+                    sbdCost.Append(strCost);
+                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
 
-                (bool blnIsSuccess, object objProcess)
-                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
-                return blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
+                    return blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                }
             }
+            return decValue;
         }
 
         public decimal TotalCost => IncludedInParent ? 0 : Cost;
@@ -2450,16 +2470,21 @@ namespace Chummer.Backend.Equipment
 
                     blnModifyParentAvail = strAvail.StartsWith('+', '-');
 
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        sbdAvail.Append(strAvail.TrimStart('+'));
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                        {
+                            sbdAvail.Append(strAvail.TrimStart('+'));
+                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
 
-                        (bool blnIsSuccess, object objProcess)
-                            = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
-                        if (blnIsSuccess)
-                            intAvail += ((double)objProcess).StandardRound();
+                            (bool blnIsSuccess, object objProcess)
+                                = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
+                            if (blnIsSuccess)
+                                intAvail += ((double)objProcess).StandardRound();
+                        }
                     }
+                    else
+                        intAvail += decValue.StandardRound();
                 }
 
                 return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
@@ -2484,17 +2509,21 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    sbdAvail.Append(strAvail.TrimStart('+'));
-                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    {
+                        sbdAvail.Append(strAvail.TrimStart('+'));
+                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
 
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        intAvail += ((double)objProcess).StandardRound();
+                        (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            intAvail += ((double)objProcess).StandardRound();
+                    }
                 }
+                else
+                    intAvail += decValue.StandardRound();
             }
 
             return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
@@ -2571,8 +2600,8 @@ namespace Chummer.Backend.Equipment
                 AvailabilityValue objTotalAvail = await GetTotalAvailTupleAsync(token).ConfigureAwait(false);
                 if (!objTotalAvail.AddToParent)
                 {
-                    int intAvailInt = objTotalAvail.Value;
-                    if (intAvailInt > _objCharacter.Settings.MaximumAvailability)
+                    int intAvailInt = await objTotalAvail.GetValueAsync(token).ConfigureAwait(false);
+                    if (intAvailInt > await _objCharacter.Settings.GetMaximumAvailabilityAsync(token).ConfigureAwait(false))
                     {
                         int intLowestValidRestrictedGearAvail = -1;
                         foreach (int intValidAvail in dicRestrictedGearLimits.Keys)

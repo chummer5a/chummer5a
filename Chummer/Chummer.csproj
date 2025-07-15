@@ -135,6 +135,9 @@
     <Compile Update="Controls\Shared\Components\NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="Forms\Utility Forms\DataExporter.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>
@@ -25690,7 +25693,7 @@
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.23.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.23.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.23.0" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.7" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -25702,13 +25705,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.6" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.6" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.6" />
-    <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.7" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.14.15" />
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15">
@@ -25718,19 +25721,19 @@
     <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.8.8" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog" Version="6.0.0" />
-    <PackageReference Include="NLog.Schema" Version="6.0.0" />
+    <PackageReference Include="NLog" Version="6.0.1" />
+    <PackageReference Include="NLog.Schema" Version="6.0.1" />
     <PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
     <PackageReference Include="System.Buffers" Version="4.6.1" />
-    <PackageReference Include="System.Collections.Immutable" Version="9.0.6" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.6" />
+    <PackageReference Include="System.Collections.Immutable" Version="9.0.7" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.7" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.6" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.7" />
     <PackageReference Include="System.IO" Version="4.3.0" />
     <PackageReference Include="System.Memory" Version="4.6.3" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" />
-    <PackageReference Include="System.Reflection.Metadata" Version="9.0.6" />
-    <PackageReference Include="System.Runtime.Caching" Version="9.0.6" />
+    <PackageReference Include="System.Reflection.Metadata" Version="9.0.7" />
+    <PackageReference Include="System.Runtime.Caching" Version="9.0.7" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
     <PackageReference Include="System.Security.AccessControl" Version="6.0.1" />
     <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
@@ -25738,14 +25741,17 @@
     <PackageReference Include="System.Security.Cryptography.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
     <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.6" />
-    <PackageReference Include="System.Text.Encodings.Web" Version="9.0.6" />
-    <PackageReference Include="System.Text.Json" Version="9.0.6" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.7" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="9.0.7" />
+    <PackageReference Include="System.Text.Json" Version="9.0.7" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
     <PackageReference Include="System.ValueTuple" Version="4.6.1" />
     <PackageReference Include="XoshiroPRNG.Net" Version="1.6.0" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Forms\Utility Forms\DataExporter.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

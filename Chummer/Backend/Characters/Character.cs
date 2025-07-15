@@ -3074,18 +3074,21 @@ namespace Chummer
                     if (xmlComplexFormData == null)
                         continue;
 
-                    ComplexForm objComplexform = new ComplexForm(this);
-                    objComplexform.Create(xmlComplexFormData);
-                    if (objComplexform.InternalId.IsEmptyGuid())
+                    ComplexForm objComplexForm = new ComplexForm(this);
+                    objComplexForm.Create(xmlComplexFormData);
+                    if (objComplexForm.InternalId.IsEmptyGuid())
+                    {
+                        objComplexForm.Dispose();
                         continue;
-                    objComplexform.Grade = -1;
+                    }
+                    objComplexForm.Grade = -1;
 
-                    ComplexForms.Add(objComplexform);
+                    ComplexForms.Add(objComplexForm);
 
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        ImprovementManager.CreateImprovement(this, objComplexform.InternalId,
+                        ImprovementManager.CreateImprovement(this, objComplexForm.InternalId,
                                                              Improvement.ImprovementSource.Metatype, string.Empty,
                                                              Improvement.ImprovementType.ComplexForm,
                                                              string.Empty, token: token);
@@ -3789,18 +3792,21 @@ namespace Chummer
                     if (xmlComplexFormData == null)
                         continue;
 
-                    ComplexForm objComplexform = new ComplexForm(this);
-                    await objComplexform.CreateAsync(xmlComplexFormData, token: token).ConfigureAwait(false);
-                    if (objComplexform.InternalId.IsEmptyGuid())
+                    ComplexForm objComplexForm = new ComplexForm(this);
+                    await objComplexForm.CreateAsync(xmlComplexFormData, token: token).ConfigureAwait(false);
+                    if (objComplexForm.InternalId.IsEmptyGuid())
+                    {
+                        await objComplexForm.DisposeAsync().ConfigureAwait(false);
                         continue;
-                    objComplexform.Grade = -1;
+                    }
+                    objComplexForm.Grade = -1;
 
-                    await ComplexForms.AddAsync(objComplexform, token).ConfigureAwait(false);
+                    await ComplexForms.AddAsync(objComplexForm, token).ConfigureAwait(false);
 
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        await ImprovementManager.CreateImprovementAsync(this, objComplexform.InternalId,
+                        await ImprovementManager.CreateImprovementAsync(this, objComplexForm.InternalId,
                             Improvement.ImprovementSource.Metatype, string.Empty,
                             Improvement.ImprovementType.ComplexForm,
                             string.Empty, token: token).ConfigureAwait(false);
@@ -12499,6 +12505,8 @@ namespace Chummer
                 foreach (MartialArt objItem in _lstMartialArts)
                     objItem.Dispose();
                 _lstMartialArts.Dispose();
+                foreach (ComplexForm objItem in _lstComplexForms)
+                    objItem.Dispose();
                 _lstComplexForms.Dispose();
                 _lstAIPrograms.Dispose();
                 _lstPowers.Dispose();
@@ -12749,6 +12757,7 @@ namespace Chummer
                 _lstVehicles.ForEach(x => x.Dispose(), token);
                 _lstLifestyles.ForEach(x => x.Dispose(), token);
                 _lstSpells.ForEach(x => x.Dispose(), token);
+                _lstComplexForms.ForEach(x => x.Dispose(), token);
                 _lstPowers.ForEach(x => x.Dispose(), token);
                 _lstMartialArts.ForEach(x => x.Dispose(), token);
                 _lstStackedFoci.ForEach(x => x.Dispose(), token);
@@ -16758,11 +16767,7 @@ namespace Chummer
                                     (!blnKeepAdeptEligible || objToRemove.Category != "Rituals" ||
                                      objToRemove.Descriptors.Contains("Spell")))
                                 {
-                                    // Remove the Improvements created by the Spell.
-                                    ImprovementManager.RemoveImprovements(this,
-                                        Improvement.ImprovementSource.Spell,
-                                        objToRemove.InternalId, token: token);
-                                    Spells.RemoveAt(i);
+                                    objToRemove.Remove(false);
                                 }
                             }
                         }
@@ -16837,11 +16842,7 @@ namespace Chummer
                                     (!blnKeepAdeptEligible || objToRemove.Category != "Rituals" ||
                                      objToRemove.Descriptors.Contains("Spell")))
                                 {
-                                    // Remove the Improvements created by the Spell.
-                                    await ImprovementManager.RemoveImprovementsAsync(this,
-                                        Improvement.ImprovementSource.Spell,
-                                        objToRemove.InternalId, token: token).ConfigureAwait(false);
-                                    await lstSpells.RemoveAtAsync(i, token).ConfigureAwait(false);
+                                    await objToRemove.RemoveAsync(false, token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -16999,10 +17000,7 @@ namespace Chummer
                         ComplexForm objToRemove = ComplexForms[i];
                         if (objToRemove.Grade == 0)
                         {
-                            // Remove the Improvements created by the Spell.
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ComplexForm,
-                                objToRemove.InternalId, token: token);
-                            ComplexForms.RemoveAt(i);
+                            objToRemove.Remove(false);
                         }
                     }
                 }
@@ -17039,31 +17037,16 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 ThreadSafeObservableCollection<ComplexForm> lstComplexForms = await GetComplexFormsAsync(token).ConfigureAwait(false);
                 // Run through all of the Complex Forms and remove their Improvements.
-                if (await lstComplexForms.AllAsync(x => x.Grade == 0, token).ConfigureAwait(false))
+                for (int i = await lstComplexForms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                 {
-                    List<string> lstIds = new List<string>();
-                    await lstComplexForms.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
-                    await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.ComplexForm,
-                        lstIds,
-                        token: token).ConfigureAwait(false);
-                    await lstComplexForms.ClearAsync(token).ConfigureAwait(false);
-                }
-                else
-                {
-                    for (int i = await lstComplexForms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                    if (i < await lstComplexForms.GetCountAsync(token).ConfigureAwait(false))
                     {
-                        if (i < await lstComplexForms.GetCountAsync(token).ConfigureAwait(false))
+                        ComplexForm objToRemove =
+                            await lstComplexForms.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objToRemove.Grade == 0)
                         {
-                            ComplexForm objToRemove =
-                                await lstComplexForms.GetValueAtAsync(i, token).ConfigureAwait(false);
-                            if (objToRemove.Grade == 0)
-                            {
-                                // Remove the Improvements created by the Spell.
-                                await ImprovementManager.RemoveImprovementsAsync(this,
-                                    Improvement.ImprovementSource.ComplexForm,
-                                    objToRemove.InternalId, token: token).ConfigureAwait(false);
-                                await lstComplexForms.RemoveAtAsync(i, token).ConfigureAwait(false);
-                            }
+                            // Remove the Improvements created by the Spell.
+                            await objToRemove.RemoveAsync(false, token).ConfigureAwait(false);
                         }
                     }
                 }
@@ -17101,32 +17084,17 @@ namespace Chummer
         {
             using (LockObject.EnterUpgradeableReadLock(token))
             {
-                if (AIPrograms.All(x => x.CanDelete, token))
+                using (LockObject.EnterWriteLock(token))
                 {
-                    List<string> lstIds = AIPrograms.Select(x => x.InternalId).ToList();
-                    using (LockObject.EnterWriteLock(token))
+                    // Run through all advanced programs and remove the ones not added by improvements
+                    for (int i = AIPrograms.Count - 1; i >= 0; --i)
                     {
-                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram, lstIds, token: token);
-                        AIPrograms.Clear();
-                    }
-                }
-                else
-                {
-                    using (LockObject.EnterWriteLock(token))
-                    {
-                        // Run through all advanced programs and remove the ones not added by improvements
-                        for (int i = AIPrograms.Count - 1; i >= 0; --i)
+                        if (i < AIPrograms.Count)
                         {
-                            if (i < AIPrograms.Count)
+                            AIProgram objToRemove = AIPrograms[i];
+                            if (objToRemove.CanDelete)
                             {
-                                AIProgram objToRemove = AIPrograms[i];
-                                if (objToRemove.CanDelete)
-                                {
-                                    // Remove the Improvements created by the Program.
-                                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram,
-                                        objToRemove.InternalId, token: token);
-                                    AIPrograms.RemoveAt(i);
-                                }
+                                objToRemove.Remove(false);
                             }
                         }
                     }
@@ -17143,52 +17111,29 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (await AIPrograms.AllAsync(x => x.CanDelete, token: token).ConfigureAwait(false))
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    List<string> lstIds = new List<string>();
-                    await AIPrograms.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    token.ThrowIfCancellationRequested();
+                    ThreadSafeObservableCollection<AIProgram> lstAIPrograms =
+                        await GetAIProgramsAsync(token).ConfigureAwait(false);
+                    for (int i = await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                     {
-                        token.ThrowIfCancellationRequested();
-                        await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.AIProgram, lstIds,
-                            token: token).ConfigureAwait(false);
-                        await AIPrograms.ClearAsync(token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                else
-                {
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        ThreadSafeObservableCollection<AIProgram> lstAIPrograms =
-                            await GetAIProgramsAsync(token).ConfigureAwait(false);
-                        for (int i = await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                        if (i < await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false))
                         {
-                            if (i < await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false))
+                            AIProgram objToRemove =
+                                await lstAIPrograms.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (objToRemove.CanDelete)
                             {
-                                AIProgram objToRemove =
-                                    await lstAIPrograms.GetValueAtAsync(i, token).ConfigureAwait(false);
-                                if (objToRemove.CanDelete)
-                                {
-                                    // Remove the Improvements created by the Program.
-                                    await ImprovementManager.RemoveImprovementsAsync(this,
-                                        Improvement.ImprovementSource.AIProgram,
-                                        objToRemove.InternalId, token: token).ConfigureAwait(false);
-                                    await lstAIPrograms.RemoveAtAsync(i, token).ConfigureAwait(false);
-                                }
+                                // Remove the Improvements created by the Program.
+                                await objToRemove.RemoveAsync(false, token).ConfigureAwait(false);
                             }
                         }
                     }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -20690,14 +20635,13 @@ namespace Chummer
                     if (_intCachedContactPoints == int.MinValue)
                     {
                         string strExpression = Settings.ContactPointsExpression;
-                        if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                        if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdValue))
                             {
                                 sbdValue.Append(strExpression);
                                 AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
-
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                                 (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
@@ -20706,8 +20650,7 @@ namespace Chummer
                             }
                         }
                         else
-                            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out _intCachedContactPoints);
+                            _intCachedContactPoints = decValue.StandardRound();
                     }
 
                     return _intCachedContactPoints;
@@ -20724,14 +20667,13 @@ namespace Chummer
                 if (_intCachedContactPoints == int.MinValue)
                 {
                     string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetContactPointsExpressionAsync(token).ConfigureAwait(false);
-                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
                         {
                             sbdValue.Append(strExpression);
                             await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-
                             // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                             (bool blnIsSuccess, object objProcess)
                                 = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
@@ -20739,8 +20681,7 @@ namespace Chummer
                         }
                     }
                     else
-                        int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                     out _intCachedContactPoints);
+                        _intCachedContactPoints = decValue.StandardRound();
                 }
 
                 return _intCachedContactPoints;
@@ -20875,7 +20816,7 @@ namespace Chummer
                     if (decReturn != decimal.MinValue)
                         return decReturn;
                     string strExpression = Settings.CarryLimitExpression;
-                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
@@ -20889,13 +20830,7 @@ namespace Chummer
                             return _decCachedBaseCarryLimit = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                         }
                     }
-                    else if (decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                              out decReturn))
-                    {
-                        return _decCachedBaseCarryLimit = decReturn;
-                    }
-
-                    return _decCachedBaseCarryLimit = 0;
+                    return _decCachedBaseCarryLimit = decReturn;
                 }
             }
         }
@@ -20915,7 +20850,7 @@ namespace Chummer
                     return decReturn;
                 string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false))
                     .GetCarryLimitExpressionAsync(token).ConfigureAwait(false);
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdValue))
@@ -20930,13 +20865,7 @@ namespace Chummer
                         return _decCachedBaseCarryLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                     }
                 }
-                else if (decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                             out decReturn))
-                {
-                    return _decCachedBaseCarryLimit = decReturn;
-                }
-
-                return _decCachedBaseCarryLimit = 0;
+                return _decCachedBaseCarryLimit = decReturn;
             }
             finally
             {
@@ -20987,7 +20916,7 @@ namespace Chummer
                     if (decReturn != decimal.MinValue)
                         return decReturn;
                     string strExpression = Settings.LiftLimitExpression;
-                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
@@ -21001,13 +20930,7 @@ namespace Chummer
                             return _decCachedBaseLiftLimit = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                         }
                     }
-                    else if (decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                              out decReturn))
-                    {
-                        return _decCachedBaseLiftLimit = decReturn;
-                    }
-
-                    return _decCachedBaseLiftLimit = 0;
+                    return _decCachedBaseLiftLimit = decReturn;
                 }
             }
         }
@@ -21026,8 +20949,8 @@ namespace Chummer
                 if (decReturn != decimal.MinValue)
                     return decReturn;
                 string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false))
-                    .GetCarryLimitExpressionAsync(token).ConfigureAwait(false);
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    .GetLiftLimitExpressionAsync(token).ConfigureAwait(false);
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdValue))
@@ -21042,13 +20965,7 @@ namespace Chummer
                         return _decCachedBaseLiftLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                     }
                 }
-                else if (decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                             out decReturn))
-                {
-                    return _decCachedBaseLiftLimit = decReturn;
-                }
-
-                return _decCachedBaseLiftLimit = 0;
+                return _decCachedBaseLiftLimit = decReturn;
             }
             finally
             {
@@ -21069,7 +20986,7 @@ namespace Chummer
                     if (decReturn != decimal.MinValue)
                         return decReturn;
                     string strExpression = Settings.EncumbranceIntervalExpression;
-                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
@@ -21083,9 +21000,6 @@ namespace Chummer
                             decReturn = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                         }
                     }
-                    else
-                        decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out decReturn);
 
                     // Need this to make sure our division doesn't go haywire
                     if (decReturn <= 0)
@@ -21109,8 +21023,9 @@ namespace Chummer
                 decimal decReturn = _decCachedEncumbranceInterval;
                 if (decReturn != decimal.MinValue)
                     return decReturn;
-                string strExpression = Settings.EncumbranceIntervalExpression;
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false))
+                    .GetEncumbranceIntervalExpressionAsync(token).ConfigureAwait(false);
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdValue))
@@ -21124,9 +21039,6 @@ namespace Chummer
                         decReturn = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                     }
                 }
-                else
-                    decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                        out decReturn);
 
                 // Need this to make sure our division doesn't go haywire
                 if (decReturn <= 0)
@@ -23255,7 +23167,7 @@ namespace Chummer
                     if (_intBoundSpiritLimit == int.MinValue)
                     {
                         string strExpression = Settings.BoundSpiritExpression;
-                        if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                        if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdValue))
@@ -23271,12 +23183,48 @@ namespace Chummer
                             }
                         }
                         else
-                            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out _intBoundSpiritLimit);
+                            _intBoundSpiritLimit = decValue.StandardRound();
                     }
 
                     return _intBoundSpiritLimit;
                 }
+            }
+        }
+
+        public async Task<int> GetBoundSpiritLimitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intBoundSpiritLimit == int.MinValue)
+                {
+                    string strExpression = await Settings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false);
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdValue))
+                        {
+                            sbdValue.Append(strExpression);
+                            await AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            (bool blnIsSuccess, object objProcess)
+                                = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                    sbdValue.ToString(), token).ConfigureAwait(false);
+                            _intBoundSpiritLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                        }
+                    }
+                    else
+                        _intBoundSpiritLimit = decValue.StandardRound();
+                }
+
+                return _intBoundSpiritLimit;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -23336,7 +23284,7 @@ namespace Chummer
                     if (_intRegisteredSpriteLimit == int.MinValue)
                     {
                         string strExpression = Settings.RegisteredSpriteExpression;
-                        if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                        if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdValue))
@@ -23352,12 +23300,48 @@ namespace Chummer
                             }
                         }
                         else
-                            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out _intRegisteredSpriteLimit);
+                            _intRegisteredSpriteLimit = decValue.StandardRound();
                     }
 
                     return _intRegisteredSpriteLimit;
                 }
+            }
+        }
+
+        public async Task<int> GetRegisteredSpriteLimitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intRegisteredSpriteLimit == int.MinValue)
+                {
+                    string strExpression = await Settings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false);
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdValue))
+                        {
+                            sbdValue.Append(strExpression);
+                            await AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            (bool blnIsSuccess, object objProcess)
+                                = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                    sbdValue.ToString(), token).ConfigureAwait(false);
+                            _intRegisteredSpriteLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                        }
+                    }
+                    else
+                        _intRegisteredSpriteLimit = decValue.StandardRound();
+                }
+
+                return _intRegisteredSpriteLimit;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -26132,13 +26116,14 @@ namespace Chummer
                     = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
                 if (objAntiHole != null)
                 {
-                    if (objAntiHole.Rating > intCentiessence)
+                    int intRating = objAntiHole.Rating;
+                    if (intRating > intCentiessence)
                     {
-                        objAntiHole.Rating -= intCentiessence;
+                        objAntiHole.Rating = intRating - intCentiessence;
                         return;
                     }
 
-                    intCentiessence -= objAntiHole.Rating;
+                    intCentiessence -= intRating;
                     objAntiHole.DeleteCyberware();
                 }
 
@@ -26309,13 +26294,14 @@ namespace Chummer
 
                 if (objHole != null)
                 {
-                    if (objHole.Rating > intCentiessence)
+                    int intRating = objHole.Rating;
+                    if (intRating > intCentiessence)
                     {
-                        objHole.Rating -= intCentiessence;
+                        objHole.Rating = intRating - intCentiessence;
                         return;
                     }
 
-                    intCentiessence -= objHole.Rating;
+                    intCentiessence -= intRating;
                     objHole.DeleteCyberware();
                 }
 
@@ -29998,6 +29984,51 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _lstStackedFoci;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Method to check we are only applying the highest focus to the spell dicepool
+        /// </summary>
+        public async Task<Improvement> GetBestFocusPowerAsync(Improvement objImprovement, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                List<Focus> list
+                    = await Foci.FindAllAsync(
+                            x => x.GearObject?.Bonded == true && x.GearObject.Bonus.InnerText == "MAGRating", token)
+                        .ConfigureAwait(false);
+                if (list.Count > 0)
+                {
+                    // get any bonded foci that add to the base magic stat and return the highest rated one's rating
+                    int powerFocusRating = list.Max(x => x.Rating);
+
+                    // If our focus is higher, add in a partial bonus
+                    if (powerFocusRating > 0)
+                    {
+                        // This is hackz -- because we don't want to lose the original improvement's value
+                        // we instantiate a fake version of the improvement that isn't saved to represent the diff
+                        if (powerFocusRating < objImprovement.Value)
+                            return new Improvement(this)
+                            {
+                                Value = objImprovement.Value - powerFocusRating,
+                                SourceName = objImprovement.SourceName,
+                                ImprovedName = objImprovement.ImprovedName,
+                                ImproveSource = objImprovement.ImproveSource,
+                                ImproveType = objImprovement.ImproveType
+                            };
+                        return null;
+                    }
+                }
+
+                return objImprovement;
             }
             finally
             {
@@ -34475,13 +34506,12 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock())
             {
-                decimal decFromKarma = 0.0m;
                 string strExpression = Settings.ChargenKarmaToNuyenExpression
                                                .Replace("{Karma}",
                                                         decKarma.ToString(GlobalSettings.InvariantCultureInfo))
                                                .Replace("{PriorityNuyen}",
                                                         decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decFromKarma))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
@@ -34495,9 +34525,6 @@ namespace Chummer
                             decFromKarma = Convert.ToDecimal((double)objProcess);
                     }
                 }
-                else
-                    decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                     out decFromKarma);
 
                 return decFromKarma;
             }
@@ -34509,13 +34536,12 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                decimal decFromKarma = 0.0m;
                 string strExpression = (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetChargenKarmaToNuyenExpressionAsync(token).ConfigureAwait(false))
                                        .Replace("{Karma}",
                                                 decKarma.ToString(GlobalSettings.InvariantCultureInfo))
                                        .Replace("{PriorityNuyen}",
                                                 decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decFromKarma))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
@@ -34529,9 +34555,6 @@ namespace Chummer
                             decFromKarma = Convert.ToDecimal((double)objProcess);
                     }
                 }
-                else
-                    decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                     out decFromKarma);
 
                 return decFromKarma;
             }
@@ -34559,7 +34582,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return '=' + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) +
-                       (await GetTotalStartingNuyenAsync(token).ConfigureAwait(false)).ToString(Settings.NuyenFormat,
+                       (await GetTotalStartingNuyenAsync(token).ConfigureAwait(false)).ToString(await Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
                            GlobalSettings.CultureInfo) +
                        await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             }
@@ -39353,14 +39376,14 @@ namespace Chummer
         /// <param name="decCost">Item's cost.</param>
         /// <param name="objAvailability">Item's Availability.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public Task<string> AvailTestAsync(decimal decCost, AvailabilityValue objAvailability, CancellationToken token = default)
+        public async Task<string> AvailTestAsync(decimal decCost, AvailabilityValue objAvailability, CancellationToken token = default)
         {
-            if (objAvailability.Value != 0 || objAvailability.Suffix == 'R' || objAvailability.Suffix == 'F')
+            if (objAvailability.Suffix == 'R' || objAvailability.Suffix == 'F' || await objAvailability.GetValueAsync(token).ConfigureAwait(false) != 0)
             {
-                return GetAvailTestStringAsync(decCost, objAvailability.Value, token);
+                return await GetAvailTestStringAsync(decCost, await objAvailability.GetValueAsync(token).ConfigureAwait(false), token);
             }
 
-            return LanguageManager.GetStringAsync("String_None", token: token);
+            return await LanguageManager.GetStringAsync("String_None", token: token);
         }
 
         private readonly AsyncFriendlyReaderWriterLock _objAvailabilityMapLock;
@@ -40786,126 +40809,6 @@ namespace Chummer
         public int InitialInit { get; set; }
 
         #endregion Temporary Properties : Dashboard
-
-        #region Temporary Properties
-
-        /// <summary>
-        /// Takes a semicolon-separated list of book codes and returns a formatted string with displaynames.
-        /// </summary>
-        /// <param name="strInput"></param>
-        /// <param name="strLanguage">Language to fetch</param>
-        public string TranslatedBookList(string strInput, string strLanguage = "")
-        {
-            if (string.IsNullOrEmpty(strInput))
-                return string.Empty;
-            List<string> lstBooks = new List<string>(strInput.Count(x => x == ';'));
-            // Load the Sourcebook information.
-            XPathNavigator objXmlDocument = LoadDataXPath("books.xml", strLanguage);
-
-            foreach (string strBook in strInput.TrimEndOnce(';')
-                                               .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
-            {
-                XPathNavigator objXmlBook
-                    = objXmlDocument.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strBook.CleanXPath() + ']');
-                if (objXmlBook != null)
-                {
-                    string strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value;
-                    if (!string.IsNullOrEmpty(strToAppend))
-                        lstBooks.Add(strToAppend);
-                    else
-                    {
-                        strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
-                        if (!string.IsNullOrEmpty(strToAppend))
-                            lstBooks.Add(strToAppend);
-                        else
-                        {
-                            strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode")?.Value ?? strBook;
-                            lstBooks.Add(LanguageManager.GetString("String_Unknown", strLanguage)
-                                         + LanguageManager.GetString("String_Space", strLanguage) + '('
-                                         + strToAppend + ')');
-                        }
-                    }
-                }
-                else
-                {
-                    lstBooks.Add(LanguageManager.GetString("String_Unknown", strLanguage)
-                                 + LanguageManager.GetString("String_Space", strLanguage) + strBook);
-                }
-            }
-
-            lstBooks.Sort();
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
-            {
-                foreach (string strToAppend in lstBooks)
-                    sbdReturn.AppendLine(strToAppend);
-                return sbdReturn.ToString();
-            }
-        }
-
-        /// <summary>
-        /// Takes a semicolon-separated list of book codes and returns a formatted string with displaynames.
-        /// </summary>
-        /// <param name="strInput"></param>
-        /// <param name="strLanguage">Language to fetch</param>
-        /// <param name="token">Cancellation token to use.</param>
-        public async Task<string> TranslatedBookListAsync(string strInput, string strLanguage = "",
-                                                          CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (string.IsNullOrEmpty(strInput))
-                return string.Empty;
-            List<string> lstBooks = new List<string>(strInput.Count(x => x == ';'));
-            // Load the Sourcebook information.
-            XPathNavigator objXmlDocument
-                = await LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false);
-
-            foreach (string strBook in strInput.TrimEndOnce(';')
-                                               .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
-            {
-                XPathNavigator objXmlBook
-                    = objXmlDocument.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strBook.CleanXPath() + ']', token);
-                if (objXmlBook != null)
-                {
-                    string strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("translate", token)?.Value;
-                    if (!string.IsNullOrEmpty(strToAppend))
-                        lstBooks.Add(strToAppend);
-                    else
-                    {
-                        strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("name", token)?.Value;
-                        if (!string.IsNullOrEmpty(strToAppend))
-                            lstBooks.Add(strToAppend);
-                        else
-                        {
-                            strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode", token)?.Value ?? strBook;
-                            lstBooks.Add(await LanguageManager
-                                               .GetStringAsync("String_Unknown", strLanguage, token: token)
-                                               .ConfigureAwait(false)
-                                         + await LanguageManager
-                                                 .GetStringAsync("String_Space", strLanguage, token: token)
-                                                 .ConfigureAwait(false) + '('
-                                         + strToAppend + ')');
-                        }
-                    }
-                }
-                else
-                {
-                    lstBooks.Add(await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
-                                                      .ConfigureAwait(false)
-                                 + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                                                        .ConfigureAwait(false) + strBook);
-                }
-            }
-
-            lstBooks.Sort();
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
-            {
-                foreach (string strToAppend in lstBooks)
-                    sbdReturn.AppendLine(strToAppend);
-                return sbdReturn.ToString();
-            }
-        }
-
-        #endregion Temporary Properties
 
         //Can't be at improvementmanager due reasons
         private readonly Lazy<ConcurrentStack<string>> _stkPushText = new Lazy<ConcurrentStack<string>>();
@@ -43170,23 +43073,23 @@ namespace Chummer
                 CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
                 if (!await GetCreatedAsync(token).ConfigureAwait(false))
                 {
-                    if (objSettings.ContactPointsExpression.Contains(strExpressionToFind))
+                    if ((await objSettings.GetContactPointsExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                         lstPropertyChangedHolder.Add(nameof(ContactPoints));
-                    if (objSettings.ChargenKarmaToNuyenExpression.Contains(strExpressionToFind))
+                    if ((await objSettings.GetChargenKarmaToNuyenExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                         lstPropertyChangedHolder.Add(nameof(TotalStartingNuyen));
                 }
 
-                if (objSettings.CarryLimitExpression.Contains(strExpressionToFind))
+                if ((await objSettings.GetCarryLimitExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(BaseCarryLimit));
-                if (objSettings.LiftLimitExpression.Contains(strExpressionToFind))
+                if ((await objSettings.GetLiftLimitExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(BaseLiftLimit));
-                if (objSettings.BoundSpiritExpression.Contains(strExpressionToFind))
+                if ((await objSettings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(BoundSpiritLimit));
-                if (objSettings.RegisteredSpriteExpression.Contains(strExpressionToFind))
+                if ((await objSettings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(RegisteredSpriteLimit));
-                if (objSettings.EncumbranceIntervalExpression.Contains(strExpressionToFind))
+                if ((await objSettings.GetEncumbranceIntervalExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(EncumbranceInterval));
-                if (objSettings.EssenceModifierPostExpression.Contains(strExpressionToFind))
+                if ((await objSettings.GetEssenceModifierPostExpressionAsync(token).ConfigureAwait(false)).Contains(strExpressionToFind))
                 {
                     lstPropertyChangedHolder.Add(nameof(PrototypeTranshumanEssenceUsed));
                     lstPropertyChangedHolder.Add(nameof(BiowareEssence));
@@ -43252,9 +43155,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{BOD}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{BOD}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{BODUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43296,9 +43199,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{AGI}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{AGI}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{AGIUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43346,9 +43249,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{REA}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{REA}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{REAUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43397,9 +43300,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{STR}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{STR}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{STRUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43447,9 +43350,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{CHA}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{CHA}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{CHAUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43503,9 +43406,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{INT}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{INT}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{INTUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43557,9 +43460,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{LOG}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{LOG}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{LOGUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43628,9 +43531,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{WIL}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{WIL}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{WILUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43677,9 +43580,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{EDG}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{EDG}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{EDGUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43744,9 +43647,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{MAG}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{MAG}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{MAGUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43792,9 +43695,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{MAGAdept}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{MAGAdept}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{MAGAdeptUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43837,9 +43740,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{RES}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{RES}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{RESUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43885,9 +43788,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{DEP}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{DEP}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{DEPUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
@@ -43945,9 +43848,9 @@ namespace Chummer
 
                 if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
                     ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                      && Settings.KnowledgePointsExpression.Contains("{ESS}"))
+                      && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{ESS}"))
                      || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                         && Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))))
+                         && (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false)).Contains("{ESSUnaug}"))))
                 {
                     await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
                         .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)

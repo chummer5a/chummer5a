@@ -3034,32 +3034,32 @@ namespace Chummer
 
         private async Task<bool> IsAllTextBoxesLegalAsync(CancellationToken token = default)
         {
-            if (_objCharacterSettings.BuildMethod == CharacterBuildMethod.Priority
-                && _objCharacterSettings.PriorityArray.Length != 5)
+            if (await _objCharacterSettings.GetBuildMethodAsync(token).ConfigureAwait(false) == CharacterBuildMethod.Priority
+                && (await _objCharacterSettings.GetPriorityArrayAsync(token).ConfigureAwait(false)).Length != 5)
                 return false;
 
             return await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.ContactPointsExpression, token: token).ConfigureAwait(false) &&
+                       await _objCharacterSettings.GetContactPointsExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.KnowledgePointsExpression, token: token).ConfigureAwait(false) &&
+                       await _objCharacterSettings.GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                        (await _objCharacterSettings.GetChargenKarmaToNuyenExpressionAsync(token).ConfigureAwait(false))
                        .Replace("{Karma}", "1")
                        .Replace("{PriorityNuyen}", "1"), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                                            _objCharacterSettings.EssenceModifierPostExpression.Replace("{Modifier}",
-                                                "1.0"), token: token)
+                                            (await _objCharacterSettings.GetEssenceModifierPostExpressionAsync(token).ConfigureAwait(false))
+                                            .Replace("{Modifier}", "1.0"), token: token)
                                         .ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.RegisteredSpriteExpression, token: token).ConfigureAwait(false) &&
+                       await _objCharacterSettings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.BoundSpiritExpression, token: token).ConfigureAwait(false) &&
+                       await _objCharacterSettings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.LiftLimitExpression, token: token).ConfigureAwait(false) &&
+                       await _objCharacterSettings.GetLiftLimitExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.CarryLimitExpression, token: token).ConfigureAwait(false) &&
+                       await _objCharacterSettings.GetCarryLimitExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.EncumbranceIntervalExpression, token: token).ConfigureAwait(false);
+                       await _objCharacterSettings.GetEncumbranceIntervalExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         private bool IsDirty

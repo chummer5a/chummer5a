@@ -1355,12 +1355,11 @@ namespace Chummer
                 strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
             }
 
-            if (strValue.ContainsAny("Rating".Yield().Concat(AttributeSection.AttributeStrings)))
+            if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                string strReturn = strValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
                 strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
-                strReturn = strReturn.Replace("/", " div ");
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1373,8 +1372,7 @@ namespace Chummer
             }
 
             //Log.Exit("ValueToInt");
-            int.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
-            return intReturn;
+            return decValue.StandardRound();
         }
 
         /// <summary>
@@ -1398,12 +1396,11 @@ namespace Chummer
                 strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
             }
 
-            if (strValue.ContainsAny("Rating".Yield().Concat(AttributeSection.AttributeStrings)))
+            if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                string strReturn = strValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
                 strReturn = await (await objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strReturn, token: token).ConfigureAwait(false);
-                strReturn = strReturn.Replace("/", " div ");
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1416,8 +1413,7 @@ namespace Chummer
             }
 
             //Log.Exit("ValueToInt");
-            int.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
-            return intReturn;
+            return decValue.StandardRound();
         }
 
         /// <summary>
@@ -1440,12 +1436,11 @@ namespace Chummer
                 strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
             }
 
-            if (strValue.ContainsAny("Rating".Yield().Concat(AttributeSection.AttributeStrings)))
+            if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                string strReturn = strValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
                 strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
-                strReturn = strReturn.Replace("/", " div ");
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1458,8 +1453,7 @@ namespace Chummer
             }
 
             //Log.Exit("ValueToInt");
-            decimal.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
-            return decReturn;
+            return decValue;
         }
 
         /// <summary>
@@ -1483,12 +1477,11 @@ namespace Chummer
                 strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
             }
 
-            if (strValue.ContainsAny("Rating".Yield().Concat(AttributeSection.AttributeStrings)))
+            if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                string strReturn = strValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
                 strReturn = await (await objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strReturn, token: token).ConfigureAwait(false);
-                strReturn = strReturn.Replace("/", " div ");
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1501,8 +1494,7 @@ namespace Chummer
             }
 
             //Log.Exit("ValueToInt");
-            decimal.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
-            return decReturn;
+            return decValue;
         }
 
         public static Tuple<string, bool> DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,

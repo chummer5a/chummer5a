@@ -728,10 +728,11 @@ namespace Chummer
                                     // <mod>
                                     await objWriter.WriteStartElementAsync("mod").ConfigureAwait(false);
                                     await objWriter.WriteElementStringAsync("name", objMod.Name).ConfigureAwait(false);
-                                    if (objMod.Rating > 0)
+                                    int intRating = await objMod.GetRatingAsync().ConfigureAwait(false);
+                                    if (intRating > 0)
                                         await objWriter
                                             .WriteElementStringAsync(
-                                                "rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                                "rating", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                                             .ConfigureAwait(false);
                                     // </mod>
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);

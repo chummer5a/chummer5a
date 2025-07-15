@@ -5281,10 +5281,10 @@ namespace Chummer.Backend.Skills
                     ? await SkillGroupObject.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strSpace +
                       await LanguageManager.GetStringAsync("String_ExpenseSkillGroup", token: token).ConfigureAwait(false) + Environment.NewLine
                     : string.Empty;
-                strReturn += await GetCurrentDisplayCategoryAsync(token).ConfigureAwait(false) + Environment.NewLine + strMiddle +
-                             (await SourceString.GetSourceStringAsync(Source, Page, GlobalSettings.Language,
-                                                                      GlobalSettings.CultureInfo,
-                                                                      CharacterObject, token).ConfigureAwait(false)).LanguageBookTooltip;
+                strReturn += await GetCurrentDisplayCategoryAsync(token).ConfigureAwait(false) + Environment.NewLine + strMiddle
+                             + await (await SourceString.GetSourceStringAsync(Source, Page, GlobalSettings.Language,
+                                                                      GlobalSettings.CultureInfo, CharacterObject, token).ConfigureAwait(false))
+                                .GetLanguageBookTooltipAsync(token).ConfigureAwait(false);
                 return strReturn;
             }
             finally

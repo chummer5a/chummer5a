@@ -59,6 +59,25 @@ namespace Chummer
 
         private static readonly ReadOnlyCollection<char> s_LstInvariantXPathLegalChars = Array.AsReadOnly("1234567890+-*abcdefghilmnorstuvw()[]{}!=<>&;,. ".ToCharArray());
 
+        // Treat as ReadOnlyCollection please, it's only not that because string.IndexOfAny() cannot use a ReadOnlyCollection as its argument
+        private static readonly char[] s_LstCharsMarkingNeedOfProcessing = "abcdfghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVWXYZ()[]{}!=<>&;+*/\\÷×∙".ToCharArray();
+
+        /// <summary>
+        /// Check if a string needs to be processed by an invariant XPath processor to be conveerted into a number.
+        /// If it doesn't, also returns the numerical value of the expression (as a decimal type).
+        /// </summary>
+        /// <param name="strExpression">String to check.</param>
+        /// <param name="decExpressionAsNumber">Numerical value of the expression if it can be evaluated without further XPath processing.</param>
+        public static bool DoesNeedXPathProcessingToBeConvertedToNumber(this string strExpression, out decimal decExpressionAsNumber)
+        {
+            decExpressionAsNumber = 0;
+            if (string.IsNullOrWhiteSpace(strExpression))
+                return false;
+            return strExpression.IndexOfAny(s_LstCharsMarkingNeedOfProcessing) != -1
+                || strExpression.Contains("- ") || strExpression.IndexOf('-') != strExpression.LastIndexOf('-')
+                || !decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decExpressionAsNumber);
+        }
+
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
         /// </summary>
@@ -68,12 +87,27 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<Tuple<bool, object>> EvaluateInvariantXPathAsync(string strXPath, CancellationToken token = default)
         {
+            return EvaluateInvariantXPathAsync(strXPath, true, token);
+        }
+
+        /// <summary>
+        /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="strXPath">String as XPath Expression to evaluate.</param>
+        /// <param name="blnIsMathExpression">Whether the expression is a purely mathematical string, therefore allowing us to replace all possible symbols for mathematical operations with the XPath-appropriate ones.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<Tuple<bool, object>> EvaluateInvariantXPathAsync(string strXPath, bool blnIsMathExpression, CancellationToken token = default)
+        {
             if (string.IsNullOrWhiteSpace(strXPath))
             {
                 Tuple<bool, object> tupReturn = new Tuple<bool, object>(false, null);
                 s_DicCompiledEvaluations.TryAdd(string.Empty, tupReturn);
                 return Task.FromResult(tupReturn);
             }
+            if (blnIsMathExpression)
+                strXPath = strXPath.Replace("/", " div ").Replace("\\", " div ").Replace("÷", " div ").Replace(" x ", " * ").Replace('∙', '*').Replace('×', '*').Replace('[', '(').Replace(']', ')').TrimStart('+');
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 Tuple<bool, object> tupReturn = new Tuple<bool, object>(false, strXPath);
@@ -142,6 +176,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Tuple<bool, object> EvaluateInvariantXPath(string strXPath, CancellationToken token = default)
         {
+            return EvaluateInvariantXPath(strXPath, true, token);
+        }
+
+        /// <summary>
+        /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="strXPath">String as XPath Expression to evaluate.</param>
+        /// <param name="blnIsMathExpression">Whether the expression is a purely mathematical string, therefore allowing us to replace all division symbols with "div".</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Tuple<bool, object> EvaluateInvariantXPath(string strXPath, bool blnIsMathExpression, CancellationToken token = default)
+        {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrWhiteSpace(strXPath))
             {
@@ -149,6 +196,8 @@ namespace Chummer
                 s_DicCompiledEvaluations.TryAdd(string.Empty, tupReturn);
                 return tupReturn;
             }
+            if (blnIsMathExpression)
+                strXPath = strXPath.Replace("/", " div ").Replace("\\", " div ").Replace("÷", " div ").Replace(" x ", " * ").Replace('∙', '*').Replace('×', '*').Replace('[', '(').Replace(']', ')').TrimStart('+');
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 Tuple<bool, object> tupReturn = new Tuple<bool, object>(false, strXPath);
@@ -1703,8 +1752,7 @@ namespace Chummer
             try
             {
                 (bool blnIsSuccess, object objProcess) = EvaluateInvariantXPath(
-                    strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
-                         .Replace("2D6", strForce), token);
+                    strIn.Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), token);
                 if (blnIsSuccess)
                     intValue = ((double)objProcess).StandardRound();
             }
@@ -1748,8 +1796,7 @@ namespace Chummer
             try
             {
                 (bool blnIsSuccess, object objProcess) = await EvaluateInvariantXPathAsync(
-                    strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
-                         .Replace("2D6", strForce), token).ConfigureAwait(false);
+                    strIn.Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     intValue = ((double)objProcess).StandardRound();
             }
@@ -1792,8 +1839,7 @@ namespace Chummer
             try
             {
                 (bool blnIsSuccess, object objProcess) = EvaluateInvariantXPath(
-                    strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
-                         .Replace("2D6", strForce), token);
+                    strIn.Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), token);
                 if (blnIsSuccess)
                     decValue = Convert.ToDecimal((double)objProcess);
             }
@@ -1838,8 +1884,7 @@ namespace Chummer
             try
             {
                 (bool blnIsSuccess, object objProcess) = await EvaluateInvariantXPathAsync(
-                    strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
-                         .Replace("2D6", strForce), token).ConfigureAwait(false);
+                    strIn.Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     decValue = Convert.ToDecimal((double)objProcess);
             }

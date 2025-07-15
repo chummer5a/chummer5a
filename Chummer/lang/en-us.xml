@@ -121,6 +121,10 @@
       <text>All Image Files </text> <!-- Prefix only, actual file extensions depend on what codecs the user's computer supports -->
     </string>
     <string>
+      <key>DialogFilter_Zip</key>
+      <text>Zip Files (*.zip)|*.zip</text>
+    </string>
+    <string>
       <key>DialogFilter_All</key>
       <text>All Files (*.*)|*.*</text>
     </string>
@@ -1569,6 +1573,10 @@
     <string>
       <key>Menu_Main_CharacterRoster</key>
       <text>Ch&amp;aracter Roster</text>
+    </string>
+    <string>
+      <key>Menu_Main_DataExporter</key>
+      <text>Data E&amp;xporter</text>
     </string>
     <string>
       <key>String_MetatypeLoadError</key>
@@ -9648,6 +9656,10 @@
     <!-- End Region-->
     <!-- Region Export Window -->
     <string>
+      <key>Title_ExportData</key>
+      <text>Export Data Files to Archive</text>
+    </string>
+    <string>
       <key>Title_ExportCharacter</key>
       <text>Export Character</text>
     </string>
@@ -9674,6 +9686,10 @@
     <string>
       <key>String_Export_Blank</key>
       <text>Export {0}</text>
+    </string>
+    <string>
+      <key>Button_Export_SaveDataAs</key>
+      <text>Save Data Archive as</text>
     </string>
     <!-- End Region-->
     <!-- Region Create Spell Window -->

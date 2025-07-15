@@ -109,7 +109,7 @@ namespace Chummer
         private string _strKnowledgePointsExpression = "({INTUnaug} + {LOGUnaug}) * 2";
         private string _strChargenKarmaToNuyenExpression = "{Karma} * 2000 + {PriorityNuyen}";
         private string _strBoundSpiritExpression = "{CHA}";
-        private string _strRegisteredSpriteExpression = "{LOG}";
+        private string _strRegisteredSpriteExpression = "{CHA}";
         private string _strEssenceModifierPostExpression = "{Modifier}";
         private string _strLiftLimitExpression = "{STR} * 15";
         private string _strCarryLimitExpression = "{STR} * 10";
@@ -1557,8 +1557,8 @@ namespace Chummer
                                                      _strChargenKarmaToNuyenExpression);
                         // <boundspiritexpression />
                         objWriter.WriteElementString("boundspiritexpression", _strBoundSpiritExpression);
-                        // <compiledspriteexpression />
-                        objWriter.WriteElementString("compiledspriteexpression", _strRegisteredSpriteExpression);
+                        // <registeredspriteexpression />
+                        objWriter.WriteElementString("registeredspriteexpression", _strRegisteredSpriteExpression);
                         // <essencemodifierpostexpression />
                         objWriter.WriteElementString("essencemodifierpostexpression", _strEssenceModifierPostExpression);
                         // <liftlimitexpression />
@@ -2306,9 +2306,9 @@ namespace Chummer
                         await objWriter
                             .WriteElementStringAsync("boundspiritexpression", _strBoundSpiritExpression, token: token)
                             .ConfigureAwait(false);
-                        // <compiledspriteexpression />
+                        // <registeredspriteexpression />
                         await objWriter
-                            .WriteElementStringAsync("compiledspriteexpression", _strRegisteredSpriteExpression,
+                            .WriteElementStringAsync("registeredspriteexpression", _strRegisteredSpriteExpression,
                                 token: token).ConfigureAwait(false);
                         // <essencemodifierpostexpression />
                         await objWriter
@@ -3259,7 +3259,8 @@ namespace Chummer
                 }
 
                 // Various expressions used to determine certain character stats
-                objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
+                if (!objXmlNode.TryGetStringFieldQuickly("registeredspriteexpression", ref _strRegisteredSpriteExpression))
+                    objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression); // Legacy shim
                 objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
                 objXmlNode.TryGetStringFieldQuickly("essencemodifierpostexpression", ref _strEssenceModifierPostExpression);
                 objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
@@ -4027,7 +4028,8 @@ namespace Chummer
                 }
 
                 // Various expressions used to determine certain character stats
-                objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
+                if (!objXmlNode.TryGetStringFieldQuickly("registeredspriteexpression", ref _strRegisteredSpriteExpression))
+                    objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression); // Legacy shim
                 objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
                 objXmlNode.TryGetStringFieldQuickly("essencemodifierpostexpression", ref _strEssenceModifierPostExpression);
                 objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
@@ -6386,6 +6388,122 @@ namespace Chummer
                 return await XmlManager.LoadAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
             }
             return await XmlManager.LoadAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Takes a semicolon-separated list of book codes and returns a formatted string with displaynames.
+        /// </summary>
+        /// <param name="strInput"></param>
+        /// <param name="strLanguage">Language to fetch</param>
+        public string TranslatedBookList(string strInput, string strLanguage = "")
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            List<string> lstBooks = new List<string>(strInput.Count(x => x == ';'));
+            // Load the Sourcebook information.
+            XPathNavigator objXmlDocument = LoadDataXPath("books.xml", strLanguage);
+
+            foreach (string strBook in strInput.TrimEndOnce(';')
+                                               .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                XPathNavigator objXmlBook
+                    = objXmlDocument.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strBook.CleanXPath() + ']');
+                if (objXmlBook != null)
+                {
+                    string strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value;
+                    if (!string.IsNullOrEmpty(strToAppend))
+                        lstBooks.Add(strToAppend);
+                    else
+                    {
+                        strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        if (!string.IsNullOrEmpty(strToAppend))
+                            lstBooks.Add(strToAppend);
+                        else
+                        {
+                            strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode")?.Value ?? strBook;
+                            lstBooks.Add(LanguageManager.GetString("String_Unknown", strLanguage)
+                                         + LanguageManager.GetString("String_Space", strLanguage) + '('
+                                         + strToAppend + ')');
+                        }
+                    }
+                }
+                else
+                {
+                    lstBooks.Add(LanguageManager.GetString("String_Unknown", strLanguage)
+                                 + LanguageManager.GetString("String_Space", strLanguage) + strBook);
+                }
+            }
+
+            lstBooks.Sort();
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                foreach (string strToAppend in lstBooks)
+                    sbdReturn.AppendLine(strToAppend);
+                return sbdReturn.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Takes a semicolon-separated list of book codes and returns a formatted string with displaynames.
+        /// </summary>
+        /// <param name="strInput"></param>
+        /// <param name="strLanguage">Language to fetch</param>
+        /// <param name="token">Cancellation token to use.</param>
+        public async Task<string> TranslatedBookListAsync(string strInput, string strLanguage = "",
+                                                          CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            List<string> lstBooks = new List<string>(strInput.Count(x => x == ';'));
+            // Load the Sourcebook information.
+            XPathNavigator objXmlDocument
+                = await LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false);
+
+            foreach (string strBook in strInput.TrimEndOnce(';')
+                                               .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                XPathNavigator objXmlBook
+                    = objXmlDocument.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strBook.CleanXPath() + ']', token);
+                if (objXmlBook != null)
+                {
+                    string strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("translate", token)?.Value;
+                    if (!string.IsNullOrEmpty(strToAppend))
+                        lstBooks.Add(strToAppend);
+                    else
+                    {
+                        strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                        if (!string.IsNullOrEmpty(strToAppend))
+                            lstBooks.Add(strToAppend);
+                        else
+                        {
+                            strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode", token)?.Value ?? strBook;
+                            lstBooks.Add(await LanguageManager
+                                               .GetStringAsync("String_Unknown", strLanguage, token: token)
+                                               .ConfigureAwait(false)
+                                         + await LanguageManager
+                                                 .GetStringAsync("String_Space", strLanguage, token: token)
+                                                 .ConfigureAwait(false) + '('
+                                         + strToAppend + ')');
+                        }
+                    }
+                }
+                else
+                {
+                    lstBooks.Add(await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
+                                                      .ConfigureAwait(false)
+                                 + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
+                                                        .ConfigureAwait(false) + strBook);
+                }
+            }
+
+            lstBooks.Sort();
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                foreach (string strToAppend in lstBooks)
+                    sbdReturn.AppendLine(strToAppend);
+                return sbdReturn.ToString();
+            }
         }
 
         public Guid SourceId

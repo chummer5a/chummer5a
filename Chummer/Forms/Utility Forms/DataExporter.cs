@@ -18,34 +18,36 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace Chummer
 {
-    public sealed partial class SelectBuildMethod : Form, IHasCharacterObject
+    public sealed partial class DataExporter : Form
     {
-        private readonly Character _objCharacter;
-        private readonly CharacterBuildMethod _eStartingBuildMethod;
-        private readonly bool _blnForExistingCharacter;
         private int _intLoading = 1;
 
         private CancellationTokenSource _objProcessCharacterSettingIndexChangedCancellationTokenSource;
         private CancellationTokenSource _objRepopulateCharacterSettingsCancellationTokenSource;
         private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
-
-        public Character CharacterObject => _objCharacter;
+        private readonly ConcurrentDictionary<string, string> _dicCachedLanguageDocumentNames =
+            new ConcurrentDictionary<string, string>();
+        private readonly DebuggableSemaphoreSlim _objExportSemaphore = new DebuggableSemaphoreSlim();
 
         #region Control Events
 
-        public SelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)
+        public DataExporter()
         {
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             Disposed += (sender, args) =>
             {
@@ -62,9 +64,9 @@ namespace Chummer
                     objOldCancellationTokenSource.Dispose();
                 }
                 _objGenericCancellationTokenSource.Dispose();
+                dlgSaveFile?.Dispose();
+                _objExportSemaphore?.Dispose();
             };
-            _eStartingBuildMethod = _objCharacter.Settings.BuildMethod;
-            _blnForExistingCharacter = blnUseCurrentValues;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -74,61 +76,6 @@ namespace Chummer
         {
             try
             {
-                if (!(await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken).ConfigureAwait(false) is CharacterSettings objSelectedGameplayOption))
-                    return;
-                CharacterBuildMethod eSelectedBuildMethod = objSelectedGameplayOption.BuildMethod;
-                if (_blnForExistingCharacter
-                    && !await _objCharacter.GetCreatedAsync(_objGenericToken).ConfigureAwait(false)
-                    && await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetBuildMethodAsync(
-                        _objGenericToken).ConfigureAwait(false) == await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false)
-                    && eSelectedBuildMethod != _eStartingBuildMethod)
-                {
-                    if (await Program.ShowScrollableMessageBoxAsync(this,
-                            string.Format(GlobalSettings.CultureInfo,
-                                await LanguageManager
-                                    .GetStringAsync("Message_SelectBP_SwitchBuildMethods", token: _objGenericToken)
-                                    .ConfigureAwait(false),
-                                await LanguageManager
-                                    .GetStringAsync("String_" + eSelectedBuildMethod, token: _objGenericToken)
-                                    .ConfigureAwait(false),
-                                await LanguageManager
-                                    .GetStringAsync("String_" + _eStartingBuildMethod, token: _objGenericToken)
-                                    .ConfigureAwait(false)).WordWrap(),
-                            await LanguageManager
-                                .GetStringAsync("MessageTitle_SelectBP_SwitchBuildMethods", token: _objGenericToken)
-                                .ConfigureAwait(false), MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Warning, token: _objGenericToken).ConfigureAwait(false) != DialogResult.Yes)
-                        return;
-                    string strOldCharacterSettingsKey =
-                        await _objCharacter.GetSettingsKeyAsync(_objGenericToken).ConfigureAwait(false);
-                    await _objCharacter.SetSettingsKeyAsync(
-                            (await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken)
-                                .ConfigureAwait(false))
-                            .FirstOrDefault(x => ReferenceEquals(x.Value, objSelectedGameplayOption)).Key,
-                            _objGenericToken)
-                        .ConfigureAwait(false);
-                    // If the character is loading, make sure we only switch build methods after we've loaded, otherwise we might cause all sorts of nastiness
-                    if (_objCharacter.IsLoading)
-                        await _objCharacter
-                            .EnqueuePostLoadAsyncMethodAsync(
-                                x => _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod,
-                                    strOldCharacterSettingsKey, x), _objGenericToken).ConfigureAwait(false);
-                    else if (!await _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod,
-                                 strOldCharacterSettingsKey, _objGenericToken).ConfigureAwait(false))
-                        return;
-                }
-                else
-                {
-                    await _objCharacter.SetSettingsKeyAsync((await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false))
-                        .FirstOrDefault(
-                            x => ReferenceEquals(
-                                x.Value, objSelectedGameplayOption)).Key, _objGenericToken).ConfigureAwait(false);
-                }
-
-                await _objCharacter
-                    .SetIgnoreRulesAsync(
-                        await chkIgnoreRules.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken)
-                            .ConfigureAwait(false), _objGenericToken).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(x =>
                 {
                     x.DialogResult = DialogResult.OK;
@@ -193,7 +140,7 @@ namespace Chummer
             }
         }
 
-        private async void SelectBuildMethod_Load(object sender, EventArgs e)
+        private async void DataExporter_Load(object sender, EventArgs e)
         {
             try
             {
@@ -203,21 +150,10 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
                     {
-                        CharacterSettings objSelectSettings = null;
-                        if (_blnForExistingCharacter)
-                        {
-                            IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
-                                = await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false);
-                            if (dicCharacterSettings.TryGetValue(
-                                    await _objCharacter.GetSettingsKeyAsync(_objGenericToken).ConfigureAwait(false), out CharacterSettings objSetting))
-                                objSelectSettings = objSetting;
-                        }
-
-                        await RepopulateCharacterSettings(objSelectSettings, _objGenericToken).ConfigureAwait(false);
-                        await chkIgnoreRules.SetToolTipAsync(
-                                                await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules", token: _objGenericToken)
-                                                                     .ConfigureAwait(false), _objGenericToken)
-                                            .ConfigureAwait(false);
+                        await RefreshLanguageDocumentNames(_objGenericToken).ConfigureAwait(false);
+                        await PopulateLanguageList(_objGenericToken).ConfigureAwait(false);
+                        await RepopulateCharacterSettings(token: _objGenericToken).ConfigureAwait(false);
+                        await pgbExportProgress.DoThreadSafeAsync(x => x.Maximum = Utils.BasicDataFileNames.Count, _objGenericToken).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -237,7 +173,7 @@ namespace Chummer
             }
         }
 
-        private void SelectBuildMethod_Closing(object sender, FormClosingEventArgs e)
+        private void DataExporter_Closing(object sender, FormClosingEventArgs e)
         {
             CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objProcessCharacterSettingIndexChangedCancellationTokenSource, null);
             if (objOldCancellationTokenSource?.IsCancellationRequested == false)
@@ -252,6 +188,64 @@ namespace Chummer
                 objOldCancellationTokenSource.Dispose();
             }
             _objGenericCancellationTokenSource.Cancel(false);
+        }
+
+        private async Task RefreshLanguageDocumentNames(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _dicCachedLanguageDocumentNames.Clear();
+            token.ThrowIfCancellationRequested();
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+            {
+                token.ThrowIfCancellationRequested();
+                if (strFilePath.EndsWith("_data.xml"))
+                    continue;
+                string strLanguageName = await LanguageManager.GetLanguageNameFromFileNameAsync(strFilePath, token: token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strLanguageName))
+                    continue;
+                token.ThrowIfCancellationRequested();
+                _dicCachedLanguageDocumentNames.AddOrUpdate(Path.GetFileNameWithoutExtension(strFilePath), x => strLanguageName, (x, y) => strLanguageName);
+            }
+        }
+
+        private async Task PopulateLanguageList(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLanguages))
+            {
+                foreach (KeyValuePair<string, string> kvpLanguages in _dicCachedLanguageDocumentNames)
+                {
+                    token.ThrowIfCancellationRequested();
+                    lstLanguages.Add(new ListItem(kvpLanguages.Key, kvpLanguages.Value));
+                }
+
+                token.ThrowIfCancellationRequested();
+                lstLanguages.Sort(CompareListItems.CompareNames);
+                await cboLanguage.PopulateWithListItemsAsync(lstLanguages, token).ConfigureAwait(false);
+                await cboLanguage.DoThreadSafeAsync(x =>
+                {
+                    x.SelectedValue = GlobalSettings.Language;
+                    if (x.SelectedIndex == -1)
+                        x.SelectedValue = GlobalSettings.DefaultLanguage;
+                }, token).ConfigureAwait(false);
+            }
+        }
+
+        private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                await pgbExportProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                string strLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken).ConfigureAwait(false);
+                await imgSheetLanguageFlag.DoThreadSafeAsync(x => x.Image = FlagImageGetter.GetFlagFromCountryCode(
+                    strLanguage.Substring(3, 2),
+                    Math.Min(x.Width, x.Height)), token: _objGenericToken).ConfigureAwait(false);
+                await ValidateIfExportPossible(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async Task RepopulateCharacterSettings(CharacterSettings objSelected = null,
@@ -375,64 +369,8 @@ namespace Chummer
                 // Load the Priority information.
                 if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false) is CharacterSettings objSelectedGameplayOption)
                 {
-                    string strText = await LanguageManager.GetStringAsync("String_" + objSelectedGameplayOption.BuildMethod, token: token).ConfigureAwait(false);
-                    await lblBuildMethod.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    switch (objSelectedGameplayOption.BuildMethod)
-                    {
-                        case CharacterBuildMethod.Priority:
-                            {
-                                string strText2 = await LanguageManager.GetStringAsync("Label_SelectBP_Priorities", token: token)
-                                                               .ConfigureAwait(false);
-                                await lblBuildMethodParamLabel.DoThreadSafeAsync(x =>
-                                {
-                                    x.Text = strText2;
-                                    x.Visible = true;
-                                }, token).ConfigureAwait(false);
-                                await lblBuildMethodParam.DoThreadSafeAsync(x =>
-                                {
-                                    x.Text = objSelectedGameplayOption.PriorityArray;
-                                    x.Visible = true;
-                                }, token).ConfigureAwait(false);
-                                break;
-                            }
-                        case CharacterBuildMethod.SumtoTen:
-                            {
-                                string strText2 = await LanguageManager.GetStringAsync("String_SumtoTen", token: token)
-                                                               .ConfigureAwait(false);
-                                await lblBuildMethodParamLabel.DoThreadSafeAsync(x =>
-                                {
-                                    x.Text = strText2;
-                                    x.Visible = true;
-                                }, token).ConfigureAwait(false);
-                                await lblBuildMethodParam.DoThreadSafeAsync(x =>
-                                {
-                                    x.Text = objSelectedGameplayOption.SumtoTen.ToString(GlobalSettings.CultureInfo);
-                                    x.Visible = true;
-                                }, token).ConfigureAwait(false);
-                                break;
-                            }
-                        default:
-                            await lblBuildMethodParamLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                            await lblBuildMethodParam.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                            break;
-                    }
-
                     string strNone = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
-
-                    await lblMaxAvail.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.MaximumAvailability.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
-                    await lblKarma.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.BuildKarma.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
-                    await lblMaxNuyen.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.NuyenMaximumBP.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
-                    await lblQualityKarma.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
-
-                    string strBookList = await objSelectedGameplayOption.TranslatedBookListAsync(string.Join(";",
-                        await objSelectedGameplayOption.GetBooksAsync(token).ConfigureAwait(false)), token: token).ConfigureAwait(false);
-                    await lblBooks.DoThreadSafeAsync(x =>
-                    {
-                        x.Text = strBookList;
-                        if (string.IsNullOrEmpty(x.Text))
-                            x.Text = strNone;
-                    }, token).ConfigureAwait(false);
-
+                    await pgbExportProgress.DoThreadSafeAsync(x => x.Value = 0, token).ConfigureAwait(false);
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdCustomDataDirectories))
                     {
@@ -449,9 +387,159 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
                     }
                 }
+                await ValidateIfExportPossible(token).ConfigureAwait(false);
+            }
+        }
+
+        private async Task ValidateIfExportPossible(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_objExportSemaphore.CurrentCount == 0)
+            {
+                // An export is currently underway, do not allow any additional exports until the current one is finished (just in case)
+                await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken).ConfigureAwait(false);
+                await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken).ConfigureAwait(false);
+            }
+            string strLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken).ConfigureAwait(false);
+            if (strLanguage == GlobalSettings.DefaultLanguage)
+            {
+                // For English, only allow export if we have any custom data
+                bool blnValidExport = false;
+                if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false) is CharacterSettings objSettings)
+                {
+                    blnValidExport = (await objSettings.GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false)).Count > 0;
+                }
+                await cmdExport.DoThreadSafeAsync(x => x.Enabled = blnValidExport, _objGenericToken).ConfigureAwait(false);
+                await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = blnValidExport, _objGenericToken).ConfigureAwait(false);
+            }
+            else
+            {
+                // Non-English languages are always valid for export because the translations can modify the base data files
+                await cmdExport.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
+                await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
+            }
+        }
+
+        private async Task DoExport(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!(await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false) is CharacterSettings objSettings))
+                return;
+            dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Zip", token: token).ConfigureAwait(false) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
+            dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Export_SaveDataAs", token: token).ConfigureAwait(false);
+            DialogResult eResult = await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token).ConfigureAwait(false);
+            if (eResult == DialogResult.Cancel)
+                throw new OperationCanceledException();
+            if (eResult != DialogResult.OK)
+                return;
+            token.ThrowIfCancellationRequested();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
+            {
+                if (!await _objExportSemaphore.WaitAsync(Utils.WaitEmergencyReleaseMaxTicks, token).ConfigureAwait(false))
+                    throw new OperationCanceledException();
+                try
+                {
+                    await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                    await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                    await pgbExportProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                    try
+                    {
+                        string strLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken).ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(strLanguage))
+                            strLanguage = GlobalSettings.DefaultLanguage;
+                        string strSaveArchive = dlgSaveFile.FileName;
+                        if (string.IsNullOrEmpty(strSaveArchive))
+                            return;
+                        if (!strSaveArchive.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                            strSaveArchive += ".zip";
+                        await Utils.SafeDeleteDirectoryAsync(strSaveArchive, token: token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker = await objSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            try
+                            {
+                                using (FileStream objZipFileStream = new FileStream(strSaveArchive, FileMode.Create, FileAccess.Write, FileShare.None))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    using (ZipArchive zipNewArchive = new ZipArchive(objZipFileStream, ZipArchiveMode.Create))
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        foreach (string strFileName in Utils.BasicDataFileNames)
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            XmlDocument xmlDocument = await objSettings.LoadDataAsync(strFileName, strLanguage, token: token).ConfigureAwait(false);
+                                            ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFileName));
+                                            token.ThrowIfCancellationRequested();
+                                            using (Stream objStream = objEntry.Open())
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                await Task.Run(() => xmlDocument.Save(objStream), token).ConfigureAwait(false);
+                                            }
+                                            await pgbExportProgress.DoThreadSafeAsync(x => x.Value = x.Value + 1, _objGenericToken).ConfigureAwait(false);
+                                        }
+                                    }
+                                }
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                // ReSharper disable once MethodSupportsCancellation
+                                await Utils.SafeDeleteDirectoryAsync(strSaveArchive, token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        
+                    }
+                }
+                finally
+                {
+                    _objExportSemaphore.Release();
+                    await ValidateIfExportPossible(token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         #endregion Control Events
+
+        private async void cmdExport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await DoExport(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdExportClose_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await DoExport(_objGenericToken).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                }, _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
     }
 }
