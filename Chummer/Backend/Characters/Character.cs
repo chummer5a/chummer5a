@@ -21023,7 +21023,8 @@ namespace Chummer
                 decimal decReturn = _decCachedEncumbranceInterval;
                 if (decReturn != decimal.MinValue)
                     return decReturn;
-                string strExpression = Settings.EncumbranceIntervalExpression;
+                string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false))
+                    .GetEncumbranceIntervalExpressionAsync(token).ConfigureAwait(false);
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
