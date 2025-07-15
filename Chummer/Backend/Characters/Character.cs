@@ -20949,7 +20949,7 @@ namespace Chummer
                 if (decReturn != decimal.MinValue)
                     return decReturn;
                 string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false))
-                    .GetCarryLimitExpressionAsync(token).ConfigureAwait(false);
+                    .GetLiftLimitExpressionAsync(token).ConfigureAwait(false);
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
