@@ -320,12 +320,13 @@ namespace Chummer
                         if (objNewNode.Tag is CharacterCache objNewCache)
                         {
                             HashSet<CharacterCache> setCachesToDispose = new HashSet<CharacterCache>(2);
+                            string strFilePath = await objNewCache.GetFilePathAsync(objTokenToUse).ConfigureAwait(false);
                             await treCharacterList.DoThreadSafeAsync(x =>
                             {
                                 foreach (TreeNode objNode in x.Nodes.OfType<TreeNode>()
                                                               .DeepWhere(y => y.Nodes.OfType<TreeNode>(),
                                                                          y => y.Tag is CharacterCache z
-                                                                              && z.FilePath == objNewCache.FilePath))
+                                                                              && z.FilePath == strFilePath))
                                 {
                                     objNode.Text = objNewNode.Text;
                                     objNode.ToolTipText = objNewNode.ToolTipText;
@@ -339,7 +340,7 @@ namespace Chummer
                             foreach (CharacterCache objCache in setCachesToDispose)
                             {
                                 objTokenToUse.ThrowIfCancellationRequested();
-                                if (!objCache.IsDisposed && _dicSavedCharacterCaches.ContainsKey(objCache.FilePath))
+                                if (!objCache.IsDisposed && _dicSavedCharacterCaches.ContainsKey(await objCache.GetFilePathAsync(objTokenToUse).ConfigureAwait(false)))
                                     lstToKeep.Add(objCache);
                             }
                             foreach (CharacterCache objCache in lstToKeep)
@@ -526,7 +527,7 @@ namespace Chummer
                                 nodNode.Tag = null;
                                 if (!objCache.IsDisposed)
                                 {
-                                    if (_dicSavedCharacterCaches.TryRemove(objCache.FilePath, out CharacterCache objCacheToRemove)
+                                    if (_dicSavedCharacterCaches.TryRemove(await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false), out CharacterCache objCacheToRemove)
                                         && !ReferenceEquals(objCacheToRemove, objCache)
                                         && !objCacheToRemove.IsDisposed)
                                         await objCacheToRemove.DisposeAsync().ConfigureAwait(false);
@@ -1152,18 +1153,20 @@ namespace Chummer
                         continue;
                     objCharacterNode.Text = kvpNode.Value;
                     string strTooltip = string.Empty;
-                    if (!string.IsNullOrEmpty(objCache.FilePath))
+                    string strFilePath = objCache.FilePath;
+                    if (!string.IsNullOrEmpty(strFilePath))
                     {
-                        strTooltip = objCache.FilePath.Replace(Utils.GetStartupPath,
+                        strTooltip = strFilePath.Replace(Utils.GetStartupPath,
                                                                '<' + Application.ProductName + '>');
                     }
 
-                    if (!string.IsNullOrEmpty(objCache.ErrorText))
+                    string strErrorText = objCache.ErrorText;
+                    if (!string.IsNullOrEmpty(strErrorText))
                     {
                         objCharacterNode.ForeColor = ColorManager.ErrorColor;
-                        if (!string.IsNullOrEmpty(objCache.FilePath))
+                        if (!string.IsNullOrEmpty(strFilePath))
                             strTooltip += Environment.NewLine + Environment.NewLine;
-                        strTooltip += strErrorPrefix + objCache.ErrorText;
+                        strTooltip += strErrorPrefix + strErrorText;
                     }
                     else
                         objCharacterNode.ForeColor = ColorManager.WindowText;
@@ -1496,7 +1499,7 @@ namespace Chummer
                 {
                     TreeNode objNode = await tskCachingTask.ConfigureAwait(false);
                     if (objNode.Tag is CharacterCache objCache)
-                        dicWatchNodes.Add(objNode, dicWatch[objCache.FilePath]);
+                        dicWatchNodes.Add(objNode, dicWatch[await objCache.GetFilePathAsync(token).ConfigureAwait(false)]);
                     token.ThrowIfCancellationRequested();
                 }
                 lstCachingTasks.Clear();
@@ -1509,7 +1512,7 @@ namespace Chummer
             {
                 TreeNode objNode = await tskCachingTask.ConfigureAwait(false);
                 if (objNode.Tag is CharacterCache objCache)
-                    dicWatchNodes.Add(objNode, dicWatch[objCache.FilePath]);
+                    dicWatchNodes.Add(objNode, dicWatch[await objCache.GetFilePathAsync(token).ConfigureAwait(false)]);
                 token.ThrowIfCancellationRequested();
             }
 
@@ -1738,8 +1741,12 @@ namespace Chummer
                                                      .ConfigureAwait(false),
                                                  async (x, y) =>
                                                  {
-                                                     objToDispose = y;
-                                                     return objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false);
+                                                     if (!await y.LoadFromFileAsync(strFile).ConfigureAwait(false))
+                                                     {
+                                                         objToDispose = y;
+                                                         return objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false);
+                                                     }
+                                                     return y;
                                                  }, token)
                                              .ConfigureAwait(false);
                             if (objToDispose != null && !ReferenceEquals(objToDispose, objCache) && !objToDispose.IsDisposed)
@@ -1788,18 +1795,19 @@ namespace Chummer
             TreeNode objNode = new TreeNode
             {
                 Text = await objCache.CalculatedNameAsync(token: token).ConfigureAwait(false),
-                ToolTipText = await objCache.FilePath.CheapReplaceAsync(Utils.GetStartupPath,
-                                                                        () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false),
+                ToolTipText = await (await objCache.GetFilePathAsync(token).ConfigureAwait(false))
+                    .CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false),
                 Tag = objCache
             };
-            if (!string.IsNullOrEmpty(objCache.ErrorText))
+            string strErrorText = await objCache.GetErrorTextAsync(token).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strErrorText))
             {
                 objNode.ForeColor = ColorManager.ErrorColor;
                 if (!string.IsNullOrEmpty(objNode.ToolTipText))
                     objNode.ToolTipText += Environment.NewLine + Environment.NewLine;
                 objNode.ToolTipText += await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) +
                                        await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false) + Environment.NewLine +
-                                       objCache.ErrorText;
+                                       strErrorText;
             }
 
             return objNode;
@@ -1834,107 +1842,130 @@ namespace Chummer
                         if (objCache != null)
                         {
                             string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                            string strTemp1 = await objCache.Description.RtfToPlainTextAsync(token).ConfigureAwait(false);
-                            await txtCharacterBio.DoThreadSafeAsync(x => x.Text = strTemp1, token).ConfigureAwait(false);
-                            string strTemp2 = await objCache.Background.RtfToPlainTextAsync(token).ConfigureAwait(false);
-                            await txtCharacterBackground.DoThreadSafeAsync(x => x.Text = strTemp2, token).ConfigureAwait(false);
-                            string strTemp3 = await objCache.CharacterNotes.RtfToPlainTextAsync(token).ConfigureAwait(false);
-                            await txtCharacterNotes.DoThreadSafeAsync(x => x.Text = strTemp3, token).ConfigureAwait(false);
-                            string strTemp4 = await objCache.GameNotes.RtfToPlainTextAsync(token).ConfigureAwait(false);
-                            await txtGameNotes.DoThreadSafeAsync(x => x.Text = strTemp4, token).ConfigureAwait(false);
-                            string strTemp5 = await objCache.Concept.RtfToPlainTextAsync(token).ConfigureAwait(false);
-                            await txtCharacterConcept.DoThreadSafeAsync(x => x.Text = strTemp5, token).ConfigureAwait(false);
-                            string strText = objCache.Karma;
-                            if (string.IsNullOrEmpty(strText) || strText == 0.ToString(GlobalSettings.CultureInfo))
-                                strText = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
-                            await lblCareerKarma.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                            await lblPlayerName.DoThreadSafeAsync(x =>
+                            System.IAsyncDisposable objLocker = await objCache.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                            try
                             {
-                                x.Text = objCache.PlayerName;
-                                if (string.IsNullOrEmpty(x.Text))
-                                    x.Text = strUnknown;
-                            }, token).ConfigureAwait(false);
-                            await lblCharacterName.DoThreadSafeAsync(x =>
-                            {
-                                x.Text = objCache.CharacterName;
-                                if (string.IsNullOrEmpty(x.Text))
-                                    x.Text = strUnknown;
-                            }, token).ConfigureAwait(false);
-                            await lblCharacterAlias.DoThreadSafeAsync(x =>
-                            {
-                                x.Text = objCache.CharacterAlias;
-                                if (string.IsNullOrEmpty(x.Text))
-                                    x.Text = strUnknown;
-                            }, token).ConfigureAwait(false);
-                            await lblEssence.DoThreadSafeAsync(x =>
-                            {
-                                x.Text = objCache.Essence;
-                                if (string.IsNullOrEmpty(x.Text))
-                                    x.Text = strUnknown;
-                            }, token).ConfigureAwait(false);
-                            string strText2 = objCache.FileName;
-                            if (string.IsNullOrEmpty(strText2))
-                                strText2 = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false);
-                            await lblFilePath.DoThreadSafeAsync(x => x.Text = strText2, token).ConfigureAwait(false);
-                            await lblSettings.DoThreadSafeAsync(x =>
-                            {
-                                x.Text = objCache.SettingsFile;
-                                if (string.IsNullOrEmpty(x.Text))
-                                    x.Text = strUnknown;
-                            }, token).ConfigureAwait(false);
-                            await lblFilePath.SetToolTipAsync(
-                                await objCache.FilePath.CheapReplaceAsync(Utils.GetStartupPath,
-                                                                          () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false),
-                                token).ConfigureAwait(false);
-                            await picMugshot.DoThreadSafeAsync(x => x.Image = objCache.Mugshot, token).ConfigureAwait(false);
-                            // Populate character information fields.
-                            if (objCache.Metatype != null)
-                            {
-                                XPathNavigator objMetatypeDoc
-                                    = await XmlManager.LoadXPathAsync("metatypes.xml", token: token).ConfigureAwait(false);
-                                XPathNavigator objMetatypeNode
-                                    = objMetatypeDoc.SelectSingleNode(
-                                        "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
-                                if (objMetatypeNode == null)
-                                {
-                                    objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml", token: token).ConfigureAwait(false);
-                                    objMetatypeNode = objMetatypeDoc.SelectSingleNode(
-                                        "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
-                                }
-
                                 token.ThrowIfCancellationRequested();
-                                string strMetatype = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objCache.Metatype;
-
-                                if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
+                                string strTemp1 = await (await objCache.GetDescriptionAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
+                                await txtCharacterBio.DoThreadSafeAsync(x => x.Text = strTemp1, token).ConfigureAwait(false);
+                                string strTemp2 = await (await objCache.GetBackgroundAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
+                                await txtCharacterBackground.DoThreadSafeAsync(x => x.Text = strTemp2, token).ConfigureAwait(false);
+                                string strTemp3 = await (await objCache.GetCharacterNotesAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
+                                await txtCharacterNotes.DoThreadSafeAsync(x => x.Text = strTemp3, token).ConfigureAwait(false);
+                                string strTemp4 = await (await objCache.GetGameNotesAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
+                                await txtGameNotes.DoThreadSafeAsync(x => x.Text = strTemp4, token).ConfigureAwait(false);
+                                string strTemp5 = await (await objCache.GetConceptAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
+                                await txtCharacterConcept.DoThreadSafeAsync(x => x.Text = strTemp5, token).ConfigureAwait(false);
+                                string strText = await objCache.GetKarmaAsync(token).ConfigureAwait(false);
+                                if (string.IsNullOrEmpty(strText) || strText == 0.ToString(GlobalSettings.CultureInfo))
+                                    strText = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
+                                await lblCareerKarma.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                                string strPlayerName = await objCache.GetPlayerNameAsync(token).ConfigureAwait(false);
+                                await lblPlayerName.DoThreadSafeAsync(x =>
                                 {
-                                    objMetatypeNode = objMetatypeNode?.SelectSingleNode(
-                                        "metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + ']');
+                                    if (string.IsNullOrEmpty(strPlayerName))
+                                        x.Text = strUnknown;
+                                    else
+                                        x.Text = strPlayerName;
+                                }, token).ConfigureAwait(false);
+                                string strCharacterName = await objCache.GetCharacterNameAsync(token).ConfigureAwait(false);
+                                await lblCharacterName.DoThreadSafeAsync(x =>
+                                {
+                                    if (string.IsNullOrEmpty(strCharacterName))
+                                        x.Text = strUnknown;
+                                    else
+                                        x.Text = strCharacterName;
+                                }, token).ConfigureAwait(false);
+                                string strCharacterAlias = await objCache.GetCharacterAliasAsync(token).ConfigureAwait(false);
+                                await lblCharacterAlias.DoThreadSafeAsync(x =>
+                                {
+                                    if (string.IsNullOrEmpty(strCharacterAlias))
+                                        x.Text = strUnknown;
+                                    else
+                                        x.Text = strCharacterAlias;
+                                }, token).ConfigureAwait(false);
+                                string strEssence = await objCache.GetEssenceAsync(token).ConfigureAwait(false);
+                                await lblEssence.DoThreadSafeAsync(x =>
+                                {
+                                    if (string.IsNullOrEmpty(strEssence))
+                                        x.Text = strUnknown;
+                                    else
+                                        x.Text = strEssence;
+                                }, token).ConfigureAwait(false);
+                                string strText2 = await objCache.GetFileNameAsync(token).ConfigureAwait(false);
+                                if (string.IsNullOrEmpty(strText2))
+                                    strText2 = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false);
+                                await lblFilePath.DoThreadSafeAsync(x => x.Text = strText2, token).ConfigureAwait(false);
+                                string strSettingsFile = await objCache.GetSettingsFileAsync(token).ConfigureAwait(false);
+                                await lblSettings.DoThreadSafeAsync(x =>
+                                {
+                                    if (string.IsNullOrEmpty(strSettingsFile))
+                                        x.Text = strUnknown;
+                                    else
+                                        x.Text = strSettingsFile;
+                                }, token).ConfigureAwait(false);
+                                await lblFilePath.SetToolTipAsync(
+                                    await (await objCache.GetFilePathAsync(token).ConfigureAwait(false))
+                                        .CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false),
+                                    token).ConfigureAwait(false);
+                                Image objMugshot = await objCache.GetMugshotAsync(token).ConfigureAwait(false);
+                                await picMugshot.DoThreadSafeAsync(x => x.Image = objMugshot, token).ConfigureAwait(false);
+                                // Populate character information fields.
+                                string strMetatype = await objCache.GetMetatypeAsync(token).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strMetatype))
+                                {
+                                    XPathNavigator objMetatypeDoc
+                                        = await XmlManager.LoadXPathAsync("metatypes.xml", token: token).ConfigureAwait(false);
+                                    XPathNavigator objMetatypeNode
+                                        = objMetatypeDoc.SelectSingleNode(
+                                            "/chummer/metatypes/metatype[name = " + strMetatype.CleanXPath() + ']');
+                                    if (objMetatypeNode == null)
+                                    {
+                                        objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml", token: token).ConfigureAwait(false);
+                                        objMetatypeNode = objMetatypeDoc.SelectSingleNode(
+                                            "/chummer/metatypes/metatype[name = " + strMetatype.CleanXPath() + ']');
+                                    }
 
-                                    strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
-                                        + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objCache.Metavariant) + ')';
+                                    token.ThrowIfCancellationRequested();
+                                    string strMetatypeText = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                        ?? strMetatype;
+                                    string strMetavariant = await objCache.GetMetavariantAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strMetavariant) && strMetavariant != "None")
+                                    {
+                                        objMetatypeNode = objMetatypeNode?.SelectSingleNode(
+                                            "metavariants/metavariant[name = " + strMetavariant.CleanXPath() + ']');
+
+                                        strMetatypeText += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
+                                            + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strMetavariant) + ')';
+                                    }
+
+                                    await lblMetatype.DoThreadSafeAsync(x => x.Text = strMetatypeText, token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    string strTemp = await LanguageManager.GetStringAsync("String_MetatypeLoadError", token: token).ConfigureAwait(false);
+                                    await lblMetatype.DoThreadSafeAsync(x => x.Text = strTemp, token).ConfigureAwait(false);
                                 }
 
-                                await lblMetatype.DoThreadSafeAsync(x => x.Text = strMetatype, token).ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                string strTemp = await LanguageManager.GetStringAsync("String_MetatypeLoadError", token: token).ConfigureAwait(false);
-                                await lblMetatype.DoThreadSafeAsync(x => x.Text = strTemp, token).ConfigureAwait(false);
-                            }
-
-                            await tabCharacterText.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                            if (!string.IsNullOrEmpty(objCache.ErrorText))
-                            {
-                                await txtCharacterBio.DoThreadSafeAsync(x =>
+                                await tabCharacterText.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                                string strErrorText = await objCache.GetErrorTextAsync(token).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strErrorText))
                                 {
-                                    x.Text = objCache.ErrorText;
-                                    x.ForeColor = ColorManager.ErrorColor;
-                                    x.BringToFront();
-                                }, token).ConfigureAwait(false);
+                                    await txtCharacterBio.DoThreadSafeAsync(x =>
+                                    {
+                                        x.Text = strErrorText;
+                                        x.ForeColor = ColorManager.ErrorColor;
+                                        x.BringToFront();
+                                    }, token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    await txtCharacterBio.DoThreadSafeAsync(x => x.ForeColor = ColorManager.WindowText, token).ConfigureAwait(false);
+                                }
                             }
-                            else
+                            finally
                             {
-                                await txtCharacterBio.DoThreadSafeAsync(x => x.ForeColor = ColorManager.WindowText, token).ConfigureAwait(false);
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
                             }
                         }
                         else
@@ -1991,6 +2022,9 @@ namespace Chummer
 
         private async void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
+                return;
+
             try
             {
                 TreeNode objSelectedNode
@@ -1998,8 +2032,21 @@ namespace Chummer
                 if (objSelectedNode == null)
                     return;
                 CharacterCache objCache = objSelectedNode.Tag as CharacterCache;
-                objCache?.OnMyAfterSelect?.Invoke(sender, e);
-                await UpdateCharacter(objCache, _objGenericToken).ConfigureAwait(false);
+                if (objCache != null)
+                {
+                    System.IAsyncDisposable objLocker = await objCache.LockObject.EnterUpgradeableReadLockAsync(_objGenericToken).ConfigureAwait(false);
+                    try
+                    {
+                        _objGenericToken.ThrowIfCancellationRequested();
+                        if (objCache.OnMyAfterSelect != null)
+                            await objCache.OnMyAfterSelect(sender, e, _objGenericToken).ConfigureAwait(false);
+                        await UpdateCharacter(objCache, _objGenericToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
                 await treCharacterList.DoThreadSafeAsync(x => x.ClearNodeBackground(x.SelectedNode), _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -2010,6 +2057,9 @@ namespace Chummer
 
         private async void treCharacterList_DoubleClick(object sender, EventArgs e)
         {
+            if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
+                return;
+
             try
             {
                 TreeNode objSelectedNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken).ConfigureAwait(false);
@@ -2024,7 +2074,8 @@ namespace Chummer
                         CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                         try
                         {
-                            objCache.OnMyDoubleClick(sender, e);
+                            if (objCache.OnMyDoubleClick != null)
+                                await objCache.OnMyDoubleClick(sender, e, _objGenericToken).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -2040,11 +2091,23 @@ namespace Chummer
             }
         }
 
-        private void treCharacterList_OnDefaultKeyDown(object sender, KeyEventArgs e)
+        private async void treCharacterList_OnDefaultKeyDown(object sender, KeyEventArgs e)
         {
-            TreeNode t = treCharacterList.SelectedNode;
-            CharacterCache objCache = t?.Tag as CharacterCache;
-            objCache?.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t));
+            if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
+                return;
+            try
+            {
+                TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken).ConfigureAwait(false);
+
+                if (t?.Tag is CharacterCache objCache && objCache.OnMyKeyDown != null)
+                {
+                    await objCache.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t), _objGenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void treCharacterList_OnDefaultDragOver(object sender, DragEventArgs e)
@@ -2069,6 +2132,9 @@ namespace Chummer
 
         private async void treCharacterList_OnDefaultDragDrop(object sender, DragEventArgs e)
         {
+            if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
+                return;
+
             // Do not allow the root element to be moved.
             if (treCharacterList.SelectedNode == null || treCharacterList.SelectedNode.Level == 0 || treCharacterList.SelectedNode.Parent?.Tag?.ToString() == "Watch")
                 return;
@@ -2077,13 +2143,15 @@ namespace Chummer
                 return;
             if (!(sender is TreeView treSenderView))
                 return;
-            Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
-            TreeNode nodDestinationNode = treSenderView.GetNodeAt(pt);
-            if (nodDestinationNode?.Level > 0)
-                nodDestinationNode = nodDestinationNode.Parent;
-            string strDestinationNode = nodDestinationNode?.Tag?.ToString();
+            
+            TreeNode nodDestinationNode;
             try
             {
+                Point pt = await treSenderView.DoThreadSafeFuncAsync(x => x.PointToClient(new Point(e.X, e.Y)), _objGenericToken).ConfigureAwait(false);
+                nodDestinationNode = await treSenderView.DoThreadSafeFuncAsync(x => x.GetNodeAt(pt), _objGenericToken).ConfigureAwait(false);
+                if (nodDestinationNode?.Level > 0)
+                    nodDestinationNode = nodDestinationNode.Parent;
+                string strDestinationNode = nodDestinationNode?.Tag?.ToString();
                 if (strDestinationNode != "Watch")
                 {
                     if (!(e.Data.GetData("System.Windows.Forms.TreeNode") is TreeNode nodNewNode))
@@ -2096,15 +2164,16 @@ namespace Chummer
                         switch (strDestinationNode)
                         {
                             case "Recent":
+                                string strFilePath = await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false);
                                 await GlobalSettings.FavoriteCharacters.RemoveAsync(
-                                    objCache.FilePath, _objGenericToken).ConfigureAwait(false);
+                                    strFilePath, _objGenericToken).ConfigureAwait(false);
                                 await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                    0, objCache.FilePath, _objGenericToken).ConfigureAwait(false);
+                                    0, strFilePath, _objGenericToken).ConfigureAwait(false);
                                 break;
 
                             case "Favorite":
                                 await GlobalSettings.FavoriteCharacters.AddWithSortAsync(
-                                    objCache.FilePath, token: _objGenericToken).ConfigureAwait(false);
+                                    await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false), token: _objGenericToken).ConfigureAwait(false);
                                 break;
                         }
                     }
@@ -2155,7 +2224,8 @@ namespace Chummer
 
         private Task ProcessMugshotSizeMode(CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (this.IsNullOrDisposed())
                 return Task.CompletedTask;
             return picMugshot.DoThreadSafeAsync(x =>
@@ -2177,22 +2247,28 @@ namespace Chummer
 
         #endregion Form Methods
 
-        public void tsDelete_Click(object sender, EventArgs e)
+        public async void tsDelete_Click(object sender, EventArgs e)
         {
-            if (treCharacterList.IsNullOrDisposed())
+            if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
-
-            TreeNode t = treCharacterList.SelectedNode;
-
-            if (t?.Tag is CharacterCache objCache)
+            try
             {
-                objCache.OnMyContextMenuDeleteClick(t, e);
+                TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken).ConfigureAwait(false);
+
+                if (t?.Tag is CharacterCache objCache && objCache.OnMyContextMenuDeleteClick != null)
+                {
+                    await objCache.OnMyContextMenuDeleteClick(t, e, _objGenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private void tsSort_Click(object sender, EventArgs e)
         {
-            if (treCharacterList.IsNullOrDisposed())
+            if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
 
             TreeNode t = treCharacterList.SelectedNode;
@@ -2228,7 +2304,7 @@ namespace Chummer
 
         private async void tsOpen_Click(object sender, EventArgs e)
         {
-            if (treCharacterList.IsNullOrDisposed())
+            if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
 
             try
@@ -2240,18 +2316,20 @@ namespace Chummer
                     CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                     try
                     {
+                        string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                         Character objCharacter
                             = await Program.OpenCharacters.FirstOrDefaultAsync(
-                                x => x.FileName == objCache.FileName, _objGenericToken).ConfigureAwait(false);
+                                x => x.FileName == strFileName, _objGenericToken).ConfigureAwait(false);
                         if (objCharacter == null)
                         {
+                            string strFilePath = await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false);
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = await Program.CreateAndShowProgressBarAsync(
-                                                      objCache.FilePath, Character.NumLoadingSections, _objGenericToken)
+                                                      strFilePath, Character.NumLoadingSections, _objGenericToken)
                                                   .ConfigureAwait(false))
                             {
                                 objCharacter = await Program.LoadCharacterAsync(
-                                                                objCache.FilePath, frmLoadingBar: frmLoadingBar.MyForm,
+                                                                strFilePath, frmLoadingBar: frmLoadingBar.MyForm,
                                                                 token: _objGenericToken)
                                                             .ConfigureAwait(false);
                             }
@@ -2274,7 +2352,7 @@ namespace Chummer
 
         private async void tsOpenForPrinting_Click(object sender, EventArgs e)
         {
-            if (treCharacterList.IsNullOrDisposed())
+            if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
 
             try
@@ -2285,18 +2363,20 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
+                    string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                     Character objCharacter
                         = await Program.OpenCharacters.FirstOrDefaultAsync(
-                            x => x.FileName == objCache.FileName, _objGenericToken).ConfigureAwait(false);
+                            x => x.FileName == strFileName, _objGenericToken).ConfigureAwait(false);
                     if (objCharacter == null)
                     {
+                        string strFilePath = await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false);
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(
-                                                  objCache.FilePath, Character.NumLoadingSections, _objGenericToken)
+                                                  strFilePath, Character.NumLoadingSections, _objGenericToken)
                                               .ConfigureAwait(false))
                         {
                             objCharacter
-                                = await Program.LoadCharacterAsync(objCache.FilePath,
+                                = await Program.LoadCharacterAsync(strFilePath,
                                                                    frmLoadingBar: frmLoadingBar.MyForm,
                                                                    token: _objGenericToken).ConfigureAwait(false);
                         }
@@ -2318,7 +2398,7 @@ namespace Chummer
 
         private async void tsOpenForExport_Click(object sender, EventArgs e)
         {
-            if (treCharacterList.IsNullOrDisposed())
+            if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
 
             try
@@ -2329,18 +2409,20 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
+                    string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                     Character objCharacter
                         = await Program.OpenCharacters.FirstOrDefaultAsync(
-                            x => x.FileName == objCache.FileName, _objGenericToken).ConfigureAwait(false);
+                            x => x.FileName == strFileName, _objGenericToken).ConfigureAwait(false);
                     if (objCharacter == null)
                     {
+                        string strFilePath = await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false);
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(
-                                                  objCache.FilePath, Character.NumLoadingSections, _objGenericToken)
+                                                  strFilePath, Character.NumLoadingSections, _objGenericToken)
                                               .ConfigureAwait(false))
                         {
                             objCharacter
-                                = await Program.LoadCharacterAsync(objCache.FilePath,
+                                = await Program.LoadCharacterAsync(strFilePath,
                                                                    frmLoadingBar: frmLoadingBar.MyForm,
                                                                    token: _objGenericToken).ConfigureAwait(false);
                         }
@@ -2362,30 +2444,32 @@ namespace Chummer
 
         private async void tsToggleFav_Click(object sender, EventArgs e)
         {
-            if (treCharacterList.IsNullOrDisposed())
+            if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
 
-            TreeNode t = treCharacterList.SelectedNode;
-
-            if (!(t?.Tag is CharacterCache objCache))
-                return;
             try
             {
+                TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken).ConfigureAwait(false);
+
+                if (!(t?.Tag is CharacterCache objCache))
+                    return;
+
                 switch (t.Parent.Tag.ToString())
                 {
                     case "Favorite":
-                        await GlobalSettings.FavoriteCharacters.RemoveAsync(objCache.FilePath, _objGenericToken).ConfigureAwait(false);
+                        string strFilePath = await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false);
+                        await GlobalSettings.FavoriteCharacters.RemoveAsync(strFilePath, _objGenericToken).ConfigureAwait(false);
                         await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                            0, objCache.FilePath, _objGenericToken).ConfigureAwait(false);
+                            0, strFilePath, _objGenericToken).ConfigureAwait(false);
                         break;
 
                     default:
                         await GlobalSettings.FavoriteCharacters.AddWithSortAsync(
-                            objCache.FilePath, token: _objGenericToken).ConfigureAwait(false);
+                            await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false), token: _objGenericToken).ConfigureAwait(false);
                         break;
                 }
 
-                treCharacterList.SelectedNode = t;
+                await treCharacterList.DoThreadSafeAsync(x => x.SelectedNode = t, _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -2405,6 +2489,9 @@ namespace Chummer
 
         public void OnDefaultMouseDown(object sender, MouseEventArgs e)
         {
+            if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
+                return;
+
             if (sender is TreeView objTree && e != null)
             {
                 // Generic event for all TreeViews to allow right-clicking to select a TreeNode so the proper ContextMenu is shown.
@@ -2434,7 +2521,7 @@ namespace Chummer
 
         private async void tsCloseOpenCharacter_Click(object sender, EventArgs e)
         {
-            if (treCharacterList.IsNullOrDisposed())
+            if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
             try
             {
@@ -2483,6 +2570,8 @@ namespace Chummer
 
         private async void TreCharacterList_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
+            if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
+                return;
             try
             {
                 if (e.Button == MouseButtons.Right)

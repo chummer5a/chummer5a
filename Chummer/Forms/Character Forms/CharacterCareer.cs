@@ -5289,7 +5289,7 @@ namespace Chummer
                                             await ImprovementManager.CreateImprovementsAsync(
                                                 CharacterObject, Improvement.ImprovementSource.Armor,
                                                 objArmor.InternalId,
-                                                objArmor.Bonus, objArmor.Rating,
+                                                objArmor.Bonus, await objArmor.GetRatingAsync(token).ConfigureAwait(false),
                                                 await objArmor.GetCurrentDisplayNameShortAsync(token)
                                                               .ConfigureAwait(false),
                                                 token: token).ConfigureAwait(false);
@@ -5332,7 +5332,7 @@ namespace Chummer
                                                                             CharacterObject,
                                                                             Improvement.ImprovementSource.ArmorMod,
                                                                             objMod.InternalId, objMod.Bonus,
-                                                                            objMod.Rating,
+                                                                            await objMod.GetRatingAsync(GenericToken).ConfigureAwait(false),
                                                                             await objMod
                                                                                 .GetCurrentDisplayNameShortAsync(token)
                                                                                 .ConfigureAwait(false), token: token)
@@ -5547,7 +5547,7 @@ namespace Chummer
                                 }
 
                                 // Load the Spirit's save file into a new Merge character.
-                                frmLoadingBar.MyForm.CharacterFile = await objMerge.GetFileNameAsync(GenericToken).ConfigureAwait(false);
+                                await frmLoadingBar.MyForm.SetCharacterFileAsync(await objMerge.GetFileNameAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                                 blnSuccess = await objMerge
                                                    .LoadAsync(frmLoadingForm: frmLoadingBar.MyForm, token: GenericToken)
                                                    .ConfigureAwait(false);
@@ -6607,7 +6607,10 @@ namespace Chummer
                     ComplexForm objComplexForm = new ComplexForm(CharacterObject);
                     await objComplexForm.CreateAsync(objXmlComplexForm, token: GenericToken).ConfigureAwait(false);
                     if (objComplexForm.InternalId.IsEmptyGuid())
+                    {
+                        await objComplexForm.DisposeAsync().ConfigureAwait(false);
                         continue;
+                    }
 
                     await CharacterObject.ComplexForms.AddAsync(objComplexForm, GenericToken).ConfigureAwait(false);
 
@@ -18449,6 +18452,7 @@ namespace Chummer
                             }
                         }
 
+                        List<string> lstActiveIds = new List<string>();
                         await treViewToUse.DoThreadSafeAsync(y =>
                         {
                             // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
@@ -18458,15 +18462,20 @@ namespace Chummer
                                 {
                                     string strNodeId = objNode.Tag.ToString();
                                     ++intFociCount;
-                                    intFociTotal += CharacterObject
-                                        .Gear.FirstOrDefault(x => x.InternalId == strNodeId && x.Bonded)
-                                        ?.Rating ?? 0;
-                                    intFociTotal += CharacterObject.StackedFoci
-                                        .Find(x => x.InternalId == strNodeId && x.Bonded)
-                                        ?.TotalForce ?? 0;
+                                    lstActiveIds.Add(strNodeId);
                                 }
                             }
                         }, GenericToken).ConfigureAwait(false);
+
+                        foreach (string strNodeId in lstActiveIds)
+                        {
+                            Gear objGear = await CharacterObject.Gear.FindByIdAsync(strNodeId, GenericToken).ConfigureAwait(false);
+                            if (objGear?.Bonded == true)
+                                intFociTotal += await objGear.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                            StackedFocus objFocus = await CharacterObject.StackedFoci.FindAsync(x => x.InternalId == strNodeId && x.Bonded, GenericToken).ConfigureAwait(false);
+                            if (objFocus != null)
+                                intFociTotal += await objFocus.GetTotalForceAsync(GenericToken).ConfigureAwait(false);
+                        }
 
                         if (!CharacterObject.IgnoreRules)
                         {
@@ -22149,14 +22158,15 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                    .ConfigureAwait(false);
-                            if (objSelectedAccessory.MaxRating > 0)
+                            int intRating = await objSelectedAccessory.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
                                 await lblWeaponRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objSelectedAccessory.Rating.ToString(GlobalSettings.CultureInfo);
+                                    x.Text = intRating.ToString(GlobalSettings.CultureInfo);
                                 }, token).ConfigureAwait(false);
                             }
                             else
@@ -22823,14 +22833,15 @@ namespace Chummer
 
                             await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token)
                                                   .ConfigureAwait(false);
-                            if (objArmorMod.MaximumRating > 1)
+                            int intRating = await objArmorMod.GetRatingAsync(token).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
                                 await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                          .ConfigureAwait(false);
                                 await lblArmorRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objArmorMod.Rating.ToString(GlobalSettings.CultureInfo);
+                                    x.Text = intRating.ToString(GlobalSettings.CultureInfo);
                                 }, token).ConfigureAwait(false);
                             }
                             else
@@ -25913,14 +25924,15 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                     .ConfigureAwait(false);
-                            if (objAccessory.MaxRating > 0)
+                            int intRating = await objAccessory.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
                                 await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                            .ConfigureAwait(false);
                                 await lblVehicleRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objAccessory.Rating.ToString(GlobalSettings.CultureInfo);
+                                    x.Text = intRating.ToString(GlobalSettings.CultureInfo);
                                 }, token).ConfigureAwait(false);
                             }
                             else
@@ -27114,7 +27126,7 @@ namespace Chummer
                         string strText4 = await objSpell.DisplayRangeAsync(GlobalSettings.Language, token)
                                                         .ConfigureAwait(false);
                         await lblSpellRange.DoThreadSafeAsync(x => x.Text = strText4, token).ConfigureAwait(false);
-                        string strText5 = await objSpell.DisplayDamageAsync(GlobalSettings.Language, token)
+                        string strText5 = await objSpell.DisplayDamageAsync(GlobalSettings.Language, GlobalSettings.CultureInfo, token)
                                                         .ConfigureAwait(false);
                         await lblSpellDamage.DoThreadSafeAsync(x => x.Text = strText5, token).ConfigureAwait(false);
                         string strText6 = await objSpell.DisplayDurationAsync(GlobalSettings.Language, token)
@@ -27123,7 +27135,7 @@ namespace Chummer
                         string strText7 = await objSpell.DisplayDvAsync(GlobalSettings.Language, token)
                                                         .ConfigureAwait(false);
                         await lblSpellDV.DoThreadSafeAsync(x => x.Text = strText7, token).ConfigureAwait(false);
-                        await lblSpellDV.SetToolTipAsync(objSpell.DvTooltip, token).ConfigureAwait(false);
+                        await lblSpellDV.SetToolTipAsync(await objSpell.GetDvTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objSpell.SetSourceDetailAsync(lblSpellSource, token).ConfigureAwait(false);
                         // Determine the size of the Spellcasting Dice Pool.
                         int intPool = await objSpell.GetDicePoolAsync(token).ConfigureAwait(false);
@@ -27351,7 +27363,7 @@ namespace Chummer
                         string strText3 = await objComplexForm.DisplayFvAsync(GlobalSettings.Language, token)
                                                               .ConfigureAwait(false);
                         await lblFV.DoThreadSafeAsync(x => x.Text = strText3, token).ConfigureAwait(false);
-                        await lblFV.SetToolTipAsync(objComplexForm.FvTooltip, token).ConfigureAwait(false);
+                        await lblFV.SetToolTipAsync(await objComplexForm.GetFvTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objComplexForm.SetSourceDetailAsync(lblComplexFormSource, token).ConfigureAwait(false);
                         // Determine the size of the Threading Dice Pool.
                         await dpcComplexFormDicePool.DoThreadSafeAsync(x => x.DicePool = objComplexForm.DicePool, token)

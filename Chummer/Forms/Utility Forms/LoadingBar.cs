@@ -52,6 +52,18 @@ namespace Chummer
             }
         }
 
+        public async Task SetCharacterFileAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.Exchange(ref _strCharacterFile, value) == value)
+                return;
+            if (this.IsNullOrDisposed())
+                return;
+            string strDisplayText = string.Format(GlobalSettings.CultureInfo,
+                await LanguageManager.GetStringAsync("String_Loading_Pattern", token: token), value);
+            await this.DoThreadSafeAsync(x => x.Text = strDisplayText, token).ConfigureAwait(false);
+        }
+
         public LoadingBar()
         {
             InitializeComponent();

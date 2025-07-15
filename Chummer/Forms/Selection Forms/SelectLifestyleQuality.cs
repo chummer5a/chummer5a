@@ -201,16 +201,20 @@ namespace Chummer
                     }
                     else
                     {
-                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost).ConfigureAwait(false);
-                        if (blnIsSuccess)
+                        if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
                         {
-                            decimal decCost = Convert.ToDecimal((double)objProcess);
-                            strCost = decCost.ToString(
-                                          await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetNuyenFormatAsync().ConfigureAwait(false),
-                                          GlobalSettings.CultureInfo)
-                                      + await LanguageManager.GetStringAsync("String_NuyenSymbol")
-                                          .ConfigureAwait(false);
+                            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost).ConfigureAwait(false);
+                            if (blnIsSuccess)
+                            {
+                                decCost = Convert.ToDecimal((double)objProcess);
+
+                            }
                         }
+                        strCost = decCost.ToString(
+                                              await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetNuyenFormatAsync().ConfigureAwait(false),
+                                              GlobalSettings.CultureInfo)
+                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol")
+                                              .ConfigureAwait(false);
                     }
 
                     await lblCost.DoThreadSafeAsync(x =>

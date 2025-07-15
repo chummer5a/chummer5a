@@ -1613,7 +1613,8 @@ namespace Chummer
         /// <returns></returns>
         public static ThreadSafeForm<LoadingBar> CreateAndShowProgressBar(string strFile = "", int intCount = 1)
         {
-            ThreadSafeForm<LoadingBar> frmReturn = ThreadSafeForm<LoadingBar>.Get(() => new LoadingBar { CharacterFile = strFile });
+            ThreadSafeForm<LoadingBar> frmReturn = ThreadSafeForm<LoadingBar>.Get(() => new LoadingBar());
+            frmReturn.MyForm.CharacterFile = strFile;
             if (intCount > 0)
                 frmReturn.MyForm.Reset(intCount);
             frmReturn.MyForm.DoThreadSafe(x =>
@@ -1641,7 +1642,8 @@ namespace Chummer
         public static async Task<ThreadSafeForm<LoadingBar>> CreateAndShowProgressBarAsync(string strFile = "", int intCount = 1, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            ThreadSafeForm<LoadingBar> frmReturn = await ThreadSafeForm<LoadingBar>.GetAsync(() => new LoadingBar { CharacterFile = strFile }, token).ConfigureAwait(false);
+            ThreadSafeForm<LoadingBar> frmReturn = await ThreadSafeForm<LoadingBar>.GetAsync(() => new LoadingBar(), token).ConfigureAwait(false);
+            await frmReturn.MyForm.SetCharacterFileAsync(strFile, token).ConfigureAwait(false);
             if (intCount > 0)
                 await frmReturn.MyForm.ResetAsync(intCount, token).ConfigureAwait(false);
             await frmReturn.MyForm.DoThreadSafeAsync(x =>

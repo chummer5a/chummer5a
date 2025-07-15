@@ -1010,14 +1010,19 @@ namespace Chummer
             }
         }
 
-        private void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
+        private async void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            try
             {
-                string strPlugin = clbPlugins.Items[e.Index]?.ToString() ?? string.Empty;
+                string strPlugin = (await clbPlugins.DoThreadSafeFuncAsync(x => x.Items[e.Index]).ConfigureAwait(false))?.ToString() ?? string.Empty;
                 bool blnNewValue = e.NewValue == CheckState.Checked;
                 GlobalSettings.PluginsEnabledDic.AddOrUpdate(strPlugin, blnNewValue, (x, y) => blnNewValue);
                 OptionsChanged(sender, e);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

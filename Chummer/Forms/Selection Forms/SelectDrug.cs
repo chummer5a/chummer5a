@@ -231,28 +231,32 @@ namespace Chummer
                         string strMinRating = xmlDrug.SelectSingleNodeAndCacheExpression("minrating")?.Value;
                         int intMinRating = 1;
                         // Not a simple integer, so we need to start mucking around with strings
-                        if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
+                        if (strMinRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
                             strMinRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMinRating, dicVehicleValues).ConfigureAwait(false);
                             (bool blnIsSuccess, object objProcess) = await CommonFunctions
                                                                            .EvaluateInvariantXPathAsync(strMinRating)
                                                                            .ConfigureAwait(false);
-                            intMinRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
+                            intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                         }
+                        else
+                            intMinRating = decValue.StandardRound();
 
                         await nudRating.DoThreadSafeAsync(x => x.Minimum = intMinRating).ConfigureAwait(false);
 
                         string strMaxRating = xmlRatingNode.Value;
                         int intMaxRating = 0;
                         // Not a simple integer, so we need to start mucking around with strings
-                        if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating))
+                        if (strMaxRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                         {
                             strMaxRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMaxRating, dicVehicleValues).ConfigureAwait(false);
                             (bool blnIsSuccess, object objProcess) = await CommonFunctions
                                                                            .EvaluateInvariantXPathAsync(strMaxRating)
                                                                            .ConfigureAwait(false);
-                            intMaxRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
+                            intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                         }
+                        else
+                            intMaxRating = decValue.StandardRound();
 
                         if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
@@ -647,19 +651,30 @@ namespace Chummer
                     strAvailExpr = strAvailExpr.Substring(1);
                 }
 
-                strAvailExpr = await strAvailExpr.CheapReplaceAsync("MinRating",
-                                                                    async () =>
-                                                                        (await nudRating.DoThreadSafeFuncAsync(
-                                                                            x => x.Minimum, token: token).ConfigureAwait(false))
-                                                                        .ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                                 .CheapReplaceAsync(
-                                                     "Rating",
-                                                     () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr, token).ConfigureAwait(false);
-                if (blnIsSuccess)
+                if (strAvailExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    int intAvail = ((double)objProcess).StandardRound() + _intAvailModifier;
+                    strAvailExpr = await strAvailExpr.CheapReplaceAsync("MinRating",
+                                                                        async () =>
+                                                                            (await nudRating.DoThreadSafeFuncAsync(
+                                                                                x => x.Minimum, token: token).ConfigureAwait(false))
+                                                                            .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                                     .CheapReplaceAsync(
+                                                         "Rating",
+                                                         () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr, token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                    {
+                        int intAvail = ((double)objProcess).StandardRound() + _intAvailModifier;
+                        // Avail cannot go below 0.
+                        if (intAvail < 0)
+                            intAvail = 0;
+                        strAvail = strPrefix + intAvail.ToString(GlobalSettings.CultureInfo) + strSuffix;
+                    }
+                }
+                else
+                {
+                    int intAvail = decValue.StandardRound() + _intAvailModifier;
                     // Avail cannot go below 0.
                     if (intAvail < 0)
                         intAvail = 0;
@@ -717,7 +732,7 @@ namespace Chummer
 
                         decItemCost = decMin;
                     }
-                    else
+                    else if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decItemCost))
                     {
                         strCost = await (await strCost.CheapReplaceAsync("MinRating", () => nudRating.Minimum.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
                                         .CheapReplaceAsync("Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
@@ -733,12 +748,26 @@ namespace Chummer
                                 decItemCost *= 0.9m;
                             }
 
-                            await lblCost.DoThreadSafeAsync(x => x.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + strNuyen, token: token).ConfigureAwait(false);
+                            string strText = decItemCost.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo) + strNuyen;
+                            await lblCost.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
                         }
                         else
                         {
                             await lblCost.DoThreadSafeAsync(x => x.Text = strCost + strNuyen, token: token).ConfigureAwait(false);
                         }
+                    }
+                    else
+                    {
+                        decItemCost *= _decCostMultiplier;
+                        decItemCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
+
+                        if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                        {
+                            decItemCost *= 0.9m;
+                        }
+
+                        string strText = decItemCost.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo) + strNuyen;
+                        await lblCost.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
                     }
                 }
                 else
@@ -832,8 +861,8 @@ namespace Chummer
                     string strMinRating = xmlDrug.SelectSingleNodeAndCacheExpression("minrating", token)?.Value;
                     int intMinRating = 1;
                     // If our rating tag is a complex property, check to make sure our maximum rating is not less than our minimum rating
-                    if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating)
-                        || !string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
+                    if (strMaxRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decMaxRating)
+                        || strMinRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decMinRating))
                     {
                         (bool blnIsSuccess, object objProcess) = await CommonFunctions
                                                                        .EvaluateInvariantXPathAsync(strMinRating, token)
@@ -842,9 +871,13 @@ namespace Chummer
                         (blnIsSuccess, objProcess) = await CommonFunctions
                                                            .EvaluateInvariantXPathAsync(strMaxRating, token)
                                                            .ConfigureAwait(false);
-                        intMaxRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
+                        int intMaxRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
                         if (intMaxRating < intMinRating)
                             continue;
+                    }
+                    else if (decMaxRating.StandardRound() < decMinRating.StandardRound())
+                    {
+                        continue;
                     }
 
                     if (ParentVehicle == null && !await xmlDrug.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))

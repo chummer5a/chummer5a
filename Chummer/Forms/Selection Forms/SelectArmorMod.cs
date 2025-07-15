@@ -377,14 +377,17 @@ namespace Chummer
                     }
                     else
                     {
-                        string strCost = await (await strCostElement.CheapReplaceAsync(
-                                                   "Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
-                                               .CheapReplaceAsync("Armor Cost",
-                                                                  () => _decArmorCost.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        if (strCostElement.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
+                        {
+                            string strCost = await (await strCostElement.CheapReplaceAsync(
+                                                       "Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
+                                                   .CheapReplaceAsync("Armor Cost",
+                                                                      () => _decArmorCost.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
 
-                        // Apply any markup.
-                        (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token: token).ConfigureAwait(false);
-                        decimal decCost = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                            // Apply any markup.
+                            (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token: token).ConfigureAwait(false);
+                            decCost = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                        }
                         decCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
 
                         await lblCost.DoThreadSafeAsync(x => x.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
@@ -415,19 +418,25 @@ namespace Chummer
                         strCapacity = strValues[nudRating.ValueAsInt - 1];
                     }
 
-                    strCapacity = await (await strCapacity.CheapReplaceAsync(
-                                            "Capacity", () => _decArmorCapacity.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
-                                        .CheapReplaceAsync(
-                                            "Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     bool blnSquareBrackets = strCapacity.StartsWith('[');
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-
-                    //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                    (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token: token).ConfigureAwait(false);
-                    string strReturn = blnIsSuccess
-                        ? ((double) objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
-                        : strCapacity;
+                    string strReturn;
+                    if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        strCapacity = await (await strCapacity.CheapReplaceAsync(
+                                                "Capacity", () => _decArmorCapacity.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
+                                            .CheapReplaceAsync(
+                                                "Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        
+                        //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
+                        (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token: token).ConfigureAwait(false);
+                        strReturn = blnIsSuccess
+                            ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
+                            : strCapacity;
+                    }
+                    else
+                        strReturn = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
 

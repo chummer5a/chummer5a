@@ -1291,10 +1291,10 @@ namespace Chummer.Backend.Equipment
                 {
                     if (Free)
                         return 0;
-                    if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                          out decimal decReturn))
+                    string strCost = CostString;
+                    if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                     {
-                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(CostString);
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCost);
                         if (blnIsSuccess)
                             return Convert.ToDecimal((double)objProcess);
                     }
@@ -1313,10 +1313,10 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 if (await GetCostFreeAsync(token).ConfigureAwait(false))
                     return 0;
-                if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                        out decimal decReturn))
+                string strCost = CostString;
+                if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(CostString, token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);
                     if (blnIsSuccess)
                         return Convert.ToDecimal((double)objProcess);
                 }

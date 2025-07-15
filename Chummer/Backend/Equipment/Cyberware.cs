@@ -130,7 +130,6 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
 
         private readonly Character _objCharacter;
-        private static readonly char[] s_MathOperators = "\"*/+-".ToCharArray();
 
         private bool _blnDoPropertyChangedInCollectionChanged = true;
 
@@ -5749,9 +5748,7 @@ namespace Chummer.Backend.Equipment
                     string strRating = MinRatingString;
 
                     // Not a simple integer, so we need to start mucking around with strings
-                    if (!string.IsNullOrEmpty(strRating)
-                        && !int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out intReturn))
+                    if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         Dictionary<string, int> dicVehicleValues = null;
                         if (strRating.Contains("imum}"))
@@ -5796,8 +5793,10 @@ namespace Chummer.Backend.Equipment
 
                         (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating);
                         if (blnIsSuccess)
-                            intReturn = ((double) objProcess).StandardRound();
+                            intReturn = ((double)objProcess).StandardRound();
                     }
+                    else
+                        intReturn = decValue.StandardRound();
                 }
 
                 return intReturn;
@@ -5817,8 +5816,7 @@ namespace Chummer.Backend.Equipment
                 string strRating = MinRatingString;
 
                 // Not a simple integer, so we need to start mucking around with strings
-                if (!string.IsNullOrEmpty(strRating)
-                    && !int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
+                if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     Dictionary<string, int> dicVehicleValues = null;
                     if (strRating.Contains("imum}"))
@@ -5869,8 +5867,10 @@ namespace Chummer.Backend.Equipment
                                                                    .EvaluateInvariantXPathAsync(strRating, token)
                                                                    .ConfigureAwait(false);
                     if (blnIsSuccess)
-                        intReturn = ((double) objProcess).StandardRound();
+                        intReturn = ((double)objProcess).StandardRound();
                 }
+                else
+                    intReturn = decValue.StandardRound();
             }
             finally
             {
@@ -5910,9 +5910,7 @@ namespace Chummer.Backend.Equipment
                     string strRating = MaxRatingString;
 
                     // Not a simple integer, so we need to start mucking around with strings
-                    if (!string.IsNullOrEmpty(strRating)
-                        && !int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out intReturn))
+                    if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         Dictionary<string, int> dicVehicleValues = null;
                         if (strRating.Contains("imum}"))
@@ -5957,8 +5955,10 @@ namespace Chummer.Backend.Equipment
 
                         (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating);
                         if (blnIsSuccess)
-                            intReturn = ((double) objProcess).StandardRound();
+                            intReturn = ((double)objProcess).StandardRound();
                     }
+                    else
+                        intReturn = decValue.StandardRound();
                 }
 
                 return intReturn;
@@ -5978,8 +5978,7 @@ namespace Chummer.Backend.Equipment
                 string strRating = MaxRatingString;
 
                 // Not a simple integer, so we need to start mucking around with strings
-                if (!string.IsNullOrEmpty(strRating)
-                    && !int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
+                if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     Dictionary<string, int> dicVehicleValues = null;
                     if (strRating.Contains("imum}"))
@@ -6030,8 +6029,10 @@ namespace Chummer.Backend.Equipment
                                                                    .EvaluateInvariantXPathAsync(strRating, token)
                                                                    .ConfigureAwait(false);
                     if (blnIsSuccess)
-                        intReturn = ((double) objProcess).StandardRound();
+                        intReturn = ((double)objProcess).StandardRound();
                 }
+                else
+                    intReturn = decValue.StandardRound();
             }
             finally
             {
@@ -7800,19 +7801,24 @@ namespace Chummer.Backend.Equipment
                     blnModifyParentAvail = strAvail.StartsWith('+', '-');
                     if (blnModifyParentAvail)
                         intAvail = 0;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        sbdAvail.Append(strAvail.TrimStart('+'));
-                        sbdAvail.CheapReplace(strAvail, "MinRating",
-                                              () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdAvail.CheapReplace(strAvail, "Rating",
-                                              () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
-                        (bool blnIsSuccess, object objProcess)
-                            = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
-                        if (blnIsSuccess)
-                            intAvail += ((double) objProcess).StandardRound();
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                        {
+                            sbdAvail.Append(strAvail.TrimStart('+'));
+                            sbdAvail.CheapReplace(strAvail, "MinRating",
+                                                  () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdAvail.CheapReplace(strAvail, "Rating",
+                                                  () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
+                            (bool blnIsSuccess, object objProcess)
+                                = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
+                            if (blnIsSuccess)
+                                intAvail += ((double)objProcess).StandardRound();
+                        }
                     }
+                    else
+                        intAvail += decValue.StandardRound();
                 }
 
                 if (blnCheckChildren)
@@ -7909,19 +7915,24 @@ namespace Chummer.Backend.Equipment
                     blnModifyParentAvail = strAvail.StartsWith('+', '-');
                     if (blnModifyParentAvail)
                         intAvail = 0;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        sbdAvail.Append(strAvail.TrimStart('+'));
-                        await sbdAvail.CheapReplaceAsync(strAvail, "MinRating",
-                                                         async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await sbdAvail.CheapReplaceAsync(strAvail, "Rating",
-                                                         async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
-                        (bool blnIsSuccess, object objProcess)
-                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
-                        if (blnIsSuccess)
-                            intAvail += ((double)objProcess).StandardRound();
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                        {
+                            sbdAvail.Append(strAvail.TrimStart('+'));
+                            await sbdAvail.CheapReplaceAsync(strAvail, "MinRating",
+                                                             async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            await sbdAvail.CheapReplaceAsync(strAvail, "Rating",
+                                                             async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
+                            (bool blnIsSuccess, object objProcess)
+                                = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
+                            if (blnIsSuccess)
+                                intAvail += ((double)objProcess).StandardRound();
+                        }
                     }
+                    else
+                        intAvail += decValue.StandardRound();
                 }
 
                 if (blnCheckChildren)
@@ -7938,7 +7949,7 @@ namespace Chummer.Backend.Equipment
                             chrLastAvailChar = 'F';
                         else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                             chrLastAvailChar = 'R';
-                        return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+                        return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
                     }, token).ConfigureAwait(false);
                 }
 
@@ -7951,14 +7962,14 @@ namespace Chummer.Backend.Equipment
                     AvailabilityValue objLoopAvailTuple =
                         await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (!objLoopAvailTuple.AddToParent)
-                        intLoopAvail = Math.Max(intLoopAvail, objLoopAvailTuple.Value);
+                        intLoopAvail = Math.Max(intLoopAvail, await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false));
                     if (blnCheckChildren)
                     {
                         if (objLoopAvailTuple.Suffix == 'F')
                             chrLastAvailChar = 'F';
                         else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                             chrLastAvailChar = 'R';
-                        return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+                        return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
                     }
 
                     if (blnOrGear)
@@ -8019,24 +8030,29 @@ namespace Chummer.Backend.Equipment
                         if (blnSquareBrackets && strFirstHalf.Length > 2)
                             strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
 
-                        try
+                        if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            (bool blnIsSuccess, object objProcess) =
-                                CommonFunctions.EvaluateInvariantXPath(
-                                    strFirstHalf.Replace(
-                                        "Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
-                            strReturn = blnIsSuccess
-                                ? ((double) objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
-                                : strFirstHalf;
+                            try
+                            {
+                                (bool blnIsSuccess, object objProcess) =
+                                    CommonFunctions.EvaluateInvariantXPath(
+                                        strFirstHalf.CheapReplace(
+                                            "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                                strReturn = blnIsSuccess
+                                    ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
+                                    : strFirstHalf;
+                            }
+                            catch (OverflowException) // Result is text and not a double
+                            {
+                                strReturn = strFirstHalf;
+                            }
+                            catch (InvalidCastException) // Result is text and not a double
+                            {
+                                strReturn = strFirstHalf;
+                            }
                         }
-                        catch (OverflowException) // Result is text and not a double
-                        {
-                            strReturn = strFirstHalf;
-                        }
-                        catch (InvalidCastException) // Result is text and not a double
-                        {
-                            strReturn = strFirstHalf;
-                        }
+                        else
+                            strReturn = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
 
                         if (blnSquareBrackets)
                             strReturn = '[' + strCapacity + ']';
@@ -8072,29 +8088,34 @@ namespace Chummer.Backend.Equipment
                             }
                         }
 
-                        try
+                        if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                         {
-                            (bool blnIsSuccess, object objProcess) =
-                                CommonFunctions.EvaluateInvariantXPath(
-                                    strSecondHalf.Replace(
-                                        "Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
-                            strSecondHalf =
-                                '[' + (blnIsSuccess
-                                    ? ((double) objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
-                                    : strSecondHalf) + ']';
+                            try
+                            {
+                                (bool blnIsSuccess, object objProcess) =
+                                    CommonFunctions.EvaluateInvariantXPath(
+                                        strSecondHalf.CheapReplace(
+                                            "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                                strSecondHalf =
+                                    '[' + (blnIsSuccess
+                                        ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
+                                        : strSecondHalf) + ']';
+                            }
+                            catch (OverflowException) // Result is text and not a double
+                            {
+                                strSecondHalf = '[' + strSecondHalf + ']';
+                            }
+                            catch (InvalidCastException) // Result is text and not a double
+                            {
+                                strSecondHalf = '[' + strSecondHalf + ']';
+                            }
                         }
-                        catch (OverflowException) // Result is text and not a double
-                        {
-                            strSecondHalf = '[' + strSecondHalf + ']';
-                        }
-                        catch (InvalidCastException) // Result is text and not a double
-                        {
-                            strSecondHalf = '[' + strSecondHalf + ']';
-                        }
+                        else
+                            strSecondHalf = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
 
                         strReturn += '/' + strSecondHalf;
                     }
-                    else if (strCapacity.Contains("Rating") ||
+                    else if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue) ||
                              (strCapacity.StartsWith('[') && Children.Any(x => x.AddToParentCapacity)))
                     {
                         // If the Capacity is determined by the Rating, evaluate the expression.
@@ -8136,21 +8157,15 @@ namespace Chummer.Backend.Equipment
 
                         (bool blnIsSuccess, object objProcess) =
                             CommonFunctions.EvaluateInvariantXPath(
-                                strCapacity.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                                strCapacity.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                         strReturn = blnIsSuccess
                             ? ((double) objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
                             : strCapacity;
                         if (blnSquareBrackets)
                             strReturn = '[' + strReturn + ']';
                     }
-                    else if (decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                              out decimal decReturn))
-                        return decReturn.ToString("#,0.##", GlobalSettings.CultureInfo);
                     else
-                    {
-                        // Just a straight Capacity, so return the value.
-                        return strCapacity;
-                    }
+                        return decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
 
                     return strReturn;
                 }
@@ -8190,24 +8205,29 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets && strFirstHalf.Length > 2)
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
 
-                    try
+                    if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        (bool blnIsSuccess, object objProcess) =
-                            await CommonFunctions.EvaluateInvariantXPathAsync(
-                                strFirstHalf.Replace(
-                                    "Rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
-                        strReturn = blnIsSuccess
-                            ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
-                            : strFirstHalf;
+                        try
+                        {
+                            (bool blnIsSuccess, object objProcess) =
+                                await CommonFunctions.EvaluateInvariantXPathAsync(
+                                    strFirstHalf.Replace(
+                                        "Rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                            strReturn = blnIsSuccess
+                                ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
+                                : strFirstHalf;
+                        }
+                        catch (OverflowException) // Result is text and not a double
+                        {
+                            strReturn = strFirstHalf;
+                        }
+                        catch (InvalidCastException) // Result is text and not a double
+                        {
+                            strReturn = strFirstHalf;
+                        }
                     }
-                    catch (OverflowException) // Result is text and not a double
-                    {
-                        strReturn = strFirstHalf;
-                    }
-                    catch (InvalidCastException) // Result is text and not a double
-                    {
-                        strReturn = strFirstHalf;
-                    }
+                    else
+                        strReturn = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
 
                     if (blnSquareBrackets)
                         strReturn = '[' + strCapacity + ']';
@@ -8241,29 +8261,34 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    try
+                    if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                     {
-                        (bool blnIsSuccess, object objProcess) =
-                            await CommonFunctions.EvaluateInvariantXPathAsync(
-                                strSecondHalf.Replace(
-                                    "Rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
-                        strSecondHalf =
-                            '[' + (blnIsSuccess
-                                ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
-                                : strSecondHalf) + ']';
+                        try
+                        {
+                            (bool blnIsSuccess, object objProcess) =
+                                await CommonFunctions.EvaluateInvariantXPathAsync(
+                                    strSecondHalf.Replace(
+                                        "Rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                            strSecondHalf =
+                                '[' + (blnIsSuccess
+                                    ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
+                                    : strSecondHalf) + ']';
+                        }
+                        catch (OverflowException) // Result is text and not a double
+                        {
+                            strSecondHalf = '[' + strSecondHalf + ']';
+                        }
+                        catch (InvalidCastException) // Result is text and not a double
+                        {
+                            strSecondHalf = '[' + strSecondHalf + ']';
+                        }
                     }
-                    catch (OverflowException) // Result is text and not a double
-                    {
-                        strSecondHalf = '[' + strSecondHalf + ']';
-                    }
-                    catch (InvalidCastException) // Result is text and not a double
-                    {
-                        strSecondHalf = '[' + strSecondHalf + ']';
-                    }
+                    else
+                        strSecondHalf = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
 
                     strReturn += '/' + strSecondHalf;
                 }
-                else if (strCapacity.Contains("Rating") ||
+                else if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue) ||
                          (strCapacity.StartsWith('[') && await (await GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(x => x.GetAddToParentCapacityAsync(token), token: token).ConfigureAwait(false)))
                 {
                     // If the Capacity is determined by the Rating, evaluate the expression.
@@ -8310,15 +8335,8 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
                 }
-                else if (decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                             out decimal decReturn))
-                    return decReturn.ToString("#,0.##", GlobalSettings.CultureInfo);
                 else
-                {
-                    // Just a straight Capacity, so return the value.
-                    return strCapacity;
-                }
-
+                    return decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
                 return strReturn;
             }
             finally
@@ -8447,7 +8465,7 @@ namespace Chummer.Backend.Equipment
                     strESS += strSuffix;
                 }
 
-                if (strESS.Contains("Rating") || strESS.IndexOfAny(s_MathOperators) >= 0)
+                if (strESS.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
                     // If the cost is determined by the Rating or there's a math operation in play, evaluate the expression.
                     (bool blnIsSuccess, object objProcess) = blnSync
@@ -8460,11 +8478,6 @@ namespace Chummer.Backend.Equipment
                                     intRating.ToString(GlobalSettings.InvariantCultureInfo)), token)
                             .ConfigureAwait(false);
                     decReturn = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
-                }
-                else
-                {
-                    // Just a straight cost, so return the value.
-                    decimal.TryParse(strESS, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decReturn);
                 }
 
                 // Factor in the Essence multiplier of the selected CyberwareGrade.
@@ -8637,26 +8650,28 @@ namespace Chummer.Backend.Equipment
                 decimal decTotalModifier = Math.Max(0, decESSMultiplier * decTotalESSMultiplier);
                 if (_objCharacter != null)
                 {
-                    string strPostModifierExpression
-                        = (blnSync
-                            ? _objCharacter.Settings
-                            : await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
-                        .EssenceModifierPostExpression;
+                    string strPostModifierExpression = blnSync
+                        ? _objCharacter.Settings.EssenceModifierPostExpression
+                        : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                            .GetEssenceModifierPostExpressionAsync(token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strPostModifierExpression) && strPostModifierExpression != "{Modifier}")
                     {
-                        (bool blnIsSuccess, object objProcess) = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? CommonFunctions.EvaluateInvariantXPath(
-                                strPostModifierExpression.Replace("{Modifier}",
-                                    decTotalModifier.ToString(
-                                        GlobalSettings.InvariantCultureInfo)), token)
-                            : await CommonFunctions.EvaluateInvariantXPathAsync(
-                                    strPostModifierExpression.Replace("{Modifier}",
-                                        decTotalModifier.ToString(
-                                            GlobalSettings.InvariantCultureInfo)), token)
-                                .ConfigureAwait(false);
-                        if (blnIsSuccess)
-                            decTotalModifier = Convert.ToDecimal((double)objProcess);
+                        strPostModifierExpression = strPostModifierExpression.Replace("{Modifier}",
+                                        decTotalModifier.ToString(GlobalSettings.InvariantCultureInfo));
+                        if (strPostModifierExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decTotalModifier))
+                        {
+                            if (blnSync)
+                                _objCharacter.AttributeSection.ProcessAttributesInXPath(strPostModifierExpression, token: token);
+                            else
+                                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strPostModifierExpression, token: token).ConfigureAwait(false);
+                            (bool blnIsSuccess, object objProcess) = blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? CommonFunctions.EvaluateInvariantXPath(strPostModifierExpression, token)
+                                : await CommonFunctions.EvaluateInvariantXPathAsync(strPostModifierExpression, token)
+                                    .ConfigureAwait(false);
+                            if (blnIsSuccess)
+                                decTotalModifier = Convert.ToDecimal((double)objProcess);
+                        }
                     }
                 }
 
@@ -8745,12 +8760,12 @@ namespace Chummer.Backend.Equipment
                     strExpression = strValues[Math.Max(0, Math.Min(Rating, strValues.Length) - 1)].Trim('[', ']');
                 }
 
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
                         sbdValue.Append(strExpression);
-                        sbdValue.Replace("{Rating}", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                         foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                         {
                             sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}',
@@ -8782,9 +8797,7 @@ namespace Chummer.Backend.Equipment
                         return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
                     }
                 }
-
-                int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
-                return intReturn;
+                return decValue.StandardRound();
             }
         }
 
@@ -8834,7 +8847,7 @@ namespace Chummer.Backend.Equipment
                     strExpression = strValues[Math.Max(0, Math.Min(await GetRatingAsync(token).ConfigureAwait(false), strValues.Length) - 1)].Trim('[', ']');
                 }
 
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
@@ -8879,9 +8892,7 @@ namespace Chummer.Backend.Equipment
                         return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                     }
                 }
-
-                int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
-                return intReturn;
+                return decValue.StandardRound();
             }
             finally
             {
@@ -8990,23 +9001,25 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(strCostExpression))
                     return 0;
 
-                decimal decReturn = 0;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                if (strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
-                    sbdCost.Append(strCostExpression.TrimStart('+'));
-                    sbdCost.Replace("Parent Cost", strParentCost);
-                    sbdCost.Replace("Parent Gear Cost",
-                                    decTotalParentGearCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdCost.Replace("Gear Cost", decTotalGearCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdCost.Replace("Children Cost",
-                                    decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdCost.CheapReplace(strCostExpression, "MinRating",
-                                         () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
-                    if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal((double)objProcess);
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                    {
+                        sbdCost.Append(strCostExpression.TrimStart('+'));
+                        sbdCost.Replace("Parent Cost", strParentCost);
+                        sbdCost.Replace("Parent Gear Cost",
+                                        decTotalParentGearCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdCost.Replace("Gear Cost", decTotalGearCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdCost.Replace("Children Cost",
+                                        decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdCost.CheapReplace(strCostExpression, "MinRating",
+                                             () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
+                        if (blnIsSuccess)
+                            decReturn = Convert.ToDecimal((double)objProcess);
+                    }
                 }
 
                 return decReturn;
@@ -9144,25 +9157,27 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(strCostExpression))
                     return 0;
 
-                decimal decReturn = 0;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                if (strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
-                    sbdCost.Append(strCostExpression.TrimStart('+'));
-                    sbdCost.Replace("Parent Cost", strParentCost);
-                    sbdCost.Replace("Parent Gear Cost",
-                                    decTotalParentGearCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdCost.Replace("Gear Cost", decTotalGearCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdCost.Replace("Children Cost",
-                                    decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    await sbdCost.CheapReplaceAsync(strCostExpression, "MinRating",
-                                                    async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(
-                                                        GlobalSettings.InvariantCultureInfo),
-                                                    token: token).ConfigureAwait(false);
-                    sbdCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                    await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal((double)objProcess);
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                    {
+                        sbdCost.Append(strCostExpression.TrimStart('+'));
+                        sbdCost.Replace("Parent Cost", strParentCost);
+                        sbdCost.Replace("Parent Gear Cost",
+                                        decTotalParentGearCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdCost.Replace("Gear Cost", decTotalGearCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdCost.Replace("Children Cost",
+                                        decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        await sbdCost.CheapReplaceAsync(strCostExpression, "MinRating",
+                                                        async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(
+                                                            GlobalSettings.InvariantCultureInfo),
+                                                        token: token).ConfigureAwait(false);
+                        sbdCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            decReturn = Convert.ToDecimal((double)objProcess);
+                    }
                 }
 
                 return decReturn;
@@ -11147,7 +11162,7 @@ namespace Chummer.Backend.Equipment
                     AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (!objTotalAvail.AddToParent)
                     {
-                        int intAvailInt = objTotalAvail.Value;
+                        int intAvailInt = await objTotalAvail.GetValueAsync(token).ConfigureAwait(false);
                         if (intAvailInt > await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaximumAvailabilityAsync(token).ConfigureAwait(false))
                         {
                             int intLowestValidRestrictedGearAvail = -1;

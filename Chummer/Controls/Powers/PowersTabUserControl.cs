@@ -866,7 +866,7 @@ namespace Chummer.UI.Powers
                             await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                         try
                         {
-                            return (await item.GetSourceDetailAsync(MyToken).ConfigureAwait(false)).LanguageBookTooltip;
+                            return await (await item.GetSourceDetailAsync(MyToken).ConfigureAwait(false)).GetLanguageBookTooltipAsync(MyToken).ConfigureAwait(false);
                         }
                         finally
                         {

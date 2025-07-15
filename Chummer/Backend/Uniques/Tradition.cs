@@ -1453,7 +1453,7 @@ namespace Chummer.Backend.Uniques
                         strDrain = sbdDrain.ToString();
                     }
 
-                    if (!decimal.TryParse(strDrain, out decimal decDrain))
+                    if (strDrain.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decDrain))
                     {
                         (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strDrain);
                         if (blnIsSuccess)
@@ -1496,7 +1496,7 @@ namespace Chummer.Backend.Uniques
                     strDrain = sbdDrain.ToString();
                 }
 
-                if (!decimal.TryParse(strDrain, out decimal decDrain))
+                if (strDrain.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decDrain))
                 {
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions
                         .EvaluateInvariantXPathAsync(strDrain, token).ConfigureAwait(false);

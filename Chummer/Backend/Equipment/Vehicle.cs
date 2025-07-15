@@ -1854,15 +1854,20 @@ namespace Chummer.Backend.Equipment
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    sbdAvail.Append(strAvail.TrimStart('+'));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
-                    if (blnIsSuccess)
-                        intAvail += ((double)objProcess).StandardRound();
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    {
+                        sbdAvail.Append(strAvail.TrimStart('+'));
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
+                        (bool blnIsSuccess, object objProcess)
+                            = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
+                        if (blnIsSuccess)
+                            intAvail += ((double)objProcess).StandardRound();
+                    }
                 }
+                else
+                    intAvail += decValue.StandardRound();
             }
 
             if (blnIncludeChildren)
@@ -1941,17 +1946,22 @@ namespace Chummer.Backend.Equipment
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    sbdAvail.Append(strAvail.TrimStart('+'));
-                    await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
-                        .ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token)
-                        .ConfigureAwait(false);
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        intAvail += ((double)objProcess).StandardRound();
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    {
+                        sbdAvail.Append(strAvail.TrimStart('+'));
+                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                            .ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token)
+                            .ConfigureAwait(false);
+                        (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            intAvail += ((double)objProcess).StandardRound();
+                    }
                 }
+                else
+                    intAvail += decValue.StandardRound();
             }
 
             if (blnIncludeChildren)
@@ -1966,7 +1976,7 @@ namespace Chummer.Backend.Equipment
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvail.AddToParent ? objLoopAvail.Value : 0;
+                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
                 }, token).ConfigureAwait(false) + await WeaponMounts.SumAsync(async objChild =>
                 {
                     if (objChild.IncludedInVehicle || !objChild.Equipped)
@@ -1977,7 +1987,7 @@ namespace Chummer.Backend.Equipment
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvail.AddToParent ? objLoopAvail.Value : 0;
+                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
                 }, token).ConfigureAwait(false) + await Weapons.SumAsync(async objChild =>
                 {
                     if (objChild.ParentID == InternalId || !objChild.Equipped)
@@ -1988,7 +1998,7 @@ namespace Chummer.Backend.Equipment
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvail.AddToParent ? objLoopAvail.Value : 0;
+                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
                 }, token).ConfigureAwait(false) + await GearChildren.SumAsync(async objChild =>
                 {
                     if (objChild.ParentID == InternalId)
@@ -1999,7 +2009,7 @@ namespace Chummer.Backend.Equipment
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvail.AddToParent ? objLoopAvail.Value : 0;
+                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
                 }, token).ConfigureAwait(false);
             }
 
@@ -2042,13 +2052,14 @@ namespace Chummer.Backend.Equipment
                             continue;
 
                         string strLoop = objMod.Bonus?["sensor"]?.InnerText;
+                        int intRating = objMod.Rating;
                         intTotalSensor = Math.Max(intTotalSensor,
-                            ParseBonus(strLoop, objMod.Rating, intTotalSensor, "Sensor", false));
+                            ParseBonus(strLoop, intRating, intTotalSensor, "Sensor", false));
                         if (!objMod.WirelessOn || objMod.WirelessBonus == null)
                             continue;
                         strLoop = objMod.WirelessBonus?["sensor"]?.InnerText;
                         intTotalSensor = Math.Max(intTotalSensor,
-                            ParseBonus(strLoop, objMod.Rating, intTotalSensor, "Sensor", false));
+                            ParseBonus(strLoop, intRating, intTotalSensor, "Sensor", false));
                     }
 
                     // Then check for mods that modify the sensor value (needs separate loop in case of % modifiers on top of stat-overriding mods)
@@ -2057,12 +2068,13 @@ namespace Chummer.Backend.Equipment
                     {
                         if (objMod.IncludedInVehicle || !objMod.Equipped)
                             continue;
-                        intTotalBonusSensor += ParseBonus(objMod.Bonus?["sensor"]?.InnerText, objMod.Rating,
+                        int intRating = objMod.Rating;
+                        intTotalBonusSensor += ParseBonus(objMod.Bonus?["sensor"]?.InnerText, intRating,
                             intTotalSensor, "Sensor");
 
                         if (objMod.WirelessOn)
                         {
-                            intTotalBonusSensor += ParseBonus(objMod.WirelessBonus?["sensor"]?.InnerText, objMod.Rating,
+                            intTotalBonusSensor += ParseBonus(objMod.WirelessBonus?["sensor"]?.InnerText, intRating,
                                 intTotalSensor, "Sensor");
                         }
                     }
@@ -2090,14 +2102,15 @@ namespace Chummer.Backend.Equipment
                         return;
 
                     string strLoop = objMod.Bonus?["sensor"]?.InnerText;
+                    int intRating = await objMod.GetRatingAsync(token).ConfigureAwait(false);
                     intTotalSensor = Math.Max(intTotalSensor,
-                        await ParseBonusAsync(strLoop, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalSensor, "Sensor", false, token)
+                        await ParseBonusAsync(strLoop, intRating, intTotalSensor, "Sensor", false, token)
                             .ConfigureAwait(false));
                     if (!objMod.WirelessOn || objMod.WirelessBonus == null)
                         return;
                     strLoop = objMod.WirelessBonus?["sensor"]?.InnerText;
                     intTotalSensor = Math.Max(intTotalSensor,
-                        await ParseBonusAsync(strLoop, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalSensor, "Sensor", false, token)
+                        await ParseBonusAsync(strLoop, intRating, intTotalSensor, "Sensor", false, token)
                             .ConfigureAwait(false));
                 }, token).ConfigureAwait(false);
 
@@ -2107,13 +2120,14 @@ namespace Chummer.Backend.Equipment
                     if (objMod.IncludedInVehicle || !objMod.Equipped)
                         return 0;
 
+                    int intRating = await objMod.GetRatingAsync(token);
                     string strLoop = objMod.Bonus?["sensor"]?.InnerText;
-                    int intTemp = await ParseBonusAsync(strLoop, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalSensor, "Sensor", token: token)
+                    int intTemp = await ParseBonusAsync(strLoop, intRating, intTotalSensor, "Sensor", token: token)
                         .ConfigureAwait(false);
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
                         strLoop = objMod.WirelessBonus?["sensor"]?.InnerText;
-                        intTemp += await ParseBonusAsync(strLoop, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalSensor, "Sensor", token: token)
+                        intTemp += await ParseBonusAsync(strLoop, intRating, intTotalSensor, "Sensor", token: token)
                             .ConfigureAwait(false);
                     }
 
@@ -2139,7 +2153,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         private static int ParseBonus(string strBonus, int intModRating, int intTotalRating, string strReplaceRating, bool blnBonus = true)
         {
-            if (!string.IsNullOrEmpty(strBonus))
+            if (strBonus.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 char chrFirstCharacter = strBonus[0];
                 //Value is a bonus
@@ -2162,7 +2176,7 @@ namespace Chummer.Backend.Equipment
                         return ((double)objProcess).StandardRound();
                 }
             }
-            return 0;
+            return decValue.StandardRound();
         }
 
         /// <summary>
@@ -2177,7 +2191,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         private static async Task<int> ParseBonusAsync(string strBonus, int intModRating, int intTotalRating, string strReplaceRating, bool blnBonus = true, CancellationToken token = default)
         {
-            if (!string.IsNullOrEmpty(strBonus))
+            if (strBonus.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 char chrFirstCharacter = strBonus[0];
                 //Value is a bonus
@@ -2200,7 +2214,7 @@ namespace Chummer.Backend.Equipment
                         return ((double)objProcess).StandardRound();
                 }
             }
-            return 0;
+            return decValue.StandardRound();
         }
 
         /// <summary>
@@ -2707,16 +2721,18 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decCost = 0;
                 string strCost = Cost;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
                 {
-                    sbdCost.Append(strCost);
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCost);
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
-                    if (blnIsSuccess)
-                        decCost = Convert.ToDecimal((double)objProcess);
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                    {
+                        sbdCost.Append(strCost);
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCost);
+                        (bool blnIsSuccess, object objProcess)
+                            = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
+                        if (blnIsSuccess)
+                            decCost = Convert.ToDecimal((double)objProcess);
+                    }
                 }
 
                 if (DiscountCost)
@@ -2734,16 +2750,18 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<decimal> GetOwnCostAsync(CancellationToken token = default)
         {
-            decimal decCost = 0;
             string strCost = Cost;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+            if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
             {
-                sbdCost.Append(strCost);
-                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
-                (bool blnIsSuccess, object objProcess)
-                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
-                if (blnIsSuccess)
-                    decCost = Convert.ToDecimal((double)objProcess);
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                {
+                    sbdCost.Append(strCost);
+                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        decCost = Convert.ToDecimal((double)objProcess);
+                }
             }
 
             if (DiscountCost)
@@ -2931,23 +2949,25 @@ namespace Chummer.Backend.Equipment
                             continue;
                         if (objMod.Bonus != null)
                         {
-                            intTotalBonusSpeed += ParseBonus(objMod.Bonus["speed"]?.InnerText, objMod.Rating,
+                            int intRating = objMod.Rating;
+                            intTotalBonusSpeed += ParseBonus(objMod.Bonus["speed"]?.InnerText, intRating,
                                 intTotalSpeed, "Speed");
                             intTotalBonusOffroadSpeed += ParseBonus(objMod.Bonus["offroadspeed"]?.InnerText,
-                                objMod.Rating, intTotalSpeed, "OffroadSpeed");
+                                intRating, intTotalSpeed, "OffroadSpeed");
                             if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, objMod.Rating,
+                                intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, intRating,
                                     intTotalArmor, "Armor");
                         }
 
                         if (objMod.WirelessOn && objMod.WirelessBonus != null)
                         {
-                            intTotalBonusSpeed += ParseBonus(objMod.WirelessBonus["speed"]?.InnerText, objMod.Rating,
+                            int intRating = objMod.Rating;
+                            intTotalBonusSpeed += ParseBonus(objMod.WirelessBonus["speed"]?.InnerText, intRating,
                                 intTotalSpeed, "Speed");
                             intTotalBonusOffroadSpeed += ParseBonus(objMod.WirelessBonus["offroadspeed"]?.InnerText,
-                                objMod.Rating, intTotalSpeed, "OffroadSpeed");
+                                intRating, intTotalSpeed, "OffroadSpeed");
                             if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, objMod.Rating,
+                                intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, intRating,
                                     intTotalArmor, "Armor");
                         }
                     }
@@ -3157,23 +3177,25 @@ namespace Chummer.Backend.Equipment
                             continue;
                         if (objMod.Bonus != null)
                         {
-                            intTotalBonusAccel += ParseBonus(objMod.Bonus["accel"]?.InnerText, objMod.Rating,
+                            int intRating = objMod.Rating;
+                            intTotalBonusAccel += ParseBonus(objMod.Bonus["accel"]?.InnerText, intRating,
                                 intTotalAccel, "Accel");
                             intTotalBonusOffroadAccel += ParseBonus(objMod.Bonus["offroadaccel"]?.InnerText,
-                                objMod.Rating, intTotalAccel, "OffroadAccel");
+                                intRating, intTotalAccel, "OffroadAccel");
                             if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, objMod.Rating,
+                                intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, intRating,
                                     intTotalArmor, "Armor");
                         }
 
                         if (objMod.WirelessOn && objMod.WirelessBonus != null)
                         {
-                            intTotalBonusAccel += ParseBonus(objMod.WirelessBonus["accel"]?.InnerText, objMod.Rating,
+                            int intRating = objMod.Rating;
+                            intTotalBonusAccel += ParseBonus(objMod.WirelessBonus["accel"]?.InnerText, intRating,
                                 intTotalAccel, "Accel");
                             intTotalBonusOffroadAccel += ParseBonus(objMod.WirelessBonus["offroadaccel"]?.InnerText,
-                                objMod.Rating, intTotalAccel, "OffroadAccel");
+                                intRating, intTotalAccel, "OffroadAccel");
                             if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, objMod.Rating,
+                                intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, intRating,
                                     intTotalArmor, "Armor");
                         }
                     }
@@ -3266,25 +3288,27 @@ namespace Chummer.Backend.Equipment
                     int intTemp = 0;
                     if (objMod.Bonus != null)
                     {
-                        intTotalBonusAccel += await ParseBonusAsync(objMod.Bonus["accel"]?.InnerText, await objMod.GetRatingAsync(token).ConfigureAwait(false),
+                        int intRating = await objMod.GetRatingAsync(token).ConfigureAwait(false);
+                        intTotalBonusAccel += await ParseBonusAsync(objMod.Bonus["accel"]?.InnerText, intRating,
                             intTotalAccel, "Accel", token: token).ConfigureAwait(false);
                         intTotalBonusOffroadAccel += await ParseBonusAsync(objMod.Bonus["offroadaccel"]?.InnerText,
-                            await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
+                            intRating, intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
                         if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
-                            intTemp += await ParseBonusAsync(objMod.Bonus["armor"]?.InnerText, await objMod.GetRatingAsync(token).ConfigureAwait(false),
+                            intTemp += await ParseBonusAsync(objMod.Bonus["armor"]?.InnerText, intRating,
                                 intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
 
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
+                        int intRating = await objMod.GetRatingAsync(token).ConfigureAwait(false);
                         intTotalBonusAccel += await ParseBonusAsync(objMod.WirelessBonus["accel"]?.InnerText,
-                            await objMod.GetRatingAsync(token).ConfigureAwait(false),
+                            intRating,
                             intTotalAccel, "Accel", token: token).ConfigureAwait(false);
                         intTotalBonusOffroadAccel += await ParseBonusAsync(
                             objMod.WirelessBonus["offroadaccel"]?.InnerText,
-                            await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
+                            intRating, intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
                         if (IsDrone && _objCharacter.Settings.DroneMods)
-                            intTemp += await ParseBonusAsync(objMod.WirelessBonus["armor"]?.InnerText, await objMod.GetRatingAsync(token).ConfigureAwait(false),
+                            intTemp += await ParseBonusAsync(objMod.WirelessBonus["armor"]?.InnerText, intRating,
                                 intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
 
@@ -5064,7 +5088,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
@@ -5099,7 +5123,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            return !int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn) ? 0 : intReturn;
+            return decValue.StandardRound();
         }
 
         public async Task<int> GetBaseMatrixAttributeAsync(string strAttributeName, CancellationToken token = default)
@@ -5126,7 +5150,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
@@ -5162,7 +5186,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            return !int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn) ? 0 : intReturn;
+            return decValue.StandardRound();
         }
 
         public int GetBonusMatrixAttribute(string strAttributeName)

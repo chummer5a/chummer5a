@@ -4470,7 +4470,7 @@ namespace Chummer
                                             await ImprovementManager.CreateImprovementsAsync(
                                                 CharacterObject, Improvement.ImprovementSource.Armor,
                                                 objArmor.InternalId,
-                                                objArmor.Bonus, objArmor.Rating,
+                                                objArmor.Bonus, await objArmor.GetRatingAsync(token).ConfigureAwait(false),
                                                 await objArmor.GetCurrentDisplayNameShortAsync(token)
                                                               .ConfigureAwait(false),
                                                 token: token).ConfigureAwait(false);
@@ -4514,7 +4514,7 @@ namespace Chummer
                                                                             CharacterObject,
                                                                             Improvement.ImprovementSource.ArmorMod,
                                                                             objMod.InternalId,
-                                                                            objMod.Bonus, objMod.Rating,
+                                                                            objMod.Bonus, await objMod.GetRatingAsync(GenericToken).ConfigureAwait(false),
                                                                             await objMod
                                                                                 .GetCurrentDisplayNameShortAsync(token)
                                                                                 .ConfigureAwait(false), token: token)
@@ -5347,7 +5347,10 @@ namespace Chummer
                         ComplexForm objComplexForm = new ComplexForm(CharacterObject);
                         await objComplexForm.CreateAsync(objXmlComplexForm, token: GenericToken).ConfigureAwait(false);
                         if (objComplexForm.InternalId.IsEmptyGuid())
+                        {
+                            await objComplexForm.DisposeAsync().ConfigureAwait(false);
                             continue;
+                        }
 
                         await CharacterObject.ComplexForms.AddAsync(objComplexForm, GenericToken).ConfigureAwait(false);
                     } while (blnAddAgain);
@@ -12487,6 +12490,7 @@ namespace Chummer
                                 ?.TotalForce ?? 0;
                         }
 
+                        List<string> lstActiveIds = new List<string>();
                         await treViewToUse.DoThreadSafeAsync(y =>
                         {
                             // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
@@ -12496,15 +12500,20 @@ namespace Chummer
                                 {
                                     string strNodeId = objNode.Tag.ToString();
                                     ++intFociCount;
-                                    intFociTotal += CharacterObject
-                                        .Gear.FirstOrDefault(x => x.InternalId == strNodeId && x.Bonded)
-                                        ?.Rating ?? 0;
-                                    intFociTotal += CharacterObject.StackedFoci
-                                        .Find(x => x.InternalId == strNodeId && x.Bonded)
-                                        ?.TotalForce ?? 0;
+                                    lstActiveIds.Add(strNodeId);
                                 }
                             }
                         }, GenericToken).ConfigureAwait(false);
+
+                        foreach (string strNodeId in lstActiveIds)
+                        {
+                            Gear objGear = await CharacterObject.Gear.FindByIdAsync(strNodeId, GenericToken).ConfigureAwait(false);
+                            if (objGear?.Bonded == true)
+                                intFociTotal += await objGear.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                            StackedFocus objFocus = await CharacterObject.StackedFoci.FindAsync(x => x.InternalId == strNodeId && x.Bonded, GenericToken).ConfigureAwait(false);
+                            if (objFocus != null)
+                                intFociTotal += await objFocus.GetTotalForceAsync(GenericToken).ConfigureAwait(false);
+                        }
 
                         if (!await CharacterObject.GetIgnoreRulesAsync(GenericToken).ConfigureAwait(false))
                         {
@@ -12765,7 +12774,7 @@ namespace Chummer
                                 await ImprovementManager.CreateImprovementsAsync(
                                                             CharacterObject, Improvement.ImprovementSource.ArmorMod,
                                                             objMod.InternalId,
-                                                            objMod.Bonus, objMod.Rating,
+                                                            objMod.Bonus, await objMod.GetRatingAsync(GenericToken).ConfigureAwait(false),
                                                             await objMod.GetCurrentDisplayNameShortAsync(GenericToken)
                                                                         .ConfigureAwait(false), token: GenericToken)
                                                         .ConfigureAwait(false);
@@ -12773,7 +12782,7 @@ namespace Chummer
                                 await ImprovementManager.CreateImprovementsAsync(
                                                             CharacterObject, Improvement.ImprovementSource.ArmorMod,
                                                             objMod.InternalId,
-                                                            objMod.WirelessBonus, objMod.Rating,
+                                                            objMod.WirelessBonus, await objMod.GetRatingAsync(GenericToken).ConfigureAwait(false),
                                                             await objMod.GetCurrentDisplayNameShortAsync(GenericToken)
                                                                         .ConfigureAwait(false), token: GenericToken)
                                                         .ConfigureAwait(false);
@@ -15661,20 +15670,21 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                             await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                    .ConfigureAwait(false);
-                            int intMaxRating = await objWeapon.GetMaxRatingValueAsync(token).ConfigureAwait(false);
-                            if (intMaxRating > 0)
+                            int intRating = await objWeapon.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
+                                int intMaxRating = await objWeapon.GetMaxRatingValueAsync(token).ConfigureAwait(false);
+                                int intMinRating = await objWeapon.GetMinRatingValueAsync(token).ConfigureAwait(false);
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                     .ConfigureAwait(false);
-                                int intRating = objWeapon.Rating;
                                 await nudWeaponRating.DoThreadSafeAsync(x =>
                                 {
+                                    x.Minimum = Math.Min(intMinRating, intMaxRating);
                                     x.Maximum = intMaxRating;
-                                    x.Minimum = Math.Min(1, intMaxRating);
-                                    x.Visible = true;
                                     x.Value = intRating;
                                     x.Increment = 1;
-                                    x.Enabled = string.IsNullOrEmpty(objWeapon.ParentID);
+                                    x.Enabled = intMaxRating > intMinRating && string.IsNullOrEmpty(objWeapon.ParentID);
+                                    x.Visible = true;
                                 }, token).ConfigureAwait(false);
                             }
                             else
@@ -15683,15 +15693,15 @@ namespace Chummer
                                     .ConfigureAwait(false);
                                 await nudWeaponRating.DoThreadSafeAsync(x =>
                                 {
-                                    x.Minimum = 0;
-                                    x.Increment = 1;
-                                    x.Maximum = 0;
-                                    x.Enabled = false;
                                     x.Visible = false;
+                                    x.Minimum = 0;
+                                    x.Maximum = 0;
+                                    x.Increment = 1;
+                                    x.Enabled = false;
                                 }, token).ConfigureAwait(false);
                             }
                             await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                    .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                             await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false, token)
                                                    .ConfigureAwait(false);
                             string strAvail = await objWeapon.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
@@ -16036,12 +16046,12 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                    .ConfigureAwait(false);
-                            int intMaxRating = objSelectedAccessory.MaxRating;
-                            if (intMaxRating > 0)
+                            int intRating = await objSelectedAccessory.GetRatingAsync(token).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
+                                int intMaxRating = await objSelectedAccessory.GetMaxRatingValueAsync(token).ConfigureAwait(false);
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                     .ConfigureAwait(false);
-                                int intRating = objSelectedAccessory.Rating;
                                 await nudWeaponRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Maximum = intMaxRating;
@@ -16368,7 +16378,7 @@ namespace Chummer
                                   .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language),
                                                      token).ConfigureAwait(false);
                             int intGearMaxRatingValue = await objGear.GetMaxRatingValueAsync(token).ConfigureAwait(false);
-                            if (intGearMaxRatingValue > 0)
+                            if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                             {
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                     .ConfigureAwait(false);
@@ -16783,15 +16793,17 @@ namespace Chummer
                                                       .ConfigureAwait(false);
                             }
 
-                            if (objArmorMod.MaximumRating > 1)
+                            int intRating = await objArmorMod.GetRatingAsync(token).ConfigureAwait(false);
+                            if (intRating > 1)
                             {
+                                int intMaxRating = await objArmorMod.GetMaxRatingValueAsync(token).ConfigureAwait(false);
                                 await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                          .ConfigureAwait(false);
                                 await nudArmorRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Maximum = objArmorMod.MaximumRating;
-                                    x.Value = objArmorMod.Rating;
+                                    x.Maximum = intMaxRating;
+                                    x.Value = intRating;
                                     x.Enabled = !objArmorMod.IncludedInArmor;
                                 }, token).ConfigureAwait(false);
                             }
@@ -19351,21 +19363,21 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                             await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                     .ConfigureAwait(false);
-                            int intMaxRating = await objWeapon.GetMaxRatingValueAsync(token).ConfigureAwait(false);
-                            if (intMaxRating > 0)
+                            int intRating = await objWeapon.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
+                                int intMaxRating = await objWeapon.GetMaxRatingValueAsync(token).ConfigureAwait(false);
+                                int intMinRating = await objWeapon.GetMinRatingValueAsync(token).ConfigureAwait(false);
                                 await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                     .ConfigureAwait(false);
-                                int intRating = objWeapon.Rating;
-                                int intMinRating = await objWeapon.GetMinRatingValueAsync(token).ConfigureAwait(false);
                                 await nudVehicleRating.DoThreadSafeAsync(x =>
                                 {
-                                    x.Maximum = intMaxRating;
                                     x.Minimum = Math.Min(intMinRating, intMaxRating);
-                                    x.Visible = true;
+                                    x.Maximum = intMaxRating;
                                     x.Value = intRating;
                                     x.Increment = 1;
                                     x.Enabled = intMaxRating > intMinRating && string.IsNullOrEmpty(objWeapon.ParentID);
+                                    x.Visible = true;
                                 }, token).ConfigureAwait(false);
                             }
                             else
@@ -19374,11 +19386,11 @@ namespace Chummer
                                     .ConfigureAwait(false);
                                 await nudVehicleRating.DoThreadSafeAsync(x =>
                                 {
-                                    x.Minimum = 0;
-                                    x.Increment = 1;
-                                    x.Maximum = 0;
-                                    x.Enabled = false;
                                     x.Visible = false;
+                                    x.Minimum = 0;
+                                    x.Maximum = 0;
+                                    x.Increment = 1;
+                                    x.Enabled = false;
                                 }, token).ConfigureAwait(false);
                             }
                             await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token)
@@ -19705,16 +19717,18 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                     .ConfigureAwait(false);
-                            if (objAccessory.MaxRating > 0)
+                            int intRating = await objAccessory.GetRatingAsync(GenericToken).ConfigureAwait(false);
+                            if (intRating > 0)
                             {
+                                int intMaxRating = await objAccessory.GetMaxRatingValueAsync(token).ConfigureAwait(false);
                                 await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                           .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                 await nudVehicleRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Minimum = Math.Min(1, objAccessory.MaxRating);
-                                    x.Maximum = objAccessory.MaxRating;
-                                    x.Value = objAccessory.Rating;
+                                    x.Minimum = Math.Min(1, intMaxRating);
+                                    x.Maximum = intMaxRating;
+                                    x.Value = intRating;
                                     x.Increment = 1;
                                     x.Enabled = !objAccessory.IncludedInWeapon;
                                 }, token).ConfigureAwait(false);
@@ -20491,7 +20505,7 @@ namespace Chummer
                         string strText4 = await objSpell.DisplayRangeAsync(GlobalSettings.Language, token)
                                                         .ConfigureAwait(false);
                         await lblSpellRange.DoThreadSafeAsync(x => x.Text = strText4, token).ConfigureAwait(false);
-                        string strText5 = await objSpell.DisplayDamageAsync(GlobalSettings.Language, token)
+                        string strText5 = await objSpell.DisplayDamageAsync(GlobalSettings.Language, GlobalSettings.CultureInfo, token)
                                                         .ConfigureAwait(false);
                         await lblSpellDamage.DoThreadSafeAsync(x => x.Text = strText5, token).ConfigureAwait(false);
                         string strText6 = await objSpell.DisplayDurationAsync(GlobalSettings.Language, token)
@@ -20500,7 +20514,7 @@ namespace Chummer
                         string strText7 = await objSpell.DisplayDvAsync(GlobalSettings.Language, token)
                                                         .ConfigureAwait(false);
                         await lblSpellDV.DoThreadSafeAsync(x => x.Text = strText7, token).ConfigureAwait(false);
-                        await lblSpellDV.SetToolTipAsync(objSpell.DvTooltip, token).ConfigureAwait(false);
+                        await lblSpellDV.SetToolTipAsync(await objSpell.GetDvTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objSpell.SetSourceDetailAsync(lblSpellSource, token).ConfigureAwait(false);
                         // Determine the size of the Spellcasting Dice Pool.
                         int intPool = await objSpell.GetDicePoolAsync(token).ConfigureAwait(false);
@@ -20557,7 +20571,7 @@ namespace Chummer
                         string strText3 = await objComplexForm.DisplayFvAsync(GlobalSettings.Language, token)
                                                               .ConfigureAwait(false);
                         await lblFV.DoThreadSafeAsync(x => x.Text = strText3, token).ConfigureAwait(false);
-                        await lblFV.SetToolTipAsync(objComplexForm.FvTooltip, token).ConfigureAwait(false);
+                        await lblFV.SetToolTipAsync(await objComplexForm.GetFvTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objComplexForm.SetSourceDetailAsync(lblComplexFormSource, token).ConfigureAwait(false);
                         // Determine the size of the Threading Dice Pool.
                         await lblComplexFormDicePool
@@ -22447,6 +22461,11 @@ namespace Chummer
                                     ComplexForm objComplexForm = new ComplexForm(CharacterObject);
                                     await objComplexForm.CreateAsync(objXmlComplexFormNode, token: token)
                                         .ConfigureAwait(false);
+                                    if (objComplexForm.InternalId.IsEmptyGuid())
+                                    {
+                                        await objComplexForm.DisposeAsync().ConfigureAwait(false);
+                                        continue;
+                                    }
                                     await CharacterObject.ComplexForms.AddAsync(objComplexForm, token)
                                         .ConfigureAwait(false);
                                 }
@@ -23292,23 +23311,18 @@ namespace Chummer
                   .SetToolTipAsync(
                       await LanguageManager.GetStringAsync("Tip_CommonAttributesMetatypeLimits", token: token)
                                            .ConfigureAwait(false), token).ConfigureAwait(false);
-            await lblNuyen.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo,
+            string strNuyenTooltip = await (await CharacterObjectSettings.GetChargenKarmaToNuyenExpressionAsync(token).ConfigureAwait(false))
+                                        .CheapReplaceAsync("{Karma}", () => LanguageManager.GetStringAsync("String_Karma", token: token), token: token)
+                                        .CheapReplaceAsync("{PriorityNuyen}", () => LanguageManager.GetStringAsync("Checkbox_CreatePACKSKit_StartingNuyen", token: token), token: token)
+                                        .ConfigureAwait(false);
+            strNuyenTooltip = await CharacterObject.AttributeSection.ProcessAttributesInXPathForTooltipAsync(
+                                                                  strNuyenTooltip, token: token).ConfigureAwait(false);
+            strNuyenTooltip = string.Format(GlobalSettings.CultureInfo,
                                                          await LanguageManager
                                                                .GetStringAsync("Tip_CommonNuyen", token: token)
                                                                .ConfigureAwait(false),
-                                                         (await CharacterObjectSettings
-                                                                .GetChargenKarmaToNuyenExpressionAsync(token)
-                                                                .ConfigureAwait(false))
-                                                         .Replace("{Karma}",
-                                                                  await LanguageManager
-                                                                        .GetStringAsync("String_Karma", token: token)
-                                                                        .ConfigureAwait(false))
-                                                         .Replace("{PriorityNuyen}",
-                                                                  await LanguageManager
-                                                                        .GetStringAsync(
-                                                                            "Checkbox_CreatePACKSKit_StartingNuyen",
-                                                                            token: token).ConfigureAwait(false))),
-                                           token).ConfigureAwait(false);
+                                                         strNuyenTooltip);
+            await lblNuyen.SetToolTipAsync(strNuyenTooltip, token).ConfigureAwait(false);
             // Armor Tab.
             await chkArmorEquipped
                   .SetToolTipAsync(
@@ -23386,24 +23400,7 @@ namespace Chummer
                   .SetToolTipAsync(
                       await LanguageManager.GetStringAsync("Tip_CommonEnemies", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
-            await lblBuildNuyen.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo,
-                                                              await LanguageManager
-                                                                    .GetStringAsync("Tip_CommonNuyen", token: token)
-                                                                    .ConfigureAwait(false),
-                                                              (await CharacterObjectSettings
-                                                                     .GetChargenKarmaToNuyenExpressionAsync(token)
-                                                                     .ConfigureAwait(false))
-                                                              .Replace("{Karma}",
-                                                                       await LanguageManager
-                                                                             .GetStringAsync(
-                                                                                 "String_Karma", token: token)
-                                                                             .ConfigureAwait(false))
-                                                              .Replace("{PriorityNuyen}",
-                                                                       await LanguageManager
-                                                                             .GetStringAsync(
-                                                                                 "Checkbox_CreatePACKSKit_StartingNuyen",
-                                                                                 token: token).ConfigureAwait(false))),
-                                                token).ConfigureAwait(false);
+            await lblBuildNuyen.SetToolTipAsync(strNuyenTooltip, token).ConfigureAwait(false);
             await lblBuildSkillGroups.SetToolTipAsync(
                 string.Format(GlobalSettings.CultureInfo,
                               await LanguageManager.GetStringAsync("Tip_SkillsSkillGroups", token: token)

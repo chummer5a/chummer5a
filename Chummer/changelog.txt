@@ -92,6 +92,7 @@ Application Changes:
 - Ammunition that alters that stats of a weapon into which it is loaded in a way that depends on its rating now properly uses the rating of the ammunition instead of the rating of the weapon into which it is loaded.
 - Weapon and weapon accessory reach and concealability entries can now work off of character attributes and/or ratings.
 - The rating entry in the Weapons tab has been changed to a dial in Create mode, allowing users to alter the ratings of eligible weapons, weapon accessories, and gear loaded into weapon accessories more easily.
+- Added a new Data Exporter tool that allows a user to export all internal data used by the program into a zip file. Data exported in this way will contain any translation entries added by non-English languages as well as any and all custom data content created, added, modified, removed, etc. by a specified character setting's enabled custom datasets.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
@@ -140,6 +141,7 @@ Data Changes:
 - Attune Animal spell now orrectly uses Animal Handling as its skill instead of the Ritual Spellcasting skill.
 - Armory asset for advanced lifestyles now properly costs 1000. Fixes #5193.
 - Monofilament Whips now properly increase their Accuracy by 2 when they are wirelessly enabled.
+- Registered sprite limits are now equal to a character's Charisma in all English pre-made settings to match the entry in the fifth printing of the CRB. German settings are unaffected because it is still Logic-based in the German CRB.
 
 Fixes implemented by BM123499
 
@@ -278,6 +280,10 @@ Changed/New Strings:
 - Message_MetatypeNotSupported
 - Message_UndoExpenseNotSupported
 - Label_Options_HasNotesColor
+- Menu_Main_DataExporter
+- DialogFilter_Zip
+- Title_ExportData
+- Button_Export_SaveDataAs
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage

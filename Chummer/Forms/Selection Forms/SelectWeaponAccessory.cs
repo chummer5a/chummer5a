@@ -606,12 +606,15 @@ namespace Chummer
                 }
                 else
                 {
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions
-                                                                   .EvaluateInvariantXPathAsync(strCost, token)
-                                                                   .ConfigureAwait(false);
-                    decimal decCost = blnIsSuccess
-                        ? Convert.ToDecimal((double)objProcess)
-                        : 0;
+                    if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
+                    {
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions
+                                                                       .EvaluateInvariantXPathAsync(strCost, token)
+                                                                       .ConfigureAwait(false);
+                        decCost = blnIsSuccess
+                            ? Convert.ToDecimal((double)objProcess)
+                            : 0;
+                    }
 
                     // Apply any markup.
                     decCost *= 1

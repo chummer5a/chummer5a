@@ -1659,7 +1659,10 @@ namespace Chummer
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
             objComplexform.Create(node);
             if (objComplexform.InternalId.IsEmptyGuid())
+            {
+                objComplexform.Dispose();
                 throw new AbortedException();
+            }
             objComplexform.Grade = -1;
 
             _objCharacter.ComplexForms.Add(objComplexform);
@@ -1682,7 +1685,10 @@ namespace Chummer
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
             objComplexform.Create(node);
             if (objComplexform.InternalId.IsEmptyGuid())
+            {
+                objComplexform.Dispose();
                 throw new AbortedException();
+            }
             objComplexform.Grade = -1;
 
             _objCharacter.ComplexForms.Add(objComplexform);
@@ -5384,10 +5390,15 @@ namespace Chummer
             if (string.IsNullOrEmpty(strForcePower) && bonusNode.Attributes?["count"] != null)
             {
                 string strCount = bonusNode.Attributes?["count"]?.InnerText;
-                strCount = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCount);
+                if (strCount.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                {
+                    strCount = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCount);
 
-                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCount);
-                powerCount = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCount);
+                    powerCount = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
+                }
+                else
+                    powerCount = Math.Max(1, decValue.StandardRound());
             }
 
             for (int i = 0; i < powerCount; i++)
