@@ -1010,9 +1010,9 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
-            IAsyncDisposable objLocker = null;
-            if (lstCollection is IHasLockObject objHasLockObject)
-                objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
+                    ? await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -1036,9 +1036,9 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
-            IAsyncDisposable objLocker = null;
-            if (lstCollection is IHasLockObject objHasLockObject)
-                objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
+                    ? await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -1064,9 +1064,9 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
-            IAsyncDisposable objLocker = null;
-            if (lstCollection is IHasLockObject objHasLockObject)
-                objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
+                    ? await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -1091,9 +1091,9 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            IAsyncDisposable objLocker = null;
-            if (lstCollection is IHasLockObject objHasLockObject)
-                objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
+                    ? await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -1116,9 +1116,9 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             List<T> lstToAdd = await collection.ToListAsync(token).ConfigureAwait(false);
             lstToAdd.Reverse();
-            IAsyncDisposable objLocker = null;
-            if (lstCollection is IHasLockObject objHasLockObject)
-                objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
+                    ? await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                    : null;
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -1145,6 +1145,7 @@ namespace Chummer
                     : null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 await lstCollection.SortAsync(0, await lstCollection.GetCountAsync(token).ConfigureAwait(false), comparer, token);
             }
             finally
@@ -1167,6 +1168,7 @@ namespace Chummer
                     : null;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await IntroSortAsync(lstCollection, index, length + index - 1, 2 * lstCollection.Count.FloorLog2(),
                         comparer, token).ConfigureAwait(false);
                 }
