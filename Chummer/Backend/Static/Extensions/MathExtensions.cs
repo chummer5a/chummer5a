@@ -976,7 +976,7 @@ namespace Chummer
             switch (y)
             {
                 case 3:
-                    if (x > 2097152 || x < -2097152) // cubing this will cause an overflow exception, so break
+                    if (x >= 2097152 || x <= -2097152) // cubing this will cause an overflow exception, so break
                     {
                         Utils.BreakIfDebug();
                         throw new ArgumentOutOfRangeException(nameof(x), "Number is too big to be cubed and still stay a 64-bit integer.");
@@ -985,6 +985,12 @@ namespace Chummer
                     return x * x * x;
 
                 case 2:
+                    if (x >= 3037000500L || x <= -3037000500L) // squaring this will cause an overflow exception, so break
+                    {
+                        Utils.BreakIfDebug();
+                        throw new ArgumentOutOfRangeException(nameof(x), "Number is too big to be squared and still stay a 64-bit integer.");
+                    }
+
                     return x * x;
 
                 case 1:
