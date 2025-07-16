@@ -1134,10 +1134,24 @@ namespace Chummer
             }
         }
 
-        public static Task SortAsync<T>(this IAsyncList<T> lstCollection, Func<T, T, Task<int>> comparer,
+        public static async Task SortAsync<T>(this IAsyncList<T> lstCollection, Func<T, T, Task<int>> comparer,
             CancellationToken token = default)
         {
-            return lstCollection.SortAsync(0, lstCollection.Count, comparer, token);
+            token.ThrowIfCancellationRequested();
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            IAsyncDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
+                    ? await objHasLockObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false)
+                    : null;
+            try
+            {
+                await lstCollection.SortAsync(0, await lstCollection.GetCountAsync(token).ConfigureAwait(false), comparer, token);
+            }
+            finally
+            {
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public static async Task SortAsync<T>(this IAsyncList<T> lstCollection, int index, int length,
