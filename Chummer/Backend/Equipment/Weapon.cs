@@ -1208,7 +1208,7 @@ namespace Chummer.Backend.Equipment
             List<string> lstCount = new List<string>(1);
             string ammoString = CalculatedAmmo(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage);
             // Determine which loading methods are available to the Weapon.
-            if (ammoString.IndexOfAny('x', '+') != -1 ||
+            if (ammoString.IndexOfAny('×', 'x', '+') != -1 ||
                 ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
                 ammoString.Contains("Special", StringComparison.OrdinalIgnoreCase) ||
                 ammoString.Contains("External Source", StringComparison.OrdinalIgnoreCase))
@@ -1274,7 +1274,7 @@ namespace Chummer.Backend.Equipment
                 await CalculatedAmmoAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token)
                     .ConfigureAwait(false);
             // Determine which loading methods are available to the Weapon.
-            if (ammoString.IndexOfAny('x', '+') != -1 ||
+            if (ammoString.IndexOfAny('×', 'x', '+') != -1 ||
                 ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
                 ammoString.Contains("Special", StringComparison.OrdinalIgnoreCase) ||
                 ammoString.Contains("External Source", StringComparison.OrdinalIgnoreCase))
@@ -4786,6 +4786,15 @@ namespace Chummer.Backend.Equipment
                         {
                             strPrepend = strThisAmmo.Substring(0, intPos + 1);
                             strThisAmmo = strThisAmmo.Substring(intPos + 1);
+                        }
+                        else
+                        {
+                            intPos = strThisAmmo.IndexOf('×');
+                            if (intPos != -1)
+                            {
+                                strPrepend = strThisAmmo.Substring(0, intPos + 1);
+                                strThisAmmo = strThisAmmo.Substring(intPos + 1);
+                            }
                         }
 
                         if (WeaponAccessories.Count != 0)
@@ -11759,7 +11768,7 @@ namespace Chummer.Backend.Equipment
                 int intCurrentAmmoCount = objInternalClip.Ammo;
 
                 // Determine which loading methods are available to the Weapon.
-                if (ammoString.IndexOfAny('x', '+') != -1 ||
+                if (ammoString.IndexOfAny('×', 'x', '+') != -1 ||
                     ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
                     ammoString.Contains("Special", StringComparison.OrdinalIgnoreCase) ||
                     ammoString.Contains("External Source", StringComparison.OrdinalIgnoreCase))
@@ -11825,7 +11834,7 @@ namespace Chummer.Backend.Equipment
             bool blnExternalSource = false;
             List<Gear> lstAmmo = new List<Gear>(1);
             // Determine which loading methods are available to the Weapon.
-            if (ammoString.IndexOfAny('x', '+') != -1 ||
+            if (ammoString.IndexOfAny('×', 'x', '+') != -1 ||
                 ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
                 ammoString.Contains("Special", StringComparison.OrdinalIgnoreCase) ||
                 ammoString.Contains("External Source", StringComparison.OrdinalIgnoreCase))

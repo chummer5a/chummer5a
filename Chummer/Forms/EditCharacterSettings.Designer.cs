@@ -5208,7 +5208,7 @@ namespace Chummer
             this.lblDroneArmorMultiplierTimes.Name = "lblDroneArmorMultiplierTimes";
             this.lblDroneArmorMultiplierTimes.Size = new System.Drawing.Size(12, 14);
             this.lblDroneArmorMultiplierTimes.TabIndex = 27;
-            this.lblDroneArmorMultiplierTimes.Text = "x";
+            this.lblDroneArmorMultiplierTimes.Text = "×";
             this.lblDroneArmorMultiplierTimes.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // nudDroneArmorMultiplier

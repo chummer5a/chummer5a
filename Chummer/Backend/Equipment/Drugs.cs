@@ -851,7 +851,7 @@ namespace Chummer.Backend.Equipment
                     strDisplayDuration += Duration.ToString(GlobalSettings.CultureInfo) + strSpace;
                     if (DurationDice > 0)
                     {
-                        strDisplayDuration += 'x' + strSpace + DurationDice.ToString(GlobalSettings.CultureInfo) +
+                        strDisplayDuration += '×' + strSpace + DurationDice.ToString(GlobalSettings.CultureInfo) +
                                               LanguageManager.GetString("String_D6") + strSpace;
                     }
                 }

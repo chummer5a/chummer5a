@@ -123,6 +123,19 @@ namespace Chummer
         public string SelectedExoticSkillSpecialisation => cboSkillSpecialisations.SelectedValue?.ToString()
                                                            ?? _objCharacter.ReverseTranslateExtra(cboSkillSpecialisations.Text);
 
+        /// <summary>
+        /// Skill specialization that was selected in the dialogue.
+        /// </summary>
+        public async Task<string> GetSelectedExoticSkillSpecialisationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strText = await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strText))
+                return strText;
+            return await _objCharacter.ReverseTranslateExtraAsync(
+                    await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+        }
+
         #endregion Properties
 
         private async Task BuildList(CancellationToken token = default)
