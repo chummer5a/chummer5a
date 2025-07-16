@@ -6515,7 +6515,7 @@ namespace Chummer
                                                            .Pow(2)
                                                            + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
                                                            .Pow(2))
-                                                          .FastSqrt().StandardRound();
+                                                          .FastSqrtAndStandardRound();
 
                                         int intBaseline = objOptionsToCheck.BuiltInOption ? 5 : 4;
 
@@ -6608,7 +6608,7 @@ namespace Chummer
                                                            .Pow(2)
                                                            + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
                                                            .Pow(2))
-                                                          .FastSqrt().StandardRound();
+                                                          .FastSqrtAndStandardRound();
 
                                         int intBaseline = objOptionsToCheck.BuiltInOption ? 5 : 4;
 

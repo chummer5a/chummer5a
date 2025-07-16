@@ -545,6 +545,113 @@ namespace Chummer
         }
 
         /// <summary>
+        /// A fast way of taking the square root of an integer and returning the result rounded up to the nearest integer.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="intBase"/> is less than 0, which is outside the domain for a square root.</exception>
+        public static int FastSqrtAndStandardRound(this int intBase)
+        {
+            if (intBase < 0)
+                throw new ArgumentOutOfRangeException(nameof(intBase), "Cannot get square root of a negative number");
+            // Handle trivial cases first (up to 100)
+            if (intBase <= 1)
+                return intBase;
+            if (intBase <= 100)
+            {
+                if (intBase <= 36)
+                {
+                    if (intBase <= 16)
+                    {
+                        if (intBase <= 9)
+                        {
+                            if (intBase <= 4)
+                                return 2;
+                            else
+                                return 3;
+                        }
+                        else
+                            return 4;
+                    }
+                    else if (intBase <= 25)
+                        return 5;
+                    else
+                        return 6;
+                }
+                else if (intBase <= 64)
+                {
+                    if (intBase <= 49)
+                        return 7;
+                    else
+                        return 8;
+                }
+                else if (intBase <= 81)
+                    return 9;
+                else
+                    return 10;
+            }
+            // We use a digit-by-digit calculation in binary base
+            int intReturn = 0;
+            // We take advantage of the fact that sqrt factors and so start factoring out powers of 4 (since we know their sqrt will be some form of 2^m)
+            int intMask = 1 << 30;
+            while (intMask > intBase)
+                intMask >>= 2;
+            while (intMask != 0)
+            {
+                int intTemp = intReturn + intMask;
+                if (intBase >= intTemp)
+                {
+                    intBase -= intTemp;
+                    intReturn = (intReturn >> 1) + intMask;
+                }
+                else
+                    intReturn >>= 1;
+                intMask >>= 2;
+            }
+            return intReturn;
+        }
+
+        /// <summary>
+        /// A fast way to take the square root of a decimal and then round up to the nearest integer in a single step.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than 0, which is outside the domain for a square root.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FastSqrtAndStandardRound(this decimal d)
+        {
+            if (d < 0)
+                throw new ArgumentOutOfRangeException(nameof(d), "Cannot get square root of a negative number");
+            // Square roots of non-integers cannot be integers and sqrt is a monotonic function
+            // Therefore, ceil(sqrt(d)) == ceil(sqrt(ceil(d)))
+            return decimal.ToInt32(Math.Ceiling(d)).FastSqrtAndStandardRound();
+        }
+
+        /// <summary>
+        /// A fast way to take the square root of a decimal and then round up to the nearest integer in a single step.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than 0, which is outside the domain for a square root.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FastSqrtAndStandardRound(this double d)
+        {
+            if (d < 0)
+                throw new ArgumentOutOfRangeException(nameof(d), "Cannot get square root of a negative number");
+            // Square roots of non-integers cannot be integers and sqrt is a monotonic function
+            // Therefore, ceil(sqrt(d)) == ceil(sqrt(ceil(d)))
+            return Convert.ToInt32(Math.Ceiling(d)).FastSqrtAndStandardRound();
+        }
+
+        /// <summary>
+        /// A fast way to take the square root of a decimal and then round up to the nearest integer in a single step.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than 0, which is outside the domain for a square root.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FastSqrtAndStandardRound(this float d)
+        {
+            if (d < 0)
+                throw new ArgumentOutOfRangeException(nameof(d), "Cannot get square root of a negative number");
+            // Square roots of non-integers cannot be integers and sqrt is a monotonic function
+            // Therefore, ceil(sqrt(d)) == ceil(sqrt(ceil(d)))
+            return Convert.ToInt32(Math.Ceiling(d)).FastSqrtAndStandardRound();
+        }
+
+        /// <summary>
         /// A decimal-precision version of <see cref="Math.Pow(double, double)"/> that tries to get a decimal-precision result if it's possible to do it quickly without casting to floating-point.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="x"/> is less than 0 while <paramref name="y"/> is not an integer, which is undefined.</exception>
