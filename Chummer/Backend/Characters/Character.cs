@@ -1075,7 +1075,7 @@ namespace Chummer
                                     await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                                 if (objNode?.SelectSingleNodeAndCacheExpression("initiativedice", token: token) == null)
                                 {
-                                    _intInitiativeDice = Settings.MinInitiativeDice;
+                                    _intInitiativeDice = await Settings.GetMinInitiativeDiceAsync(token).ConfigureAwait(false);
                                     setPropertiesToRefresh.Add(nameof(InitiativeDice));
                                 }
                             }
@@ -1130,22 +1130,22 @@ namespace Chummer
                             break;
 
                         case nameof(CharacterSettings.EncumbrancePenaltyPhysicalLimit):
-                            if (Settings.DoEncumbrancePenaltyPhysicalLimit)
+                            if (await Settings.GetDoEncumbrancePenaltyPhysicalLimitAsync(token).ConfigureAwait(false))
                                 setPropertiesToRefresh.Add(nameof(Encumbrance));
                             break;
 
                         case nameof(CharacterSettings.EncumbrancePenaltyMovementSpeed):
-                            if (Settings.DoEncumbrancePenaltyMovementSpeed)
+                            if (await Settings.GetDoEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false))
                                 setPropertiesToRefresh.Add(nameof(Encumbrance));
                             break;
 
                         case nameof(CharacterSettings.EncumbrancePenaltyAgility):
-                            if (Settings.DoEncumbrancePenaltyAgility)
+                            if (await Settings.GetDoEncumbrancePenaltyAgilityAsync(token).ConfigureAwait(false))
                                 setPropertiesToRefresh.Add(nameof(Encumbrance));
                             break;
 
                         case nameof(CharacterSettings.EncumbrancePenaltyReaction):
-                            if (Settings.DoEncumbrancePenaltyReaction)
+                            if (await Settings.GetDoEncumbrancePenaltyReactionAsync(token).ConfigureAwait(false))
                                 setPropertiesToRefresh.Add(nameof(Encumbrance));
                             break;
 
@@ -1155,7 +1155,7 @@ namespace Chummer
                             break;
 
                         case nameof(CharacterSettings.EncumbrancePenaltyWoundModifier):
-                            if (Settings.DoEncumbrancePenaltyWoundModifier)
+                            if (await Settings.GetDoEncumbrancePenaltyWoundModifierAsync(token).ConfigureAwait(false))
                             {
                                 setPropertiesToRefresh.Add(nameof(WoundModifier));
                                 setPropertiesToRefresh.Add(nameof(Encumbrance));
@@ -2521,7 +2521,7 @@ namespace Chummer
                             }
                             case NotifyCollectionChangedAction.Replace:
                             {
-                                if (!Settings.DontUseCyberlimbCalculation)
+                                if (!await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false))
                                 {
                                     foreach (Cyberware objOldItem in e.OldItems)
                                     {
@@ -11141,9 +11141,10 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync(
                             "created", (await GetCreatedAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
+                    string strNuyenFormat = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                     // <nuyen />
                     await objWriter
-                        .WriteElementStringAsync("nuyen", (await GetNuyenAsync(token).ConfigureAwait(false)).ToString(Settings.NuyenFormat, objCulture),
+                        .WriteElementStringAsync("nuyen", (await GetNuyenAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture),
                             token: token).ConfigureAwait(false);
                     // <adept />
                     await objWriter.WriteElementStringAsync(
@@ -11489,18 +11490,19 @@ namespace Chummer
                     // <memory />
                     await objWriter.WriteElementStringAsync("memory", Memory.ToString(objCulture), token: token)
                         .ConfigureAwait(false);
+                    string strWeightFormat = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
                     // <liftweight />
                     await objWriter.WriteElementStringAsync("liftweight",
-                        LiftLimit.ToString(Settings.WeightFormat, objCulture),
+                        (await GetLiftLimitAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture),
                         token: token).ConfigureAwait(false);
                     // <carryweight />
                     await objWriter.WriteElementStringAsync("carryweight",
-                        CarryLimit.ToString(Settings.WeightFormat, objCulture),
+                        (await GetCarryLimitAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture),
                         token: token).ConfigureAwait(false);
                     // <totalcarriedweight />
                     await objWriter.WriteElementStringAsync("totalcarriedweight",
-                            TotalCarriedWeight.ToString(
-                                Settings.WeightFormat, objCulture), token: token)
+                            (await GetTotalCarriedWeightAsync(token).ConfigureAwait(false)).ToString(
+                                strWeightFormat, objCulture), token: token)
                         .ConfigureAwait(false);
                     // <fatigueresist />
                     await objWriter
@@ -15150,8 +15152,8 @@ namespace Chummer
                         intExtraKarmaToRemoveForPointBuyComparison += intMetatypePriorityKarmaCost + intMetatypeQualitiesValue;
                         int intAttributesValue = 0;
                         // Zeroed to -10 because that's Human's value at default settings
-                        int intMetatypeExtraAttributesValue = -2 * objSettings.KarmaAttribute;
-                        intExtraKarmaToRemoveForPointBuyComparison -= 2 * objSettings.KarmaAttribute;
+                        int intMetatypeExtraAttributesValue = -2 * await objSettings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
+                        intExtraKarmaToRemoveForPointBuyComparison += intMetatypeExtraAttributesValue;
                         // Value from attribute points and raised attribute minimums
                         foreach (CharacterAttrib objLoopAttrib in AttributeSection.AllAttributes)
                         {
@@ -21522,7 +21524,8 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return (await GetCareerNuyenAsync(token).ConfigureAwait(false)).ToString(Settings.NuyenFormat,
+                string strNuyenFormat = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
+                return (await GetCareerNuyenAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat,
                     GlobalSettings.CultureInfo) + await LanguageManager
                     .GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             }
@@ -26584,8 +26587,8 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return (await EssenceAsync(token: token).ConfigureAwait(false)).ToString(Settings.EssenceFormat,
-                    GlobalSettings.CultureInfo);
+                return (await EssenceAsync(token: token).ConfigureAwait(false))
+                    .ToString(await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo);
             }
             finally
             {
@@ -26680,9 +26683,12 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
-                    return PrototypeTranshumanEssenceUsed.ToString(Settings.EssenceFormat, GlobalSettings.CultureInfo)
+                {
+                    string strEssenceFormat = Settings.EssenceFormat;
+                    return PrototypeTranshumanEssenceUsed.ToString(strEssenceFormat, GlobalSettings.CultureInfo)
                            + strSpace + '/' + strSpace +
-                           PrototypeTranshuman.ToString(Settings.EssenceFormat, GlobalSettings.CultureInfo);
+                           PrototypeTranshuman.ToString(strEssenceFormat, GlobalSettings.CultureInfo);
+                }
             }
         }
 
@@ -34432,7 +34438,8 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return (await GetNuyenAsync(token).ConfigureAwait(false)).ToString(Settings.NuyenFormat,
+                string strNuyenFormat = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
+                return (await GetNuyenAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat,
                     GlobalSettings.CultureInfo) + await LanguageManager
                     .GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             }
@@ -44065,10 +44072,10 @@ namespace Chummer
                     .RemoveImprovementsAsync(this, Improvement.ImprovementSource.Encumbrance, token: token)
                     .ConfigureAwait(false);
                 CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
-                if (!objSettings.DoEncumbrancePenaltyPhysicalLimit
-                    && !objSettings.DoEncumbrancePenaltyMovementSpeed
-                    && !objSettings.DoEncumbrancePenaltyAgility
-                    && !objSettings.DoEncumbrancePenaltyReaction)
+                if (!await objSettings.GetDoEncumbrancePenaltyPhysicalLimitAsync(token).ConfigureAwait(false)
+                    && !await objSettings.GetDoEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false)
+                    && !await objSettings.GetDoEncumbrancePenaltyAgilityAsync(token).ConfigureAwait(false)
+                    && !await objSettings.GetDoEncumbrancePenaltyReactionAsync(token).ConfigureAwait(false))
                     return;
                 // Create the Encumbrance Improvements.
                 int intEncumbrance = await GetEncumbranceAsync(token).ConfigureAwait(false);
@@ -44077,56 +44084,56 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (objSettings.DoEncumbrancePenaltyPhysicalLimit)
+                    if (await objSettings.GetDoEncumbrancePenaltyPhysicalLimitAsync(token).ConfigureAwait(false))
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Physical", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.PhysicalLimit,
                                 "precedence-1",
-                                intEncumbrance * objSettings.EncumbrancePenaltyPhysicalLimit,
+                                intEncumbrance * await objSettings.GetEncumbrancePenaltyPhysicalLimitAsync(token).ConfigureAwait(false),
                                 token: token)
                             .ConfigureAwait(false);
-                    if (objSettings.DoEncumbrancePenaltyMovementSpeed)
+                    if (await objSettings.GetDoEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false))
                     {
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Ground", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.SprintBonusPercent,
                                 "precedence-1",
-                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * await objSettings.GetEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false),
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Fly", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.SprintBonusPercent,
                                 "precedence-1",
-                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * await objSettings.GetEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false),
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Swim", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.SprintBonusPercent,
                                 "precedence-1",
-                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * await objSettings.GetEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false),
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Ground", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
                                 "precedence-1",
-                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * await objSettings.GetEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false),
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Fly", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
                                 "precedence-1",
-                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * await objSettings.GetEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false),
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Swim", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
                                 "precedence-1",
-                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * await objSettings.GetEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false),
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
@@ -44134,7 +44141,7 @@ namespace Chummer
                                 string.Empty,
                                 Improvement.ImprovementType.WalkMultiplierPercent,
                                 "precedence-1",
-                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * await objSettings.GetEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false),
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
@@ -44142,7 +44149,7 @@ namespace Chummer
                                 string.Empty,
                                 Improvement.ImprovementType.WalkMultiplierPercent,
                                 "precedence-1",
-                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * await objSettings.GetEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false),
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
@@ -44150,25 +44157,25 @@ namespace Chummer
                                 string.Empty,
                                 Improvement.ImprovementType.WalkMultiplierPercent,
                                 "precedence-1",
-                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * await objSettings.GetEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false),
                                 token: token)
                             .ConfigureAwait(false);
                     }
 
-                    if (objSettings.DoEncumbrancePenaltyAgility)
+                    if (await objSettings.GetDoEncumbrancePenaltyAgilityAsync(token).ConfigureAwait(false))
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "AGI", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.Attribute,
                                 "precedence-1", 0, 1, 0, 0,
-                                intEncumbrance * objSettings.EncumbrancePenaltyAgility,
+                                intEncumbrance * await objSettings.GetEncumbrancePenaltyAgilityAsync(token).ConfigureAwait(false),
                                 token: token)
                             .ConfigureAwait(false);
-                    if (objSettings.DoEncumbrancePenaltyReaction)
+                    if (await objSettings.GetDoEncumbrancePenaltyReactionAsync(token).ConfigureAwait(false))
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "REA", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.Attribute,
                                 "precedence-1", 0, 1, 0, 0,
-                                intEncumbrance * objSettings.EncumbrancePenaltyReaction,
+                                intEncumbrance * await objSettings.GetEncumbrancePenaltyReactionAsync(token).ConfigureAwait(false),
                                 token: token)
                             .ConfigureAwait(false);
                 }
@@ -44296,7 +44303,7 @@ namespace Chummer
                     ? 0
                     : Math.Min(0, PhysicalCMThresholdOffset - intPhysicalCMFilled) / intCMThreshold;
                 int intWoundModifier = intPhysicalCMPenalty + intStunCMPenalty;
-                if (Settings.DoEncumbrancePenaltyWoundModifier && Encumbrance != 0)
+                if (Settings.DoEncumbrancePenaltyWoundModifier)
                     intWoundModifier += Encumbrance * Settings.EncumbrancePenaltyWoundModifier;
                 _intWoundModifier = intWoundModifier;
             }
@@ -44334,8 +44341,11 @@ namespace Chummer
                             await GetPhysicalCMThresholdOffsetAsync(token).ConfigureAwait(false) -
                             intPhysicalCMFilled) / intCMThreshold;
                 int intWoundModifier = intPhysicalCMPenalty + intStunCMPenalty;
-                if (Settings.DoEncumbrancePenaltyWoundModifier && Encumbrance != 0)
-                    intWoundModifier += Encumbrance * Settings.EncumbrancePenaltyWoundModifier;
+                if (await Settings.GetDoEncumbrancePenaltyWoundModifierAsync(token).ConfigureAwait(false))
+                {
+                    intWoundModifier += await GetEncumbranceAsync(token).ConfigureAwait(false)
+                        * await Settings.GetEncumbrancePenaltyWoundModifierAsync(token).ConfigureAwait(false);
+                }
                 _intWoundModifier = intWoundModifier;
             }
             finally
@@ -49546,19 +49556,21 @@ namespace Chummer
                 int intNewValue
                     = await Qualities.SumAsync(
                         async objQuality => await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Positive && objQuality.ContributeToLimit,
-                        objQuality => objQuality.GetBPAsync(token), token).ConfigureAwait(false) * Settings.KarmaQuality;
+                        objQuality => objQuality.GetBPAsync(token), token).ConfigureAwait(false) * await Settings.GetKarmaQualityAsync(token).ConfigureAwait(false);
                 // Group contacts are counted as positive qualities
-                intNewValue += await Contacts.SumAsync(async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Contact && await x.GetIsGroupAsync(token).ConfigureAwait(false) && !await x.GetFreeAsync(token).ConfigureAwait(false), x => x.GetContactPointsAsync(token), token).ConfigureAwait(false) * Settings.KarmaContact;
+                intNewValue += await Contacts.SumAsync(async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Contact && await x.GetIsGroupAsync(token).ConfigureAwait(false) && !await x.GetFreeAsync(token).ConfigureAwait(false),
+                                                       x => x.GetContactPointsAsync(token), token).ConfigureAwait(false)
+                    * await Settings.GetKarmaContactAsync(token).ConfigureAwait(false);
 
                 // Deduct the amount for free Qualities.
                 intNewValue -=
                     (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.FreePositiveQualities, token: token).ConfigureAwait(false) *
-                     Settings.KarmaQuality).StandardRound();
+                     await Settings.GetKarmaQualityAsync(token).ConfigureAwait(false)).StandardRound();
 
                 // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
-                if (Settings.ExceedPositiveQualitiesCostDoubled)
+                if (await Settings.GetExceedPositiveQualitiesCostDoubledAsync(token).ConfigureAwait(false))
                 {
-                    int intPositiveQualityExcess = intNewValue - Settings.QualityKarmaLimit;
+                    int intPositiveQualityExcess = intNewValue - await Settings.GetQualityKarmaLimitAsync(token).ConfigureAwait(false);
                     if (intPositiveQualityExcess > 0)
                     {
                         intNewValue += intPositiveQualityExcess;

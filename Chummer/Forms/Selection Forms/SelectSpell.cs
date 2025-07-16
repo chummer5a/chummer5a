@@ -113,9 +113,10 @@ namespace Chummer
             }).ConfigureAwait(false);
 
             // Don't show the Extended Spell checkbox if the option to Extend any Detection Spell is disabled.
-            await chkExtended.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.ExtendAnyDetectionSpell).ConfigureAwait(false);
+            bool blnExtendedVisible = await (await _objCharacter.GetSettingsAsync()).GetExtendAnyDetectionSpellAsync().ConfigureAwait(false);
+            await chkExtended.DoThreadSafeAsync(x => x.Visible = blnExtendedVisible).ConfigureAwait(false);
             _blnLoading = false;
-            await BuildSpellList(cboCategory.SelectedValue?.ToString()).ConfigureAwait(false);
+            await BuildSpellList(await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false)).ConfigureAwait(false);
         }
 
         private async void lstSpells_SelectedIndexChanged(object sender, EventArgs e)
@@ -322,7 +323,7 @@ namespace Chummer
                             }
                         }
 
-                        if (_objCharacter.Settings.ExtendAnyDetectionSpell)
+                        if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetExtendAnyDetectionSpellAsync(token).ConfigureAwait(false))
                             sbdFilter.Append(" and ((not(contains(name, \", Extended\"))))");
                         if (!string.IsNullOrEmpty(strSearch))
                             sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));

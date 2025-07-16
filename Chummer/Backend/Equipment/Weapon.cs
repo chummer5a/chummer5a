@@ -639,9 +639,10 @@ namespace Chummer.Backend.Equipment
                                 await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token)
                                     .ConfigureAwait(false),
                                 await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                            int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
                             using (ThreadSafeForm<SelectNumber> frmPickNumber
                                    = await ThreadSafeForm<SelectNumber>.GetAsync(() =>
-                                       new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                       new SelectNumber(intDecimalPlaces)
                                        {
                                            Minimum = decMin,
                                            Maximum = decMax,
@@ -2180,17 +2181,19 @@ namespace Chummer.Backend.Equipment
                         await objGear
                             .TotalAvailAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token)
                             .ConfigureAwait(false), token).ConfigureAwait(false);
+                    string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("cost",
                         (await objGear.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
-                            _objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                            strNuyenFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("owncost",
                         (await objGear.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
-                            _objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                            strNuyenFormat, objCulture), token).ConfigureAwait(false);
+                    string strWeightFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("weight",
-                            objGear.TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token)
+                            objGear.TotalWeight.ToString(strWeightFormat, objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("ownweight",
-                            objGear.OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token)
+                            objGear.OwnWeight.ToString(strWeightFormat, objCulture), token)
                         .ConfigureAwait(false);
                 }
                 else
@@ -2201,17 +2204,19 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("avail_english",
                         await TotalAvailAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
                             token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("cost",
                         (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
-                            _objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                            strNuyenFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("owncost",
                         (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
-                            _objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                            strNuyenFormat, objCulture), token).ConfigureAwait(false);
+                    string strWeightFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("weight",
-                            TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token)
+                            TotalWeight.ToString(strWeightFormat, objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("ownweight",
-                            OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token)
+                            OwnWeight.ToString(strWeightFormat, objCulture), token)
                         .ConfigureAwait(false);
                 }
 
@@ -6268,11 +6273,14 @@ namespace Chummer.Backend.Equipment
 
                 // Now that we know the Weapon's RC values, run through all of the Accessories and add theirs to the mix.
                 // Only add in the values for items that do not come with the weapon.
+                bool blnRestrictRecoil = blnSync
+                    ? _objCharacter.Settings.RestrictRecoil
+                    : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetRestrictRecoilAsync(token).ConfigureAwait(false);
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
                     if (!objAccessory.Equipped || string.IsNullOrEmpty(objAccessory.RC))
                         continue;
-                    if (_objCharacter.Settings.RestrictRecoil && objAccessory.RCGroup != 0)
+                    if (blnRestrictRecoil && objAccessory.RCGroup != 0)
                     {
                         int intItemRC = Convert.ToInt32(objAccessory.RC, GlobalSettings.InvariantCultureInfo);
                         List<Tuple<string, int>> lstLoopRCGroup = lstRCGroups;

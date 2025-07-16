@@ -1073,9 +1073,10 @@ namespace Chummer.Backend.Equipment
                                         GlobalSettings.CultureInfo,
                                         await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
                                         await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                    int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
                                     using (ThreadSafeForm<SelectNumber> frmPickNumber
                                            = await ThreadSafeForm<SelectNumber>.GetAsync(
-                                               () => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                               () => new SelectNumber(intDecimalPlaces)
                                                {
                                                    Minimum = decMin,
                                                    Maximum = decMax,
@@ -2886,7 +2887,7 @@ namespace Chummer.Backend.Equipment
 
                     await objWriter.WriteElementStringAsync("ess",
                         (await GetCalculatedESSAsync(token).ConfigureAwait(false))
-                        .ToString(_objCharacter.Settings.EssenceFormat, objCulture),
+                        .ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceFormatAsync(token).ConfigureAwait(false), objCulture),
                         token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("capacity", Capacity, token: token).ConfigureAwait(false);
                     await objWriter
@@ -2894,23 +2895,26 @@ namespace Chummer.Backend.Equipment
                             await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
                             token: token)
                         .ConfigureAwait(false);
+                    string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
-                            "cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token: token)
+                            "cost", (await GetTotalCostAsync(token).ConfigureAwait(false))
+                                .ToString(strNuyenFormat, objCulture), token: token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "owncost",
                             (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
-                                _objCharacter.Settings.NuyenFormat, objCulture), token: token)
+                                strNuyenFormat, objCulture), token: token)
                         .ConfigureAwait(false);
+                    string strWeightFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
-                            "weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture),
+                            "weight", TotalWeight.ToString(strWeightFormat, objCulture),
                             token: token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("ownweight",
-                            OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture),
+                            OwnWeight.ToString(strWeightFormat, objCulture),
                             token: token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
@@ -8677,8 +8681,10 @@ namespace Chummer.Backend.Equipment
 
                 decReturn *= decTotalModifier;
 
-                if (_objCharacter?.Settings.DontRoundEssenceInternally == false)
-                    decReturn = decimal.Round(decReturn, _objCharacter.Settings.EssenceDecimals,
+                if (_objCharacter != null && !(blnSync
+                        ? _objCharacter.Settings.DontRoundEssenceInternally
+                        : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDontRoundEssenceInternallyAsync(token).ConfigureAwait(false)))
+                    decReturn = decimal.Round(decReturn, (blnSync ? _objCharacter.Settings.EssenceDecimals : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceDecimalsAsync(token).ConfigureAwait(false)),
                         MidpointRounding.AwayFromZero);
 
                 if (blnSync)

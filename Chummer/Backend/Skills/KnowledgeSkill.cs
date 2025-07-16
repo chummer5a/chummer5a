@@ -1088,7 +1088,7 @@ namespace Chummer.Backend.Skills
                     }
                     else
                     {
-                        intOptionsCost = CharacterObject.Settings.KarmaNewKnowledgeSkill;
+                        intOptionsCost = CharacterObject.Settings.KarmaImproveKnowledgeSkill;
                         intValue = (intTotalBaseRating + 1) * intOptionsCost;
                     }
 
@@ -1173,12 +1173,12 @@ namespace Chummer.Backend.Skills
                 CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                 if (intTotalBaseRating == 0)
                 {
-                    intOptionsCost = objSettings.KarmaNewKnowledgeSkill;
+                    intOptionsCost = await objSettings.GetKarmaNewKnowledgeSkillAsync(token).ConfigureAwait(false);
                     intValue = intOptionsCost;
                 }
                 else
                 {
-                    intOptionsCost = objSettings.KarmaNewKnowledgeSkill;
+                    intOptionsCost = await objSettings.GetKarmaImproveKnowledgeSkillAsync(token).ConfigureAwait(false);
                     intValue = (intTotalBaseRating + 1) * intOptionsCost;
                 }
 

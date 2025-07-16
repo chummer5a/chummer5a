@@ -400,8 +400,9 @@ namespace Chummer.Backend.Equipment
                                 GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
                                 await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                            int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
                             using (ThreadSafeForm<SelectNumber> frmPickNumber
-                                   = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                   = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(intDecimalPlaces)
                                    {
                                        Minimum = decMin,
                                        Maximum = decMax,
@@ -1356,11 +1357,12 @@ namespace Chummer.Backend.Equipment
                            .ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token)
                            .ConfigureAwait(false);
+            string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
             await objWriter
-                  .WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                  .WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture),
                                            token).ConfigureAwait(false);
             await objWriter
-                  .WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                  .WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture),
                                            token).ConfigureAwait(false);
             await objWriter
                   .WriteElementStringAsync(
@@ -3029,7 +3031,7 @@ namespace Chummer.Backend.Equipment
                                         "OffroadSpeed", false, token)
                                     .ConfigureAwait(false),
                                 intTotalSpeed);
-                    if (IsDrone && _objCharacter.Settings.DroneMods)
+                    if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
                     {
                         strBonus = objMod.Bonus?["armor"]?.InnerText;
                         if (!string.IsNullOrEmpty(strBonus))
@@ -3255,7 +3257,7 @@ namespace Chummer.Backend.Equipment
                                         token)
                                     .ConfigureAwait(false),
                                 intTotalAccel);
-                    if (IsDrone && _objCharacter.Settings.DroneMods)
+                    if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
                     {
                         strBonus = objMod.Bonus?["armor"]?.InnerText;
                         if (!string.IsNullOrEmpty(strBonus))
@@ -3307,7 +3309,7 @@ namespace Chummer.Backend.Equipment
                         intTotalBonusOffroadAccel += await ParseBonusAsync(
                             objMod.WirelessBonus["offroadaccel"]?.InnerText,
                             intRating, intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
-                        if (IsDrone && _objCharacter.Settings.DroneMods)
+                        if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
                             intTemp += await ParseBonusAsync(objMod.WirelessBonus["armor"]?.InnerText, intRating,
                                 intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
@@ -3969,7 +3971,7 @@ namespace Chummer.Backend.Equipment
             //Drone's attributes can never by higher than twice their starting value (R5, p123)
             //When you need to use a 0 for the math, use 0.5 instead
             if (IsDrone && !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false) &&
-                (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).DroneModsMaximumPilot)
+                await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDroneModsMaximumPilotAsync(token).ConfigureAwait(false))
             {
                 return Math.Max(await GetPilotAsync(token).ConfigureAwait(false) * 2, 1);
             }
