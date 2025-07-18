@@ -39,8 +39,6 @@ namespace Chummer
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             LockObject = objCharacter.LockObject;
-            _dicPersistence.TryAdd("metatype", _objCharacter.Metatype.ToLowerInvariant());
-            _dicPersistence.TryAdd("metavariant", _objCharacter.Metavariant.ToLowerInvariant());
         }
 
         public async Task<string> GetStory(string strLanguage = "", CancellationToken token = default)
@@ -221,18 +219,30 @@ namespace Chummer
                 switch (macroName)
                 {
                     //$DOLLAR is defined elsewhere to prevent recursive calling
+                    case "metatype":
+                        string strMetatype = await _objCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
+                        return strMetatype.ToLowerInvariant();
+
+                    case "metavariant":
+                        string strMetavariant = await _objCharacter.GetMetavariantAsync(token).ConfigureAwait(false);
+                        return strMetavariant.ToLowerInvariant();
+
                     case "street":
-                        return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : "Alias ";
+                        string strAlias = await _objCharacter.GetAliasAsync(token).ConfigureAwait(false);
+                        return !string.IsNullOrEmpty(strAlias) ? strAlias : "Alias ";
 
                     case "real":
-                        return !string.IsNullOrEmpty(_objCharacter.Name) ? _objCharacter.Name : "Unnamed John Doe ";
-
-                    case "year" when int.TryParse(_objCharacter.Age, out int year):
-                        return int.TryParse(macroPool, out int age)
-                            ? (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalSettings.CultureInfo)
-                            : (DateTime.UtcNow.Year + 62 - year).ToString(GlobalSettings.CultureInfo);
+                        string strName = await _objCharacter.GetNameAsync(token).ConfigureAwait(false);
+                        return !string.IsNullOrEmpty(strName) ? strName : "Unnamed John Doe ";
 
                     case "year":
+                        string strAge = await _objCharacter.GetAgeAsync(token).ConfigureAwait(false);
+                        if (int.TryParse(strAge, out int year))
+                        {
+                            return int.TryParse(macroPool, out int age)
+                                ? (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalSettings.CultureInfo)
+                                : (DateTime.UtcNow.Year + 62 - year).ToString(GlobalSettings.CultureInfo);
+                        }
                         return "(ERROR PARSING \"" + _objCharacter.Age + "\")";
                 }
 

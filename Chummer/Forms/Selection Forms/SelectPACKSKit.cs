@@ -981,7 +981,7 @@ namespace Chummer
                     objChild.Text += strSpace + await LanguageManager.GetStringAsync("String_Rating").ConfigureAwait(false) + strSpace + strExtra;
                 strExtra = objXmlGear.SelectSingleNodeAndCacheExpression("qty")?.Value;
                 if (!string.IsNullOrEmpty(strExtra))
-                    objChild.Text += strSpace + 'x' + strExtra;
+                    objChild.Text += strSpace + '×' + strExtra;
 
                 if (objParent.TreeView != null)
                     await objParent.TreeView.DoThreadSafeAsync(() => objParent.Nodes.Add(objChild)).ConfigureAwait(false);

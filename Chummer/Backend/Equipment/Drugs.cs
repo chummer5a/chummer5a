@@ -221,8 +221,9 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("avail_english",
                                                         await TotalAvailAsync(GlobalSettings.CultureInfo,
                                                                               GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync(
-                    "cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                    "cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture), token).ConfigureAwait(false);
 
                 // <attributes>
                 XmlElementWriteHelper objAttributesElement = await objWriter.StartElementAsync("attributes", token).ConfigureAwait(false);
@@ -850,7 +851,7 @@ namespace Chummer.Backend.Equipment
                     strDisplayDuration += Duration.ToString(GlobalSettings.CultureInfo) + strSpace;
                     if (DurationDice > 0)
                     {
-                        strDisplayDuration += 'x' + strSpace + DurationDice.ToString(GlobalSettings.CultureInfo) +
+                        strDisplayDuration += '×' + strSpace + DurationDice.ToString(GlobalSettings.CultureInfo) +
                                               LanguageManager.GetString("String_D6") + strSpace;
                     }
                 }
@@ -1300,6 +1301,7 @@ namespace Chummer.Backend.Equipment
                                       .AppendLine(await LanguageManager.GetStringAsync("String_DamageUnresisted", strLanguage, token: token).ConfigureAwait(false));
                     if (!blnEffectsOnly)
                     {
+                        string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                         sbdDescription.Append(await LanguageManager.GetStringAsync("Label_AddictionRating", strLanguage, token: token).ConfigureAwait(false))
                                       .Append(strSpace)
                                       .AppendLine((AddictionRating * (intLevel + 1)).ToString(objCulture))
@@ -1308,13 +1310,14 @@ namespace Chummer.Backend.Equipment
                                       .AppendLine((AddictionThreshold * (intLevel + 1)).ToString(objCulture))
                                       .Append(await LanguageManager.GetStringAsync("Label_Cost", strLanguage, token: token).ConfigureAwait(false)).Append(strSpace)
                                       .Append((Cost * (intLevel + 1)).ToString(
-                                                  _objCharacter.Settings.NuyenFormat, objCulture)).AppendLine(await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false))
+                                                  strNuyenFormat, objCulture)).AppendLine(await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false))
                                       .Append(await LanguageManager.GetStringAsync("Label_Avail", strLanguage, token: token).ConfigureAwait(false)).Append(strSpace)
                                       .AppendLine(await TotalAvailAsync(objCulture, strLanguage, token).ConfigureAwait(false));
                     }
                 }
                 else if (!blnEffectsOnly)
                 {
+                    string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_AddictionRating", strLanguage, token: token).ConfigureAwait(false))
                                   .Append(strSpace)
                                   .AppendLine(0.ToString(objCulture))
@@ -1322,7 +1325,7 @@ namespace Chummer.Backend.Equipment
                                   .Append(strSpace).AppendLine(0.ToString(objCulture))
                                   .Append(await LanguageManager.GetStringAsync("Label_Cost", strLanguage, token: token).ConfigureAwait(false)).Append(strSpace)
                                   .Append((Cost * (intLevel + 1)).ToString(
-                                              _objCharacter.Settings.NuyenFormat, objCulture))
+                                              strNuyenFormat, objCulture))
                                   .AppendLine(await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false))
                                   .Append(await LanguageManager.GetStringAsync("Label_Avail", strLanguage, token: token).ConfigureAwait(false)).Append(strSpace)
                                   .AppendLine(await TotalAvailAsync(objCulture, strLanguage, token).ConfigureAwait(false));
@@ -2460,9 +2463,10 @@ namespace Chummer.Backend.Equipment
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_AddictionThreshold", token: token).ConfigureAwait(false)).Append(strSpace)
                                   .AppendLine(
                                       (AddictionThreshold * (intLevel + 1)).ToString(GlobalSettings.CultureInfo));
+                    string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Cost", token: token).ConfigureAwait(false)).Append(strSpace)
                                   .Append((await GetCostPerLevelAsync(token).ConfigureAwait(false) * (intLevel + 1)).ToString(
-                                              _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo))
+                                             strNuyenFormat, GlobalSettings.CultureInfo))
                                   .AppendLine(await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false));
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Avail", token: token).ConfigureAwait(false)).Append(strSpace)
                                   .AppendLine(DisplayTotalAvail);
@@ -2476,9 +2480,10 @@ namespace Chummer.Backend.Equipment
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_AddictionThreshold", token: token).ConfigureAwait(false)).Append(strSpace)
                                   .Append(0.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
                                   .AppendLine(strPerLevel);
+                    string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Cost", token: token).ConfigureAwait(false)).Append(strSpace)
                                   .Append((await GetCostPerLevelAsync(token).ConfigureAwait(false) * (intLevel + 1)).ToString(
-                                              _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo))
+                                              strNuyenFormat, GlobalSettings.CultureInfo))
                                   .Append(await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false))
                                   .Append(strSpace).AppendLine(strPerLevel);
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Avail", token: token).ConfigureAwait(false)).Append(strSpace)

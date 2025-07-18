@@ -51,7 +51,7 @@ namespace Chummer
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstAmmo)
                 {
-                    string strName = await objGear.GetCurrentDisplayNameShortAsync().ConfigureAwait(false) + " x"
+                    string strName = await objGear.GetCurrentDisplayNameShortAsync().ConfigureAwait(false) + strSpace + "×"
                         + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo);
                     int intRating = await objGear.GetRatingAsync().ConfigureAwait(false);
                     if (intRating > 0)
@@ -85,10 +85,10 @@ namespace Chummer
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdPlugins))
                         {
-                            foreach (Gear objChild in objGear.Children)
+                            await objGear.Children.ForEachAsync(async objChild =>
                             {
                                 sbdPlugins.Append(await objChild.GetCurrentDisplayNameShortAsync().ConfigureAwait(false)).Append(',').Append(strSpace);
-                            }
+                            }).ConfigureAwait(false);
 
                             // Remove the trailing comma.
                             sbdPlugins.Length -= 1 + strSpace.Length;

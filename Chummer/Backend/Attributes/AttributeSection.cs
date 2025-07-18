@@ -3536,7 +3536,7 @@ namespace Chummer.Backend.Attributes
                     return true;
                 CharacterAttrib.AttributeCategory eCategory = objAttribute.MetatypeCategory;
                 if (eCategory == CharacterAttrib.AttributeCategory.Special
-                    || _objCharacter.Settings.MaxNumberMaxAttributesCreate
+                    || await _objCharacter.Settings.GetMaxNumberMaxAttributesCreateAsync(token).ConfigureAwait(false)
                     >= await AttributeList.GetCountAsync(token).ConfigureAwait(false))
                     return true;
                 return await AttributeList.CountAsync(async x => x.MetatypeCategory == eCategory
@@ -3544,7 +3544,7 @@ namespace Chummer.Backend.Attributes
                                                                  && await x.GetAtMetatypeMaximumAsync(token)
                                                                            .ConfigureAwait(false), token)
                                           .ConfigureAwait(false)
-                       < _objCharacter.Settings.MaxNumberMaxAttributesCreate;
+                       < await _objCharacter.Settings.GetMaxNumberMaxAttributesCreateAsync(token).ConfigureAwait(false);
             }
             finally
             {

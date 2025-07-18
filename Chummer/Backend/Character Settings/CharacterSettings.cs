@@ -4145,7 +4145,7 @@ namespace Chummer
                     int intTemp = 2;
                     // Number of decimal places to round to when calculating Essence.
                     objXmlNode.TryGetInt32FieldQuickly("essencedecimals", ref intTemp);
-                    EssenceDecimals = intTemp;
+                    await SetEssenceDecimalsAsync(intTemp, token).ConfigureAwait(false);
                 }
                 else
                 {

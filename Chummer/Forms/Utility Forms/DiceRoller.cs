@@ -115,7 +115,7 @@ namespace Chummer
 
             int intGlitchThreshold = await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
                 ? intHitCount + 1
-                : (intDice + 1) / 2;
+                : intDice.DivAwayFromZero(2);
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= await nudGremlins.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
             if (intGlitchThreshold < 1)
@@ -258,7 +258,7 @@ namespace Chummer
             int intGlitchCount = _lstResults.Count(x => x.IsGlitch);
             int intGlitchThreshold = await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
                 ? intHitCount + 1
-                : (_lstResults.Count + 1) / 2;
+                : _lstResults.Count.DivAwayFromZero(2);
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= await nudGremlins.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
             if (intGlitchThreshold < 1)
@@ -309,7 +309,7 @@ namespace Chummer
                 intGlitchCount = _lstResults.Count(x => x.IsGlitch);
                 intGlitchThreshold = await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
                     ? intHitCount + 1
-                    : (_lstResults.Count + 1) / 2;
+                    : _lstResults.Count.DivAwayFromZero(2);
                 // Deduct the Gremlins Rating from the Glitch Threshold.
                 intGlitchThreshold -= await nudGremlins.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
                 if (intGlitchThreshold < 1)

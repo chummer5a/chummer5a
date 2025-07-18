@@ -3418,12 +3418,12 @@ namespace Chummer.Backend.Skills
                 int intOptionsCost;
                 if (intRating == 0)
                 {
-                    intOptionsCost = (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).KarmaNewSkillGroup;
+                    intOptionsCost = await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaNewSkillGroupAsync(token).ConfigureAwait(false);
                     intReturn = intOptionsCost;
                 }
                 else if (await GetRatingMaximumAsync(token).ConfigureAwait(false) > intRating)
                 {
-                    intOptionsCost = (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).KarmaImproveSkillGroup;
+                    intOptionsCost = await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaImproveSkillGroupAsync(token).ConfigureAwait(false);
                     intReturn = (intRating + 1) * intOptionsCost;
                 }
                 else

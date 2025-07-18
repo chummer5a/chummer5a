@@ -726,8 +726,8 @@ namespace Chummer
                             await _objSpirit.CharacterObject.GetSettingsKeyAsync(token).ConfigureAwait(false),
                             token).ConfigureAwait(false);
                         // Override the defaults for the setting.
-                        objCharacter.IgnoreRules = true;
-                        objCharacter.IsCritter = true;
+                        await objCharacter.SetIgnoreRulesAsync(true, token).ConfigureAwait(false);
+                        await objCharacter.SetIsCritterAsync(true, token).ConfigureAwait(false);
                         await objCharacter.SetAliasAsync(strCritterName, token).ConfigureAwait(false);
                         await objCharacter.SetCreatedAsync(true, token: token).ConfigureAwait(false);
                         string strCritterCharacterName = await txtCritterName

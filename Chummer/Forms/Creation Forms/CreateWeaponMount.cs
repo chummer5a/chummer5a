@@ -1058,7 +1058,7 @@ namespace Chummer
                 {
                     // Populate the Weapon Mount Category list.
                     string strFilter = "category != \"Size\" and " + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false);
-                    if (!_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
+                    if (!_objVehicle.IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
                         strFilter += " and not(optionaldrone)";
                     XPathNodeIterator xmlWeaponMountOptionNodeList
                         = _xmlDocXPath.Select("/chummer/weaponmounts/weaponmount[" + strFilter + ']');

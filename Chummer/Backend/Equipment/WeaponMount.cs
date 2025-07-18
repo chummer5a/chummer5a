@@ -255,8 +255,9 @@ namespace Chummer.Backend.Equipment
                             GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
                             await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                        int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
                         using (ThreadSafeForm<SelectNumber> frmPickNumber
-                               = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(intDecimalPlaces)
                                {
                                    Minimum = decMin,
                                    Maximum = decMax,
@@ -571,11 +572,12 @@ namespace Chummer.Backend.Equipment
                 token: token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("avail",
                 await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("cost",
-                (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat,
+                (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat,
                     objCulture), token: token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("owncost",
-                (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat,
+                (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat,
                     objCulture), token: token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false),
                 token: token).ConfigureAwait(false);
@@ -2190,8 +2192,9 @@ namespace Chummer.Backend.Equipment
                             GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
                             await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                        int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
                         using (ThreadSafeForm<SelectNumber> frmPickNumber
-                               = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(intDecimalPlaces)
                                {
                                    Minimum = decMin,
                                    Maximum = decMax,

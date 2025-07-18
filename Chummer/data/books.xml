@@ -287,17 +287,17 @@
     </book>
     <book>
       <id>bb5c7e4e-431b-404f-89da-e69cf3b75d50</id>
-      <name>Schattenhandbuch (German Handbook)</name>
+      <name>Schattenhandbuch (German-Only)</name>
       <code>SHB</code>
     </book>
     <book>
       <id>8798c923-8118-448e-b201-53d299d7e58c</id>
-      <name>Schattenhandbuch 2 (German Handbook)</name>
+      <name>Schattenhandbuch 2 (German-Only)</name>
       <code>SHB2</code>
     </book>
     <book>
       <id>08dea2f1-3add-4516-bdbe-b47ab9a5e31f</id>
-      <name>Schattenhandbuch 3 (German Handbook)</name>
+      <name>Schattenhandbuch 3 (German-Only)</name>
       <code>SHB3</code>
     </book>
     <book>
@@ -422,9 +422,21 @@
     </book>
     <book>
       <id>71a6304e-03dc-41db-be01-a86acab1517b</id>
-      <name>Shadowrun 2050 (5th Edition)</name>
+      <name>Shadowrun 2050 (German-Only)</name>
       <code>2050</code>
       <!-- Only match to the German one because the English one is 4e -->
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Von seinem stillen Platz am North Avenue Beach</text>
+          <page>4</page>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>Von seinem stillen Platz am North Avenue Beach</text>
+          <page>4</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>485cc0ae-8221-4d5e-a527-33df76fd1f21</id>
@@ -452,9 +464,14 @@
     </book>
     <book>
       <id>c6b7136f-e461-457b-b6f7-09e95c2f6313</id>
-      <name>State of the Art ADL (German Handbook)</name>
+      <name>State of the Art ADL (German-Only)</name>
       <code>SAG</code>
       <matches>
+        <match>
+          <language>en-us</language>
+          <text>ihre Hauer oftmals etwas einschüchternd auf Norms wirkten</text>
+          <page>6</page>
+        </match>
         <match>
           <language>de-de</language>
           <text>ihre Hauer oftmals etwas einschüchternd auf Norms wirkten</text>
@@ -536,9 +553,14 @@
     </book>
     <book>
       <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
-      <name>Hamburg (German-exclusive)</name>
+      <name>Hamburg (German-Only)</name>
       <code>HAMG</code>
       <matches>
+        <match>
+          <language>en-us</language>
+          <text>Willkommen in Hamburg. Willkommen in einem Sprawl voller Gefahren und Möglichkeiten.</text>
+          <page>7</page>
+        </match>
         <match>
           <language>de-de</language>
           <text>Willkommen in Hamburg. Willkommen in einem Sprawl voller Gefahren und Möglichkeiten.</text>
@@ -589,9 +611,14 @@
     </book>
     <book>
       <id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
-      <name>Datapuls SOTA 2080 (German-exclusive)</name>
+      <name>Datapuls SOTA 2080 (German-Only)</name>
       <code>SOTG</code>
       <matches>
+        <match>
+          <language>en-us</language>
+          <text>Laserwaffen stoßen bei der Energieversorgung (noch) an ihre Grenzen</text>
+          <page>4</page>
+        </match>
         <match>
           <language>de-de</language>
           <text>Laserwaffen stoßen bei der Energieversorgung (noch) an ihre Grenzen</text>
@@ -601,9 +628,14 @@
     </book>
     <book>
       <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
-      <name>Datapuls Verschlusssache (German-exclusive)</name>
+      <name>Datapuls Verschlusssache (German-Only)</name>
       <code>DPVG</code>
       <matches>
+        <match>
+          <language>en-us</language>
+          <text>Das Verhältnis der Deutschen zu ihren Geheimdiensten ist kompliziert</text>
+          <page>4</page>
+        </match>
         <match>
           <language>de-de</language>
           <text>Das Verhältnis der Deutschen zu ihren Geheimdiensten ist kompliziert</text>
@@ -662,7 +694,7 @@
     </book>
     <book>
       <id>d7ac8252-fc5d-42d2-afca-2cf98ec14287</id>
-      <name>Grimmes Erwachen (German-exclusive)</name>
+      <name>Grimmes Erwachen (German-Only)</name>
       <code>GE</code>
     </book>
     <book>

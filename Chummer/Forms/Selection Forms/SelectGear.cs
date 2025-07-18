@@ -340,7 +340,7 @@ namespace Chummer
                             }
                             if (strName.StartsWith("Nuyen", StringComparison.Ordinal))
                             {
-                                int intDecimalPlaces = _objCharacter.Settings.MaxNuyenDecimals;
+                                int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
                                 if (intDecimalPlaces <= 0)
                                 {
                                     await nudGearQty.DoThreadSafeAsync(x =>

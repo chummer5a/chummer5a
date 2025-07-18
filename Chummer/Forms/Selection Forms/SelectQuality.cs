@@ -436,7 +436,7 @@ namespace Chummer
 
                         intBP *= await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
 
-                        int intKarmaCost = intBP * _objCharacter.Settings.KarmaQuality;
+                        int intKarmaCost = intBP * await _objCharacter.Settings.GetKarmaQualityAsync(token).ConfigureAwait(false);
                         await lblBP.DoThreadSafeAsync(x => x.Text = intKarmaCost.ToString(GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
                         if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                         {
@@ -672,8 +672,14 @@ namespace Chummer
                                                          x => x.SelectedValue?.ToString(), token: token)
                                                      .ConfigureAwait(false);
                 _blnLoading = true;
-                await lstQualities.PopulateWithListItemsAsync(lstQuality, token: token).ConfigureAwait(false);
-                _blnLoading = false;
+                try
+                {
+                    await lstQualities.PopulateWithListItemsAsync(lstQuality, token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    _blnLoading = false;
+                }
                 await lstQualities.DoThreadSafeAsync(x =>
                 {
                     if (string.IsNullOrEmpty(strOldSelectedQuality))

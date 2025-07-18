@@ -1058,7 +1058,7 @@ namespace Chummer
                 int intMag = await (await _objCharacter.GetAttributeAsync("MAG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
                 // Barehanded Adept is limited to a Force of MAG/3 rounded up
                 int intHighestForce = BarehandedAdept
-                    ? (intMag + 2) / 3
+                    ? intMag.DivAwayFromZero(3)
                     : intMag * 2;
                 string strDV = await GetCalculatedDvAsync(token).ConfigureAwait(false);
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,

@@ -639,9 +639,10 @@ namespace Chummer.Backend.Equipment
                                 await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token)
                                     .ConfigureAwait(false),
                                 await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                            int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
                             using (ThreadSafeForm<SelectNumber> frmPickNumber
                                    = await ThreadSafeForm<SelectNumber>.GetAsync(() =>
-                                       new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                       new SelectNumber(intDecimalPlaces)
                                        {
                                            Minimum = decMin,
                                            Maximum = decMax,
@@ -1207,7 +1208,7 @@ namespace Chummer.Backend.Equipment
             List<string> lstCount = new List<string>(1);
             string ammoString = CalculatedAmmo(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage);
             // Determine which loading methods are available to the Weapon.
-            if (ammoString.IndexOfAny('x', '+') != -1 ||
+            if (ammoString.IndexOfAny('×', 'x', '+') != -1 ||
                 ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
                 ammoString.Contains("Special", StringComparison.OrdinalIgnoreCase) ||
                 ammoString.Contains("External Source", StringComparison.OrdinalIgnoreCase))
@@ -1273,7 +1274,7 @@ namespace Chummer.Backend.Equipment
                 await CalculatedAmmoAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token)
                     .ConfigureAwait(false);
             // Determine which loading methods are available to the Weapon.
-            if (ammoString.IndexOfAny('x', '+') != -1 ||
+            if (ammoString.IndexOfAny('×', 'x', '+') != -1 ||
                 ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
                 ammoString.Contains("Special", StringComparison.OrdinalIgnoreCase) ||
                 ammoString.Contains("External Source", StringComparison.OrdinalIgnoreCase))
@@ -2180,17 +2181,19 @@ namespace Chummer.Backend.Equipment
                         await objGear
                             .TotalAvailAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token)
                             .ConfigureAwait(false), token).ConfigureAwait(false);
+                    string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("cost",
                         (await objGear.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
-                            _objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                            strNuyenFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("owncost",
                         (await objGear.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
-                            _objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                            strNuyenFormat, objCulture), token).ConfigureAwait(false);
+                    string strWeightFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("weight",
-                            objGear.TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token)
+                            objGear.TotalWeight.ToString(strWeightFormat, objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("ownweight",
-                            objGear.OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token)
+                            objGear.OwnWeight.ToString(strWeightFormat, objCulture), token)
                         .ConfigureAwait(false);
                 }
                 else
@@ -2201,17 +2204,19 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("avail_english",
                         await TotalAvailAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
                             token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("cost",
                         (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
-                            _objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                            strNuyenFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("owncost",
                         (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
-                            _objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                            strNuyenFormat, objCulture), token).ConfigureAwait(false);
+                    string strWeightFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("weight",
-                            TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token)
+                            TotalWeight.ToString(strWeightFormat, objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("ownweight",
-                            OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token)
+                            OwnWeight.ToString(strWeightFormat, objCulture), token)
                         .ConfigureAwait(false);
                 }
 
@@ -4782,6 +4787,15 @@ namespace Chummer.Backend.Equipment
                             strPrepend = strThisAmmo.Substring(0, intPos + 1);
                             strThisAmmo = strThisAmmo.Substring(intPos + 1);
                         }
+                        else
+                        {
+                            intPos = strThisAmmo.IndexOf('×');
+                            if (intPos != -1)
+                            {
+                                strPrepend = strThisAmmo.Substring(0, intPos + 1);
+                                strThisAmmo = strThisAmmo.Substring(intPos + 1);
+                            }
+                        }
 
                         if (WeaponAccessories.Count != 0)
                         {
@@ -4826,7 +4840,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 int intAmmo = ((double)objProcess).StandardRound() + intAmmoBonusFlat;
 
-                                intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
+                                intAmmo += (intAmmo * intAmmoBonus).DivAwayFromZero(100);
 
                                 if (decAmmoBonusPercent != 1.0m)
                                 {
@@ -4842,7 +4856,7 @@ namespace Chummer.Backend.Equipment
                         {
                             int intAmmo = decValue.StandardRound() + intAmmoBonusFlat;
 
-                            intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
+                            intAmmo += (intAmmo * intAmmoBonus).DivAwayFromZero(100);
 
                             if (decAmmoBonusPercent != 1.0m)
                             {
@@ -6268,11 +6282,14 @@ namespace Chummer.Backend.Equipment
 
                 // Now that we know the Weapon's RC values, run through all of the Accessories and add theirs to the mix.
                 // Only add in the values for items that do not come with the weapon.
+                bool blnRestrictRecoil = blnSync
+                    ? _objCharacter.Settings.RestrictRecoil
+                    : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetRestrictRecoilAsync(token).ConfigureAwait(false);
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
                     if (!objAccessory.Equipped || string.IsNullOrEmpty(objAccessory.RC))
                         continue;
-                    if (_objCharacter.Settings.RestrictRecoil && objAccessory.RCGroup != 0)
+                    if (blnRestrictRecoil && objAccessory.RCGroup != 0)
                     {
                         int intItemRC = Convert.ToInt32(objAccessory.RC, GlobalSettings.InvariantCultureInfo);
                         List<Tuple<string, int>> lstLoopRCGroup = lstRCGroups;
@@ -6620,7 +6637,7 @@ namespace Chummer.Backend.Equipment
                                 Improvement.ImprovementType.ThrowSTR, token: token).ConfigureAwait(false))
                         .StandardRound();
 
-                int intStrRC = (intUseSTR + 2) / 3;
+                int intStrRC = intUseSTR.DivAwayFromZero(3);
 
                 intRCBase += intStrRC + 1;
                 intRCFull += intStrRC + 1;
@@ -11373,7 +11390,7 @@ namespace Chummer.Backend.Equipment
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
                 if (objThis != null)
                     return objThis.MatrixCM;
-                return BaseMatrixBoxes + (this.GetTotalMatrixAttribute("Device Rating") + 1) / 2 + TotalBonusMatrixBoxes;
+                return BaseMatrixBoxes + this.GetTotalMatrixAttribute("Device Rating").DivAwayFromZero(2) + TotalBonusMatrixBoxes;
             }
         }
 
@@ -11751,7 +11768,7 @@ namespace Chummer.Backend.Equipment
                 int intCurrentAmmoCount = objInternalClip.Ammo;
 
                 // Determine which loading methods are available to the Weapon.
-                if (ammoString.IndexOfAny('x', '+') != -1 ||
+                if (ammoString.IndexOfAny('×', 'x', '+') != -1 ||
                     ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
                     ammoString.Contains("Special", StringComparison.OrdinalIgnoreCase) ||
                     ammoString.Contains("External Source", StringComparison.OrdinalIgnoreCase))
@@ -11817,7 +11834,7 @@ namespace Chummer.Backend.Equipment
             bool blnExternalSource = false;
             List<Gear> lstAmmo = new List<Gear>(1);
             // Determine which loading methods are available to the Weapon.
-            if (ammoString.IndexOfAny('x', '+') != -1 ||
+            if (ammoString.IndexOfAny('×', 'x', '+') != -1 ||
                 ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
                 ammoString.Contains("Special", StringComparison.OrdinalIgnoreCase) ||
                 ammoString.Contains("External Source", StringComparison.OrdinalIgnoreCase))

@@ -1133,7 +1133,8 @@ namespace Chummer.UI.Skills
 
                     objSkill = await _objCharacter.SkillsSection.AddExoticSkillAsync(
                         frmPickExoticSkill.MyForm.SelectedExoticSkill,
-                        frmPickExoticSkill.MyForm.SelectedExoticSkillSpecialisation, MyToken).ConfigureAwait(false);
+                        await frmPickExoticSkill.MyForm.GetSelectedExoticSkillSpecialisationAsync(MyToken).ConfigureAwait(false),
+                        MyToken).ConfigureAwait(false);
                 }
 
                 IAsyncDisposable objLocker = await objSkill.LockObject.EnterUpgradeableReadLockAsync(MyToken).ConfigureAwait(false);

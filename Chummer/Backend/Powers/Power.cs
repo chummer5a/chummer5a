@@ -2797,8 +2797,8 @@ namespace Chummer
                     {
                         intReturn = CharacterObject.Settings.IncreasedImprovedAbilityMultiplier
                             // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
-                            ? Math.Min(intReturn, _intCachedLearnedRating + (_intCachedLearnedRating + 1) / 2)
-                            : Math.Min(intReturn, (_intCachedLearnedRating + 1) / 2);
+                            ? Math.Min(intReturn, _intCachedLearnedRating + _intCachedLearnedRating.DivAwayFromZero(2))
+                            : Math.Min(intReturn, _intCachedLearnedRating.DivAwayFromZero(2));
                     }
 
                     if (!CharacterObject.IgnoreRules)
@@ -2828,8 +2828,8 @@ namespace Chummer
                     intReturn = await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
                         .GetIncreasedImprovedAbilityMultiplierAsync(token).ConfigureAwait(false)
                         // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
-                        ? Math.Min(intReturn, _intCachedLearnedRating + (_intCachedLearnedRating + 1) / 2)
-                        : Math.Min(intReturn, (_intCachedLearnedRating + 1) / 2);
+                        ? Math.Min(intReturn, _intCachedLearnedRating + _intCachedLearnedRating.DivAwayFromZero(2))
+                        : Math.Min(intReturn, _intCachedLearnedRating.DivAwayFromZero(2));
                 }
 
                 if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))

@@ -5199,17 +5199,18 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 int intPrice = IsKnowledgeSkill
-                    ? CharacterObject.Settings.KarmaKnowledgeSpecialization
-                    : CharacterObject.Settings.KarmaSpecialization;
+                    ? await CharacterObject.Settings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
+                    : await CharacterObject.Settings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
 
                 int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                 decimal decSpecCostMultiplier = 1.0m;
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
                 decimal decExtraSpecCost = await CharacterObject.Improvements.SumAsync(objLoopImprovement =>
                 {
                     if (objLoopImprovement.Minimum > intTotalBaseRating
                         || (!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                            && (objLoopImprovement.Condition == "career") != CharacterObject.Created
-                            && (objLoopImprovement.Condition == "create") == CharacterObject.Created)
+                            && (objLoopImprovement.Condition == "career") != blnCreated
+                            && (objLoopImprovement.Condition == "create") == blnCreated)
                         || !objLoopImprovement.Enabled)
                         return 0;
                     if (objLoopImprovement.ImprovedName != SkillCategory)
@@ -7418,17 +7419,17 @@ namespace Chummer.Backend.Skills
                 CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                 if (intTotalBaseRating == 0)
                 {
-                    intOptionsCost = objSettings.KarmaNewActiveSkill;
+                    intOptionsCost = await objSettings.GetKarmaNewActiveSkillAsync(token).ConfigureAwait(false);
                     upgrade += intOptionsCost;
                 }
                 else
                 {
-                    intOptionsCost = objSettings.KarmaImproveActiveSkill;
+                    intOptionsCost = await objSettings.GetKarmaImproveActiveSkillAsync(token).ConfigureAwait(false);
                     upgrade += (intTotalBaseRating + 1) * intOptionsCost;
                 }
 
                 int intSkillGroupCostAdjustment = 0;
-                if (objSettings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
+                if (await objSettings.GetCompensateSkillGroupKarmaDifferenceAsync(token).ConfigureAwait(false) && SkillGroupObject != null)
                 {
                     int intSkillGroupUpper = int.MaxValue;
                     foreach (Skill objSkillGroupMember in SkillGroupObject.SkillList)
@@ -7447,15 +7448,15 @@ namespace Chummer.Backend.Skills
                         int intNakedSkillCost = await SkillGroupObject.SkillList.CountAsync(async x => x == this || await x.GetEnabledAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         if (intTotalBaseRating == 0)
                         {
-                            intGroupCost = objSettings.KarmaNewSkillGroup;
-                            intNakedSkillCost *= objSettings.KarmaNewActiveSkill;
+                            intGroupCost = await objSettings.GetKarmaNewSkillGroupAsync(token).ConfigureAwait(false);
+                            intNakedSkillCost *= await objSettings.GetKarmaNewActiveSkillAsync(token).ConfigureAwait(false);
                         }
                         else
                         {
                             intGroupCost = (intTotalBaseRating + 1) *
-                                           objSettings.KarmaImproveSkillGroup;
+                                           await objSettings.GetKarmaImproveSkillGroupAsync(token).ConfigureAwait(false);
                             intNakedSkillCost *= (intTotalBaseRating + 1) *
-                                                 objSettings.KarmaImproveActiveSkill;
+                                                 await objSettings.GetKarmaImproveActiveSkillAsync(token).ConfigureAwait(false);
                         }
 
                         intSkillGroupCostAdjustment = intGroupCost - intNakedSkillCost;
@@ -7648,8 +7649,8 @@ namespace Chummer.Backend.Skills
                     else
                     {
                         int intPrice = IsKnowledgeSkill
-                            ? CharacterObject.Settings.KarmaKnowledgeSpecialization
-                            : CharacterObject.Settings.KarmaSpecialization;
+                            ? await CharacterObject.Settings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
+                            : await CharacterObject.Settings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
 
                         int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                         decimal decSpecCostMultiplier = 1.0m;
@@ -7711,8 +7712,8 @@ namespace Chummer.Backend.Skills
                 if (blnCreated)
                 {
                     int intPrice = IsKnowledgeSkill
-                        ? CharacterObject.Settings.KarmaKnowledgeSpecialization
-                        : CharacterObject.Settings.KarmaSpecialization;
+                        ? await CharacterObject.Settings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
+                        : await CharacterObject.Settings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
 
                     decimal decExtraSpecCost = 0;
                     int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);

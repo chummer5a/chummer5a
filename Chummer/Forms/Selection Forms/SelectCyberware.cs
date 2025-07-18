@@ -1241,6 +1241,7 @@ namespace Chummer
                         await lblESSDiscountPercentLabel.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts, token: token).ConfigureAwait(false);
                         await nudESSDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts, token: token).ConfigureAwait(false);
 
+                        string strEssenceFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceFormatAsync(token).ConfigureAwait(false);
                         bool blnAddToParentESS = objXmlCyberware.SelectSingleNodeAndCacheExpression("addtoparentess", token) != null;
                         if (_objParentNode == null || blnAddToParentESS)
                         {
@@ -1332,7 +1333,7 @@ namespace Chummer
 
                             await lblEssence.DoThreadSafeAsync(x =>
                             {
-                                x.Text = decESS.ToString(_objCharacter.Settings.EssenceFormat, GlobalSettings.CultureInfo);
+                                x.Text = decESS.ToString(strEssenceFormat, GlobalSettings.CultureInfo);
                                 if (blnAddToParentESS)
                                     x.Text = '+' + x.Text;
                             }, token: token).ConfigureAwait(false);
@@ -1341,7 +1342,7 @@ namespace Chummer
                         {
                             await lblEssence.DoThreadSafeAsync(x => x.Text
                                                                    = 0.0m.ToString(
-                                                                       _objCharacter.Settings.EssenceFormat,
+                                                                       strEssenceFormat,
                                                                        GlobalSettings.CultureInfo), token: token)
                                             .ConfigureAwait(false);
                         }
@@ -1939,7 +1940,7 @@ namespace Chummer
             if (objCyberwareNode == null)
                 return;
 
-            if (_objCharacter.Settings.EnforceCapacity && _objParentObject != null)
+            if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEnforceCapacityAsync(token).ConfigureAwait(false) && _objParentObject != null)
             {
                 // Capacity.
                 bool blnAddToParentCapacity = objCyberwareNode.SelectSingleNodeAndCacheExpression("addtoparentcapacity", token: token) != null;

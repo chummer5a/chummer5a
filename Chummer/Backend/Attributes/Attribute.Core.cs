@@ -1597,12 +1597,11 @@ namespace Chummer.Backend.Attributes
                 int intPureCyberValue = 0;
                 int intLimbCount = 0;
                 // If this is AGI or STR, factor in any Cyberlimbs.
-                if (blnIncludeCyberlimbs &&
-                    !(blnSync
-                            ? _objCharacter.Settings
-                            : await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
-                        .DontUseCyberlimbCalculation &&
-                    Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
+                if (blnIncludeCyberlimbs
+                    && !(blnSync
+                            ? _objCharacter.Settings.DontUseCyberlimbCalculation
+                            : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false))
+                    && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
                     int intLimbTotal;
                     if (blnSync)
@@ -2834,7 +2833,7 @@ namespace Chummer.Backend.Attributes
                         }
 
                         //// If this is AGI or STR, factor in any Cyberlimbs.
-                        if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                        if (!await _objCharacter.Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
                             Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                         {
                             await _objCharacter.Cyberware.ForEachAsync(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace), token: token).ConfigureAwait(false);
@@ -3157,7 +3156,7 @@ namespace Chummer.Backend.Attributes
                 }
 
                 int intUpgradeCost;
-                int intOptionsCost = _objCharacter.Settings.KarmaAttribute;
+                int intOptionsCost = await _objCharacter.Settings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
                 if (intValue == 0)
                 {
                     intUpgradeCost = intOptionsCost;
@@ -3167,7 +3166,7 @@ namespace Chummer.Backend.Attributes
                     intUpgradeCost = (intValue + 1) * intOptionsCost;
                 }
 
-                if (_objCharacter.Settings.AlternateMetatypeAttributeKarma
+                if (await _objCharacter.Settings.GetAlternateMetatypeAttributeKarmaAsync(token).ConfigureAwait(false)
                     && !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
                     intUpgradeCost -= (await GetMetatypeMinimumAsync(token).ConfigureAwait(false) - 1) *
                                       intOptionsCost;

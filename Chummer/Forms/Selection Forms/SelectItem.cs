@@ -88,7 +88,7 @@ namespace Chummer
                                                .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')');
                                 }
 
-                                sbdAmmoName.Append(strSpace).Append('x')
+                                sbdAmmoName.Append(strSpace).Append('×')
                                            .Append(objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
                                 lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
                             }
