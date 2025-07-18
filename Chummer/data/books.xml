@@ -404,11 +404,6 @@
       <!-- Only match to the German one because the English one is 4e -->
       <matches>
         <match>
-          <language>en-us</language>
-          <text>Von seinem stillen Platz am North Avenue Beach</text>
-          <page>4</page>
-        </match>
-        <match>
           <language>de-de</language>
           <text>Von seinem stillen Platz am North Avenue Beach</text>
           <page>4</page>
@@ -445,14 +440,9 @@
       <code>SAG</code>
       <matches>
         <match>
-          <language>en-us</language>
-          <text>ihre Hauer oftmals etwas einschüchternd auf Norms wirkten</text>
-          <page>6</page>
-        </match>
-        <match>
           <language>de-de</language>
-          <text>ihre Hauer oftmals etwas einschüchternd auf Norms wirkten</text>
-          <page>6</page>
+          <text>die beste Waffe der Welt in den Händen, schon hat der</text>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -534,13 +524,8 @@
       <code>HAMG</code>
       <matches>
         <match>
-          <language>en-us</language>
-          <text>Willkommen in Hamburg. Willkommen in einem Sprawl voller Gefahren und Möglichkeiten.</text>
-          <page>7</page>
-        </match>
-        <match>
           <language>de-de</language>
-          <text>Willkommen in Hamburg. Willkommen in einem Sprawl voller Gefahren und Möglichkeiten.</text>
+          <text>Willkommen in Hamburg. Willkommen in einem Sprawl</text>
           <page>7</page>
         </match>
       </matches>
@@ -592,13 +577,8 @@
       <code>SOTG</code>
       <matches>
         <match>
-          <language>en-us</language>
-          <text>Laserwaffen stoßen bei der Energieversorgung (noch) an ihre Grenzen</text>
-          <page>4</page>
-        </match>
-        <match>
           <language>de-de</language>
-          <text>Laserwaffen stoßen bei der Energieversorgung (noch) an ihre Grenzen</text>
+          <text>Treibladung komplett abzulösen. Laserwaffen stoßen bei</text>
           <page>4</page>
         </match>
       </matches>
@@ -609,14 +589,9 @@
       <code>DPVG</code>
       <matches>
         <match>
-          <language>en-us</language>
-          <text>Das Verhältnis der Deutschen zu ihren Geheimdiensten ist kompliziert</text>
-          <page>4</page>
-        </match>
-        <match>
           <language>de-de</language>
-          <text>Das Verhältnis der Deutschen zu ihren Geheimdiensten ist kompliziert</text>
-          <page>4</page>
+          <text>Das Verhältnis der Deutschen zu ihren Geheimdiensten</text>
+          <page>2</page>
         </match>
       </matches>
     </book>
