@@ -331,7 +331,7 @@ namespace Chummer
                                     objNode.Text = objNewNode.Text;
                                     objNode.ToolTipText = objNewNode.ToolTipText;
                                     objNode.ForeColor = objNewNode.ForeColor;
-                                    if (objNode.Tag is CharacterCache objOldCache && !objOldCache.IsDisposed)
+                                    if (objNode.Tag is CharacterCache objOldCache && !ReferenceEquals(objOldCache, objNewCache) && !objOldCache.IsDisposed)
                                         setCachesToDispose.Add(objOldCache);
                                     objNode.Tag = objNewCache;
                                 }
