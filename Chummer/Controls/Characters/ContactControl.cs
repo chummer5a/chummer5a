@@ -109,11 +109,11 @@ namespace Chummer
 
                 await DoDataBindings(_objMyToken).ConfigureAwait(false);
 
-                if (_objContact.IsEnemy)
+                if (await _objContact.GetIsEnemyAsync(_objMyToken).ConfigureAwait(false))
                 {
                     if (cmdLink != null)
                     {
-                        string strText = !string.IsNullOrEmpty(_objContact.FileName)
+                        string strText = !string.IsNullOrEmpty(await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false))
                             ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenLinkedEnemy", token: _objMyToken)
                                 .ConfigureAwait(false)
                             : await LanguageManager.GetStringAsync("Tip_Enemy_LinkEnemy", token: _objMyToken)
@@ -123,15 +123,16 @@ namespace Chummer
 
                     string strTooltip = await LanguageManager.GetStringAsync("Tip_Enemy_EditNotes", token: _objMyToken)
                         .ConfigureAwait(false);
-                    if (!string.IsNullOrEmpty(_objContact.Notes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+                    string strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strNotes))
+                        strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
                     await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
                 }
                 else
                 {
                     if (cmdLink != null)
                     {
-                        string strText = !string.IsNullOrEmpty(_objContact.FileName)
+                        string strText = !string.IsNullOrEmpty(await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false))
                             ? await LanguageManager.GetStringAsync("Tip_Contact_OpenLinkedContact", token: _objMyToken)
                                 .ConfigureAwait(false)
                             : await LanguageManager.GetStringAsync("Tip_Contact_LinkContact", token: _objMyToken)
@@ -141,8 +142,9 @@ namespace Chummer
 
                     string strTooltip = await LanguageManager
                         .GetStringAsync("Tip_Contact_EditNotes", token: _objMyToken).ConfigureAwait(false);
-                    if (!string.IsNullOrEmpty(_objContact.Notes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+                    string strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strNotes))
+                        strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
                     await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
                 }
             }
@@ -730,23 +732,27 @@ namespace Chummer
         {
             try
             {
+                string strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                Color objColor = await _objContact.GetNotesColorAsync(_objMyToken).ConfigureAwait(false);
                 using (ThreadSafeForm<EditNotes> frmContactNotes
                        = await ThreadSafeForm<EditNotes>.GetAsync(
-                               () => new EditNotes(_objContact.Notes, _objContact.NotesColor, _objMyToken), _objMyToken)
+                               () => new EditNotes(strNotes, objColor, _objMyToken), _objMyToken)
                            .ConfigureAwait(false))
                 {
                     if (await frmContactNotes.ShowDialogSafeAsync(this, _objMyToken).ConfigureAwait(false) !=
                         DialogResult.OK)
                         return;
-                    _objContact.Notes = frmContactNotes.MyForm.Notes;
+                    await _objContact.SetNotesAsync(frmContactNotes.MyForm.Notes, _objMyToken).ConfigureAwait(false);
+                    await _objContact.SetNotesColorAsync(frmContactNotes.MyForm.NotesColor, _objMyToken).ConfigureAwait(false);
                 }
 
                 string strTooltip
-                    = await LanguageManager.GetStringAsync(_objContact.IsEnemy
+                    = await LanguageManager.GetStringAsync(await _objContact.GetIsEnemyAsync(_objMyToken).ConfigureAwait(false)
                         ? "Tip_Enemy_EditNotes"
                         : "Tip_Contact_EditNotes", token: _objMyToken).ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(_objContact.Notes))
-                    strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+                strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strNotes))
+                    strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
                 await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)

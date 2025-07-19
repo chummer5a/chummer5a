@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -215,10 +216,12 @@ namespace Chummer.UI.Shared
                             if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
                                 objImprovement.SourceName != objSelectedNodeTag.ToString())
                                 return;
+                            string strNotes = await objImprovement.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                            Color objColor = await objImprovement.GetNotesColorAsync(_objMyToken).ConfigureAwait(false);
                             using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>
                                        .GetAsync(() => new EditNotes(
-                                           objImprovement.Notes,
-                                           objImprovement.NotesColor), _objMyToken)
+                                           strNotes,
+                                           objColor), _objMyToken)
                                        .ConfigureAwait(false))
                             {
                                 if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter, _objMyToken)
@@ -226,14 +229,16 @@ namespace Chummer.UI.Shared
                                     != DialogResult.OK)
                                     return;
 
-                                objImprovement.Notes = frmItemNotes.MyForm.Notes;
+                                await objImprovement.SetNotesAsync(frmItemNotes.MyForm.Notes, _objMyToken).ConfigureAwait(false);
+                                await objImprovement.SetNotesColorAsync(frmItemNotes.MyForm.NotesColor, _objMyToken).ConfigureAwait(false);
                             }
 
-                            string strTooltip = objImprovement.Notes.WordWrap();
+                            strNotes = (await objImprovement.GetNotesAsync(_objMyToken).ConfigureAwait(false)).WordWrap();
+                            objColor = await objImprovement.GetPreferredColorAsync(_objMyToken).ConfigureAwait(false);
                             await treLimit.DoThreadSafeAsync(() =>
                             {
-                                objSelectedNode.ForeColor = objImprovement.PreferredColor;
-                                objSelectedNode.ToolTipText = strTooltip;
+                                objSelectedNode.ForeColor = objColor;
+                                objSelectedNode.ToolTipText = strNotes;
                             }, token: _objMyToken).ConfigureAwait(false);
                             if (MakeDirty != null)
                                 await MakeDirty.Invoke(this, EventArgs.Empty, _objMyToken).ConfigureAwait(false);
@@ -271,25 +276,32 @@ namespace Chummer.UI.Shared
         /// </summary>
         private async Task WriteNotes(IHasNotes objNotes, TreeNode treNode, CancellationToken token = default)
         {
-            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor), token).ConfigureAwait(false))
+            string strNotes = await objNotes.GetNotesAsync(token).ConfigureAwait(false);
+            Color objColor = await objNotes.GetNotesColorAsync(token).ConfigureAwait(false);
+            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(strNotes, objColor), token).ConfigureAwait(false))
             {
                 if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) != DialogResult.OK)
                     return;
 
-                objNotes.Notes = frmItemNotes.MyForm.Notes;
-                objNotes.NotesColor = frmItemNotes.MyForm.NotesColor;
+                await objNotes.SetNotesAsync(frmItemNotes.MyForm.Notes, token).ConfigureAwait(false);
+                await objNotes.SetNotesColorAsync(frmItemNotes.MyForm.NotesColor, token).ConfigureAwait(false);
             }
+
+            strNotes = (await objNotes.GetNotesAsync(token).ConfigureAwait(false)).WordWrap();
+            objColor = await objNotes.GetPreferredColorAsync(token).ConfigureAwait(false);
             TreeView objTreeView = treNode.TreeView;
             if (objTreeView != null)
+            {
                 await objTreeView.DoThreadSafeAsync(() =>
                 {
-                    treNode.ForeColor = objNotes.PreferredColor;
-                    treNode.ToolTipText = objNotes.Notes.WordWrap();
+                    treNode.ForeColor = objColor;
+                    treNode.ToolTipText = strNotes;
                 }, token: token).ConfigureAwait(false);
+            }
             else
             {
-                treNode.ForeColor = objNotes.PreferredColor;
-                treNode.ToolTipText = objNotes.Notes.WordWrap();
+                treNode.ForeColor = objColor;
+                treNode.ToolTipText = strNotes;
             }
             if (MakeDirty != null)
                 await MakeDirty.Invoke(this, EventArgs.Empty, token).ConfigureAwait(false);
@@ -399,6 +411,8 @@ namespace Chummer.UI.Shared
                             strName += ','
                                        + await LanguageManager.GetStringAsync("String_Space", token: token)
                                                               .ConfigureAwait(false) + objImprovement.Condition;
+                        string strNotes = (await objImprovement.GetNotesAsync(token).ConfigureAwait(false)).WordWrap();
+                        Color objColor = await objImprovement.GetPreferredColorAsync(token).ConfigureAwait(false);
                         await treLimit.DoThreadSafeAsync(() =>
                         {
                             if (!objParentNode.Nodes.ContainsKey(strName))
@@ -409,8 +423,8 @@ namespace Chummer.UI.Shared
                                     Text = strName,
                                     Tag = objImprovement.SourceName,
                                     ContextMenuStrip = cmsLimitModifierNotesOnly,
-                                    ForeColor = objImprovement.PreferredColor,
-                                    ToolTipText = objImprovement.Notes.WordWrap()
+                                    ForeColor = objColor,
+                                    ToolTipText = strNotes
                                 };
                                 if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                                 {

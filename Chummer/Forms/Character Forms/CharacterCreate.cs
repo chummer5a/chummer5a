@@ -8182,25 +8182,28 @@ namespace Chummer
                 {
                     case Gear objGear:
                     {
+                        string strNotes = await objGear.GetNotesAsync(GenericToken).ConfigureAwait(false);
+                        Color objColor = await objGear.GetNotesColorAsync(GenericToken).ConfigureAwait(false);
                         using (ThreadSafeForm<EditNotes> frmItemNotes
                                = await ThreadSafeForm<EditNotes>.GetAsync(
-                                                                    () => new EditNotes(objGear.Notes,
-                                                                        objGear.NotesColor, GenericToken), GenericToken)
+                                                                    () => new EditNotes(strNotes,
+                                                                        objColor, GenericToken), GenericToken)
                                                                 .ConfigureAwait(false))
                         {
                             if (await frmItemNotes.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                                 != DialogResult.OK)
                                 return;
-                            objGear.Notes = frmItemNotes.MyForm.Notes;
-                            objGear.NotesColor = frmItemNotes.MyForm.NotesColor;
-                            string strTooltip = objGear.Notes.WordWrap();
-                            await treVehicles.DoThreadSafeAsync(() =>
-                            {
-                                objSelectedNode.ForeColor = objGear.PreferredColor;
-                                objSelectedNode.ToolTipText = strTooltip;
-                            }, GenericToken).ConfigureAwait(false);
-                            await SetDirty(true).ConfigureAwait(false);
+                            await objGear.SetNotesAsync(frmItemNotes.MyForm.Notes, GenericToken).ConfigureAwait(false);
+                            await objGear.SetNotesColorAsync(frmItemNotes.MyForm.NotesColor, GenericToken).ConfigureAwait(false);
                         }
+                        strNotes = (await objGear.GetNotesAsync(GenericToken).ConfigureAwait(false)).WordWrap();
+                        objColor = await objGear.GetPreferredColorAsync(GenericToken).ConfigureAwait(false);
+                        await treVehicles.DoThreadSafeAsync(() =>
+                        {
+                            objSelectedNode.ForeColor = objColor;
+                            objSelectedNode.ToolTipText = strNotes;
+                        }, GenericToken).ConfigureAwait(false);
+                        await SetDirty(true).ConfigureAwait(false);
 
                         break;
                     }

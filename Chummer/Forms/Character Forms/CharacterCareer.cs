@@ -8259,7 +8259,7 @@ namespace Chummer
                     objGear.Quantity = frmPickNumber.MyForm.SelectedValue;
                     await objGear.SetEquippedAsync(objSelectedGear.Equipped, GenericToken).ConfigureAwait(false);
                     objGear.Location = objSelectedGear.Location;
-                    objGear.Notes = objSelectedGear.Notes;
+                    await objGear.SetNotesAsync(await objSelectedGear.GetNotesAsync(GenericToken), GenericToken).ConfigureAwait(false);
 
                     // Update the selected item.
                     objSelectedGear.Quantity -= objGear.Quantity;
@@ -9882,21 +9882,22 @@ namespace Chummer
                     = await lstCalendar.DoThreadSafeFuncAsync(x => x.SelectedItems[0].SubItems[2].Text, GenericToken)
                                        .ConfigureAwait(false);
 
-                CalendarWeek objWeek = CharacterObject.Calendar.FirstOrDefault(x => x.InternalId == strWeekId);
-
+                CalendarWeek objWeek = await CharacterObject.Calendar.FirstOrDefaultAsync(x => x.InternalId == strWeekId, GenericToken).ConfigureAwait(false);
                 if (objWeek == null)
                     return;
+                string strNotes = await objWeek.GetNotesAsync(GenericToken).ConfigureAwait(false);
+                Color objColor = await objWeek.GetNotesColorAsync(GenericToken).ConfigureAwait(false);
                 using (ThreadSafeForm<EditNotes> frmItemNotes
                        = await ThreadSafeForm<EditNotes>.GetAsync(
-                                                            () => new EditNotes(objWeek.Notes, objWeek.NotesColor,
+                                                            () => new EditNotes(strNotes, objColor,
                                                                 GenericToken), GenericToken)
                                                         .ConfigureAwait(false))
                 {
                     if (await frmItemNotes.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                         != DialogResult.OK)
                         return;
-                    objWeek.Notes = frmItemNotes.MyForm.Notes;
-                    objWeek.NotesColor = frmItemNotes.MyForm.NotesColor;
+                    await objWeek.SetNotesAsync(frmItemNotes.MyForm.Notes, GenericToken).ConfigureAwait(false);
+                    await objWeek.SetNotesColorAsync(frmItemNotes.MyForm.NotesColor, GenericToken).ConfigureAwait(false);
                     await SetDirty(true).ConfigureAwait(false);
                 }
             }
@@ -10168,11 +10169,13 @@ namespace Chummer
 
             if (newNode != null)
             {
+                Color objColor = await objNewImprovement.GetPreferredColorAsync(token).ConfigureAwait(false);
+                string strNotes = await objNewImprovement.GetNotesAsync(token).ConfigureAwait(false);
                 await treImprovements.DoThreadSafeAsync(() =>
                 {
                     newNode.Text = objNewImprovement.CustomName;
-                    newNode.ForeColor = objNewImprovement.PreferredColor;
-                    newNode.ToolTipText = objNewImprovement.Notes;
+                    newNode.ForeColor = objColor;
+                    newNode.ToolTipText = strNotes;
                 }, token).ConfigureAwait(false);
             }
             else
@@ -19913,7 +19916,8 @@ namespace Chummer
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-                await treImprovements.DoThreadSafeAsync(() => nodSelected.ForeColor = objImprovement.PreferredColor, GenericToken).ConfigureAwait(false);
+                Color objColor = await objImprovement.GetPreferredColorAsync(GenericToken).ConfigureAwait(false);
+                await treImprovements.DoThreadSafeAsync(() => nodSelected.ForeColor = objColor, GenericToken).ConfigureAwait(false);
                 await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)

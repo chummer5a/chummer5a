@@ -1585,6 +1585,23 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether the Quality has been implemented completely, or needs additional code support.
+        /// </summary>
+        public async Task<bool> GetImplementedAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnImplemented;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Whether the Quality contributes towards the character's Quality BP limits.
         /// </summary>
         public bool ContributeToLimit
@@ -1947,7 +1964,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_strCachedNotes))
                     return _strCachedNotes;
                 string strCachedNotes = string.Empty;
-                if (Suppressed)
+                if (await GetSuppressedAsync(token).ConfigureAwait(false))
                 {
                     Improvement objDisablingImprovement
                         = (await ImprovementManager
@@ -2020,9 +2037,63 @@ namespace Chummer
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _colNotes = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
+            }
+        }
+
+        public async Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _colNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _colNotes)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_colNotes == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _colNotes = value;
+                    await OnPropertyChangedAsync(nameof(NotesColor), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2236,27 +2307,64 @@ namespace Chummer
         {
             get
             {
-                if (!Implemented)
+                using (LockObject.EnterReadLock())
                 {
-                    return ColorManager.ErrorColor;
-                }
-                if (!string.IsNullOrEmpty(Notes))
-                {
+                    if (!Implemented)
+                    {
+                        return ColorManager.ErrorColor;
+                    }
+                    if (!string.IsNullOrEmpty(Notes))
+                    {
+                        return OriginSource == QualitySource.BuiltIn
+                               || OriginSource == QualitySource.Improvement
+                               || OriginSource == QualitySource.LifeModule
+                               || OriginSource == QualitySource.Metatype
+                               || OriginSource == QualitySource.Heritage
+                            ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                            : ColorManager.GenerateCurrentModeColor(NotesColor);
+                    }
                     return OriginSource == QualitySource.BuiltIn
                            || OriginSource == QualitySource.Improvement
                            || OriginSource == QualitySource.LifeModule
                            || OriginSource == QualitySource.Metatype
                            || OriginSource == QualitySource.Heritage
-                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
-                        : ColorManager.GenerateCurrentModeColor(NotesColor);
+                        ? ColorManager.GrayText
+                        : ColorManager.WindowText;
+                }
+            }
+        }
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await GetImplementedAsync(token).ConfigureAwait(false))
+                {
+                    return ColorManager.ErrorColor;
+                }
+                if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+                {
+                    return OriginSource == QualitySource.BuiltIn
+                            || OriginSource == QualitySource.Improvement
+                            || OriginSource == QualitySource.LifeModule
+                            || OriginSource == QualitySource.Metatype
+                            || OriginSource == QualitySource.Heritage
+                        ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                        : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
                 }
                 return OriginSource == QualitySource.BuiltIn
-                       || OriginSource == QualitySource.Improvement
-                       || OriginSource == QualitySource.LifeModule
-                       || OriginSource == QualitySource.Metatype
-                       || OriginSource == QualitySource.Heritage
+                        || OriginSource == QualitySource.Improvement
+                        || OriginSource == QualitySource.LifeModule
+                        || OriginSource == QualitySource.Metatype
+                        || OriginSource == QualitySource.Heritage
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

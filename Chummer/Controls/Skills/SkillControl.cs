@@ -1204,16 +1204,18 @@ namespace Chummer.UI.Skills
         {
             try
             {
+                string strNotes = await _objSkill.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                Color objColor = await _objSkill.GetNotesColorAsync(_objMyToken).ConfigureAwait(false);
                 using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>
                                                                       .GetAsync(
                                                                           () => new EditNotes(
-                                                                              _objSkill.Notes, _objSkill.NotesColor, _objMyToken),
+                                                                              strNotes, objColor, _objMyToken),
                                                                           _objMyToken).ConfigureAwait(false))
                 {
                     if (await frmItemNotes.ShowDialogSafeAsync(_objSkill.CharacterObject, _objMyToken)
                                           .ConfigureAwait(false) != DialogResult.OK)
                         return;
-                    _objSkill.Notes = frmItemNotes.MyForm.Notes;
+                    await _objSkill.SetNotesAsync(frmItemNotes.MyForm.Notes, _objMyToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
