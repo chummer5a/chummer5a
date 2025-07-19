@@ -1193,6 +1193,12 @@ namespace Chummer
 
         public Skill Skill => _objCharacter.SkillsSection.GetActiveSkill("Software");
 
+        public async Task<Skill> GetSkillAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync("Software", token).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// The Dice Pool size for the Active Skill required to thread the Complex Form.
         /// </summary>
@@ -1200,21 +1206,41 @@ namespace Chummer
         {
             get
             {
-                int intReturn = 0;
                 using (LockObject.EnterReadLock())
                 {
                     Skill objSkill = Skill;
-                    if (objSkill != null)
-                    {
-                        intReturn = objSkill.PoolOtherAttribute("RES");
-                        // Add any Specialization bonus if applicable.
-                        intReturn += objSkill.GetSpecializationBonus(CurrentDisplayName);
-                    }
-
+                    int intReturn = objSkill != null
+                        ? objSkill.PoolOtherAttribute("RES") + objSkill.GetSpecializationBonus(CurrentDisplayName)
+                        : 0;
                     // Include any Improvements to Threading.
                     intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ActionDicePool, false, "Threading").StandardRound();
+                    return intReturn;
                 }
+            }
+        }
+
+        /// <summary>
+        /// The Dice Pool size for the Active Skill required to cast the Spell.
+        /// </summary>
+        public async Task<int> GetDicePoolAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                int intReturn = objSkill != null
+                        ? await objSkill.PoolOtherAttributeAsync("RES", token: token).ConfigureAwait(false)
+                            + await objSkill.GetSpecializationBonusAsync(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false)
+                        : 0;
+                // Include any Improvements to Threading.
+                intReturn += (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.ActionDicePool, false, "Threading", token: token).ConfigureAwait(false)).StandardRound();
                 return intReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1262,6 +1288,59 @@ namespace Chummer
                         return sbdReturn.ToString();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Tooltip information for the Dice Pool.
+        /// </summary>
+        public async Task<string> GetDicePoolTooltipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdReturn))
+                {
+                    string strFormat = strSpace + "{0}" + strSpace + "({1})";
+                    CharacterAttrib objResonanceAttrib = await _objCharacter.GetAttributeAsync("RES", token: token).ConfigureAwait(false);
+                    if (objResonanceAttrib != null)
+                    {
+                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
+                                               await objResonanceAttrib.GetDisplayNameFormattedAsync(token).ConfigureAwait(false),
+                                               await objResonanceAttrib.GetDisplayValueAsync(token).ConfigureAwait(false));
+                    }
+
+                    Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                    if (objSkill != null)
+                    {
+                        if (sbdReturn.Length > 0)
+                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                        sbdReturn.Append(await objSkill.FormattedDicePoolAsync(
+                            await objSkill.PoolOtherAttributeAsync("RES", token: token).ConfigureAwait(false)
+                            - (objResonanceAttrib != null ? await objResonanceAttrib.GetTotalValueAsync(token).ConfigureAwait(false) : 0),
+                            await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false));
+                    }
+
+                    // Include any Improvements to the Spell Category.
+                    foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                 _objCharacter, Improvement.ImprovementType.ActionDicePool, "Threading", token: token).ConfigureAwait(false))
+                    {
+                        if (sbdReturn.Length > 0)
+                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
+                                               await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), objImprovement.Value);
+                    }
+
+                    return sbdReturn.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

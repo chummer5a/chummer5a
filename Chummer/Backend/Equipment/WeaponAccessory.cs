@@ -2449,16 +2449,111 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Dice Pool modifier.
         /// </summary>
-        public int DicePool
+        public decimal DicePool
         {
             get
             {
-                if (string.IsNullOrEmpty(DicePoolString))
+                string strDicePoolExpression = DicePoolString;
+                if (string.IsNullOrEmpty(strDicePoolExpression))
                     return 0;
-                int.TryParse(DicePoolString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                    out int intReturn);
-                return intReturn;
+                if (strDicePoolExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+                {
+                    string[] strValues = strDicePoolExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    strDicePoolExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                }
+                if (strDicePoolExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDicePool))
+                    {
+                        sbdDicePool.Append(strDicePoolExpression.TrimStart('+'));
+                        Weapon objParent = Parent;
+                        if (objParent != null)
+                        {
+                            Lazy<int> intParentRating = new Lazy<int>(() => objParent.Rating);
+                            sbdDicePool.CheapReplace(strDicePoolExpression, "{Parent Rating}", () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdDicePool.CheapReplace(strDicePoolExpression, "Parent Rating", () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdDicePool.CheapReplace(strDicePoolExpression, "{Weapon Rating}", () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdDicePool.CheapReplace(strDicePoolExpression, "Weapon Rating", () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            objParent.ProcessAttributesInXPath(sbdDicePool, strDicePoolExpression);
+                        }
+                        else
+                        {
+                            sbdDicePool.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                .Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdDicePool, strDicePoolExpression);
+                        }
+                        Lazy<int> intRating = new Lazy<int>(() => Rating);
+                        sbdDicePool.CheapReplace(strDicePoolExpression, "{Rating}", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdDicePool.CheapReplace(strDicePoolExpression, "Rating", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                        (bool blnIsSuccess, object objProcess)
+                            = CommonFunctions.EvaluateInvariantXPath(sbdDicePool.ToString());
+                        if (blnIsSuccess)
+                            decReturn = Convert.ToDecimal((double)objProcess);
+                    }
+                }
+
+                return decReturn;
             }
+        }
+
+        /// <summary>
+        /// Dice Pool modifier.
+        /// </summary>
+        public async Task<decimal> GetDicePoolAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strDicePoolExpression = DicePoolString;
+            if (string.IsNullOrEmpty(strDicePoolExpression))
+                return 0;
+            if (strDicePoolExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
+            {
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDicePool))
+                {
+                    sbdDicePool.Append(strDicePoolExpression.TrimStart('+'));
+                    Weapon objParent = Parent;
+                    if (objParent != null)
+                    {
+                        Microsoft.VisualStudio.Threading.AsyncLazy<int> intParentRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => objParent.GetRatingAsync(token), Utils.JoinableTaskFactory);
+                        await sbdDicePool.CheapReplaceAsync(strDicePoolExpression, "{Parent Rating}",
+                            async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await sbdDicePool.CheapReplaceAsync(strDicePoolExpression, "Parent Rating",
+                            async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await sbdDicePool.CheapReplaceAsync(strDicePoolExpression, "{Weapon Rating}",
+                            async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await sbdDicePool.CheapReplaceAsync(strDicePoolExpression, "Weapon Rating",
+                            async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await objParent.ProcessAttributesInXPathAsync(sbdDicePool, strDicePoolExpression, token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        sbdDicePool.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                            .Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                            .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                            .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                            .ProcessAttributesInXPathAsync(sbdDicePool, strDicePoolExpression, token: token).ConfigureAwait(false);
+                    }
+                    Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
+                    await sbdDicePool.CheapReplaceAsync(strDicePoolExpression, "{Rating}",
+                                                    async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                                    token: token).ConfigureAwait(false);
+                    await sbdDicePool.CheapReplaceAsync(strDicePoolExpression, "Rating",
+                                                    async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                                    token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdDicePool.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        decReturn = Convert.ToDecimal((double)objProcess);
+                }
+            }
+
+            return decReturn;
         }
 
         private string DicePoolString => _strDicePool;

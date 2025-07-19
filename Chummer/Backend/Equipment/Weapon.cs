@@ -8730,7 +8730,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                intDicePool += WeaponAccessories.Sum(a => a.Equipped, a =>
+                decDicePoolModifier += WeaponAccessories.Sum(a => a.Equipped, a =>
                 {
                     if (WirelessOn && a.WirelessOn && a.WirelessWeaponBonus != null)
                     {
@@ -9150,7 +9150,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                intDicePool += await WeaponAccessories.SumAsync(a => a.Equipped, async a =>
+                decDicePoolModifier += await WeaponAccessories.SumAsync(a => a.Equipped, async a =>
                 {
                     if (WirelessOn && a.WirelessOn && a.WirelessWeaponBonus != null)
                     {
@@ -9178,7 +9178,7 @@ namespace Chummer.Backend.Equipment
                             }
                         }
                     }
-                    return a.DicePool;
+                    return await a.GetDicePoolAsync(token).ConfigureAwait(false);
                 }, token: token).ConfigureAwait(false);
 
                 if (blnIncludeAmmo)
@@ -9550,11 +9550,11 @@ namespace Chummer.Backend.Equipment
 
                     foreach (WeaponAccessory wa in WeaponAccessories.Where(a => a.Equipped))
                     {
-                        int intDicePool = wa.DicePool;
-                        if (intDicePool != 0)
+                        decimal decDicePool = wa.DicePool;
+                        if (decDicePool != 0)
                         {
                             sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                strSpace, wa.CurrentDisplayName, intDicePool);
+                                strSpace, wa.CurrentDisplayName, decDicePool.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo));
                         }
 
                         if (WirelessOn && wa.WirelessOn && wa.WirelessWeaponBonus != null)
@@ -10143,10 +10143,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!wa.Equipped)
                         return;
-                    if (wa.DicePool != 0)
+                    decimal decDicePool = await wa.GetDicePoolAsync(token).ConfigureAwait(false);
+                    if (decDicePool != 0)
                     {
                         sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace,
-                            await wa.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), wa.DicePool);
+                            await wa.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), decDicePool.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo));
                     }
                     if (WirelessOn && wa.WirelessOn && wa.WirelessWeaponBonus != null)
                     {

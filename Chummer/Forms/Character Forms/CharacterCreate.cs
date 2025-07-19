@@ -16274,6 +16274,7 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
+                            decimal decDicePool = await objSelectedAccessory.GetDicePoolAsync(token).ConfigureAwait(false);
                             if (objSelectedAccessory.DicePool == 0)
                             {
                                 await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false, token)
@@ -16289,8 +16290,8 @@ namespace Chummer
                                 {
                                     x.Visible = true;
                                     x.Text
-                                        = objSelectedAccessory.DicePool.ToString(
-                                            "+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                        = decDicePool.ToString(
+                                            "+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                                 }, token).ConfigureAwait(false);
                             }
 
@@ -19954,7 +19955,8 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                             }
 
-                            if (objAccessory.DicePool == 0)
+                            decimal decDicePool = await objAccessory.GetDicePoolAsync(token).ConfigureAwait(false);
+                            if (decDicePool == 0)
                             {
                                 await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                    .ConfigureAwait(false);
@@ -19968,7 +19970,7 @@ namespace Chummer
                                 await lblVehicleWeaponDicePool.DoThreadSafeAsync(x =>
                                 {
                                     x.Text
-                                        = objAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                        = decDicePool.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
                                 await lblVehicleWeaponDicePool.SetToolTipAsync(string.Empty, token)
@@ -20576,11 +20578,12 @@ namespace Chummer
                         await lblFV.SetToolTipAsync(await objComplexForm.GetFvTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objComplexForm.SetSourceDetailAsync(lblComplexFormSource, token).ConfigureAwait(false);
                         // Determine the size of the Threading Dice Pool.
+                        string strDicePool = (await objComplexForm.GetDicePoolAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                         await lblComplexFormDicePool
                               .DoThreadSafeAsync(
-                                  x => x.Text = objComplexForm.DicePool.ToString(GlobalSettings.CultureInfo), token)
+                                  x => x.Text = strDicePool, token)
                               .ConfigureAwait(false);
-                        await lblComplexFormDicePool.SetToolTipAsync(objComplexForm.DicePoolTooltip, token)
+                        await lblComplexFormDicePool.SetToolTipAsync(await objComplexForm.GetDicePoolTooltipAsync(token).ConfigureAwait(false), token)
                                                     .ConfigureAwait(false);
                     }
                     else
