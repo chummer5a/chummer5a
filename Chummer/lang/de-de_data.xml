@@ -3091,19 +3091,19 @@
       </book>
       <book>
         <id>bb5c7e4e-431b-404f-89da-e69cf3b75d50</id>
-        <name>Schattenhandbuch (German Handbook)</name>
+        <name>Schattenhandbuch (German-Only)</name>
         <translate>Schattenhandbuch</translate>
         <altcode>SHB</altcode>
       </book>
       <book>
         <id>8798c923-8118-448e-b201-53d299d7e58c</id>
-        <name>Schattenhandbuch 2 (German Handbook)</name>
+        <name>Schattenhandbuch 2 (German-Only)</name>
         <translate>Schattenhandbuch 2</translate>
         <altcode>SHB2</altcode>
       </book>
       <book>
         <id>08dea2f1-3add-4516-bdbe-b47ab9a5e31f</id>
-        <name>Schattenhandbuch 3 (German Handbook)</name>
+        <name>Schattenhandbuch 3 (German-Only)</name>
         <translate>Schattenhandbuch 3</translate>
         <altcode>SHB3</altcode>
       </book>
@@ -3133,14 +3133,14 @@
       </book>
       <book>
         <id>71a6304e-03dc-41db-be01-a86acab1517b</id>
-        <name>Shadowrun 2050 (5th Edition)</name>
-        <translate>Shadowrun 2050 (5. Edition)</translate>
+        <name>Shadowrun 2050 (German-Only)</name>
+        <translate>Shadowrun 2050</translate>
         <altcode>2050</altcode>
       </book>
       <book>
         <id>c6b7136f-e461-457b-b6f7-09e95c2f6313</id>
-        <name>State of the Art ADL (German Handbook)</name>
-        <translate>State of the Art ADL</translate>
+        <name>Datapuls ADL (German-Only)</name>
+        <translate>Datapuls ADL</translate>
         <altcode>SAG</altcode>
       </book>
       <book>
@@ -3235,8 +3235,8 @@
       </book>
       <book>
         <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
-        <name>Hamburg (German-exclusive)</name>
-        <translate>Hamburg (Deutsch-exklusiv)</translate>
+        <name>Datapuls Hamburg (German-Only)</name>
+        <translate>Datapuls Hamburg</translate>
         <altcode>HAMG</altcode>
       </book>
       <book>
@@ -3259,20 +3259,20 @@
       </book>
       <book>
         <id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
-        <name>Datapuls SOTA 2080 (German-exclusive)</name>
-        <translate>Datapuls SOTA 2080 (Deutsch-exklusiv)</translate>
+        <name>Datapuls SOTA 2080 (German-Only)</name>
+        <translate>Datapuls SOTA 2080</translate>
         <altcode>SOTG</altcode>
       </book>
       <book>
         <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
-        <name>Datapuls Verschlusssache (German-exclusive)</name>
-        <translate>Datapuls Verschlusssache (Deutsch-exklusiv)</translate>
+        <name>Datapuls Verschlusssache (German-Only)</name>
+        <translate>Datapuls Verschlusssache</translate>
         <altcode>DPVG</altcode>
       </book>
       <book>
         <id>ee63bbc5-2abd-4543-8371-457044bc7c63</id>
         <name>Street Grimoire Errata</name>
-        <translate>Street Grimoire Errata</translate>
+        <translate>Straßengrimoire Errata</translate>
         <altcode>SGE</altcode>
       </book>
       <book>
@@ -3295,8 +3295,8 @@
       </book>
       <book>
         <id>d7ac8252-fc5d-42d2-afca-2cf98ec14287</id>
-        <name>Grimmes Erwachen (German-exclusive)</name>
-        <translate>Grimmes Erwachen (German-exclusive)</translate>
+        <name>Grimmes Erwachen (German-Only)</name>
+        <translate>Grimmes Erwachen</translate>
         <altcode>GE</altcode>
       </book>
       <book>

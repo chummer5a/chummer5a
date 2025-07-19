@@ -3078,14 +3078,14 @@
       </book>
       <book>
         <id>bb5c7e4e-431b-404f-89da-e69cf3b75d50</id>
-        <name>Schattenhandbuch (German Handbook)</name>
-        <translate>Schattenhandbuch (Livret allemand)</translate>
+        <name>Schattenhandbuch (German-Only)</name>
+        <translate>Schattenhandbuch (exclusivement allemand)</translate>
         <altcode>SHB</altcode>
       </book>
       <book>
         <id>8798c923-8118-448e-b201-53d299d7e58c</id>
-        <name>Schattenhandbuch 2 (German Handbook)</name>
-        <translate>Schattenhandbuch 2 (Livret allemand)</translate>
+        <name>Schattenhandbuch 2 (German-Only)</name>
+        <translate>Schattenhandbuch 2 (exclusivement allemand)</translate>
         <altcode>SHB2</altcode>
       </book>
       <book>
@@ -3150,8 +3150,8 @@
       </book>
       <book>
         <id>71a6304e-03dc-41db-be01-a86acab1517b</id>
-        <name>Shadowrun 2050 (5th Edition)</name>
-        <translate>Shadowrun 2050 (5e Édition)</translate>
+        <name>Shadowrun 2050 (German-Only)</name>
+        <translate>Shadowrun 2050 (exclusivement allemand)</translate>
         <altcode>2050</altcode>
       </book>
       <book>
@@ -3168,8 +3168,8 @@
       </book>
       <book>
         <id>c6b7136f-e461-457b-b6f7-09e95c2f6313</id>
-        <name>State of the Art ADL (German Handbook)</name>
-        <translate>State of the Art ADL (Livret allemand)</translate>
+        <name>Datapuls ADL (German-Only)</name>
+        <translate>Datapuls ADL (exclusivement allemand)</translate>
         <altcode>SAG</altcode>
       </book>
       <book>
@@ -3198,8 +3198,8 @@
       </book>
       <book>
         <id>08dea2f1-3add-4516-bdbe-b47ab9a5e31f</id>
-        <name>Schattenhandbuch 3 (German Handbook)</name>
-        <translate>Schattenhandbuch 3 (Livret allemand)</translate>
+        <name>Schattenhandbuch 3 (German-Only)</name>
+        <translate>Schattenhandbuch 3 (exclusivement allemand)</translate>
         <altcode>SHB3</altcode>
       </book>
       <book>
@@ -3216,8 +3216,8 @@
       </book>
       <book>
         <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
-        <name>Hamburg (German-exclusive)</name>
-        <translate>Hamburg (exclusivement allemand)</translate>
+        <name>Datapuls Hamburg (German-Only)</name>
+        <translate>Datapuls Hamburg (exclusivement allemand)</translate>
         <altcode>HAMG</altcode>
       </book>
       <book>
@@ -3234,14 +3234,14 @@
       </book>
       <book>
         <id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
-        <name>Datapuls SOTA 2080 (German-exclusive)</name>
-        <translate>Datapuls SOTA 2080 (Livret allemand)</translate>
+        <name>Datapuls SOTA 2080 (German-Only)</name>
+        <translate>Datapuls SOTA 2080 (exclusivement allemand)</translate>
         <altcode>SOTG</altcode>
       </book>
       <book>
         <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
-        <name>Datapuls Verschlusssache (German-exclusive)</name>
-        <translate>Datapuls Verschlusssache (Livret allemand)</translate>
+        <name>Datapuls Verschlusssache (German-Only)</name>
+        <translate>Datapuls Verschlusssache (exclusivement allemand)</translate>
         <altcode>DPVG</altcode>
       </book>
       <book>

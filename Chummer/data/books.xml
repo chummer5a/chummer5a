@@ -436,7 +436,7 @@
     </book>
     <book>
       <id>c6b7136f-e461-457b-b6f7-09e95c2f6313</id>
-      <name>State of the Art ADL (German-Only)</name>
+      <name>Datapuls ADL (German-Only)</name>
       <code>SAG</code>
       <matches>
         <match>
@@ -520,7 +520,7 @@
     </book>
     <book>
       <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
-      <name>Hamburg (German-Only)</name>
+      <name>Datapuls Hamburg (German-Only)</name>
       <code>HAMG</code>
       <matches>
         <match>
