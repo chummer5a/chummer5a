@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -64,6 +64,7 @@
     <category blackmarket="Electronics">Housewares</category>
     <category>ID/Credsticks</category>
     <category blackmarket="Magic">Magical Compounds</category>
+    <category blackmarket="Magic">Magical Plants</category>
     <category blackmarket="Magic">Magical Supplies</category>
     <category>Metatype-Specific</category>
     <category>Miscellany</category>
@@ -5301,25 +5302,23 @@
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
-          <name>Datasoft</name>
+          <name>Commlink Form Factor, Weapon</name>
+          <category>Commlink/Cyberdeck Form Factors</category>
+        </usegear>
+        <usegear>
+          <name select="Urban Brawl News">Datasoft</name>
           <category>Software</category>
+        </usegear>
+        <usegear>
+          <name>Hardened Casing</name>
+          <category>Commlink Accessories</category>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
           <category>Electronics Accessories</category>
         </usegear>
       </gears>
-    </gear>
-    <gear>
-      <id>db03eec4-aa3b-4393-bf86-f8e3e6652264</id>
-      <name>Urban Brawl News</name>
-      <category>Miscellany</category>
-      <rating>0</rating>
-      <source>SAG</source>
-      <page>86</page>
-      <avail>0</avail>
-      <cost>0</cost>
-      <hide />
+      <addweapon>Extendable Baton</addweapon>
     </gear>
     <gear>
       <id>69c65b09-ac94-4032-a491-3610a464d168</id>
@@ -5350,21 +5349,14 @@
           <category>Sensors</category>
         </usegear>
         <usegear>
+          <name>Noise Detector and Alarm</name>
+          <category>Sensors</category>
+        </usegear>
+        <usegear>
           <name>Commlink Functionality</name>
           <category>Electronics Accessories</category>
         </usegear>
       </gears>
-    </gear>
-    <gear>
-      <id>33f9d60d-740f-4e99-8a15-e08ba8ed53ac</id>
-      <name>Wristband</name>
-      <category>Miscellany</category>
-      <rating>0</rating>
-      <source>SAG</source>
-      <page>86</page>
-      <avail>0</avail>
-      <cost>0</cost>
-      <hide />
     </gear>
     <gear>
       <id>403f8001-71a4-49c5-9ff3-00abd67e2e7a</id>
@@ -5381,6 +5373,18 @@
     <gear>
       <id>314a9040-1f18-4b1e-aece-36be00ad7aa9</id>
       <name>Blood Alcohol Biosensor</name>
+      <category>Sensors</category>
+      <rating>0</rating>
+      <source>SAG</source>
+      <page>86</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>bc847262-cacb-414f-a383-885ab2976e6a</id>
+      <name>Noise Detector and Alarm</name>
       <category>Sensors</category>
       <rating>0</rating>
       <source>SAG</source>
@@ -12833,6 +12837,28 @@
       <allowrename>True</allowrename>
     </gear>
     <!-- End Region -->
+    <!-- Region Magical Plants -->
+    <gear>
+      <id>b2336252-30b7-4390-92c9-4cd1067fc80a</id>
+      <name>Embracing Fruit</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>SAG</source>
+      <page>137</page>
+      <avail>18R</avail>
+      <cost>35000</cost>
+    </gear>
+    <gear>
+      <id>76d62d7c-55d5-4715-b6dc-1170a951b7e9</id>
+      <name>Night Cellar Cat</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>SAG</source>
+      <page>138</page>
+      <avail>5F</avail>
+      <cost>400</cost>
+    </gear>
+    <!-- End Region -->
     <!-- Region Magical Compounds -->
     <gear>
       <id>08b3bf17-e52a-41d4-b023-af6ee5354fe6</id>
@@ -18982,6 +19008,18 @@
       <addweapon>Grenade: Halloweener Molotov Cocktail, Aerodynamic</addweapon>
       <cost>50</cost>
     </gear>
+    <gear>
+      <id>e1e1d6df-3136-4093-9d07-ce22646158d0</id>
+      <name>Microgrenade: High Explosive</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SAG</source>
+      <page>27</page>
+      <avail>20F</avail>
+      <addweapon>Microgrenade: High Explosive</addweapon>
+      <cost>200</cost>
+      <ammoforweapontype noextra="True">microglauncher</ammoforweapontype>
+    </gear>
     <!-- Ammo -->
     <gear>
       <id>02993005-44f2-4b2c-9e19-6ddb3517a7ee</id>
@@ -19138,7 +19176,7 @@
     </gear>
     <gear>
       <id>60ac70ec-8b62-464d-817d-1d2fd04a8102</id>
-      <name>Thermographic Vision(2050)</name>
+      <name>Thermographic Vision (2050)</name>
       <category>Vision Enhancements</category>
       <rating>0</rating>
       <source>2050</source>

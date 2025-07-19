@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -8278,6 +8278,7 @@
       </gears>
       <mods>
         <name rating="4">Metahuman Adjustment</name>
+        <name>Dynamic Color Change System</name>
       </mods>
       <seats>4</seats>
     </vehicle>
@@ -8404,13 +8405,13 @@
       <weaponmounts>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Flexible</flexibility>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
         </weaponmount>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Flexible</flexibility>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
         </weaponmount>
@@ -8474,7 +8475,7 @@
     </vehicle>
     <vehicle>
       <id>54165cb2-522f-441f-9a3c-fc6d6e4b4aaf</id>
-      <name>Kamow Ka-226 Kasatka</name>
+      <name>Kamow Ka-60 Kasatka</name>
       <page>55</page>
       <source>SAG</source>
       <accel>3</accel>
@@ -8496,6 +8497,118 @@
       </gears>
       <mods>
         <name>Multifuel Engine</name>
+      </mods>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>e15fa11a-403a-4ea7-b9e1-d3f5b44b8a5d</id>
+      <name>Kamow Ka-226 Sergej (Passenger Variant)</name>
+      <page>55</page>
+      <source>SAG</source>
+      <accel>3</accel>
+      <armor>6</armor>
+      <avail>10</avail>
+      <body>16</body>
+      <category>Rotorcraft</category>
+      <cost>225000</cost>
+      <handling>2</handling>
+      <pilot>1</pilot>
+      <sensor>1</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>1</rating>
+          <maxrating>1</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Multifuel Engine</name>
+        <name>Winch (Basic)</name>
+      </mods>
+      <seats>20</seats>
+    </vehicle>
+    <vehicle>
+      <id>8e0a0cd6-d5f0-4842-a25c-33683b5c7f03</id>
+      <name>Kamow Ka-60 Kasatka (Passenger Variant)</name>
+      <page>55</page>
+      <source>SAG</source>
+      <accel>3</accel>
+      <armor>6</armor>
+      <avail>12</avail>
+      <body>14</body>
+      <category>Rotorcraft</category>
+      <cost>300000</cost>
+      <handling>3</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Multifuel Engine</name>
+      </mods>
+      <seats>20</seats>
+    </vehicle>
+    <vehicle>
+      <id>77c943d2-684e-4376-9dd3-f807618ead60</id>
+      <name>Kamow Ka-226 Sergej (Firefighter Variant)</name>
+      <page>55</page>
+      <source>SAG</source>
+      <accel>3</accel>
+      <armor>6</armor>
+      <avail>10</avail>
+      <body>16</body>
+      <category>Rotorcraft</category>
+      <cost>225000</cost>
+      <handling>2</handling>
+      <pilot>1</pilot>
+      <sensor>1</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>1</rating>
+          <maxrating>1</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Multifuel Engine</name>
+        <name>Winch (Basic)</name>
+        <name>Drop Tank</name>
+      </mods>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>456ab764-45af-4e49-a0c6-32b8227e3b11</id>
+      <name>Kamow Ka-60 Kasatka (Firefighter Variant)</name>
+      <page>55</page>
+      <source>SAG</source>
+      <accel>3</accel>
+      <armor>6</armor>
+      <avail>12</avail>
+      <body>14</body>
+      <category>Rotorcraft</category>
+      <cost>300000</cost>
+      <handling>3</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Multifuel Engine</name>
+        <name>Drop Tank</name>
       </mods>
       <seats>6</seats>
     </vehicle>
@@ -8554,6 +8667,8 @@
       </gears>
       <mods>
         <name>SunCell</name>
+        <name select="Cargo Crane">Special Equipment</name>
+        <name select="Construction Crane">Special Equipment</name>
       </mods>
       <seats>4</seats>
     </vehicle>
@@ -8643,7 +8758,7 @@
       <mods>
         <name>Gecko Grips (Drone)</name>
         <name rating="1">Realistic Features</name>
-        <name select="Engineering laser">Special Equipment</name>
+        <name select="Engineering Laser">Special Equipment</name>
         <name>Rigger Interface</name>
       </mods>
       <modslots>0</modslots>
@@ -8793,6 +8908,27 @@
           <name>Sensor Array</name>
           <rating>4</rating>
           <maxrating>4</maxrating>
+          <gears>
+            <gear>
+              <!-- Ultrasound (Sensor function) -->
+              <id>e140b671-dc22-429d-b12a-dfbf46951049</id>
+            </gear>
+            <gear>
+              <!-- Camera (Sensor function) -->
+              <id>ffc069af-d3ec-4201-887c-0178dcdfeef9</id>
+              <rating>4</rating>
+              <gears>
+                <gear>
+                  <!-- Low Light Vision (Vision enhancement) -->
+                  <id>287c6d58-2217-48b2-9e14-6ba23584939a</id>
+                </gear>
+                <gear>
+                  <!-- Thermographic Vision (Vision enhancement) -->
+                  <id>f7f74a85-bd3b-4a46-9c3b-80688c72ef51</id>
+                </gear>
+              </gears>
+            </gear>
+          </gears>
         </gear>
       </gears>
       <mods>
@@ -8886,7 +9022,10 @@
       <sensor>1</sensor>
       <speed>1</speed>
       <gears>
-        <gear>Grenade: Flash-Pak</gear>
+        <gear>
+          <name>Grenade: Flash-Pak</name>
+          <qty>200</qty>
+        </gear>
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
@@ -8905,7 +9044,29 @@
           <size>Standard (Drone)</size>
           <visibility>External</visibility>
         </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+          <allowedweapons>Riot Shield</allowedweapons>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+          <allowedweapons>Riot Shield</allowedweapons>
+        </weaponmount>
       </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Riot Shield</name>
+        </weapon>
+        <weapon>
+          <name>Riot Shield</name>
+        </weapon>
+      </weapons>
     </vehicle>
     <vehicle>
       <id>3524337b-03e3-4218-b721-d1df2cc4a8c7</id>
@@ -8927,6 +9088,35 @@
           <name>Sensor Array</name>
           <rating>4</rating>
           <maxrating>4</maxrating>
+          <gears>
+            <gear>
+              <!-- Camera (Sensor function) -->
+              <id>ffc069af-d3ec-4201-887c-0178dcdfeef9</id>
+              <rating>4</rating>
+              <gears>
+                <gear>
+                  <!-- Low Light Vision (Vision enhancement) -->
+                  <id>287c6d58-2217-48b2-9e14-6ba23584939a</id>
+                </gear>
+                <gear>
+                  <!-- Thermographic Vision (Vision enhancement) -->
+                  <id>f7f74a85-bd3b-4a46-9c3b-80688c72ef51</id>
+                </gear>
+              </gears>
+            </gear>
+            <gear>
+              <!-- Ultrasound (Sensor function) -->
+              <id>e140b671-dc22-429d-b12a-dfbf46951049</id>
+            </gear>
+            <gear>
+              <!-- Geiger Counter (Sensor function) -->
+              <id>d98f419f-7625-4228-9723-0217950d8155</id>
+            </gear>
+            <gear>
+              <!-- Olfactory Scanner (Sensor function) -->
+              <id>c763fac2-8b08-4c61-8dc2-6291d905a2df</id>
+            </gear>
+          </gears>
         </gear>
         <gear rating="3" select="Sonic Cannon">[Weapon] Targeting Autosoft</gear>
       </gears>
@@ -8934,6 +9124,18 @@
         <name>Spotlight (Drone)</name>
         <name>Rigger Interface</name>
       </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+          <allowedweapons>Siemens FWD Screamer Sonic Cannon</allowedweapons>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>Siemens FWD Screamer Sonic Cannon</weapon>
+      </weapons>
       <modslots>0</modslots>
       <seats>0</seats>
     </vehicle>
@@ -9142,6 +9344,9 @@
         <name>Drone Leg</name>
         <name>Drone Leg</name>
         <name>Rigger Interface</name>
+        <name select="Rescue Tool">Special Equipment</name>
+        <name select="Fire Extinguisher">Special Equipment</name>
+        <name select="Handcuffs">Special Equipment</name>
       </mods>
       <modslots>0</modslots>
       <seats>0</seats>
@@ -10995,6 +11200,75 @@
       <slots>0</slots>
       <hide />
     </mod>
+    <mod>
+      <id>b93d5f90-3fbe-4513-b70f-afbc5eed3db6</id>
+      <name>Shiawase Motors Shuriken Tires</name>
+      <page>44</page>
+      <source>SAG</source>
+      <avail>6</avail>
+      <category>Model-Specific</category>
+      <cost>Rating * 300</cost>
+      <rating>qty</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>Shiawase Motors Shuriken</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>8fac73e5-f91b-4652-bfd5-932c548355d1</id>
+      <name>Dynamic Color Change System</name>
+      <page>49</page>
+      <source>SAG</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <OR>
+            <name>Mercedes Click</name>
+          </OR>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>cce1b3e5-2eef-4d5a-a3ec-69838dae40c7</id>
+      <name>Caterpillar Omniwinder Tires</name>
+      <page>52</page>
+      <source>SAG</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>Rating * 2000</cost>
+      <rating>qty</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>Caterpillar Omniwinder</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>d8cf4bf4-b680-4c76-9eb3-19c1870f767f</id>
+      <name>Drop Tank</name>
+      <page>55</page>
+      <source>SAG</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <OR>
+            <name>Kamow Ka-226 Sergej (Firefighter Variant)</name>
+            <name>Kamow Ka-60 Kasatka (Firefighter Variant)</name>
+          </OR>
+        </vehicledetails>
+      </required>
+    </mod>
     <!-- End Region -->
     <!-- Region Powertrain-->
     <mod>
@@ -12842,6 +13116,14 @@
         <handling>-1</handling>
         <offroadhandling>+1</offroadhandling>
       </bonus>
+      <forbidden>
+        <vehicledetails>
+          <OR>
+            <name>Shiawase Motors Shuriken</name>
+            <name>Caterpillar Omniwinder</name>
+          </OR>
+        </vehicledetails>
+      </forbidden>
     </mod>
     <mod>
       <id>bac2fcca-1edd-4814-ba50-31d63f031d4e</id>
@@ -12857,6 +13139,14 @@
         <handling>+1</handling>
         <offroadhandling>-1</offroadhandling>
       </bonus>
+      <forbidden>
+        <vehicledetails>
+          <OR>
+            <name>Shiawase Motors Shuriken</name>
+            <name>Caterpillar Omniwinder</name>
+          </OR>
+        </vehicledetails>
+      </forbidden>
     </mod>
     <mod>
       <id>aba3338c-0a54-4486-84a4-2e74524b63de</id>
@@ -12868,6 +13158,14 @@
       <cost>Rating * 250</cost>
       <rating>qty</rating>
       <slots>0</slots>
+      <forbidden>
+        <vehicledetails>
+          <OR>
+            <name>Shiawase Motors Shuriken</name>
+            <name>Caterpillar Omniwinder</name>
+          </OR>
+        </vehicledetails>
+      </forbidden>
     </mod>
     <mod>
       <id>d8eb6a6e-3da1-4e22-96d7-4f634ad77301</id>

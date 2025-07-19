@@ -11217,7 +11217,7 @@
     </weapon>
     <weapon>
       <id>ad28b2dd-4f4f-4089-af6b-39f3ff6900fd</id>
-      <name>HK Urban Fighter (ADL)</name>
+      <name>HK Urban Fighter</name>
       <category>Heavy Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
@@ -11232,12 +11232,6 @@
       <cost>2400</cost>
       <source>SAG</source>
       <page>21</page>
-      <accessorymounts>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-      </accessorymounts>
       <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
@@ -11312,15 +11306,16 @@
       <category>Machine Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
-      <!-- Accuracy is 5 but because of Trigger Removal must be 4 -->
+      <!-- Accuracy is 5 in the book, but must be 4 here because of Trigger Removal's +1 modifier -->
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
       <ap>-</ap>
       <mode>SA/BF/FA</mode>
-      <rc>0</rc>
+      <!-- RC is 3 in the book, but must be 1 here because of Gas Vent 2's +2 modifier -->
+      <rc>1</rc>
+      <!-- Ammo is 24 in the book, but must be 16 here because of Extended Clip 1's 1.5x modifier -->
       <ammo>16(c)</ammo>
-      <!-- Ammo is 24 but because of extended clip-factor '1,5' amount must be 16 -->
       <avail>9R</avail>
       <cost>2300</cost>
       <source>SAG</source>
@@ -11352,7 +11347,6 @@
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
-
         <mount>Barrel</mount>
         <mount>Top</mount>
       </accessorymounts>
@@ -11362,12 +11356,14 @@
       <name>Glock MP Custodes (MPK)</name>
       <category>Submachine Guns</category>
       <type>Ranged</type>
-      <conceal>2</conceal>
+      <!-- Gains +2 only when Folding Stock is deployed -->
+      <conceal>0</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
       <ap>-</ap>
       <mode>SA/BF/FA</mode>
+      <!-- RC is 1 in the book, but must be 0 here because of Gas Vent 1's +1 modifier -->
       <rc>0</rc>
       <ammo>24(c)</ammo>
       <avail>15F</avail>
@@ -11375,9 +11371,7 @@
       <source>SAG</source>
       <page>25</page>
       <accessories>
-        <accessory>
-          <name>Folding Stock</name>
-        </accessory>
+        <!-- Only the MPV version comes standard with a folding stock, it has to be purchased separately for the MPK version -->
         <accessory>
           <name>Gas-Vent 1 System</name>
         </accessory>
@@ -11401,12 +11395,14 @@
       <name>Glock MP Custodes (MPV)</name>
       <category>Submachine Guns</category>
       <type>Ranged</type>
-      <conceal>-6</conceal>
+      <!-- Gains +2 only when Folding Stock is deployed, comes with a briefcase that makes it -6 -->
+      <conceal>0</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
       <ap>-</ap>
       <mode>SA/BF/FA</mode>
+      <!-- RC is 1 in the book, but must be 0 here because of Gas Vent 1's +1 modifier -->
       <rc>0</rc>
       <ammo>24(c)</ammo>
       <avail>15F</avail>
@@ -11415,7 +11411,7 @@
       <page>25</page>
       <accessories>
         <accessory>
-          <name>Folding Stock</name>
+          <name>Folding Stock (Glock MP Custodes)</name>
         </accessory>
         <accessory>
           <name>Gas-Vent 1 System</name>
@@ -11426,6 +11422,9 @@
         </accessory>
         <accessory>
           <name>Sling</name>
+        </accessory>
+        <accessory>
+          <name>Glock MP Custodes Briefcase</name>
         </accessory>
       </accessories>
       <accessorymounts>
@@ -11477,12 +11476,13 @@
       <category>Submachine Guns</category>
       <type>Ranged</type>
       <conceal>2</conceal>
-      <!-- Accuracy is 7 but because of Trigger Removal must be 6 -->
+      <!-- Accuracy is 7 in the book, but must be 6 here because of Trigger Removal's +1 modifier -->
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>8P</damage>
       <ap>0</ap>
       <mode>SA/BF/FA</mode>
+      <!-- RC is 1 in the book, but must be 0 here because of Electronic Firing's +1 modifier -->
       <rc>0</rc>
       <ammo>36(c)</ammo>
       <avail>20F</avail>
@@ -11506,12 +11506,6 @@
           <name>Advanced Safety System, Basic</name>
         </accessory>
       </accessories>
-      <accessorymounts>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-      </accessorymounts>
       <underbarrels>
         <underbarrel>HK Urban Enforcer Microgrenade Launcher</underbarrel>
       </underbarrels>
@@ -11521,7 +11515,7 @@
       <name>HK Urban Enforcer Microgrenade Launcher</name>
       <category>Underbarrel Weapons</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>2</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>Grenade</damage>
@@ -11539,7 +11533,28 @@
       <range>Grenade Launchers</range>
       <useskill>Heavy Weapons</useskill>
       <useskillspec>Grenade Launchers</useskillspec>
-      <weapontype>glauncher</weapontype>
+      <weapontype>microglauncher</weapontype>
+    </weapon>
+    <weapon>
+      <id>d5ebda25-ecff-43c5-aa8c-3f4220bfe309</id>
+      <name>Microgrenade: High Explosive</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>-2</conceal>
+      <accuracy>0</accuracy>
+      <reach>0</reach>
+      <damage>14P (-2/m)</damage>
+      <ap>-2</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>20F</avail>
+      <cost>200</cost>
+      <source>SAG</source>
+      <page>27</page>
+      <range>Grenade Launchers</range>
+      <spec>Grenade Launcher</spec>
+      <useskill>Heavy Weapons</useskill>
     </weapon>
     <weapon>
       <id>028d08a4-456a-4a4d-9aef-c74ff4a2c97e</id>
@@ -11552,7 +11567,8 @@
       <damage>10P</damage>
       <ap>-2</ap>
       <mode>SA/BF/FA</mode>
-      <rc>1</rc>
+      <!-- RC is 1 in the book, but must be 0 here because of Foregrip's +1 modifier -->
+      <rc>0</rc>
       <ammo>30(c)</ammo>
       <avail>13F</avail>
       <cost>3000</cost>
@@ -11574,7 +11590,6 @@
         <mount>Side</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
-        <mount>Under</mount>
       </accessorymounts>
       <addweapon>Steyr AUG-CSL III (Carbine)</addweapon>
       <addweapon>Steyr AUG-CSL III (LMG)</addweapon>
@@ -11591,7 +11606,8 @@
       <damage>8P</damage>
       <ap>-2</ap>
       <mode>SA/BF/FA</mode>
-      <rc>1</rc>
+      <!-- RC is 1 in the book, but must be 0 here because of Foregrip's +1 modifier -->
+      <rc>0</rc>
       <ammo>36(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
@@ -11613,7 +11629,6 @@
         <mount>Side</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
-        <mount>Under</mount>
       </accessorymounts>
       <hide />
       <range>Submachine Guns</range>
@@ -11632,7 +11647,7 @@
       <ap>-2</ap>
       <mode>BF/FA</mode>
       <rc>0</rc>
-      <ammo>50(m)</ammo>
+      <ammo>50(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
       <source>SAG</source>
@@ -11653,7 +11668,6 @@
         <mount>Side</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
-        <mount>Under</mount>
       </accessorymounts>
       <hide />
       <range>Light Machine Guns</range>
@@ -11693,7 +11707,6 @@
         <mount>Side</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
-        <mount>Under</mount>
       </accessorymounts>
       <hide />
       <range>Sniper Rifles</range>
@@ -11711,6 +11724,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>SA/BF/FA</mode>
+      <!-- RC is 3 in the book, but must be 0 here because of Foregrip's +1 modifier and Gas Vent 2's +2 modifier -->
       <rc>0</rc>
       <ammo>32(c)</ammo>
       <avail>9F</avail>
@@ -11790,7 +11804,8 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>SA/BF/FA</mode>
-      <rc>1</rc>
+      <!-- RC is 1 in the book, but must be 0 here because of Shock Pad's +1 modifier -->
+      <rc>0</rc>
       <ammo>40(c)</ammo>
       <avail>10F</avail>
       <cost>1850</cost>
@@ -11888,13 +11903,14 @@
       <category>Sniper Rifles</category>
       <type>Ranged</type>
       <conceal>8</conceal>
-      <!-- Ammo is 8 but because of Trigger Removal must be 7 -->
+      <!-- Accuracy is 8 in the book, but must be 7 here because of Trigger Removal's +1 modifier -->
       <accuracy>7</accuracy>
       <reach>0</reach>
       <damage>13P</damage>
       <ap>-4</ap>
       <mode>SA</mode>
-      <rc>1</rc>
+      <!-- RC is 1 in the book, but must be 0 here because of Electronic Firing's +1 modifier -->
+      <rc>0</rc>
       <ammo>10(c)</ammo>
       <avail>18F</avail>
       <cost>45000</cost>
@@ -12006,7 +12022,7 @@
       <reach>0</reach>
       <damage>11P</damage>
       <ap>-1</ap>
-      <mode>SS</mode>
+      <mode>SS/BF</mode>
       <rc>0</rc>
       <ammo>2(b)</ammo>
       <avail>8R</avail>
@@ -12037,7 +12053,7 @@
       <reach>0</reach>
       <damage>11P</damage>
       <ap>-1</ap>
-      <mode>SS</mode>
+      <mode>SS/BF</mode>
       <rc>0</rc>
       <ammo>2(b)</ammo>
       <avail>8R</avail>
@@ -12092,17 +12108,21 @@
       <category>Assault Cannons</category>
       <type>Ranged</type>
       <conceal>10</conceal>
-      <accuracy>6</accuracy>
+      <!-- Accuracy is 6 in the book, but must be 6 here because of Long Barrel's +1 modifier -->
+      <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>16P</damage>
       <ap>-5</ap>
       <mode>SA</mode>
-      <rc>1</rc>
-      <ammo>20(c)</ammo>
+      <!-- RC is 1 in the book, but must be 0 here because of Foregrip's +1 modifier -->
+      <rc>0</rc>
+      <!-- Ammo is 20 in the book, but must be 13 here because of Extended Clip's x1.5 modifier -->
+      <ammo>13(c)</ammo>
       <avail>22F</avail>
       <cost>50000</cost>
       <source>SAG</source>
       <page>37</page>
+      <weight>60</weight>
       <accessories>
         <accessory>
           <name>Extended Clip</name>
@@ -12127,6 +12147,36 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
+      <range>Sniper Rifles</range>
+    </weapon>
+    <weapon>
+      <id>2471a4e8-cda2-47a1-970e-1857273c4e1b</id>
+      <name>Siemens FWD Screamer Sonic Cannon</name>
+      <category>Exotic Ranged Weapons</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>6</accuracy>
+      <reach>0</reach>
+      <damage>7S</damage>
+      <ap>-</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>10(c)</ammo>
+      <avail>16R</avail>
+      <cost>8000</cost>
+      <source>SAG</source>
+      <page>57</page>
+      <accessorymounts>
+        <mount>Top</mount>
+        <mount>Under</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
+      <range>Shotguns (flechette)</range>
+      <sizecategory>Assault Rifles</sizecategory>
+      <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>energy</weapontype>
+      <hide />
     </weapon>
     <!-- End Region -->
     <!-- Region The Complete Trog -->
@@ -16226,7 +16276,7 @@
     <!-- Region Shadowrun 5 -->
     <accessory>
       <id>d34a93a8-b695-4c46-8e34-0948df68d44f</id>
-      <name>Silencer, Ares Light Fire 70</name>
+      <name>Silencer (Ares Light Fire 70)</name>
       <mount>Barrel</mount>
       <avail>6F</avail>
       <cost>750</cost>
@@ -16241,7 +16291,7 @@
     </accessory>
     <accessory>
       <id>4026650e-ecd3-4514-b2c6-d03dc1d466b5</id>
-      <name>Silencer, Ares Light Fire 75</name>
+      <name>Silencer (Ares Light Fire 75)</name>
       <mount>Barrel</mount>
       <avail>6F</avail>
       <cost>0</cost>
@@ -16463,6 +16513,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -16504,6 +16555,7 @@
             <ammocategory>Shotguns</ammocategory>
             <category>Shotguns</category>
             <name>PSK-3 Collapsible Heavy Pistol</name>
+            <name>Onotari Arms Pressure KS-X</name>
             <spec>Revolvers</spec>
             <spec>Shotguns</spec>
             <spec2>Revolvers</spec2>
@@ -16528,6 +16580,7 @@
             <ammocategory>Shotguns</ammocategory>
             <category>Shotguns</category>
             <name>PSK-3 Collapsible Heavy Pistol</name>
+            <name>Onotari Arms Pressure KS-X</name>
             <spec>Revolvers</spec>
             <spec>Shotguns</spec>
             <spec2>Revolvers</spec2>
@@ -16586,6 +16639,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
             <type>Melee</type>
           </OR>
@@ -16656,6 +16710,8 @@
         <weapondetails>
           <OR>
            <name>HK Urban Fighter</name>
+           <name>HK Urban Enforcer</name>
+           <name>HK Urban Striker</name>
            <name>Hammerli Gemini</name>
           </OR>
         </weapondetails>
@@ -16663,7 +16719,7 @@
     </accessory>
     <accessory>
       <id>20f3fdc1-6652-4619-a606-1a3d7bad1296</id>
-      <name>Hammerli Gemini Spare Clip</name>
+      <name>Spare Clip (Hammerli Gemini)</name>
       <mount />
       <avail>4</avail>
       <cost>10</cost>
@@ -16810,6 +16866,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -16825,7 +16882,7 @@
     </accessory>
     <accessory>
       <id>7898e7dc-3ee6-46a9-83d7-d3ec54a456fb</id>
-      <name>Silencer, PSK-3 Collapsible Heavy Pistol</name>
+      <name>Silencer (PSK-3 Collapsible Heavy Pistol)</name>
       <mount>Barrel</mount>
       <avail>6F</avail>
       <cost>700</cost>
@@ -16903,6 +16960,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -16934,6 +16992,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -16965,6 +17024,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -16996,6 +17056,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -17064,6 +17125,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -17107,6 +17169,11 @@
       <cost>30</cost>
       <source>RG</source>
       <page>51</page>
+      <forbidden>
+        <weapondetails>
+          <name operation="contains">Glock MP Custodes</name>
+        </weapondetails>
+      </forbidden>
       <rating>0</rating>
       <rc>1</rc>
       <rcdeployable>True</rcdeployable>
@@ -17171,6 +17238,7 @@
               <mount>Stock</mount>
             </accessorymounts>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -17327,6 +17395,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -17350,6 +17419,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -17373,6 +17443,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -17401,6 +17472,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -17419,6 +17491,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -17533,6 +17606,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -17554,6 +17628,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -17607,6 +17682,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -17678,8 +17754,11 @@
             <name>Ceska Black Scorpion</name>
             <name>PPSK-4 Collapsible Machine Pistol</name>
             <name>Steyr TMP</name>
+            <name>Ruhrmetall SMK 252</name>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Striker</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17696,7 +17775,7 @@
     </accessory>
     <accessory>
       <id>5f672085-49f9-4fed-9a1f-4bebfea82e8d</id>
-      <name>Extended Clip (Large Ammo Machine Pistols)</name>
+      <name>Extended Clip (Large Ammo Firearms)</name>
       <mount />
       <avail>6R</avail>
       <cost>35</cost>
@@ -17712,17 +17791,10 @@
             <name>Ceska Black Scorpion</name>
             <name>PPSK-4 Collapsible Machine Pistol</name>
             <name>Steyr TMP</name>
+            <name>Ruhrmetall SMK 252</name>
           </OR>
         </weapondetails>
       </required>
-      <forbidden>
-        <weapondetails>
-          <OR>
-            <name>HK Urban Combat</name>
-            <name>HK Urban Fighter</name>
-          </OR>
-        </weapondetails>
-      </forbidden>
     </accessory>
     <accessory>
       <id>5d819147-d262-48c2-bb0e-80e0049c67ed</id>
@@ -17743,6 +17815,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -17835,6 +17908,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -17983,6 +18057,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -18011,6 +18086,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -18131,6 +18207,7 @@
           <OR>
             <category>Bows</category>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
             <type>Melee</type>
           </OR>
@@ -18178,6 +18255,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -18227,7 +18305,12 @@
       </required>
       <forbidden>
         <weapondetails>
-          <name>HK Urban Fighter</name>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
+            <name>HK Urban Fighter</name>
+            <name>HK Urban Striker</name>
+          </OR>
         </weapondetails>
       </forbidden>
     </accessory>
@@ -18318,6 +18401,7 @@
             <ammocategory>Shotguns</ammocategory>
             <category>Shotguns</category>
             <name>PSK-3 Collapsible Heavy Pistol</name>
+            <name>Onotari Arms Pressure KS-X</name>
             <spec>Revolvers</spec>
             <spec>Shotguns</spec>
             <spec2>Revolvers</spec2>
@@ -18359,6 +18443,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -18403,6 +18488,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
             <type>Melee</type>
           </OR>
@@ -18428,6 +18514,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
             <type>Melee</type>
           </OR>
@@ -18484,10 +18571,11 @@
       <rcgroup>1</rcgroup>
     </accessory>
     <!-- End Region -->
+    <!-- Region SotA ADL -->
     <accessory>
       <id>75cf7909-ac1b-4659-977a-371a950fcda9</id>
       <name>Silencer (HK Urban Fighter)</name>
-      <mount>Barrel</mount>
+      <mount />
       <avail>16F</avail>
       <cost>1000</cost>
       <source>SAG</source>
@@ -18495,7 +18583,109 @@
       <rating>0</rating>
       <required>
         <weapondetails>
-          <name>HK Urban Fighter</name>
+          <!-- German HK Urban Fighter -->
+          <id>ad28b2dd-4f4f-4089-af6b-39f3ff6900fd</id>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>ff48f23d-e503-4487-b743-c01b4b4edae8</id>
+      <name>Spare Clip (HK Urban Fighter)</name>
+      <mount />
+      <avail>16F</avail>
+      <cost>150</cost>
+      <source>SAG</source>
+      <page>21</page>
+      <ammoslots>1</ammoslots>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <!-- German HK Urban Fighter -->
+          <id>ad28b2dd-4f4f-4089-af6b-39f3ff6900fd</id>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>b9f06e3e-5ed3-433e-9017-5f7e4ed35b3d</id>
+      <name>Glock MP Custodes Briefcase</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SAG</source>
+      <page>25</page>
+      <conceal>-6</conceal>
+      <hide />
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <!-- Glock MP Custodes MPV -->
+          <id>dc1ce668-94ba-44a5-a61b-d5b330537ac2</id>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>9adeccb8-63d0-45df-a854-db2cd33ccd26</id>
+      <name>Folding Stock (Glock MP Custodes)</name>
+      <mount>Stock</mount>
+      <avail>2</avail>
+      <cost>50</cost>
+      <source>SAG</source>
+      <page>25</page>
+      <rating>0</rating>
+      <rc>1</rc>
+      <rcdeployable>True</rcdeployable>
+      <rcgroup>2</rcgroup>
+      <required>
+        <weapondetails>
+          <name operation="contains">Glock MP Custodes</name>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>04eedb80-cde8-4a87-bf31-b68b62513f33</id>
+      <name>HK 223C Colt Magazine</name>
+      <mount />
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SAG</source>
+      <page>26</page>
+      <ammoreplace>40(c)</ammoreplace>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <name>HK 223C</name>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>5a097359-670b-4685-95be-c762d6c44c79</id>
+      <name>Spare Clip (HK Urban Enforcer)</name>
+      <mount />
+      <avail>20F</avail>
+      <cost>200</cost>
+      <source>SAG</source>
+      <page>27</page>
+      <ammoslots>1</ammoslots>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <name>HK Urban Enforcer</name>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>3dca3546-5b96-4a37-890e-1a84a20f5f89</id>
+      <name>Spare Clip (HK Urban Striker)</name>
+      <mount />
+      <avail>18F</avail>
+      <cost>200</cost>
+      <source>SAG</source>
+      <page>33</page>
+      <ammoslots>1</ammoslots>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <name>HK Urban Striker</name>
         </weapondetails>
       </required>
     </accessory>
@@ -18514,6 +18704,7 @@
         </weapondetails>
       </required>
     </accessory>
+    <!-- End Region -->
     <accessory>
       <id>c50723ab-8354-4b32-a1a8-b3720df0dd2d</id>
       <name>Survival Knife Bonuses</name>
@@ -18571,7 +18762,7 @@
     <!-- Region Street Lethal -->
     <accessory>
       <id>5fac79b3-5eff-44f8-a13c-e1eba38df873</id>
-      <name>Terracotta Arms Pup Silencer</name>
+      <name>Silencer (Terracotta Arms Pup)</name>
       <mount />
       <avail>+2F</avail>
       <cost>400</cost>
@@ -18592,7 +18783,7 @@
     </accessory>
     <accessory>
       <id>6f84482e-5a9d-4fb3-bad3-4fbbfa569919</id>
-      <name>HK Urban Fighter Spare Clip</name>
+      <name>Spare Clip (HK Urban Fighter)</name>
       <mount />
       <avail>10F</avail>
       <cost>100</cost>
@@ -18602,7 +18793,8 @@
       <rating>0</rating>
       <required>
         <weapondetails>
-          <name>HK Urban Fighter</name>
+          <!-- Street Lethal HK Urban Fighter -->
+          <id>65b7803a-0efe-44d9-8b85-6410644f079d</id>
         </weapondetails>
       </required>
     </accessory>
@@ -18623,6 +18815,7 @@
             <category>Light Pistols</category>
             <category>Heavy Pistols</category>
             <category>Machine Pistols</category>
+            <name>HK Urban Striker</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -18768,7 +18961,11 @@
       </required>
       <forbidden>
         <weapondetails>
-          <name>HK Urban Fighter</name>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
+            <name>HK Urban Fighter</name>
+          </OR>
         </weapondetails>
       </forbidden>
     </accessory>
@@ -18795,7 +18992,11 @@
       </required>
       <forbidden>
         <weapondetails>
-          <name>HK Urban Fighter</name>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
+            <name>HK Urban Fighter</name>
+          </OR>
         </weapondetails>
       </forbidden>
     </accessory>
@@ -18842,6 +19043,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -18867,6 +19069,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -18892,6 +19095,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -18917,6 +19121,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -18942,6 +19147,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -18967,6 +19173,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -18992,6 +19199,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -19013,6 +19221,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -19031,6 +19240,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -19124,6 +19334,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
@@ -19153,6 +19364,7 @@
         <weapondetails>
           <OR>
             <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>

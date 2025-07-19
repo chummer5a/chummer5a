@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -2394,7 +2394,7 @@
       <id>3244e940-4666-4510-b1a1-c34df97797fe</id>
       <name>Eurasian Jay</name>
       <advantage>All: +1 dice pool modifier for tests using the Perception and Palming skills.</advantage>
-      <disadvantage>Eurasian Jay loves to split his possessions. If a follower of Eurasian Jay receives a splittable reward, she must make a Charisma + Willpower (3) test to not spread the reward over different accounts or rooms.</disadvantage>
+      <disadvantage>Eurasian Jay loves to divide his possessions. If a follower of Eurasian Jay receives a splittable reward, she must make a Charisma + Willpower (3) test to not spread the reward over different accounts or rooms.</disadvantage>
       <bonus>
         <specificskill>
           <name>Palming</name>
@@ -2449,12 +2449,23 @@
     <mentor>
       <id>bcf60ea4-577a-4487-9996-6c40a86294c5</id>
       <name>Squirrel</name>
-      <advantage>All: +2 dice pool modifier for tests using the Gymnastics skill.</advantage>
-      <disadvantage>When followers of Squirrel are in confined spaces, they must make a Willpower + Charisma (3) Tests or take a -1 dice pool modifier on all tests while feeling cramped.</disadvantage>
+      <advantage>All: +2 dice pool modifier for Balance, Climbing, and Jumping tests using the Gymnastics skill.</advantage>
+      <disadvantage>When followers of Squirrel find themselves in a confined space, they must succeed a Willpower + Charisma (3) Test or else suffer a -1 dice pool modifier on all tests while feeling cramped.</disadvantage>
       <bonus>
         <specificskill>
           <name>Gymnastics</name>
           <bonus>2</bonus>
+          <condition>Balance</condition>
+        </specificskill>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>2</bonus>
+          <condition>Climbing</condition>
+        </specificskill>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>2</bonus>
+          <condition>Jumping</condition>
         </specificskill>
       </bonus>
       <choices>
@@ -2484,7 +2495,7 @@
       <id>50b20b8c-8cf4-4b92-95ea-b0c8bbf560b0</id>
       <name>Fox</name>
       <advantage>All: +2 dice pool modifier for tests using the Perception skill.</advantage>
-      <disadvantage>If Fox fights, it'll fight to kill. A follower of this mentor spirit must make a Willpower + Intuition (3) Test to spare an overpowered foe.</disadvantage>
+      <disadvantage>Whenever Fox fights, it is a fight to the death. A follower of this mentor spirit must succeed a Willpower + Intuition (3) Test to spare an overpowered foe.</disadvantage>
       <bonus>
         <specificskill>
           <name>Perception</name>
@@ -2518,7 +2529,7 @@
       <id>b83bab65-bbda-4367-aa50-3069def5b2e4</id>
       <name>Tide</name>
       <advantage>All: +2 dice pool modifier for tests using the Ritual Spellcasting skill.</advantage>
-      <disadvantage>Followers of Tide live in transition, but in the consistency of a cycle. They also design their lives this way. If their normal life cycle is lastingly impaired by Sleep deprivation or illness, they suffer a -1 dice pool modifier on all tests until the cycle is restored.</disadvantage>
+      <disadvantage>Followers of Tide live in constant transition, but within the consistency of a cycle. They also design their lives this way. If the cycle of their normal life is disrupted by sleep deprivation or illness, they suffer a -1 dice pool modifier on all tests until the cycle is restored.</disadvantage>
       <bonus>
         <specificskill>
           <name>Ritual Spellcasting</name>
@@ -2557,8 +2568,8 @@
     <mentor>
       <id>62188234-323a-4c8e-96c4-b8b8a750e272</id>
       <name>Heinzelmännchen</name>
-      <advantage>All: +2 dice pool modifier for tests using the Artisan skill and the Engineering skill group.</advantage>
-      <disadvantage>Heinzelmännchen works in secret. If a follower of Heinzelmännchen wants to perform magic in public or under close observation, they'll have to make a Willpower + Charisma (3) Test or else their magic cease to function for the moment.</disadvantage>
+      <advantage>All: +1 dice pool modifier for tests using the Artisan skill and the Engineering skill group.</advantage>
+      <disadvantage>Heinzelmännchen prefers to work in secret. If a follower of Heinzelmännchen wants to perform magic in public or under close observation, they'll have to make a Willpower + Charisma (3) Test or else their magic ceases to function for the moment.</disadvantage>
       <bonus>
         <specificskill>
           <name>Artisan</name>
@@ -2604,7 +2615,7 @@
       <id>128ba60a-7825-4d29-8b94-8dd291fdc468</id>
       <name>Groundhog</name>
       <advantage>All: +1 dice pool modifier for tests using the Perception and Etiquette skills.</advantage>
-      <disadvantage>If a follower of Groundhog get into a fight (intentionally or unintentionally), they'll have to make a Willpower + Charisma (3) Test to not flee immediately.</disadvantage>
+      <disadvantage>If a follower of Groundhog get into a fight (intentionally or unintentionally), they must make a Willpower + Charisma (3) Test to not flee immediately.</disadvantage>
       <bonus>
         <specificskill>
           <name>Perception</name>
@@ -2771,7 +2782,7 @@
       <id>88b517e3-a3c8-4028-9a69-d947f3384aab</id>
       <name>Wild Hunt</name>
       <advantage>All: +2 dice pool modifier for tests using the Pilot Ground Craft or Intimidation skill.</advantage>
-      <disadvantage>A follower of the Wild Hunt always leaves behind a swath of devastation. If objects or uninvolved persons could be harmed in the fight, he wouldn't take any consideration. If a follower of the Wild Hunt is consciously considerate in the fight, he must succeed in a Charisma + Willpower (3) test, otherwise he is so inhibited that he suffers a -2 dicepool modifier on all actions.</disadvantage>
+      <disadvantage>A follower of the Wild Hunt always leaves behind a swath of devastation. If objects or uninvolved persons could be harmed in the fight, he could not care less. If a follower of the Wild Hunt is consciously considerate in the fight, he must succeed in a Charisma + Willpower (3) test, otherwise he is so inhibited that he suffers a -2 dicepool modifier on all actions.</disadvantage>
       <choices>
         <choice>
           <name>+2 dice on Pilot Ground Craft Tests</name>

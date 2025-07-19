@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -1005,6 +1005,7 @@
       <drain>{WIL} + {CHA}</drain>
       <source>SAG</source>
       <page>115</page>
+      <spiritform>Possession</spiritform>
       <spirits>
         <spiritcombat>Spirit of Earth</spiritcombat>
         <spiritdetection>Guidance Spirit</spiritdetection>

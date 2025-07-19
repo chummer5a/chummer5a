@@ -518,7 +518,12 @@ namespace Chummer.Backend.Equipment
             {
                 objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
-            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory)
+                || (_strCategory.EndsWith("Liners") && _objCharacter.LastSavedVersion < new ValueVersion(5, 255, 949)))
+            {
+                // Legacy shim for liners
+                objMyNode.Value?.TryGetStringFieldQuickly("category", ref _strCategory);
+            }
             objNode.TryGetInt32FieldQuickly("armor", ref _intArmorValue);
             objNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
             objNode.TryGetStringFieldQuickly("gearcapacity", ref _strGearCapacity);
