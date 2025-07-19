@@ -1206,19 +1206,19 @@
       </armor>
       <armor translated="True">
         <id>4b16a172-b328-4717-b632-39a3d07eeb41</id>
-        <name>FleetHead Kappe</name>
+        <name>FleetHead Sou'wester</name>
         <translate>FleetHead Kappe</translate>
         <altpage>173</altpage>
       </armor>
       <armor translated="True">
         <id>fc1c9de6-4600-4c14-8e8a-9fed51389e4a</id>
-        <name>Rheingold Friesennerz</name>
+        <name>Rheingold Oilskin</name>
         <translate>Rheingold Friesennerz</translate>
         <altpage>173</altpage>
       </armor>
       <armor translated="True">
         <id>e8065f02-68f3-46f6-8cca-298a1806b97b</id>
-        <name>Ares Victory Friesennerz</name>
+        <name>Ares Victory Oilskin</name>
         <translate>Ares Victory Friesennerz</translate>
         <altpage>173</altpage>
       </armor>
@@ -20407,7 +20407,7 @@
       </gear>
       <gear>
         <id>13b3f7fb-87c1-41d1-9c98-54484b0d557c</id>
-        <name>Elektro-Netz</name>
+        <name>Electro-Net</name>
         <translate>Elektro-Netz</translate>
         <altpage>172</altpage>
       </gear>
@@ -42092,8 +42092,8 @@
       </vehicle>
       <vehicle translated="True">
         <id>18f41586-7f0f-4ca1-8881-eccdabc3351d</id>
-        <name>MK R/Evolution</name>
-        <translate>MK R/Evolution</translate>
+        <name>Messerschmitt-Kawasaki R/Evolution</name>
+        <translate>Messerschmitt-Kawasaki R/Evolution</translate>
         <altpage>174</altpage>
       </vehicle>
       <vehicle translated="True">
@@ -42122,8 +42122,8 @@
       </vehicle>
       <vehicle translated="True">
         <id>94318a48-9f0d-4c9b-ac3e-9e35d31ffb08</id>
-        <name>MK Harbor Sentry</name>
-        <translate>MK Harbor Sentry</translate>
+        <name>Messerschmitt-Kawasaki Harbor Sentry</name>
+        <translate>Messerschmitt-Kawasaki Harbor Sentry</translate>
         <altpage>176</altpage>
       </vehicle>
       <vehicle translated="True">
@@ -47011,13 +47011,13 @@
       </weapon>
       <weapon translated="True">
         <id>787627c8-a2c4-47c1-9f3e-dd96ebfadf29</id>
-        <name>Elektro-Angel</name>
+        <name>Electro-Fishing Rod</name>
         <translate>Elektro-Angel</translate>
         <altpage>172</altpage>
       </weapon>
       <weapon translated="True">
         <id>1a329276-af02-4911-a600-387291465201</id>
-        <name>Elektro-Netz</name>
+        <name>Electro-Net</name>
         <translate>Elektro-Netz</translate>
         <altpage>172</altpage>
       </weapon>

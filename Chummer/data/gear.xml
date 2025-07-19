@@ -667,14 +667,14 @@
     </gear>
     <gear>
       <id>13b3f7fb-87c1-41d1-9c98-54484b0d557c</id>
-      <name>Elektro-Netz</name>
+      <name>Electro-Net</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>HAMG</source>
       <page>172</page>
       <avail>6</avail>
       <cost>600</cost>
-      <addweapon>Elektro-Netz</addweapon>
+      <addweapon>Electro-Net</addweapon>
       <costfor>1</costfor>
     </gear>
     <gear>

@@ -14608,43 +14608,41 @@
     <!-- Region Hamburg -->
     <weapon>
       <id>787627c8-a2c4-47c1-9f3e-dd96ebfadf29</id>
-      <name>Elektro-Angel</name>
+      <name>Electro-Fishing Rod</name>
       <category>Exotic Melee Weapons</category>
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>4</accuracy>
       <reach>2</reach>
-      <damage>8S</damage>
+      <damage>8S(e)</damage>
       <ap>-5</ap>
       <mode>0</mode>
       <rc>0</rc>
-      <ammo>0</ammo>
+      <ammo>3(m)</ammo>
       <avail>6</avail>
       <cost>500</cost>
       <source>HAMG</source>
       <page>172</page>
-      <spec>Elektro-Angel</spec>
       <useskill>Exotic Melee Weapon</useskill>
     </weapon>
     <weapon>
       <id>1a329276-af02-4911-a600-387291465201</id>
-      <name>Elektro-Netz</name>
-      <category>Exotic Ranged Weapons</category>
+      <name>Electro-Net</name>
+      <category>Gear</category>
       <type>Ranged</type>
       <conceal>0</conceal>
       <accuracy>Physical-2</accuracy>
       <reach>0</reach>
-      <damage>8S</damage>
+      <damage>8S(e)</damage>
       <ap>-5</ap>
       <mode>0</mode>
       <rc>0</rc>
-      <ammo>0</ammo>
+      <ammo>2(m)</ammo>
       <avail>6</avail>
       <cost>600</cost>
       <source>HAMG</source>
       <page>172</page>
       <range>Thrown Knife</range>
-      <spec>Elektro-Netz</spec>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <!-- End Region -->
