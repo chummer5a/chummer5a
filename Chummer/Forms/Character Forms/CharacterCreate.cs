@@ -12757,8 +12757,8 @@ namespace Chummer
                     // Locate the selected ArmorMod.
                     case ArmorMod objMod:
                     {
-                        objMod.Rating = await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
-                                                            .ConfigureAwait(false);
+                        await objMod.SetRatingAsync(await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                            .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                         string strText = await objMod.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                         await treArmor.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
                                       .ConfigureAwait(false);
@@ -12860,8 +12860,8 @@ namespace Chummer
                     }
                     case Armor objArmor:
                     {
-                        objArmor.Rating = await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
-                                                              .ConfigureAwait(false);
+                        await objArmor.SetRatingAsync(await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                              .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                         string strText = await objArmor.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                         await treArmor.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
                                       .ConfigureAwait(false);

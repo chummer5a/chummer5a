@@ -912,8 +912,7 @@ namespace Chummer.Backend.Equipment
                     if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
                     {
                         // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                        int intCurrentRating = await objChild.GetRatingAsync(token).ConfigureAwait(false);
-                        await objChild.SetRatingAsync(intCurrentRating, token).ConfigureAwait(false);
+                        await objChild.SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                 }, token).ConfigureAwait(false);
             }

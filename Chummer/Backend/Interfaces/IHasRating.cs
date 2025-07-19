@@ -26,6 +26,7 @@ namespace Chummer
     {
         int Rating { get; set; }
         Task<int> GetRatingAsync(CancellationToken token = default);
+        Task SetRatingAsync(int value, CancellationToken token = default);
         string RatingLabel { get; set; }
     }
 }
