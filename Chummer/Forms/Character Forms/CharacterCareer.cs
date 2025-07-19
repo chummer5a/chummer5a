@@ -22407,7 +22407,8 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
-                            if (objSelectedAccessory.TotalAmmoBonus != 0
+                            decimal decAmmoBonus = await objSelectedAccessory.GetTotalAmmoBonusAsync(token).ConfigureAwait(false);
+                            if (decAmmoBonus != 0
                                 || (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity)
                                     && objSelectedAccessory.ModifyAmmoCapacity != "0"))
                             {
@@ -22418,11 +22419,10 @@ namespace Chummer
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdAmmoBonus))
                                 {
-                                    int intAmmoBonus = objSelectedAccessory.TotalAmmoBonus;
-                                    if (intAmmoBonus != 0)
+                                    if (decAmmoBonus != 0)
                                         sbdAmmoBonus.Append(
-                                            (intAmmoBonus / 100.0m).ToString(
-                                                "+#,0%;-#,0%;0%", GlobalSettings.CultureInfo));
+                                            (decAmmoBonus / 100.0m).ToString(
+                                                "+#,0.##%;-#,0.##%;0.##%", GlobalSettings.CultureInfo));
                                     if (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity)
                                         && objSelectedAccessory.ModifyAmmoCapacity != "0")
                                         sbdAmmoBonus.Append(objSelectedAccessory.ModifyAmmoCapacity);
@@ -26165,7 +26165,8 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
-                            if (objAccessory.TotalAmmoBonus != 0
+                            decimal decAmmoBonus = await objAccessory.GetTotalAmmoBonusAsync(token).ConfigureAwait(false);
+                            if (decAmmoBonus != 0
                                 || (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity)
                                     && objAccessory.ModifyAmmoCapacity != "0"))
                             {
@@ -26176,11 +26177,10 @@ namespace Chummer
                                 using (new FetchSafelyFromPool<StringBuilder>(
                                            Utils.StringBuilderPool, out StringBuilder sbdAmmoBonus))
                                 {
-                                    int intAmmoBonus = objAccessory.TotalAmmoBonus;
-                                    if (intAmmoBonus != 0)
+                                    if (decAmmoBonus != 0)
                                         sbdAmmoBonus.Append(
-                                            (intAmmoBonus / 100.0m).ToString(
-                                                "+#,0%;-#,0%;0%", GlobalSettings.CultureInfo));
+                                            (decAmmoBonus / 100.0m).ToString(
+                                                "+#,0.##%;-#,0.##%;0.##%", GlobalSettings.CultureInfo));
                                     if (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity)
                                         && objAccessory.ModifyAmmoCapacity != "0")
                                         sbdAmmoBonus.Append(objAccessory.ModifyAmmoCapacity);

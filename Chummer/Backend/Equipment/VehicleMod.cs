@@ -76,7 +76,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
         private string _strAmmoReplace;
-        private int _intAmmoBonus;
+        private decimal _decAmmoBonus;
         private decimal _decAmmoBonusPercent;
         private int _intSortOrder;
         private bool _blnStolen;
@@ -230,7 +230,7 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetInt32FieldQuickly("conditionmonitor", ref _intConditionMonitor);
             objXmlMod.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
             objXmlMod.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
-            objXmlMod.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
+            objXmlMod.TryGetDecFieldQuickly("ammobonus", ref _decAmmoBonus);
             objXmlMod.TryGetDecFieldQuickly("ammobonuspercent", ref _decAmmoBonusPercent);
             // Add Subsystem information if applicable.
             XmlElement xmlSubsystemsNode = objXmlMod?["subsystems"];
@@ -432,7 +432,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("subsystems", _strSubsystems);
             objWriter.WriteElementString("weaponmountcategories", _strWeaponMountCategories);
-            objWriter.WriteElementString("ammobonus", _intAmmoBonus.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("ammobonus", _decAmmoBonus.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("ammobonuspercent", _decAmmoBonusPercent.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("ammoreplace", _strAmmoReplace);
             objWriter.WriteStartElement("weapons");
@@ -500,7 +500,7 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
             }
             objNode.TryGetDecFieldQuickly("ammobonuspercent", ref _decAmmoBonusPercent);
-            objNode.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
+            objNode.TryGetDecFieldQuickly("ammobonus", ref _decAmmoBonus);
             objNode.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
             objNode.TryGetStringFieldQuickly("subsystems", ref _strSubsystems);
             // Legacy Shims
@@ -1286,10 +1286,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Adjust the Weapon's Ammo amount by the specified flat value.
         /// </summary>
-        public int AmmoBonus
+        public decimal AmmoBonus
         {
-            get => _intAmmoBonus;
-            set => _intAmmoBonus = value;
+            get => _decAmmoBonus;
+            set => _decAmmoBonus = value;
         }
 
         /// <summary>

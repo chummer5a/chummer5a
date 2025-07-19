@@ -4758,7 +4758,7 @@ namespace Chummer.Backend.Equipment
             CancellationToken token = default)
         {
             IEnumerable<string> lstAmmos = Ammo.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
-            int intAmmoBonus = 0;
+            decimal decAmmoBonus = 0;
 
             if (WeaponAccessories.Count != 0)
             {
@@ -4773,12 +4773,12 @@ namespace Chummer.Backend.Equipment
                                 StringSplitOptions.RemoveEmptyEntries);
                         }
 
-                        intAmmoBonus += objAccessory.TotalAmmoBonus;
+                        decAmmoBonus += blnSync ? objAccessory.TotalAmmoBonus : await objAccessory.GetTotalAmmoBonusAsync(token).ConfigureAwait(false);
                     }
                 }
             }
 
-            int intAmmoBonusFlat = 0;
+            decimal decAmmoBonusFlat = 0;
             decimal decAmmoBonusPercent = 1.0m;
             if (ParentMount != null)
             {
@@ -4789,7 +4789,7 @@ namespace Chummer.Backend.Equipment
                         lstAmmos = objMod.AmmoReplace.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
                     }
 
-                    intAmmoBonusFlat += objMod.AmmoBonus;
+                    decAmmoBonusFlat += objMod.AmmoBonus;
                     if (objMod.AmmoBonusPercent != 0)
                     {
                         decAmmoBonusPercent *= objMod.AmmoBonusPercent / 100.0m;
@@ -4868,32 +4868,25 @@ namespace Chummer.Backend.Equipment
                                     .ConfigureAwait(false);
                             if (blnIsSuccess)
                             {
-                                int intAmmo = ((double)objProcess).StandardRound() + intAmmoBonusFlat;
-
-                                intAmmo += (intAmmo * intAmmoBonus).DivAwayFromZero(100);
-
+                                decimal decAmmo = Convert.ToDecimal((double)objProcess) + decAmmoBonusFlat;
+                                if (decAmmoBonus != 0.0m)
+                                    decAmmo += (decAmmo * decAmmoBonus) / 100.0m;
                                 if (decAmmoBonusPercent != 1.0m)
-                                {
-                                    intAmmo = (intAmmo * decAmmoBonusPercent).StandardRound();
-                                }
+                                    decAmmo *= decAmmoBonusPercent;
 
-                                strThisAmmo = intAmmo.ToString(objCulture)
+                                strThisAmmo = decAmmo.StandardRound().ToString(objCulture)
                                               + strAmmo.Substring(strAmmo.IndexOf('('),
                                                   strAmmo.Length - strAmmo.IndexOf('('));
                             }
                         }
                         else
                         {
-                            int intAmmo = decValue.StandardRound() + intAmmoBonusFlat;
-
-                            intAmmo += (intAmmo * intAmmoBonus).DivAwayFromZero(100);
-
+                            decimal decAmmo = decValue + decAmmoBonusFlat;
+                            if (decAmmoBonus != 0.0m)
+                                decAmmo += (decAmmo * decAmmoBonus) / 100.0m;
                             if (decAmmoBonusPercent != 1.0m)
-                            {
-                                intAmmo = (intAmmo * decAmmoBonusPercent).StandardRound();
-                            }
-
-                            strThisAmmo = intAmmo.ToString(objCulture)
+                                decAmmo *= decAmmoBonusPercent;
+                            strThisAmmo = decAmmo.StandardRound().ToString(objCulture)
                                           + strAmmo.Substring(strAmmo.IndexOf('('),
                                               strAmmo.Length - strAmmo.IndexOf('('));
                         }

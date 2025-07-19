@@ -1037,10 +1037,10 @@ namespace Chummer.Backend.Equipment
                                     .InvariantCultureInfo);
                     }
                     Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
-                    await sbdAccuracy.CheapReplaceAsync(strAccuracy, "Rating",
+                    await sbdAccuracy.CheapReplaceAsync(strAccuracy, "{Rating}",
                                                     async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                                     token: token).ConfigureAwait(false);
-                    await sbdAccuracy.CheapReplaceAsync(strAccuracy, "{Rating}",
+                    await sbdAccuracy.CheapReplaceAsync(strAccuracy, "Rating",
                                                     async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                                     token: token).ConfigureAwait(false);
                     await sbdAccuracy.CheapReplaceAsync(strAccuracy, "Physical", funcPhysicalLimitString, token: token).ConfigureAwait(false);
@@ -1168,10 +1168,10 @@ namespace Chummer.Backend.Equipment
                             .ProcessAttributesInXPathAsync(sbdReach, strReach, token: token).ConfigureAwait(false);
                     }
                     Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
-                    await sbdReach.CheapReplaceAsync(strReach, "Rating",
+                    await sbdReach.CheapReplaceAsync(strReach, "{Rating}",
                                                     async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                                     token: token).ConfigureAwait(false);
-                    await sbdReach.CheapReplaceAsync(strReach, "{Rating}",
+                    await sbdReach.CheapReplaceAsync(strReach, "Rating",
                                                     async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                                     token: token).ConfigureAwait(false);
                     strToEvaluate = sbdReach.ToString();
@@ -1427,10 +1427,10 @@ namespace Chummer.Backend.Equipment
                             .ProcessAttributesInXPathAsync(sbdConceal, strConceal, token: token).ConfigureAwait(false);
                     }
                     Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
-                    await sbdConceal.CheapReplaceAsync(strConceal, "Rating",
+                    await sbdConceal.CheapReplaceAsync(strConceal, "{Rating}",
                                                     async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                                     token: token).ConfigureAwait(false);
-                    await sbdConceal.CheapReplaceAsync(strConceal, "{Rating}",
+                    await sbdConceal.CheapReplaceAsync(strConceal, "Rating",
                                                     async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                                     token: token).ConfigureAwait(false);
                     strToEvaluate = sbdConceal.ToString();
@@ -2344,10 +2344,10 @@ namespace Chummer.Backend.Equipment
                             .ProcessAttributesInXPathAsync(sbdCost, strCostExpr, token: token).ConfigureAwait(false);
                     }
                     Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
-                    await sbdCost.CheapReplaceAsync(strCostExpr, "Rating",
+                    await sbdCost.CheapReplaceAsync(strCostExpr, "{Rating}",
                                                     async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                                     token: token).ConfigureAwait(false);
-                    await sbdCost.CheapReplaceAsync(strCostExpr, "{Rating}",
+                    await sbdCost.CheapReplaceAsync(strCostExpr, "Rating",
                                                     async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                                     token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
@@ -2472,38 +2472,97 @@ namespace Chummer.Backend.Equipment
             set => _strAmmoBonus = value;
         }
 
-        public int TotalAmmoBonus
+        public decimal TotalAmmoBonus
         {
             get
             {
-                int intReturn = 0;
-
                 string strAmmoBonus = AmmoBonus;
-                if (strAmmoBonus.Contains("Rating"))
+                if (strAmmoBonus.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decBonus))
                 {
-                    // If the cost is determined by the Rating, evaluate the expression.
-                    strAmmoBonus = strAmmoBonus.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    try
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAmmoBonus))
                     {
-                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAmmoBonus);
+                        sbdAmmoBonus.Append(strAmmoBonus.TrimStart('+'));
+                        Weapon objParent = Parent;
+                        if (objParent != null)
+                        {
+                            Lazy<int> intParentRating = new Lazy<int>(() => objParent.Rating);
+                            sbdAmmoBonus.CheapReplace(strAmmoBonus, "{Parent Rating}", () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdAmmoBonus.CheapReplace(strAmmoBonus, "Parent Rating", () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdAmmoBonus.CheapReplace(strAmmoBonus, "{Weapon Rating}", () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdAmmoBonus.CheapReplace(strAmmoBonus, "Weapon Rating", () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            objParent.ProcessAttributesInXPath(sbdAmmoBonus, strAmmoBonus);
+                        }
+                        else
+                        {
+                            sbdAmmoBonus.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                .Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAmmoBonus, strAmmoBonus);
+                        }
+                        Lazy<int> intRating = new Lazy<int>(() => Rating);
+                        sbdAmmoBonus.CheapReplace(strAmmoBonus, "{Rating}", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdAmmoBonus.CheapReplace(strAmmoBonus, "Rating", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                        (bool blnIsSuccess, object objProcess)
+                            = CommonFunctions.EvaluateInvariantXPath(sbdAmmoBonus.ToString());
                         if (blnIsSuccess)
-                            intReturn = ((double)objProcess).StandardRound();
-                    }
-                    catch (OverflowException)
-                    {
-                        // swallow this
-                    }
-                    catch (InvalidCastException)
-                    {
-                        // swallow this
+                            decBonus = Convert.ToDecimal((double)objProcess);
                     }
                 }
-                else if (!string.IsNullOrEmpty(strAmmoBonus) && !int.TryParse(strAmmoBonus, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
-                {
-                    intReturn = 0;
-                }
-                return intReturn;
+                return decBonus;
             }
+        }
+
+        public async Task<decimal> GetTotalAmmoBonusAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strAmmoBonus = AmmoBonus;
+            if (strAmmoBonus.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decBonus))
+            {
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAmmoBonus))
+                {
+                    sbdAmmoBonus.Append(strAmmoBonus.TrimStart('+'));
+                    Weapon objParent = Parent;
+                    if (objParent != null)
+                    {
+                        Microsoft.VisualStudio.Threading.AsyncLazy<int> intParentRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => objParent.GetRatingAsync(token), Utils.JoinableTaskFactory);
+                        await sbdAmmoBonus.CheapReplaceAsync(strAmmoBonus, "{Parent Rating}",
+                            async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await sbdAmmoBonus.CheapReplaceAsync(strAmmoBonus, "Parent Rating",
+                            async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await sbdAmmoBonus.CheapReplaceAsync(strAmmoBonus, "{Weapon Rating}",
+                            async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await sbdAmmoBonus.CheapReplaceAsync(strAmmoBonus, "Weapon Rating",
+                            async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await objParent.ProcessAttributesInXPathAsync(sbdAmmoBonus, strAmmoBonus, token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        sbdAmmoBonus.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                            .Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                            .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                            .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                            .ProcessAttributesInXPathAsync(sbdAmmoBonus, strAmmoBonus, token: token).ConfigureAwait(false);
+                    }
+                    Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
+                    await sbdAmmoBonus.CheapReplaceAsync(strAmmoBonus, "{Rating}",
+                                                    async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                                    token: token).ConfigureAwait(false);
+                    await sbdAmmoBonus.CheapReplaceAsync(strAmmoBonus, "Rating",
+                                                    async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                                    token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAmmoBonus.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        decBonus = Convert.ToDecimal((double)objProcess);
+                }
+            }
+            return decBonus;
         }
 
         /// <summary>
