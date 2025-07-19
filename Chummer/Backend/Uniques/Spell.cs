@@ -2198,8 +2198,16 @@ namespace Chummer
         /// </summary>
         public string UseSkill
         {
-            get => _strUseSkill;
-            set => _strUseSkill = value;
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _strUseSkill;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                    _strUseSkill = value;
+            }
         }
 
         #endregion Properties
@@ -2215,8 +2223,8 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    string strSkillKey = string.Empty;
-                    if (string.IsNullOrEmpty(UseSkill))
+                    string strSkillKey = UseSkill;
+                    if (string.IsNullOrEmpty(strSkillKey))
                     {
                         XPathNavigator objCategoryNode = _objCharacter.LoadDataXPath("spells.xml")
                                               .SelectSingleNode(
@@ -2237,10 +2245,6 @@ namespace Chummer
                             objCategoryNode.TryGetStringFieldQuickly("@barehandedadeptskill", ref strSkillKey);
                         }
                     }
-                    else
-                    {
-                        strSkillKey = UseSkill;
-                    }
 
                     return string.IsNullOrEmpty(strSkillKey)
                         ? null
@@ -2259,8 +2263,8 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strSkillKey = string.Empty;
-                if (string.IsNullOrEmpty(UseSkill))
+                string strSkillKey = UseSkill;
+                if (string.IsNullOrEmpty(strSkillKey))
                 {
                     // If UseSkill is not set, we need to look it up in the XML file.
                     // This is done asynchronously to avoid blocking the UI thread.
@@ -2282,11 +2286,6 @@ namespace Chummer
                     {
                         objCategoryNode.TryGetStringFieldQuickly("@barehandedadeptskill", ref strSkillKey);
                     }
-                }
-                else
-                {
-                    // If UseSkill is set, we use that directly.
-                    strSkillKey = UseSkill;
                 }
 
                 return string.IsNullOrEmpty(strSkillKey)

@@ -94,6 +94,7 @@ Application Changes:
 - The rating entry in the Weapons tab has been changed to a dial in Create mode, allowing users to alter the ratings of eligible weapons, weapon accessories, and gear loaded into weapon accessories more easily.
 - Added a new Data Exporter tool that allows a user to export all internal data used by the program into a zip file. Data exported in this way will contain any translation entries added by non-English languages as well as any and all custom data content created, added, modified, removed, etc. by a specified character setting's enabled custom datasets.
 - The button to automatically scan a folder for PDFs can now also detect PDFs in languages different from the currently selected user interface language, though it will prioritize PDFs that match the current user interface language if possible. It can also now be used to scan folders recursively.
+- Complex forms can be set to use a skill other than Software through the same useskill data node that spells can have.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.

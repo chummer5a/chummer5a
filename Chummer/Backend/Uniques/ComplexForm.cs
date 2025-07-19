@@ -45,6 +45,7 @@ namespace Chummer
         private Guid _guiID;
         private Guid _guiSourceID = Guid.Empty;
         private string _strName = string.Empty;
+        private string _strUseSkill = string.Empty;
         private string _strTarget = string.Empty;
         private string _strDuration = string.Empty;
         private string _strFv = string.Empty;
@@ -85,6 +86,7 @@ namespace Chummer
                 }
                 objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName);
+                objXmlComplexFormNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("target", ref _strTarget);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -144,6 +146,7 @@ namespace Chummer
                 }
                 objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName);
+                objXmlComplexFormNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("target", ref _strTarget);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -201,6 +204,7 @@ namespace Chummer
                 objWriter.WriteElementString("sourceid", SourceIDString);
                 objWriter.WriteElementString("guid", InternalId);
                 objWriter.WriteElementString("name", _strName);
+                objWriter.WriteElementString("useskill", _strUseSkill);
                 objWriter.WriteElementString("target", _strTarget);
                 objWriter.WriteElementString("duration", _strDuration);
                 objWriter.WriteElementString("fv", _strFv);
@@ -234,6 +238,7 @@ namespace Chummer
                     this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
+                objNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
                 objNode.TryGetStringFieldQuickly("target", ref _strTarget);
                 objNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -974,6 +979,23 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Active Skill that should be used with this Complex Form instead of the default one.
+        /// </summary>
+        public string UseSkill
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _strUseSkill;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                    _strUseSkill = value;
+            }
+        }
+
+        /// <summary>
         /// Complex Form's Source.
         /// </summary>
         public string Source
@@ -1191,12 +1213,36 @@ namespace Chummer
             }
         }
 
-        public Skill Skill => _objCharacter.SkillsSection.GetActiveSkill("Software");
+        public Skill Skill
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    string strSkillKey = UseSkill;
+                    if (string.IsNullOrEmpty(strSkillKey))
+                        strSkillKey = "Software";
+                    return _objCharacter.SkillsSection.GetActiveSkill(strSkillKey);
+                }
+            }
+        }
 
         public async Task<Skill> GetSkillAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync("Software", token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strSkillKey = UseSkill;
+                if (string.IsNullOrEmpty(strSkillKey))
+                    strSkillKey = "Software";
+                return await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync("Software", token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -1266,13 +1312,14 @@ namespace Chummer
                                                    objResonanceAttrib.DisplayValue);
                         }
 
-                        if (Skill != null)
+                        Skill objSkill = Skill;
+                        if (objSkill != null)
                         {
                             if (sbdReturn.Length > 0)
                                 sbdReturn.Append(strSpace).Append('+').Append(strSpace);
-                            sbdReturn.Append(Skill.FormattedDicePool(Skill.PoolOtherAttribute("RES") -
-                                                                     (objResonanceAttrib?.TotalValue ?? 0),
-                                                                     CurrentDisplayName));
+                            sbdReturn.Append(objSkill.FormattedDicePool(objSkill.PoolOtherAttribute("RES") -
+                                                                        (objResonanceAttrib?.TotalValue ?? 0),
+                                                                        CurrentDisplayName));
                         }
 
                         // Include any Improvements to the Spell Category.
