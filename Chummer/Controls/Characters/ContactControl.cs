@@ -764,8 +764,6 @@ namespace Chummer
         /// </summary>
         public Contact ContactObject => _objContact;
 
-        public bool Expanded => tlpStatBlock?.DoThreadSafeFunc(x => x.Visible) == true;
-
         public async Task<bool> GetExpandedAsync(CancellationToken token = default)
         {
             if (tlpStatBlock != null)

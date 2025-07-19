@@ -1254,12 +1254,10 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                lblName.DoThreadSafe(
-                    x => x.MinimumSize =
+                lblName.MinimumSize =
                         new Size(
-                            intNewNameWidth - x.Margin.Right -
-                            pnlAttributes.DoThreadSafeFunc(y => y.Margin.Left + y.Width, token: _objMyToken),
-                            x.MinimumSize.Height), token: _objMyToken);
+                            intNewNameWidth - lblName.Margin.Right - pnlAttributes.Margin.Left + pnlAttributes.Width,
+                            lblName.MinimumSize.Height);
             }
             catch (OperationCanceledException)
             {

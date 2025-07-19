@@ -11915,11 +11915,12 @@ namespace Chummer.Backend.Equipment
 
                 Gear objCurrentlyLoadedAmmo = AmmoLoaded;
                 Gear objSelectedAmmo;
-                decimal decQty = frmReloadWeapon.MyForm.SelectedCount;
+                decimal decQty = await frmReloadWeapon.MyForm.GetSelectedCountAsync(token).ConfigureAwait(false);
+                string strSelectedAmmo = await frmReloadWeapon.MyForm.GetSelectedAmmoAsync(token).ConfigureAwait(false);
                 // If an External Source is not being used, consume ammo.
-                if (frmReloadWeapon.MyForm.SelectedAmmo != objExternalSource?.InternalId)
+                if (strSelectedAmmo != objExternalSource?.InternalId)
                 {
-                    objSelectedAmmo = await lstGears.DeepFindByIdAsync(frmReloadWeapon.MyForm.SelectedAmmo, token: token).ConfigureAwait(false);
+                    objSelectedAmmo = await lstGears.DeepFindByIdAsync(strSelectedAmmo, token: token).ConfigureAwait(false);
 
                     // If the Ammo is coming from a Spare Clip, reduce the container quantity instead of the plugin quantity.
                     if (objSelectedAmmo.Parent is Gear objParent &&
@@ -11935,7 +11936,7 @@ namespace Chummer.Backend.Equipment
                             await lstGears.AddAsync(objDuplicatedParent, token).ConfigureAwait(false);
                             --objParent.Quantity;
                             Gear objNewSelectedAmmo
-                                = await objDuplicatedParent.Children.DeepFindByIdAsync(frmReloadWeapon.MyForm.SelectedAmmo, token: token).ConfigureAwait(false);
+                                = await objDuplicatedParent.Children.DeepFindByIdAsync(strSelectedAmmo, token: token).ConfigureAwait(false);
                             if (objNewSelectedAmmo == null)
                             {
                                 objNewSelectedAmmo = new Gear(_objCharacter);
