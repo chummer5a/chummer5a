@@ -10109,6 +10109,7 @@
       <name>Alchemical Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>318</page>
       <avail>(Rating * 3)R</avail>
@@ -10126,6 +10127,7 @@
       <name>Disenchanting Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -10143,6 +10145,7 @@
       <name>Centering Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -10156,6 +10159,7 @@
       <name>Flexible Signature Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -10169,6 +10173,7 @@
       <name>Masking Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -10182,6 +10187,7 @@
       <name>Spell Shaping Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -10195,6 +10201,7 @@
       <name>Power Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 4)R</avail>
@@ -10212,6 +10219,7 @@
       <name>Qi Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -10232,6 +10240,7 @@
       <name>Counterspelling Focus, Combat</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10245,6 +10254,7 @@
       <name>Ritual Spellcasting Focus, Combat</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10258,6 +10268,7 @@
       <name>Spellcasting Focus, Combat</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10275,6 +10286,7 @@
       <name>Sustaining Focus, Combat</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10288,6 +10300,7 @@
       <name>Counterspelling Focus, Detection</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10301,6 +10314,7 @@
       <name>Ritual Spellcasting Focus, Detection</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10314,6 +10328,7 @@
       <name>Spellcasting Focus, Detection</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10331,6 +10346,7 @@
       <name>Sustaining Focus, Detection</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10344,6 +10360,7 @@
       <name>Counterspelling Focus, Health</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10357,6 +10374,7 @@
       <name>Ritual Spellcasting Focus, Health</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10370,6 +10388,7 @@
       <name>Spellcasting Focus, Health</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10387,6 +10406,7 @@
       <name>Sustaining Focus, Health</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10400,6 +10420,7 @@
       <name>Counterspelling Focus, Illusion</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10413,6 +10434,7 @@
       <name>Ritual Spellcasting Focus, Illusion</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10426,6 +10448,7 @@
       <name>Spellcasting Focus, Illusion</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10443,6 +10466,7 @@
       <name>Sustaining Focus, Illusion</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10456,6 +10480,7 @@
       <name>Counterspelling Focus, Manipulation</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10469,6 +10494,7 @@
       <name>Ritual Spellcasting Focus, Manipulation</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10482,6 +10508,7 @@
       <name>Spellcasting Focus, Manipulation</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10499,6 +10526,7 @@
       <name>Sustaining Focus, Manipulation</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10512,6 +10540,7 @@
       <name>Summoning Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10525,6 +10554,7 @@
       <name>Banishing Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10538,6 +10568,7 @@
       <name>Binding Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10550,6 +10581,7 @@
       <id>25b0168d-7052-4f76-b8e5-162d67b8ab6e</id>
       <name>Weapon Focus</name>
       <category>Foci</category>
+      <ratinglabel>String_Force</ratinglabel>
       <rating>18</rating>
       <source>SR5</source>
       <page>320</page>
@@ -10568,6 +10600,7 @@
       <name>Alchemical Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10590,6 +10623,7 @@
       <name>Disenchanting Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10612,6 +10646,7 @@
       <name>Centering Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10630,6 +10665,7 @@
       <name>Flexible Signature Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10648,6 +10684,7 @@
       <name>Masking Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10666,6 +10703,7 @@
       <name>Spell Shaping Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10684,6 +10722,7 @@
       <name>Power Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 4)R</avail>
@@ -10706,6 +10745,7 @@
       <name>Qi Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10731,6 +10771,7 @@
       <name>Counterspelling Focus, Combat, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10749,6 +10790,7 @@
       <name>Ritual Spellcasting Focus, Combat, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10767,6 +10809,7 @@
       <name>Spellcasting Focus, Combat, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10789,6 +10832,7 @@
       <name>Sustaining Focus, Combat, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10807,6 +10851,7 @@
       <name>Counterspelling Focus, Detection, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10825,6 +10870,7 @@
       <name>Ritual Spellcasting Focus, Detection, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10843,6 +10889,7 @@
       <name>Spellcasting Focus, Detection, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10865,6 +10912,7 @@
       <name>Sustaining Focus, Detection, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10883,6 +10931,7 @@
       <name>Counterspelling Focus, Health, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10901,6 +10950,7 @@
       <name>Ritual Spellcasting Focus, Health, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10919,6 +10969,7 @@
       <name>Spellcasting Focus, Health, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10941,6 +10992,7 @@
       <name>Sustaining Focus, Health, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10959,6 +11011,7 @@
       <name>Counterspelling Focus, Illusion, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10977,6 +11030,7 @@
       <name>Ritual Spellcasting Focus, Illusion, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10995,6 +11049,7 @@
       <name>Spellcasting Focus, Illusion, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11017,6 +11072,7 @@
       <name>Sustaining Focus, Illusion, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11035,6 +11091,7 @@
       <name>Counterspelling Focus, Manipulation, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11053,6 +11110,7 @@
       <name>Ritual Spellcasting Focus, Manipulation, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11071,6 +11129,7 @@
       <name>Spellcasting Focus, Manipulation, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11093,6 +11152,7 @@
       <name>Sustaining Focus, Manipulation, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11111,6 +11171,7 @@
       <name>Summoning Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11129,6 +11190,7 @@
       <name>Banishing Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11147,6 +11209,7 @@
       <name>Binding Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11165,6 +11228,7 @@
       <name>Weapon Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 4)R</avail>
@@ -11183,6 +11247,7 @@
       <name>Alchemical Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11205,6 +11270,7 @@
       <name>Disenchanting Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11227,6 +11293,7 @@
       <name>Centering Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11245,6 +11312,7 @@
       <name>Flexible Signature Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11263,6 +11331,7 @@
       <name>Masking Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11281,6 +11350,7 @@
       <name>Spell Shaping Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11299,6 +11369,7 @@
       <name>Power Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 4)R</avail>
@@ -11321,6 +11392,7 @@
       <name>Qi Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11346,6 +11418,7 @@
       <name>Counterspelling Focus, Combat, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11364,6 +11437,7 @@
       <name>Ritual Spellcasting Focus, Combat, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11382,6 +11456,7 @@
       <name>Spellcasting Focus, Combat, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11404,6 +11479,7 @@
       <name>Sustaining Focus, Combat, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11422,6 +11498,7 @@
       <name>Counterspelling Focus, Detection, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11440,6 +11517,7 @@
       <name>Ritual Spellcasting Focus, Detection, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11458,6 +11536,7 @@
       <name>Spellcasting Focus, Detection, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11480,6 +11559,7 @@
       <name>Sustaining Focus, Detection, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11498,6 +11578,7 @@
       <name>Counterspelling Focus, Health, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11516,6 +11597,7 @@
       <name>Ritual Spellcasting Focus, Health, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11534,6 +11616,7 @@
       <name>Spellcasting Focus, Health, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11556,6 +11639,7 @@
       <name>Sustaining Focus, Health, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11574,6 +11658,7 @@
       <name>Counterspelling Focus, Illusion, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11592,6 +11677,7 @@
       <name>Ritual Spellcasting Focus, Illusion, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11610,6 +11696,7 @@
       <name>Spellcasting Focus, Illusion, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11632,6 +11719,7 @@
       <name>Sustaining Focus, Illusion, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11650,6 +11738,7 @@
       <name>Counterspelling Focus, Manipulation, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11668,6 +11757,7 @@
       <name>Ritual Spellcasting Focus, Manipulation, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11686,6 +11776,7 @@
       <name>Spellcasting Focus, Manipulation, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11708,6 +11799,7 @@
       <name>Sustaining Focus, Manipulation, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11726,6 +11818,7 @@
       <name>Summoning Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11744,6 +11837,7 @@
       <name>Banishing Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11762,6 +11856,7 @@
       <name>Binding Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11780,6 +11875,7 @@
       <name>Weapon Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 4)R</avail>
@@ -11800,6 +11896,7 @@
       <name>Alchemical Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>318</page>
       <avail>(Rating * 3)R</avail>
@@ -11813,6 +11910,7 @@
       <name>Disenchanting Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -11826,6 +11924,7 @@
       <name>Centering Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -11839,6 +11938,7 @@
       <name>Flexible Signature Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -11852,6 +11952,7 @@
       <name>Masking Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -11865,6 +11966,7 @@
       <name>Spell Shaping Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -11878,6 +11980,7 @@
       <name>Power Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 4)R</avail>
@@ -11891,6 +11994,7 @@
       <name>Qi Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -11904,6 +12008,7 @@
       <name>Counterspelling Focus Formula, Combat</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11917,6 +12022,7 @@
       <name>Ritual Spellcasting Focus Formula, Combat</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11930,6 +12036,7 @@
       <name>Spellcasting Focus Formula, Combat</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11943,6 +12050,7 @@
       <name>Sustaining Focus Formula, Combat</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11956,6 +12064,7 @@
       <name>Counterspelling Focus Formula, Detection</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11969,6 +12078,7 @@
       <name>Ritual Spellcasting Focus Formula, Detection</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11982,6 +12092,7 @@
       <name>Spellcasting Focus Formula, Detection</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11995,6 +12106,7 @@
       <name>Sustaining Focus Formula, Detection</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12008,6 +12120,7 @@
       <name>Counterspelling Focus Formula, Health</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12021,6 +12134,7 @@
       <name>Ritual Spellcasting Focus Formula, Health</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12034,6 +12148,7 @@
       <name>Spellcasting Focus Formula, Health</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12047,6 +12162,7 @@
       <name>Sustaining Focus Formula, Health</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12060,6 +12176,7 @@
       <name>Counterspelling Focus Formula, Illusion</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12073,6 +12190,7 @@
       <name>Ritual Spellcasting Focus Formula, Illusion</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12086,6 +12204,7 @@
       <name>Spellcasting Focus Formula, Illusion</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12099,6 +12218,7 @@
       <name>Sustaining Focus Formula, Illusion</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12112,6 +12232,7 @@
       <name>Counterspelling Focus Formula, Manipulation</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12125,6 +12246,7 @@
       <name>Ritual Spellcasting Focus Formula, Manipulation</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12138,6 +12260,7 @@
       <name>Spellcasting Focus Formula, Manipulation</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12151,6 +12274,7 @@
       <name>Sustaining Focus Formula, Manipulation</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12164,6 +12288,7 @@
       <name>Summoning Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12178,6 +12303,7 @@
       <name>Banishing Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12192,6 +12318,7 @@
       <name>Binding Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12206,6 +12333,7 @@
       <name>Weapon Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 4)R</avail>
@@ -12302,6 +12430,7 @@
       <name>Magical Lodge Materials</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>326</page>
       <avail>Rating * 2</avail>
@@ -12315,6 +12444,7 @@
       <name>Sacred Circle Materials</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>FA</source>
       <page>65</page>
       <avail>Rating * 2</avail>
@@ -12634,6 +12764,7 @@
       <name>FAB II</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>212</page>
       <avail>16R</avail>
@@ -12644,6 +12775,7 @@
       <name>FAB III</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>212</page>
       <avail>20F</avail>
@@ -12704,6 +12836,7 @@
       <name>Govi</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>212</page>
       <avail>Rating</avail>
@@ -12714,6 +12847,7 @@
       <name>Hand of Glory</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>213</page>
       <avail>(Rating * Rating)R</avail>
@@ -12747,6 +12881,7 @@
       <name>Mystic Cuff</name>
       <category>Magical Supplies</category>
       <rating>8</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>214</page>
       <avail>(Rating)R</avail>
@@ -12757,6 +12892,7 @@
       <name>Mystic Jacket</name>
       <category>Magical Supplies</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>214</page>
       <avail>(Rating)R</avail>
@@ -12767,6 +12903,7 @@
       <name>Mystic Mask</name>
       <category>Magical Supplies</category>
       <rating>12</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>214</page>
       <avail>(Rating)R</avail>
@@ -12807,6 +12944,7 @@
       <name>Shofar</name>
       <category>Magical Supplies</category>
       <rating>12</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>216</page>
       <avail>Rating</avail>
@@ -12889,6 +13027,7 @@
       <name>AgHexHex</name>
       <category>Magical Compounds</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>219</page>
       <avail>8</avail>
@@ -12899,6 +13038,7 @@
       <name>BDNB</name>
       <category>Magical Compounds</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
       <avail>8</avail>
@@ -12909,6 +13049,7 @@
       <name>Lot's Curse</name>
       <category>Magical Compounds</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
       <avail>14F</avail>
@@ -12919,6 +13060,7 @@
       <name>Sage</name>
       <category>Magical Compounds</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
       <avail>(Rating * 6)R</avail>
@@ -12929,6 +13071,7 @@
       <name>Spirit Strength</name>
       <category>Magical Compounds</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
       <avail>(Rating * 6)R</avail>
@@ -12939,6 +13082,7 @@
       <name>Witch's Moss</name>
       <category>Magical Compounds</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
       <avail>(Rating * 6)R</avail>
@@ -19217,6 +19361,7 @@
       <name>Counterspelling Focus, Health (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19227,6 +19372,7 @@
       <name>Counterspelling Focus, Illusion (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19237,6 +19383,7 @@
       <name>Counterspelling Focus, Combat (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19247,6 +19394,7 @@
       <name>Counterspelling Focus, Manipulation (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19257,6 +19405,7 @@
       <name>Counterspelling Focus, Detection (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19267,6 +19416,7 @@
       <name>Binding Focus (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19277,6 +19427,7 @@
       <name>Summoning Focus (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 3)R</avail>
@@ -19287,6 +19438,7 @@
       <name>Power Focus (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 3)R</avail>
@@ -19297,6 +19449,7 @@
       <name>Banishing Focus (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 3)R</avail>
@@ -19307,6 +19460,7 @@
       <name>Weapon Focus (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <bonus>
@@ -19320,6 +19474,7 @@
       <name>Spell Lock, Health (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19330,6 +19485,7 @@
       <name>Spell Lock, Illusion (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19340,6 +19496,7 @@
       <name>Spell Lock, Combat (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19350,6 +19507,7 @@
       <name>Spell Lock, Manipulation (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19360,6 +19518,7 @@
       <name>Spell Lock, Detection (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19370,6 +19529,7 @@
       <name>Spellcasting Focus, Health (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19380,6 +19540,7 @@
       <name>Spellcasting Focus, Illusion (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19390,6 +19551,7 @@
       <name>Spellcasting Focus, Combat (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19400,6 +19562,7 @@
       <name>Spellcasting Focus, Manipulation (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19410,6 +19573,7 @@
       <name>Spellcasting Focus, Detection (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19422,6 +19586,7 @@
       <name>Elemental Binding Materials (2050)</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>Rating</avail>
@@ -19432,6 +19597,7 @@
       <name>Medicine Lodge Materials (2050)</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>Rating</avail>
