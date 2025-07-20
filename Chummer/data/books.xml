@@ -712,5 +712,17 @@
         </match>
       </matches>
     </book>
+    <book>
+      <id>00178f4e-b682-4742-b259-7c086b18bc95</id>
+      <name>Shadows In Focus: Casablanca-Rabat</name>
+      <code>SFCR</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>me say that modern Morocco was shaped largely by the</text>
+          <page>3</page>
+        </match>
+      </matches>
+    </book>
   </books>
 </chummer>

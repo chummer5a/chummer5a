@@ -3643,6 +3643,25 @@
       </specs>
     </skill>
     <skill>
+      <id>f1714745-01ae-4d17-95a8-68c94cc48d58</id>
+      <name>Tamazight</name>
+      <attribute>INT</attribute>
+      <category>Language</category>
+      <default>False</default>
+      <skillgroup />
+      <specs>
+        <spec>Read/Write</spec>
+        <spec>Speak</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
+      </specs>
+    </skill>
+    <skill>
       <id>bb231493-bc95-4783-8ad9-e66078ee31ef</id>
       <name>Thai</name>
       <attribute>INT</attribute>

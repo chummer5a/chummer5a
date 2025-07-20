@@ -12174,6 +12174,296 @@
       <page>81</page>
     </module>
     <!-- End Region -->
+    <!-- Region Shadows in Focus: Casablanca-Rabat -->
+    <module>
+      <id>8aa2a54f-3afd-4fe3-b30a-7a525b1c52d0</id>
+      <stage>Nationality</stage>
+      <category>LifeModule</category>
+      <name>Morocco</name>
+      <karma>15</karma>
+      <versions>
+        <version>
+          <id>9bc6c8ed-7ec1-4eb2-ad2f-714f580483ac</id>
+          <name>Casablanca-Rabat</name>
+          <story>$real was born in Casablanca-Rabat.</story>
+          <bonus>
+            <attributelevel>
+              <!--Defaults to <val>1</val>-->
+              <name>INT</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Navigation</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Etiquette</name>
+            </skilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+            <addqualities>
+              <addquality>SINner (National)</addquality>
+            </addqualities>
+            <knowledgeskilllevel>
+              <name>Area Knowledge: Casablanca-Rabat</name>
+              <group>Street</group>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+      </versions>
+      <bonus>
+        <knowledgeskilllevel>
+          <name>Morocco History</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>SINless Intuition</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <options>
+            <arabic>Arabic</arabic>
+            <tamazight>Tamazight</tamazight>
+          </options>
+          <id>1082e017-a93f-4b64-a478-b329668d57d6</id>
+          <val>0</val>
+          <group>Language</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <options>
+            <arabic>Arabic</arabic>
+            <tamazight>Tamazight</tamazight>
+            <french>French</french>
+            <spanish>Spanish</spanish>
+            <english>English</english>
+          </options>
+          <id>6715b9d9-5445-4bc0-886c-b6ac309181b3</id>
+          <group>Language</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>$real was born in Morocco in Northeast Africa.</story>
+      <source>SFCR</source>
+      <page>27</page>
+    </module>
+    <module>
+      <id>4aa7d75c-538f-4f36-9d19-5be9e29e6335</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Desert Nomad</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Outdoorsman</addquality>
+          <addquality>Sense of Direction</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Animal Handling</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Outdoors</name>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <addskillspecialization>
+          <skill>Tracking</skill>
+          <spec>Desert</spec>
+        </addskillspecialization>
+        <knowledgeskilllevel>
+          <name>Geography</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <source>SFCR</source>
+      <page>27</page>
+    </module>
+    <module>
+      <id>845921f5-9481-49df-bd1f-138889459c4a</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Wharf Rat</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <freenegativequalities>-10</freenegativequalities>
+        <addqualities>
+          <addquality>Loss of Confidence</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Clubs</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Swimming</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Ship Identification</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Language]</name>
+          <group>Language</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SFCR</source>
+      <page>27</page>
+    </module>
+    <module>
+      <id>13149d3c-9454-416e-983a-86828554bdb7</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Bardi (Berber Rider)</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Animal Empathy</addquality>
+        </addqualities>
+        <knowledgeskilllevel>
+          <name>Moroccan History</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Berber Tribes</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Animal Handling</name>
+        </skilllevel>
+        <addskillspecialization>
+          <skill>Animal Handling</skill>
+          <spec>Riding</spec>
+        </addskillspecialization>
+        <skilllevel>
+          <name>Longarms</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Gymnastics</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Intimidation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SFCR</source>
+      <page>27</page>
+    </module>
+    <module>
+      <id>53bbb6ff-dd83-41c6-83df-474c5ede08e7</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Snake Charmer</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <addqualities>
+          <!-- RF version of Inspired -->
+          <addquality>f8f216b5-1c29-467d-9fb5-c9812408203d</addquality>
+        </addqualities>
+        <knowledgeskilllevel>
+          <name>Herpetology</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Berber Tribes</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Gymnastics</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Music</name>
+          <group>Interest</group>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Palming</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Performance</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SFCR</source>
+      <page>27</page>
+    </module>
+    <!-- End Region -->
     <!-- End Region -->
   </modules>
   <storybuilder>

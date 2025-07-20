@@ -5268,5 +5268,26 @@
       </required>
     </spell>
     <!-- End Region -->
+    <!-- Region Shadows in Focus: Casablanca-Rabat -->
+    <spell>
+      <id>18450234-0de2-4c22-9a75-5608f7a49f6b</id>
+      <name>Krigama Carpet</name>
+      <page>26</page>
+      <source>SFCR</source>
+      <category>Rituals</category>
+      <damage>0</damage>
+      <descriptor>Anchored, Material Link</descriptor>
+      <duration>Special</duration>
+      <dv>0</dv>
+      <range>Special</range>
+      <type>M</type>
+      <required>
+        <allof>
+          <metamagicart>Geomancy</metamagicart>
+          <metamagic>Patronage</metamagic>
+        </allof>
+      </required>
+    </spell>
+    <!-- End Region -->
   </spells>
 </chummer>
