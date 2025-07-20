@@ -411,6 +411,45 @@
       </matches>
     </book>
     <book>
+      <id>5b97fd1f-08d4-4ce9-99a8-d6a0c70b5bdc</id>
+      <name>Parabotany (German-Only)</name>
+      <code>PBG</code>
+      <!-- Only match to the German one because the English one is 4e -->
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Es hat zehntausend Jahre der Domestizierung gebraucht,</text>
+          <page>2</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>d7c0c5eb-0900-431c-9852-edcc86b03f67</id>
+      <name>Parageology (German-Only)</name>
+      <code>PGG</code>
+      <!-- Only match to the German one because the English one is 4e -->
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Magie auf Landschaft und Gesteine zu studieren. Zu</text>
+          <page>2</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>e5b9d556-d084-418d-a2d2-2d5b45b2dede</id>
+      <name>Parazoology (German-Only)</name>
+      <code>PZG</code>
+      <!-- Only match to the German one because the English one is 4e -->
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Die Erde hat eine durch den Menschen verursachte, einzigartige Phase der Ausrottung durchgemacht. Zum ersten Mal ist eine</text>
+          <page>2</page>
+        </match>
+      </matches>
+    </book>
+    <book>
       <id>485cc0ae-8221-4d5e-a527-33df76fd1f21</id>
       <name>Book of the Lost</name>
       <code>BOTL</code>
@@ -579,6 +618,18 @@
         <match>
           <language>de-de</language>
           <text>Treibladung komplett abzulösen. Laserwaffen stoßen bei</text>
+          <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>a43010ac-7b1a-420f-ab72-1644ee57ed7a</id>
+      <name>Datapuls SOX 2080 (German-Only)</name>
+      <code>SOXG</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Der Schweiß lief Virgil aus allen Poren und verklebte die</text>
           <page>4</page>
         </match>
       </matches>

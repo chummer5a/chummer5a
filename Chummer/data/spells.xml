@@ -5228,5 +5228,45 @@
       <type>M</type>
     </spell>
     <!-- End Region -->
+    <!-- Region Parageology -->
+    <spell>
+      <id>f1f92398-dced-429f-8463-53894d8b2604</id>
+      <name>Geopathic Connection</name>
+      <page>36</page>
+      <source>PGG</source>
+      <category>Rituals</category>
+      <damage>0</damage>
+      <descriptor>Mana</descriptor>
+      <duration>I</duration>
+      <dv>0</dv>
+      <range>Special</range>
+      <type>M</type>
+      <required>
+        <allof>
+          <metamagicart>Geomancy</metamagicart>
+          <metamagic>Home Advantage</metamagic>
+        </allof>
+      </required>
+    </spell>
+    <spell>
+      <id>fb05d206-f175-4dfa-a1bb-54ae3b298d33</id>
+      <name>Yang Zhai</name>
+      <page>36</page>
+      <source>PGG</source>
+      <category>Rituals</category>
+      <damage>0</damage>
+      <descriptor>Mana</descriptor>
+      <duration>Special</duration>
+      <dv>0</dv>
+      <range>Special</range>
+      <type>M</type>
+      <required>
+        <allof>
+          <metamagicart>Geomancy</metamagicart>
+          <metamagic>Patronage</metamagic>
+        </allof>
+      </required>
+    </spell>
+    <!-- End Region -->
   </spells>
 </chummer>
