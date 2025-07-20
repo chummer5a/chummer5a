@@ -713,6 +713,18 @@
       </matches>
     </book>
     <book>
+      <id>d90bad82-303e-4c0b-b00b-f8649af99db6</id>
+      <name>Shadows In Focus: Morocco</name>
+      <code>SFMO</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Morocco is my kind of place. It’s a combination of</text>
+          <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
       <id>00178f4e-b682-4742-b259-7c086b18bc95</id>
       <name>Shadows In Focus: Casablanca-Rabat</name>
       <code>SFCR</code>

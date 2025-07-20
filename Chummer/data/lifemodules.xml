@@ -12174,6 +12174,235 @@
       <page>81</page>
     </module>
     <!-- End Region -->
+    <!-- Region Shadows in Focus: Morocco -->
+    <module>
+      <id>53bbb6ff-dd83-41c6-83df-474c5ede08e7</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Moroccan Citizen</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <freenegativequalities>-5</freenegativequalities>
+        <addqualities>
+          <addquality>Perceptive</addquality>
+          <addquality select="Morocco">SINner (National)</addquality>
+        </addqualities>
+        <selectquality>
+          <quality>College Education</quality>
+          <quality>Technical School Education</quality>
+        </selectquality>
+        <skilllevel>
+          <name>Computer</name>
+          <val>2</val>
+        </skilllevel>
+        <addskillspecialization>
+          <skill>Etiquette</skill>
+          <spec>Moroccan</spec>
+        </addskillspecialization>
+        <addskillspecialization>
+          <skill>Etiquette</skill>
+          <spec>Business</spec>
+        </addskillspecialization>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>SFMO</source>
+      <page>29</page>
+    </module>
+    <module>
+      <id>d90bad82-303e-4c0b-b00b-f8649af99db6</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Business Apprentice</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Bilingual</addquality>
+          <addquality>Dealer Connection</addquality>
+          <addquality>Linguist</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Con</name>
+          <val>2</val>
+        </skilllevel>
+        <addskillspecialization>
+          <skill>Etiquette</skill>
+          <spec>Business</spec>
+        </addskillspecialization>
+        <skilllevel>
+          <name>Negotiation</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+          <val>2</val>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>SFMO</source>
+      <page>29</page>
+    </module>
+    <module>
+      <id>bb1f877c-6826-41ad-a4cc-b4bad9b4eb28</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>RMAF Short-Timer/Auxiliary Forces Member</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Will to Live</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Automatics</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Blades</name>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
+          <val>2</val>
+        </skilllevel>
+        <selectskill limittoskill="Pilot Ground Craft,Pilot Watercraft">
+          <val>2</val>
+        </selectskill>
+        <skilllevel>
+          <name>Pistols</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>SFMO</source>
+      <page>29</page>
+    </module>
+    <module>
+      <id>6a32e5d6-23cd-41fc-9225-5919e42fe979</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Former Royal Gendarmerie or National Police Force</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <freenegativequalities>-7</freenegativequalities>
+        <addqualities>
+          <addquality>Bad Rep</addquality>
+          <addquality>Common Sense</addquality>
+          <addquality select="Street Politics">Home Ground</addquality>
+          <addquality>Perceptive</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Clubs</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Intimidation</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Pistols</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Criminal Investigation</name>
+          <group>Professional</group>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>SFMO</source>
+      <page>29</page>
+    </module>
+    <module>
+      <id>b70926e9-2150-461e-9c3f-6340e7bd8236</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>RMAF Veteran</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Tough as Nails (Physical)</addquality>
+          <addquality>Restricted Gear</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Automatics</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Blades</name>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Heavy Weapons</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pistols</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <selectskill limittoskill="Pilot Ground Craft,Pilot Watercraft">
+          <val>1</val>
+        </selectskill>
+        <skilllevel>
+          <name>Throwing Weapons</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>SFMO</source>
+      <page>30</page>
+    </module>
+    <!-- End Region -->
     <!-- Region Shadows in Focus: Casablanca-Rabat -->
     <module>
       <id>8aa2a54f-3afd-4fe3-b30a-7a525b1c52d0</id>
