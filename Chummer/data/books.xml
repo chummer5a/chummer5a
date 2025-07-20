@@ -743,7 +743,19 @@
       <matches>
         <match>
           <language>de-de</language>
-          <text>Servas. Willkommen im Schattennetzwerk der </text>
+          <text>Servas. Willkommen im Schattennetzwerk der</text>
+          <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>0f4619da-b7d9-4b62-81b6-20734267623c</id>
+      <name>Der Almanach – Gratisrollenspieltag 2019 (German-Only)</name>
+      <code>GRST2019</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Am 23. März 2019 findet bereits zum siebten Mal der Gratisrollen</text>
           <page>4</page>
         </match>
       </matches>

@@ -18993,6 +18993,16 @@
       <avail>1</avail>
       <cost>250</cost>
     </gear>
+    <gear>
+      <id>85283941-f6e6-4a3c-ac7f-782ce58d3680</id>
+      <name>Critter Medkit</name>
+      <category>Critter Gear</category>
+      <rating>6</rating>
+      <source>GRST2019</source>
+      <page>96</page>
+      <avail>Rating+2</avail>
+      <cost>Rating * 250</cost>
+    </gear>
     <!-- End Region -->
     <!-- Region Tir Tairngire Beverages -->
     <gear>
