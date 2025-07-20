@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -27475,8 +27475,8 @@
             <skill rating="6" spec="Sight">Perception</skill>
             <skill rating="8">Unarmed Combat</skill>
          </skills>
-         <source>SHB3</source>
-         <page>170</page>
+         <source>DATG</source>
+         <page>42</page>
       </metatype>
       <metatype>
          <id>75aa9c20-8c7f-4a99-8b69-06c0056f5ffe</id>
@@ -27553,8 +27553,8 @@
             <skill rating="5">Sneaking</skill>
             <skill rating="5">Unarmed Combat</skill>
          </skills>
-         <source>SHB3</source>
-         <page>207</page>
+         <source>SOXG</source>
+         <page>37</page>
       </metatype>
       <metatype>
          <id>7086b5a8-c5f4-4cb5-9b01-6854790aa02a</id>
@@ -27637,8 +27637,8 @@
             <skill rating="2">Perception</skill>
             <skill rating="2">Sneaking</skill>
          </skills>
-         <source>SHB3</source>
-         <page>208</page>
+         <source>SOXG</source>
+         <page>38</page>
       </metatype>
       <metatype>
          <id>259c1bbb-e7b3-4bea-a07a-e60c4a09ca03</id>
@@ -27714,8 +27714,8 @@
             <skill rating="3">Perception</skill>
             <skill rating="4">Unarmed Combat</skill>
          </skills>
-         <source>SHB3</source>
-         <page>209</page>
+         <source>SOXG</source>
+         <page>38</page>
       </metatype>
       <metatype>
          <id>8e1bd9aa-a042-405a-af6b-8aa1fcf42b62</id>
@@ -27787,8 +27787,8 @@
             <skill rating="2">Sneaking</skill>
             <skill rating="6">Unarmed Combat</skill>
          </skills>
-         <source>SHB3</source>
-         <page>207</page>
+         <source>SOXG</source>
+         <page>37</page>
       </metatype>
       <!-- End Region Schattenhandbuch -->
       <!-- Region Hard Targets -->

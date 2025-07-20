@@ -3305,6 +3305,12 @@
         <translate>Sprawl Wilds</translate>
         <altcode>SW</altcode>
       </book>
+      <book>
+        <id>bd1e6ed4-5ae2-4745-8444-ba89630fd940</id>
+        <name>Datapuls Österreich (German-Only)</name>
+        <translate>Datapuls Österreich</translate>
+        <altcode>DATG</altcode>
+      </book>
     </books>
   </chummer>
   <chummer file="critterpowers.xml">
@@ -39592,7 +39598,7 @@
       </tradition>
       <tradition>
         <id>c0405095-5304-4fbd-b955-203a11f88b73</id>
-        <name>Dr.-Singer-School</name>
+        <name>Dr. Singer School</name>
         <translate>Dr.-Singer-Schule</translate>
         <altpage>169</altpage>
       </tradition>

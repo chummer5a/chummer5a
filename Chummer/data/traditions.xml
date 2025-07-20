@@ -1045,13 +1045,13 @@
       </spirits>
     </tradition>
     <!-- End Region -->
-    <!-- Region Schattenhandbuch 3 -->
+    <!-- Region Datapuls Oesterreich -->
     <tradition>
       <id>c0405095-5304-4fbd-b955-203a11f88b73</id>
-      <name>Dr.-Singer-School</name>
+      <name>Dr. Singer School</name>
       <drain>{WIL} + {CHA}</drain>
-      <source>SHB3</source>
-      <page>169</page>
+      <source>DATG</source>
+      <page>40</page>
       <spirits>
         <spiritcombat>Spirit of Beasts</spiritcombat>
         <spiritdetection>Task Spirit</spiritdetection>
@@ -1064,8 +1064,8 @@
       <id>53a919e6-739d-4418-aaff-79e9df17e3b6</id>
       <name>Storm Children</name>
       <drain>{WIL} + {INT}</drain>
-      <source>SHB3</source>
-      <page>169</page>
+      <source>DATG</source>
+      <page>41</page>
       <spirits>
         <spiritcombat>Spirit of Fire</spiritcombat>
         <spiritdetection>Spirit of Beasts</spiritdetection>

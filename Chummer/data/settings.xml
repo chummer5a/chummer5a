@@ -3295,6 +3295,7 @@
         <book>DT</book>
         <book>SOTG</book>
         <book>SOXG</book>
+        <book>DATG</book>
         <book>PBG</book>
         <book>PGG</book>
         <book>PZG</book>
@@ -3526,6 +3527,7 @@
         <book>DT</book>
         <book>SOTG</book>
         <book>SOXG</book>
+        <book>DATG</book>
         <book>PBG</book>
         <book>PGG</book>
         <book>PZG</book>
@@ -3757,6 +3759,7 @@
         <book>DT</book>
         <book>SOTG</book>
         <book>SOXG</book>
+        <book>DATG</book>
         <book>PBG</book>
         <book>PGG</book>
         <book>PZG</book>
@@ -3988,6 +3991,7 @@
         <book>DT</book>
         <book>SOTG</book>
         <book>SOXG</book>
+        <book>DATG</book>
         <book>PBG</book>
         <book>PGG</book>
         <book>PZG</book>

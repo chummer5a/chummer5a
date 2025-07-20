@@ -736,5 +736,17 @@
         </match>
       </matches>
     </book>
+    <book>
+      <id>bd1e6ed4-5ae2-4745-8444-ba89630fd940</id>
+      <name>Datapuls Österreich (German-Only)</name>
+      <code>DATG</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Servas. Willkommen im Schattennetzwerk der </text>
+          <page>4</page>
+        </match>
+      </matches>
+    </book>
   </books>
 </chummer>
