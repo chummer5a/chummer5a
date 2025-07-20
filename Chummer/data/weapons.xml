@@ -14843,12 +14843,12 @@
     <!-- Region Datapuls Sota 2080 -->
     <weapon>
       <id>e1670cec-28ff-4281-94f4-2bda59556f27</id>
-      <name>Abräumer</name>
+      <name>Rheinmetall Cleaner (Telescoping Halberd)</name>
       <category>Blades</category>
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>5</accuracy>
-      <reach>0</reach>
+      <reach>2</reach>
       <damage>({STR}+3)P</damage>
       <ap>-2</ap>
       <mode>0</mode>
@@ -14881,7 +14881,7 @@
     </weapon>
     <weapon>
       <id>c97d8ffb-1c2d-484f-8c8b-a1428d630d9d</id>
-      <name>Folding Spade</name>
+      <name>Entrenching Tool of the German Army</name>
       <category>Blades</category>
       <type>Melee</type>
       <conceal>0</conceal>
@@ -14911,7 +14911,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>7F</avail>
+      <avail>7R</avail>
       <cost>2500</cost>
       <source>SOTG</source>
       <page>7</page>
@@ -14930,11 +14930,52 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>10F</avail>
+      <avail>10R</avail>
       <cost>8600</cost>
       <source>SOTG</source>
       <page>7</page>
       <spec>Swords</spec>
+    </weapon>
+    <weapon>
+      <id>5dd5980a-7d74-4a3d-9bdf-67387d778fdd</id>
+      <name>Rheinmetall Wrecking Ball</name>
+      <category>Clubs</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>5</accuracy>
+      <reach>1</reach>
+      <damage>({STR}+4)P</damage>
+      <ap>-2</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>8R</avail>
+      <cost>1000</cost>
+      <source>SOTG</source>
+      <page>7</page>
+      <spec>Hammers</spec>
+      <underbarrels>
+        <underbarrel>Rheinmetall Wrecking Ball (Morningstar Mode)</underbarrel>
+      </underbarrels>
+    </weapon>
+    <weapon>
+      <id>346288c5-b87f-4356-ad73-d2e4a2085141</id>
+      <name>Rheinmetall Wrecking Ball (Morningstar Mode)</name>
+      <category>Exotic Melee Weapons</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>4</accuracy>
+      <reach>2</reach>
+      <damage>({STR}+3)P</damage>
+      <ap>-2</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SOTG</source>
+      <page>7</page>
+      <hide/>
     </weapon>
     <weapon>
       <id>f41e735d-44f3-4eae-8538-71d8ae14b3e1</id>
@@ -14942,7 +14983,8 @@
       <category>Heavy Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
-      <accuracy>6</accuracy>
+      <!-- Accuracy is 6 in the book, but must be 5 here because of Personalized Grip's +1 modifier -->
+      <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
       <ap>-1</ap>
@@ -14971,12 +15013,34 @@
           <rating>6</rating>
         </accessory>
       </accessories>
+      <allowaccessory>False</allowaccessory>
     </weapon>
     <weapon>
       <id>08a0ab4f-e5db-4306-875b-df552d0811f7</id>
-      <name>Kanonenschlag</name>
+      <name>Cannon Shot</name>
       <category>Holdouts</category>
       <type>Ranged</type>
+      <conceal>-4</conceal>
+      <accuracy>2</accuracy>
+      <reach>0</reach>
+      <damage>9P</damage>
+      <ap>-3</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>1(b)</ammo>
+      <avail>6F</avail>
+      <cost>100</cost>
+      <source>SOTG</source>
+      <page>9</page>
+      <underbarrels>
+        <underbarrel>Kanonenschlag (Melee)</underbarrel>
+      </underbarrels>
+    </weapon>
+    <weapon>
+      <id>c0a71059-4f89-45e2-bda8-ef3c77a3ad91</id>
+      <name>Cannon Shot (Melee)</name>
+      <category>Unarmed</category>
+      <type>Melee</type>
       <conceal>-4</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
@@ -14989,10 +15053,11 @@
       <cost>100</cost>
       <source>SOTG</source>
       <page>9</page>
+      <hide/>
     </weapon>
     <weapon>
       <id>330c3fdf-f64f-482c-9dd9-85d8a8f05f61</id>
-      <name>Donnerbüchse</name>
+      <name>Blunderbuss</name>
       <category>Shotguns</category>
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -15011,7 +15076,7 @@
     <weapon>
       <id>3d07b871-2d0f-49ad-8c4f-7cb98487ffe4</id>
       <name>Blaser R11 Conqueror</name>
-      <category>Sniper Rifles</category>
+      <category>Sporting Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>7</accuracy>
@@ -15019,7 +15084,8 @@
       <damage>12P</damage>
       <ap>-3</ap>
       <mode>SA</mode>
-      <rc>1</rc>
+      <!-- RC is 1 in the book, but must be 0 here because of Shock Pad's +1 modifier -->
+      <rc>0</rc>
       <ammo>5(c)</ammo>
       <avail>9R</avail>
       <cost>8500</cost>
@@ -15049,8 +15115,8 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
-      <range>Sniper Rifles</range>
-      <spec>Sniper Rifles</spec>
+      <range>Sporting Rifles</range>
+      <spec>Sporting Rifles</spec>
       <useskill>Longarms</useskill>
     </weapon>
     <weapon>
@@ -15081,7 +15147,8 @@
       <category>Heavy Machine Guns</category>
       <type>Ranged</type>
       <conceal>10</conceal>
-      <accuracy>6</accuracy>
+      <!-- Accuracy is 6 in the book, but must be 5 here because of Trigger Removal's +1 modifier -->
+      <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>14P</damage>
       <ap>-10</ap>
@@ -15108,13 +15175,15 @@
         <mount>Under</mount>
       </accessorymounts>
       <underbarrels>
-        <underbarrel>Underbarrel Weapon</underbarrel>
+        <underbarrel>Ruhrmetall SFW-30 Tracker Weapon</underbarrel>
       </underbarrels>
       <spec>Machine Guns</spec>
+      <weight>80</weight>
+      <weapontype>sfw-30 main weapon</weapontype>
     </weapon>
     <weapon>
       <id>59b08aa4-e71a-4f94-ad79-faa0668b0c81</id>
-      <name>Underbarrel Weapon</name>
+      <name>Ruhrmetall SFW-30 Tracker Weapon</name>
       <category>Heavy Machine Guns</category>
       <type>Ranged</type>
       <conceal>10</conceal>
@@ -15132,6 +15201,7 @@
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Machine Guns</spec>
+      <weapontype>sfw-30 underbarrel weapon</weapontype>
     </weapon>
     <weapon>
       <id>4629315e-9d09-4d04-92ac-3bad46675522</id>
@@ -15151,6 +15221,11 @@
       <cost>150</cost>
       <source>SOTG</source>
       <page>13</page>
+      <accessories>
+        <accessory>
+          <name>Slide Mount</name>
+        </accessory>
+      </accessories>
       <mount>Under</mount>
       <useskill>Archery</useskill>
       <required>
@@ -16513,6 +16588,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -16639,6 +16715,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
             <type>Melee</type>
           </OR>
         </weapondetails>
@@ -16710,6 +16787,7 @@
            <name>HK Urban Fighter</name>
            <name>HK Urban Enforcer</name>
            <name>HK Urban Striker</name>
+           <name>HK Urban Assassin</name>
            <name>Hammerli Gemini</name>
           </OR>
         </weapondetails>
@@ -16866,6 +16944,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -16960,6 +17039,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -16992,6 +17072,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17024,6 +17105,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17056,6 +17138,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17125,6 +17208,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17238,6 +17322,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17395,6 +17480,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17419,6 +17505,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17443,6 +17530,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17472,6 +17560,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17491,6 +17580,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17606,6 +17696,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17628,6 +17719,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17682,6 +17774,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17757,6 +17850,7 @@
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
             <name>HK Urban Striker</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17815,6 +17909,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17908,6 +18003,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -18057,6 +18153,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -18086,6 +18183,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -18207,6 +18305,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
             <type>Melee</type>
           </OR>
         </weapondetails>
@@ -18255,6 +18354,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -18308,6 +18408,7 @@
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
             <name>HK Urban Striker</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -18443,6 +18544,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -18488,6 +18590,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
             <type>Melee</type>
           </OR>
         </weapondetails>
@@ -18514,6 +18617,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
             <type>Melee</type>
           </OR>
         </weapondetails>
@@ -18963,6 +19067,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -18994,6 +19099,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -19043,6 +19149,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -19069,6 +19176,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -19095,6 +19203,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -19121,6 +19230,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -19147,6 +19257,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -19173,6 +19284,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -19199,6 +19311,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -19221,6 +19334,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -19240,6 +19354,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -19291,7 +19406,13 @@
           <accessory>Vintage</accessory>
         </oneof>
         <weapondetails>
-          <type>Melee</type>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
+            <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
+            <type>Melee</type>
+          </OR>
         </weapondetails>
       </forbidden>
       <gears>
@@ -19318,6 +19439,16 @@
       <rc>6</rc>
       <rcdeployable>True</rcdeployable>
       <rcgroup>1</rcgroup>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
+            <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>9b09fc1e-cb5b-473f-83a5-6f23a7524012</id>
@@ -19334,6 +19465,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -19347,6 +19479,16 @@
       <source>KK</source>
       <page>23</page>
       <rating>0</rating>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Enforcer</name>
+            <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
       <rc>2</rc>
     </accessory>
     <accessory>
@@ -19364,6 +19506,7 @@
             <name>HK Urban Combat</name>
             <name>HK Urban Enforcer</name>
             <name>HK Urban Fighter</name>
+            <name>HK Urban Assassin</name>
           </OR>
         </weapondetails>
       </forbidden>

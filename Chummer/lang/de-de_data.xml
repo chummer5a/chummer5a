@@ -23902,7 +23902,7 @@
       <mentor>
         <id>5593f724-7b72-4927-a8c8-2c73844cc1b1</id>
         <name>Architect</name>
-        <translate>Architekt (SOTA 2080)</translate>
+        <translate>Architekt</translate>
         <altadvantage>Allgemein: +2 Würfel für Proben auf Führung</altadvantage>
         <altdisadvantage>Ein Anhänger dieses Schutzgeistes behält gerne die Initiative. Immer dann, wenn die Umstände eines Runs ihn in die Defensive drängen, muss ihm eine Probe auf Willenskraft + Intuition (3) gelingen. Misslingt die Probe, erhält der Anhänger von Architekt einen Würfelpoolmalus von -2 auf seine Proben, bis er das Heft wieder in der Hand hält.</altdisadvantage>
         <altpage>29</altpage>
@@ -24093,7 +24093,7 @@
       </mentor>
       <mentor>
         <id>f2cc5e2b-6538-4271-9f7f-5434076f9a6b</id>
-        <name>Brother at Arms</name>
+        <name>Brother in Arms</name>
         <translate>Waffenbruder</translate>
         <altadvantage>Allgemein: +1 Würfel für Proben auf Gebräuche und Unterricht</altadvantage>
         <altdisadvantage>Anhänger von Waffenbruder erwählen in jedem Run drei Personen mit direkter Plot-Relevanz – das können Spielercharaktere sein, aber auch wichtige NSC – als diejenigen Leute, denen während der Mission ihre Loyalität gilt. Ihnen muss eine Probe auf Willenskraft + Intuition (3) gelingen, bevor sie diesen Personenkreis übervorteilen, anlügen oder gar im Stich lassen können. Selbst wenn sie sich dazu überwinden können, erleiden sie einen Würfelpoolmalus von -2 auf alle Proben, bis sie ihre Verfehlung wieder ausgebügelt haben.</altdisadvantage>
@@ -42206,14 +42206,14 @@
       </vehicle>
       <vehicle translated="True">
         <id>1b47defa-56d5-4827-b57b-2b4d7b1051a0</id>
-        <name>BMW GGX Sandleopard</name>
-        <translate>BMW GGX Sandleopard</translate>
+        <name>BMW GGX "Sand Leopard"</name>
+        <translate>BMW GGX "Sandleopard"</translate>
         <altpage>15</altpage>
       </vehicle>
       <vehicle translated="True">
         <id>e5fc5640-a49c-4b01-98b0-6456b867fb4c</id>
-        <name>Jena Robotik Mewero (Minidrone)</name>
-        <translate>Jena Robotik Mewero (Minidrohne)</translate>
+        <name>Jena Robotik MeWeRo</name>
+        <translate>Jena Robotik MeWeRo</translate>
         <altpage>15</altpage>
       </vehicle>
       <vehicle translated="True">
@@ -42242,32 +42242,32 @@
       </vehicle>
       <vehicle>
         <id>be13725c-d5cd-4855-96f6-a07de090b58d</id>
-        <name>Eurocar Escape FüKomKW</name>
+        <name>Eurocar Escape Command and Control Vehicle</name>
         <translate>Eurocar Escape FüKomKW</translate>
         <altpage>16</altpage>
       </vehicle>
       <vehicle>
         <id>3385c5ce-0224-41be-bede-ef908f0af007</id>
-        <name>Eurocar Escape MzKW D</name>
+        <name>Eurocar Escape Multipurpose Vehicle Type D</name>
         <translate>Eurocar Escape MzKW D</translate>
         <altpage>16</altpage>
       </vehicle>
       <vehicle>
         <id>1af96573-ee09-4bc9-8598-75f62bccfebc</id>
-        <name>Eurocar Escape DeKW</name>
+        <name>Eurocar Escape Decontamination Vehicle</name>
         <translate>Eurocar Escape DeKW</translate>
         <altpage>16</altpage>
       </vehicle>
       <vehicle>
         <id>7d708ed4-02ce-4047-91bb-6bce6bee03aa</id>
-        <name>THW MzKW C</name>
-        <translate>THW MzKW C</translate>
+        <name>BMX X Infinity Utility Vehicle, Multipurpose Vehicle Type C</name>
+        <translate>BMX X Infinity THW MzKW C</translate>
         <altpage>16</altpage>
       </vehicle>
       <vehicle>
         <id>143ec17c-1b87-4cb8-aea7-0a8af46f0f76</id>
-        <name>ZET Commando</name>
-        <translate>ZET Commando</translate>
+        <name>BMX X Infinity Zone Decontamination Team Commando</name>
+        <translate>BMX X Infinity ZET Commando</translate>
         <altpage>16</altpage>
       </vehicle>
       <vehicle>
@@ -47047,20 +47047,20 @@
       </weapon>
       <weapon translated="True">
         <id>e1670cec-28ff-4281-94f4-2bda59556f27</id>
-        <name>Abräumer</name>
-        <translate>Abräumer (Teleskop-Hellebarde)</translate>
+        <name>Rheinmetall Cleaner (Telescoping Halberd)</name>
+        <translate>Rheinmetall Abräumer (Teleskop-Hellebarde)</translate>
         <altpage>8</altpage>
       </weapon>
       <weapon translated="True">
         <id>2f49233d-f747-476a-98cb-996def3714ed</id>
         <name>Katzbalger</name>
-        <translate>Katzbalger (Landsknechtschwert)</translate>
+        <translate>Katzbalger</translate>
         <altpage>7</altpage>
       </weapon>
       <weapon translated="True">
         <id>c97d8ffb-1c2d-484f-8c8b-a1428d630d9d</id>
-        <name>Folding Spade</name>
-        <translate>Klappspaten</translate>
+        <name>Entrenching Tool of the German Army</name>
+        <translate>Klappspaten der Bundeswehr</translate>
         <altpage>8</altpage>
       </weapon>
       <weapon translated="True">
@@ -47076,14 +47076,32 @@
         <altpage>7</altpage>
       </weapon>
       <weapon translated="True">
+        <id>5dd5980a-7d74-4a3d-9bdf-67387d778fdd</id>
+        <name>Rheinmetall Wrecking Ball</name>
+        <translate>Rheinmetall Abrissbirne</translate>
+        <altpage>7</altpage>
+      </weapon>
+      <weapon translated="True">
+        <id>346288c5-b87f-4356-ad73-d2e4a2085141</id>
+        <name>Rheinmetall Wrecking Ball (Morningstar Mode)</name>
+        <translate>Rheinmetall Abrissbirne (Morgenstern-Modus)</translate>
+        <altpage>7</altpage>
+      </weapon>
+      <weapon translated="True">
         <id>08a0ab4f-e5db-4306-875b-df552d0811f7</id>
-        <name>Kanonenschlag</name>
+        <name>Cannon Shot</name>
         <translate>Kanonenschlag</translate>
         <altpage>9</altpage>
       </weapon>
       <weapon translated="True">
+        <id>c0a71059-4f89-45e2-bda8-ef3c77a3ad91</id>
+        <name>Cannon Shot (Melee)</name>
+        <translate>Kanonenschlag (Nahkampf)</translate>
+        <altpage>9</altpage>
+      </weapon>
+      <weapon translated="True">
         <id>330c3fdf-f64f-482c-9dd9-85d8a8f05f61</id>
-        <name>Donnerbüchse</name>
+        <name>Blunderbuss</name>
         <translate>Donnerbüchse</translate>
         <altpage>10</altpage>
       </weapon>

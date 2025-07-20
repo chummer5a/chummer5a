@@ -1597,7 +1597,7 @@
       <source>SOTG</source>
       <page>13</page>
       <avail>0</avail>
-      <cost>100</cost>
+      <cost>520</cost>
       <costfor>10</costfor>
       <weaponbonus>
         <damagereplace>As Narcoject</damagereplace>
@@ -1619,6 +1619,30 @@
         <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype noextra="True">slingshot</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>89b2c8c2-e13a-4c76-a62a-09adcda15924</id>
+      <name>Ammo: Ruhrmetall SFW-30 Smart Ammunition</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SOTG</source>
+      <page>14</page>
+      <avail>24F</avail>
+      <cost>600</cost>
+      <costfor>10</costfor>
+      <ammoforweapontype noextra="True">sfw-30 main weapon</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>5de06b98-6c28-4d0c-addb-885438011a81</id>
+      <name>Ammo: Ruhrmetall SFW-30 Tracker Ammunition</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SOTG</source>
+      <page>14</page>
+      <avail>12F</avail>
+      <cost>410</cost>
+      <costfor>10</costfor>
+      <ammoforweapontype noextra="True">sfw-30 underbarrel weapon</ammoforweapontype>
     </gear>
     <!-- Region Street Lethal -->
     <gear>

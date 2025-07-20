@@ -10217,7 +10217,7 @@
     <!-- Region SOTA 2080 -->
     <vehicle>
       <id>1b47defa-56d5-4827-b57b-2b4d7b1051a0</id>
-      <name>BMW GGX Sandleopard</name>
+      <name>BMW GGX "Sand Leopard"</name>
       <page>15</page>
       <source>SOTG</source>
       <accel>2</accel>
@@ -10246,7 +10246,7 @@
     </vehicle>
     <vehicle>
       <id>e5fc5640-a49c-4b01-98b0-6456b867fb4c</id>
-      <name>Jena Robotik Mewero (Minidrone)</name>
+      <name>Jena Robotik MeWeRo</name>
       <page>23</page>
       <source>SOTG</source>
       <accel>1</accel>
@@ -10268,7 +10268,10 @@
       </gears>
       <mods>
         <name>Rigger Interface</name>
+        <name>Gecko Grips (Drone)</name>
+        <name select="RFID Tag Switcher">Special Equipment</name>
       </mods>
+      <modslots>0</modslots>
     </vehicle>
     <vehicle>
       <id>8e710ab0-637a-43a1-93a2-66120e7dbea5</id>
@@ -10325,8 +10328,136 @@
       </mods>
     </vehicle>
     <vehicle>
+      <id>f6dd8b88-ff77-48b2-b907-9a7a75377110</id>
+      <name>Shiawase Kurina 162</name>
+      <page>20</page>
+      <source>SOTG</source>
+      <accel>1</accel>
+      <armor>8</armor>
+      <avail>8</avail>
+      <body>5</body>
+      <category>Drones: Medium</category>
+      <cost>8500</cost>
+      <handling>3</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>2</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>4</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Rigger Interface</name>
+        <name>Primitive Drone Arm</name>
+      </mods>
+      <modslots>3</modslots>
+    </vehicle>
+    <vehicle>
+      <id>41f752a5-d3b3-4a90-babc-b7d304db2577</id>
+      <name>Caterpillar Demolitionman</name>
+      <page>21</page>
+      <source>SOTG</source>
+      <accel>1</accel>
+      <armor>12</armor>
+      <avail>8</avail>
+      <body>8</body>
+      <category>Drones: Large</category>
+      <cost>24000</cost>
+      <handling>3</handling>
+      <pilot>3</pilot>
+      <sensor>2</sensor>
+      <speed>2</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>5</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Rigger Interface</name>
+        <name>Primitive Drone Arm</name>
+        <name>Multifuel Engine</name>
+        <name select="Dozer Blade">Special Equipment</name>
+        <name>Off-Road Suspension</name>
+      </mods>
+      <modslots>0</modslots>
+    </vehicle>
+    <vehicle>
+      <id>a38bff97-67ce-4346-abd3-256565b3504b</id>
+      <name>AGC Resilient</name>
+      <page>22</page>
+      <source>SOTG</source>
+      <accel>2</accel>
+      <armor>8</armor>
+      <avail>14R</avail>
+      <body>5</body>
+      <category>Drones: Anthro</category>
+      <cost>129000</cost>
+      <handling>4</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>2</speed>
+      <gears>
+        <gear select="Automotive Mechanic" rating="3">Skill Autosoft</gear>
+        <gear select="Industrial Mechanic" rating="3">Skill Autosoft</gear>
+        <gear select="Survival" rating="3">Skill Autosoft</gear>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+        <name>Rigger Interface</name>
+        <name>Extreme Environment Modification</name>
+        <name select="Welding Torch">Special Equipment</name>
+        <name select="Tool Arm">Special Equipment</name>
+        <name select="Chemical Detector">Special Equipment</name>
+        <name>Touch Sensors</name>
+      </mods>
+      <modslots>0</modslots>
+    </vehicle>
+    <vehicle>
+      <id>664bbde6-a2a6-4d85-a991-612773f7932e</id>
+      <name>Renraku Lotse</name>
+      <page>24</page>
+      <source>SOTG</source>
+      <accel>1</accel>
+      <armor>8</armor>
+      <avail>10</avail>
+      <body>8</body>
+      <category>Drones: Large</category>
+      <cost>30000</cost>
+      <handling>1</handling>
+      <pilot>2</pilot>
+      <sensor>3</sensor>
+      <speed>1</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>5</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Rigger Interface</name>
+        <name>Extreme Environment Modification</name>
+        <name select="Anchor Mechanism">Special Equipment</name>
+        <name select="Escape Capsule">Special Equipment</name>
+      </mods>
+      <modslots>0</modslots>
+    </vehicle>
+    <vehicle>
       <id>be13725c-d5cd-4855-96f6-a07de090b58d</id>
-      <name>Eurocar Escape FüKomKW</name>
+      <name>Eurocar Escape Command and Control Vehicle</name>
       <source>SOTG</source>
       <page>16</page>
       <accel>3</accel>
@@ -10364,7 +10495,7 @@
     </vehicle>
     <vehicle>
       <id>3385c5ce-0224-41be-bede-ef908f0af007</id>
-      <name>Eurocar Escape MzKW D</name>
+      <name>Eurocar Escape Multipurpose Vehicle Type D</name>
       <source>SOTG</source>
       <page>16</page>
       <accel>3</accel>
@@ -10419,7 +10550,7 @@
     </vehicle>
     <vehicle>
       <id>1af96573-ee09-4bc9-8598-75f62bccfebc</id>
-      <name>Eurocar Escape DeKW</name>
+      <name>Eurocar Escape Decontamination Vehicle</name>
       <source>SOTG</source>
       <page>16</page>
       <accel>2</accel>
@@ -10473,7 +10604,7 @@
     </vehicle>
     <vehicle>
       <id>7d708ed4-02ce-4047-91bb-6bce6bee03aa</id>
-      <name>THW MzKW C</name>
+      <name>BMX X Infinity Multipurpose Utility Vehicle Type C</name>
       <source>SOTG</source>
       <page>16</page>
       <accel>2</accel>
@@ -10516,7 +10647,7 @@
     </vehicle>
     <vehicle>
       <id>143ec17c-1b87-4cb8-aea7-0a8af46f0f76</id>
-      <name>ZET Commando</name>
+      <name>BMX X Infinity Zone Decontamination Team Commando</name>
       <source>SOTG</source>
       <page>16</page>
       <accel>3</accel>
