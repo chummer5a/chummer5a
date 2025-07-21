@@ -146,8 +146,7 @@ Data Changes:
 - Registered sprite limits are now equal to a character's Charisma in all English pre-made settings to match the entry in the fifth printing of the CRB. German settings are unaffected because it is still Logic-based in the German CRB.
 - Fixed some faulty text matches for German books that fetched strings that would span multiple lines, thus sometimes causing the books to not be detected.
 - Corrected multiple incorrect or faulty entries in State of the Art ADL content, including some weapons, some vehicles, the Svetoid tradition, the Squirrel mentor spirit, the Cyberdynamix Special HardCore and MCT Dusseldorf commlinks, and the Rheingold Pro Tec Plus Coat and Franzinger Fashion Tenor Coat armors. Existing characters that use these items will usually need to remove and re-add them to see any changes.
-- Corrected mistranslations and bad weapon and vehicle entries for Datapuls Hamburg content. Existing characters that use these items will usually need to remove and re-add them to see any changes.
-- Corrected mistranslations, bad weapon entries, and missing content from Datapuls SOTA 2080. Existing characters that use these items will usually need to remove and re-add them to see any changes.
+- Corrected mistranslations, bad weapon entries, bad vehicle entries, and missing content for Datapuls Hamburg, Datapuls SOTA 2080, Schattenhandbuch 1, Schattenhandbuch 2, and Schattenhandbuch 3 content. Existing characters that use these items will usually need to remove and re-add them to see any changes.
 - Added missing content from Datapuls SOX, Der Almanach - Gratisrollenspieltag 2019, and the German versions of Parabotany, Parageology, and Parazoology (all of which are for SR5e).
 - Added missing content from Shadows in Focus: Morocco and Shadows in Focus: Casablanca-Rabat.
 - Corrected cases where content from Datapuls SOX and Datapuls Österreich were sourced to the collection of Schattenhandbuch 3 instead of their specific books.

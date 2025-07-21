@@ -996,9 +996,33 @@
       <seats>2</seats>
     </vehicle>
     <vehicle>
+      <id>a9ca1788-7190-4023-abbf-852448aac8ab</id>
+      <name>BMW M8</name>
+      <page>179</page>
+      <source>SHB</source>
+      <accel>2</accel>
+      <armor>11</armor>
+      <avail>10</avail>
+      <body>12</body>
+      <category>Cars</category>
+      <cost>76000</cost>
+      <handling>4/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>5</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>4</seats>
+    </vehicle>
+    <vehicle>
       <id>8b7dd760-4528-413f-a577-a51fe8a705c9</id>
       <name>Mercury Comet Cruiser</name>
-      <page>42</page>
+      <page>180</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>11</armor>
@@ -1020,9 +1044,37 @@
       <seats>5</seats>
     </vehicle>
     <vehicle>
+      <id>96222e70-90f8-47db-9bf8-50c0f2618f94</id>
+      <name>Mercury Comet Cruiser-S</name>
+      <page>180</page>
+      <source>SHB</source>
+      <accel>2</accel>
+      <armor>11</armor>
+      <avail>0</avail>
+      <body>14</body>
+      <category>Cars</category>
+      <cost>21900</cost>
+      <handling>4/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name select="Skylight">Special Equipment</name>
+        <name select="Integrated Video Displays">Special Equipment</name>
+      </mods>
+      <seats>5</seats>
+    </vehicle>
+    <vehicle>
       <id>2f46305b-6196-43d1-b748-2266c5f1dc08</id>
       <name>Chrysler-Nissan Bobcat</name>
-      <page>42</page>
+      <page>181</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>10</armor>
@@ -1041,12 +1093,45 @@
           <maxrating>7</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name>Standard Drone Rack (Small)</name>
+        <name>Standard Drone Rack (Micro)</name>
+      </mods>
       <seats>8</seats>
+    </vehicle>
+    <vehicle>
+      <id>9260f852-105c-4190-b862-516c8c82d209</id>
+      <name>Chrysler-Nissan Bobcat T</name>
+      <page>181</page>
+      <source>SHB</source>
+      <accel>2</accel>
+      <armor>10</armor>
+      <avail>0</avail>
+      <body>15</body>
+      <category>Cars</category>
+      <cost>26000</cost>
+      <handling>3/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Standard Drone Rack (Small)</name>
+        <name>Standard Drone Rack (Micro)</name>
+        <name rating="6">Metahuman Adjustment</name>
+      </mods>
+      <seats>6</seats>
     </vehicle>
     <vehicle>
       <id>15e937d5-a1be-401e-a15c-0ff6e73a25d9</id>
       <name>Dodge Hurricane</name>
-      <page>42</page>
+      <page>182</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>12</armor>
@@ -1069,8 +1154,8 @@
     </vehicle>
     <vehicle>
       <id>026beaac-5e92-4210-943a-97f5455d98ec</id>
-      <name>Dodge Hurricane Crew Modell</name>
-      <page>42</page>
+      <name>Dodge Hurricane Crew</name>
+      <page>182</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>12</armor>
@@ -1093,8 +1178,8 @@
     </vehicle>
     <vehicle>
       <id>4d38b501-1b40-4eb2-a4be-4ec0fb099cdf</id>
-      <name>Dodge Hurricane Security Modell</name>
-      <page>42</page>
+      <name>Dodge Hurricane Security</name>
+      <page>182</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>14</armor>
@@ -1118,7 +1203,7 @@
     <vehicle>
       <id>baf9cd37-06b2-45d7-b355-7da492a82220</id>
       <name>Mercedes-Benz Tornado</name>
-      <page>42</page>
+      <page>182</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>12</armor>
@@ -1141,8 +1226,8 @@
     </vehicle>
     <vehicle>
       <id>3748c902-c5f0-4173-bc4e-d5fab28418bc</id>
-      <name>Mercedes-Benz Tornado Crew Modell</name>
-      <page>42</page>
+      <name>Mercedes-Benz Tornado Crew</name>
+      <page>182</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>12</armor>
@@ -1165,8 +1250,8 @@
     </vehicle>
     <vehicle>
       <id>d823558b-3d98-47eb-924a-3f3db1565eb1</id>
-      <name>Mercedes-Benz Tornado Security Modell</name>
-      <page>42</page>
+      <name>Mercedes-Benz Tornado Security</name>
+      <page>182</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>14</armor>
@@ -1190,7 +1275,7 @@
     <vehicle>
       <id>5159292e-897c-40aa-84ad-a1b374d95370</id>
       <name>BMW X Infinity</name>
-      <page>42</page>
+      <page>183</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>13</armor>
@@ -1205,7 +1290,7 @@
       <gears>
         <gear>
           <name>Sensor Array</name>
-          <rating>2</rating>
+          <rating>4</rating>
           <maxrating>7</maxrating>
         </gear>
       </gears>
@@ -1213,14 +1298,14 @@
     </vehicle>
     <vehicle>
       <id>c90e2ec7-f351-4bb5-a145-bf33c9062ff9</id>
-      <name>Volkswagen MultyCity</name>
-      <page>42</page>
+      <name>Volkswagen MultiCity</name>
+      <page>184</page>
       <source>SHB</source>
       <accel>1</accel>
       <armor>4</armor>
       <avail>0</avail>
       <body>12</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>18000</cost>
       <handling>3/2</handling>
       <pilot>1</pilot>
@@ -1229,7 +1314,7 @@
       <gears>
         <gear>
           <name>Sensor Array</name>
-          <rating>2</rating>
+          <rating>1</rating>
           <maxrating>7</maxrating>
         </gear>
       </gears>
@@ -1238,13 +1323,13 @@
     <vehicle>
       <id>2a548234-f76f-4359-bfa0-f3d26a749426</id>
       <name>Volkswagen Urban Allrounder</name>
-      <page>42</page>
+      <page>185</page>
       <source>SHB</source>
       <accel>1</accel>
       <armor>6</armor>
       <avail>0</avail>
       <body>13</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>19500</cost>
       <handling>3/3</handling>
       <pilot>2</pilot>
@@ -1261,14 +1346,14 @@
     </vehicle>
     <vehicle>
       <id>453d90d0-8ec0-4d0a-9478-1dde666c0b24</id>
-      <name>Mercedes-Benz CityMog / Dodge City Basis Modell</name>
-      <page>42</page>
+      <name>Mercedes-Benz CityMog / Dodge City</name>
+      <page>186</page>
       <source>SHB</source>
       <accel>1</accel>
       <armor>10</armor>
       <avail>0</avail>
       <body>18</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>44000</cost>
       <handling>5/4</handling>
       <pilot>2</pilot>
@@ -1285,14 +1370,14 @@
     </vehicle>
     <vehicle>
       <id>22d97843-c25b-4b83-97f4-9f0db590b77d</id>
-      <name>Mercedes-Benz CityMog / Dodge City CM-X (mit Pritsche)</name>
-      <page>42</page>
+      <name>Mercedes-Benz CityMog / Dodge City CM-X (Pickup)</name>
+      <page>186</page>
       <source>SHB</source>
       <accel>1</accel>
       <armor>10</armor>
       <avail>0</avail>
       <body>18</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>42000</cost>
       <handling>5/4</handling>
       <pilot>2</pilot>
@@ -1309,14 +1394,14 @@
     </vehicle>
     <vehicle>
       <id>8053ea4f-9ad3-4b50-8ca9-cc7e78eb8da4</id>
-      <name>Mercedes-Benz CityMog / Dodge City CM Traveller (mit Pritsche)</name>
-      <page>42</page>
+      <name>Mercedes-Benz CityMog / Dodge City CM Traveler (Minivan)</name>
+      <page>186</page>
       <source>SHB</source>
       <accel>1</accel>
       <armor>10</armor>
       <avail>0</avail>
       <body>18</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>56000</cost>
       <handling>5/4</handling>
       <pilot>3</pilot>
@@ -1329,18 +1414,21 @@
           <maxrating>7</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name>Amenities (Middle)</name>
+      </mods>
       <seats>20</seats>
     </vehicle>
     <vehicle>
       <id>5ef26f25-f8cf-4610-856b-91f2152ad17a</id>
-      <name>Mercedes-Benz CityMog / Dodge City CM Elite</name>
-      <page>42</page>
+      <name>Mercedes-Benz CityMog / Dodge City CM Elite (Luxury Minivan)</name>
+      <page>186</page>
       <source>SHB</source>
       <accel>1</accel>
       <armor>12</armor>
       <avail>0</avail>
       <body>18</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>96000</cost>
       <handling>5/3</handling>
       <pilot>3</pilot>
@@ -1349,10 +1437,13 @@
       <gears>
         <gear>
           <name>Sensor Array</name>
-          <rating>2</rating>
+          <rating>4</rating>
           <maxrating>7</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name>Amenities (High)</name>
+      </mods>
       <seats>12</seats>
     </vehicle>
     <vehicle>
@@ -9516,7 +9607,7 @@
         <name>Rigger Interface</name>
         <name>Enhanced Image Screens</name>
       </mods>
-      <seats>2-6</seats>
+      <seats>6</seats>
     </vehicle>
     <vehicle>
       <id>7b728361-e755-4c86-815b-3018b17e7753</id>
@@ -9605,11 +9696,11 @@
         <name>Interior Cameras</name>
         <name>Rigger Interface</name>
       </mods>
-      <seats>8-10</seats>
+      <seats>10</seats>
     </vehicle>
     <vehicle>
       <id>188daf6f-4b37-4e6f-a4a7-d7a186643787</id>
-      <name>Eurocopter FC</name>
+      <name>Eurocopter Flying Commuter</name>
       <page>219</page>
       <source>SHB3</source>
       <accel>3</accel>
@@ -9637,8 +9728,30 @@
       </mods>
       <seats>8</seats>
     </vehicle>
-    <!-- Missing: EMC Kommodore (Would require adjustments in code,
-         since it uses building block where each part receives part of the slots) -->
+    <vehicle>
+      <id>f755d5a0-bc18-49fb-bc91-de8ae4756eca</id>
+      <name>EMC Commodore</name>
+      <page>220</page>
+      <source>SHB3</source>
+      <accel>2</accel>
+      <armor>8</armor>
+      <avail>10R</avail>
+      <body>10</body>
+      <category>Trucks</category>
+      <cost>28000</cost>
+      <handling>3/2</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <seats>2</seats>
+    </vehicle>
     <!-- End Region -->
     <!-- Region Hamburg -->
     <vehicle>
@@ -11442,6 +11555,46 @@
             <name>Kamow Ka-226 Sergej (Firefighter Variant)</name>
             <name>Kamow Ka-60 Kasatka (Firefighter Variant)</name>
           </OR>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>6b3de360-77b1-4d3a-ac98-a6ab5791461a</id>
+      <name>E-Foil</name>
+      <page>186</page>
+      <source>SHB</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>2000</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <OR>
+            <name>Mercedes-Benz CityMog / Dodge City</name>
+            <name>Mercedes-Benz CityMog / Dodge City CM-X (Pickup)</name>
+            <name>Mercedes-Benz CityMog / Dodge City CM Traveler (Minivan)</name>
+            <name>Mercedes-Benz CityMog / Dodge City CM Elite (Luxury Minivan)</name>
+          </OR>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>5db86ca6-2019-45f4-b9bf-5d24a75bff82</id>
+      <name>EMC Commodore Module</name>
+      <page>220</page>
+      <source>SHB3</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>2000</cost>
+      <rating>0</rating>
+      <slots>-4</slots>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <vehicledetails>
+          <name>EMC Commodore</name>
         </vehicledetails>
       </required>
     </mod>

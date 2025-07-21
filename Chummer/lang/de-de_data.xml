@@ -40846,13 +40846,36 @@
         <id>116f6efe-2bb0-4fd4-80de-c25d6fa721bd</id>
         <name>BMW M8</name>
         <translate>BMW M8</translate>
-        <altpage>56</altpage>
+        <altpage>53</altpage>
+      </vehicle>
+      <vehicle>
+        <id>a9ca1788-7190-4023-abbf-852448aac8ab</id>
+        <name>BMW M8</name>
+        <translate>BMW M8</translate>
+        <altpage>179</altpage>
       </vehicle>
       <vehicle>
         <id>2f46305b-6196-43d1-b748-2266c5f1dc08</id>
         <name>Chrysler-Nissan Bobcat</name>
-        <source>R5</source>
         <translate>Chrysler-Nissan Bobcat</translate>
+        <altpage>181</altpage>
+      </vehicle>
+      <vehicle>
+        <id>9260f852-105c-4190-b862-516c8c82d209</id>
+        <name>Chrysler-Nissan Bobcat T</name>
+        <translate>Chrysler-Nissan Bobcat T</translate>
+        <altpage>181</altpage>
+      </vehicle>
+      <vehicle>
+        <id>2a4ccb56-333c-4503-b655-4ae3b22e3445</id>
+        <name>Chrysler-Nissan Bobcat</name>
+        <translate>Chrysler-Nissan Bobcat</translate>
+        <altpage>62</altpage>
+      </vehicle>
+      <vehicle>
+        <id>af13aa1e-72ab-4edc-b35c-b708a9e0c9e6</id>
+        <name>Chrysler-Nissan Bobcat T</name>
+        <translate>Chrysler-Nissan Bobcat T</translate>
         <altpage>62</altpage>
       </vehicle>
       <vehicle>
@@ -40863,13 +40886,13 @@
       </vehicle>
       <vehicle>
         <id>026beaac-5e92-4210-943a-97f5455d98ec</id>
-        <name>Dodge Hurricane Crew Modell</name>
+        <name>Dodge Hurricane Crew</name>
         <translate>Dodge Hurricane Crew Modell</translate>
         <altpage>57</altpage>
       </vehicle>
       <vehicle>
         <id>4d38b501-1b40-4eb2-a4be-4ec0fb099cdf</id>
-        <name>Dodge Hurricane Security Modell</name>
+        <name>Dodge Hurricane Security</name>
         <translate>Dodge Hurricane Security Modell</translate>
         <altpage>57</altpage>
       </vehicle>
@@ -40881,30 +40904,30 @@
       </vehicle>
       <vehicle>
         <id>453d90d0-8ec0-4d0a-9478-1dde666c0b24</id>
-        <name>Mercedes-Benz CityMog / Dodge City Basis Modell</name>
+        <name>Mercedes-Benz CityMog / Dodge City</name>
         <source>R5</source>
         <translate>Mercedes-Benz CityMog / Dodge City Basis Modell</translate>
         <altpage>64</altpage>
       </vehicle>
       <vehicle>
         <id>22d97843-c25b-4b83-97f4-9f0db590b77d</id>
-        <name>Mercedes-Benz CityMog / Dodge City CM-X (mit Pritsche)</name>
+        <name>Mercedes-Benz CityMog / Dodge City CM-X (Pickup)</name>
         <source>R5</source>
         <translate>Mercedes-Benz CityMog / Dodge City CM-X (mit Pritsche)</translate>
         <altpage>64</altpage>
       </vehicle>
       <vehicle>
         <id>8053ea4f-9ad3-4b50-8ca9-cc7e78eb8da4</id>
-        <name>Mercedes-Benz CityMog / Dodge City CM Traveller (mit Pritsche)</name>
+        <name>Mercedes-Benz CityMog / Dodge City CM Traveler (Minivan)</name>
         <source>R5</source>
-        <translate>Mercedes-Benz CityMog / Dodge City CM Traveller (mit Pritsche)</translate>
+        <translate>Mercedes-Benz CityMog / Dodge City CM Traveller (Kleinbus)</translate>
         <altpage>64</altpage>
       </vehicle>
       <vehicle>
         <id>5ef26f25-f8cf-4610-856b-91f2152ad17a</id>
-        <name>Mercedes-Benz CityMog / Dodge City CM Elite</name>
+        <name>Mercedes-Benz CityMog / Dodge City CM Elite (Luxury Minivan)</name>
         <source>R5</source>
-        <translate>Mercedes-Benz CityMog / Dodge City CM Elite</translate>
+        <translate>Mercedes-Benz CityMog / Dodge City CM Elite (Luxus-Kleinbus)</translate>
         <altpage>64</altpage>
       </vehicle>
       <vehicle translated="True">
@@ -41656,37 +41679,49 @@
         <id>8b7dd760-4528-413f-a577-a51fe8a705c9</id>
         <name>Mercury Comet Cruiser</name>
         <translate>Mercury Comet Cruiser</translate>
-        <altpage>42</altpage>
+        <altpage>180</altpage>
+      </vehicle>
+      <vehicle>
+        <id>96222e70-90f8-47db-9bf8-50c0f2618f94</id>
+        <name>Mercury Comet Cruiser-S</name>
+        <translate>Mercury Comet Cruiser-S</translate>
+        <altpage>180</altpage>
       </vehicle>
       <vehicle>
         <id>baf9cd37-06b2-45d7-b355-7da492a82220</id>
         <name>Mercedes-Benz Tornado</name>
         <translate>Mercedes-Benz Tornado</translate>
-        <altpage>42</altpage>
+        <altpage>182</altpage>
       </vehicle>
       <vehicle>
         <id>3748c902-c5f0-4173-bc4e-d5fab28418bc</id>
-        <name>Mercedes-Benz Tornado Crew Modell</name>
+        <name>Mercedes-Benz Tornado Crew</name>
         <translate>Mercedes-Benz Tornado Crew Modell</translate>
-        <altpage>42</altpage>
+        <altpage>182</altpage>
       </vehicle>
       <vehicle>
         <id>d823558b-3d98-47eb-924a-3f3db1565eb1</id>
-        <name>Mercedes-Benz Tornado Security Modell</name>
+        <name>Mercedes-Benz Tornado Security</name>
         <translate>Mercedes-Benz Tornado Security Modell</translate>
-        <altpage>42</altpage>
+        <altpage>182</altpage>
+      </vehicle>
+      <vehicle>
+        <id>349e9cdf-fa51-4da1-87ee-2ecd535fd019</id>
+        <name>BMW X Infinity</name>
+        <translate>BMW X Infinity</translate>
+        <altpage>57</altpage>
       </vehicle>
       <vehicle>
         <id>5159292e-897c-40aa-84ad-a1b374d95370</id>
         <name>BMW X Infinity</name>
         <translate>BMW X Infinity</translate>
-        <altpage>42</altpage>
+        <altpage>183</altpage>
       </vehicle>
       <vehicle>
         <id>2a548234-f76f-4359-bfa0-f3d26a749426</id>
         <name>Volkswagen Urban Allrounder</name>
         <translate>Volkswagen Urban Allrounder</translate>
-        <altpage>42</altpage>
+        <altpage>185</altpage>
       </vehicle>
       <vehicle translated="True">
         <id>472a0869-4759-41cf-b529-a42b0f308f69</id>

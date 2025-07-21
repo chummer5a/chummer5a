@@ -8761,13 +8761,13 @@
       <reach>0</reach>
       <damage>12P(f)</damage>
       <ap>-1</ap>
-      <mode>SS</mode>
+      <mode>SS/BF</mode>
       <rc>0</rc>
       <ammo>2(b)</ammo>
       <avail>0</avail>
       <cost>0</cost>
       <source>SHB2</source>
-      <page>0</page>
+      <page>187</page>
       <allowaccessory>False</allowaccessory>
       <alternaterange>Shotguns (flechette)</alternaterange>
       <hide />
@@ -8791,7 +8791,7 @@
       <avail>5R</avail>
       <cost>1800</cost>
       <source>SHB2</source>
-      <page>0</page>
+      <page>187</page>
       <accessories>
         <accessory>
           <name>Slide Mount</name>
@@ -8822,7 +8822,8 @@
       <damage>9P</damage>
       <ap>-1</ap>
       <mode>SA/BF/FA</mode>
-      <rc>2</rc>
+      <!-- RC is 2 in the book, but must be 0 here because of Gas Vent 2's +2 modifier -->
+      <rc>0</rc>
       <ammo>30(c)</ammo>
       <avail>12F</avail>
       <cost>1000</cost>
@@ -8866,8 +8867,8 @@
       <ammo>1(b)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <source>SHB</source>
-      <page>0</page>
+      <source>SHB2</source>
+      <page>188</page>
       <allowaccessory>False</allowaccessory>
       <alternaterange>Shotguns (flechette)</alternaterange>
       <hide />
@@ -8891,7 +8892,12 @@
       <avail>6R</avail>
       <cost>1550</cost>
       <source>SHB2</source>
-      <page>0</page>
+      <page>188</page>
+      <accessories>
+        <accessory>
+          <name>Folding Stock</name>
+        </accessory>
+      </accessories>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -8923,7 +8929,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>SHB2</source>
-      <page>0</page>
+      <page>188</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <range>Machine Pistols</range>
@@ -8946,7 +8952,7 @@
       <avail>7R</avail>
       <cost>325</cost>
       <source>SHB2</source>
-      <page>0</page>
+      <page>185</page>
       <accessories>
         <accessory>
           <name>Flashlight, Standard</name>
@@ -8979,7 +8985,7 @@
       <avail>8R</avail>
       <cost>700</cost>
       <source>SHB</source>
-      <page>0</page>
+      <page>174</page>
       <accessories>
         <accessory>
           <name>Laser Sight</name>
@@ -9011,7 +9017,7 @@
       <avail>4R</avail>
       <cost>475</cost>
       <source>SHB</source>
-      <page>0</page>
+      <page>175</page>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -9028,18 +9034,19 @@
       <name>Onotari Arms SIG-6</name>
       <category>Submachine Guns</category>
       <type>Ranged</type>
-      <conceal>0</conceal>
-      <accuracy>4</accuracy>
+      <conceal>2</conceal>
+      <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>8P</damage>
       <ap>0</ap>
       <mode>SA/BF</mode>
+      <!-- RC is 2 in the book, but must be 4 here because of Gas Vent 2's +2 modifier -->
       <rc>0</rc>
       <ammo>16(c) or 32(c)</ammo>
       <avail>7R</avail>
       <cost>780</cost>
       <source>SHB</source>
-      <page>0</page>
+      <page>176</page>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -17851,6 +17858,8 @@
             <name>HK Urban Fighter</name>
             <name>HK Urban Striker</name>
             <name>HK Urban Assassin</name>
+            <!-- Has extended mag option built into it -->
+            <name>Onotari Arms SIG-6</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17884,6 +17893,8 @@
             <name>PPSK-4 Collapsible Machine Pistol</name>
             <name>Steyr TMP</name>
             <name>Ruhrmetall SMK 252</name>
+            <!-- Has extended mag option built into it -->
+            <name>Onotari Arms SIG-6</name>
           </OR>
         </weapondetails>
       </required>

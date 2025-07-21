@@ -1217,8 +1217,8 @@
     <mentor>
       <id>9f020eb4-975f-4449-9ba1-c1242159d774</id>
       <name>Oak (SHB)</name>
-      <advantage>All: +2 dice to memory test.</advantage>
-      <disadvantage>A follower of Oak has to succeed in a CHA+WIL (3) test to retreat from a dangerous area instead of waiting till the danger passes.</disadvantage>
+      <advantage>All: +2 dice to Memory tests.</advantage>
+      <disadvantage>When confronted with danger, followers of Oak prefers to wait it out. In order to retreat from a dangerous situation, a follower of Oak has to succeed in a Charisma + Willpower (3) test instead of waiting until the danger has passed.</disadvantage>
       <bonus>
         <memory>2</memory>
       </bonus>
@@ -1249,7 +1249,7 @@
       <id>f8f32157-2dbf-42b3-9ea6-2e60640875c7</id>
       <name>Artist</name>
       <advantage>All: +2 dice to Artisan or Forgery.</advantage>
-      <disadvantage>If for more than two weeks the Artist fails to find an audience for a presentation of her ability, she has to make a WIL+ CHA (3) test. Should she fail, she fall into depression (-2 dice for every skill linked to LOG, INT or CHA) for 1d6 days. After that (or if she succeeded in the the WIL+CHA test) a new 14 day period begins in which she has to show off her skills.</disadvantage>
+      <disadvantage>If a follower of Artist is unable to present their abilities or work to an audience for more than two weeks, they must make a Willpower + Charisma (3) test. Should they fail, they fall into a depression for 1D6 days. They become lethargic and unmotivated and struggle to concentrate. They suffer -2 dice to all LOG-, INT-, and CHA-linked skills. After the period has passed, or if they succeeded their test, the two-week cycle begins anew.</disadvantage>
       <bonus>
         <selectskill limittoskill="Artisan,Forgery">
           <val>2</val>
@@ -1281,9 +1281,9 @@
     </mentor>
     <mentor>
       <id>66f968d6-96da-404e-b1ef-a4d7377ac3cf</id>
-      <name>Blacksmith</name>
+      <name>Smith</name>
       <advantage>All: +2 dice to Artisan or Alchemy tests.</advantage>
-      <disadvantage>You have to pass a CHA + WIL (3) check to refrain from instantaneously avenging an insult.</disadvantage>
+      <disadvantage>A follower of Smith must pass a Charisma + Willpower (3) test to avoid responding to an insult in kind.</disadvantage>
       <bonus>
         <selectskill limittoskill="Artisan,Alchemy">
           <val>2</val>
@@ -3083,7 +3083,7 @@
             <specificskill>
               <name>Summoning</name>
               <bonus>2</bonus>
-              <condition>Spirit of Beasts</condition>
+              <condition>Spirits of Beasts</condition>
             </specificskill>
           </bonus>
         </choice>
@@ -3218,7 +3218,7 @@
             <specificskill>
               <name>Summoning</name>
               <bonus>2</bonus>
-              <condition>Spirit of Man</condition>
+              <condition>Spirits of Man</condition>
             </specificskill>
           </bonus>
         </choice>
