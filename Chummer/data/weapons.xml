@@ -5940,7 +5940,7 @@
       <name>FN-AAL Gyrojet Pistol</name>
       <category>Exotic Ranged Weapons</category>
       <type>Ranged</type>
-      <conceal>+0</conceal>
+      <conceal>0</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>10P</damage>
@@ -8378,7 +8378,7 @@
       <name>Ares Armatus</name>
       <category>Laser Weapons</category>
       <type>Ranged</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>6P</damage>
@@ -9000,7 +9000,7 @@
       <name>Altmayr SPX</name>
       <category>Shotguns</category>
       <type>Ranged</type>
-      <conceal>+2</conceal>
+      <conceal>4</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>10P</damage>
@@ -12286,7 +12286,7 @@
       <name>Krime Bill</name>
       <category>Blades</category>
       <type>Melee</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>5</accuracy>
       <reach>1</reach>
       <damage>({STR}+3)P</damage>
@@ -12304,7 +12304,7 @@
       <name>Krime Reaver Axe</name>
       <category>Blades</category>
       <type>Melee</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>4</accuracy>
       <reach>1</reach>
       <damage>({STR}+3)P</damage>
@@ -12325,7 +12325,7 @@
       <name>Krime Reaver Pick</name>
       <category>Blades</category>
       <type>Melee</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>4</accuracy>
       <reach>1</reach>
       <damage>({STR}+1)P</damage>
@@ -12344,7 +12344,7 @@
       <name>Krime Reaver Knob</name>
       <category>Clubs</category>
       <type>Melee</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>4</accuracy>
       <reach>1</reach>
       <damage>({STR}+3)P</damage>
@@ -12363,7 +12363,7 @@
       <name>Krime Shiv</name>
       <category>Blades</category>
       <type>Melee</type>
-      <conceal>+2</conceal>
+      <conceal>2</conceal>
       <accuracy>5</accuracy>
       <reach>1</reach>
       <damage>({STR}+2)P</damage>
@@ -12381,7 +12381,7 @@
       <name>Traditional Macuahuitl</name>
       <category>Blades</category>
       <type>Melee</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>6</accuracy>
       <reach>1</reach>
       <damage>({STR}+3)P</damage>
@@ -12400,7 +12400,7 @@
       <name>Modern Macuahuitl</name>
       <category>Blades</category>
       <type>Melee</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>4</accuracy>
       <reach>1</reach>
       <damage>({STR}+2)P</damage>
@@ -12419,7 +12419,7 @@
       <name>Nodachi</name>
       <category>Blades</category>
       <type>Melee</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>5</accuracy>
       <reach>2</reach>
       <damage>({STR}+5)P</damage>
@@ -12438,7 +12438,7 @@
       <name>Fluid-Motion Mace</name>
       <category>Clubs</category>
       <type>Melee</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>4</accuracy>
       <reach>1</reach>
       <damage>({STR}+4)P</damage>
@@ -12496,7 +12496,7 @@
       <name>Nunchaku</name>
       <category>Clubs</category>
       <type>Melee</type>
-      <conceal>+2</conceal>
+      <conceal>2</conceal>
       <accuracy>5</accuracy>
       <reach>1</reach>
       <damage>({STR}+2)P</damage>
@@ -12514,7 +12514,7 @@
       <name>Tonfa</name>
       <category>Clubs</category>
       <type>Melee</type>
-      <conceal>+2</conceal>
+      <conceal>2</conceal>
       <accuracy>4</accuracy>
       <reach>1</reach>
       <damage>({STR}+3)P</damage>
@@ -12570,7 +12570,7 @@
       <name>Krime Stun Lance</name>
       <category>Exotic Melee Weapons</category>
       <type>Melee</type>
-      <conceal>+8</conceal>
+      <conceal>8</conceal>
       <accuracy>4</accuracy>
       <reach>2</reach>
       <damage>10S(e)</damage>
@@ -12588,7 +12588,7 @@
       <name>Krime Trollbow (Rating 6)</name>
       <category>Bows</category>
       <type>Ranged</type>
-      <conceal>+8</conceal>
+      <conceal>8</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>8P</damage>
@@ -12608,7 +12608,7 @@
       <name>Krime Trollbow (Rating 7)</name>
       <category>Bows</category>
       <type>Ranged</type>
-      <conceal>+8</conceal>
+      <conceal>8</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
@@ -12628,7 +12628,7 @@
       <name>Krime Trollbow (Rating 8)</name>
       <category>Bows</category>
       <type>Ranged</type>
-      <conceal>+8</conceal>
+      <conceal>8</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>10P</damage>
@@ -12648,7 +12648,7 @@
       <name>Krime Trollbow (Rating 9)</name>
       <category>Bows</category>
       <type>Ranged</type>
-      <conceal>+8</conceal>
+      <conceal>8</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>11P</damage>
@@ -12668,7 +12668,7 @@
       <name>Krime Trollbow (Rating 10)</name>
       <category>Bows</category>
       <type>Ranged</type>
-      <conceal>+8</conceal>
+      <conceal>8</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>12P</damage>
@@ -12688,7 +12688,7 @@
       <name>Krime Trollbow (Rating 11)</name>
       <category>Bows</category>
       <type>Ranged</type>
-      <conceal>+8</conceal>
+      <conceal>8</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>13P</damage>
@@ -12708,7 +12708,7 @@
       <name>Krime Trollbow (Rating 12)</name>
       <category>Bows</category>
       <type>Ranged</type>
-      <conceal>+8</conceal>
+      <conceal>8</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>14P</damage>
@@ -12728,7 +12728,7 @@
       <name>Krime Trollbow Horns</name>
       <category>Blades</category>
       <type>Melee</type>
-      <conceal>+8</conceal>
+      <conceal>8</conceal>
       <accuracy>3</accuracy>
       <reach>1</reach>
       <damage>({STR}+1)P</damage>
@@ -12748,7 +12748,7 @@
       <name>Winchester Airbow</name>
       <category>Crossbows</category>
       <type>Ranged</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>10P</damage>
@@ -13098,7 +13098,7 @@
       <name>Hammerli Gemini</name>
       <category>Heavy Pistols</category>
       <type>Ranged</type>
-      <conceal>+1</conceal>
+      <conceal>1</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
@@ -13345,7 +13345,7 @@
       <name>Cavalier Flash</name>
       <category>Machine Pistols</category>
       <type>Ranged</type>
-      <conceal>+0</conceal>
+      <conceal>0</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
@@ -13369,7 +13369,7 @@
       <name>Esprit Tsunami</name>
       <category>Submachine Guns</category>
       <type>Ranged</type>
-      <conceal>+2</conceal>
+      <conceal>2</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
@@ -13401,7 +13401,7 @@
       <name>Onotari Arms S-3K</name>
       <category>Submachine Guns</category>
       <type>Ranged</type>
-      <conceal>+2</conceal>
+      <conceal>2</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
@@ -13435,7 +13435,7 @@
       <name>Ares Stalwart</name>
       <category>Carbines</category>
       <type>Ranged</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
@@ -13465,7 +13465,7 @@
       <name>Colt M23A2</name>
       <category>Carbines</category>
       <type>Ranged</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
@@ -13507,7 +13507,7 @@
       <name>Izom Artemis</name>
       <category>Carbines</category>
       <type>Ranged</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
@@ -13540,7 +13540,7 @@
       <name>Cavalier Frontier</name>
       <category>Assault Rifles</category>
       <type>Ranged</type>
-      <conceal>+6</conceal>
+      <conceal>6</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>10P</damage>
@@ -13574,7 +13574,7 @@
       <name>Krime Happiness</name>
       <category>Assault Rifles</category>
       <type>Ranged</type>
-      <conceal>+6</conceal>
+      <conceal>6</conceal>
       <accuracy>3</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
@@ -13599,7 +13599,7 @@
       <name>Onotari HL-13</name>
       <category>Assault Rifles</category>
       <type>Ranged</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>10P</damage>
@@ -13636,7 +13636,7 @@
       <name>Onotari HL-13 Personal Defense Weapon</name>
       <category>Submachine Guns</category>
       <type>Ranged</type>
-      <conceal>+2</conceal>
+      <conceal>2</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
@@ -13670,7 +13670,7 @@
       <name>Onotari HL-13 Urban Assault</name>
       <category>Carbines</category>
       <type>Ranged</type>
-      <conceal>+4</conceal>
+      <conceal>4</conceal>
       <accuracy>3</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
@@ -13781,7 +13781,7 @@
       <name>Beretta Northstar</name>
       <category>Shotguns</category>
       <type>Ranged</type>
-      <conceal>+6</conceal>
+      <conceal>6</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>11P</damage>
@@ -13815,7 +13815,7 @@
       <name>Krime Boom</name>
       <category>Shotguns</category>
       <type>Ranged</type>
-      <conceal>+6</conceal>
+      <conceal>6</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>10P</damage>
@@ -13840,7 +13840,7 @@
       <name>Krime Whammy</name>
       <category>Shotguns</category>
       <type>Ranged</type>
-      <conceal>+6</conceal>
+      <conceal>6</conceal>
       <accuracy>3</accuracy>
       <reach>0</reach>
       <damage>12P</damage>
@@ -13995,7 +13995,7 @@
       <name>HK 82A1</name>
       <category>Grenade Launchers</category>
       <type>Ranged</type>
-      <conceal>+8</conceal>
+      <conceal>8</conceal>
       <accuracy>3</accuracy>
       <reach>0</reach>
       <damage>Grenade</damage>
@@ -14076,7 +14076,7 @@
       <name>Terracotta X-6 MGL</name>
       <category>Grenade Launchers</category>
       <type>Ranged</type>
-      <conceal>+8</conceal>
+      <conceal>8</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>Grenade</damage>
@@ -14109,7 +14109,7 @@
       <name>Narcoject Gas Gun</name>
       <category>Exotic Ranged Weapons</category>
       <type>Ranged</type>
-      <conceal>+2</conceal>
+      <conceal>2</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>Chemical</damage>
@@ -14162,7 +14162,7 @@
       <name>Narcoject Trackstopper</name>
       <category>Exotic Ranged Weapons</category>
       <type>Ranged</type>
-      <conceal>+2</conceal>
+      <conceal>2</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>Chemical</damage>
@@ -14189,7 +14189,7 @@
       <name>Krime Stun-O-Net</name>
       <category>Clubs</category>
       <type>Melee</type>
-      <conceal>+2</conceal>
+      <conceal>2</conceal>
       <accuracy>4</accuracy>
       <reach>1</reach>
       <damage>9S(e)</damage>
@@ -14373,7 +14373,7 @@
       <name>Lone Star Remington 995 "Buzzsaw"</name>
       <category>Shotguns</category>
       <type>Ranged</type>
-      <conceal>+6</conceal>
+      <conceal>6</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>11P</damage>
