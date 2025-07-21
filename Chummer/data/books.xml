@@ -278,6 +278,11 @@
       <code>SHB3</code>
     </book>
     <book>
+      <id>e1f426ff-e35a-4ddd-a168-11faec92d3b6</id>
+      <name>Schattenhandbuch 4 (German-Only)</name>
+      <code>SHB4</code>
+    </book>
+    <book>
       <id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
       <name>Rigger 5.0</name>
       <code>R5</code>
@@ -631,18 +636,6 @@
           <language>de-de</language>
           <text>Der Schweiß lief Virgil aus allen Poren und verklebte die</text>
           <page>4</page>
-        </match>
-      </matches>
-    </book>
-    <book>
-      <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
-      <name>Datapuls Verschlusssache (German-Only)</name>
-      <code>DPVG</code>
-      <matches>
-        <match>
-          <language>de-de</language>
-          <text>Das Verhältnis der Deutschen zu ihren Geheimdiensten</text>
-          <page>2</page>
         </match>
       </matches>
     </book>

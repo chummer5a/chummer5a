@@ -3203,6 +3203,12 @@
         <altcode>SHB3</altcode>
       </book>
       <book>
+        <id>e1f426ff-e35a-4ddd-a168-11faec92d3b6</id>
+        <name>Schattenhandbuch 4 (German-Only)</name>
+        <translate>Schattenhandbuch 4 (exclusivement allemand)</translate>
+        <altcode>SHB4</altcode>
+      </book>
+      <book>
         <id>bfe6c53b-1c68-4d7a-b11d-9d47461df1cd</id>
         <name>Street Lethal</name>
         <translate>Street Lethal</translate>
@@ -3237,12 +3243,6 @@
         <name>Datapuls SOTA 2080 (German-Only)</name>
         <translate>Datapuls SOTA 2080 (exclusivement allemand)</translate>
         <altcode>SOTG</altcode>
-      </book>
-      <book>
-        <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
-        <name>Datapuls Verschlusssache (German-Only)</name>
-        <translate>Datapuls Verschlusssache (exclusivement allemand)</translate>
-        <altcode>DPVG</altcode>
       </book>
       <book>
         <id>9b88873f-61fa-4419-b733-49b96997bd42</id>

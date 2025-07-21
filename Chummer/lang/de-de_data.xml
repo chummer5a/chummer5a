@@ -3108,6 +3108,12 @@
         <altcode>SHB3</altcode>
       </book>
       <book>
+        <id>e1f426ff-e35a-4ddd-a168-11faec92d3b6</id>
+        <name>Schattenhandbuch 4 (German-Only)</name>
+        <translate>Schattenhandbuch 4</translate>
+        <altcode>SHB4</altcode>
+      </book>
+      <book>
         <id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
         <name>Rigger 5.0</name>
         <translate>Asphaltkrieger</translate>
@@ -3262,12 +3268,6 @@
         <name>Datapuls SOTA 2080 (German-Only)</name>
         <translate>Datapuls SOTA 2080</translate>
         <altcode>SOTG</altcode>
-      </book>
-      <book>
-        <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
-        <name>Datapuls Verschlusssache (German-Only)</name>
-        <translate>Datapuls Verschlusssache</translate>
-        <altcode>DPVG</altcode>
       </book>
       <book>
         <id>ee63bbc5-2abd-4543-8371-457044bc7c63</id>
