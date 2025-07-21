@@ -277,21 +277,9 @@ namespace Chummer
             _lstAllowedMounts.Clear();
             if (objWeapon != null)
             {
-                XPathNavigator xmlThisWeaponDataNode
-                    = _xmlBaseChummerNode.TryGetNodeById("weapons/weapon", objWeapon.SourceID);
-                if (xmlThisWeaponDataNode != null)
+                foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                 {
-                    foreach (XPathNavigator objXmlMount in xmlThisWeaponDataNode.Select("accessorymounts/mount"))
-                    {
-                        string strLoopMount = objXmlMount.Value;
-                        // Run through the Weapon's current Accessories and filter out any used up Mount points.
-                        if (!await _objParentWeapon.WeaponAccessories.AnyAsync(objMod =>
-                                objMod.Mount == strLoopMount
-                                || objMod.ExtraMount == strLoopMount, token: token).ConfigureAwait(false))
-                        {
-                            _lstAllowedMounts.Add(strLoopMount);
-                        }
-                    }
+                    _lstAllowedMounts.Add(strMount);
                 }
 
                 //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.

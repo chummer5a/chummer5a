@@ -1204,16 +1204,18 @@ namespace Chummer.UI.Skills
         {
             try
             {
+                string strNotes = await _objSkill.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                Color objColor = await _objSkill.GetNotesColorAsync(_objMyToken).ConfigureAwait(false);
                 using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>
                                                                       .GetAsync(
                                                                           () => new EditNotes(
-                                                                              _objSkill.Notes, _objSkill.NotesColor, _objMyToken),
+                                                                              strNotes, objColor, _objMyToken),
                                                                           _objMyToken).ConfigureAwait(false))
                 {
                     if (await frmItemNotes.ShowDialogSafeAsync(_objSkill.CharacterObject, _objMyToken)
                                           .ConfigureAwait(false) != DialogResult.OK)
                         return;
-                    _objSkill.Notes = frmItemNotes.MyForm.Notes;
+                    await _objSkill.SetNotesAsync(frmItemNotes.MyForm.Notes, _objMyToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -1254,12 +1256,10 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                lblName.DoThreadSafe(
-                    x => x.MinimumSize =
+                lblName.MinimumSize =
                         new Size(
-                            intNewNameWidth - x.Margin.Right -
-                            pnlAttributes.DoThreadSafeFunc(y => y.Margin.Left + y.Width, token: _objMyToken),
-                            x.MinimumSize.Height), token: _objMyToken);
+                            intNewNameWidth - lblName.Margin.Right - pnlAttributes.Margin.Left + pnlAttributes.Width,
+                            lblName.MinimumSize.Height);
             }
             catch (OperationCanceledException)
             {

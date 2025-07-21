@@ -2933,14 +2933,14 @@
       </book>
       <book>
         <id>bb5c7e4e-431b-404f-89da-e69cf3b75d50</id>
-        <name>Schattenhandbuch (German Handbook)</name>
-        <translate>Schattenhandbuch (German Handbook)</translate>
+        <name>Schattenhandbuch (German-Only)</name>
+        <translate>Schattenhandbuch (German-Only)</translate>
         <altcode>SHB</altcode>
       </book>
       <book>
         <id>8798c923-8118-448e-b201-53d299d7e58c</id>
-        <name>Schattenhandbuch 2 (German Handbook)</name>
-        <translate>Schattenhandbuch 2 (German Handbook)</translate>
+        <name>Schattenhandbuch 2 (German-Only)</name>
+        <translate>Schattenhandbuch 2 (German-Only)</translate>
         <altcode>SHB2</altcode>
       </book>
       <book>
@@ -2999,8 +2999,8 @@
       </book>
       <book>
         <id>71a6304e-03dc-41db-be01-a86acab1517b</id>
-        <name>Shadowrun 2050 (5th Edition)</name>
-        <translate>Shadowrun 2050 (5th Edition)</translate>
+        <name>Shadowrun 2050 (German-Only)</name>
+        <translate>Shadowrun 2050 (German-Only)</translate>
         <altcode>2050</altcode>
       </book>
       <book>
@@ -3017,8 +3017,8 @@
       </book>
       <book>
         <id>c6b7136f-e461-457b-b6f7-09e95c2f6313</id>
-        <name>State of the Art ADL (German Handbook)</name>
-        <translate>State of the Art ADL (German Handbook)</translate>
+        <name>State of the Art ADL (German-Only)</name>
+        <translate>State of the Art ADL (German-Only)</translate>
         <altcode>SAG</altcode>
       </book>
       <book>

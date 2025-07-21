@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -996,9 +996,33 @@
       <seats>2</seats>
     </vehicle>
     <vehicle>
+      <id>a9ca1788-7190-4023-abbf-852448aac8ab</id>
+      <name>BMW M8</name>
+      <page>179</page>
+      <source>SHB</source>
+      <accel>2</accel>
+      <armor>11</armor>
+      <avail>10</avail>
+      <body>12</body>
+      <category>Cars</category>
+      <cost>76000</cost>
+      <handling>4/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>5</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>4</seats>
+    </vehicle>
+    <vehicle>
       <id>8b7dd760-4528-413f-a577-a51fe8a705c9</id>
       <name>Mercury Comet Cruiser</name>
-      <page>42</page>
+      <page>180</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>11</armor>
@@ -1020,9 +1044,37 @@
       <seats>5</seats>
     </vehicle>
     <vehicle>
+      <id>96222e70-90f8-47db-9bf8-50c0f2618f94</id>
+      <name>Mercury Comet Cruiser-S</name>
+      <page>180</page>
+      <source>SHB</source>
+      <accel>2</accel>
+      <armor>11</armor>
+      <avail>0</avail>
+      <body>14</body>
+      <category>Cars</category>
+      <cost>21900</cost>
+      <handling>4/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name select="Skylight">Special Equipment</name>
+        <name select="Integrated Video Displays">Special Equipment</name>
+      </mods>
+      <seats>5</seats>
+    </vehicle>
+    <vehicle>
       <id>2f46305b-6196-43d1-b748-2266c5f1dc08</id>
       <name>Chrysler-Nissan Bobcat</name>
-      <page>42</page>
+      <page>181</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>10</armor>
@@ -1041,12 +1093,45 @@
           <maxrating>7</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name>Standard Drone Rack (Small)</name>
+        <name>Standard Drone Rack (Micro)</name>
+      </mods>
       <seats>8</seats>
+    </vehicle>
+    <vehicle>
+      <id>9260f852-105c-4190-b862-516c8c82d209</id>
+      <name>Chrysler-Nissan Bobcat T</name>
+      <page>181</page>
+      <source>SHB</source>
+      <accel>2</accel>
+      <armor>10</armor>
+      <avail>0</avail>
+      <body>15</body>
+      <category>Cars</category>
+      <cost>26000</cost>
+      <handling>3/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Standard Drone Rack (Small)</name>
+        <name>Standard Drone Rack (Micro)</name>
+        <name rating="6">Metahuman Adjustment</name>
+      </mods>
+      <seats>6</seats>
     </vehicle>
     <vehicle>
       <id>15e937d5-a1be-401e-a15c-0ff6e73a25d9</id>
       <name>Dodge Hurricane</name>
-      <page>42</page>
+      <page>182</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>12</armor>
@@ -1069,8 +1154,8 @@
     </vehicle>
     <vehicle>
       <id>026beaac-5e92-4210-943a-97f5455d98ec</id>
-      <name>Dodge Hurricane Crew Modell</name>
-      <page>42</page>
+      <name>Dodge Hurricane Crew</name>
+      <page>182</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>12</armor>
@@ -1093,8 +1178,8 @@
     </vehicle>
     <vehicle>
       <id>4d38b501-1b40-4eb2-a4be-4ec0fb099cdf</id>
-      <name>Dodge Hurricane Security Modell</name>
-      <page>42</page>
+      <name>Dodge Hurricane Security</name>
+      <page>182</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>14</armor>
@@ -1118,7 +1203,7 @@
     <vehicle>
       <id>baf9cd37-06b2-45d7-b355-7da492a82220</id>
       <name>Mercedes-Benz Tornado</name>
-      <page>42</page>
+      <page>182</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>12</armor>
@@ -1141,8 +1226,8 @@
     </vehicle>
     <vehicle>
       <id>3748c902-c5f0-4173-bc4e-d5fab28418bc</id>
-      <name>Mercedes-Benz Tornado Crew Modell</name>
-      <page>42</page>
+      <name>Mercedes-Benz Tornado Crew</name>
+      <page>182</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>12</armor>
@@ -1165,8 +1250,8 @@
     </vehicle>
     <vehicle>
       <id>d823558b-3d98-47eb-924a-3f3db1565eb1</id>
-      <name>Mercedes-Benz Tornado Security Modell</name>
-      <page>42</page>
+      <name>Mercedes-Benz Tornado Security</name>
+      <page>182</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>14</armor>
@@ -1190,7 +1275,7 @@
     <vehicle>
       <id>5159292e-897c-40aa-84ad-a1b374d95370</id>
       <name>BMW X Infinity</name>
-      <page>42</page>
+      <page>183</page>
       <source>SHB</source>
       <accel>2</accel>
       <armor>13</armor>
@@ -1205,7 +1290,7 @@
       <gears>
         <gear>
           <name>Sensor Array</name>
-          <rating>2</rating>
+          <rating>4</rating>
           <maxrating>7</maxrating>
         </gear>
       </gears>
@@ -1213,14 +1298,14 @@
     </vehicle>
     <vehicle>
       <id>c90e2ec7-f351-4bb5-a145-bf33c9062ff9</id>
-      <name>Volkswagen MultyCity</name>
-      <page>42</page>
+      <name>Volkswagen MultiCity</name>
+      <page>184</page>
       <source>SHB</source>
       <accel>1</accel>
       <armor>4</armor>
       <avail>0</avail>
       <body>12</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>18000</cost>
       <handling>3/2</handling>
       <pilot>1</pilot>
@@ -1229,7 +1314,7 @@
       <gears>
         <gear>
           <name>Sensor Array</name>
-          <rating>2</rating>
+          <rating>1</rating>
           <maxrating>7</maxrating>
         </gear>
       </gears>
@@ -1238,13 +1323,13 @@
     <vehicle>
       <id>2a548234-f76f-4359-bfa0-f3d26a749426</id>
       <name>Volkswagen Urban Allrounder</name>
-      <page>42</page>
+      <page>185</page>
       <source>SHB</source>
       <accel>1</accel>
       <armor>6</armor>
       <avail>0</avail>
       <body>13</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>19500</cost>
       <handling>3/3</handling>
       <pilot>2</pilot>
@@ -1261,14 +1346,14 @@
     </vehicle>
     <vehicle>
       <id>453d90d0-8ec0-4d0a-9478-1dde666c0b24</id>
-      <name>Mercedes-Benz CityMog / Dodge City Basis Modell</name>
-      <page>42</page>
+      <name>Mercedes-Benz CityMog / Dodge City</name>
+      <page>186</page>
       <source>SHB</source>
       <accel>1</accel>
       <armor>10</armor>
       <avail>0</avail>
       <body>18</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>44000</cost>
       <handling>5/4</handling>
       <pilot>2</pilot>
@@ -1285,14 +1370,14 @@
     </vehicle>
     <vehicle>
       <id>22d97843-c25b-4b83-97f4-9f0db590b77d</id>
-      <name>Mercedes-Benz CityMog / Dodge City CM-X (mit Pritsche)</name>
-      <page>42</page>
+      <name>Mercedes-Benz CityMog / Dodge City CM-X (Pickup)</name>
+      <page>186</page>
       <source>SHB</source>
       <accel>1</accel>
       <armor>10</armor>
       <avail>0</avail>
       <body>18</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>42000</cost>
       <handling>5/4</handling>
       <pilot>2</pilot>
@@ -1309,14 +1394,14 @@
     </vehicle>
     <vehicle>
       <id>8053ea4f-9ad3-4b50-8ca9-cc7e78eb8da4</id>
-      <name>Mercedes-Benz CityMog / Dodge City CM Traveller (mit Pritsche)</name>
-      <page>42</page>
+      <name>Mercedes-Benz CityMog / Dodge City CM Traveler (Minivan)</name>
+      <page>186</page>
       <source>SHB</source>
       <accel>1</accel>
       <armor>10</armor>
       <avail>0</avail>
       <body>18</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>56000</cost>
       <handling>5/4</handling>
       <pilot>3</pilot>
@@ -1329,18 +1414,21 @@
           <maxrating>7</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name>Amenities (Middle)</name>
+      </mods>
       <seats>20</seats>
     </vehicle>
     <vehicle>
       <id>5ef26f25-f8cf-4610-856b-91f2152ad17a</id>
-      <name>Mercedes-Benz CityMog / Dodge City CM Elite</name>
-      <page>42</page>
+      <name>Mercedes-Benz CityMog / Dodge City CM Elite (Luxury Minivan)</name>
+      <page>186</page>
       <source>SHB</source>
       <accel>1</accel>
       <armor>12</armor>
       <avail>0</avail>
       <body>18</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>96000</cost>
       <handling>5/3</handling>
       <pilot>3</pilot>
@@ -1349,10 +1437,13 @@
       <gears>
         <gear>
           <name>Sensor Array</name>
-          <rating>2</rating>
+          <rating>4</rating>
           <maxrating>7</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name>Amenities (High)</name>
+      </mods>
       <seats>12</seats>
     </vehicle>
     <vehicle>
@@ -8278,6 +8369,7 @@
       </gears>
       <mods>
         <name rating="4">Metahuman Adjustment</name>
+        <name>Dynamic Color Change System</name>
       </mods>
       <seats>4</seats>
     </vehicle>
@@ -8404,13 +8496,13 @@
       <weaponmounts>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Flexible</flexibility>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
         </weaponmount>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Flexible</flexibility>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
         </weaponmount>
@@ -8474,7 +8566,7 @@
     </vehicle>
     <vehicle>
       <id>54165cb2-522f-441f-9a3c-fc6d6e4b4aaf</id>
-      <name>Kamow Ka-226 Kasatka</name>
+      <name>Kamow Ka-60 Kasatka</name>
       <page>55</page>
       <source>SAG</source>
       <accel>3</accel>
@@ -8496,6 +8588,118 @@
       </gears>
       <mods>
         <name>Multifuel Engine</name>
+      </mods>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>e15fa11a-403a-4ea7-b9e1-d3f5b44b8a5d</id>
+      <name>Kamow Ka-226 Sergej (Passenger Variant)</name>
+      <page>55</page>
+      <source>SAG</source>
+      <accel>3</accel>
+      <armor>6</armor>
+      <avail>10</avail>
+      <body>16</body>
+      <category>Rotorcraft</category>
+      <cost>225000</cost>
+      <handling>2</handling>
+      <pilot>1</pilot>
+      <sensor>1</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>1</rating>
+          <maxrating>1</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Multifuel Engine</name>
+        <name>Winch (Basic)</name>
+      </mods>
+      <seats>20</seats>
+    </vehicle>
+    <vehicle>
+      <id>8e0a0cd6-d5f0-4842-a25c-33683b5c7f03</id>
+      <name>Kamow Ka-60 Kasatka (Passenger Variant)</name>
+      <page>55</page>
+      <source>SAG</source>
+      <accel>3</accel>
+      <armor>6</armor>
+      <avail>12</avail>
+      <body>14</body>
+      <category>Rotorcraft</category>
+      <cost>300000</cost>
+      <handling>3</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Multifuel Engine</name>
+      </mods>
+      <seats>20</seats>
+    </vehicle>
+    <vehicle>
+      <id>77c943d2-684e-4376-9dd3-f807618ead60</id>
+      <name>Kamow Ka-226 Sergej (Firefighter Variant)</name>
+      <page>55</page>
+      <source>SAG</source>
+      <accel>3</accel>
+      <armor>6</armor>
+      <avail>10</avail>
+      <body>16</body>
+      <category>Rotorcraft</category>
+      <cost>225000</cost>
+      <handling>2</handling>
+      <pilot>1</pilot>
+      <sensor>1</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>1</rating>
+          <maxrating>1</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Multifuel Engine</name>
+        <name>Winch (Basic)</name>
+        <name>Drop Tank</name>
+      </mods>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>456ab764-45af-4e49-a0c6-32b8227e3b11</id>
+      <name>Kamow Ka-60 Kasatka (Firefighter Variant)</name>
+      <page>55</page>
+      <source>SAG</source>
+      <accel>3</accel>
+      <armor>6</armor>
+      <avail>12</avail>
+      <body>14</body>
+      <category>Rotorcraft</category>
+      <cost>300000</cost>
+      <handling>3</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Multifuel Engine</name>
+        <name>Drop Tank</name>
       </mods>
       <seats>6</seats>
     </vehicle>
@@ -8554,6 +8758,8 @@
       </gears>
       <mods>
         <name>SunCell</name>
+        <name select="Cargo Crane">Special Equipment</name>
+        <name select="Construction Crane">Special Equipment</name>
       </mods>
       <seats>4</seats>
     </vehicle>
@@ -8643,7 +8849,7 @@
       <mods>
         <name>Gecko Grips (Drone)</name>
         <name rating="1">Realistic Features</name>
-        <name select="Engineering laser">Special Equipment</name>
+        <name select="Engineering Laser">Special Equipment</name>
         <name>Rigger Interface</name>
       </mods>
       <modslots>0</modslots>
@@ -8793,6 +8999,27 @@
           <name>Sensor Array</name>
           <rating>4</rating>
           <maxrating>4</maxrating>
+          <gears>
+            <gear>
+              <!-- Ultrasound (Sensor function) -->
+              <id>e140b671-dc22-429d-b12a-dfbf46951049</id>
+            </gear>
+            <gear>
+              <!-- Camera (Sensor function) -->
+              <id>ffc069af-d3ec-4201-887c-0178dcdfeef9</id>
+              <rating>4</rating>
+              <gears>
+                <gear>
+                  <!-- Low Light Vision (Vision enhancement) -->
+                  <id>287c6d58-2217-48b2-9e14-6ba23584939a</id>
+                </gear>
+                <gear>
+                  <!-- Thermographic Vision (Vision enhancement) -->
+                  <id>f7f74a85-bd3b-4a46-9c3b-80688c72ef51</id>
+                </gear>
+              </gears>
+            </gear>
+          </gears>
         </gear>
       </gears>
       <mods>
@@ -8886,7 +9113,10 @@
       <sensor>1</sensor>
       <speed>1</speed>
       <gears>
-        <gear>Grenade: Flash-Pak</gear>
+        <gear>
+          <name>Grenade: Flash-Pak</name>
+          <qty>200</qty>
+        </gear>
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
@@ -8905,7 +9135,29 @@
           <size>Standard (Drone)</size>
           <visibility>External</visibility>
         </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+          <allowedweapons>Riot Shield</allowedweapons>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+          <allowedweapons>Riot Shield</allowedweapons>
+        </weaponmount>
       </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Riot Shield</name>
+        </weapon>
+        <weapon>
+          <name>Riot Shield</name>
+        </weapon>
+      </weapons>
     </vehicle>
     <vehicle>
       <id>3524337b-03e3-4218-b721-d1df2cc4a8c7</id>
@@ -8927,6 +9179,35 @@
           <name>Sensor Array</name>
           <rating>4</rating>
           <maxrating>4</maxrating>
+          <gears>
+            <gear>
+              <!-- Camera (Sensor function) -->
+              <id>ffc069af-d3ec-4201-887c-0178dcdfeef9</id>
+              <rating>4</rating>
+              <gears>
+                <gear>
+                  <!-- Low Light Vision (Vision enhancement) -->
+                  <id>287c6d58-2217-48b2-9e14-6ba23584939a</id>
+                </gear>
+                <gear>
+                  <!-- Thermographic Vision (Vision enhancement) -->
+                  <id>f7f74a85-bd3b-4a46-9c3b-80688c72ef51</id>
+                </gear>
+              </gears>
+            </gear>
+            <gear>
+              <!-- Ultrasound (Sensor function) -->
+              <id>e140b671-dc22-429d-b12a-dfbf46951049</id>
+            </gear>
+            <gear>
+              <!-- Geiger Counter (Sensor function) -->
+              <id>d98f419f-7625-4228-9723-0217950d8155</id>
+            </gear>
+            <gear>
+              <!-- Olfactory Scanner (Sensor function) -->
+              <id>c763fac2-8b08-4c61-8dc2-6291d905a2df</id>
+            </gear>
+          </gears>
         </gear>
         <gear rating="3" select="Sonic Cannon">[Weapon] Targeting Autosoft</gear>
       </gears>
@@ -8934,6 +9215,18 @@
         <name>Spotlight (Drone)</name>
         <name>Rigger Interface</name>
       </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+          <allowedweapons>Siemens FWD Screamer Sonic Cannon</allowedweapons>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>Siemens FWD Screamer Sonic Cannon</weapon>
+      </weapons>
       <modslots>0</modslots>
       <seats>0</seats>
     </vehicle>
@@ -9142,6 +9435,9 @@
         <name>Drone Leg</name>
         <name>Drone Leg</name>
         <name>Rigger Interface</name>
+        <name select="Rescue Tool">Special Equipment</name>
+        <name select="Fire Extinguisher">Special Equipment</name>
+        <name select="Handcuffs">Special Equipment</name>
       </mods>
       <modslots>0</modslots>
       <seats>0</seats>
@@ -9311,7 +9607,7 @@
         <name>Rigger Interface</name>
         <name>Enhanced Image Screens</name>
       </mods>
-      <seats>2-6</seats>
+      <seats>6</seats>
     </vehicle>
     <vehicle>
       <id>7b728361-e755-4c86-815b-3018b17e7753</id>
@@ -9400,11 +9696,11 @@
         <name>Interior Cameras</name>
         <name>Rigger Interface</name>
       </mods>
-      <seats>8-10</seats>
+      <seats>10</seats>
     </vehicle>
     <vehicle>
       <id>188daf6f-4b37-4e6f-a4a7-d7a186643787</id>
-      <name>Eurocopter FC</name>
+      <name>Eurocopter Flying Commuter</name>
       <page>219</page>
       <source>SHB3</source>
       <accel>3</accel>
@@ -9425,20 +9721,42 @@
         </gear>
       </gears>
       <mods>
-        <name>ECM</name>
+        <name rating="1">ECM</name> <!-- no rating specified in book -->
         <name rating="1">Passenger Protection System</name> <!-- no rating specified in book -->
         <name>Amenities (Luxury)</name>
         <name>Rigger Interface</name>
       </mods>
       <seats>8</seats>
     </vehicle>
-    <!-- Missing: EMC Kommodore (Would require adjustments in code,
-         since it uses building block where each part receives part of the slots) -->
+    <vehicle>
+      <id>f755d5a0-bc18-49fb-bc91-de8ae4756eca</id>
+      <name>EMC Commodore</name>
+      <page>220</page>
+      <source>SHB3</source>
+      <accel>2</accel>
+      <armor>8</armor>
+      <avail>10R</avail>
+      <body>10</body>
+      <category>Trucks</category>
+      <cost>28000</cost>
+      <handling>3/2</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <seats>2</seats>
+    </vehicle>
     <!-- End Region -->
     <!-- Region Hamburg -->
     <vehicle>
       <id>18f41586-7f0f-4ca1-8881-eccdabc3351d</id>
-      <name>MK R/Evolution</name>
+      <name>Messerschmitt-Kawasaki R/Evolution</name>
       <page>174</page>
       <source>HAMG</source>
       <accel>3/2</accel>
@@ -9458,6 +9776,9 @@
           <maxrating>6</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name>Secondary Propulsion (Amphibious, Surface)</name>
+      </mods>
       <seats>1</seats>
     </vehicle>
     <vehicle>
@@ -9560,11 +9881,14 @@
           <maxrating>7</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name rating="2">Life Support</name>
+      </mods>
       <seats>7</seats>
     </vehicle>
     <vehicle>
       <id>94318a48-9f0d-4c9b-ac3e-9e35d31ffb08</id>
-      <name>MK Harbor Sentry</name>
+      <name>Messerschmitt-Kawasaki Harbor Sentry</name>
       <page>176</page>
       <source>HAMG</source>
       <accel>4</accel>
@@ -9578,12 +9902,51 @@
       <sensor>5</sensor>
       <speed>6</speed>
       <gears>
+        <gear rating="5" select="Stoner-Ares M202">[Weapon] Targeting Autosoft</gear>
+        <gear rating="4" select="GE Vindicator Minigun">[Weapon] Targeting Autosoft</gear>
+        <gear>Smartsoft</gear>
+        <gear rating="3">Clearsight Autosoft</gear>
         <gear>
           <name>Sensor Array</name>
           <rating>5</rating>
           <maxrating>7</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name rating="2">Anti-Theft System</name>
+        <name>Standard Drone Rack (Small)</name>
+        <name>Standard Drone Rack (Small)</name>
+        <name rating="2">Passenger Protection System</name>
+        <name>Searchlight</name>
+      </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Heavy</size>
+          <visibility>External</visibility>
+          <mods>
+            <mod>Ammo Bin</mod>
+          </mods>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
+          <size>Heavy</size>
+          <visibility>External</visibility>
+          <mods>
+            <mod>Ammo Bin</mod>
+          </mods>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Stoner-Ares M202</name>
+        </weapon>
+        <weapon>
+          <name>GE Vindicator Minigun</name>
+        </weapon>
+      </weapons>
       <seats>6</seats>
     </vehicle>
     <vehicle>
@@ -9967,7 +10330,7 @@
     <!-- Region SOTA 2080 -->
     <vehicle>
       <id>1b47defa-56d5-4827-b57b-2b4d7b1051a0</id>
-      <name>BMW GGX Sandleopard</name>
+      <name>BMW GGX "Sand Leopard"</name>
       <page>15</page>
       <source>SOTG</source>
       <accel>2</accel>
@@ -9996,7 +10359,7 @@
     </vehicle>
     <vehicle>
       <id>e5fc5640-a49c-4b01-98b0-6456b867fb4c</id>
-      <name>Jena Robotik Mewero (Minidrone)</name>
+      <name>Jena Robotik MeWeRo</name>
       <page>23</page>
       <source>SOTG</source>
       <accel>1</accel>
@@ -10018,7 +10381,10 @@
       </gears>
       <mods>
         <name>Rigger Interface</name>
+        <name>Gecko Grips (Drone)</name>
+        <name select="RFID Tag Switcher">Special Equipment</name>
       </mods>
+      <modslots>0</modslots>
     </vehicle>
     <vehicle>
       <id>8e710ab0-637a-43a1-93a2-66120e7dbea5</id>
@@ -10075,8 +10441,136 @@
       </mods>
     </vehicle>
     <vehicle>
+      <id>f6dd8b88-ff77-48b2-b907-9a7a75377110</id>
+      <name>Shiawase Kurina 162</name>
+      <page>20</page>
+      <source>SOTG</source>
+      <accel>1</accel>
+      <armor>8</armor>
+      <avail>8</avail>
+      <body>5</body>
+      <category>Drones: Medium</category>
+      <cost>8500</cost>
+      <handling>3</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>2</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>4</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Rigger Interface</name>
+        <name>Primitive Drone Arm</name>
+      </mods>
+      <modslots>3</modslots>
+    </vehicle>
+    <vehicle>
+      <id>41f752a5-d3b3-4a90-babc-b7d304db2577</id>
+      <name>Caterpillar Demolitionman</name>
+      <page>21</page>
+      <source>SOTG</source>
+      <accel>1</accel>
+      <armor>12</armor>
+      <avail>8</avail>
+      <body>8</body>
+      <category>Drones: Large</category>
+      <cost>24000</cost>
+      <handling>3</handling>
+      <pilot>3</pilot>
+      <sensor>2</sensor>
+      <speed>2</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>5</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Rigger Interface</name>
+        <name>Primitive Drone Arm</name>
+        <name>Multifuel Engine</name>
+        <name select="Dozer Blade">Special Equipment</name>
+        <name>Off-Road Suspension</name>
+      </mods>
+      <modslots>0</modslots>
+    </vehicle>
+    <vehicle>
+      <id>a38bff97-67ce-4346-abd3-256565b3504b</id>
+      <name>AGC Resilient</name>
+      <page>22</page>
+      <source>SOTG</source>
+      <accel>2</accel>
+      <armor>8</armor>
+      <avail>14R</avail>
+      <body>5</body>
+      <category>Drones: Anthro</category>
+      <cost>129000</cost>
+      <handling>4</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>2</speed>
+      <gears>
+        <gear select="Automotive Mechanic" rating="3">Skill Autosoft</gear>
+        <gear select="Industrial Mechanic" rating="3">Skill Autosoft</gear>
+        <gear select="Survival" rating="3">Skill Autosoft</gear>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+        <name>Rigger Interface</name>
+        <name>Extreme Environment Modification</name>
+        <name select="Welding Torch">Special Equipment</name>
+        <name select="Tool Arm">Special Equipment</name>
+        <name select="Chemical Detector">Special Equipment</name>
+        <name>Touch Sensors</name>
+      </mods>
+      <modslots>0</modslots>
+    </vehicle>
+    <vehicle>
+      <id>664bbde6-a2a6-4d85-a991-612773f7932e</id>
+      <name>Renraku Lotse</name>
+      <page>24</page>
+      <source>SOTG</source>
+      <accel>1</accel>
+      <armor>8</armor>
+      <avail>10</avail>
+      <body>8</body>
+      <category>Drones: Large</category>
+      <cost>30000</cost>
+      <handling>1</handling>
+      <pilot>2</pilot>
+      <sensor>3</sensor>
+      <speed>1</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>5</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Rigger Interface</name>
+        <name>Extreme Environment Modification</name>
+        <name select="Anchor Mechanism">Special Equipment</name>
+        <name select="Escape Capsule">Special Equipment</name>
+      </mods>
+      <modslots>0</modslots>
+    </vehicle>
+    <vehicle>
       <id>be13725c-d5cd-4855-96f6-a07de090b58d</id>
-      <name>Eurocar Escape FüKomKW</name>
+      <name>Eurocar Escape Command and Control Vehicle</name>
       <source>SOTG</source>
       <page>16</page>
       <accel>3</accel>
@@ -10114,7 +10608,7 @@
     </vehicle>
     <vehicle>
       <id>3385c5ce-0224-41be-bede-ef908f0af007</id>
-      <name>Eurocar Escape MzKW D</name>
+      <name>Eurocar Escape Multipurpose Vehicle Type D</name>
       <source>SOTG</source>
       <page>16</page>
       <accel>3</accel>
@@ -10169,7 +10663,7 @@
     </vehicle>
     <vehicle>
       <id>1af96573-ee09-4bc9-8598-75f62bccfebc</id>
-      <name>Eurocar Escape DeKW</name>
+      <name>Eurocar Escape Decontamination Vehicle</name>
       <source>SOTG</source>
       <page>16</page>
       <accel>2</accel>
@@ -10223,7 +10717,7 @@
     </vehicle>
     <vehicle>
       <id>7d708ed4-02ce-4047-91bb-6bce6bee03aa</id>
-      <name>THW MzKW C</name>
+      <name>BMW X Infinity Multipurpose Utility Vehicle Type C</name>
       <source>SOTG</source>
       <page>16</page>
       <accel>2</accel>
@@ -10266,7 +10760,7 @@
     </vehicle>
     <vehicle>
       <id>143ec17c-1b87-4cb8-aea7-0a8af46f0f76</id>
-      <name>ZET Commando</name>
+      <name>BMW X Infinity Zone Decontamination Team Commando</name>
       <source>SOTG</source>
       <page>16</page>
       <accel>3</accel>
@@ -10305,6 +10799,214 @@
           <visibility>External</visibility>
         </weaponmount>
       </weaponmounts>
+    </vehicle>
+    <!-- End Region -->
+    <!-- Region Schattenload 3 -->
+    <vehicle>
+      <id>94524d79-72f6-4d98-87b1-ce874a6a9e9e</id>
+      <name>Sony Economically-4</name>
+      <page>3</page>
+      <source>SLG3</source>
+      <accel>1</accel>
+      <armor>3</armor>
+      <avail>4</avail>
+      <body>3</body>
+      <category>Drones: Anthro</category>
+      <cost>18000</cost>
+      <handling>2</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+        <name>Rigger Interface</name>
+      </mods>
+      <modslots>0</modslots>
+    </vehicle>
+    <vehicle>
+      <id>74581303-4417-42f1-ad22-916197ab3697</id>
+      <name>Sony Reliable-4</name>
+      <page>3</page>
+      <source>SLG3</source>
+      <accel>2</accel>
+      <armor>3</armor>
+      <avail>12R</avail>
+      <body>4</body>
+      <category>Drones: Anthro</category>
+      <cost>34000</cost>
+      <handling>2</handling>
+      <pilot>4</pilot>
+      <sensor>4</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>6</maxrating>
+        </gear>
+        <gear>
+          <name>Holster</name>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+        <name>Rigger Interface</name>
+        <name select="Emotive Display">Special Equipment</name>
+        <name select="Forearm Guard">Special Equipment</name>
+      </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Light</size>
+          <visibility>External</visibility>
+          <allowedweapons>Underbarrel Grenade Launcher</allowedweapons>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Underbarrel Grenade Launcher</name>
+        </weapon>
+      </weapons>
+    </vehicle>
+    <vehicle>
+      <id>34e6af17-7718-4d9b-9d40-263c692763fe</id>
+      <name>Sony Versatile Cologne Edition</name>
+      <page>3</page>
+      <source>SLG3</source>
+      <accel>1</accel>
+      <armor>0</armor>
+      <avail>18R</avail>
+      <body>3</body>
+      <category>Drones: Anthro</category>
+      <cost>23000</cost>
+      <handling>2</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>6</maxrating>
+        </gear>
+        <gear>
+          <name>Holster</name>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+        <name>Rigger Interface</name>
+        <name select="Candy Launcher">Special Equipment</name>
+      </mods>
+      <modslots>0</modslots>
+    </vehicle>
+    <vehicle>
+      <id>b4ad7e5f-2e75-4fd7-bcae-160a09ca27c6</id>
+      <name>Sony Orderly-4</name>
+      <page>3</page>
+      <source>SLG3</source>
+      <accel>1</accel>
+      <armor>3</armor>
+      <avail>11R</avail>
+      <body>4</body>
+      <category>Drones: Anthro</category>
+      <cost>38000</cost>
+      <handling>4</handling>
+      <pilot>4</pilot>
+      <sensor>4</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>6</maxrating>
+        </gear>
+        <gear>
+          <name>Holster</name>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+        <name>Rigger Interface</name>
+        <name select="Emotive Display">Special Equipment</name>
+      </mods>
+    </vehicle>
+    <!-- End Region -->
+    <!-- Region Schattenload 7 -->
+    <vehicle>
+      <id>4f5c48f2-f370-437c-a656-3c354e8586e3</id>
+      <name>Mercedes Multimog-D1</name>
+      <page>1</page>
+      <source>SLG7</source>
+      <accel>1</accel>
+      <armor>16</armor>
+      <avail>0</avail>
+      <body>16</body>
+      <category>Trucks</category>
+      <cost>45000</cost>
+      <handling>3/4</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>bfdd8849-c104-4df5-ae67-61ef34d41d62</id>
+      <name>Mercedes Multimog-K4 "Gryphon"</name>
+      <page>1</page>
+      <source>SLG7</source>
+      <accel>1</accel>
+      <armor>18</armor>
+      <avail>12</avail>
+      <body>18</body>
+      <category>Trucks</category>
+      <cost>83000</cost>
+      <handling>3/4</handling>
+      <pilot>4</pilot>
+      <sensor>4</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Rigger Interface</name>
+        <name rating="1">ECM</name> <!-- no rating specified in book -->
+        <name>Landing Drone Rack (Small)</name> <!-- no size specified in book -->
+        <name>Landing Drone Rack (Small)</name> <!-- no size specified in book -->
+        <name>Satellite Link</name>
+      </mods>
+      <seats>6</seats>
     </vehicle>
     <!-- End Region -->
     <!-- Region Krime Katalog -->
@@ -10994,6 +11696,115 @@
       <rating>0</rating>
       <slots>0</slots>
       <hide />
+    </mod>
+    <mod>
+      <id>b93d5f90-3fbe-4513-b70f-afbc5eed3db6</id>
+      <name>Shiawase Motors Shuriken Tires</name>
+      <page>44</page>
+      <source>SAG</source>
+      <avail>6</avail>
+      <category>Model-Specific</category>
+      <cost>Rating * 300</cost>
+      <rating>qty</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>Shiawase Motors Shuriken</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>8fac73e5-f91b-4652-bfd5-932c548355d1</id>
+      <name>Dynamic Color Change System</name>
+      <page>49</page>
+      <source>SAG</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <OR>
+            <name>Mercedes Click</name>
+          </OR>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>cce1b3e5-2eef-4d5a-a3ec-69838dae40c7</id>
+      <name>Caterpillar Omniwinder Tires</name>
+      <page>52</page>
+      <source>SAG</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>Rating * 2000</cost>
+      <rating>qty</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>Caterpillar Omniwinder</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>d8cf4bf4-b680-4c76-9eb3-19c1870f767f</id>
+      <name>Drop Tank</name>
+      <page>55</page>
+      <source>SAG</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <OR>
+            <name>Kamow Ka-226 Sergej (Firefighter Variant)</name>
+            <name>Kamow Ka-60 Kasatka (Firefighter Variant)</name>
+          </OR>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>6b3de360-77b1-4d3a-ac98-a6ab5791461a</id>
+      <name>E-Foil</name>
+      <page>186</page>
+      <source>SHB</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>2000</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <OR>
+            <name>Mercedes-Benz CityMog / Dodge City</name>
+            <name>Mercedes-Benz CityMog / Dodge City CM-X (Pickup)</name>
+            <name>Mercedes-Benz CityMog / Dodge City CM Traveler (Minivan)</name>
+            <name>Mercedes-Benz CityMog / Dodge City CM Elite (Luxury Minivan)</name>
+          </OR>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>5db86ca6-2019-45f4-b9bf-5d24a75bff82</id>
+      <name>EMC Commodore Module</name>
+      <page>220</page>
+      <source>SHB3</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>2000</cost>
+      <rating>0</rating>
+      <slots>-4</slots>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <vehicledetails>
+          <name>EMC Commodore</name>
+        </vehicledetails>
+      </required>
     </mod>
     <!-- End Region -->
     <!-- Region Powertrain-->
@@ -12842,6 +13653,14 @@
         <handling>-1</handling>
         <offroadhandling>+1</offroadhandling>
       </bonus>
+      <forbidden>
+        <vehicledetails>
+          <OR>
+            <name>Shiawase Motors Shuriken</name>
+            <name>Caterpillar Omniwinder</name>
+          </OR>
+        </vehicledetails>
+      </forbidden>
     </mod>
     <mod>
       <id>bac2fcca-1edd-4814-ba50-31d63f031d4e</id>
@@ -12857,6 +13676,14 @@
         <handling>+1</handling>
         <offroadhandling>-1</offroadhandling>
       </bonus>
+      <forbidden>
+        <vehicledetails>
+          <OR>
+            <name>Shiawase Motors Shuriken</name>
+            <name>Caterpillar Omniwinder</name>
+          </OR>
+        </vehicledetails>
+      </forbidden>
     </mod>
     <mod>
       <id>aba3338c-0a54-4486-84a4-2e74524b63de</id>
@@ -12868,6 +13695,14 @@
       <cost>Rating * 250</cost>
       <rating>qty</rating>
       <slots>0</slots>
+      <forbidden>
+        <vehicledetails>
+          <OR>
+            <name>Shiawase Motors Shuriken</name>
+            <name>Caterpillar Omniwinder</name>
+          </OR>
+        </vehicledetails>
+      </forbidden>
     </mod>
     <mod>
       <id>d8eb6a6e-3da1-4e22-96d7-4f634ad77301</id>

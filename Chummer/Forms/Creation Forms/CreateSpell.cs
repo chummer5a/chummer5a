@@ -504,9 +504,9 @@ namespace Chummer
                                 Interlocked.Decrement(ref _intSkipRefresh);
                             }
                         }
-                        await chkModifier1.DoThreadSafeAsync(x => x.Enabled = !chkModifier2.DoThreadSafeFunc(y => y.Checked) && !chkModifier3.DoThreadSafeFunc(y => y.Checked)).ConfigureAwait(false);
-                        await chkModifier2.DoThreadSafeAsync(x => x.Enabled = !chkModifier1.DoThreadSafeFunc(y => y.Checked) && !chkModifier3.DoThreadSafeFunc(y => y.Checked)).ConfigureAwait(false);
-                        await chkModifier3.DoThreadSafeAsync(x => x.Enabled = !chkModifier1.DoThreadSafeFunc(y => y.Checked) && !chkModifier2.DoThreadSafeFunc(y => y.Checked)).ConfigureAwait(false);
+                        await chkModifier1.DoThreadSafeAsync(x => x.Enabled = !chkModifier2.Checked && !chkModifier3.Checked).ConfigureAwait(false);
+                        await chkModifier2.DoThreadSafeAsync(x => x.Enabled = !chkModifier1.Checked && !chkModifier3.Checked).ConfigureAwait(false);
+                        await chkModifier3.DoThreadSafeAsync(x => x.Enabled = !chkModifier1.Checked && !chkModifier2.Checked).ConfigureAwait(false);
 
                         // Minor Change and Major Change cannot be selected at the same time.
                         if (await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
@@ -559,11 +559,11 @@ namespace Chummer
 
         private async void chkRestricted_CheckedChanged(object sender, EventArgs e)
         {
-            await chkVeryRestricted.DoThreadSafeAsync(x => x.Enabled = !chkRestricted.DoThreadSafeFunc(y => y.Checked)).ConfigureAwait(false);
+            await chkVeryRestricted.DoThreadSafeAsync(x => x.Enabled = !chkRestricted.Checked).ConfigureAwait(false);
             await CalculateDrain().ConfigureAwait(false);
             await txtRestriction.DoThreadSafeAsync(x =>
             {
-                x.Enabled = chkRestricted.DoThreadSafeFunc(y => y.Checked) || chkVeryRestricted.DoThreadSafeFunc(y => y.Checked);
+                x.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
                 if (!x.Enabled)
                     x.Text = string.Empty;
             }).ConfigureAwait(false);
@@ -571,11 +571,11 @@ namespace Chummer
 
         private async void chkVeryRestricted_CheckedChanged(object sender, EventArgs e)
         {
-            await chkRestricted.DoThreadSafeAsync(x => x.Enabled = !chkVeryRestricted.DoThreadSafeFunc(y => y.Checked)).ConfigureAwait(false);
+            await chkRestricted.DoThreadSafeAsync(x => x.Enabled = !chkVeryRestricted.Checked).ConfigureAwait(false);
             await CalculateDrain().ConfigureAwait(false);
             await txtRestriction.DoThreadSafeAsync(x =>
             {
-                x.Enabled = chkRestricted.DoThreadSafeFunc(y => y.Checked) || chkVeryRestricted.DoThreadSafeFunc(y => y.Checked);
+                x.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
                 if (!x.Enabled)
                     x.Text = string.Empty;
             }).ConfigureAwait(false);

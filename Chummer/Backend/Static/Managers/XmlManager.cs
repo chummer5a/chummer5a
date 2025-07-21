@@ -1219,8 +1219,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             // Do not check required or forbidden nodes because ids within those are always references to an entry, not a new entry
             if (string.Equals(xmlParentNode.Name, "required", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(xmlParentNode.Name, "forbidden", StringComparison.OrdinalIgnoreCase))
+                || string.Equals(xmlParentNode.Name, "forbidden", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(xmlParentNode.Name, "usegear", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(xmlParentNode.Name, "subsystems", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(xmlParentNode.Name, "underbarrels", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(xmlParentNode.Name, "bonus", StringComparison.OrdinalIgnoreCase))
                 return;
+            bool blnIsTopLevelGroupNode = string.Equals(xmlParentNode.Name, "chummer", StringComparison.OrdinalIgnoreCase);
             using (XmlNodeList xmlChildNodeList = xmlParentNode.SelectNodes("*"))
             {
                 if (!(xmlChildNodeList?.Count > 0))
@@ -1231,7 +1236,17 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     // Do not check required or forbidden nodes because ids within those are always references to an entry, not a new entry
                     if (string.Equals(xmlLoopNode.Name, "required", StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(xmlLoopNode.Name, "forbidden", StringComparison.OrdinalIgnoreCase))
+                        || string.Equals(xmlLoopNode.Name, "forbidden", StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(xmlLoopNode.Name, "usegear", StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(xmlLoopNode.Name, "subsystems", StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(xmlLoopNode.Name, "underbarrels", StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(xmlLoopNode.Name, "bonus", StringComparison.OrdinalIgnoreCase))
+                        continue;
+                    if (!blnIsTopLevelGroupNode
+                        && (string.Equals(xmlLoopNode.Name, "gears", StringComparison.OrdinalIgnoreCase)
+                            || string.Equals(xmlLoopNode.Name, "mods", StringComparison.OrdinalIgnoreCase)
+                            || string.Equals(xmlLoopNode.Name, "accessories", StringComparison.OrdinalIgnoreCase)
+                            || string.Equals(xmlLoopNode.Name, "weaponmounts", StringComparison.OrdinalIgnoreCase)))
                         continue;
                     string strId = xmlLoopNode["id"]?.InnerText;
                     if (!string.IsNullOrEmpty(strId))

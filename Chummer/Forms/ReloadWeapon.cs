@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Backend.Equipment;
 
@@ -173,16 +175,24 @@ namespace Chummer
         /// <summary>
         /// Name of the ammunition that was selected.
         /// </summary>
-        public string SelectedAmmo => cboAmmo.DoThreadSafeFunc(x => x.SelectedValue)?.ToString() ?? string.Empty;
+        public async Task<string> GetSelectedAmmoAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await cboAmmo.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false))?.ToString() ?? string.Empty;
+        }
 
         /// <summary>
         /// Number of rounds that were selected to be loaded.
         /// </summary>
-        public int SelectedCount =>
-            int.TryParse(cboType.DoThreadSafeFunc(x => x.Text), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo,
-                out int intReturn)
-                ? intReturn
+        public async Task<decimal> GetSelectedCountAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strText = await cboType.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+            return decimal.TryParse(strText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                out decimal decReturn)
+                ? decReturn
                 : _objWeapon?.AmmoRemaining ?? 0;
+        }
 
         #endregion Properties
 

@@ -835,19 +835,19 @@ namespace Chummer
             if (EditImprovementObject != null)
             {
                 // Copy the notes over to the new item.
-                strNotes = EditImprovementObject.Notes;
+                strNotes = await EditImprovementObject.GetNotesAsync(token).ConfigureAwait(false);
                 intOrder = EditImprovementObject.SortOrder;
                 await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Custom, EditImprovementObject.SourceName, token).ConfigureAwait(false);
             }
 
             // Find the newly-created Improvement and attach its custom name.
-            Improvement objImprovement = _objCharacter.Improvements.FirstOrDefault(imp => imp.SourceName == strGuid);
+            Improvement objImprovement = await _objCharacter.Improvements.FirstOrDefaultAsync(imp => imp.SourceName == strGuid, token).ConfigureAwait(false);
             if (objImprovement != null)
             {
                 objImprovement.CustomName = strName;
                 objImprovement.CustomId = strSelectedType;
                 objImprovement.Custom = true;
-                objImprovement.Notes = strNotes;
+                await objImprovement.SetNotesAsync(strNotes, token).ConfigureAwait(false);
                 objImprovement.SortOrder = intOrder;
                 objImprovement.CustomGroup = _strCustomGroup;
                 NewImprovement = objImprovement;

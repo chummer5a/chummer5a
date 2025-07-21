@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -145,8 +146,9 @@ namespace Chummer
                                 : "Tip_Spirit_LinkSpirit", token: _objMyToken).ConfigureAwait(false), _objMyToken).ConfigureAwait(false);
                     string strTooltip =
                         await LanguageManager.GetStringAsync("Tip_Spirit_EditNotes", token: _objMyToken).ConfigureAwait(false);
-                    if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
+                    string strNotes = await _objSpirit.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strNotes))
+                        strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
                     await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
                 }
                 else
@@ -168,8 +170,9 @@ namespace Chummer
                                 : "Tip_Sprite_LinkSpirit", token: _objMyToken).ConfigureAwait(false), _objMyToken).ConfigureAwait(false);
                     string strTooltip =
                         await LanguageManager.GetStringAsync("Tip_Sprite_EditNotes", token: _objMyToken).ConfigureAwait(false);
-                    if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
+                    string strNotes = await _objSpirit.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strNotes))
+                        strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
                     await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
                 }
 
@@ -430,23 +433,26 @@ namespace Chummer
         {
             try
             {
+                string strNotes = await _objSpirit.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                Color objColor = await _objSpirit.GetNotesColorAsync(_objMyToken).ConfigureAwait(false);
                 using (ThreadSafeForm<EditNotes> frmSpiritNotes = await ThreadSafeForm<EditNotes>
-                           .GetAsync(() => new EditNotes(_objSpirit.Notes, _objSpirit.NotesColor), _objMyToken)
+                           .GetAsync(() => new EditNotes(strNotes, objColor), _objMyToken)
                            .ConfigureAwait(false))
                 {
                     if (await frmSpiritNotes.ShowDialogSafeAsync(_objSpirit.CharacterObject, _objMyToken).ConfigureAwait(false) !=
                         DialogResult.OK)
                         return;
-                    _objSpirit.Notes = frmSpiritNotes.MyForm.Notes;
+                    await _objSpirit.SetNotesAsync(frmSpiritNotes.MyForm.Notes, _objMyToken).ConfigureAwait(false);
+                    await _objSpirit.SetNotesColorAsync(frmSpiritNotes.MyForm.NotesColor, _objMyToken).ConfigureAwait(false);
                 }
 
                 string strTooltip = await LanguageManager
                     .GetStringAsync(await _objSpirit.GetEntityTypeAsync(_objMyToken).ConfigureAwait(false) == SpiritType.Spirit
                         ? "Tip_Spirit_EditNotes"
                         : "Tip_Sprite_EditNotes", token: _objMyToken).ConfigureAwait(false);
-
-                if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                    strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
+                strNotes = await _objSpirit.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strNotes))
+                    strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
                 await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)

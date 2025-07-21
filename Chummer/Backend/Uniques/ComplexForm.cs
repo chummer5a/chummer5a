@@ -45,6 +45,7 @@ namespace Chummer
         private Guid _guiID;
         private Guid _guiSourceID = Guid.Empty;
         private string _strName = string.Empty;
+        private string _strUseSkill = string.Empty;
         private string _strTarget = string.Empty;
         private string _strDuration = string.Empty;
         private string _strFv = string.Empty;
@@ -85,6 +86,7 @@ namespace Chummer
                 }
                 objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName);
+                objXmlComplexFormNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("target", ref _strTarget);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -144,6 +146,7 @@ namespace Chummer
                 }
                 objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName);
+                objXmlComplexFormNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("target", ref _strTarget);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -156,10 +159,10 @@ namespace Chummer
                 objXmlComplexFormNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
                 {
-                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlComplexFormNode, Name, await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
-                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+                    await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(objXmlComplexFormNode, Name, await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
 
                 if (objXmlComplexFormNode["bonus"] != null)
@@ -201,6 +204,7 @@ namespace Chummer
                 objWriter.WriteElementString("sourceid", SourceIDString);
                 objWriter.WriteElementString("guid", InternalId);
                 objWriter.WriteElementString("name", _strName);
+                objWriter.WriteElementString("useskill", _strUseSkill);
                 objWriter.WriteElementString("target", _strTarget);
                 objWriter.WriteElementString("duration", _strDuration);
                 objWriter.WriteElementString("fv", _strFv);
@@ -234,6 +238,7 @@ namespace Chummer
                     this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
+                objNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
                 objNode.TryGetStringFieldQuickly("target", ref _strTarget);
                 objNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -287,7 +292,7 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)
-                        await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -974,6 +979,23 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Active Skill that should be used with this Complex Form instead of the default one.
+        /// </summary>
+        public string UseSkill
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _strUseSkill;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                    _strUseSkill = value;
+            }
+        }
+
+        /// <summary>
         /// Complex Form's Source.
         /// </summary>
         public string Source
@@ -1061,8 +1083,52 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_strNotes == value)
+                        return;
+                }
                 using (LockObject.EnterUpgradeableReadLock())
                     _strNotes = value;
+            }
+        }
+
+        public async Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strNotes == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _strNotes = value;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1078,12 +1144,106 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
-                    _colNotes = value;
+                {
+                    if (_colNotes == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _colNotes = value;
+                    }
+                }
             }
         }
 
-        public Skill Skill => _objCharacter.SkillsSection.GetActiveSkill("Software");
+        public async Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _colNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _colNotes)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_colNotes == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _colNotes = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public Skill Skill
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    string strSkillKey = UseSkill;
+                    if (string.IsNullOrEmpty(strSkillKey))
+                        strSkillKey = "Software";
+                    return _objCharacter.SkillsSection.GetActiveSkill(strSkillKey);
+                }
+            }
+        }
+
+        public async Task<Skill> GetSkillAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strSkillKey = UseSkill;
+                if (string.IsNullOrEmpty(strSkillKey))
+                    strSkillKey = "Software";
+                return await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync("Software", token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
 
         /// <summary>
         /// The Dice Pool size for the Active Skill required to thread the Complex Form.
@@ -1092,21 +1252,41 @@ namespace Chummer
         {
             get
             {
-                int intReturn = 0;
                 using (LockObject.EnterReadLock())
                 {
                     Skill objSkill = Skill;
-                    if (objSkill != null)
-                    {
-                        intReturn = objSkill.PoolOtherAttribute("RES");
-                        // Add any Specialization bonus if applicable.
-                        intReturn += objSkill.GetSpecializationBonus(CurrentDisplayName);
-                    }
-
+                    int intReturn = objSkill != null
+                        ? objSkill.PoolOtherAttribute("RES") + objSkill.GetSpecializationBonus(CurrentDisplayName)
+                        : 0;
                     // Include any Improvements to Threading.
                     intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ActionDicePool, false, "Threading").StandardRound();
+                    return intReturn;
                 }
+            }
+        }
+
+        /// <summary>
+        /// The Dice Pool size for the Active Skill required to cast the Spell.
+        /// </summary>
+        public async Task<int> GetDicePoolAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                int intReturn = objSkill != null
+                        ? await objSkill.PoolOtherAttributeAsync("RES", token: token).ConfigureAwait(false)
+                            + await objSkill.GetSpecializationBonusAsync(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false)
+                        : 0;
+                // Include any Improvements to Threading.
+                intReturn += (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.ActionDicePool, false, "Threading", token: token).ConfigureAwait(false)).StandardRound();
                 return intReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1132,13 +1312,14 @@ namespace Chummer
                                                    objResonanceAttrib.DisplayValue);
                         }
 
-                        if (Skill != null)
+                        Skill objSkill = Skill;
+                        if (objSkill != null)
                         {
                             if (sbdReturn.Length > 0)
                                 sbdReturn.Append(strSpace).Append('+').Append(strSpace);
-                            sbdReturn.Append(Skill.FormattedDicePool(Skill.PoolOtherAttribute("RES") -
-                                                                     (objResonanceAttrib?.TotalValue ?? 0),
-                                                                     CurrentDisplayName));
+                            sbdReturn.Append(objSkill.FormattedDicePool(objSkill.PoolOtherAttribute("RES") -
+                                                                        (objResonanceAttrib?.TotalValue ?? 0),
+                                                                        CurrentDisplayName));
                         }
 
                         // Include any Improvements to the Spell Category.
@@ -1154,6 +1335,59 @@ namespace Chummer
                         return sbdReturn.ToString();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Tooltip information for the Dice Pool.
+        /// </summary>
+        public async Task<string> GetDicePoolTooltipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdReturn))
+                {
+                    string strFormat = strSpace + "{0}" + strSpace + "({1})";
+                    CharacterAttrib objResonanceAttrib = await _objCharacter.GetAttributeAsync("RES", token: token).ConfigureAwait(false);
+                    if (objResonanceAttrib != null)
+                    {
+                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
+                                               await objResonanceAttrib.GetDisplayNameFormattedAsync(token).ConfigureAwait(false),
+                                               await objResonanceAttrib.GetDisplayValueAsync(token).ConfigureAwait(false));
+                    }
+
+                    Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                    if (objSkill != null)
+                    {
+                        if (sbdReturn.Length > 0)
+                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                        sbdReturn.Append(await objSkill.FormattedDicePoolAsync(
+                            await objSkill.PoolOtherAttributeAsync("RES", token: token).ConfigureAwait(false)
+                            - (objResonanceAttrib != null ? await objResonanceAttrib.GetTotalValueAsync(token).ConfigureAwait(false) : 0),
+                            await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false));
+                    }
+
+                    // Include any Improvements to the Spell Category.
+                    foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                 _objCharacter, Improvement.ImprovementType.ActionDicePool, "Threading", token: token).ConfigureAwait(false))
+                    {
+                        if (sbdReturn.Length > 0)
+                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
+                                               await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), objImprovement.Value);
+                    }
+
+                    return sbdReturn.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1279,6 +1513,28 @@ namespace Chummer
                         ? ColorManager.GrayText
                         : ColorManager.WindowText;
                 }
+            }
+        }
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+                {
+                    return Grade != 0
+                        ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                        : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+                }
+                return Grade != 0
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

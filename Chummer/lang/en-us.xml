@@ -2523,6 +2523,14 @@
       <text>Cannot Remove Cyberware</text>
     </string>
     <string>
+      <key>String_SelectFolderForPDFScan</key>
+      <text>Select the folder to scan for PDF files. If there are multiple, select the topmost folder.</text>
+    </string>
+    <string>
+      <key>Message_ScanFoldersRecursively</key>
+      <text>Scan the selected folder recursively (also scan any folders within the selected folder)?</text>
+    </string>
+    <string>
       <key>MessageTitle_FoundPDFsInFolder</key>
       <text>Scan finished</text>
     </string>
@@ -10302,6 +10310,10 @@
     <string>
       <key>String_Scanning_Pattern</key>
       <text>Scanning {0}...</text>
+    </string>
+    <string>
+      <key>String_Fallback_Pattern</key>
+      <text>Fallback {0}</text>
     </string>
     <string>
       <key>String_Initializing</key>

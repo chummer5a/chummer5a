@@ -67,9 +67,10 @@ namespace Chummer
         public AvailabilityValue(int intRating, string strInput, int intBonus = 0, bool blnIncludedInParent = false)
         {
             decimal decValue = 0;
-            if (strInput.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
+            string strAvailExpr = strInput;
+            bool blnDoComplexInitializer = false;
+            if (strAvailExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
             {
-                string strAvailExpr = strInput;
                 if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -97,42 +98,39 @@ namespace Chummer
                 }
                 else
                     AddToParent = false;
-                if (strAvailExpr.Contains("Rating"))
+                if (strAvailExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                 {
-                    string strRating = intRating.ToString(GlobalSettings.InvariantCultureInfo);
-                    strAvailExpr = strAvailExpr.Replace("Rating", strRating).Replace("{Rating}", strRating);
-                }
-                if (decimal.TryParse(strAvailExpr, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decProcessedInput))
-                {
-                    int intValue = decProcessedInput.StandardRound() + intBonus;
-                    if (intValue < 0)
-                        intValue = 0;
-                    _objValueInitializer = new Lazy<int>(() => intValue);
-                    _objAsyncValueInitializer = new AsyncLazy<int>(() => Task.FromResult(intValue), Utils.JoinableTaskFactory);
-                }
-                else
-                {
-                    _objValueInitializer = new Lazy<int>(() =>
+                    if (strAvailExpr.Contains("Rating"))
                     {
-                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAvailExpr);
-                        int intValue = blnIsSuccess ? ((double)objProcess).StandardRound() + intBonus : intBonus;
-                        return Math.Max(intValue, 0);
-                    });
-                    _objAsyncValueInitializer = new AsyncLazy<int>(async () =>
-                    {
-                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr);
-                        int intValue = blnIsSuccess ? ((double)objProcess).StandardRound() + intBonus : intBonus;
-                        return Math.Max(intValue, 0);
-                    }, Utils.JoinableTaskFactory);
+                        string strRating = intRating.ToString(GlobalSettings.InvariantCultureInfo);
+                        strAvailExpr = strAvailExpr.Replace("{Rating}", strRating).Replace("Rating", strRating);
+                    }
+                    blnDoComplexInitializer = strAvailExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue);
                 }
             }
             else
             {
                 Suffix = 'Z';
                 AddToParent = !string.IsNullOrEmpty(strInput) && (strInput.StartsWith('+') || strInput.StartsWith('-'));
-                int intValue = decValue.StandardRound() + intBonus;
-                if (intValue < 0)
-                    intValue = 0;
+            }
+            if (blnDoComplexInitializer)
+            {
+                _objValueInitializer = new Lazy<int>(() =>
+                {
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAvailExpr);
+                    int intValue = blnIsSuccess ? ((double)objProcess).StandardRound() + intBonus : intBonus;
+                    return Math.Max(intValue, 0);
+                });
+                _objAsyncValueInitializer = new AsyncLazy<int>(async () =>
+                {
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr);
+                    int intValue = blnIsSuccess ? ((double)objProcess).StandardRound() + intBonus : intBonus;
+                    return Math.Max(intValue, 0);
+                }, Utils.JoinableTaskFactory);
+            }
+            else
+            {
+                int intValue = Math.Max(decValue.StandardRound() + intBonus, 0);
                 _objValueInitializer = new Lazy<int>(() => intValue);
                 _objAsyncValueInitializer = new AsyncLazy<int>(() => Task.FromResult(intValue), Utils.JoinableTaskFactory);
             }

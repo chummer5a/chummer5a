@@ -214,10 +214,10 @@ namespace Chummer.Backend.Equipment
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             Page, DisplayPage(GlobalSettings.Language), _objCharacter, token);
                     else
-                        Notes = await CommonFunctions.GetBookNotesAsync(objXmlArmorNode, Name,
+                        await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(objXmlArmorNode, Name,
                             await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
                             await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
-                            token).ConfigureAwait(false);
+                            token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
             }
 
@@ -518,7 +518,12 @@ namespace Chummer.Backend.Equipment
             {
                 objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
-            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory)
+                || (_strCategory.EndsWith("Liners") && _objCharacter.LastSavedVersion < new ValueVersion(5, 255, 949)))
+            {
+                // Legacy shim for liners
+                objMyNode.Value?.TryGetStringFieldQuickly("category", ref _strCategory);
+            }
             objNode.TryGetInt32FieldQuickly("armor", ref _intArmorValue);
             objNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
             objNode.TryGetStringFieldQuickly("gearcapacity", ref _strGearCapacity);
@@ -639,7 +644,7 @@ namespace Chummer.Backend.Equipment
                 }
                 await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(_strExtra, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
             finally
             {
@@ -912,8 +917,7 @@ namespace Chummer.Backend.Equipment
                     if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
                     {
                         // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                        int intCurrentRating = await objChild.GetRatingAsync(token).ConfigureAwait(false);
-                        await objChild.SetRatingAsync(intCurrentRating, token).ConfigureAwait(false);
+                        await objChild.SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                 }, token).ConfigureAwait(false);
             }
@@ -1278,6 +1282,21 @@ namespace Chummer.Backend.Equipment
             set => _strNotes = value;
         }
 
+        public Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return Task.FromResult(_strNotes);
+        }
+
+        public Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _strNotes = value;
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Forecolor to use for Notes in treeviews.
         /// </summary>
@@ -1285,6 +1304,21 @@ namespace Chummer.Backend.Equipment
         {
             get => _colNotes;
             set => _colNotes = value;
+        }
+
+        public Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<Color>(token);
+            return Task.FromResult(_colNotes);
+        }
+
+        public Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _colNotes = value;
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -2299,6 +2333,20 @@ namespace Chummer.Backend.Equipment
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }
+        }
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+            {
+                return IncludedInArmor
+                    ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                    : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+            }
+            return IncludedInArmor
+                ? ColorManager.GrayText
+                : ColorManager.WindowText;
         }
 
         #endregion UI Methods

@@ -11726,7 +11726,7 @@ namespace Chummer
                                 await objWriter.WriteElementStringAsync("name", strName, token: token)
                                     .ConfigureAwait(false);
                                 if (GlobalSettings.PrintNotes)
-                                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes, token: token)
+                                    await objWriter.WriteElementStringAsync("notes", await objImprovement.GetNotesAsync(token).ConfigureAwait(false), token: token)
                                         .ConfigureAwait(false);
                             }
                             finally
@@ -11795,7 +11795,7 @@ namespace Chummer
                                 await objWriter.WriteElementStringAsync("name", strName, token: token)
                                     .ConfigureAwait(false);
                                 if (GlobalSettings.PrintNotes)
-                                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes, token: token)
+                                    await objWriter.WriteElementStringAsync("notes", await objImprovement.GetNotesAsync(token).ConfigureAwait(false), token: token)
                                         .ConfigureAwait(false);
                             }
                             finally
@@ -11862,7 +11862,7 @@ namespace Chummer
                                 await objWriter.WriteElementStringAsync("name", strName, token: token)
                                     .ConfigureAwait(false);
                                 if (GlobalSettings.PrintNotes)
-                                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes, token: token)
+                                    await objWriter.WriteElementStringAsync("notes", await objImprovement.GetNotesAsync(token).ConfigureAwait(false), token: token)
                                         .ConfigureAwait(false);
                             }
                             finally
@@ -12383,7 +12383,7 @@ namespace Chummer
                                     .WriteElementStringAsync("customgroup", objImprovement.CustomGroup, token: token)
                                     .ConfigureAwait(false);
                                 if (GlobalSettings.PrintNotes)
-                                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes, token: token)
+                                    await objWriter.WriteElementStringAsync("notes", await objImprovement.GetNotesAsync(token).ConfigureAwait(false), token: token)
                                         .ConfigureAwait(false);
                             }
                             finally
@@ -47795,7 +47795,10 @@ namespace Chummer
 
                                         if (sbdNotes.Length > 0)
                                             sbdNotes.Length -= Environment.NewLine.Length;
-                                        objContact.Notes = sbdNotes.ToString();
+                                        if (blnSync)
+                                            objContact.Notes = sbdNotes.ToString();
+                                        else
+                                            await objContact.SetNotesAsync(sbdNotes.ToString(), token).ConfigureAwait(false);
                                     }
 
                                     if (blnSync)
@@ -47861,6 +47864,7 @@ namespace Chummer
                                         {
                                             Armor objArmor = new Armor(this);
                                             if (blnSync)
+                                            {
                                                 // ReSharper disable once MethodHasAsyncOverload
                                                 objArmor.Create(xmlArmorData,
                                                     xmlArmorToImport.SelectSingleNodeAndCacheExpression(
@@ -47868,22 +47872,25 @@ namespace Chummer
                                                         ?.ValueAsInt
                                                     ?? 0,
                                                     lstWeapons, token: token);
+                                                objArmor.Notes = xmlArmorToImport.SelectSingleNodeAndCacheExpression(
+                                                        "description", token)
+                                                    ?.Value;
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                _lstArmor.Add(objArmor);
+                                            }
                                             else
+                                            {
                                                 await objArmor.CreateAsync(xmlArmorData,
                                                     xmlArmorToImport.SelectSingleNodeAndCacheExpression(
                                                             "@rating", token)
                                                         ?.ValueAsInt
                                                     ?? 0,
                                                     lstWeapons, token: token).ConfigureAwait(false);
-                                            objArmor.Notes = xmlArmorToImport.SelectSingleNodeAndCacheExpression(
-                                                    "description", token)
-                                                ?.Value;
-                                            if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                _lstArmor.Add(objArmor);
-                                            else
+                                                await objArmor.SetNotesAsync(xmlArmorToImport.SelectSingleNodeAndCacheExpression(
+                                                        "description", token)
+                                                    ?.Value, token).ConfigureAwait(false);
                                                 await _lstArmor.AddAsync(objArmor, token).ConfigureAwait(false);
-
+                                            }
                                             foreach (string strName in HeroLabPluginNodeNames)
                                             {
                                                 foreach (XPathNavigator xmlArmorModToImport in xmlArmorToImport
@@ -47902,29 +47909,36 @@ namespace Chummer
                                                         {
                                                             ArmorMod objArmorMod = new ArmorMod(this);
                                                             if (blnSync)
+                                                            {
                                                                 // ReSharper disable once MethodHasAsyncOverload
                                                                 objArmorMod.Create(xmlArmorModData,
                                                                     xmlArmorModToImport
                                                                         .SelectSingleNodeAndCacheExpression(
                                                                             "@rating", token)
                                                                                    ?.ValueAsInt ?? 0, lstWeapons, token: token);
+                                                                objArmorMod.Notes = xmlArmorModToImport
+                                                                    .SelectSingleNodeAndCacheExpression(
+                                                                        "description", token)
+                                                                    ?.Value;
+                                                                objArmorMod.Parent = objArmor;
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                objArmor.ArmorMods.Add(objArmorMod);
+                                                            }
                                                             else
+                                                            {
                                                                 await objArmorMod.CreateAsync(xmlArmorModData,
                                                                     xmlArmorModToImport
                                                                         .SelectSingleNodeAndCacheExpression(
                                                                             "@rating", token)
                                                                         ?.ValueAsInt ?? 0, lstWeapons, token: token).ConfigureAwait(false);
-                                                            objArmorMod.Notes = xmlArmorModToImport
-                                                                .SelectSingleNodeAndCacheExpression(
-                                                                    "description", token)
-                                                                ?.Value;
-                                                            objArmorMod.Parent = objArmor;
-                                                            if (blnSync)
-                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                                objArmor.ArmorMods.Add(objArmorMod);
-                                                            else
+                                                                await objArmorMod.SetNotesAsync(xmlArmorModToImport
+                                                                    .SelectSingleNodeAndCacheExpression(
+                                                                        "description", token)
+                                                                    ?.Value, token).ConfigureAwait(false);
+                                                                objArmorMod.Parent = objArmor;
                                                                 await objArmor.ArmorMods.AddAsync(objArmorMod, token)
                                                                               .ConfigureAwait(false);
+                                                            }
 
                                                             foreach (string strPluginNodeName in
                                                                      HeroLabPluginNodeNames)
@@ -48021,11 +48035,11 @@ namespace Chummer
                                                                                         .SelectSingleNodeAndCacheExpression(
                                                                                             "@quantity", token))
                                                                                     ?.ValueAsInt ?? 1;
-                                                                                objPlugin.Notes
-                                                                                    = (xmlPluginToAdd
+                                                                                await objPlugin.SetNotesAsync(
+                                                                                    (xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
                                                                                             "description", token))
-                                                                                    ?.Value;
+                                                                                    ?.Value, token).ConfigureAwait(false);
                                                                                 await objPlugin
                                                                                     .ProcessHeroLabGearPluginsAsync(
                                                                                         xmlPluginToAdd,
@@ -48091,17 +48105,27 @@ namespace Chummer
                                                                             .ConfigureAwait(false);
                                                         if (objArmorMod != null)
                                                         {
-                                                            objArmorMod.Notes = xmlArmorModToImport
-                                                                .SelectSingleNodeAndCacheExpression(
-                                                                    "description", token)
-                                                                ?.Value;
+                                                            if (blnSync)
+                                                            {
+                                                                objArmorMod.Notes = xmlArmorModToImport
+                                                                    .SelectSingleNodeAndCacheExpression(
+                                                                        "description", token)
+                                                                    ?.Value;
+                                                            }
+                                                            else
+                                                            {
+                                                                await objArmorMod.SetNotesAsync(xmlArmorModToImport
+                                                                    .SelectSingleNodeAndCacheExpression(
+                                                                        "description", token)
+                                                                    ?.Value, token).ConfigureAwait(false);
+                                                            }
                                                             foreach (string strPluginNodeName in
-                                                                     HeroLabPluginNodeNames)
+                                                                        HeroLabPluginNodeNames)
                                                             {
                                                                 foreach (XPathNavigator xmlPluginToAdd in
-                                                                         xmlArmorModToImport
-                                                                             .Select(strPluginNodeName +
-                                                                                 "/item[@useradded != \"no\"]"))
+                                                                            xmlArmorModToImport
+                                                                                .Select(strPluginNodeName +
+                                                                                    "/item[@useradded != \"no\"]"))
                                                                 {
                                                                     Gear objPlugin = new Gear(this);
                                                                     if (blnSync)
@@ -48120,9 +48144,9 @@ namespace Chummer
                                                                             objPlugin.Dispose();
                                                                     }
                                                                     else if (await objPlugin.ImportHeroLabGearAsync(xmlPluginToAdd,
-                                                                                 await objArmorMod.GetNodeAsync(token)
-                                                                                     .ConfigureAwait(false),
-                                                                                 lstWeapons, token).ConfigureAwait(false))
+                                                                                    await objArmorMod.GetNodeAsync(token)
+                                                                                        .ConfigureAwait(false),
+                                                                                    lstWeapons, token).ConfigureAwait(false))
                                                                     {
                                                                         await objArmorMod.GearChildren
                                                                             .AddAsync(objPlugin, token)
@@ -48133,9 +48157,9 @@ namespace Chummer
                                                                 }
 
                                                                 foreach (XPathNavigator xmlPluginToAdd in
-                                                                         xmlArmorModToImport
-                                                                             .Select(strPluginNodeName +
-                                                                                 "/item[@useradded = \"no\"]"))
+                                                                            xmlArmorModToImport
+                                                                                .Select(strPluginNodeName +
+                                                                                    "/item[@useradded = \"no\"]"))
                                                                 {
                                                                     string strGearName = xmlPluginToAdd
                                                                         .SelectSingleNodeAndCacheExpression(
@@ -48185,11 +48209,11 @@ namespace Chummer
                                                                                         .SelectSingleNodeAndCacheExpression(
                                                                                             "@quantity", token))
                                                                                     ?.ValueAsInt ?? 1;
-                                                                                objPlugin.Notes
-                                                                                    = (xmlPluginToAdd
+                                                                                await objPlugin.SetNotesAsync(
+                                                                                    (xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
                                                                                             "description", token))
-                                                                                    ?.Value;
+                                                                                    ?.Value, token).ConfigureAwait(false);
                                                                                 await objPlugin
                                                                                     .ProcessHeroLabGearPluginsAsync(
                                                                                         xmlPluginToAdd,
@@ -48236,9 +48260,9 @@ namespace Chummer
                                                                 objPlugin.Quantity = (xmlArmorModToImport
                                                                     .SelectSingleNodeAndCacheExpression(
                                                                         "@quantity", token))?.ValueAsInt ?? 1;
-                                                                objPlugin.Notes = (xmlArmorModToImport
+                                                                await objPlugin.SetNotesAsync((xmlArmorModToImport
                                                                     .SelectSingleNodeAndCacheExpression(
-                                                                        "description", token))?.Value;
+                                                                        "description", token))?.Value, token).ConfigureAwait(false);
                                                                 await objPlugin.ProcessHeroLabGearPluginsAsync(
                                                                     xmlArmorModToImport,
                                                                     lstWeapons, token).ConfigureAwait(false);
@@ -48288,8 +48312,12 @@ namespace Chummer
                                             (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                         if (objWeapon != null)
                                         {
-                                            objWeapon.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression(
-                                                "description", token)?.Value;
+                                            if (blnSync)
+                                                objWeapon.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression(
+                                                    "description", token)?.Value;
+                                            else
+                                                await objWeapon.SetNotesAsync(xmlPluginToAdd.SelectSingleNodeAndCacheExpression(
+                                                    "description", token)?.Value, token).ConfigureAwait(false);
                                             objWeapon.ProcessHeroLabWeaponPlugins(xmlPluginToAdd, lstWeapons);
                                         }
                                     }
@@ -48370,13 +48398,21 @@ namespace Chummer
                                         = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name", token)?.Value;
                                     if (!string.IsNullOrEmpty(strName))
                                     {
-                                        Cyberware objPlugin = _lstCyberware.FirstOrDefault(x =>
-                                            !string.IsNullOrEmpty(x.ParentID) &&
-                                            (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                        Cyberware objPlugin = blnSync
+                                            ? _lstCyberware.FirstOrDefault(x =>
+                                                !string.IsNullOrEmpty(x.ParentID) &&
+                                                (x.Name.Contains(strName) || strName.Contains(x.Name)))
+                                            : await _lstCyberware.FirstOrDefaultAsync(x =>
+                                                !string.IsNullOrEmpty(x.ParentID) &&
+                                                (x.Name.Contains(strName) || strName.Contains(x.Name)), token).ConfigureAwait(false);
                                         if (objPlugin != null)
                                         {
-                                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression(
-                                                "description", token)?.Value;
+                                            if (blnSync)
+                                                objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression(
+                                                    "description", token)?.Value;
+                                            else
+                                                await objPlugin.SetNotesAsync(xmlPluginToAdd.SelectSingleNodeAndCacheExpression(
+                                                    "description", token)?.Value, token).ConfigureAwait(false);
                                             objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd,
                                                 blnSync ? objPlugin.Grade : await objPlugin.GetGradeAsync(token).ConfigureAwait(false),
                                                 lstWeapons,
@@ -48673,17 +48709,21 @@ namespace Chummer
                                         {
                                             Spell objSpell = new Spell(this);
                                             if (blnSync)
+                                            {
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 objSpell.Create(xmlSpellData, strForcedValue, blnIsLimited);
-                                            else
-                                                await objSpell.CreateAsync(xmlSpellData, strForcedValue, blnIsLimited, token: token).ConfigureAwait(false);
-                                            objSpell.Notes = xmlHeroLabSpell.SelectSingleNodeAndCacheExpression(
-                                                "description", token)?.Value;
-                                            if (blnSync)
+                                                objSpell.Notes = xmlHeroLabSpell.SelectSingleNodeAndCacheExpression(
+                                                    "description", token)?.Value;
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstSpells.Add(objSpell);
+                                            }
                                             else
+                                            {
+                                                await objSpell.CreateAsync(xmlSpellData, strForcedValue, blnIsLimited, token: token).ConfigureAwait(false);
+                                                await objSpell.SetNotesAsync(xmlHeroLabSpell.SelectSingleNodeAndCacheExpression(
+                                                    "description", token)?.Value, token).ConfigureAwait(false);
                                                 await _lstSpells.AddAsync(objSpell, token).ConfigureAwait(false);
+                                            }
                                         }
                                     }
                                 }
@@ -48772,21 +48812,23 @@ namespace Chummer
                                         {
                                             Power objPower = new Power(this);
                                             if (blnSync)
+                                            {
                                                 objPower.Extra = strForcedValue;
-                                            else
-                                                await objPower.SetExtraAsync(strForcedValue, token).ConfigureAwait(false);
-                                            if (blnSync)
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 objPower.Create(xmlPowerData, intRating);
-                                            else
-                                                await objPower.CreateAsync(xmlPowerData, intRating, token: token).ConfigureAwait(false);
-                                            objPower.Notes = xmlHeroLabPower.SelectSingleNodeAndCacheExpression(
-                                                "description", token)?.Value;
-                                            if (blnSync)
+                                                objPower.Notes = xmlHeroLabPower.SelectSingleNodeAndCacheExpression(
+                                                    "description", token)?.Value;
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstPowers.Add(objPower);
+                                            }
                                             else
+                                            {
+                                                await objPower.SetExtraAsync(strForcedValue, token).ConfigureAwait(false);
+                                                await objPower.CreateAsync(xmlPowerData, intRating, token: token).ConfigureAwait(false);
+                                                await objPower.SetNotesAsync(xmlHeroLabPower.SelectSingleNodeAndCacheExpression(
+                                                    "description", token)?.Value, token).ConfigureAwait(false);
                                                 await _lstPowers.AddAsync(objPower, token).ConfigureAwait(false);
+                                            }
                                         }
                                     }
                                 }
@@ -49172,10 +49214,10 @@ namespace Chummer
                                                                    "@quantity", token))
                                                         ?.Value ?? "1",
                                                         GlobalSettings.InvariantCultureInfo);
-                                                objPlugin.Notes = (xmlPluginToAdd
+                                                await objPlugin.SetNotesAsync((xmlPluginToAdd
                                                                          .SelectSingleNodeAndCacheExpression(
                                                                              "description", token))
-                                                    ?.Value;
+                                                    ?.Value, token).ConfigureAwait(false);
                                                 await objPlugin
                                                       .ProcessHeroLabGearPluginsAsync(xmlPluginToAdd, lstWeapons, token)
                                                       .ConfigureAwait(false);

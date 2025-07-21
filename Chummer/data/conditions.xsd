@@ -281,6 +281,15 @@
   </xs:group>
   <xs:group name="geardetailoptions">
     <xs:sequence>
+      <xs:element name="id" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attributeGroup ref="xmloperations" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="name" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>
@@ -304,6 +313,15 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="category" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attributeGroup ref="xmloperations" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="id" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
@@ -385,6 +403,15 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="damage" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attributeGroup ref="xmloperations" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="id" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">

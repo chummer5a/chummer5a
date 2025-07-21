@@ -60,7 +60,6 @@ namespace Chummer
         private int _intCreated;
         private string _strSettingsFile;
         private readonly ConcurrentDictionary<string, object> _dicMyPluginData = new ConcurrentDictionary<string, object>();
-        private Task<string> _tskRunningDownloadTask;
         private SafeAsyncEventHandler _onMyDoubleClick;
         private SafeAsyncEventHandler _onMyContextMenuDeleteClick;
         private SafeAsyncEventHandler<TreeViewEventArgs> _onMyAfterSelect;
@@ -446,15 +445,6 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return _imgMugshot;
             }
-            private set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                {
-                    Image objOldMugshot = Interlocked.Exchange(ref _imgMugshot, value);
-                    if (objOldMugshot != null && !ReferenceEquals(objOldMugshot, value))
-                        objOldMugshot.Dispose();
-                }
-            }
         }
 
         public async Task<Image> GetMugshotAsync(CancellationToken token = default)
@@ -526,25 +516,6 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _dicMyPluginData;
-            }
-        }
-
-        public Task<string> RunningDownloadTask
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return _tskRunningDownloadTask;
-            }
-            private set
-            {
-                Task<string> tskOld;
-                using (LockObject.EnterUpgradeableReadLock())
-                {
-                    tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, value);
-                    if (tskOld != null && tskOld != value)
-                        Utils.SafelyRunSynchronously(() => tskOld);
-                }
             }
         }
 
@@ -791,22 +762,6 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                Task<string> tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
-                if (tskOld != null)
-                {
-                    try
-                    {
-                        if (blnSync)
-                            Utils.SafelyRunSynchronously(() => tskOld, token);
-                        else
-                            await tskOld.ConfigureAwait(false);
-                    }
-                    catch
-                    {
-                        _ = Interlocked.CompareExchange(ref _tskRunningDownloadTask, tskOld, null);
-                        throw;
-                    }
-                }
                 string strErrorText = string.Empty;
                 XPathNavigator xmlSourceNode;
                 if (!File.Exists(strFile))
@@ -1178,9 +1133,6 @@ namespace Chummer
             using (LockObject.EnterWriteLock())
             {
                 Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
-                Task<string> tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
-                if (tskOld != null)
-                    Utils.SafelyRunSynchronously(() => tskOld);
             }
 
             LockObject.Dispose();
@@ -1195,9 +1147,6 @@ namespace Chummer
             try
             {
                 Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
-                Task<string> tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
-                if (tskOld != null)
-                    await tskOld.ConfigureAwait(false);
             }
             finally
             {

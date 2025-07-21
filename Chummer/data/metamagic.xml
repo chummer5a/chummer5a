@@ -871,6 +871,34 @@
       <page>134</page>
     </metamagic>
     <!-- End Region -->
+    <!-- Region Parageology -->
+    <metamagic>
+      <id>ada56275-fd19-42c4-a2f0-858e10353040</id>
+      <name>Home Advantage</name>
+      <adept>False</adept>
+      <magician>True</magician>
+      <required>
+        <allof>
+          <art>Geomancy</art>
+        </allof>
+      </required>
+      <source>PGG</source>
+      <page>35</page>
+    </metamagic>
+    <metamagic>
+      <id>d7061bad-e6cc-4f78-a88e-8f451a7d2949</id>
+      <name>Patronage</name>
+      <adept>False</adept>
+      <magician>True</magician>
+      <required>
+        <allof>
+          <art>Geomancy</art>
+        </allof>
+      </required>
+      <source>PGG</source>
+      <page>35</page>
+    </metamagic>
+    <!-- End Region -->
   </metamagics>
   <arts>
     <art>

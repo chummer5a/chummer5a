@@ -301,6 +301,11 @@
       <code>SHB3</code>
     </book>
     <book>
+      <id>e1f426ff-e35a-4ddd-a168-11faec92d3b6</id>
+      <name>Schattenhandbuch 4 (German-Only)</name>
+      <code>SHB4</code>
+    </book>
+    <book>
       <id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
       <name>Rigger 5.0</name>
       <code>R5</code>
@@ -427,14 +432,48 @@
       <!-- Only match to the German one because the English one is 4e -->
       <matches>
         <match>
-          <language>en-us</language>
-          <text>Von seinem stillen Platz am North Avenue Beach</text>
-          <page>4</page>
-        </match>
-        <match>
           <language>de-de</language>
           <text>Von seinem stillen Platz am North Avenue Beach</text>
           <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>5b97fd1f-08d4-4ce9-99a8-d6a0c70b5bdc</id>
+      <name>Parabotany (German-Only)</name>
+      <code>PBG</code>
+      <!-- Only match to the German one because the English one is 4e -->
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Es hat zehntausend Jahre der Domestizierung gebraucht,</text>
+          <page>2</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>d7c0c5eb-0900-431c-9852-edcc86b03f67</id>
+      <name>Parageology (German-Only)</name>
+      <code>PGG</code>
+      <!-- Only match to the German one because the English one is 4e -->
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Magie auf Landschaft und Gesteine zu studieren. Zu</text>
+          <page>2</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>e5b9d556-d084-418d-a2d2-2d5b45b2dede</id>
+      <name>Parazoology (German-Only)</name>
+      <code>PZG</code>
+      <!-- Only match to the German one because the English one is 4e -->
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Die Erde hat eine durch den Menschen verursachte, einzigartige Phase der Ausrottung durchgemacht. Zum ersten Mal ist eine</text>
+          <page>2</page>
         </match>
       </matches>
     </book>
@@ -468,14 +507,9 @@
       <code>SAG</code>
       <matches>
         <match>
-          <language>en-us</language>
-          <text>ihre Hauer oftmals etwas einschüchternd auf Norms wirkten</text>
-          <page>6</page>
-        </match>
-        <match>
           <language>de-de</language>
-          <text>ihre Hauer oftmals etwas einschüchternd auf Norms wirkten</text>
-          <page>6</page>
+          <text>die beste Waffe der Welt in den Händen, schon hat der</text>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -553,17 +587,12 @@
     </book>
     <book>
       <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
-      <name>Hamburg (German-Only)</name>
+      <name>Datapuls Hamburg (German-Only)</name>
       <code>HAMG</code>
       <matches>
         <match>
-          <language>en-us</language>
-          <text>Willkommen in Hamburg. Willkommen in einem Sprawl voller Gefahren und Möglichkeiten.</text>
-          <page>7</page>
-        </match>
-        <match>
           <language>de-de</language>
-          <text>Willkommen in Hamburg. Willkommen in einem Sprawl voller Gefahren und Möglichkeiten.</text>
+          <text>Willkommen in Hamburg. Willkommen in einem Sprawl</text>
           <page>7</page>
         </match>
       </matches>
@@ -615,30 +644,20 @@
       <code>SOTG</code>
       <matches>
         <match>
-          <language>en-us</language>
-          <text>Laserwaffen stoßen bei der Energieversorgung (noch) an ihre Grenzen</text>
-          <page>4</page>
-        </match>
-        <match>
           <language>de-de</language>
-          <text>Laserwaffen stoßen bei der Energieversorgung (noch) an ihre Grenzen</text>
+          <text>Treibladung komplett abzulösen. Laserwaffen stoßen bei</text>
           <page>4</page>
         </match>
       </matches>
     </book>
     <book>
-      <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
-      <name>Datapuls Verschlusssache (German-Only)</name>
-      <code>DPVG</code>
+      <id>a43010ac-7b1a-420f-ab72-1644ee57ed7a</id>
+      <name>Datapuls SOX 2080 (German-Only)</name>
+      <code>SOXG</code>
       <matches>
         <match>
-          <language>en-us</language>
-          <text>Das Verhältnis der Deutschen zu ihren Geheimdiensten ist kompliziert</text>
-          <page>4</page>
-        </match>
-        <match>
           <language>de-de</language>
-          <text>Das Verhältnis der Deutschen zu ihren Geheimdiensten ist kompliziert</text>
+          <text>Der Schweiß lief Virgil aus allen Poren und verklebte die</text>
           <page>4</page>
         </match>
       </matches>
@@ -706,6 +725,90 @@
           <language>en-us</language>
           <text>Gamemastering is more of an art than a science</text>
           <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>d90bad82-303e-4c0b-b00b-f8649af99db6</id>
+      <name>Shadows In Focus: Morocco</name>
+      <code>SFMO</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Morocco is my kind of place. It’s a combination of</text>
+          <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>00178f4e-b682-4742-b259-7c086b18bc95</id>
+      <name>Shadows In Focus: Casablanca-Rabat</name>
+      <code>SFCR</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>me say that modern Morocco was shaped largely by the</text>
+          <page>3</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>bd1e6ed4-5ae2-4745-8444-ba89630fd940</id>
+      <name>Datapuls Österreich (German-Only)</name>
+      <code>DATG</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Servas. Willkommen im Schattennetzwerk der</text>
+          <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>0f4619da-b7d9-4b62-81b6-20734267623c</id>
+      <name>Der Almanach – Gratisrollenspieltag 2019 (German-Only)</name>
+      <code>GRST2019</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Am 23. März 2019 findet bereits zum siebten Mal der Gratisrollen</text>
+          <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>71405233-c42c-46c7-b387-f5baae3c9e64</id>
+      <name>Schattenload 2 (German-Only)</name>
+      <code>SLG2</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Mit der Einführung der Puncheon reagiert</text>
+          <page>1</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>5295c4f3-53d6-4406-b5dc-79ffe54f7a4f</id>
+      <name>Schattenload 3 (German-Only)</name>
+      <code>SLG3</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Frohsinns. Was Karneval, Fastnacht oder</text>
+          <page>1</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>0851f253-fd27-4a66-ae56-10721d8be5e4</id>
+      <name>Schattenload 7 (German-Only)</name>
+      <code>SLG7</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>schlechter. Risse, Schlaglöcher, Unter</text>
+          <page>1</page>
         </match>
       </matches>
     </book>

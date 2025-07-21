@@ -1206,19 +1206,19 @@
       </armor>
       <armor translated="True">
         <id>4b16a172-b328-4717-b632-39a3d07eeb41</id>
-        <name>FleetHead Kappe</name>
+        <name>FleetHead Sou'wester</name>
         <translate>FleetHead Kappe</translate>
         <altpage>173</altpage>
       </armor>
       <armor translated="True">
         <id>fc1c9de6-4600-4c14-8e8a-9fed51389e4a</id>
-        <name>Rheingold Friesennerz</name>
+        <name>Rheingold Oilskin</name>
         <translate>Rheingold Friesennerz</translate>
         <altpage>173</altpage>
       </armor>
       <armor translated="True">
         <id>e8065f02-68f3-46f6-8cca-298a1806b97b</id>
-        <name>Ares Victory Friesennerz</name>
+        <name>Ares Victory Oilskin</name>
         <translate>Ares Victory Friesennerz</translate>
         <altpage>173</altpage>
       </armor>
@@ -3091,21 +3091,27 @@
       </book>
       <book>
         <id>bb5c7e4e-431b-404f-89da-e69cf3b75d50</id>
-        <name>Schattenhandbuch (German Handbook)</name>
+        <name>Schattenhandbuch (German-Only)</name>
         <translate>Schattenhandbuch</translate>
         <altcode>SHB</altcode>
       </book>
       <book>
         <id>8798c923-8118-448e-b201-53d299d7e58c</id>
-        <name>Schattenhandbuch 2 (German Handbook)</name>
+        <name>Schattenhandbuch 2 (German-Only)</name>
         <translate>Schattenhandbuch 2</translate>
         <altcode>SHB2</altcode>
       </book>
       <book>
         <id>08dea2f1-3add-4516-bdbe-b47ab9a5e31f</id>
-        <name>Schattenhandbuch 3 (German Handbook)</name>
+        <name>Schattenhandbuch 3 (German-Only)</name>
         <translate>Schattenhandbuch 3</translate>
         <altcode>SHB3</altcode>
+      </book>
+      <book>
+        <id>e1f426ff-e35a-4ddd-a168-11faec92d3b6</id>
+        <name>Schattenhandbuch 4 (German-Only)</name>
+        <translate>Schattenhandbuch 4</translate>
+        <altcode>SHB4</altcode>
       </book>
       <book>
         <id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
@@ -3133,13 +3139,13 @@
       </book>
       <book>
         <id>71a6304e-03dc-41db-be01-a86acab1517b</id>
-        <name>Shadowrun 2050 (5th Edition)</name>
-        <translate>Shadowrun 2050 (5. Edition)</translate>
+        <name>Shadowrun 2050 (German-Only)</name>
+        <translate>Shadowrun 2050</translate>
         <altcode>2050</altcode>
       </book>
       <book>
         <id>c6b7136f-e461-457b-b6f7-09e95c2f6313</id>
-        <name>State of the Art ADL (German Handbook)</name>
+        <name>State of the Art ADL (German-Only)</name>
         <translate>State of the Art ADL</translate>
         <altcode>SAG</altcode>
       </book>
@@ -3235,8 +3241,8 @@
       </book>
       <book>
         <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
-        <name>Hamburg (German-exclusive)</name>
-        <translate>Hamburg (Deutsch-exklusiv)</translate>
+        <name>Datapuls Hamburg (German-Only)</name>
+        <translate>Datapuls Hamburg</translate>
         <altcode>HAMG</altcode>
       </book>
       <book>
@@ -3259,20 +3265,14 @@
       </book>
       <book>
         <id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
-        <name>Datapuls SOTA 2080 (German-exclusive)</name>
-        <translate>Datapuls SOTA 2080 (Deutsch-exklusiv)</translate>
+        <name>Datapuls SOTA 2080 (German-Only)</name>
+        <translate>Datapuls SOTA 2080</translate>
         <altcode>SOTG</altcode>
-      </book>
-      <book>
-        <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
-        <name>Datapuls Verschlusssache (German-exclusive)</name>
-        <translate>Datapuls Verschlusssache (Deutsch-exklusiv)</translate>
-        <altcode>DPVG</altcode>
       </book>
       <book>
         <id>ee63bbc5-2abd-4543-8371-457044bc7c63</id>
         <name>Street Grimoire Errata</name>
-        <translate>Street Grimoire Errata</translate>
+        <translate>Straßengrimoire Errata</translate>
         <altcode>SGE</altcode>
       </book>
       <book>
@@ -3295,8 +3295,8 @@
       </book>
       <book>
         <id>d7ac8252-fc5d-42d2-afca-2cf98ec14287</id>
-        <name>Grimmes Erwachen (German-exclusive)</name>
-        <translate>Grimmes Erwachen (German-exclusive)</translate>
+        <name>Grimmes Erwachen (German-Only)</name>
+        <translate>Grimmes Erwachen</translate>
         <altcode>GE</altcode>
       </book>
       <book>
@@ -3304,6 +3304,12 @@
         <name>Sprawl Wilds</name>
         <translate>Sprawl Wilds</translate>
         <altcode>SW</altcode>
+      </book>
+      <book>
+        <id>bd1e6ed4-5ae2-4745-8444-ba89630fd940</id>
+        <name>Datapuls Österreich (German-Only)</name>
+        <translate>Datapuls Österreich</translate>
+        <altcode>DATG</altcode>
       </book>
     </books>
   </chummer>
@@ -20407,7 +20413,7 @@
       </gear>
       <gear>
         <id>13b3f7fb-87c1-41d1-9c98-54484b0d557c</id>
-        <name>Elektro-Netz</name>
+        <name>Electro-Net</name>
         <translate>Elektro-Netz</translate>
         <altpage>172</altpage>
       </gear>
@@ -23902,7 +23908,7 @@
       <mentor>
         <id>5593f724-7b72-4927-a8c8-2c73844cc1b1</id>
         <name>Architect</name>
-        <translate>Architekt (SOTA 2080)</translate>
+        <translate>Architekt</translate>
         <altadvantage>Allgemein: +2 Würfel für Proben auf Führung</altadvantage>
         <altdisadvantage>Ein Anhänger dieses Schutzgeistes behält gerne die Initiative. Immer dann, wenn die Umstände eines Runs ihn in die Defensive drängen, muss ihm eine Probe auf Willenskraft + Intuition (3) gelingen. Misslingt die Probe, erhält der Anhänger von Architekt einen Würfelpoolmalus von -2 auf seine Proben, bis er das Heft wieder in der Hand hält.</altdisadvantage>
         <altpage>29</altpage>
@@ -24093,7 +24099,7 @@
       </mentor>
       <mentor>
         <id>f2cc5e2b-6538-4271-9f7f-5434076f9a6b</id>
-        <name>Brother at Arms</name>
+        <name>Brother in Arms</name>
         <translate>Waffenbruder</translate>
         <altadvantage>Allgemein: +1 Würfel für Proben auf Gebräuche und Unterricht</altadvantage>
         <altdisadvantage>Anhänger von Waffenbruder erwählen in jedem Run drei Personen mit direkter Plot-Relevanz – das können Spielercharaktere sein, aber auch wichtige NSC – als diejenigen Leute, denen während der Mission ihre Loyalität gilt. Ihnen muss eine Probe auf Willenskraft + Intuition (3) gelingen, bevor sie diesen Personenkreis übervorteilen, anlügen oder gar im Stich lassen können. Selbst wenn sie sich dazu überwinden können, erleiden sie einen Würfelpoolmalus von -2 auf alle Proben, bis sie ihre Verfehlung wieder ausgebügelt haben.</altdisadvantage>
@@ -39592,7 +39598,7 @@
       </tradition>
       <tradition>
         <id>c0405095-5304-4fbd-b955-203a11f88b73</id>
-        <name>Dr.-Singer-School</name>
+        <name>Dr. Singer School</name>
         <translate>Dr.-Singer-Schule</translate>
         <altpage>169</altpage>
       </tradition>
@@ -40840,13 +40846,36 @@
         <id>116f6efe-2bb0-4fd4-80de-c25d6fa721bd</id>
         <name>BMW M8</name>
         <translate>BMW M8</translate>
-        <altpage>56</altpage>
+        <altpage>53</altpage>
+      </vehicle>
+      <vehicle>
+        <id>a9ca1788-7190-4023-abbf-852448aac8ab</id>
+        <name>BMW M8</name>
+        <translate>BMW M8</translate>
+        <altpage>179</altpage>
       </vehicle>
       <vehicle>
         <id>2f46305b-6196-43d1-b748-2266c5f1dc08</id>
         <name>Chrysler-Nissan Bobcat</name>
-        <source>R5</source>
         <translate>Chrysler-Nissan Bobcat</translate>
+        <altpage>181</altpage>
+      </vehicle>
+      <vehicle>
+        <id>9260f852-105c-4190-b862-516c8c82d209</id>
+        <name>Chrysler-Nissan Bobcat T</name>
+        <translate>Chrysler-Nissan Bobcat T</translate>
+        <altpage>181</altpage>
+      </vehicle>
+      <vehicle>
+        <id>2a4ccb56-333c-4503-b655-4ae3b22e3445</id>
+        <name>Chrysler-Nissan Bobcat</name>
+        <translate>Chrysler-Nissan Bobcat</translate>
+        <altpage>62</altpage>
+      </vehicle>
+      <vehicle>
+        <id>af13aa1e-72ab-4edc-b35c-b708a9e0c9e6</id>
+        <name>Chrysler-Nissan Bobcat T</name>
+        <translate>Chrysler-Nissan Bobcat T</translate>
         <altpage>62</altpage>
       </vehicle>
       <vehicle>
@@ -40857,13 +40886,13 @@
       </vehicle>
       <vehicle>
         <id>026beaac-5e92-4210-943a-97f5455d98ec</id>
-        <name>Dodge Hurricane Crew Modell</name>
+        <name>Dodge Hurricane Crew</name>
         <translate>Dodge Hurricane Crew Modell</translate>
         <altpage>57</altpage>
       </vehicle>
       <vehicle>
         <id>4d38b501-1b40-4eb2-a4be-4ec0fb099cdf</id>
-        <name>Dodge Hurricane Security Modell</name>
+        <name>Dodge Hurricane Security</name>
         <translate>Dodge Hurricane Security Modell</translate>
         <altpage>57</altpage>
       </vehicle>
@@ -40875,30 +40904,30 @@
       </vehicle>
       <vehicle>
         <id>453d90d0-8ec0-4d0a-9478-1dde666c0b24</id>
-        <name>Mercedes-Benz CityMog / Dodge City Basis Modell</name>
+        <name>Mercedes-Benz CityMog / Dodge City</name>
         <source>R5</source>
         <translate>Mercedes-Benz CityMog / Dodge City Basis Modell</translate>
         <altpage>64</altpage>
       </vehicle>
       <vehicle>
         <id>22d97843-c25b-4b83-97f4-9f0db590b77d</id>
-        <name>Mercedes-Benz CityMog / Dodge City CM-X (mit Pritsche)</name>
+        <name>Mercedes-Benz CityMog / Dodge City CM-X (Pickup)</name>
         <source>R5</source>
         <translate>Mercedes-Benz CityMog / Dodge City CM-X (mit Pritsche)</translate>
         <altpage>64</altpage>
       </vehicle>
       <vehicle>
         <id>8053ea4f-9ad3-4b50-8ca9-cc7e78eb8da4</id>
-        <name>Mercedes-Benz CityMog / Dodge City CM Traveller (mit Pritsche)</name>
+        <name>Mercedes-Benz CityMog / Dodge City CM Traveler (Minivan)</name>
         <source>R5</source>
-        <translate>Mercedes-Benz CityMog / Dodge City CM Traveller (mit Pritsche)</translate>
+        <translate>Mercedes-Benz CityMog / Dodge City CM Traveller (Kleinbus)</translate>
         <altpage>64</altpage>
       </vehicle>
       <vehicle>
         <id>5ef26f25-f8cf-4610-856b-91f2152ad17a</id>
-        <name>Mercedes-Benz CityMog / Dodge City CM Elite</name>
+        <name>Mercedes-Benz CityMog / Dodge City CM Elite (Luxury Minivan)</name>
         <source>R5</source>
-        <translate>Mercedes-Benz CityMog / Dodge City CM Elite</translate>
+        <translate>Mercedes-Benz CityMog / Dodge City CM Elite (Luxus-Kleinbus)</translate>
         <altpage>64</altpage>
       </vehicle>
       <vehicle translated="True">
@@ -41650,37 +41679,49 @@
         <id>8b7dd760-4528-413f-a577-a51fe8a705c9</id>
         <name>Mercury Comet Cruiser</name>
         <translate>Mercury Comet Cruiser</translate>
-        <altpage>42</altpage>
+        <altpage>180</altpage>
+      </vehicle>
+      <vehicle>
+        <id>96222e70-90f8-47db-9bf8-50c0f2618f94</id>
+        <name>Mercury Comet Cruiser-S</name>
+        <translate>Mercury Comet Cruiser-S</translate>
+        <altpage>180</altpage>
       </vehicle>
       <vehicle>
         <id>baf9cd37-06b2-45d7-b355-7da492a82220</id>
         <name>Mercedes-Benz Tornado</name>
         <translate>Mercedes-Benz Tornado</translate>
-        <altpage>42</altpage>
+        <altpage>182</altpage>
       </vehicle>
       <vehicle>
         <id>3748c902-c5f0-4173-bc4e-d5fab28418bc</id>
-        <name>Mercedes-Benz Tornado Crew Modell</name>
+        <name>Mercedes-Benz Tornado Crew</name>
         <translate>Mercedes-Benz Tornado Crew Modell</translate>
-        <altpage>42</altpage>
+        <altpage>182</altpage>
       </vehicle>
       <vehicle>
         <id>d823558b-3d98-47eb-924a-3f3db1565eb1</id>
-        <name>Mercedes-Benz Tornado Security Modell</name>
+        <name>Mercedes-Benz Tornado Security</name>
         <translate>Mercedes-Benz Tornado Security Modell</translate>
-        <altpage>42</altpage>
+        <altpage>182</altpage>
+      </vehicle>
+      <vehicle>
+        <id>349e9cdf-fa51-4da1-87ee-2ecd535fd019</id>
+        <name>BMW X Infinity</name>
+        <translate>BMW X Infinity</translate>
+        <altpage>57</altpage>
       </vehicle>
       <vehicle>
         <id>5159292e-897c-40aa-84ad-a1b374d95370</id>
         <name>BMW X Infinity</name>
         <translate>BMW X Infinity</translate>
-        <altpage>42</altpage>
+        <altpage>183</altpage>
       </vehicle>
       <vehicle>
         <id>2a548234-f76f-4359-bfa0-f3d26a749426</id>
         <name>Volkswagen Urban Allrounder</name>
         <translate>Volkswagen Urban Allrounder</translate>
-        <altpage>42</altpage>
+        <altpage>185</altpage>
       </vehicle>
       <vehicle translated="True">
         <id>472a0869-4759-41cf-b529-a42b0f308f69</id>
@@ -42092,8 +42133,8 @@
       </vehicle>
       <vehicle translated="True">
         <id>18f41586-7f0f-4ca1-8881-eccdabc3351d</id>
-        <name>MK R/Evolution</name>
-        <translate>MK R/Evolution</translate>
+        <name>Messerschmitt-Kawasaki R/Evolution</name>
+        <translate>Messerschmitt-Kawasaki R/Evolution</translate>
         <altpage>174</altpage>
       </vehicle>
       <vehicle translated="True">
@@ -42122,8 +42163,8 @@
       </vehicle>
       <vehicle translated="True">
         <id>94318a48-9f0d-4c9b-ac3e-9e35d31ffb08</id>
-        <name>MK Harbor Sentry</name>
-        <translate>MK Harbor Sentry</translate>
+        <name>Messerschmitt-Kawasaki Harbor Sentry</name>
+        <translate>Messerschmitt-Kawasaki Harbor Sentry</translate>
         <altpage>176</altpage>
       </vehicle>
       <vehicle translated="True">
@@ -42206,14 +42247,14 @@
       </vehicle>
       <vehicle translated="True">
         <id>1b47defa-56d5-4827-b57b-2b4d7b1051a0</id>
-        <name>BMW GGX Sandleopard</name>
-        <translate>BMW GGX Sandleopard</translate>
+        <name>BMW GGX "Sand Leopard"</name>
+        <translate>BMW GGX "Sandleopard"</translate>
         <altpage>15</altpage>
       </vehicle>
       <vehicle translated="True">
         <id>e5fc5640-a49c-4b01-98b0-6456b867fb4c</id>
-        <name>Jena Robotik Mewero (Minidrone)</name>
-        <translate>Jena Robotik Mewero (Minidrohne)</translate>
+        <name>Jena Robotik MeWeRo</name>
+        <translate>Jena Robotik MeWeRo</translate>
         <altpage>15</altpage>
       </vehicle>
       <vehicle translated="True">
@@ -42242,32 +42283,32 @@
       </vehicle>
       <vehicle>
         <id>be13725c-d5cd-4855-96f6-a07de090b58d</id>
-        <name>Eurocar Escape FüKomKW</name>
+        <name>Eurocar Escape Command and Control Vehicle</name>
         <translate>Eurocar Escape FüKomKW</translate>
         <altpage>16</altpage>
       </vehicle>
       <vehicle>
         <id>3385c5ce-0224-41be-bede-ef908f0af007</id>
-        <name>Eurocar Escape MzKW D</name>
+        <name>Eurocar Escape Multipurpose Vehicle Type D</name>
         <translate>Eurocar Escape MzKW D</translate>
         <altpage>16</altpage>
       </vehicle>
       <vehicle>
         <id>1af96573-ee09-4bc9-8598-75f62bccfebc</id>
-        <name>Eurocar Escape DeKW</name>
+        <name>Eurocar Escape Decontamination Vehicle</name>
         <translate>Eurocar Escape DeKW</translate>
         <altpage>16</altpage>
       </vehicle>
       <vehicle>
         <id>7d708ed4-02ce-4047-91bb-6bce6bee03aa</id>
-        <name>THW MzKW C</name>
-        <translate>THW MzKW C</translate>
+        <name>BMW X Infinity Utility Vehicle, Multipurpose Vehicle Type C</name>
+        <translate>BMW X Infinity THW MzKW C</translate>
         <altpage>16</altpage>
       </vehicle>
       <vehicle>
         <id>143ec17c-1b87-4cb8-aea7-0a8af46f0f76</id>
-        <name>ZET Commando</name>
-        <translate>ZET Commando</translate>
+        <name>BMW X Infinity Zone Decontamination Team Commando</name>
+        <translate>BMW X Infinity ZET Commando</translate>
         <altpage>16</altpage>
       </vehicle>
       <vehicle>
@@ -47011,13 +47052,13 @@
       </weapon>
       <weapon translated="True">
         <id>787627c8-a2c4-47c1-9f3e-dd96ebfadf29</id>
-        <name>Elektro-Angel</name>
+        <name>Electro-Fishing Rod</name>
         <translate>Elektro-Angel</translate>
         <altpage>172</altpage>
       </weapon>
       <weapon translated="True">
         <id>1a329276-af02-4911-a600-387291465201</id>
-        <name>Elektro-Netz</name>
+        <name>Electro-Net</name>
         <translate>Elektro-Netz</translate>
         <altpage>172</altpage>
       </weapon>
@@ -47047,20 +47088,20 @@
       </weapon>
       <weapon translated="True">
         <id>e1670cec-28ff-4281-94f4-2bda59556f27</id>
-        <name>Abräumer</name>
-        <translate>Abräumer (Teleskop-Hellebarde)</translate>
+        <name>Rheinmetall Cleaner (Telescoping Halberd)</name>
+        <translate>Rheinmetall Abräumer (Teleskop-Hellebarde)</translate>
         <altpage>8</altpage>
       </weapon>
       <weapon translated="True">
         <id>2f49233d-f747-476a-98cb-996def3714ed</id>
         <name>Katzbalger</name>
-        <translate>Katzbalger (Landsknechtschwert)</translate>
+        <translate>Katzbalger</translate>
         <altpage>7</altpage>
       </weapon>
       <weapon translated="True">
         <id>c97d8ffb-1c2d-484f-8c8b-a1428d630d9d</id>
-        <name>Folding Spade</name>
-        <translate>Klappspaten</translate>
+        <name>Entrenching Tool of the German Army</name>
+        <translate>Klappspaten der Bundeswehr</translate>
         <altpage>8</altpage>
       </weapon>
       <weapon translated="True">
@@ -47076,14 +47117,32 @@
         <altpage>7</altpage>
       </weapon>
       <weapon translated="True">
+        <id>5dd5980a-7d74-4a3d-9bdf-67387d778fdd</id>
+        <name>Rheinmetall Wrecking Ball</name>
+        <translate>Rheinmetall Abrissbirne</translate>
+        <altpage>7</altpage>
+      </weapon>
+      <weapon translated="True">
+        <id>346288c5-b87f-4356-ad73-d2e4a2085141</id>
+        <name>Rheinmetall Wrecking Ball (Morningstar Mode)</name>
+        <translate>Rheinmetall Abrissbirne (Morgenstern-Modus)</translate>
+        <altpage>7</altpage>
+      </weapon>
+      <weapon translated="True">
         <id>08a0ab4f-e5db-4306-875b-df552d0811f7</id>
-        <name>Kanonenschlag</name>
+        <name>Cannon Shot</name>
         <translate>Kanonenschlag</translate>
         <altpage>9</altpage>
       </weapon>
       <weapon translated="True">
+        <id>c0a71059-4f89-45e2-bda8-ef3c77a3ad91</id>
+        <name>Cannon Shot (Melee)</name>
+        <translate>Kanonenschlag (Nahkampf)</translate>
+        <altpage>9</altpage>
+      </weapon>
+      <weapon translated="True">
         <id>330c3fdf-f64f-482c-9dd9-85d8a8f05f61</id>
-        <name>Donnerbüchse</name>
+        <name>Blunderbuss</name>
         <translate>Donnerbüchse</translate>
         <altpage>10</altpage>
       </weapon>

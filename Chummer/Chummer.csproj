@@ -1066,9 +1066,6 @@
     <Content Include="customdata\Shadowrun Missions Rules\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Shadowrun Missions Animal Prices\amend_gear.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="customdata\Trolls Have Natural Weapon Horns\amend_trollhorn_metatypes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

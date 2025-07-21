@@ -682,6 +682,7 @@ namespace Chummer
                                     using (Timekeeper.StartSyncron("load_frm_career_magictradition",
                                                op_load_frm_career))
                                     {
+                                        objTradition.PropertyChangedAsync += TraditionOnPropertyChanged;
                                         // Populate the Magician Traditions list.
                                         XPathNavigator xmlTraditionsBaseChummerNode =
                                             (await CharacterObject.LoadDataXPathAsync(
@@ -796,12 +797,6 @@ namespace Chummer
                                                 x => x.GetDisplayDrainExpressionAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
                                         await dpcDrainAttributes.RegisterOneWayAsyncDataBindingAsync(
-                                                (x, y) => x.DicePool = y,
-                                                objTradition,
-                                                nameof(Tradition.DrainValue),
-                                                x => x.GetDrainValueAsync(GenericToken), GenericToken)
-                                            .ConfigureAwait(false);
-                                        await dpcDrainAttributes.RegisterOneWayAsyncDataBindingAsync(
                                                 (x, y) => x.ToolTipText = y,
                                                 objTradition,
                                                 nameof(Tradition.DrainValueToolTip),
@@ -815,12 +810,6 @@ namespace Chummer
                                                 objTradition,
                                                 nameof(Tradition.DisplayDrainExpression),
                                                 x => x.GetDisplayDrainExpressionAsync(GenericToken), GenericToken)
-                                            .ConfigureAwait(false);
-                                        await dpcFadingAttributes.RegisterOneWayAsyncDataBindingAsync(
-                                                (x, y) => x.DicePool = y,
-                                                objTradition,
-                                                nameof(Tradition.DrainValue),
-                                                x => x.GetDrainValueAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
                                         await dpcFadingAttributes.RegisterOneWayAsyncDataBindingAsync(
                                                 (x, y) => x.ToolTipText = y,
@@ -2001,6 +1990,32 @@ namespace Chummer
             }
         }
 
+        private async Task TraditionOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        {
+            try
+            {
+                if (e.PropertyName == nameof(Tradition.DrainValue))
+                {
+                    Tradition objTradition = await CharacterObject.GetMagicTraditionAsync(token).ConfigureAwait(false);
+                    decimal decDicePool = await objTradition.GetDrainValueAsync(token).ConfigureAwait(false);
+                    switch (await objTradition.GetTypeAsync(token).ConfigureAwait(false))
+                    {
+                        case TraditionType.MAG:
+                            await dpcDrainAttributes.SetDicePoolAsync(decDicePool, token).ConfigureAwait(false);
+                            break;
+                        case TraditionType.RES:
+                            await dpcFadingAttributes.SetDicePoolAsync(decDicePool, token).ConfigureAwait(false);
+                            break;
+                    }
+                }
+                await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async Task PowersBeforeRemove(object sender, RemovingOldEventArgs e, CancellationToken token = default)
         {
             try
@@ -2574,6 +2589,8 @@ namespace Chummer
                             ToolStripManager.RevertMerge("toolStrip");
 
                         // Unsubscribe from events.
+                        Tradition objTradition = await CharacterObject.GetMagicTraditionAsync().ConfigureAwait(false);
+                        objTradition.PropertyChangedAsync -= TraditionOnPropertyChanged;
                         GlobalSettings.ClipboardChangedAsync -= DoRefreshPasteStatus;
                         CharacterObject.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
                         CharacterObject.SettingsMultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
@@ -8259,7 +8276,7 @@ namespace Chummer
                     objGear.Quantity = frmPickNumber.MyForm.SelectedValue;
                     await objGear.SetEquippedAsync(objSelectedGear.Equipped, GenericToken).ConfigureAwait(false);
                     objGear.Location = objSelectedGear.Location;
-                    objGear.Notes = objSelectedGear.Notes;
+                    await objGear.SetNotesAsync(await objSelectedGear.GetNotesAsync(GenericToken), GenericToken).ConfigureAwait(false);
 
                     // Update the selected item.
                     objSelectedGear.Quantity -= objGear.Quantity;
@@ -9882,21 +9899,22 @@ namespace Chummer
                     = await lstCalendar.DoThreadSafeFuncAsync(x => x.SelectedItems[0].SubItems[2].Text, GenericToken)
                                        .ConfigureAwait(false);
 
-                CalendarWeek objWeek = CharacterObject.Calendar.FirstOrDefault(x => x.InternalId == strWeekId);
-
+                CalendarWeek objWeek = await CharacterObject.Calendar.FirstOrDefaultAsync(x => x.InternalId == strWeekId, GenericToken).ConfigureAwait(false);
                 if (objWeek == null)
                     return;
+                string strNotes = await objWeek.GetNotesAsync(GenericToken).ConfigureAwait(false);
+                Color objColor = await objWeek.GetNotesColorAsync(GenericToken).ConfigureAwait(false);
                 using (ThreadSafeForm<EditNotes> frmItemNotes
                        = await ThreadSafeForm<EditNotes>.GetAsync(
-                                                            () => new EditNotes(objWeek.Notes, objWeek.NotesColor,
+                                                            () => new EditNotes(strNotes, objColor,
                                                                 GenericToken), GenericToken)
                                                         .ConfigureAwait(false))
                 {
                     if (await frmItemNotes.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                         != DialogResult.OK)
                         return;
-                    objWeek.Notes = frmItemNotes.MyForm.Notes;
-                    objWeek.NotesColor = frmItemNotes.MyForm.NotesColor;
+                    await objWeek.SetNotesAsync(frmItemNotes.MyForm.Notes, GenericToken).ConfigureAwait(false);
+                    await objWeek.SetNotesColorAsync(frmItemNotes.MyForm.NotesColor, GenericToken).ConfigureAwait(false);
                     await SetDirty(true).ConfigureAwait(false);
                 }
             }
@@ -10168,11 +10186,13 @@ namespace Chummer
 
             if (newNode != null)
             {
+                Color objColor = await objNewImprovement.GetPreferredColorAsync(token).ConfigureAwait(false);
+                string strNotes = await objNewImprovement.GetNotesAsync(token).ConfigureAwait(false);
                 await treImprovements.DoThreadSafeAsync(() =>
                 {
                     newNode.Text = objNewImprovement.CustomName;
-                    newNode.ForeColor = objNewImprovement.PreferredColor;
-                    newNode.ToolTipText = objNewImprovement.Notes;
+                    newNode.ForeColor = objColor;
+                    newNode.ToolTipText = strNotes;
                 }, token).ConfigureAwait(false);
             }
             else
@@ -19913,7 +19933,8 @@ namespace Chummer
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-                await treImprovements.DoThreadSafeAsync(() => nodSelected.ForeColor = objImprovement.PreferredColor, GenericToken).ConfigureAwait(false);
+                Color objColor = await objImprovement.GetPreferredColorAsync(GenericToken).ConfigureAwait(false);
+                await treImprovements.DoThreadSafeAsync(() => nodSelected.ForeColor = objColor, GenericToken).ConfigureAwait(false);
                 await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -21771,10 +21792,10 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             int intPool
                                 = await objWeapon.GetDicePoolAsync(token: token).ConfigureAwait(false);
+                            await dpcWeaponDicePool.SetDicePoolAsync(intPool, token).ConfigureAwait(false);
                             await dpcWeaponDicePool.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.DicePool = intPool;
                                 x.CanBeRolled = true;
                             }, token).ConfigureAwait(false);
                             await dpcWeaponDicePool.SetLabelToolTipAsync(await objWeapon.GetDicePoolTooltipAsync(token).ConfigureAwait(false), token)
@@ -22253,6 +22274,15 @@ namespace Chummer
                                         --sbdSlotsText.Length;
                                 }
 
+                                if (!string.IsNullOrEmpty(objSelectedAccessory.AddMount))
+                                {
+                                    sbdSlotsText.Append(strSpace).Append("(++").Append(strSpace)
+                                            .Append(await LanguageManager.GetStringAsync(
+                                                                                "String_Mount" + objSelectedAccessory.AddMount,
+                                                                                token: token)
+                                                                            .ConfigureAwait(false)).Append(')');
+                                }
+    
                                 token.ThrowIfCancellationRequested();
                                 await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = sbdSlotsText.ToString(), token)
                                                     .ConfigureAwait(false);
@@ -22358,7 +22388,8 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
-                            if (objSelectedAccessory.DicePool == 0)
+                            decimal decDicePool = await objSelectedAccessory.GetDicePoolAsync(token).ConfigureAwait(false);
+                            if (decDicePool == 0)
                             {
                                 await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                             .ConfigureAwait(false);
@@ -22369,10 +22400,10 @@ namespace Chummer
                             {
                                 await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                             .ConfigureAwait(false);
+                                await dpcWeaponDicePool.SetDicePoolAsync(decDicePool, token).ConfigureAwait(false);
                                 await dpcWeaponDicePool.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.DicePool = objSelectedAccessory.DicePool;
                                     x.CanBeRolled = false;
                                 }, token).ConfigureAwait(false);
                                 await dpcWeaponDicePool.SetLabelToolTipAsync(string.Empty, token).ConfigureAwait(false);
@@ -22403,7 +22434,8 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
-                            if (objSelectedAccessory.TotalAmmoBonus != 0
+                            decimal decAmmoBonus = await objSelectedAccessory.GetTotalAmmoBonusAsync(token).ConfigureAwait(false);
+                            if (decAmmoBonus != 0
                                 || (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity)
                                     && objSelectedAccessory.ModifyAmmoCapacity != "0"))
                             {
@@ -22414,11 +22446,10 @@ namespace Chummer
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdAmmoBonus))
                                 {
-                                    int intAmmoBonus = objSelectedAccessory.TotalAmmoBonus;
-                                    if (intAmmoBonus != 0)
+                                    if (decAmmoBonus != 0)
                                         sbdAmmoBonus.Append(
-                                            (intAmmoBonus / 100.0m).ToString(
-                                                "+#,0%;-#,0%;0%", GlobalSettings.CultureInfo));
+                                            (decAmmoBonus / 100.0m).ToString(
+                                                "+#,0.##%;-#,0.##%;0.##%", GlobalSettings.CultureInfo));
                                     if (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity)
                                         && objSelectedAccessory.ModifyAmmoCapacity != "0")
                                         sbdAmmoBonus.Append(objSelectedAccessory.ModifyAmmoCapacity);
@@ -25546,10 +25577,10 @@ namespace Chummer
                                                                .ConfigureAwait(false);
                             int intPool
                                 = await objWeapon.GetDicePoolAsync(token: token).ConfigureAwait(false);
+                            await dpcVehicleWeaponDicePool.SetDicePoolAsync(intPool, token).ConfigureAwait(false);
                             await dpcVehicleWeaponDicePool.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.DicePool = intPool;
                                 x.CanBeRolled = true;
                             }, token).ConfigureAwait(false);
                             await dpcVehicleWeaponDicePool.SetLabelToolTipAsync(await objWeapon.GetDicePoolTooltipAsync(token).ConfigureAwait(false), token)
@@ -26008,8 +26039,17 @@ namespace Chummer
                                         --sbdMount.Length;
                                 }
 
+                                if (!string.IsNullOrEmpty(objAccessory.AddMount))
+                                {
+                                    sbdMount.Append(strSpace).Append("(++").Append(strSpace)
+                                            .Append(await LanguageManager.GetStringAsync(
+                                                                                "String_Mount" + objAccessory.AddMount,
+                                                                                token: token)
+                                                                            .ConfigureAwait(false)).Append(')');
+                                }
+
                                 await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                          .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                 await lblVehicleSlots.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
@@ -26139,7 +26179,8 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                             }
 
-                            if (objAccessory.DicePool == 0)
+                            decimal decDicePool = await objAccessory.GetDicePoolAsync(token).ConfigureAwait(false);
+                            if (decDicePool == 0)
                             {
                                 await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                    .ConfigureAwait(false);
@@ -26150,10 +26191,10 @@ namespace Chummer
                             {
                                 await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                    .ConfigureAwait(false);
+                                await dpcVehicleWeaponDicePool.SetDicePoolAsync(decDicePool, token).ConfigureAwait(false);
                                 await dpcVehicleWeaponDicePool.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.DicePool = objAccessory.DicePool;
                                     x.CanBeRolled = false;
                                 }, token).ConfigureAwait(false);
                                 await dpcVehicleWeaponDicePool.SetLabelToolTipAsync(string.Empty, token)
@@ -26161,7 +26202,8 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
-                            if (objAccessory.TotalAmmoBonus != 0
+                            decimal decAmmoBonus = await objAccessory.GetTotalAmmoBonusAsync(token).ConfigureAwait(false);
+                            if (decAmmoBonus != 0
                                 || (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity)
                                     && objAccessory.ModifyAmmoCapacity != "0"))
                             {
@@ -26172,11 +26214,10 @@ namespace Chummer
                                 using (new FetchSafelyFromPool<StringBuilder>(
                                            Utils.StringBuilderPool, out StringBuilder sbdAmmoBonus))
                                 {
-                                    int intAmmoBonus = objAccessory.TotalAmmoBonus;
-                                    if (intAmmoBonus != 0)
+                                    if (decAmmoBonus != 0)
                                         sbdAmmoBonus.Append(
-                                            (intAmmoBonus / 100.0m).ToString(
-                                                "+#,0%;-#,0%;0%", GlobalSettings.CultureInfo));
+                                            (decAmmoBonus / 100.0m).ToString(
+                                                "+#,0.##%;-#,0.##%;0.##%", GlobalSettings.CultureInfo));
                                     if (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity)
                                         && objAccessory.ModifyAmmoCapacity != "0")
                                         sbdAmmoBonus.Append(objAccessory.ModifyAmmoCapacity);
@@ -27150,8 +27191,7 @@ namespace Chummer
                         await objSpell.SetSourceDetailAsync(lblSpellSource, token).ConfigureAwait(false);
                         // Determine the size of the Spellcasting Dice Pool.
                         int intPool = await objSpell.GetDicePoolAsync(token).ConfigureAwait(false);
-                        await dpcSpellDicePool.DoThreadSafeAsync(x => x.DicePool = intPool, token)
-                                              .ConfigureAwait(false);
+                        await dpcSpellDicePool.SetDicePoolAsync(intPool, token).ConfigureAwait(false);
                         await dpcSpellDicePool.SetLabelToolTipAsync(await objSpell.GetDicePoolTooltipAsync(token).ConfigureAwait(false), token)
                                               .ConfigureAwait(false);
                     }
@@ -27377,9 +27417,9 @@ namespace Chummer
                         await lblFV.SetToolTipAsync(await objComplexForm.GetFvTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objComplexForm.SetSourceDetailAsync(lblComplexFormSource, token).ConfigureAwait(false);
                         // Determine the size of the Threading Dice Pool.
-                        await dpcComplexFormDicePool.DoThreadSafeAsync(x => x.DicePool = objComplexForm.DicePool, token)
-                                                    .ConfigureAwait(false);
-                        await dpcComplexFormDicePool.SetLabelToolTipAsync(objComplexForm.DicePoolTooltip, token)
+                        int intPool = await objComplexForm.GetDicePoolAsync(token).ConfigureAwait(false);
+                        await dpcComplexFormDicePool.SetDicePoolAsync(intPool, token).ConfigureAwait(false);
+                        await dpcComplexFormDicePool.SetLabelToolTipAsync(await objComplexForm.GetDicePoolTooltipAsync(token).ConfigureAwait(false), token)
                                                     .ConfigureAwait(false);
                     }
                     else

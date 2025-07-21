@@ -682,10 +682,10 @@ namespace Chummer.Backend.Equipment
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         Page, DisplayPage(GlobalSettings.Language), _objCharacter, token);
                 else
-                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlWeapon, Name,
+                    await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(objXmlWeapon, Name,
                         await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
                         await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
-                        token).ConfigureAwait(false);
+                        token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
 
             XmlDocument objXmlDocument = blnSync
@@ -2468,7 +2468,7 @@ namespace Chummer.Backend.Equipment
                     .WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo),
                         token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
             finally
             {
@@ -3324,6 +3324,21 @@ namespace Chummer.Backend.Equipment
             set => _strNotes = value;
         }
 
+        public Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return Task.FromResult(_strNotes);
+        }
+
+        public Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _strNotes = value;
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Forecolor to use for Notes in treeviews.
         /// </summary>
@@ -3331,6 +3346,21 @@ namespace Chummer.Backend.Equipment
         {
             get => _colNotes;
             set => _colNotes = value;
+        }
+
+        public Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<Color>(token);
+            return Task.FromResult(_colNotes);
+        }
+
+        public Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _colNotes = value;
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -4728,7 +4758,7 @@ namespace Chummer.Backend.Equipment
             CancellationToken token = default)
         {
             IEnumerable<string> lstAmmos = Ammo.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
-            int intAmmoBonus = 0;
+            decimal decAmmoBonus = 0;
 
             if (WeaponAccessories.Count != 0)
             {
@@ -4743,12 +4773,12 @@ namespace Chummer.Backend.Equipment
                                 StringSplitOptions.RemoveEmptyEntries);
                         }
 
-                        intAmmoBonus += objAccessory.TotalAmmoBonus;
+                        decAmmoBonus += blnSync ? objAccessory.TotalAmmoBonus : await objAccessory.GetTotalAmmoBonusAsync(token).ConfigureAwait(false);
                     }
                 }
             }
 
-            int intAmmoBonusFlat = 0;
+            decimal decAmmoBonusFlat = 0;
             decimal decAmmoBonusPercent = 1.0m;
             if (ParentMount != null)
             {
@@ -4759,7 +4789,7 @@ namespace Chummer.Backend.Equipment
                         lstAmmos = objMod.AmmoReplace.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
                     }
 
-                    intAmmoBonusFlat += objMod.AmmoBonus;
+                    decAmmoBonusFlat += objMod.AmmoBonus;
                     if (objMod.AmmoBonusPercent != 0)
                     {
                         decAmmoBonusPercent *= objMod.AmmoBonusPercent / 100.0m;
@@ -4838,32 +4868,25 @@ namespace Chummer.Backend.Equipment
                                     .ConfigureAwait(false);
                             if (blnIsSuccess)
                             {
-                                int intAmmo = ((double)objProcess).StandardRound() + intAmmoBonusFlat;
-
-                                intAmmo += (intAmmo * intAmmoBonus).DivAwayFromZero(100);
-
+                                decimal decAmmo = Convert.ToDecimal((double)objProcess) + decAmmoBonusFlat;
+                                if (decAmmoBonus != 0.0m)
+                                    decAmmo += (decAmmo * decAmmoBonus) / 100.0m;
                                 if (decAmmoBonusPercent != 1.0m)
-                                {
-                                    intAmmo = (intAmmo * decAmmoBonusPercent).StandardRound();
-                                }
+                                    decAmmo *= decAmmoBonusPercent;
 
-                                strThisAmmo = intAmmo.ToString(objCulture)
+                                strThisAmmo = decAmmo.StandardRound().ToString(objCulture)
                                               + strAmmo.Substring(strAmmo.IndexOf('('),
                                                   strAmmo.Length - strAmmo.IndexOf('('));
                             }
                         }
                         else
                         {
-                            int intAmmo = decValue.StandardRound() + intAmmoBonusFlat;
-
-                            intAmmo += (intAmmo * intAmmoBonus).DivAwayFromZero(100);
-
+                            decimal decAmmo = decValue + decAmmoBonusFlat;
+                            if (decAmmoBonus != 0.0m)
+                                decAmmo += (decAmmo * decAmmoBonus) / 100.0m;
                             if (decAmmoBonusPercent != 1.0m)
-                            {
-                                intAmmo = (intAmmo * decAmmoBonusPercent).StandardRound();
-                            }
-
-                            strThisAmmo = intAmmo.ToString(objCulture)
+                                decAmmo *= decAmmoBonusPercent;
+                            strThisAmmo = decAmmo.StandardRound().ToString(objCulture)
                                           + strAmmo.Substring(strAmmo.IndexOf('('),
                                               strAmmo.Length - strAmmo.IndexOf('('));
                         }
@@ -5552,21 +5575,68 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (string.IsNullOrEmpty(ModificationSlots))
+                string strSlots = ModificationSlots;
+                if (string.IsNullOrEmpty(strSlots))
                     return string.Empty;
+                Dictionary<string, int> dicMounts = new Dictionary<string, int>();
+                foreach (string strMount in strSlots.SplitNoAlloc(
+                                 '/', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (dicMounts.ContainsKey(strMount))
+                        dicMounts[strMount] += 1;
+                    else
+                        dicMounts.Add(strMount, 1);
+                }
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                {
+                    if (!objAccessory.Equipped)
+                        continue;
+                    string strLoop = objAccessory.AddMount;
+                    if (!string.IsNullOrEmpty(strLoop))
+                    {
+                        foreach (string strMount in strLoop.SplitNoAlloc(
+                                 '/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            if (dicMounts.ContainsKey(strMount))
+                                dicMounts[strMount] += 1;
+                            else
+                                dicMounts.Add(strMount, 1);
+                        }
+                    }
+                    strLoop = objAccessory.Mount;
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    {
+                        dicMounts[strLoop] -= 1;
+                    }
+                    strLoop = objAccessory.ExtraMount;
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    {
+                        dicMounts[strLoop] -= 1;
+                    }
+                }
+                foreach (Weapon objWeapon in UnderbarrelWeapons)
+                {
+                    if (!objWeapon.Equipped)
+                        continue;
+                    string strLoop = objWeapon.Mount;
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    {
+                        dicMounts[strLoop] -= 1;
+                    }
+                    strLoop = objWeapon.ExtraMount;
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    {
+                        dicMounts[strLoop] -= 1;
+                    }
+                }
+
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMounts))
                 {
-                    foreach (string strMount in ModificationSlots.SplitNoAlloc(
-                                 '/', StringSplitOptions.RemoveEmptyEntries))
+                    foreach (KeyValuePair<string, int> kvpMount in dicMounts)
                     {
-                        if (WeaponAccessories.All(objAccessory =>
-                                !objAccessory.Equipped || objAccessory.Mount != strMount
-                                && objAccessory.ExtraMount != strMount)
-                            && UnderbarrelWeapons.All(weapon => !weapon.Equipped
-                                                                || weapon.Mount != strMount
-                                                                && weapon.ExtraMount != strMount))
+                        for (int i = 0; i < kvpMount.Value; ++i)
                         {
-                            sbdMounts.Append(strMount).Append('/');
+                            sbdMounts.Append(kvpMount.Key).Append('/');
                         }
                     }
 
@@ -7534,6 +7604,16 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            await WeaponAccessories.ForEachAsync(x =>
+            {
+                if (x.Equipped)
+                {
+                    string strNewRange = x.ReplaceRange;
+                    if (!string.IsNullOrEmpty(strNewRange))
+                        strRange = strNewRange;
+                }
+            }, token).ConfigureAwait(false);
+
             if (blnIncludeAmmoName)
             {
                 // Check if the Weapon has Ammunition loaded and look for any range replacement.
@@ -7719,6 +7799,16 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+            {
+                if (objAccessory.Equipped)
+                {
+                    string strNewRange = objAccessory.ReplaceRange;
+                    if (!string.IsNullOrEmpty(strNewRange))
+                        strRangeCategory = strNewRange;
+                }
+            }
+
             if (blnIncludeAmmo)
             {
                 // Check if the Weapon has Ammunition loaded and look for any range replacement.
@@ -7821,6 +7911,16 @@ namespace Chummer.Backend.Equipment
                     strRangeCategory = strNewRange;
                 }
             }
+
+            await WeaponAccessories.ForEachAsync(x =>
+            {
+                if (x.Equipped)
+                {
+                    string strNewRange = x.ReplaceRange;
+                    if (!string.IsNullOrEmpty(strNewRange))
+                        strRangeCategory = strNewRange;
+                }
+            }, token).ConfigureAwait(false);
 
             if (blnIncludeAmmo)
             {
@@ -8707,7 +8807,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                intDicePool += WeaponAccessories.Sum(a => a.Equipped, a =>
+                decDicePoolModifier += WeaponAccessories.Sum(a => a.Equipped, a =>
                 {
                     if (WirelessOn && a.WirelessOn && a.WirelessWeaponBonus != null)
                     {
@@ -9127,7 +9227,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                intDicePool += await WeaponAccessories.SumAsync(a => a.Equipped, async a =>
+                decDicePoolModifier += await WeaponAccessories.SumAsync(a => a.Equipped, async a =>
                 {
                     if (WirelessOn && a.WirelessOn && a.WirelessWeaponBonus != null)
                     {
@@ -9155,7 +9255,7 @@ namespace Chummer.Backend.Equipment
                             }
                         }
                     }
-                    return a.DicePool;
+                    return await a.GetDicePoolAsync(token).ConfigureAwait(false);
                 }, token: token).ConfigureAwait(false);
 
                 if (blnIncludeAmmo)
@@ -9527,11 +9627,11 @@ namespace Chummer.Backend.Equipment
 
                     foreach (WeaponAccessory wa in WeaponAccessories.Where(a => a.Equipped))
                     {
-                        int intDicePool = wa.DicePool;
-                        if (intDicePool != 0)
+                        decimal decDicePool = wa.DicePool;
+                        if (decDicePool != 0)
                         {
                             sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                strSpace, wa.CurrentDisplayName, intDicePool);
+                                strSpace, wa.CurrentDisplayName, decDicePool.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo));
                         }
 
                         if (WirelessOn && wa.WirelessOn && wa.WirelessWeaponBonus != null)
@@ -10120,10 +10220,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!wa.Equipped)
                         return;
-                    if (wa.DicePool != 0)
+                    decimal decDicePool = await wa.GetDicePoolAsync(token).ConfigureAwait(false);
+                    if (decDicePool != 0)
                     {
                         sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace,
-                            await wa.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), wa.DicePool);
+                            await wa.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), decDicePool.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo));
                     }
                     if (WirelessOn && wa.WirelessOn && wa.WirelessWeaponBonus != null)
                     {
@@ -11915,11 +12016,12 @@ namespace Chummer.Backend.Equipment
 
                 Gear objCurrentlyLoadedAmmo = AmmoLoaded;
                 Gear objSelectedAmmo;
-                decimal decQty = frmReloadWeapon.MyForm.SelectedCount;
+                decimal decQty = await frmReloadWeapon.MyForm.GetSelectedCountAsync(token).ConfigureAwait(false);
+                string strSelectedAmmo = await frmReloadWeapon.MyForm.GetSelectedAmmoAsync(token).ConfigureAwait(false);
                 // If an External Source is not being used, consume ammo.
-                if (frmReloadWeapon.MyForm.SelectedAmmo != objExternalSource?.InternalId)
+                if (strSelectedAmmo != objExternalSource?.InternalId)
                 {
-                    objSelectedAmmo = await lstGears.DeepFindByIdAsync(frmReloadWeapon.MyForm.SelectedAmmo, token: token).ConfigureAwait(false);
+                    objSelectedAmmo = await lstGears.DeepFindByIdAsync(strSelectedAmmo, token: token).ConfigureAwait(false);
 
                     // If the Ammo is coming from a Spare Clip, reduce the container quantity instead of the plugin quantity.
                     if (objSelectedAmmo.Parent is Gear objParent &&
@@ -11935,7 +12037,7 @@ namespace Chummer.Backend.Equipment
                             await lstGears.AddAsync(objDuplicatedParent, token).ConfigureAwait(false);
                             --objParent.Quantity;
                             Gear objNewSelectedAmmo
-                                = await objDuplicatedParent.Children.DeepFindByIdAsync(frmReloadWeapon.MyForm.SelectedAmmo, token: token).ConfigureAwait(false);
+                                = await objDuplicatedParent.Children.DeepFindByIdAsync(strSelectedAmmo, token: token).ConfigureAwait(false);
                             if (objNewSelectedAmmo == null)
                             {
                                 objNewSelectedAmmo = new Gear(_objCharacter);
@@ -12285,6 +12387,20 @@ namespace Chummer.Backend.Equipment
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }
+        }
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+            {
+                return Cyberware || Category == "Gear" || Category.StartsWith("Quality", StringComparison.Ordinal) || !string.IsNullOrEmpty(ParentID)
+                    ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                    : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+            }
+            return Cyberware || Category == "Gear" || Category.StartsWith("Quality", StringComparison.Ordinal) || !string.IsNullOrEmpty(ParentID)
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
         }
 
         public void SetupChildrenWeaponsCollectionChanged(bool blnAdd, TreeView treWeapons, ContextMenuStrip cmsWeapon = null, ContextMenuStrip cmsWeaponAccessory = null, ContextMenuStrip cmsWeaponAccessoryGear = null, AsyncNotifyCollectionChangedEventHandler funcMakeDirty = null)

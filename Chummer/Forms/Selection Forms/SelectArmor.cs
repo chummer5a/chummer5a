@@ -918,7 +918,7 @@ namespace Chummer
                         }
                         return x.Checked;
                     }, token).ConfigureAwait(false);
-                    objSelectedArmor.Rating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
+                    await objSelectedArmor.SetRatingAsync(await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
 
                     await objSelectedArmor.SetSourceDetailAsync(lblSource, token: token).ConfigureAwait(false);
                     bool blnShowSource = !string.IsNullOrEmpty(

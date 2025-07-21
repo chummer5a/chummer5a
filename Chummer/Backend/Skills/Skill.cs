@@ -365,7 +365,7 @@ namespace Chummer.Backend.Skills
                         await DisplayAttributeMethodAsync(strLanguageToPrint, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)
-                        await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("source",
                         await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint, token)
                             .ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -5249,8 +5249,9 @@ namespace Chummer.Backend.Skills
                 using (LockObject.EnterReadLock())
                 {
                     string strSpace = LanguageManager.GetString("String_Space");
-                    string strReturn = !string.IsNullOrEmpty(Notes)
-                        ? LanguageManager.GetString("Label_Notes") + strSpace + Notes + Environment.NewLine +
+                    string strNotes = Notes;
+                    string strReturn = !string.IsNullOrEmpty(strNotes)
+                        ? LanguageManager.GetString("Label_Notes") + strSpace + strNotes + Environment.NewLine +
                           Environment.NewLine
                         : string.Empty;
                     string strMiddle = !string.IsNullOrWhiteSpace(SkillGroup)
@@ -5327,6 +5328,23 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // No need to write lock because interlocked guarantees safety
+                if (Interlocked.Exchange(ref _strNotes, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(Notes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Forecolor to use for Notes in treeviews.
         /// </summary>
@@ -5358,6 +5376,58 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _colNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _colNotes)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_colNotes == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _colNotes = value;
+                    await OnPropertyChangedAsync(nameof(NotesColor), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public Color PreferredColor
         {
             get
@@ -5376,7 +5446,7 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 return !string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false))
-                    ? ColorManager.GenerateCurrentModeColor(NotesColor)
+                    ? ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false))
                     : ColorManager.ControlText;
             }
             finally

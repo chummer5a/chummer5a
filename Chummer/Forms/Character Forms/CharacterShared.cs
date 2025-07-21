@@ -538,29 +538,33 @@ namespace Chummer
             SkipUpdate = true;
             try
             {
+                string strNotes = await objNotes.GetNotesAsync(token).ConfigureAwait(false);
+                Color objColor = await objNotes.GetNotesColorAsync(token).ConfigureAwait(false);
                 using (ThreadSafeForm<EditNotes> frmItemNotes =
                        await ThreadSafeForm<EditNotes>.GetAsync(
-                           () => new EditNotes(objNotes.Notes, objNotes.NotesColor, token), token).ConfigureAwait(false))
+                           () => new EditNotes(strNotes, objColor, token), token).ConfigureAwait(false))
                 {
                     if (await frmItemNotes.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
                         return;
-                    objNotes.Notes = frmItemNotes.MyForm.Notes;
-                    objNotes.NotesColor = frmItemNotes.MyForm.NotesColor;
-                    await SetDirty(true, token).ConfigureAwait(false);
-                    TreeView objTreeView = treNode.TreeView;
-                    if (objTreeView != null)
+                    await objNotes.SetNotesAsync(frmItemNotes.MyForm.Notes, token).ConfigureAwait(false);
+                    await objNotes.SetNotesColorAsync(frmItemNotes.MyForm.NotesColor, token).ConfigureAwait(false);
+                }
+                await SetDirty(true, token).ConfigureAwait(false);
+                strNotes = (await objNotes.GetNotesAsync(token).ConfigureAwait(false)).WordWrap();
+                objColor = await objNotes.GetPreferredColorAsync(token).ConfigureAwait(false);
+                TreeView objTreeView = treNode.TreeView;
+                if (objTreeView != null)
+                {
+                    await objTreeView.DoThreadSafeAsync(() =>
                     {
-                        await objTreeView.DoThreadSafeAsync(() =>
-                        {
-                            treNode.ForeColor = objNotes.PreferredColor;
-                            treNode.ToolTipText = objNotes.Notes.WordWrap();
-                        }, token).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        treNode.ForeColor = objNotes.PreferredColor;
-                        treNode.ToolTipText = objNotes.Notes.WordWrap();
-                    }
+                        treNode.ForeColor = objColor;
+                        treNode.ToolTipText = strNotes;
+                    }, token).ConfigureAwait(false);
+                }
+                else
+                {
+                    treNode.ForeColor = objColor;
+                    treNode.ToolTipText = strNotes;
                 }
             }
             finally
@@ -7579,14 +7583,16 @@ namespace Chummer
                                                    + objImprovement.Condition;
                                 if (objParentNode?.Nodes.ContainsKey(strName) == false)
                                 {
+                                    string strNotes = (await objImprovement.GetNotesAsync(token).ConfigureAwait(false)).WordWrap();
+                                    Color objColor = await objImprovement.GetPreferredColorAsync(token).ConfigureAwait(false);
                                     TreeNode objNode = new TreeNode
                                     {
                                         Name = strName,
                                         Text = strName,
                                         Tag = objImprovement.SourceName,
                                         ContextMenuStrip = cmsLimitModifier,
-                                        ForeColor = objImprovement.PreferredColor,
-                                        ToolTipText = objImprovement.Notes.WordWrap()
+                                        ForeColor = objColor,
+                                        ToolTipText = strNotes
                                     };
                                     if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                                     {
@@ -7894,21 +7900,22 @@ namespace Chummer
                             await lstCalendar.DoThreadSafeAsync(x => x.Items.Clear(), token).ConfigureAwait(false);
                             await CharacterObject.Calendar.ForEachAsync(async objWeek =>
                             {
+                                Color objColor = await objWeek.GetPreferredColorAsync(token).ConfigureAwait(false);
                                 ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                                 {
-                                    Text = objWeek.Notes,
-                                    ForeColor = objWeek.PreferredColor
+                                    Text = await objWeek.GetNotesAsync(token).ConfigureAwait(false),
+                                    ForeColor = objColor
                                 };
                                 ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
                                 {
                                     Text = objWeek.InternalId,
-                                    ForeColor = objWeek.PreferredColor
+                                    ForeColor = objColor
                                 };
 
                                 ListViewItem objItem = new ListViewItem
                                 {
                                     Text = await objWeek.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                    ForeColor = objWeek.PreferredColor
+                                    ForeColor = objColor
                                 };
                                 objItem.SubItems.Add(objNoteItem);
                                 objItem.SubItems.Add(objInternalIdItem);
@@ -7930,23 +7937,23 @@ namespace Chummer
                             case ListChangedType.ItemAdded:
                             {
                                 int intInsertIndex = listChangedEventArgs.NewIndex;
-                                CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
-
+                                CalendarWeek objWeek = await CharacterObject.Calendar.GetValueAtAsync(intInsertIndex, token).ConfigureAwait(false);
+                                Color objColor = await objWeek.GetPreferredColorAsync(token).ConfigureAwait(false);
                                 ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                                 {
-                                    Text = objWeek.Notes,
-                                    ForeColor = objWeek.PreferredColor
+                                    Text = await objWeek.GetNotesAsync(token).ConfigureAwait(false),
+                                    ForeColor = objColor
                                 };
                                 ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
                                 {
                                     Text = objWeek.InternalId,
-                                    ForeColor = objWeek.PreferredColor
+                                    ForeColor = objColor
                                 };
 
                                 ListViewItem objItem = new ListViewItem
                                 {
                                     Text = await objWeek.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                    ForeColor = objWeek.PreferredColor
+                                    ForeColor = objColor
                                 };
                                 objItem.SubItems.Add(objNoteItem);
                                 objItem.SubItems.Add(objInternalIdItem);
@@ -7970,23 +7977,23 @@ namespace Chummer
                                     x => x.Items.RemoveAt(listChangedEventArgs.NewIndex),
                                     token).ConfigureAwait(false);
                                 int intInsertIndex = listChangedEventArgs.NewIndex;
-                                CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
-
+                                CalendarWeek objWeek = await CharacterObject.Calendar.GetValueAtAsync(intInsertIndex, token).ConfigureAwait(false);
+                                Color objColor = await objWeek.GetPreferredColorAsync(token).ConfigureAwait(false);
                                 ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                                 {
-                                    Text = objWeek.Notes,
-                                    ForeColor = objWeek.PreferredColor
+                                    Text = await objWeek.GetNotesAsync(token).ConfigureAwait(false),
+                                    ForeColor = objColor
                                 };
                                 ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
                                 {
                                     Text = objWeek.InternalId,
-                                    ForeColor = objWeek.PreferredColor
+                                    ForeColor = objColor
                                 };
 
                                 ListViewItem objItem = new ListViewItem
                                 {
                                     Text = await objWeek.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                    ForeColor = objWeek.PreferredColor
+                                    ForeColor = objColor
                                 };
                                 objItem.SubItems.Add(objNoteItem);
                                 objItem.SubItems.Add(objInternalIdItem);
@@ -8002,23 +8009,23 @@ namespace Chummer
                                     x => x.Items.RemoveAt(listChangedEventArgs.OldIndex),
                                     token).ConfigureAwait(false);
                                 int intInsertIndex = listChangedEventArgs.NewIndex;
-                                CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
-
+                                CalendarWeek objWeek = await CharacterObject.Calendar.GetValueAtAsync(intInsertIndex, token).ConfigureAwait(false);
+                                Color objColor = await objWeek.GetPreferredColorAsync(token).ConfigureAwait(false);
                                 ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                                 {
-                                    Text = objWeek.Notes,
-                                    ForeColor = objWeek.PreferredColor
+                                    Text = await objWeek.GetNotesAsync(token).ConfigureAwait(false),
+                                    ForeColor = objColor
                                 };
                                 ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
                                 {
                                     Text = objWeek.InternalId,
-                                    ForeColor = objWeek.PreferredColor
+                                    ForeColor = objColor
                                 };
 
                                 ListViewItem objItem = new ListViewItem
                                 {
                                     Text = await objWeek.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                    ForeColor = objWeek.PreferredColor
+                                    ForeColor = objColor
                                 };
                                 objItem.SubItems.Add(objNoteItem);
                                 objItem.SubItems.Add(objInternalIdItem);

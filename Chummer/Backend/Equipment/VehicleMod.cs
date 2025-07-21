@@ -76,7 +76,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
         private string _strAmmoReplace;
-        private int _intAmmoBonus;
+        private decimal _decAmmoBonus;
         private decimal _decAmmoBonusPercent;
         private int _intSortOrder;
         private bool _blnStolen;
@@ -230,7 +230,7 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetInt32FieldQuickly("conditionmonitor", ref _intConditionMonitor);
             objXmlMod.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
             objXmlMod.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
-            objXmlMod.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
+            objXmlMod.TryGetDecFieldQuickly("ammobonus", ref _decAmmoBonus);
             objXmlMod.TryGetDecFieldQuickly("ammobonuspercent", ref _decAmmoBonusPercent);
             // Add Subsystem information if applicable.
             XmlElement xmlSubsystemsNode = objXmlMod?["subsystems"];
@@ -341,9 +341,9 @@ namespace Chummer.Backend.Equipment
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         Page, DisplayPage(GlobalSettings.Language), _objCharacter, token);
                 else
-                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlMod, Name,
+                    await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(objXmlMod, Name,
                         await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
-                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
             _nodBonus = objXmlMod?["bonus"];
             _nodWirelessBonus = objXmlMod?["wirelessbonus"];
@@ -432,7 +432,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("subsystems", _strSubsystems);
             objWriter.WriteElementString("weaponmountcategories", _strWeaponMountCategories);
-            objWriter.WriteElementString("ammobonus", _intAmmoBonus.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("ammobonus", _decAmmoBonus.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("ammobonuspercent", _decAmmoBonusPercent.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("ammoreplace", _strAmmoReplace);
             objWriter.WriteStartElement("weapons");
@@ -500,7 +500,7 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
             }
             objNode.TryGetDecFieldQuickly("ammobonuspercent", ref _decAmmoBonusPercent);
-            objNode.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
+            objNode.TryGetDecFieldQuickly("ammobonus", ref _decAmmoBonus);
             objNode.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
             objNode.TryGetStringFieldQuickly("subsystems", ref _strSubsystems);
             // Legacy Shims
@@ -588,34 +588,34 @@ namespace Chummer.Backend.Equipment
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("mod");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("fullname", await DisplayNameAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false));
-            objWriter.WriteElementString("category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false));
-            objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("limit", Limit);
-            objWriter.WriteElementString("slots", Slots);
-            objWriter.WriteElementString("rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(objCulture));
-            objWriter.WriteElementString("ratinglabel", RatingLabel);
-            objWriter.WriteElementString("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false));
+            await objWriter.WriteStartElementAsync("mod", token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("category_english", Category, token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("limit", Limit, token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("slots", Slots, token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel, token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
             string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
-            objWriter.WriteElementString("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture));
-            objWriter.WriteElementString("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture));
-            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false));
-            objWriter.WriteElementString("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false));
-            objWriter.WriteElementString("included", IncludedInVehicle.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteStartElement("weapons");
+            await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture), token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture), token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("included", IncludedInVehicle.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+            await objWriter.WriteStartElementAsync("weapons", token).ConfigureAwait(false);
             await Weapons.ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-            objWriter.WriteStartElement("cyberwares");
+            await objWriter.WriteStartElementAsync("cyberwares", token).ConfigureAwait(false);
             await Cyberware.ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
+                await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
         }
 
@@ -1170,6 +1170,21 @@ namespace Chummer.Backend.Equipment
             set => _strNotes = value;
         }
 
+        public Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return Task.FromResult(_strNotes);
+        }
+
+        public Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _strNotes = value;
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Forecolor to use for Notes in treeviews.
         /// </summary>
@@ -1177,6 +1192,21 @@ namespace Chummer.Backend.Equipment
         {
             get => _colNotes;
             set => _colNotes = value;
+        }
+
+        public Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<Color>(token);
+            return Task.FromResult(_colNotes);
+        }
+
+        public Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _colNotes = value;
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -1256,10 +1286,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Adjust the Weapon's Ammo amount by the specified flat value.
         /// </summary>
-        public int AmmoBonus
+        public decimal AmmoBonus
         {
-            get => _intAmmoBonus;
-            set => _intAmmoBonus = value;
+            get => _decAmmoBonus;
+            set => _decAmmoBonus = value;
         }
 
         /// <summary>
@@ -2671,6 +2701,20 @@ namespace Chummer.Backend.Equipment
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }
+        }
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+            {
+                return IncludedInVehicle
+                    ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                    : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+            }
+            return IncludedInVehicle
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
         }
 
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);

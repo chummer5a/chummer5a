@@ -2697,21 +2697,27 @@
       </book>
       <book>
         <id>bb5c7e4e-431b-404f-89da-e69cf3b75d50</id>
-        <name>Schattenhandbuch (German Handbook)</name>
-        <translate>Schattenhandbuch (German Handbook)</translate>
+        <name>Schattenhandbuch (German-Only)</name>
+        <translate>Schattenhandbuch (German-Only)</translate>
         <altcode>SHB</altcode>
       </book>
       <book>
         <id>8798c923-8118-448e-b201-53d299d7e58c</id>
-        <name>Schattenhandbuch 2 (German Handbook)</name>
-        <translate>Schattenhandbuch 2 (German Handbook)</translate>
+        <name>Schattenhandbuch 2 (German-Only)</name>
+        <translate>Schattenhandbuch 2 (German-Only)</translate>
         <altcode>SHB2</altcode>
       </book>
       <book>
         <id>08dea2f1-3add-4516-bdbe-b47ab9a5e31f</id>
-        <name>Schattenhandbuch 3 (German Handbook)</name>
-        <translate>Schattenhandbuch 3 (German Handbook)</translate>
+        <name>Schattenhandbuch 3 (German-Only)</name>
+        <translate>Schattenhandbuch 3 (German-Only)</translate>
         <altcode>SHB3</altcode>
+      </book>
+      <book>
+        <id>e1f426ff-e35a-4ddd-a168-11faec92d3b6</id>
+        <name>Schattenhandbuch 4 (German-Only)</name>
+        <translate>Schattenhandbuch 4 (German-Only)</translate>
+        <altcode>SHB4</altcode>
       </book>
       <book>
         <id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
@@ -2775,8 +2781,8 @@
       </book>
       <book>
         <id>71a6304e-03dc-41db-be01-a86acab1517b</id>
-        <name>Shadowrun 2050 (5th Edition)</name>
-        <translate>Shadowrun 2050 (5th Edition)</translate>
+        <name>Shadowrun 2050 (German-Only)</name>
+        <translate>Shadowrun 2050 (German-Only)</translate>
         <altcode>2050</altcode>
       </book>
       <book>
@@ -2793,8 +2799,8 @@
       </book>
       <book>
         <id>c6b7136f-e461-457b-b6f7-09e95c2f6313</id>
-        <name>State of the Art ADL (German Handbook)</name>
-        <translate>State of the Art ADL (German Handbook)</translate>
+        <name>State of the Art ADL (German-Only)</name>
+        <translate>State of the Art ADL (German-Only)</translate>
         <altcode>SAG</altcode>
       </book>
       <book>
@@ -2835,8 +2841,8 @@
       </book>
       <book>
         <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
-        <name>Hamburg (German-exclusive)</name>
-        <translate>Hamburg (German-exclusive)</translate>
+        <name>Datapuls Hamburg (German-Only)</name>
+        <translate>Datapuls Hamburg (German-Only)</translate>
         <altcode>HAMG</altcode>
       </book>
       <book>
@@ -2859,15 +2865,9 @@
       </book>
       <book>
         <id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
-        <name>Datapuls SOTA 2080 (German-exclusive)</name>
-        <translate>Datapuls SOTA 2080 (German-exclusive)</translate>
+        <name>Datapuls SOTA 2080 (German-Only)</name>
+        <translate>Datapuls SOTA 2080 (German-Only)</translate>
         <altcode>SOTG</altcode>
-      </book>
-      <book>
-        <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
-        <name>Datapuls Verschlusssache (German-exclusive)</name>
-        <translate>Datapuls Verschlusssache (German-exclusive)</translate>
-        <altcode>DPVG</altcode>
       </book>
       <book>
         <id>e997ea2e-916b-4482-a381-bf8c49cb08ff</id>
@@ -2895,8 +2895,8 @@
       </book>
       <book>
         <id>d7ac8252-fc5d-42d2-afca-2cf98ec14287</id>
-        <name>Grimmes Erwachen (German-exclusive)</name>
-        <translate>Grimmes Erwachen (German-exclusive)</translate>
+        <name>Grimmes Erwachen (German-Only)</name>
+        <translate>Grimmes Erwachen (German-Only)</translate>
         <altcode>GE</altcode>
       </book>
       <book>

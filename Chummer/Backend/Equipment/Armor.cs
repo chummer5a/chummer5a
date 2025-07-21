@@ -386,10 +386,10 @@ namespace Chummer.Backend.Equipment
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             Page, DisplayPage(GlobalSettings.Language), _objCharacter, token);
                     else
-                        Notes = await CommonFunctions.GetBookNotesAsync(objXmlArmorNode, Name,
+                        await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(objXmlArmorNode, Name,
                             await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
                             await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
-                            token).ConfigureAwait(false);
+                            token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
             }
 
@@ -584,9 +584,12 @@ namespace Chummer.Backend.Equipment
                                     IncludedInArmor = true,
                                     ArmorCapacity = "[0]",
                                     Cost = "0",
-                                    Rating = 0,
                                     MaxRating = "0"
                                 };
+                                if (blnSync)
+                                    Rating = 0;
+                                else
+                                    await SetRatingAsync(0, token).ConfigureAwait(false);
                             }
 
                             if (blnSync)
@@ -648,7 +651,10 @@ namespace Chummer.Backend.Equipment
                                 if (!string.IsNullOrEmpty(strOverrideRating))
                                     int.TryParse(strOverrideRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                         out intDummy);
-                                objMod.Rating = intDummy;
+                                if (blnSync)
+                                    objMod.Rating = intDummy;
+                                else
+                                    await objMod.SetRatingAsync(intDummy, token).ConfigureAwait(false);
                             }
                             else
                             {
@@ -677,9 +683,12 @@ namespace Chummer.Backend.Equipment
                                 ArmorCapacity = "[0]",
                                 Cost = "0",
                                 MaxRating = strLoopMaximumRating,
-                                Rating = intLoopRating,
                                 Extra = strForceValue
                             };
+                            if (blnSync)
+                                Rating = intLoopRating;
+                            else
+                                await SetRatingAsync(intLoopRating, token).ConfigureAwait(false);
                         }
 
                         if (blnSync)
@@ -1185,7 +1194,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture), token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
             finally
             {
@@ -1396,8 +1405,7 @@ namespace Chummer.Backend.Equipment
                     if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
                     {
                         // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                        int intCurrentRating = await objChild.GetRatingAsync(token).ConfigureAwait(false);
-                        await objChild.SetRatingAsync(intCurrentRating, token).ConfigureAwait(false);
+                        await objChild.SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                 }, token).ConfigureAwait(false);
             }
@@ -2294,6 +2302,21 @@ namespace Chummer.Backend.Equipment
             set => _strNotes = value;
         }
 
+        public Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return Task.FromResult(_strNotes);
+        }
+
+        public Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _strNotes = value;
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Forecolor to use for Notes in treeviews.
         /// </summary>
@@ -2301,6 +2324,21 @@ namespace Chummer.Backend.Equipment
         {
             get => _colNotes;
             set => _colNotes = value;
+        }
+
+        public Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<Color>(token);
+            return Task.FromResult(_colNotes);
+        }
+
+        public Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _colNotes = value;
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -3466,6 +3504,14 @@ namespace Chummer.Backend.Equipment
             !string.IsNullOrEmpty(Notes)
                 ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return !string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false))
+                ? ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                : ColorManager.WindowText;
+        }
 
         #endregion UI Methods
 

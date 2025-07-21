@@ -93,6 +93,10 @@ Application Changes:
 - Weapon and weapon accessory reach and concealability entries can now work off of character attributes and/or ratings.
 - The rating entry in the Weapons tab has been changed to a dial in Create mode, allowing users to alter the ratings of eligible weapons, weapon accessories, and gear loaded into weapon accessories more easily.
 - Added a new Data Exporter tool that allows a user to export all internal data used by the program into a zip file. Data exported in this way will contain any translation entries added by non-English languages as well as any and all custom data content created, added, modified, removed, etc. by a specified character setting's enabled custom datasets.
+- The button to automatically scan a folder for PDFs can now also detect PDFs in languages different from the currently selected user interface language, though it will prioritize PDFs that match the current user interface language if possible. It can also now be used to scan folders recursively.
+- Complex forms can be set to use a skill other than Software through the same useskill data node that spells can have.
+- Weapon accessories can now add additional accessory mounting slots to their parent weapon through the addmount node.
+- Weapon accessories can now overwrite the range category of their parent weapon through the replacerange node.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
@@ -142,6 +146,15 @@ Data Changes:
 - Armory asset for advanced lifestyles now properly costs 1000. Fixes #5193.
 - Monofilament Whips now properly increase their Accuracy by 2 when they are wirelessly enabled.
 - Registered sprite limits are now equal to a character's Charisma in all English pre-made settings to match the entry in the fifth printing of the CRB. German settings are unaffected because it is still Logic-based in the German CRB.
+- Fixed some faulty text matches for German books that fetched strings that would span multiple lines, thus sometimes causing the books to not be detected.
+- Corrected multiple incorrect or faulty entries in State of the Art ADL content, including some weapons, some vehicles, the Svetoid tradition, the Squirrel mentor spirit, the Cyberdynamix Special HardCore and MCT Dusseldorf commlinks, and the Rheingold Pro Tec Plus Coat and Franzinger Fashion Tenor Coat armors. Existing characters that use these items will usually need to remove and re-add them to see any changes.
+- Corrected mistranslations, bad weapon entries, bad vehicle entries, and missing content for Datapuls Hamburg, Datapuls SOTA 2080, Schattenhandbuch 1, Schattenhandbuch 2, and Schattenhandbuch 3 content. Existing characters that use these items will usually need to remove and re-add them to see any changes.
+- Added missing content from Datapuls SOX, Der Almanach - Gratisrollenspieltag 2019, and the German versions of Parabotany, Parageology, and Parazoology (all of which are for SR5e).
+- Added missing content from Shadows in Focus: Morocco, Shadows in Focus: Casablanca-Rabat, and Schattenload numbers 2, 3, and 7.
+- Corrected cases where content from Datapuls SOX and Datapuls Österreich were sourced to the collection of Schattenhandbuch 3 instead of their specific books.
+- Corrected the Walther P99 being sourced to Datapuls Verschlusssache instead of to Schattenhandbuch 4 (it is exclusive to that collection and does not appear in the individual books).
+- Armor mods for custom liners have now had their categories renamed to be more generic.
+- Foci, formulae, and magical supplies and compounds will now use "Force" instead of "Rating" where appropriate.
 
 Fixes implemented by BM123499
 
@@ -284,6 +297,9 @@ Changed/New Strings:
 - DialogFilter_Zip
 - Title_ExportData
 - Button_Export_SaveDataAs
+- String_SelectFolderForPDFScan
+- Message_ScanFoldersRecursively
+- String_Fallback_Pattern
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage
