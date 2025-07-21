@@ -9086,12 +9086,10 @@
       <ammo>6(c)</ammo>
       <avail>9R</avail>
       <cost>1150</cost>
-      <source>SR5</source>
-      <page>429</page>
+      <source>SLG2</source>
+      <page>1</page>
       <accessorymounts>
         <mount>Top</mount>
-        <mount>Stock</mount>
-        <mount>Side</mount>
       </accessorymounts>
       <range>Holdouts</range>
       <useskill>Pistols</useskill>
