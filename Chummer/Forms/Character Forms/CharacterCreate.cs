@@ -16143,8 +16143,17 @@ namespace Chummer
                                         --sbdSlotsText.Length;
                                 }
 
+                                if (!string.IsNullOrEmpty(objSelectedAccessory.AddMount))
+                                {
+                                    sbdSlotsText.Append(strSpace).Append("(++").Append(strSpace)
+                                            .Append(await LanguageManager.GetStringAsync(
+                                                                                "String_Mount" + objSelectedAccessory.AddMount,
+                                                                                token: token)
+                                                                            .ConfigureAwait(false)).Append(')');
+                                }
+
                                 await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = sbdSlotsText.ToString(), token)
-                                                    .ConfigureAwait(false);
+                                                .ConfigureAwait(false);
                             }
 
                             await lblWeaponConcealLabel
@@ -19836,8 +19845,17 @@ namespace Chummer
                                         --sbdMount.Length;
                                 }
 
+                                if (!string.IsNullOrEmpty(objAccessory.AddMount))
+                                {
+                                    sbdMount.Append(strSpace).Append("(++").Append(strSpace)
+                                            .Append(await LanguageManager.GetStringAsync(
+                                                                                "String_Mount" + objAccessory.AddMount,
+                                                                                token: token)
+                                                                            .ConfigureAwait(false)).Append(')');
+                                }
+
                                 await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                          .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                 await lblVehicleSlots.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;

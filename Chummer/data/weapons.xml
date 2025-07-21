@@ -9070,6 +9070,35 @@
       <useskill>Automatics</useskill>
     </weapon>
     <!-- End Region -->
+    <!-- Region Schattenload 2 -->
+    <weapon>
+      <id>96de7dec-2473-45f1-bcda-0ca55ba43538</id>
+      <name>HK Puncheon</name>
+      <category>Exotic Ranged Weapons</category>
+      <type>Ranged</type>
+      <conceal>-2</conceal>
+      <accuracy>2</accuracy>
+      <reach>0</reach>
+      <damage>Chemical</damage>
+      <ap>-</ap>
+      <mode>SA</mode>
+      <rc>0</rc>
+      <ammo>6(c)</ammo>
+      <avail>9R</avail>
+      <cost>1150</cost>
+      <source>SR5</source>
+      <page>429</page>
+      <accessorymounts>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
+      <range>Holdouts</range>
+      <useskill>Pistols</useskill>
+      <spec>Semi-Automatics</spec>
+      <weapontype>squirtgun</weapontype>
+    </weapon>
+    <!-- End Region -->
     <!-- Region Cutting Aces -->
     <weapon>
       <id>dfec9209-7bf7-49fa-b816-da173fad9963</id>
@@ -19369,6 +19398,27 @@
           </OR>
         </weapondetails>
       </forbidden>
+    </accessory>
+    <!-- End Region -->
+    <!-- Region Schattenload 2 -->
+    <accessory>
+      <id>ba6a4f69-bdfa-4fcf-82ac-81c64aa99114</id>
+      <name>HK Puncheon Booster</name>
+      <mount />
+      <addmount>Under</addmount>
+      <avail>9R</avail>
+      <cost>250</cost>
+      <source>SLG2</source>
+      <page>1</page>
+      <accuracy>2</accuracy>
+      <conceal>+2</conceal>
+      <rating>0</rating>
+      <replacerange>Heavy Pistols</replacerange>
+      <required>
+        <weapondetails>
+          <name>HK Puncheon</name>
+        </weapondetails>
+      </required>
     </accessory>
     <!-- End Region -->
     <!-- Region Krime Katalog -->

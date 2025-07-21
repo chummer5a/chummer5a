@@ -55,6 +55,7 @@ namespace Chummer.Backend.Equipment
         private string _strName = string.Empty;
         private string _strMount = string.Empty;
         private string _strExtraMount = string.Empty;
+        private string _strAddMount = string.Empty;
         private string _strRC = string.Empty;
         private string _strDamage = string.Empty;
         private string _strDamageType = string.Empty;
@@ -87,6 +88,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnEquipped = true;
         private int _intAccessoryCostMultiplier = 1;
         private string _strExtra = string.Empty;
+        private string _strReplaceRange = string.Empty;
         private string _strRangeBonus = "0";
         private string _strRangeModifier = "0";
         private int _intSingleShot;
@@ -217,6 +219,7 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("name", ref _strName);
             _strMount = strMount?.Item1 ?? string.Empty;
             _strExtraMount = strMount?.Item2 ?? string.Empty;
+            objXmlAccessory.TryGetStringFieldQuickly("addmount", ref _strAddMount);
             objXmlAccessory.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             _intRating = intRating; // Set first to make MaxRatingValue work properly
             _intRating = Math.Min(intRating, blnSync ? MaxRatingValue : await GetMaxRatingValueAsync(token).ConfigureAwait(false));
@@ -358,6 +361,7 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
             objXmlAccessory.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objXmlAccessory.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
+            objXmlAccessory.TryGetStringFieldQuickly("replacerange", ref _strReplaceRange);
             objXmlAccessory.TryGetStringFieldQuickly("rangebonus", ref _strRangeBonus);
             objXmlAccessory.TryGetStringFieldQuickly("rangemodifier", ref _strRangeModifier);
             objXmlAccessory.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -494,6 +498,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("mount", _strMount);
             objWriter.WriteElementString("extramount", _strExtraMount);
+            objWriter.WriteElementString("addmount", _strAddMount);
             objWriter.WriteElementString("rc", _strRC);
             objWriter.WriteElementString("maxrating", _strMaxRating);
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -542,6 +547,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("longburst", _intLongBurst.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("fullburst", _intFullBurst.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("suppressive", _intSuppressive.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("replacerange", _strReplaceRange);
             objWriter.WriteElementString("rangebonus", _strRangeBonus);
             objWriter.WriteElementString("rangemodifier", _strRangeModifier);
             objWriter.WriteElementString("extra", _strExtra);
@@ -588,6 +594,7 @@ namespace Chummer.Backend.Equipment
             }
             objNode.TryGetStringFieldQuickly("mount", ref _strMount);
             objNode.TryGetStringFieldQuickly("extramount", ref _strExtraMount);
+            objNode.TryGetStringFieldQuickly("addmount", ref _strAddMount);
             objNode.TryGetStringFieldQuickly("rc", ref _strRC);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
@@ -680,6 +687,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
+            objNode.TryGetStringFieldQuickly("replacerange", ref _strReplaceRange);
             objNode.TryGetStringFieldQuickly("rangebonus", ref _strRangeBonus);
             objNode.TryGetStringFieldQuickly("rangemodifier", ref _strRangeModifier);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -729,6 +737,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("mount", Mount, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("extramount", ExtraMount, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("addmount", AddMount, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc", RC, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("conceal", (await GetTotalConcealabilityAsync(token).ConfigureAwait(false)).ToString("+#,0;-#,0;0", objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -1306,6 +1315,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strExtraMount;
             set => _strExtraMount = value;
+        }
+
+        /// <summary>
+        /// Mount slot added (if any).
+        /// </summary>
+        public string AddMount
+        {
+            get => _strAddMount;
+            set => _strAddMount = value;
         }
 
         /// <summary>
@@ -2702,6 +2720,11 @@ namespace Chummer.Backend.Equipment
         /// Number of rounds consumed by Suppressive Fire.
         /// </summary>
         public int Suppressive => _intSuppressive;
+
+        /// <summary>
+        /// If not empty, overrides the parent weapon's range type with this entry.
+        /// </summary>
+        public string ReplaceRange => _strReplaceRange;
 
         /// <summary>
         /// Range bonus granted by the Accessory.

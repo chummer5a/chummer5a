@@ -5575,21 +5575,68 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (string.IsNullOrEmpty(ModificationSlots))
+                string strSlots = ModificationSlots;
+                if (string.IsNullOrEmpty(strSlots))
                     return string.Empty;
+                Dictionary<string, int> dicMounts = new Dictionary<string, int>();
+                foreach (string strMount in strSlots.SplitNoAlloc(
+                                 '/', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (dicMounts.ContainsKey(strMount))
+                        dicMounts[strMount] += 1;
+                    else
+                        dicMounts.Add(strMount, 1);
+                }
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                {
+                    if (!objAccessory.Equipped)
+                        continue;
+                    string strLoop = objAccessory.AddMount;
+                    if (!string.IsNullOrEmpty(strLoop))
+                    {
+                        foreach (string strMount in strLoop.SplitNoAlloc(
+                                 '/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            if (dicMounts.ContainsKey(strMount))
+                                dicMounts[strMount] += 1;
+                            else
+                                dicMounts.Add(strMount, 1);
+                        }
+                    }
+                    strLoop = objAccessory.Mount;
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    {
+                        dicMounts[strLoop] -= 1;
+                    }
+                    strLoop = objAccessory.ExtraMount;
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    {
+                        dicMounts[strLoop] -= 1;
+                    }
+                }
+                foreach (Weapon objWeapon in UnderbarrelWeapons)
+                {
+                    if (!objWeapon.Equipped)
+                        continue;
+                    string strLoop = objWeapon.Mount;
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    {
+                        dicMounts[strLoop] -= 1;
+                    }
+                    strLoop = objWeapon.ExtraMount;
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    {
+                        dicMounts[strLoop] -= 1;
+                    }
+                }
+
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMounts))
                 {
-                    foreach (string strMount in ModificationSlots.SplitNoAlloc(
-                                 '/', StringSplitOptions.RemoveEmptyEntries))
+                    foreach (KeyValuePair<string, int> kvpMount in dicMounts)
                     {
-                        if (WeaponAccessories.All(objAccessory =>
-                                !objAccessory.Equipped || objAccessory.Mount != strMount
-                                && objAccessory.ExtraMount != strMount)
-                            && UnderbarrelWeapons.All(weapon => !weapon.Equipped
-                                                                || weapon.Mount != strMount
-                                                                && weapon.ExtraMount != strMount))
+                        for (int i = 0; i < kvpMount.Value; ++i)
                         {
-                            sbdMounts.Append(strMount).Append('/');
+                            sbdMounts.Append(kvpMount.Key).Append('/');
                         }
                     }
 
@@ -7557,6 +7604,16 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            await WeaponAccessories.ForEachAsync(x =>
+            {
+                if (x.Equipped)
+                {
+                    string strNewRange = x.ReplaceRange;
+                    if (!string.IsNullOrEmpty(strNewRange))
+                        strRange = strNewRange;
+                }
+            }, token).ConfigureAwait(false);
+
             if (blnIncludeAmmoName)
             {
                 // Check if the Weapon has Ammunition loaded and look for any range replacement.
@@ -7742,6 +7799,16 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+            {
+                if (objAccessory.Equipped)
+                {
+                    string strNewRange = objAccessory.ReplaceRange;
+                    if (!string.IsNullOrEmpty(strNewRange))
+                        strRangeCategory = strNewRange;
+                }
+            }
+
             if (blnIncludeAmmo)
             {
                 // Check if the Weapon has Ammunition loaded and look for any range replacement.
@@ -7844,6 +7911,16 @@ namespace Chummer.Backend.Equipment
                     strRangeCategory = strNewRange;
                 }
             }
+
+            await WeaponAccessories.ForEachAsync(x =>
+            {
+                if (x.Equipped)
+                {
+                    string strNewRange = x.ReplaceRange;
+                    if (!string.IsNullOrEmpty(strNewRange))
+                        strRangeCategory = strNewRange;
+                }
+            }, token).ConfigureAwait(false);
 
             if (blnIncludeAmmo)
             {

@@ -760,5 +760,41 @@
         </match>
       </matches>
     </book>
+    <book>
+      <id>71405233-c42c-46c7-b387-f5baae3c9e64</id>
+      <name>Schattenload 2 (German-Only)</name>
+      <code>SLG2</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Mit der Einführung der Puncheon reagiert</text>
+          <page>1</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>5295c4f3-53d6-4406-b5dc-79ffe54f7a4f</id>
+      <name>Schattenload 3 (German-Only)</name>
+      <code>SLG3</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Frohsinns. Was Karneval, Fastnacht oder</text>
+          <page>1</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>0851f253-fd27-4a66-ae56-10721d8be5e4</id>
+      <name>Schattenload 7 (German-Only)</name>
+      <code>SLG7</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>schlechter. Risse, Schlaglöcher, Unter</text>
+          <page>1</page>
+        </match>
+      </matches>
+    </book>
   </books>
 </chummer>

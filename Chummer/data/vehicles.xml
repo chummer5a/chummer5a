@@ -9721,7 +9721,7 @@
         </gear>
       </gears>
       <mods>
-        <name>ECM</name>
+        <name rating="1">ECM</name> <!-- no rating specified in book -->
         <name rating="1">Passenger Protection System</name> <!-- no rating specified in book -->
         <name>Amenities (Luxury)</name>
         <name>Rigger Interface</name>
@@ -10799,6 +10799,214 @@
           <visibility>External</visibility>
         </weaponmount>
       </weaponmounts>
+    </vehicle>
+    <!-- End Region -->
+    <!-- Region Schattenload 3 -->
+    <vehicle>
+      <id>94524d79-72f6-4d98-87b1-ce874a6a9e9e</id>
+      <name>Sony Economically-4</name>
+      <page>3</page>
+      <source>SLG3</source>
+      <accel>1</accel>
+      <armor>3</armor>
+      <avail>4</avail>
+      <body>3</body>
+      <category>Drones: Anthro</category>
+      <cost>18000</cost>
+      <handling>2</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+        <name>Rigger Interface</name>
+      </mods>
+      <modslots>0</modslots>
+    </vehicle>
+    <vehicle>
+      <id>74581303-4417-42f1-ad22-916197ab3697</id>
+      <name>Sony Reliable-4</name>
+      <page>3</page>
+      <source>SLG3</source>
+      <accel>2</accel>
+      <armor>3</armor>
+      <avail>12R</avail>
+      <body>4</body>
+      <category>Drones: Anthro</category>
+      <cost>34000</cost>
+      <handling>2</handling>
+      <pilot>4</pilot>
+      <sensor>4</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>6</maxrating>
+        </gear>
+        <gear>
+          <name>Holster</name>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+        <name>Rigger Interface</name>
+        <name select="Emotive Display">Special Equipment</name>
+        <name select="Forearm Guard">Special Equipment</name>
+      </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Light</size>
+          <visibility>External</visibility>
+          <allowedweapons>Underbarrel Grenade Launcher</allowedweapons>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Underbarrel Grenade Launcher</name>
+        </weapon>
+      </weapons>
+    </vehicle>
+    <vehicle>
+      <id>34e6af17-7718-4d9b-9d40-263c692763fe</id>
+      <name>Sony Versatile Cologne Edition</name>
+      <page>3</page>
+      <source>SLG3</source>
+      <accel>1</accel>
+      <armor>0</armor>
+      <avail>18R</avail>
+      <body>3</body>
+      <category>Drones: Anthro</category>
+      <cost>23000</cost>
+      <handling>2</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>6</maxrating>
+        </gear>
+        <gear>
+          <name>Holster</name>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+        <name>Rigger Interface</name>
+        <name select="Candy Launcher">Special Equipment</name>
+      </mods>
+      <modslots>0</modslots>
+    </vehicle>
+    <vehicle>
+      <id>b4ad7e5f-2e75-4fd7-bcae-160a09ca27c6</id>
+      <name>Sony Orderly-4</name>
+      <page>3</page>
+      <source>SLG3</source>
+      <accel>1</accel>
+      <armor>3</armor>
+      <avail>11R</avail>
+      <body>4</body>
+      <category>Drones: Anthro</category>
+      <cost>38000</cost>
+      <handling>4</handling>
+      <pilot>4</pilot>
+      <sensor>4</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>6</maxrating>
+        </gear>
+        <gear>
+          <name>Holster</name>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+        <name>Rigger Interface</name>
+        <name select="Emotive Display">Special Equipment</name>
+      </mods>
+    </vehicle>
+    <!-- End Region -->
+    <!-- Region Schattenload 7 -->
+    <vehicle>
+      <id>4f5c48f2-f370-437c-a656-3c354e8586e3</id>
+      <name>Mercedes Multimog-D1</name>
+      <page>1</page>
+      <source>SLG7</source>
+      <accel>1</accel>
+      <armor>16</armor>
+      <avail>0</avail>
+      <body>16</body>
+      <category>Trucks</category>
+      <cost>45000</cost>
+      <handling>3/4</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>bfdd8849-c104-4df5-ae67-61ef34d41d62</id>
+      <name>Mercedes Multimog-K4 "Gryphon"</name>
+      <page>1</page>
+      <source>SLG7</source>
+      <accel>1</accel>
+      <armor>18</armor>
+      <avail>12</avail>
+      <body>18</body>
+      <category>Trucks</category>
+      <cost>83000</cost>
+      <handling>3/4</handling>
+      <pilot>4</pilot>
+      <sensor>4</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Rigger Interface</name>
+        <name rating="1">ECM</name> <!-- no rating specified in book -->
+        <name>Landing Drone Rack (Small)</name> <!-- no size specified in book -->
+        <name>Landing Drone Rack (Small)</name> <!-- no size specified in book -->
+        <name>Satellite Link</name>
+      </mods>
+      <seats>6</seats>
     </vehicle>
     <!-- End Region -->
     <!-- Region Krime Katalog -->
