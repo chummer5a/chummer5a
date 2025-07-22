@@ -155,6 +155,7 @@ Data Changes:
 - Corrected the Walther P99 being sourced to Datapuls Verschlusssache instead of to Schattenhandbuch 4 (it is exclusive to that collection and does not appear in the individual books).
 - Armor mods for custom liners have now had their categories renamed to be more generic.
 - Foci, formulae, and magical supplies and compounds will now use "Force" instead of "Rating" where appropriate.
+- Fixed page reference for the Guard, Hammer, Lockdown, Mugger, Shell, Sneak, Stealth, Track and Wrapper programs in gear.xml.
 
 Fixes implemented by BM123499
 
