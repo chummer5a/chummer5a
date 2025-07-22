@@ -1738,30 +1738,41 @@ namespace Chummer
         private async Task PurgeUnusedCharacterCaches(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            System.IAsyncDisposable objLocker = await _objCachePurgeReaderWriterLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+            if (_objCachePurgeReaderWriterLock.IsInUpgradeableReadLock)
+                return; // This is the only place where we enter an upgradeable read lock, so if we are already in one, that means we are already mid-purge, so skip
+            System.IAsyncDisposable objLocker1 = await _objCachePurgeReaderWriterLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                // Done in two steps because we want the entire ConcurrentDictionary read-locked via the enumerator while we collect the caches we want to purge
-                List<string> lstToPurge = new List<string>();
-                foreach (KeyValuePair<string, CharacterCache> kvpCache in _dicSavedCharacterCaches)
+                System.IAsyncDisposable objLocker2 = await _objCachePurgeReaderWriterLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
-                    string strKey = kvpCache.Key;
-                    CharacterCache objCache = kvpCache.Value;
-                    if (await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objCache), token).ConfigureAwait(false) == null)
-                        lstToPurge.Add(kvpCache.Key);
+                    // Done in two steps because we want the entire ConcurrentDictionary read-locked via the enumerator while we collect the caches we want to purge
+                    List<string> lstToPurge = new List<string>();
+                    foreach (KeyValuePair<string, CharacterCache> kvpCache in _dicSavedCharacterCaches)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strKey = kvpCache.Key;
+                        CharacterCache objCache = kvpCache.Value;
+                        if (await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objCache), token).ConfigureAwait(false) == null)
+                            lstToPurge.Add(kvpCache.Key);
+                    }
+                    foreach (string strKey in lstToPurge)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (_dicSavedCharacterCaches.TryRemove(strKey, out CharacterCache objCacheToDelete) && !objCacheToDelete.IsDisposed)
+                            await objCacheToDelete.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
-                foreach (string strKey in lstToPurge)
+                finally
                 {
-                    token.ThrowIfCancellationRequested();
-                    if (_dicSavedCharacterCaches.TryRemove(strKey, out CharacterCache objCacheToDelete) && !objCacheToDelete.IsDisposed)
-                        await objCacheToDelete.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker1.DisposeAsync().ConfigureAwait(false);
             }
         }
 
