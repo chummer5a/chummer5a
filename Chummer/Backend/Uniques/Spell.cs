@@ -2587,10 +2587,10 @@ namespace Chummer
                                 {
                                     //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
                                     // we are returning either the original improvement, null or a newly instantiated improvement
-                                    Improvement bestFocus = _objCharacter.GetBestFocusPower(objImprovement);
-                                    if (bestFocus != null)
+                                    Improvement objCompensatedImprovement = _objCharacter.GetPowerFocusAdjustedImprovementValue(objImprovement);
+                                    if (objCompensatedImprovement != null)
                                     {
-                                        yield return bestFocus;
+                                        yield return objCompensatedImprovement;
                                         if (blnExitAfterFirst) yield break;
                                     }
                                 }
@@ -2708,10 +2708,10 @@ namespace Chummer
                                 {
                                     //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
                                     // we are returning either the original improvement, null or a newly instantiated improvement
-                                    Improvement bestFocus = await _objCharacter.GetBestFocusPowerAsync(objImprovement, token).ConfigureAwait(false);
-                                    if (bestFocus != null)
+                                    Improvement objCompensatedImprovement = await _objCharacter.GetPowerFocusAdjustedImprovementValueAsync(objImprovement, token).ConfigureAwait(false);
+                                    if (objCompensatedImprovement != null)
                                     {
-                                        lstReturn.Add(bestFocus);
+                                        lstReturn.Add(objCompensatedImprovement);
                                         if (blnExitAfterFirst)
                                             return false;
                                     }
