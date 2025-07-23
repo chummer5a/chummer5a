@@ -30064,47 +30064,65 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock())
             {
+                List<Improvement> lstRelevantImprovements = new List<Improvement>();
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.Enabled
+                        && objLoopImprovement.ImproveSource == Improvement.ImprovementSource.Gear
+                        && objLoopImprovement.UniqueName == "precedence0"
+                        && objLoopImprovement.ImprovedName.Contains("MAG")
+                        && (objLoopImprovement.ImproveType == Improvement.ImprovementType.Attribute
+                            || objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute
+                            || objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillLinkedAttribute))
+                    {
+                        lstRelevantImprovements.Add(objLoopImprovement);
+                    }
+                }
                 List<Focus> lstPowerFoci;
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setPotentialPowerFociImprovementSources))
                 {
-                    foreach (Improvement objImprovement in Improvements)
-                    {
-                        if (objImprovement.Enabled
-                            && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear
-                            && objImprovement.UniqueName == "precedence0"
-                            && objImprovement.ImprovedName.Contains("MAG")
-                            && (objImprovement.ImproveType == Improvement.ImprovementType.Attribute
-                                || objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute
-                                || objImprovement.ImproveType == Improvement.ImprovementType.SkillLinkedAttribute))
-                        {
-                            setPotentialPowerFociImprovementSources.Add(objImprovement.SourceName);
-                        }
-                    }
-                    lstPowerFoci = Foci.FindAll(x => x.GearObject?.Bonded == true && setPotentialPowerFociImprovementSources.Contains(x.GearObject.InternalId));
+                    foreach (Improvement objLoopImprovement in lstRelevantImprovements)
+                        setPotentialPowerFociImprovementSources.Add(objLoopImprovement.SourceName);
+                    lstPowerFoci = Foci.FindAll(x => x.GearObject?.Bonded == true
+                        && setPotentialPowerFociImprovementSources.Contains(x.GearObject.InternalId));
                 }
                 if (lstPowerFoci.Count > 0)
                 {
-                    // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-                    int intMaxFocusRating = lstPowerFoci.Max(x => x.Rating);
-                    if (intMaxFocusRating > 0)
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setPowerFociIds))
                     {
-                        // If our focus is higher, add in a partial bonus
-                        if (intMaxFocusRating < objImprovement.Value)
+                        foreach (Focus objFocus in lstPowerFoci)
+                            setPowerFociIds.Add(objFocus.GearObject.InternalId);
+                        for (int i = lstRelevantImprovements.Count; i >= 0; --i)
                         {
-                            // This is hackz -- because we don't want to lose the original improvement's value
-                            // we instantiate a fake version of the improvement that isn't saved to represent the diff
-                            return new Improvement(this)
-                            {
-                                SourceName = objImprovement.SourceName,
-                                ImprovedName = objImprovement.ImprovedName,
-                                ImproveSource = objImprovement.ImproveSource,
-                                ImproveType = objImprovement.ImproveType,
-                                Value = objImprovement.Value - intMaxFocusRating
-                            };
+                            if (!setPowerFociIds.Contains(lstRelevantImprovements[i].SourceName))
+                                lstRelevantImprovements.RemoveAt(i);
                         }
-                        // Power focus rating is higher, return null because we do not want to apply the given improvement
-                        return null;
+                    }
+                    if (lstRelevantImprovements.Count > 0)
+                    {
+                        // get any bonded foci that add to the base magic stat and return the highest rated one's rating
+                        decimal decMaxFocusBonus = lstRelevantImprovements.Max(x => x.Rating * (x.Value + x.Augmented));
+                        if (decMaxFocusBonus > 0)
+                        {
+                            // If our focus is higher, add in a partial bonus
+                            if (decMaxFocusBonus < objImprovement.Value)
+                            {
+                                // This is hackz -- because we don't want to lose the original improvement's value
+                                // we instantiate a fake version of the improvement that isn't saved to represent the diff
+                                return new Improvement(this)
+                                {
+                                    SourceName = objImprovement.SourceName,
+                                    ImprovedName = objImprovement.ImprovedName,
+                                    ImproveSource = objImprovement.ImproveSource,
+                                    ImproveType = objImprovement.ImproveType,
+                                    Value = objImprovement.Value - decMaxFocusBonus
+                                };
+                            }
+                            // Power focus rating is higher, return null because we do not want to apply the given improvement
+                            return null;
+                        }
                     }
                 }
 
@@ -30122,49 +30140,66 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
+                List<Improvement> lstRelevantImprovements = new List<Improvement>();
+                await Improvements.ForEachAsync(objLoopImprovement =>
+                {
+                    if (objLoopImprovement.Enabled
+                        && objLoopImprovement.ImproveSource == Improvement.ImprovementSource.Gear
+                        && objLoopImprovement.UniqueName == "precedence0"
+                        && objLoopImprovement.ImprovedName.Contains("MAG")
+                        && (objLoopImprovement.ImproveType == Improvement.ImprovementType.Attribute
+                            || objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute
+                            || objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillLinkedAttribute))
+                    {
+                        lstRelevantImprovements.Add(objLoopImprovement);
+                    }
+                }, token).ConfigureAwait(false);
                 List<Focus> lstPowerFoci;
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setPotentialPowerFociImprovementSources))
                 {
-                    await Improvements.ForEachAsync(objImprovement =>
-                    {
-                        if (objImprovement.Enabled
-                            && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear
-                            && objImprovement.UniqueName == "precedence0"
-                            && objImprovement.ImprovedName.Contains("MAG")
-                            && (objImprovement.ImproveType == Improvement.ImprovementType.Attribute
-                                || objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute
-                                || objImprovement.ImproveType == Improvement.ImprovementType.SkillLinkedAttribute))
-                        {
-                            setPotentialPowerFociImprovementSources.Add(objImprovement.SourceName);
-                        }
-                    }, token).ConfigureAwait(false);
-                    lstPowerFoci = await Foci.FindAllAsync(x => x.GearObject?.Bonded == true && setPotentialPowerFociImprovementSources.Contains(x.GearObject.InternalId), token).ConfigureAwait(false);
+                    foreach (Improvement objLoopImprovement in lstRelevantImprovements)
+                        setPotentialPowerFociImprovementSources.Add(objLoopImprovement.SourceName);
+                    lstPowerFoci = await Foci.FindAllAsync(x => x.GearObject?.Bonded == true
+                        && setPotentialPowerFociImprovementSources.Contains(x.GearObject.InternalId), token).ConfigureAwait(false);
                 }
                 if (lstPowerFoci.Count > 0)
                 {
-                    // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-                    int intMaxFocusRating = await lstFoci.MaxAsync(x => x.GetRatingAsync(token), token).ConfigureAwait(false);
-
-                    if (intMaxFocusRating > 0)
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setPowerFociIds))
                     {
-                        // If our focus is higher, add in a partial bonus
-                        if (powerFocusRating < objImprovement.Value)
+                        foreach (Focus objFocus in lstPowerFoci)
+                            setPowerFociIds.Add(objFocus.GearObject.InternalId);
+                        for (int i = lstRelevantImprovements.Count; i >= 0; --i)
                         {
-                            // This is hackz -- because we don't want to lose the original improvement's value
-                            // we instantiate a fake version of the improvement that isn't saved to represent the diff
-                            Improvement objPlaceholder = new Improvement(this)
-                            {
-                                SourceName = objImprovement.SourceName,
-                                ImprovedName = objImprovement.ImprovedName,
-                                ImproveSource = objImprovement.ImproveSource,
-                                ImproveType = objImprovement.ImproveType
-                            };
-                            await objPlaceholder.SetValueAsync(objImprovement.Value - intMaxFocusRating, token).ConfigureAwait(false);
-                            return objPlaceholder;
+                            if (!setPowerFociIds.Contains(lstRelevantImprovements[i].SourceName))
+                                lstRelevantImprovements.RemoveAt(i);
                         }
-                        // Power focus rating is higher, return null because we do not want to apply the given improvement
-                        return null;
+                    }
+                    if (lstRelevantImprovements.Count > 0)
+                    {
+                        // get any bonded foci that add to the base magic stat and return the highest rated one's rating
+                        decimal decMaxFocusBonus = lstRelevantImprovements.Max(x => x.Rating * (x.Value + x.Augmented));
+                        if (decMaxFocusBonus > 0)
+                        {
+                            // If our focus is higher, add in a partial bonus
+                            if (decMaxFocusBonus < objImprovement.Value)
+                            {
+                                // This is hackz -- because we don't want to lose the original improvement's value
+                                // we instantiate a fake version of the improvement that isn't saved to represent the diff
+                                Improvement objPlaceholder = new Improvement(this)
+                                {
+                                    SourceName = objImprovement.SourceName,
+                                    ImprovedName = objImprovement.ImprovedName,
+                                    ImproveSource = objImprovement.ImproveSource,
+                                    ImproveType = objImprovement.ImproveType
+                                };
+                                await objPlaceholder.SetValueAsync(objImprovement.Value - decMaxFocusBonus, token).ConfigureAwait(false);
+                                return objPlaceholder;
+                            }
+                            // Power focus rating is higher, return null because we do not want to apply the given improvement
+                            return null;
+                        }
                     }
                 }
 
