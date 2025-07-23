@@ -18224,12 +18224,12 @@ namespace Chummer
         /// <summary>
         /// The value by which Specializations add to dicepool.
         /// </summary>
-        public int SpecializationBonus => 2;
+        public static int SpecializationBonus => 2;
 
         /// <summary>
         /// The value by which Expertise Specializations add to dicepool (does not stack with SpecializationBonus).
         /// </summary>
-        public int ExpertiseBonus => 3;
+        public static int ExpertiseBonus => 3;
 
         #endregion Constant Values
 
