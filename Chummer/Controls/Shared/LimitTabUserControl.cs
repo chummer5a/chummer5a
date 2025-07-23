@@ -400,24 +400,6 @@ namespace Chummer.UI.Shared
 
                     if (intTargetLimit != -1)
                     {
-                        if (string.IsNullOrEmpty(objImprovement.ImprovedName))
-                        {
-                            switch (objImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.SocialLimit:
-                                    objImprovement.ImprovedName = "Social";
-                                    break;
-
-                                case Improvement.ImprovementType.MentalLimit:
-                                    objImprovement.ImprovedName = "Mental";
-                                    break;
-
-                                default:
-                                    objImprovement.ImprovedName = "Physical";
-                                    break;
-                            }
-                        }
-
                         TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
                         if (objParentNode != null)
                         {

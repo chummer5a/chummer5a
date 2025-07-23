@@ -567,6 +567,18 @@ namespace Chummer
                 case ImprovementType.BlockSkillDefault when _objCharacter.LastSavedVersion <= new ValueVersion(5, 224, 39):
                     _eImprovementType = ImprovementType.BlockSkillGroupDefault;
                     break;
+
+                case ImprovementType.PhysicalLimit when string.IsNullOrEmpty(_strImprovedName):
+                    _strImprovedName = "Physical";
+                    break;
+
+                case ImprovementType.MentalLimit when string.IsNullOrEmpty(_strImprovedName):
+                    _strImprovedName = "Mental";
+                    break;
+
+                case ImprovementType.SocialLimit when string.IsNullOrEmpty(_strImprovedName):
+                    _strImprovedName = "Social";
+                    break;
             }
 
             objNode.TryGetBoolFieldQuickly("custom", ref _blnCustom);
