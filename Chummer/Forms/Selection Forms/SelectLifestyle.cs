@@ -207,7 +207,7 @@ namespace Chummer
 
                     async ValueTask AddToTree(LifestyleQuality objQuality)
                     {
-                        TreeNode objNode = objQuality.CreateTreeNode();
+                        TreeNode objNode = await objQuality.CreateTreeNode(token).ConfigureAwait(false);
                         if (objNode == null)
                             return;
                         TreeNode objParentNode;
@@ -339,7 +339,7 @@ namespace Chummer
 
             await _objLifestyle.LifestyleQualities.ForEachAsync(async objQuality =>
             {
-                TreeNode objNode = objQuality.CreateTreeNode();
+                TreeNode objNode = await objQuality.CreateTreeNode(token).ConfigureAwait(false);
                 if (objNode == null)
                     return;
                 if (await objQuality.GetIsFreeGridAsync(token).ConfigureAwait(false))

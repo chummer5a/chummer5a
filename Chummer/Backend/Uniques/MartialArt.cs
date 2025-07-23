@@ -968,35 +968,42 @@ namespace Chummer
 
         #region Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArt, ContextMenuStrip cmsMartialArtTechnique)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsMartialArt, ContextMenuStrip cmsMartialArtTechnique, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if (IsQuality && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
+                token.ThrowIfCancellationRequested();
+                if (IsQuality && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
                     return null;
 
                 TreeNode objNode = new TreeNode
                 {
                     Name = InternalId,
-                    Text = CurrentDisplayName,
+                    Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                     Tag = this,
                     ContextMenuStrip = cmsMartialArt,
-                    ForeColor = PreferredColor,
-                    ToolTipText = Notes.WordWrap()
+                    ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                    ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
                 };
 
                 TreeNodeCollection lstChildNodes = objNode.Nodes;
-                foreach (MartialArtTechnique objTechnique in Techniques)
+                await Techniques.ForEachAsync(async objTechnique =>
                 {
-                    TreeNode objLoopNode = objTechnique.CreateTreeNode(cmsMartialArtTechnique);
+                    TreeNode objLoopNode = await objTechnique.CreateTreeNode(cmsMartialArtTechnique, token).ConfigureAwait(false);
                     if (objLoopNode != null)
                     {
                         lstChildNodes.Add(objLoopNode);
                         objNode.Expand();
                     }
-                }
+                }, token).ConfigureAwait(false);
 
                 return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

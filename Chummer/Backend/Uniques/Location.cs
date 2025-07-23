@@ -427,15 +427,14 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                 TreeNode objNode = new TreeNode
                 {
                     Name = InternalId,
-                    Text = strText,
+                    Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                     Tag = this,
                     ContextMenuStrip = cmsLocation,
-                    ForeColor = PreferredColor,
-                    ToolTipText = Notes.WordWrap()
+                    ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                    ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
                 };
 
                 return objNode;

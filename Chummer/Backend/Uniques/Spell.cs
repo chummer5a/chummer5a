@@ -2834,52 +2834,14 @@ namespace Chummer
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsSpell, bool blnForInitiationsTab = false)
-        {
-            using (LockObject.EnterReadLock())
-            {
-                if (Grade != 0 && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
-                    return null;
-
-                string strText = CurrentDisplayName;
-                if (blnForInitiationsTab)
-                {
-                    switch (Category)
-                    {
-                        case "Rituals":
-                            strText = LanguageManager.GetString("Label_Ritual")
-                                      + LanguageManager.GetString("String_Space") + strText;
-                            break;
-
-                        case "Enchantments":
-                            strText = LanguageManager.GetString("Label_Enchantment")
-                                      + LanguageManager.GetString("String_Space") + strText;
-                            break;
-                    }
-                }
-
-                TreeNode objNode = new TreeNode
-                {
-                    Name = InternalId,
-                    Text = strText,
-                    Tag = this,
-                    ContextMenuStrip = cmsSpell,
-                    ForeColor = blnForInitiationsTab ? PreferredColorForInitiationsTab : PreferredColor,
-                    ToolTipText = Notes.WordWrap()
-                };
-
-                return objNode;
-            }
-        }
-
-        public async Task<TreeNode> CreateTreeNodeAsync(ContextMenuStrip cmsSpell, bool blnForInitiationsTab = false, CancellationToken token = default)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsSpell, bool blnForInitiationsTab = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (Grade != 0 && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+                if ((blnForInitiationsTab ? Grade < 0 : Grade != 0) && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
                     return null;
 
                 string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);

@@ -573,22 +573,24 @@ namespace Chummer
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsEnhancement, bool blnAddCategory = false)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsEnhancement, bool blnAddCategory = false, CancellationToken token = default)
         {
-            if (Grade == -1 && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
+            token.ThrowIfCancellationRequested();
+            if (Grade < 0 && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
                 return null;
 
-            string strText = CurrentDisplayName;
+            string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
             if (blnAddCategory)
-                strText = LanguageManager.GetString("Label_Enhancement") + LanguageManager.GetString("String_Space") + strText;
+                strText = await LanguageManager.GetStringAsync("Label_Enhancement", token: token).ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + strText;
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
                 Text = strText,
                 Tag = this,
                 ContextMenuStrip = cmsEnhancement,
-                ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap()
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
             return objNode;
         }
@@ -619,8 +621,8 @@ namespace Chummer
                     : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
             }
             return Grade < 0
-                    ? ColorManager.GrayText
-                    : ColorManager.WindowText;
+                ? ColorManager.GrayText
+                : ColorManager.WindowText;
         }
 
         #endregion UI Methods

@@ -17985,6 +17985,24 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
+        /// </summary>
+        public async Task<decimal> GetKarmaMAGInitiationGroupPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaMAGInitiationGroupPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if a member of a Group.
         /// </summary>
         public decimal KarmaRESInitiationGroupPercent
@@ -18006,6 +18024,24 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if a member of a Group.
+        /// </summary>
+        public async Task<decimal> GetKarmaRESInitiationGroupPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaRESInitiationGroupPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -18035,6 +18071,24 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
+        /// </summary>
+        public async Task<decimal> GetKarmaMAGInitiationOrdealPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaMAGInitiationOrdealPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
         /// </summary>
         public decimal KarmaRESInitiationOrdealPercent
@@ -18060,7 +18114,25 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
+        /// </summary>
+        public async Task<decimal> GetKarmaRESInitiationOrdealPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaRESInitiationOrdealPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if receiving schooling.
         /// </summary>
         public decimal KarmaMAGInitiationSchoolingPercent
         {
@@ -18085,7 +18157,25 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if receiving schooling.
+        /// </summary>
+        public async Task<decimal> GetKarmaMAGInitiationSchoolingPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaMAGInitiationSchoolingPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if receiving schooling.
         /// </summary>
         public decimal KarmaRESInitiationSchoolingPercent
         {
@@ -18106,6 +18196,24 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if receiving schooling.
+        /// </summary>
+        public async Task<decimal> GetKarmaRESInitiationSchoolingPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaRESInitiationSchoolingPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

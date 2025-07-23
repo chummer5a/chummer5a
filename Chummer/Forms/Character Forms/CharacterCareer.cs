@@ -2892,7 +2892,7 @@ namespace Chummer
                         string strText1 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
                                 .GetStringAsync(
                                     "Checkbox_InitiationOrdeal", token: token).ConfigureAwait(false),
-                            CharacterObjectSettings.KarmaMAGInitiationOrdealPercent
+                            (await CharacterObjectSettings.GetKarmaMAGInitiationOrdealPercentAsync(token).ConfigureAwait(false))
                                 .ToString(
                                     "P", GlobalSettings.CultureInfo));
                         await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText1, token)
@@ -2900,7 +2900,7 @@ namespace Chummer
                         string strText2 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
                                 .GetStringAsync(
                                     "Checkbox_InitiationGroup", token: token).ConfigureAwait(false),
-                            CharacterObjectSettings.KarmaMAGInitiationGroupPercent
+                            (await CharacterObjectSettings.GetKarmaMAGInitiationGroupPercentAsync(token).ConfigureAwait(false))
                                 .ToString(
                                     "P", GlobalSettings.CultureInfo));
                         await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText2, token)
@@ -2909,7 +2909,7 @@ namespace Chummer
                                 .GetStringAsync(
                                     "Checkbox_InitiationSchooling", token: token)
                                 .ConfigureAwait(false),
-                            CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent
+                            (await CharacterObjectSettings.GetKarmaMAGInitiationSchoolingPercentAsync(token).ConfigureAwait(false))
                                 .ToString(
                                     "P", GlobalSettings.CultureInfo));
                         await chkInitiationSchooling.DoThreadSafeAsync(x =>
@@ -3041,7 +3041,7 @@ namespace Chummer
                         string strText1 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
                                 .GetStringAsync(
                                     "Checkbox_SubmersionTask", token: token).ConfigureAwait(false),
-                            CharacterObjectSettings.KarmaRESInitiationOrdealPercent
+                            (await CharacterObjectSettings.GetKarmaRESInitiationOrdealPercentAsync(token).ConfigureAwait(false))
                                 .ToString(
                                     "P", GlobalSettings.CultureInfo));
                         await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText1, token)
@@ -3049,7 +3049,7 @@ namespace Chummer
                         string strText2 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
                                 .GetStringAsync(
                                     "Checkbox_NetworkSubmersion", token: token).ConfigureAwait(false),
-                            CharacterObjectSettings.KarmaRESInitiationGroupPercent
+                            (await CharacterObjectSettings.GetKarmaRESInitiationGroupPercentAsync(token).ConfigureAwait(false))
                                 .ToString(
                                     "P", GlobalSettings.CultureInfo));
                         await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText2, token)
@@ -3058,7 +3058,7 @@ namespace Chummer
                                 .GetStringAsync(
                                     "Checkbox_InitiationSchooling", token: token)
                                 .ConfigureAwait(false),
-                            CharacterObjectSettings.KarmaRESInitiationSchoolingPercent
+                            (await CharacterObjectSettings.GetKarmaRESInitiationSchoolingPercentAsync(token).ConfigureAwait(false))
                                 .ToString(
                                     "P", GlobalSettings.CultureInfo));
                         bool blnEnabled = await CharacterObjectSettings.GetAllowTechnomancerSchoolingAsync(token).ConfigureAwait(false);
@@ -7349,13 +7349,13 @@ namespace Chummer
                             decimal decMultiplier = 1.0m;
                             if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
                                     .ConfigureAwait(false))
-                                decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationGroupPercent;
+                                decMultiplier -= await CharacterObjectSettings.GetKarmaMAGInitiationGroupPercentAsync(GenericToken).ConfigureAwait(false);
                             if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
                                     .ConfigureAwait(false))
-                                decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationOrdealPercent;
+                                decMultiplier -= await CharacterObjectSettings.GetKarmaMAGInitiationOrdealPercentAsync(GenericToken).ConfigureAwait(false);
                             if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
                                     .ConfigureAwait(false))
-                                decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
+                                decMultiplier -= await CharacterObjectSettings.GetKarmaMAGInitiationSchoolingPercentAsync(GenericToken).ConfigureAwait(false);
 
                             int intKarmaExpense
                                 = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(GenericToken).ConfigureAwait(false) + (intGrade + 1)
@@ -7524,13 +7524,13 @@ namespace Chummer
                             decimal decMultiplier = 1.0m;
                             if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
                                     .ConfigureAwait(false))
-                                decMultiplier -= CharacterObjectSettings.KarmaRESInitiationGroupPercent;
+                                decMultiplier -= await CharacterObjectSettings.GetKarmaRESInitiationGroupPercentAsync(GenericToken).ConfigureAwait(false);
                             if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
                                     .ConfigureAwait(false))
-                                decMultiplier -= CharacterObjectSettings.KarmaRESInitiationOrdealPercent;
+                                decMultiplier -= await CharacterObjectSettings.GetKarmaRESInitiationOrdealPercentAsync(GenericToken).ConfigureAwait(false);
                             if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
                                     .ConfigureAwait(false))
-                                decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
+                                decMultiplier -= await CharacterObjectSettings.GetKarmaRESInitiationSchoolingPercentAsync(GenericToken).ConfigureAwait(false);
 
                             int intKarmaExpense
                                 = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(GenericToken).ConfigureAwait(false) + (intGrade + 1)
@@ -26907,48 +26907,68 @@ namespace Chummer
         private async Task UpdateInitiationCost(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            decimal decMultiplier = 1.0m;
-            int intAmount;
             string strInitTip;
-            if (await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
             {
-                if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                    decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationGroupPercent;
-                if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                    decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationOrdealPercent;
-                if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                    decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
-                int intGrade = await CharacterObject.GetInitiateGradeAsync(token).ConfigureAwait(false);
-                intAmount = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false)
-                              + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
-                             * decMultiplier).StandardRound();
                 token.ThrowIfCancellationRequested();
-                strInitTip = string.Format(GlobalSettings.CultureInfo,
-                                           await LanguageManager
-                                                 .GetStringAsync("Tip_ImproveInitiateGrade", token: token)
-                                                 .ConfigureAwait(false),
-                                           (intGrade + 1).ToString(GlobalSettings.CultureInfo),
-                                           intAmount.ToString(GlobalSettings.CultureInfo));
+                IAsyncDisposable objLocker2 = await CharacterObjectSettings.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    decimal decMultiplier = 1.0m;
+                    int intAmount;
+                    if (await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
+                    {
+                        if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                            decMultiplier -= await CharacterObjectSettings.GetKarmaMAGInitiationGroupPercentAsync(token).ConfigureAwait(false);
+                        if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                            decMultiplier -= await CharacterObjectSettings.GetKarmaMAGInitiationOrdealPercentAsync(token).ConfigureAwait(false);
+                        if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                            decMultiplier -= await CharacterObjectSettings.GetKarmaMAGInitiationSchoolingPercentAsync(token).ConfigureAwait(false);
+                        int intGrade = await CharacterObject.GetInitiateGradeAsync(token).ConfigureAwait(false);
+                        intAmount = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false)
+                                      + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
+                                     * decMultiplier).StandardRound();
+                        token.ThrowIfCancellationRequested();
+                        strInitTip = string.Format(GlobalSettings.CultureInfo,
+                                                   await LanguageManager
+                                                         .GetStringAsync("Tip_ImproveInitiateGrade", token: token)
+                                                         .ConfigureAwait(false),
+                                                   (intGrade + 1).ToString(GlobalSettings.CultureInfo),
+                                                   intAmount.ToString(GlobalSettings.CultureInfo));
+                    }
+                    else
+                    {
+                        if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                            decMultiplier -= await CharacterObjectSettings.GetKarmaRESInitiationGroupPercentAsync(token).ConfigureAwait(false);
+                        if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                            decMultiplier -= await CharacterObjectSettings.GetKarmaRESInitiationOrdealPercentAsync(token).ConfigureAwait(false);
+                        if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                            decMultiplier -= await CharacterObjectSettings.GetKarmaRESInitiationSchoolingPercentAsync(token).ConfigureAwait(false);
+                        int intGrade = await CharacterObject.GetSubmersionGradeAsync(token).ConfigureAwait(false);
+                        intAmount = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false)
+                                      + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
+                                     * decMultiplier).StandardRound();
+                        token.ThrowIfCancellationRequested();
+                        strInitTip = string.Format(GlobalSettings.CultureInfo,
+                                                   await LanguageManager
+                                                         .GetStringAsync("Tip_ImproveSubmersionGrade", token: token)
+                                                         .ConfigureAwait(false),
+                                                   (intGrade + 1).ToString(GlobalSettings.CultureInfo),
+                                                   intAmount.ToString(GlobalSettings.CultureInfo));
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
-            else
+            finally
             {
-                if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                    decMultiplier -= CharacterObjectSettings.KarmaRESInitiationGroupPercent;
-                if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                    decMultiplier -= CharacterObjectSettings.KarmaRESInitiationOrdealPercent;
-                if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                    decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
-                int intGrade = await CharacterObject.GetSubmersionGradeAsync(token).ConfigureAwait(false);
-                intAmount = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false)
-                              + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
-                             * decMultiplier).StandardRound();
-                token.ThrowIfCancellationRequested();
-                strInitTip = string.Format(GlobalSettings.CultureInfo,
-                                           await LanguageManager
-                                                 .GetStringAsync("Tip_ImproveSubmersionGrade", token: token)
-                                                 .ConfigureAwait(false),
-                                           (intGrade + 1).ToString(GlobalSettings.CultureInfo),
-                                           intAmount.ToString(GlobalSettings.CultureInfo));
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             await cmdAddMetamagic.SetToolTipAsync(strInitTip, token).ConfigureAwait(false);

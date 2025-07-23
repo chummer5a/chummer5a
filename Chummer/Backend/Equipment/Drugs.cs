@@ -33,7 +33,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    public sealed class Drug : IHasName, IHasSourceId, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable, IAsyncDisposable, IHasCharacterObject
+    public sealed class Drug : IHasName, IHasSourceId, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable, IAsyncDisposable, IHasCharacterObject, IHasNotes
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -64,6 +64,8 @@ namespace Chummer.Backend.Equipment
         private string _strSource;
         private string _strPage;
         private int _intDurationDice;
+        private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -114,6 +116,12 @@ namespace Chummer.Backend.Equipment
 
             objXmlData.TryGetField("source", out _strSource);
             objXmlData.TryGetField("page", out _strPage);
+            if (!objXmlData.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlData.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlData.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
 
         public void Load(XmlNode objXmlData)
@@ -149,6 +157,11 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             objXmlData.TryGetField("source", out _strSource);
             objXmlData.TryGetField("page", out _strPage);
+            objXmlData.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlData.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
 
         public void Save(XmlWriter objXmlWriter)
@@ -182,6 +195,8 @@ namespace Chummer.Backend.Equipment
             objXmlWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalSettings.InvariantCultureInfo));
             objXmlWriter.WriteElementString("source", _strSource);
             objXmlWriter.WriteElementString("page", _strPage);
+            objXmlWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objXmlWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objXmlWriter.WriteEndElement();
         }
 
@@ -348,7 +363,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
             finally
             {
@@ -886,7 +901,53 @@ namespace Chummer.Backend.Equipment
             set => _intSortOrder = value;
         }
 
-        public string Notes { get; internal set; }
+        /// <summary>
+        /// Notes.
+        /// </summary>
+        public string Notes
+        {
+            get => _strNotes;
+            set => _strNotes = value;
+        }
+
+        public Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return Task.FromResult(_strNotes);
+        }
+
+        public Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _strNotes = value;
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        public Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<Color>(token);
+            return Task.FromResult(_colNotes);
+        }
+
+        public Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _colNotes = value;
+            return Task.CompletedTask;
+        }
 
         /// <summary>
         /// The name of the object as it should appear on printouts (translated name only).
@@ -973,6 +1034,14 @@ namespace Chummer.Backend.Equipment
                 ? ColorManager.HasNotesColor
                 : ColorManager.WindowText;
 
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+                return ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+            return ColorManager.WindowText;
+        }
+
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -998,18 +1067,19 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Add a piece of Armor to the Armor TreeView.
         /// </summary>
-        public TreeNode CreateTreeNode()
+        public async Task<TreeNode> CreateTreeNode(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             //if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
             //return null;
 
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = CurrentDisplayName,
+                Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                 Tag = this,
-                ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap()
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;

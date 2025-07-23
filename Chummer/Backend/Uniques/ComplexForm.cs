@@ -1477,34 +1477,14 @@ namespace Chummer
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsComplexForm, bool blnForInitiationsTab = false)
-        {
-            using (LockObject.EnterReadLock())
-            {
-                if (Grade != 0 && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
-                    return null;
-
-                TreeNode objNode = new TreeNode
-                {
-                    Name = InternalId,
-                    Text = CurrentDisplayName,
-                    Tag = this,
-                    ContextMenuStrip = cmsComplexForm,
-                    ForeColor = blnForInitiationsTab ? PreferredColorForInitiationsTab : PreferredColor,
-                    ToolTipText = Notes.WordWrap()
-                };
-                return objNode;
-            }
-        }
-
-        public async Task<TreeNode> CreateTreeNodeAsync(ContextMenuStrip cmsComplexForm, bool blnForInitiationsTab = false, CancellationToken token = default)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsComplexForm, bool blnForInitiationsTab = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (Grade != 0 && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+                if ((blnForInitiationsTab ? Grade < 0 : Grade != 0) && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
                     return null;
 
                 TreeNode objNode = new TreeNode

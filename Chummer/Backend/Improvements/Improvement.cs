@@ -6060,17 +6060,19 @@ namespace Chummer
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsImprovement)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsImprovement, CancellationToken token = default)
         {
-            TreeNode nodImprovement = new TreeNode
+            token.ThrowIfCancellationRequested();
+            TreeNode objNode = new TreeNode
             {
-                Tag = this,
+                Name = InternalId,
                 Text = CustomName,
-                ToolTipText = Notes.WordWrap(),
+                Tag = this,
                 ContextMenuStrip = cmsImprovement,
-                ForeColor = PreferredColor
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
-            return nodImprovement;
+            return objNode;
         }
 
         public Color PreferredColor
