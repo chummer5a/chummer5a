@@ -845,6 +845,22 @@ namespace Chummer
             }
         }
 
+        public Task SetValueAsync(decimal value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (_decVal != value)
+            {
+                _decVal = value;
+                if (Enabled)
+                {
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName, token);
+                    return this.ProcessRelevantEventsAsync(token: token);
+                }
+            }
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// The Rating value for the Improvement. This is 1 by default.
         /// </summary>
@@ -859,6 +875,18 @@ namespace Chummer
                     this.ProcessRelevantEvents();
                 }
             }
+        }
+
+        public Task SetRatingAsync(int value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (Interlocked.Exchange(ref _intRating, value) != value && Enabled)
+            {
+                ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName, token);
+                return this.ProcessRelevantEventsAsync(token: token);
+            }
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -954,6 +982,17 @@ namespace Chummer
                 ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
                 this.ProcessRelevantEvents();
             }
+        }
+
+        public Task SetEnabledAsync(bool value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            int intNewValue = value.ToInt32();
+            if (Interlocked.Exchange(ref _intEnabled, intNewValue) == intNewValue)
+                return Task.CompletedTask;
+            ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName, token);
+            return this.ProcessRelevantEventsAsync(token: token);
         }
 
         /// <summary>

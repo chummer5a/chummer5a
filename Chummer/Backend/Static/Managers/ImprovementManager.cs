@@ -2843,7 +2843,10 @@ namespace Chummer
                 foreach (Improvement objImprovement in objImprovementList)
                 {
                     // Enable the Improvement.
-                    objImprovement.Enabled = true;
+                    if (blnSync)
+                        objImprovement.Enabled = true;
+                    else
+                        await objImprovement.SetEnabledAsync(true, token).ConfigureAwait(false);
                 }
 
                 bool blnCharacterHasSkillsoftAccess
@@ -3526,7 +3529,10 @@ namespace Chummer
                 foreach (Improvement objImprovement in objImprovementList)
                 {
                     // Disable the Improvement.
-                    objImprovement.Enabled = false;
+                    if (blnSync)
+                        objImprovement.Enabled = false;
+                    else
+                        await objImprovement.SetEnabledAsync(false, token).ConfigureAwait(false);
                 }
 
                 // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
@@ -5901,8 +5907,6 @@ namespace Chummer
                         SourceName = strSourceName,
                         ImproveType = objImprovementType,
                         UniqueName = strUnique,
-                        Value = decValue,
-                        Rating = intRating,
                         Minimum = intMinimum,
                         Maximum = intMaximum,
                         Augmented = decAugmented,
@@ -5912,6 +5916,8 @@ namespace Chummer
                         Target = strTarget,
                         Condition = strCondition
                     };
+                    await objImprovement.SetRatingAsync(intRating, token).ConfigureAwait(false);
+                    await objImprovement.SetValueAsync(decValue, token).ConfigureAwait(false);
                     // This is initially set to false make sure no property changers are triggered by the setters in the section above
                     objImprovement.SetupComplete = true;
                     // Add the Improvement to the list.

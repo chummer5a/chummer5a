@@ -1444,13 +1444,13 @@ namespace Chummer.Backend.Equipment
                 {
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
-                    Value = objLimit.Value,
                     CustomName = strNamePrefix + await LanguageManager
                                                    .GetStringAsync("Node_" + objLimit.Key, token: token)
                                                    .ConfigureAwait(false)
                                                + strSpace + objLimit.Value.ToString("+#,0;-#,0;0",
                                                    GlobalSettings.CultureInfo)
                 };
+                await i.SetValueAsync(objLimit.Value, token).ConfigureAwait(false);
                 switch (objLimit.Key)
                 {
                     case "Physical":
@@ -1476,12 +1476,12 @@ namespace Chummer.Backend.Equipment
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.Initiative,
-                    Value = Initiative,
                     CustomName = strNamePrefix + await LanguageManager.GetStringAsync("String_Initiative", token: token)
                                                    .ConfigureAwait(false)
                                                + strSpace + Initiative.ToString("+#,0;-#,0;0",
                                                    GlobalSettings.CultureInfo)
                 };
+                await i.SetValueAsync(Initiative, token).ConfigureAwait(false);
                 lstImprovements.Add(i);
             }
 
@@ -1492,13 +1492,13 @@ namespace Chummer.Backend.Equipment
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.InitiativeDice,
-                    Value = InitiativeDice,
                     CustomName = strNamePrefix + await LanguageManager
                                                    .GetStringAsync("String_InitiativeDice", token: token)
                                                    .ConfigureAwait(false)
                                                + strSpace + InitiativeDice.ToString("+#,0;-#,0;0",
                                                    GlobalSettings.CultureInfo)
                 };
+                await i.SetValueAsync(InitiativeDice, token).ConfigureAwait(false);
                 lstImprovements.Add(i);
             }
 
@@ -1582,7 +1582,7 @@ namespace Chummer.Backend.Equipment
             {
                 i.CustomGroup = Name;
                 i.Custom = true;
-                i.Enabled = false;
+                await i.SetEnabledAsync(false, token).ConfigureAwait(false);
                 // This is initially set to false make sure no property changers are triggered
                 i.SetupComplete = true;
             }

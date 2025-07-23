@@ -23952,7 +23952,7 @@ namespace Chummer
                             if (objImprovement.ImproveSource == Improvement.ImprovementSource.Initiation)
                             {
                                 blnFoundImprovement = true;
-                                objImprovement.Rating = value;
+                                await objImprovement.SetRatingAsync(value, token).ConfigureAwait(false);
                             }
                         }
 
@@ -24004,7 +24004,7 @@ namespace Chummer
                                         == Improvement.ImprovementSource.Initiation)
                                     {
                                         blnFoundImprovement = true;
-                                        objImprovement.Rating = value;
+                                        await objImprovement.SetRatingAsync(value, token).ConfigureAwait(false);
                                     }
                                 }
 
@@ -25389,7 +25389,7 @@ namespace Chummer
                             if (objImprovement.ImproveSource == Improvement.ImprovementSource.Submersion)
                             {
                                 blnFoundImprovement = true;
-                                objImprovement.Rating = value;
+                                await objImprovement.SetRatingAsync(value, token).ConfigureAwait(false);
                             }
                         }
 
@@ -25435,7 +25435,7 @@ namespace Chummer
                                         == Improvement.ImprovementSource.Echo)
                                     {
                                         blnFoundImprovement = true;
-                                        objImprovement.Rating = value;
+                                        await objImprovement.SetRatingAsync(value, token).ConfigureAwait(false);
                                     }
                                 }
 
@@ -30121,14 +30121,17 @@ namespace Chummer
                         // This is hackz -- because we don't want to lose the original improvement's value
                         // we instantiate a fake version of the improvement that isn't saved to represent the diff
                         if (powerFocusRating < objImprovement.Value)
-                            return new Improvement(this)
+                        {
+                            Improvement objPlaceholder = new Improvement(this)
                             {
-                                Value = objImprovement.Value - powerFocusRating,
                                 SourceName = objImprovement.SourceName,
                                 ImprovedName = objImprovement.ImprovedName,
                                 ImproveSource = objImprovement.ImproveSource,
                                 ImproveType = objImprovement.ImproveType
                             };
+                            await objPlaceholder.SetValueAsync(objImprovement.Value - powerFocusRating, token).ConfigureAwait(false);
+                            return objPlaceholder;
+                        }
                         return null;
                     }
                 }
