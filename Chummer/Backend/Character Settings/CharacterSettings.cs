@@ -18224,26 +18224,12 @@ namespace Chummer
         /// <summary>
         /// The value by which Specializations add to dicepool.
         /// </summary>
-        public int SpecializationBonus
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return 2;
-            }
-        }
+        public int SpecializationBonus => 2;
 
         /// <summary>
         /// The value by which Expertise Specializations add to dicepool (does not stack with SpecializationBonus).
         /// </summary>
-        public int ExpertiseBonus
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return 3;
-            }
-        }
+        public int ExpertiseBonus => 3;
 
         #endregion Constant Values
 
