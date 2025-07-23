@@ -13268,10 +13268,7 @@ namespace Chummer
                     }
                     case Art objArt:
                     {
-                        strText = await LanguageManager.GetStringAsync(
-                            objArt.SourceType == Improvement.ImprovementSource.Metamagic
-                                ? "Button_RemoveMetamagic"
-                                : "Button_RemoveEcho", token: token).ConfigureAwait(false);
+                        strText = await LanguageManager.GetStringAsync("Button_RemoveMetamagic", token: token).ConfigureAwait(false);
                         await cmsMetamagic.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                         await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                         {
@@ -13312,10 +13309,7 @@ namespace Chummer
                     }
                     case Enhancement objEnhancement:
                     {
-                        strText = await LanguageManager.GetStringAsync(
-                            objEnhancement.SourceType == Improvement.ImprovementSource.Metamagic
-                                ? "Button_RemoveMetamagic"
-                                : "Button_RemoveEcho", token: token).ConfigureAwait(false);
+                        strText = await LanguageManager.GetStringAsync("Button_RemoveMetamagic", token: token).ConfigureAwait(false);
                         await cmsMetamagic.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                         await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                         {

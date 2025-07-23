@@ -1010,7 +1010,7 @@ namespace Chummer
 
             async Task AddToTree(Spell objSpell, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
+                TreeNode objNode = await objSpell.CreateTreeNodeAsync(cmsSpell, token: token).ConfigureAwait(false);
                 if (objNode == null)
                     return;
                 TreeNode objParentNode;
@@ -1509,7 +1509,7 @@ namespace Chummer
 
             async Task AddToTree(ComplexForm objComplexForm, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objComplexForm.CreateTreeNode(cmsComplexForm);
+                TreeNode objNode = await objComplexForm.CreateTreeNodeAsync(cmsComplexForm, token: token).ConfigureAwait(false);
                 if (objNode == null)
                     return;
                 if (objParentNode == null)
@@ -1537,7 +1537,7 @@ namespace Chummer
                             if (nodMetamagicParent != null)
                             {
                                 TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
-                                TreeNode objMetamagicNode = objComplexForm.CreateTreeNode(cmsInitiationNotes);
+                                TreeNode objMetamagicNode = objComplexForm.CreateTreeNode(cmsInitiationNotes, true);
                                 int intNodesCount = nodMetamagicParentChildren.Count;
                                 int intTargetIndex = 0;
                                 for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1750,11 +1750,11 @@ namespace Chummer
                     }
                 }, token).ConfigureAwait(false);
 
-                await CharacterObject.Spells.ForEachAsync(objSpell =>
+                await CharacterObject.Spells.ForEachAsync(async objSpell =>
                 {
                     if (objSpell.Grade == objInitiationGrade.Grade)
                     {
-                        TreeNode objNode = objSpell.CreateTreeNode(cmsInitiationNotes, true);
+                        TreeNode objNode = await objSpell.CreateTreeNodeAsync(cmsInitiationNotes, true, token).ConfigureAwait(false);
                         if (objNode == null)
                             return;
                         int intNodesCount = lstParentNodeChildren.Count;
@@ -1771,11 +1771,11 @@ namespace Chummer
                     }
                 }, token).ConfigureAwait(false);
 
-                await CharacterObject.ComplexForms.ForEachAsync(objComplexForm =>
+                await CharacterObject.ComplexForms.ForEachAsync(async objComplexForm =>
                 {
                     if (objComplexForm.Grade == objInitiationGrade.Grade)
                     {
-                        TreeNode objNode = objComplexForm.CreateTreeNode(cmsInitiationNotes);
+                        TreeNode objNode = await objComplexForm.CreateTreeNodeAsync(cmsInitiationNotes, true).ConfigureAwait(false);
                         if (objNode == null)
                             return;
                         int intNodesCount = lstParentNodeChildren.Count;

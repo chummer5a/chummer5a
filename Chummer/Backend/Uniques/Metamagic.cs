@@ -710,11 +710,11 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    return Grade != 0
+                    return Grade < 0
                         ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
                         : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
-                return Grade != 0
+                return Grade < 0
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }
@@ -725,11 +725,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
             {
-                return Grade != 0
+                return Grade < 0
                     ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
                     : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
             }
-            return Grade != 0
+            return Grade < 0
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
         }

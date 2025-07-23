@@ -2834,7 +2834,7 @@ namespace Chummer
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsSpell, bool blnAddCategory = false)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsSpell, bool blnForInitiationsTab = false)
         {
             using (LockObject.EnterReadLock())
             {
@@ -2842,7 +2842,7 @@ namespace Chummer
                     return null;
 
                 string strText = CurrentDisplayName;
-                if (blnAddCategory)
+                if (blnForInitiationsTab)
                 {
                     switch (Category)
                     {
@@ -2864,11 +2864,58 @@ namespace Chummer
                     Text = strText,
                     Tag = this,
                     ContextMenuStrip = cmsSpell,
-                    ForeColor = PreferredColor,
+                    ForeColor = blnForInitiationsTab ? PreferredColorForInitiationsTab : PreferredColor,
                     ToolTipText = Notes.WordWrap()
                 };
 
                 return objNode;
+            }
+        }
+
+        public async Task<TreeNode> CreateTreeNodeAsync(ContextMenuStrip cmsSpell, bool blnForInitiationsTab = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Grade != 0 && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+                    return null;
+
+                string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                if (blnForInitiationsTab)
+                {
+                    switch (Category)
+                    {
+                        case "Rituals":
+                            strText = await LanguageManager.GetStringAsync("Label_Ritual", token: token)
+                                      + await LanguageManager.GetStringAsync("String_Space", token: token) + strText;
+                            break;
+
+                        case "Enchantments":
+                            strText = await LanguageManager.GetStringAsync("Label_Enchantment", token: token)
+                                      + await LanguageManager.GetStringAsync("String_Space", token: token) + strText;
+                            break;
+                    }
+                }
+
+                TreeNode objNode = new TreeNode
+                {
+                    Name = InternalId,
+                    Text = strText,
+                    Tag = this,
+                    ContextMenuStrip = cmsSpell,
+                    ForeColor = blnForInitiationsTab
+                        ? await GetPreferredColorForInitiationsTabAsync(token).ConfigureAwait(false)
+                        : await GetPreferredColorAsync(token).ConfigureAwait(false),
+                    ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
+                };
+
+                return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2914,18 +2961,59 @@ namespace Chummer
             }
         }
 
+        public Color PreferredColorForInitiationsTab
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    if (!string.IsNullOrEmpty(Notes))
+                    {
+                        return Grade < 0
+                            ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                            : ColorManager.GenerateCurrentModeColor(NotesColor);
+                    }
+
+                    return Grade < 0
+                        ? ColorManager.GrayText
+                        : ColorManager.WindowText;
+                }
+            }
+        }
+
+        public async Task<Color> GetPreferredColorForInitiationsTabAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+                {
+                    return Grade < 0
+                        ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                        : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+                }
+                return Grade < 0
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         #endregion UI Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
-                if (blnConfirmDelete)
+                if (Grade < 0)
+                    return false;
+                if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSpell")))
                 {
-                    if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
-                        return false;
-                    if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSpell")))
-                        return false;
+                    return false;
                 }
 
                 using (LockObject.EnterWriteLock())
@@ -2947,14 +3035,13 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (blnConfirmDelete)
-                {
-                    if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
-                        return false;
-                    if (!await CommonFunctions
+                if (Grade < 0)
+                    return false;
+                if (blnConfirmDelete && !await CommonFunctions
                             .ConfirmDeleteAsync(
                                 await LanguageManager.GetStringAsync("Message_DeleteSpell", token: token)
                                     .ConfigureAwait(false), token).ConfigureAwait(false))
+                {
                         return false;
                 }
 

@@ -599,11 +599,11 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    return Grade != 0
+                    return Grade < 0
                         ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
                         : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
-                return Grade != 0
+                return Grade < 0
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }
@@ -614,11 +614,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
             {
-                return Grade != 0
+                return Grade < 0
                     ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
                     : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
             }
-            return Grade != 0
+            return Grade < 0
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
         }
@@ -627,12 +627,11 @@ namespace Chummer
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete)
+            if (Grade < 0)
+                return false;
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnhancement")))
             {
-                if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
-                    return false;
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnhancement")))
-                    return false;
+                return false;
             }
 
             _objCharacter.Enhancements.Remove(this);
@@ -650,14 +649,13 @@ namespace Chummer
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (blnConfirmDelete)
-            {
-                if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
-                    return false;
-                if (!await CommonFunctions
+            if (Grade < 0)
+                return false;
+            if (blnConfirmDelete && !await CommonFunctions
                         .ConfirmDeleteAsync(
                             await LanguageManager.GetStringAsync("Message_DeleteEnhancement", token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false))
+            {
                     return false;
             }
 

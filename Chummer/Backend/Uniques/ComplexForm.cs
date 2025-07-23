@@ -1477,7 +1477,7 @@ namespace Chummer
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsComplexForm)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsComplexForm, bool blnForInitiationsTab = false)
         {
             using (LockObject.EnterReadLock())
             {
@@ -1490,10 +1490,39 @@ namespace Chummer
                     Text = CurrentDisplayName,
                     Tag = this,
                     ContextMenuStrip = cmsComplexForm,
-                    ForeColor = PreferredColor,
+                    ForeColor = blnForInitiationsTab ? PreferredColorForInitiationsTab : PreferredColor,
                     ToolTipText = Notes.WordWrap()
                 };
                 return objNode;
+            }
+        }
+
+        public async Task<TreeNode> CreateTreeNodeAsync(ContextMenuStrip cmsComplexForm, bool blnForInitiationsTab = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Grade != 0 && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+                    return null;
+
+                TreeNode objNode = new TreeNode
+                {
+                    Name = InternalId,
+                    Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                    Tag = this,
+                    ContextMenuStrip = cmsComplexForm,
+                    ForeColor = blnForInitiationsTab
+                        ? await GetPreferredColorForInitiationsTabAsync(token).ConfigureAwait(false)
+                        : await GetPreferredColorAsync(token).ConfigureAwait(false),
+                    ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
+                };
+                return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1538,18 +1567,58 @@ namespace Chummer
             }
         }
 
+        public Color PreferredColorForInitiationsTab
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    if (!string.IsNullOrEmpty(Notes))
+                    {
+                        return Grade < 0
+                            ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                            : ColorManager.GenerateCurrentModeColor(NotesColor);
+                    }
+                    return Grade < 0
+                        ? ColorManager.GrayText
+                        : ColorManager.WindowText;
+                }
+            }
+        }
+
+        public async Task<Color> GetPreferredColorForInitiationsTabAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+                {
+                    return Grade < 0
+                        ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                        : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+                }
+                return Grade < 0
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         #endregion UI Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
-                if (blnConfirmDelete)
+                if (Grade < 0)
+                    return false;
+                if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm")))
                 {
-                    if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
-                        return false;
-                    if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm")))
-                        return false;
+                    return false;
                 }
 
                 using (LockObject.EnterWriteLock())
@@ -1570,15 +1639,14 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (blnConfirmDelete)
-                {
-                    if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
-                        return false;
-                    if (!await CommonFunctions
+                if (Grade < 0)
+                    return false;
+                if (blnConfirmDelete && !await CommonFunctions
                             .ConfirmDeleteAsync(
                                 await LanguageManager.GetStringAsync("Message_DeleteComplexForm", token: token)
                                     .ConfigureAwait(false), token).ConfigureAwait(false))
-                        return false;
+                {
+                    return false;
                 }
 
                 IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
