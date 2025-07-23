@@ -30060,6 +30060,45 @@ namespace Chummer
         /// <summary>
         /// Method to check we are only applying the highest focus to the spell dicepool
         /// </summary>
+        public Improvement GetBestFocusPower(Improvement objImprovement)
+        {
+            using (LockObject.EnterReadLock())
+            {
+                List<Focus> list
+                    = Foci.FindAll(
+                            x => x.GearObject?.Bonded == true && x.GearObject.Bonus.InnerText == "MAGRating");
+                if (list.Count > 0)
+                {
+                    // get any bonded foci that add to the base magic stat and return the highest rated one's rating
+                    int powerFocusRating = list.Max(x => x.Rating, token);
+
+                    // If our focus is higher, add in a partial bonus
+                    if (powerFocusRating > 0)
+                    {
+                        // This is hackz -- because we don't want to lose the original improvement's value
+                        // we instantiate a fake version of the improvement that isn't saved to represent the diff
+                        if (powerFocusRating < objImprovement.Value)
+                        {
+                            return new Improvement(this)
+                            {
+                                SourceName = objImprovement.SourceName,
+                                ImprovedName = objImprovement.ImprovedName,
+                                ImproveSource = objImprovement.ImproveSource,
+                                ImproveType = objImprovement.ImproveType,
+                                Value = objImprovement.Value - powerFocusRating
+                            };
+                        }
+                        return null;
+                    }
+                }
+
+                return objImprovement;
+            }
+        }
+
+        /// <summary>
+        /// Method to check we are only applying the highest focus to the spell dicepool
+        /// </summary>
         public async Task<Improvement> GetBestFocusPowerAsync(Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -30074,7 +30113,7 @@ namespace Chummer
                 if (list.Count > 0)
                 {
                     // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-                    int powerFocusRating = list.Max(x => x.Rating);
+                    int powerFocusRating = await list.MaxAsync(x => x.GetRatingAsync(token), token).ConfigureAwait(false);
 
                     // If our focus is higher, add in a partial bonus
                     if (powerFocusRating > 0)
