@@ -506,7 +506,7 @@ namespace Chummer.UI.Skills
                 intRatingLabelWidth = Math.Max(intRatingLabelWidth, objSkillControl.NudSkillWidth);
             }
             token.ThrowIfCancellationRequested();
-            lblActiveSkills.MinimumSize = new Size(intNameLabelWidth - lblActiveSkills.Margin.Right, lblActiveSkills.MinimumSize.Height);
+            lblActiveSkills.MinimumSize = new Size(intNameLabelWidth, lblActiveSkills.MinimumSize.Height);
             token.ThrowIfCancellationRequested();
             lblActiveKarma.Margin = new Padding(
                 Math.Max(0, lblActiveSp.Margin.Left + intRatingLabelWidth - lblActiveSp.Width),

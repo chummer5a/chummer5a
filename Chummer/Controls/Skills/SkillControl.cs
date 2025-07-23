@@ -1258,7 +1258,7 @@ namespace Chummer.UI.Skills
             {
                 lblName.MinimumSize =
                         new Size(
-                            intNewNameWidth - lblName.Margin.Right - pnlAttributes.Margin.Left + pnlAttributes.Width,
+                            intNewNameWidth - lblName.Margin.Right - pnlAttributes.Margin.Left - pnlAttributes.Width,
                             lblName.MinimumSize.Height);
             }
             catch (OperationCanceledException)
