@@ -30070,7 +30070,7 @@ namespace Chummer
                 if (list.Count > 0)
                 {
                     // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-                    int powerFocusRating = list.Max(x => x.Rating, token);
+                    int powerFocusRating = list.Max(x => x.Rating);
 
                     // If our focus is higher, add in a partial bonus
                     if (powerFocusRating > 0)
