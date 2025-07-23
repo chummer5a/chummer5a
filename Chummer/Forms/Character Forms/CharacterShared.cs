@@ -7204,13 +7204,10 @@ namespace Chummer
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            await treMartialArts.DoThreadSafeAsync(() =>
+                            foreach (MartialArtTechnique objTechnique in e.NewItems)
                             {
-                                foreach (MartialArtTechnique objTechnique in e.NewItems)
-                                {
-                                    AddToTree(objTechnique);
-                                }
-                            }, token).ConfigureAwait(false);
+                                await AddToTree(objTechnique).ConfigureAwait(false);
+                            }
                         }
                             break;
 
@@ -7234,31 +7231,21 @@ namespace Chummer
                                 {
                                     nodMartialArt.FindNodeByTag(objTechnique)?.Remove();
                                 }
-
-                                foreach (MartialArtTechnique objTechnique in e.NewItems)
-                                {
-                                    AddToTree(objTechnique);
-                                }
                             }, token).ConfigureAwait(false);
                         }
                             break;
 
                         case NotifyCollectionChangedAction.Reset:
                         {
-                            await treMartialArts.DoThreadSafeAsync(x =>
+                            string strSelectedId = await treMartialArts.DoThreadSafeFuncAsync(x =>
                             {
-                                string strSelectedId =
+                                string strInnerReturn =
                                     (x.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
-
                                 nodMartialArt.Nodes.Clear();
-
-                                foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
-                                {
-                                    AddToTree(objTechnique, false);
-                                }
-
-                                x.SortCustomAlphabetically(strSelectedId);
+                                return strInnerReturn;
                             }, token).ConfigureAwait(false);
+                            await objMartialArt.Techniques.ForEachAsync(x => AddToTree(x), token).ConfigureAwait(false);
+                            await treMartialArts.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
                         }
                             break;
                     }
