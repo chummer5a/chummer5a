@@ -122,8 +122,7 @@ namespace Chummer
             if (intLength > GlobalSettings.MaxStackLimit)
             {
                 string strReturn;
-                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                try
+                using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
                 {
                     // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
                     int intCurrent = 0;
@@ -136,10 +135,6 @@ namespace Chummer
 
                     // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
                     strReturn = new string(achrNewChars, 0, intCurrent);
-                }
-                finally
-                {
-                    ArrayPool<char>.Shared.Return(achrNewChars);
                 }
 
                 return strReturn;
@@ -182,8 +177,7 @@ namespace Chummer
             if (intLength > GlobalSettings.MaxStackLimit)
             {
                 string strReturn;
-                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                try
+                using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
                 {
                     // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
                     int intCurrent = 0;
@@ -206,10 +200,6 @@ namespace Chummer
 
                     // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
                     strReturn = new string(achrNewChars, 0, intCurrent);
-                }
-                finally
-                {
-                    ArrayPool<char>.Shared.Return(achrNewChars);
                 }
 
                 return strReturn;
@@ -682,8 +672,7 @@ namespace Chummer
             if (intLength > GlobalSettings.MaxStackLimit)
             {
                 string strReturn;
-                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                try
+                using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
                 {
                     // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
                     int intCurrent = 0;
@@ -721,10 +710,6 @@ namespace Chummer
                     // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
                     // If the last char is whitespace, we don't copy that, either.
                     strReturn = new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
-                }
-                finally
-                {
-                    ArrayPool<char>.Shared.Return(achrNewChars);
                 }
 
                 return strReturn;

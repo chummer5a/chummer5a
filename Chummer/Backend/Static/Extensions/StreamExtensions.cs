@@ -172,8 +172,7 @@ namespace Chummer
                 fixed (char* ptr = s_Base64Table)
                 {
                     inData.Position = offset;
-                    byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(3);
-                    try
+                    using (new FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, 3, out byte[] achrBuffer))
                     {
                         while (inData.Position < num2)
                         {
@@ -230,10 +229,6 @@ namespace Chummer
                                 break;
                             }
                         }
-                    }
-                    finally
-                    {
-                        ArrayPool<byte>.Shared.Return(achrBuffer);
                     }
                 }
 
@@ -315,8 +310,7 @@ namespace Chummer
                 int num3 = 0;
                 int num4 = 0;
                 inData.Position = offset;
-                byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(3);
-                try
+                using (new FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, 3, out byte[] achrBuffer))
                 {
                     while (inData.Position < num2)
                     {
@@ -373,10 +367,6 @@ namespace Chummer
                             break;
                         }
                     }
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(achrBuffer);
                 }
 
                 return num3;

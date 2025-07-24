@@ -421,8 +421,7 @@ namespace Codaxy.WkHtmlToPdf
                     using (FileStream fs
                            = new FileStream(outputPdfFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
-                        byte[] buffer = ArrayPool<byte>.Shared.Rent(32 * 1024);
-                        try
+                        using (new FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, 32 * 1024, out byte[] buffer))
                         {
                             int read;
 
@@ -439,10 +438,6 @@ namespace Codaxy.WkHtmlToPdf
                                                        .ConfigureAwait(false)) > 0)
                                     await woutput.OutputStream.WriteAsync(buffer, 0, read, token).ConfigureAwait(false);
                             }
-                        }
-                        finally
-                        {
-                            ArrayPool<byte>.Shared.Return(buffer);
                         }
                     }
                 }
