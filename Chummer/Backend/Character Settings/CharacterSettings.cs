@@ -2061,7 +2061,7 @@ namespace Chummer
                                                                             EnabledCustomDataDirectoryPaths, token: token)
                                                                  .SelectAndCacheExpression(
                                                                      "/chummer/books/book[not(hide)]/code", token);
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string> setAllowedBooks))
                         {
                             foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
@@ -2965,7 +2965,7 @@ namespace Chummer
                                     token: token).ConfigureAwait(false))
                             .SelectAndCacheExpression(
                                 "/chummer/books/book[not(hide)]/code", token);
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string> setAllowedBooks))
                         {
                             foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
@@ -3385,7 +3385,7 @@ namespace Chummer
                             _strEssenceFormat += ".00";
                         else
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdZeros))
                             {
                                 for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
@@ -4156,7 +4156,7 @@ namespace Chummer
                             _strEssenceFormat += ".00";
                         else
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdZeros))
                             {
                                 for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
@@ -5901,7 +5901,7 @@ namespace Chummer
         /// </summary>
         public string BookXPath(bool excludeHidden = true, CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdPath))
             {
                 if (excludeHidden)
@@ -5948,7 +5948,7 @@ namespace Chummer
         /// </summary>
         public async Task<string> BookXPathAsync(bool excludeHidden = true, CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdPath))
             {
                 if (excludeHidden)
@@ -6006,7 +6006,7 @@ namespace Chummer
             using (LockObject.EnterReadLock(token))
             {
                 _strBookXPath = string.Empty;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdBookXPath))
                 {
                     sbdBookXPath.Append('(');
@@ -6039,7 +6039,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 _strBookXPath = string.Empty;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdBookXPath))
                 {
                     sbdBookXPath.Append('(');
@@ -6435,7 +6435,7 @@ namespace Chummer
             }
 
             lstBooks.Sort();
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 foreach (string strToAppend in lstBooks)
                     sbdReturn.AppendLine(strToAppend);
@@ -6498,7 +6498,7 @@ namespace Chummer
             }
 
             lstBooks.Sort();
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 foreach (string strToAppend in lstBooks)
                     sbdReturn.AppendLine(strToAppend);
@@ -7757,7 +7757,7 @@ namespace Chummer
                         return;
                     if (value)
                     {
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string> setProperties))
                         {
                             setProperties.Add(nameof(MysAdeptSecondMAGAttribute));
@@ -7833,7 +7833,7 @@ namespace Chummer
                     return;
                 if (value)
                 {
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setProperties))
                     {
                         setProperties.Add(nameof(MysAdeptSecondMAGAttribute));
@@ -10128,7 +10128,7 @@ namespace Chummer
                     }
                     else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdNuyenFormat))
                         {
                             sbdNuyenFormat.Append(string.IsNullOrEmpty(NuyenFormat) ? "#,0" : NuyenFormat);
@@ -10200,7 +10200,7 @@ namespace Chummer
                 }
                 else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdNuyenFormat))
                     {
                         string strNuyenFormat = await GetNuyenFormatAsync(token).ConfigureAwait(false);
@@ -10537,7 +10537,7 @@ namespace Chummer
                     }
                     else if (intNewWeightDecimals > intCurrentWeightDecimals)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdWeightFormat))
                         {
                             sbdWeightFormat.Append(string.IsNullOrEmpty(WeightFormat) ? "#,0" : WeightFormat);
@@ -10604,7 +10604,7 @@ namespace Chummer
                 }
                 else if (intNewWeightDecimals > intCurrentWeightDecimals)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdWeightFormat))
                     {
                         string strWeightFormat = await GetWeightFormatAsync(token).ConfigureAwait(false);
@@ -11615,7 +11615,7 @@ namespace Chummer
                     }
                     else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdEssenceFormat))
                         {
                             sbdEssenceFormat.Append(string.IsNullOrEmpty(EssenceFormat) ? "#,0" : EssenceFormat);
@@ -11682,7 +11682,7 @@ namespace Chummer
                 }
                 else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdEssenceFormat))
                     {
                         string strEssenceFormat = await GetEssenceFormatAsync(token).ConfigureAwait(false);
@@ -11726,7 +11726,7 @@ namespace Chummer
                         value += ".00";
                     else
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdZeros))
                         {
                             sbdZeros.Append(value);

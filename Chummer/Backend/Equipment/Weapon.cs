@@ -524,7 +524,7 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
                 if (objXmlMountList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdMounts))
                     {
                         foreach (XmlNode objXmlMount in objXmlMountList)
@@ -544,7 +544,7 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("doubledcostaccessorymounts/mount");
                 if (objXmlMountList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdMounts))
                     {
                         foreach (XmlNode objXmlMount in objXmlMountList)
@@ -1688,7 +1688,7 @@ namespace Chummer.Backend.Equipment
                     XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
                     if (objXmlMountList?.Count > 0)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdMounts))
                         {
                             foreach (XmlNode objXmlMount in objXmlMountList)
@@ -1712,7 +1712,7 @@ namespace Chummer.Backend.Equipment
                     XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("doubledcostaccessorymounts/mount");
                     if (objXmlMountList?.Count > 0)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdMounts))
                         {
                             foreach (XmlNode objXmlMount in objXmlMountList)
@@ -2787,7 +2787,7 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
                     sbdValue.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -2818,7 +2818,7 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
                     sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -3921,7 +3921,7 @@ namespace Chummer.Backend.Equipment
             string strConceal = Concealability;
             if (strConceal.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
                 {
                     if (!string.IsNullOrEmpty(strConceal))
                         sbdConceal.Append('(').Append(strConceal.TrimStartOnce('+')).Append(')');
@@ -3961,7 +3961,7 @@ namespace Chummer.Backend.Equipment
             string strConceal = Concealability;
             if (strConceal.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
                 {
                     if (!string.IsNullOrEmpty(strConceal))
                         sbdConceal.Append('(').Append(strConceal.TrimStartOnce('+')).Append(')');
@@ -4031,7 +4031,7 @@ namespace Chummer.Backend.Equipment
             string strDamageType = string.Empty;
             string strDamageExtra = string.Empty;
             string strDamage;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDamage))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDamage))
             {
                 sbdDamage.Append(Damage);
                 if (blnSync)
@@ -4216,7 +4216,7 @@ namespace Chummer.Backend.Equipment
             }
 
             bool blnDamageReplaced = false;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                        out StringBuilder sbdBonusDamage))
             {
                 // First look at any changes caused by the weapon being wireless
@@ -4801,7 +4801,7 @@ namespace Chummer.Backend.Equipment
                 // ReSharper disable once MethodHasAsyncOverload
                 ? LanguageManager.GetString("String_Space", strLanguage, token: token)
                 : await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 foreach (string strAmmo in lstAmmos)
                 {
@@ -4836,7 +4836,7 @@ namespace Chummer.Backend.Equipment
                                     string strModifyAmmoCapacity = objAccessory.ModifyAmmoCapacity;
                                     if (!string.IsNullOrEmpty(strModifyAmmoCapacity))
                                     {
-                                        using (new FetchSafelyFromPool<StringBuilder>(
+                                        using (new FetchSafelyFromObjectPool<StringBuilder>(
                                                    Utils.StringBuilderPool, out StringBuilder sbdThisAmmo))
                                         {
                                             sbdThisAmmo.Append('(').Append(strThisAmmo).Append(strModifyAmmoCapacity)
@@ -5100,9 +5100,9 @@ namespace Chummer.Backend.Equipment
             CancellationToken token = default)
         {
             // Move the contents of the array to a list so it's easier to work with.
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                        out HashSet<string> setModes))
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                        out HashSet<string> setNewModes))
             {
                 setModes.AddRange(_strMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
@@ -5455,7 +5455,7 @@ namespace Chummer.Backend.Equipment
 
                 setModes.UnionWith(setNewModes);
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
                     if (blnSync)
                     {
@@ -5630,7 +5630,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMounts))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMounts))
                 {
                     foreach (KeyValuePair<string, int> kvpMount in dicMounts)
                     {
@@ -5681,7 +5681,7 @@ namespace Chummer.Backend.Equipment
                 string strCostExpression = Cost;
                 if (strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                     {
                         sbdCost.Append(strCostExpression.TrimStart('+'));
                         _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
@@ -5723,7 +5723,7 @@ namespace Chummer.Backend.Equipment
             string strCostExpression = Cost;
             if (strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                 {
                     sbdCost.Append(strCostExpression.TrimStart('+'));
                     await _objCharacter.AttributeSection
@@ -5778,7 +5778,7 @@ namespace Chummer.Backend.Equipment
                     return 0;
 
                 decimal decReturn = 0;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
                 {
                     sbdWeight.Append(strWeightExpression.TrimStart('+'));
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
@@ -5829,7 +5829,7 @@ namespace Chummer.Backend.Equipment
             string strAP = AP;
 
             int intImprove = 0;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBonusAP))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBonusAP))
             {
                 // First look at any changes caused by the weapon being wireless
                 if (WirelessOn && WirelessWeaponBonus != null)
@@ -6135,7 +6135,7 @@ namespace Chummer.Backend.Equipment
             int intAP;
             if (strAP.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decAP))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAP))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAP))
                 {
                     sbdAP.Append(strAP);
                     if (blnSync)
@@ -6311,7 +6311,7 @@ namespace Chummer.Backend.Equipment
                 strRCFull = strRC;
             }
 
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRCTip))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRCTip))
             {
                 sbdRCTip.Append(1.ToString(GlobalSettings.CultureInfo)).Append(strSpace);
                 if (blnRefreshRCToolTip && strRCBase != "0" && strRCBase != "+0")
@@ -6751,7 +6751,7 @@ namespace Chummer.Backend.Equipment
                     || WeaponAccessories.Any(x => x.Equipped && !string.IsNullOrEmpty(x.Reach)))
                 {
                     string strToEvaluate;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
                     {
                         if (!string.IsNullOrEmpty(strReach))
                             sbdReach.Append('(').Append(strReach.TrimStartOnce('+')).Append(')');
@@ -6814,7 +6814,7 @@ namespace Chummer.Backend.Equipment
                 || await WeaponAccessories.AnyAsync(x => x.Equipped && !string.IsNullOrEmpty(x.Reach), token).ConfigureAwait(false))
             {
                 string strToEvaluate;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
                 {
                     if (!string.IsNullOrEmpty(strReach))
                         sbdReach.Append('(').Append(strReach.TrimStartOnce('+')).Append(')');
@@ -6893,7 +6893,7 @@ namespace Chummer.Backend.Equipment
             }
             else
                 funcPhysicalLimitString = () => _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdBonusAccuracy))
             {
                 // First look at any changes caused by the weapon being wireless
@@ -6977,7 +6977,7 @@ namespace Chummer.Backend.Equipment
                     if (lstNonStackingAccessoryBonuses.Count > 1)
                     {
                         int intIndexToUse = 0;
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
                         {
                             string strLoopAccuracy = lstNonStackingAccessoryBonuses[0];
                             sbdAccuracy.Append(strLoopAccuracy);
@@ -7120,7 +7120,7 @@ namespace Chummer.Backend.Equipment
 
             if (strAccuracy.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decAccuracy))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
                 {
                     sbdAccuracy.Append(strAccuracy);
                     sbdAccuracy.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -7186,7 +7186,7 @@ namespace Chummer.Backend.Equipment
                 funcPhysicalLimitString = async () =>
                     (await _objCharacter.GetLimitPhysicalAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
                         .InvariantCultureInfo);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdBonusAccuracy))
             {
                 // First look at any changes caused by the weapon being wireless
@@ -7274,7 +7274,7 @@ namespace Chummer.Backend.Equipment
                     if (lstNonStackingAccessoryBonuses.Count > 1)
                     {
                         int intIndexToUse = 0;
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
                         {
                             string strLoopAccuracy = lstNonStackingAccessoryBonuses[0];
                             sbdAccuracy.Append(strLoopAccuracy);
@@ -7432,7 +7432,7 @@ namespace Chummer.Backend.Equipment
 
             if (strAccuracy.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decAccuracy))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
                 {
                     sbdAccuracy.Append(strAccuracy);
                     await sbdAccuracy.CheapReplaceAsync(strAccuracy, "{Rating}",
@@ -7860,7 +7860,7 @@ namespace Chummer.Backend.Equipment
             string strRange = objXmlCategoryNode.SelectSingleNode(strFindRange)?.Value ?? string.Empty;
             if (strRange.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decRange))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRange))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRange))
                 {
                     sbdRange.Append(strRange);
                     sbdRange.CheapReplace(strRange, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
@@ -7976,7 +7976,7 @@ namespace Chummer.Backend.Equipment
             string strRange = objXmlCategoryNode.SelectSingleNode(strFindRange)?.Value ?? string.Empty;
             if (strRange.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decRange))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRange))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRange))
                 {
                     sbdRange.Append(strRange);
                     await sbdRange.CheapReplaceAsync(strRange, "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
@@ -8017,7 +8017,7 @@ namespace Chummer.Backend.Equipment
         public decimal GetRangeBonus(bool blnIncludeAmmo = true)
         {
             string strToEvaluate;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRangeBonus))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRangeBonus))
             {
                 string strRangeBonus = string.Empty;
                 // First look at any changes caused by the weapon being wireless
@@ -8095,7 +8095,7 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetRangeBonusAsync(bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             string strToEvaluate;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRangeBonus))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRangeBonus))
             {
                 string strRangeBonus = string.Empty;
                 // First look at any changes caused by the weapon being wireless
@@ -8176,7 +8176,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strRange))
                 return string.Empty;
             string strToEvaluate = string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBaseModifier))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBaseModifier))
             {
                 string strBaseModifier = _objCharacter.LoadDataXPath("ranges.xml")
                         .SelectSingleNodeAndCacheExpression("chummer/modifiers/" + strRange.ToLowerInvariant())?.Value;
@@ -8229,7 +8229,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strRange))
                 return string.Empty;
             string strToEvaluate = string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBaseModifier))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBaseModifier))
             {
                 string strBaseModifier = (await _objCharacter.LoadDataXPathAsync("ranges.xml", token: token).ConfigureAwait(false))
                         .SelectSingleNodeAndCacheExpression("chummer/modifiers/" + strRange.ToLowerInvariant(), token)?.Value;
@@ -8786,7 +8786,7 @@ namespace Chummer.Backend.Equipment
             }
 
             string strToEvaluate;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtraModifier))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtraModifier))
             {
                 // First look at any changes caused by the weapon being wireless
                 if (WirelessOn && WirelessWeaponBonus != null)
@@ -9201,7 +9201,7 @@ namespace Chummer.Backend.Equipment
             }
 
             string strToEvaluate;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtraModifier))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtraModifier))
             {
                 // First look at any changes caused by the weapon being wireless
                 if (WirelessOn && WirelessWeaponBonus != null)
@@ -9569,7 +9569,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 string strExtra;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtra))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtra))
                 {
                     // First look at any changes caused by the weapon being wireless
                     if (WirelessOn && WirelessWeaponBonus != null)
@@ -10160,7 +10160,7 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             string strExtra;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtra))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtra))
             {
                 // First look at any changes caused by the weapon being wireless
                 if (WirelessOn && WirelessWeaponBonus != null)
@@ -10875,7 +10875,7 @@ namespace Chummer.Backend.Equipment
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
                         sbdAvail.CheapReplace(strAvail, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -10977,7 +10977,7 @@ namespace Chummer.Backend.Equipment
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
                         await sbdAvail.CheapReplaceAsync(strAvail, "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
@@ -12641,7 +12641,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     //Add to set for O(N log M) runtime instead of O(N * M)
 
-                                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                out HashSet<string> setForbiddenAccessory))
                                     {
                                         foreach (XPathNavigator node in xmlTestNode.Select("accessory"))
@@ -12663,7 +12663,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     //Add to set for O(N log M) runtime instead of O(N * M)
 
-                                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                out HashSet<string> setRequiredAccessory))
                                     {
                                         foreach (XPathNavigator node in xmlTestNode.Select("accessory"))
@@ -13264,7 +13264,7 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
                     foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
@@ -13342,7 +13342,7 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
                     foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)

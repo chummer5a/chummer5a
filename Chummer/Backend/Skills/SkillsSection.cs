@@ -1268,7 +1268,7 @@ namespace Chummer.Backend.Skills
                             _dicSkills.Clear();
                             if (!blnLegacy)
                             {
-                                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                            out HashSet<string>
                                                setSkillIdsToSkip))
                                 {
@@ -1836,7 +1836,7 @@ namespace Chummer.Backend.Skills
 
                             if (!blnDidInitializeInLoad)
                             {
-                                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                            out HashSet<string>
                                                setSkillNames))
                                 {
@@ -3049,7 +3049,7 @@ namespace Chummer.Backend.Skills
                         string strExpression = _objCharacter.Settings.KnowledgePointsExpression;
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                        out StringBuilder sbdValue))
                             {
                                 sbdValue.Append(strExpression);
@@ -3112,7 +3112,7 @@ namespace Chummer.Backend.Skills
                     string strExpression = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdValue))
                         {
                             sbdValue.Append(strExpression);

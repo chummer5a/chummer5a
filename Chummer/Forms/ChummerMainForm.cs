@@ -4420,10 +4420,10 @@ namespace Chummer
             }
         }
 
-        private static FetchSafelyFromPool<HashSet<string>> ProcessCommandLineArguments(string[] strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
+        private static FetchSafelyFromSafeObjectPool<HashSet<string>> ProcessCommandLineArguments(string[] strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
         {
             blnShowTest = false;
-            FetchSafelyFromPool<HashSet<string>> objReturn = new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out setFilesToLoad);
+            FetchSafelyFromSafeObjectPool<HashSet<string>> objReturn = new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out setFilesToLoad);
             if (strArgs.Length == 0)
                 return objReturn;
             try

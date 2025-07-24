@@ -2501,7 +2501,7 @@ namespace Chummer
                                 {
                                     token.ThrowIfCancellationRequested();
                                     // now just add more lines to it until it is enough
-                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdCurrentLine))
                                     {
                                         sbdCurrentLine.Append(strCurrentLine);
@@ -2621,7 +2621,7 @@ namespace Chummer
                     return string.Join(" ", strArray, intTitleIndex, intBlockEndIndex - intTitleIndex);
                 token.ThrowIfCancellationRequested();
                 // add the title
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdResultContent))
                 {
                     token.ThrowIfCancellationRequested();

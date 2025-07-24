@@ -413,7 +413,7 @@ namespace Chummer
         public string Text(string strLanguage)
         {
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
                 sbdReturn.Append(LanguageManager.GetString("String_Grade", strLanguage)).Append(strSpace)
@@ -456,7 +456,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
                 sbdReturn.Append(await LanguageManager.GetStringAsync("String_Grade", strLanguage, token: token)).Append(strSpace)

@@ -2403,7 +2403,7 @@ namespace Chummer.Backend.Attributes
 
                     string strSpace = LanguageManager.GetString("String_Space");
 
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string> setUniqueNames))
                     {
                         decimal decBaseValue = 0;
@@ -2415,7 +2415,7 @@ namespace Chummer.Backend.Attributes
                         List<Tuple<string, decimal, string>> lstUniquePair =
                             new List<Tuple<string, decimal, string>>(lstUsedImprovements.Count);
 
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdModifier))
                         {
                             foreach (Improvement objImprovement in lstUsedImprovements.Where(
@@ -2458,7 +2458,7 @@ namespace Chummer.Backend.Attributes
                                 // Run through the list of UniqueNames and pick out the highest value for each one.
                                 decimal decHighest = decimal.MinValue;
 
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdNewModifier))
                                 {
                                     foreach ((string strGroupName, decimal decValue, string strSourceName) in
@@ -2499,7 +2499,7 @@ namespace Chummer.Backend.Attributes
                             else if (setUniqueNames.Contains("precedence1"))
                             {
                                 // Retrieve all the items that are precedence1 and nothing else.
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdNewModifier))
                                 {
                                     foreach ((string _, decimal decValue, string strSourceName) in lstUniquePair
@@ -2641,7 +2641,7 @@ namespace Chummer.Backend.Attributes
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setUniqueNames))
                 {
                     decimal decBaseValue = 0;
@@ -2653,7 +2653,7 @@ namespace Chummer.Backend.Attributes
                     List<Tuple<string, decimal, string>> lstUniquePair =
                         new List<Tuple<string, decimal, string>>(lstUsedImprovements.Count);
 
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdModifier))
                     {
                         foreach (Improvement objImprovement in lstUsedImprovements.Where(
@@ -2697,7 +2697,7 @@ namespace Chummer.Backend.Attributes
                             // Run through the list of UniqueNames and pick out the highest value for each one.
                             decimal decHighest = decimal.MinValue;
 
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdNewModifier))
                             {
                                 foreach ((string strGroupName, decimal decValue, string strSourceName) in
@@ -2740,7 +2740,7 @@ namespace Chummer.Backend.Attributes
                         else if (setUniqueNames.Contains("precedence1"))
                         {
                             // Retrieve all the items that are precedence1 and nothing else.
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdNewModifier))
                             {
                                 foreach ((string _, decimal decValue, string strSourceName) in lstUniquePair

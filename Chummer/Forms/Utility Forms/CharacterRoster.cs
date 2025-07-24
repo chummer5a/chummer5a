@@ -804,7 +804,7 @@ namespace Chummer
                 return;
             try
             {
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setToRefresh))
                 {
                     bool blnRefreshMru = false;
@@ -847,7 +847,7 @@ namespace Chummer
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string> setToRefresh))
                         {
                             foreach (ExportCharacter objForm in e.NewItems)
@@ -865,7 +865,7 @@ namespace Chummer
                     case NotifyCollectionChangedAction.Replace:
                     case NotifyCollectionChangedAction.Remove:
                         {
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> setToRefresh))
                             {
                                 bool blnRefreshMru = false;
@@ -912,11 +912,11 @@ namespace Chummer
                 return;
             try
             {
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setToRefresh))
                 {
                     bool blnRefreshMru = false;
-                    using (new FetchSafelyFromPool<HashSet<string>>(
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
                                Utils.StringHashSetPool, out HashSet<string> setCharacters))
                     {
                         // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
@@ -959,7 +959,7 @@ namespace Chummer
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string> setToRefresh))
                         {
                             foreach (CharacterSheetViewer objForm in e.NewItems)
@@ -976,11 +976,11 @@ namespace Chummer
                     case NotifyCollectionChangedAction.Replace:
                     case NotifyCollectionChangedAction.Remove:
                     {
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string> setToRefresh))
                         {
                             bool blnRefreshMru = false;
-                            using (new FetchSafelyFromPool<HashSet<string>>(
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
                                        Utils.StringHashSetPool, out HashSet<string> setCharacters))
                             {
                                 // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
@@ -1027,7 +1027,7 @@ namespace Chummer
                 return;
             try
             {
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setToRefresh))
                 {
                     bool blnRefreshMru = false;
@@ -1070,7 +1070,7 @@ namespace Chummer
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string> setToRefresh))
                         {
                             foreach (CharacterShared objForm in e.NewItems)
@@ -1087,7 +1087,7 @@ namespace Chummer
                     case NotifyCollectionChangedAction.Replace:
                     case NotifyCollectionChangedAction.Remove:
                     {
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string> setToRefresh))
                         {
                             bool blnRefreshMru = false;

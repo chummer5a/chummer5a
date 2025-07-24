@@ -1542,7 +1542,7 @@ namespace Chummer
                         ? ValueToInt(objCharacter, strMaximumRating, intRating)
                         : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token).ConfigureAwait(false);
 
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string>
                                                                     setAllowedCategories))
                 {
@@ -1567,7 +1567,7 @@ namespace Chummer
                         }
                     }
 
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string>
                                                                         setForbiddenCategories))
                     {
@@ -1579,7 +1579,7 @@ namespace Chummer
                                                   .Select(x => x.Trim()));
                         }
 
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string>
                                                                             setAllowedNames))
                         {
@@ -1603,7 +1603,7 @@ namespace Chummer
                                 }
                             }
 
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string>
                                                                                 setAllowedLinkedAttributes))
                             {
@@ -1616,10 +1616,10 @@ namespace Chummer
                                                            .Select(x => x.Trim()));
                                 }
 
-                                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                                out List<ListItem> lstDropdownItems))
                                 {
-                                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                out HashSet<string>
                                                    setProcessedSkillNames))
                                     {
@@ -1714,7 +1714,7 @@ namespace Chummer
 
                                             if (intMinimumRating <= 0)
                                             {
-                                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                            out StringBuilder sbdFilter))
                                                 {
                                                     if (setAllowedCategories?.Count > 0)
@@ -2221,7 +2221,7 @@ namespace Chummer
                                                                     bool blnAddImprovementsToCharacter, CancellationToken token = default)
         {
             Log.Debug("CreateImprovements enter");
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
             {
                 sbdTrace.Append("objImprovementSource = ").AppendLine(objImprovementSource.ToString());
                 sbdTrace.Append("strSourceName = ").AppendLine(strSourceName);
@@ -2357,12 +2357,12 @@ namespace Chummer
                                                 ? objCharacter.LoadDataXPath(strXmlFile, token: token)
                                                 : await objCharacter.LoadDataXPathAsync(strXmlFile, token: token)
                                                     .ConfigureAwait(false);
-                                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                                    Utils.ListItemListPool, out List<ListItem> lstItems))
                                         {
                                             //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
                                             //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
-                                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                        out HashSet<string> setUsedValues))
                                             {
                                                 foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
@@ -5770,7 +5770,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             Log.Debug("CreateImprovement");
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
             {
                 sbdTrace.Append("strImprovedName = ").AppendLine(strImprovedName);
                 sbdTrace.Append("objImprovementSource = ").AppendLine(objImprovementSource.ToString());
@@ -5868,7 +5868,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             Log.Debug("CreateImprovement");
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
             {
                 sbdTrace.Append("strImprovedName = ").AppendLine(strImprovedName);
                 sbdTrace.Append("objImprovementSource = ").AppendLine(objImprovementSource.ToString());
@@ -6017,7 +6017,7 @@ namespace Chummer
             if (objImprovement?.SetupComplete != true)
                 return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
@@ -6096,7 +6096,7 @@ namespace Chummer
             if (lstImprovements == null)
                 return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
@@ -6156,7 +6156,7 @@ namespace Chummer
             if (objImprovement?.SetupComplete != true)
                 return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
@@ -6235,7 +6235,7 @@ namespace Chummer
             if (lstImprovements == null)
                 return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {

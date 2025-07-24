@@ -211,7 +211,7 @@ namespace Chummer
 
                         string strInfo;
 
-                        using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
+                        using (new FetchSafelyFromSafeObjectPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
                         {
                             sw.Start();
                             //If debugging and launched from other place (Bootstrap), launch debugger

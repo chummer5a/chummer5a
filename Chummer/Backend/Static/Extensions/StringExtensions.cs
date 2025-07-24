@@ -45,7 +45,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             bool blnAddSeparator = false;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 foreach (Task<string> tskString in lstStringTasks)
                 {
@@ -84,7 +84,7 @@ namespace Chummer
             int intHead = strInput.IndexOf(strOldValue, eStringComparison);
             if (intHead == -1)
                 return strInput;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 // Buffer size is increased by 1 in addition to the length-dependent stuff in order to compensate for integer division rounding down
                 int intNewCapacity = strInput.Length + 1 + Math.Max(0, strNewValue.Length - strOldValue.Length);
@@ -1446,7 +1446,7 @@ namespace Chummer
             if (intWidth >= strText.Length)
                 return strText;
 
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 int intNewCapacity = strText.Length;
                 if (sbdReturn.Capacity < intNewCapacity)
@@ -1565,7 +1565,7 @@ namespace Chummer
                 return '\"' + strSearch + '\"';
             }
 
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 int intNewCapacity = strSearch.Length + 10;
                 if (sbdReturn.Capacity < intNewCapacity)
@@ -1846,7 +1846,7 @@ namespace Chummer
             int intUCSkip = 1; // Number of ASCII characters to skip after a unicode character.
             int intCurSkip = 0; // Number of ASCII characters left to skip
 
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 for (; objMatch.Success; objMatch = objMatch.NextMatch())
                 {

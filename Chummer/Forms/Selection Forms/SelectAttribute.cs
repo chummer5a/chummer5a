@@ -48,7 +48,7 @@ namespace Chummer
 
         private async void SelectAttribute_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAttributes))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAttributes))
             {
                 // Build the list of Attributes.
                 foreach (string strAbbrev in _lstAttributeAbbrevs)

@@ -930,7 +930,7 @@ namespace Chummer
                 // Get the parameters/arguments passed to program if any
                 if (lstToProcess != null)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(StringBuilderPool, out StringBuilder sbdArguments))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(StringBuilderPool, out StringBuilder sbdArguments))
                     {
                         foreach (CharacterShared objOpenCharacterForm in lstToProcess)
                         {

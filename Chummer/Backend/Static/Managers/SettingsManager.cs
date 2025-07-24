@@ -609,7 +609,7 @@ namespace Chummer
                     intReturn -= intMismatchCount * intBaselineCustomDataCount * intBaseline;
             }
 
-            using (new FetchSafelyFromPool<HashSet<string>>(
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
                        Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
             {
                 setDummyBooks.AddRange(await objBaselineSettings.GetBooksAsync(token).ConfigureAwait(false));

@@ -352,7 +352,7 @@ namespace Chummer.UI.Skills
                                                                     ,
                                                               _objMyToken);
 
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstAttributeItems))
                     {
                         foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
@@ -565,7 +565,7 @@ namespace Chummer.UI.Skills
                                                                 x => x.GetAddSpecToolTipAsync(_objMyToken)
                                                                       , token).ConfigureAwait(false);
 
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstAttributeItems))
                 {
                     foreach (string strLoopAttribute in AttributeSection.AttributeStrings)

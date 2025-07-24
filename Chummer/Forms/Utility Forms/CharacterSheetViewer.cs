@@ -234,7 +234,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                 string strCareer = await LanguageManager.GetStringAsync("Title_CareerMode", token: token)
                                                         .ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTitle))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTitle))
                 {
                     await sbdTitle
                         .Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token)
@@ -1065,7 +1065,7 @@ namespace Chummer
                         objStream.Position = 0;
 
                         // Read in the resulting code and pass it to the browser.
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                         {
                             token.ThrowIfCancellationRequested();
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))

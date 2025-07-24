@@ -161,7 +161,7 @@ namespace Chummer
                 // Populate the Gear Category list.
                 if (_setAllowedCategories.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMount))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMount))
                     {
                         foreach (string strAllowedMount in _setAllowedCategories)
                         {
@@ -1114,7 +1114,7 @@ namespace Chummer
 
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decRating))
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(
                                        Utils.StringBuilderPool, out StringBuilder sbdValue))
                             {
                                 sbdValue.Append(strExpression);
@@ -1163,7 +1163,7 @@ namespace Chummer
 
                                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decMinRating))
                                 {
-                                    using (new FetchSafelyFromPool<StringBuilder>(
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(
                                                Utils.StringBuilderPool, out StringBuilder sbdValue))
                                     {
                                         sbdValue.Append(strExpression);
@@ -1288,7 +1288,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strCategory))
                 strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             string strFilter = string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
                 sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
 
@@ -1299,7 +1299,7 @@ namespace Chummer
                     sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                 else if (_setAllowedCategories.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdCategoryFilter))
                     {
                         foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
@@ -1317,7 +1317,7 @@ namespace Chummer
 
                 if (_setAllowedNames.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdNameFilter))
                     {
                         foreach (string strItem in _setAllowedNames)
@@ -1436,7 +1436,7 @@ namespace Chummer
                         if (!GlobalSettings.SearchInCategoryOnly || string.IsNullOrEmpty(strSelectCategory) ||
                             strSelectCategory == "Show All")
                         {
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> setDuplicateNames))
                             {
                                 for (int i = 0; i + 1 < lstGears.Count; ++i)

@@ -19,31 +19,21 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using Microsoft.Extensions.ObjectPool;
 
 namespace Chummer
 {
     /// <summary>
-    /// Syntactic Sugar for wrapping a ObjectPool{T}'s Get() and Return() methods into something that hooks into `using`
+    /// Syntactic Sugar for wrapping a SafeObjectPool{T}'s Get() and Return() methods into something that hooks into `using`
     /// and that guarantees that pooled objects will be returned
     /// </summary>
-    public sealed class FetchSafelyFromPool<T> : IDisposable where T : class
+    public sealed class FetchSafelyFromSafeObjectPool<T> : IDisposable where T : class
     {
-        private readonly ObjectPool<T> _objMyPool;
         private readonly SafeObjectPool<T> _objMySafePool;
         private T _objMyValue;
 
         [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public FetchSafelyFromPool(ObjectPool<T> objMyPool, out T objReturn)
-        {
-            _objMyPool = objMyPool;
-            objReturn = _objMyValue = objMyPool.Get();
-        }
-
-        [CLSCompliant(false)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public FetchSafelyFromPool(SafeObjectPool<T> objMySafePool, out T objReturn)
+        public FetchSafelyFromSafeObjectPool(SafeObjectPool<T> objMySafePool, out T objReturn)
         {
             _objMySafePool = objMySafePool;
             objReturn = _objMyValue = objMySafePool.Get();
@@ -52,7 +42,6 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
-            _objMyPool?.Return(_objMyValue);
             _objMySafePool?.Return(ref _objMyValue);
         }
     }

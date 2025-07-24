@@ -648,7 +648,7 @@ namespace Chummer
                     .GetTotalValueAsync(token).ConfigureAwait(false);
                 int intHighestLevel = intRes * 2;
                 string strFv = await GetCalculatedFvAsync(token).ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                 out StringBuilder sbdTip))
                 {
                     sbdTip.Append(await LanguageManager.GetStringAsync("Tip_ComplexFormFading", token: token));
@@ -738,7 +738,7 @@ namespace Chummer
                         int intFadingDv = 0;
                         if (strFv.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdReturn))
                             {
                                 sbdReturn.Append(strFv);
@@ -824,7 +824,7 @@ namespace Chummer
                     int intFadingDv = 0;
                     if (strFv.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdReturn))
                         {
                             sbdReturn.Append(strFv);
@@ -1300,7 +1300,7 @@ namespace Chummer
                 string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                     {
                         string strFormat = strSpace + "{0}" + strSpace + "({1})";
@@ -1349,7 +1349,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
                     string strFormat = strSpace + "{0}" + strSpace + "({1})";

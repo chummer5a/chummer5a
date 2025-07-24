@@ -688,7 +688,7 @@ namespace Chummer
                                             (await CharacterObject.LoadDataXPathAsync(
                                                 "traditions.xml", token: GenericToken).ConfigureAwait(false))
                                             .SelectSingleNodeAndCacheExpression("/chummer", GenericToken);
-                                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                                    Utils.ListItemListPool, out List<ListItem> lstTraditions))
                                         {
                                             if (xmlTraditionsBaseChummerNode != null)
@@ -742,7 +742,7 @@ namespace Chummer
                                         }
 
                                         // Populate the Magician Custom Drain Options list.
-                                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                                    Utils.ListItemListPool, out List<ListItem> lstDrainAttributes))
                                         {
                                             if (xmlTraditionsBaseChummerNode != null)
@@ -818,7 +818,7 @@ namespace Chummer
                                                 x => x.GetDrainValueToolTipAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
 
-                                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                    out HashSet<string> limit))
                                         {
                                             foreach (Improvement improvement in await ImprovementManager
@@ -832,7 +832,7 @@ namespace Chummer
                                             }
 
                                             // Populate the Magician Custom Spirits lists - Combat.
-                                            using (new FetchSafelyFromPool<List<ListItem>>(
+                                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                                        Utils.ListItemListPool, out List<ListItem> lstSpirit))
                                             {
                                                 lstSpirit.Add(ListItem.Blank);
@@ -931,7 +931,7 @@ namespace Chummer
                                             (await CharacterObject.LoadDataXPathAsync(
                                                 "streams.xml", token: GenericToken).ConfigureAwait(false))
                                             .SelectSingleNodeAndCacheExpression("/chummer", GenericToken);
-                                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                                    Utils.ListItemListPool, out List<ListItem> lstStreams))
                                         {
                                             if (xmlTraditionsBaseChummerNode != null)
@@ -997,7 +997,7 @@ namespace Chummer
                                                     "/chummer/metatypes/metatype[name = "
                                                     + CharacterObject.Metatype.CleanXPath()
                                                     + ']');
-                                            using (new FetchSafelyFromPool<List<ListItem>>(
+                                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                                        Utils.ListItemListPool,
                                                        out List<ListItem> lstAttributeCategories))
                                             {
@@ -1050,7 +1050,7 @@ namespace Chummer
                                     using (Timekeeper.StartSyncron("load_frm_career_vehicle", op_load_frm_career))
                                     {
                                         // Populate vehicle weapon fire mode list.
-                                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                                    Utils.ListItemListPool, out List<ListItem> lstFireModes))
                                         {
                                             foreach (Weapon.FiringMode mode in
@@ -3130,7 +3130,7 @@ namespace Chummer
 
                 if (e.PropertyNames.Contains(nameof(Character.Ambidextrous)))
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                Utils.ListItemListPool, out List<ListItem> lstPrimaryArm))
                     {
                         if (await CharacterObject.GetAmbidextrousAsync(token).ConfigureAwait(false))
@@ -3860,7 +3860,7 @@ namespace Chummer
                                 (await CharacterObject.LoadDataXPathAsync(
                                     "traditions.xml", token: token).ConfigureAwait(false))
                                 .SelectSingleNodeAndCacheExpression("/chummer", token);
-                            using (new FetchSafelyFromPool<List<ListItem>>(
+                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstTraditions))
                             {
                                 if (xmlTraditionsBaseChummerNode != null)
@@ -3932,7 +3932,7 @@ namespace Chummer
                                 }
                             }
 
-                            using (new FetchSafelyFromPool<List<ListItem>>(
+                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstDrainAttributes))
                             {
                                 if (xmlTraditionsBaseChummerNode != null)
@@ -3963,7 +3963,7 @@ namespace Chummer
                                     .ConfigureAwait(false);
                             }
 
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                        out HashSet<string> limit))
                             {
                                 foreach (Improvement improvement in await ImprovementManager
@@ -3975,7 +3975,7 @@ namespace Chummer
                                     limit.Add(improvement.ImprovedName);
                                 }
 
-                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstSpirit))
                                 {
                                     lstSpirit.Add(ListItem.Blank);
@@ -4021,7 +4021,7 @@ namespace Chummer
                                 (await CharacterObject.LoadDataXPathAsync(
                                     "streams.xml", token: token).ConfigureAwait(false))
                                 .SelectSingleNodeAndCacheExpression("/chummer", token);
-                            using (new FetchSafelyFromPool<List<ListItem>>(
+                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstStreams))
                             {
                                 if (xmlTraditionsBaseChummerNode != null)
@@ -4664,7 +4664,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdOutdatedItems))
                     {
                         // Record the status of any flags that normally trigger character events.
@@ -5787,7 +5787,7 @@ namespace Chummer
                 XPathNavigator xmlVesselsNavigator = await CharacterObject
                                                            .LoadDataXPathAsync("vessels.xml", token: GenericToken)
                                                            .ConfigureAwait(false);
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatype))
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatype))
                 {
                     foreach (XPathNavigator xmlMetatype in xmlVesselsNavigator.SelectAndCacheExpression(
                                  "/chummer/metatypes/metatype", GenericToken))
@@ -12113,7 +12113,7 @@ namespace Chummer
                 XPathNodeIterator xmlAddonCategoryList = objSensorNode?.SelectAndCacheExpression("addoncategory", GenericToken);
                 if (xmlAddonCategoryList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdCategories))
                     {
                         foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
@@ -14494,9 +14494,9 @@ namespace Chummer
                             //frmPickCyberware.SetGrade = "Standard";
                             frmPickCyberware.MyForm.MaximumCapacity = objMod.CapacityRemaining;
                             frmPickCyberware.MyForm.Subsystems = objMod.Subsystems;
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> setDisallowedMounts))
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> setHasMounts))
                             {
                                 foreach (Cyberware objLoopCyberware in await objMod.Cyberware.DeepWhereAsync(
@@ -14513,7 +14513,7 @@ namespace Chummer
                                         setHasMounts.Add(strLoopHasModularMount);
                                 }
 
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdDisallowedMounts))
                                 {
                                     foreach (string strLoop in setDisallowedMounts)
@@ -14531,7 +14531,7 @@ namespace Chummer
                                     frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
                                 }
 
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdHasMounts))
                                 {
                                     foreach (string strLoop in setHasMounts)
@@ -14567,9 +14567,9 @@ namespace Chummer
 
                             frmPickCyberware.MyForm.Subsystems = objCyberwareParent.AllowedSubsystems;
 
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> setDisallowedMounts))
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> setHasMounts))
                             {
                                 string strLoopHasModularMount = await objCyberwareParent.GetHasModularMountAsync(GenericToken).ConfigureAwait(false);
@@ -14589,7 +14589,7 @@ namespace Chummer
                                         setHasMounts.Add(strLoopHasModularMount);
                                 }
 
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdDisallowedMounts))
                                 {
                                     foreach (string strLoop in setDisallowedMounts)
@@ -14607,7 +14607,7 @@ namespace Chummer
                                     frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
                                 }
 
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdHasMounts))
                                 {
                                     foreach (string strLoop in setHasMounts)
@@ -15039,7 +15039,7 @@ namespace Chummer
                 try
                 {
                     string strCategories = string.Empty;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdCategories))
                     {
                         foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
@@ -15219,7 +15219,7 @@ namespace Chummer
                 try
                 {
                     string strCategories = string.Empty;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdCategories))
                     {
                         foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
@@ -15403,7 +15403,7 @@ namespace Chummer
                 XPathNodeIterator xmlAddonCategoryList = objSensorNode?.SelectAndCacheExpression("addoncategory", GenericToken);
                 if (xmlAddonCategoryList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdCategories))
                     {
                         foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
@@ -15578,7 +15578,7 @@ namespace Chummer
                 XPathNodeIterator xmlAddonCategoryList = objSensorNode?.SelectAndCacheExpression("addoncategory", GenericToken);
                 if (xmlAddonCategoryList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdCategories))
                     {
                         foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
@@ -15752,7 +15752,7 @@ namespace Chummer
                 try
                 {
                     string strCategories = string.Empty;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdCategories))
                     {
                         foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
@@ -15922,7 +15922,7 @@ namespace Chummer
                 XPathNodeIterator xmlAddonCategoryList = objSensorNode?.SelectAndCacheExpression("addoncategory", GenericToken);
                 if (xmlAddonCategoryList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdCategories))
                     {
                         foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
@@ -16166,7 +16166,7 @@ namespace Chummer
                 XPathNodeIterator xmlAddonCategoryList = objSensorNode?.SelectAndCacheExpression("addoncategory", GenericToken);
                 if (xmlAddonCategoryList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdCategories))
                     {
                         foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
@@ -16344,7 +16344,7 @@ namespace Chummer
                 try
                 {
                     string strCategories = string.Empty;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdCategories))
                     {
                         foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
@@ -17201,7 +17201,7 @@ namespace Chummer
                         return;
 
                     // Now display a list of the acceptable mounting points for the Weapon.
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
                     {
                         foreach (WeaponMount objVehicleWeaponMount in objVehicle.WeaponMounts)
                         {
@@ -20870,7 +20870,7 @@ namespace Chummer
                               .ConfigureAwait(false);
                         string strText = await objDrug.GetEffectDescriptionAsync(token: token).ConfigureAwait(false);
                         await lblDrugEffect.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdComponents))
                         {
                             foreach (DrugComponent objComponent in objDrug.Components)
@@ -21478,7 +21478,7 @@ namespace Chummer
                                 token.ThrowIfCancellationRequested();
                             if (await CharacterObject.GetOverclockerAsync(token).ConfigureAwait(false) && objGear.Category == "Cyberdecks")
                             {
-                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstOverclocker))
                                 {
                                     lstOverclocker.Add(
@@ -21694,7 +21694,7 @@ namespace Chummer
                                 if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                     StringComparison.OrdinalIgnoreCase))
                                 {
-                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdSlotsText))
                                     {
                                         foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc(
@@ -22035,7 +22035,7 @@ namespace Chummer
                                     cmsAmmoSuppressiveFire.Text = strSuppressiveFireText;
                                 }, token).ConfigureAwait(false);
                                 token.ThrowIfCancellationRequested();
-                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstAmmo))
                                 {
                                     int intSlot = 0;
@@ -22063,7 +22063,7 @@ namespace Chummer
                                             string strPlugins = string.Empty;
                                             if (objGear?.Children.Count > 0)
                                             {
-                                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                            out StringBuilder sbdPlugins))
                                                 {
                                                     foreach (Gear objChild in objGear.Children)
@@ -22222,7 +22222,7 @@ namespace Chummer
                             await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
                             await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdSlotsText))
                             {
                                 sbdSlotsText.Append(objSelectedAccessory.Mount);
@@ -22437,7 +22437,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                                 await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = true, token)
                                                    .ConfigureAwait(false);
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdAmmoBonus))
                                 {
                                     if (decAmmoBonus != 0)
@@ -22587,7 +22587,7 @@ namespace Chummer
                                 token.ThrowIfCancellationRequested();
                             if (await CharacterObject.GetOverclockerAsync(token).ConfigureAwait(false) && objGear.Category == "Cyberdecks")
                             {
-                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstOverclocker))
                                 {
                                     lstOverclocker.Add(
@@ -23003,7 +23003,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                                     token.ThrowIfCancellationRequested();
                                     // gpbArmorLocation
-                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdArmorEquipped))
                                     {
                                         await CharacterObject.Armor.ForEachAsync(async objLoopArmor =>
@@ -23053,7 +23053,7 @@ namespace Chummer
                                         await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = false, token)
                                                             .ConfigureAwait(false);
                                         token.ThrowIfCancellationRequested();
-                                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                    out StringBuilder sbdArmorEquipped))
                                         {
                                             await CharacterObject.Armor.ForEachAsync(async objLoopArmor =>
@@ -23152,7 +23152,7 @@ namespace Chummer
                         if (await CharacterObject.GetOverclockerAsync(token).ConfigureAwait(false) && objHasMatrixAttributes is Gear objGear
                                                         && objGear.Category == "Cyberdecks")
                         {
-                            using (new FetchSafelyFromPool<List<ListItem>>(
+                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstOverclocker))
                             {
                                 lstOverclocker.Add(
@@ -23498,7 +23498,7 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
                         if (await CharacterObject.GetOverclockerAsync(token).ConfigureAwait(false) && objGear.Category == "Cyberdecks")
                         {
-                            using (new FetchSafelyFromPool<List<ListItem>>(
+                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstOverclocker))
                             {
                                 lstOverclocker.Add(
@@ -23895,9 +23895,9 @@ namespace Chummer
                         }
                         else
                         {
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                        out HashSet<string> setLoopDisallowedMounts))
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                        out HashSet<string> setLoopHasModularMount))
                             {
                                 await CharacterObject.Cyberware.ForEachAsync(async objLoopCyberware =>
@@ -23956,7 +23956,7 @@ namespace Chummer
                             }
                         }
 
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdDisallowedMounts))
                         {
                             foreach (KeyValuePair<string, int> kvpLoop in dicDisallowedMounts)
@@ -23988,7 +23988,7 @@ namespace Chummer
                             frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
                         }
 
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdHasMounts))
                         {
                             foreach (KeyValuePair<string, int> kvpLoop in dicHasMounts)
@@ -24110,7 +24110,7 @@ namespace Chummer
                                 "addoncategory", token);
                         if (xmlAddonCategoryList.Count > 0)
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(
                                        Utils.StringBuilderPool, out StringBuilder sbdCategories))
                             {
                                 foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
@@ -24426,7 +24426,7 @@ namespace Chummer
                             objParentDataNode?.SelectAndCacheExpression("addoncategory", token);
                         if (xmlAddonCategoryList?.Count > 0)
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                        out StringBuilder sbdCategories))
                             {
                                 foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
@@ -24806,7 +24806,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (!string.IsNullOrEmpty(await objLifestyle.GetBaseLifestyleAsync(token).ConfigureAwait(false)))
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdQualities))
                         {
                             await sbdQualities.AppendJoinAsync(',' + Environment.NewLine,
@@ -25494,7 +25494,7 @@ namespace Chummer
                                 if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                     StringComparison.OrdinalIgnoreCase))
                                 {
-                                    using (new FetchSafelyFromPool<StringBuilder>(
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(
                                                Utils.StringBuilderPool, out StringBuilder sbdSlotsText))
                                     {
                                         foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc(
@@ -25815,7 +25815,7 @@ namespace Chummer
                                     cmsVehicleAmmoFullBurst.Text = strFullBurstText;
                                     cmsVehicleAmmoSuppressiveFire.Text = strSuppressiveFireText;
                                 }, token).ConfigureAwait(false);
-                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstAmmo))
                                 {
                                     int intSlot = 0;
@@ -25843,7 +25843,7 @@ namespace Chummer
                                             string strPlugins = string.Empty;
                                             if (objGear?.Children.Count > 0)
                                             {
-                                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                            out StringBuilder sbdPlugins))
                                                 {
                                                     foreach (Gear objChild in objGear.Children)
@@ -25995,7 +25995,7 @@ namespace Chummer
                                                  "String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                                 .ConfigureAwait(false);
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdMount))
                             {
                                 foreach (string strCurrentMount in objAccessory.Mount.SplitNoAlloc(
@@ -26205,7 +26205,7 @@ namespace Chummer
                                                                .ConfigureAwait(false);
                                 await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
-                                using (new FetchSafelyFromPool<StringBuilder>(
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(
                                            Utils.StringBuilderPool, out StringBuilder sbdAmmoBonus))
                                 {
                                     if (decAmmoBonus != 0)
@@ -28910,7 +28910,7 @@ namespace Chummer
                 {
                     GenericToken.ThrowIfCancellationRequested();
                     string strSelectedParentID;
-                    using (new FetchSafelyFromPool<List<ListItem>>(
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                Utils.ListItemListPool, out List<ListItem> lstModularMounts))
                     {
                         lstModularMounts.AddRange(await CharacterObject
@@ -29052,7 +29052,7 @@ namespace Chummer
                 {
                     GenericToken.ThrowIfCancellationRequested();
                     string strSelectedParentID;
-                    using (new FetchSafelyFromPool<List<ListItem>>(
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                Utils.ListItemListPool, out List<ListItem> lstModularMounts))
                     {
                         lstModularMounts.AddRange(await CharacterObject

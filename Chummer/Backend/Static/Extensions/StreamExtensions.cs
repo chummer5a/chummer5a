@@ -126,7 +126,7 @@ namespace Chummer
             bool blnInsertLineBreaks = eFormattingOptions == Base64FormattingOptions.InsertLineBreaks;
             int intStringLength = ToBase64_CalculateAndValidateOutputLength(intLength, blnInsertLineBreaks);
             token.ThrowIfCancellationRequested();
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 sbdReturn.Capacity = intStringLength;
                 _ = ConvertToBase64Array(sbdReturn, objStream, 0, (int) intLength, blnInsertLineBreaks);
@@ -265,7 +265,7 @@ namespace Chummer
             bool blnInsertLineBreaks = eFormattingOptions == Base64FormattingOptions.InsertLineBreaks;
             int intStringLength = ToBase64_CalculateAndValidateOutputLength(intLength, blnInsertLineBreaks);
             token.ThrowIfCancellationRequested();
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 sbdReturn.Capacity = intStringLength;
                 _ = await ConvertToBase64ArrayAsync(sbdReturn, objStream, 0, (int)intLength, blnInsertLineBreaks).ConfigureAwait(false);

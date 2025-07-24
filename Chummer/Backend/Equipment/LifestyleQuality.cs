@@ -543,7 +543,7 @@ namespace Chummer.Backend.Equipment
                                                              + ']');
                 if (objLifestyleQualityNode == null)
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstQualities))
                     {
                         foreach (XPathNavigator xmlNode in objXmlDocument.SelectAndCacheExpression(
@@ -2488,7 +2488,7 @@ namespace Chummer.Backend.Equipment
 
                     if (ParentLifestyle != null)
                     {
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string>
                                                                             setParentLifestyleNamesOfChangedProperties))
                         {
@@ -2646,7 +2646,7 @@ namespace Chummer.Backend.Equipment
 
                     if (ParentLifestyle != null)
                     {
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string>
                                        setParentLifestyleNamesOfChangedProperties))
                         {

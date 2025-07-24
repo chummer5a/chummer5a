@@ -94,7 +94,7 @@ namespace Chummer
         public static void MakeLog()
         {
             string strLog;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdLog))
             {
                 sbdLog.AppendLine("Time statistics");

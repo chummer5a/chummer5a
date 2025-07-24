@@ -412,7 +412,7 @@ namespace Chummer
 
                             // Open the stream using a StreamReader for easy access.
                             string responseFromServer;
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                             {
                                 token.ThrowIfCancellationRequested();
                                 using (StreamReader objReader = new StreamReader(dataStream, Encoding.UTF8, true))
@@ -1258,7 +1258,7 @@ namespace Chummer
                         Utils.BreakIfDebug();
                         if (!SilentMode)
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdOutput))
                             {
                                 sbdOutput.Append(

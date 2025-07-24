@@ -574,7 +574,7 @@ namespace Chummer.Backend.Equipment
                     objNode.TryGetStringFieldQuickly("lifestylename", ref _strBaseLifestyle);
                     if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
                     {
-                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstQualities))
                         {
                             foreach (XPathNavigator xmlLifestyle in xmlLifestyles.SelectAndCacheExpression(

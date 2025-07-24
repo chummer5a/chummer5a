@@ -280,7 +280,7 @@ namespace Chummer
                                                                          x => x.SelectedValue, token: token)
                                                                      .ConfigureAwait(false);
                         // Populate the Gameplay Settings list.
-                        using (new FetchSafelyFromPool<List<ListItem>>(
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                    Utils.ListItemListPool, out List<ListItem> lstCharacterSettings))
                         {
                             IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
@@ -433,7 +433,7 @@ namespace Chummer
                             x.Text = strNone;
                     }, token).ConfigureAwait(false);
 
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdCustomDataDirectories))
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in await objSelectedGameplayOption
