@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -1854,19 +1855,27 @@ namespace Chummer
                         if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
                             && !string.IsNullOrEmpty(strTemp))
                         {
-                            string[] strParts = strTemp.Split('|');
-                            objSource.Path = strParts[0];
-                            if (string.IsNullOrEmpty(objSource.Path))
+                            string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                            try
                             {
-                                objSource.Path = string.Empty;
-                                objSource.Offset = 0;
-                            }
-                            else
-                            {
-                                if (!File.Exists(objSource.Path))
+                                objSource.Path = strParts[0];
+                                if (string.IsNullOrEmpty(objSource.Path))
+                                {
                                     objSource.Path = string.Empty;
-                                if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                    objSource.Offset = intTmp;
+                                    objSource.Offset = 0;
+                                }
+                                else
+                                {
+                                    if (!File.Exists(objSource.Path))
+                                        objSource.Path = string.Empty;
+                                    string strSecondPart = strParts[1];
+                                    if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                        objSource.Offset = intTmp;
+                                }
+                            }
+                            finally
+                            {
+                                ArrayPool<string>.Shared.Return(strParts);
                             }
                         }
                     }
@@ -1904,19 +1913,27 @@ namespace Chummer
                             if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
                                 && !string.IsNullOrEmpty(strTemp))
                             {
-                                string[] strParts = strTemp.Split('|');
-                                objSource.Path = strParts[0];
-                                if (string.IsNullOrEmpty(objSource.Path))
+                                string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                                try
                                 {
-                                    objSource.Path = string.Empty;
-                                    objSource.Offset = 0;
-                                }
-                                else
-                                {
-                                    if (!File.Exists(objSource.Path))
+                                    objSource.Path = strParts[0];
+                                    if (string.IsNullOrEmpty(objSource.Path))
+                                    {
                                         objSource.Path = string.Empty;
-                                    if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                        objSource.Offset = intTmp;
+                                        objSource.Offset = 0;
+                                    }
+                                    else
+                                    {
+                                        if (!File.Exists(objSource.Path))
+                                            objSource.Path = string.Empty;
+                                        string strSecondPart = strParts[1];
+                                        if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                            objSource.Offset = intTmp;
+                                    }
+                                }
+                                finally
+                                {
+                                    ArrayPool<string>.Shared.Return(strParts);
                                 }
                             }
                         }
@@ -1975,19 +1992,27 @@ namespace Chummer
                         if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
                             && !string.IsNullOrEmpty(strTemp))
                         {
-                            string[] strParts = strTemp.Split('|');
-                            objSource.Path = strParts[0];
-                            if (string.IsNullOrEmpty(objSource.Path))
+                            string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                            try
                             {
-                                objSource.Path = string.Empty;
-                                objSource.Offset = 0;
-                            }
-                            else
-                            {
-                                if (!File.Exists(objSource.Path))
+                                objSource.Path = strParts[0];
+                                if (string.IsNullOrEmpty(objSource.Path))
+                                {
                                     objSource.Path = string.Empty;
-                                if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                    objSource.Offset = intTmp;
+                                    objSource.Offset = 0;
+                                }
+                                else
+                                {
+                                    if (!File.Exists(objSource.Path))
+                                        objSource.Path = string.Empty;
+                                    string strSecondPart = strParts[1];
+                                    if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                        objSource.Offset = intTmp;
+                                }
+                            }
+                            finally
+                            {
+                                ArrayPool<string>.Shared.Return(strParts);
                             }
                         }
                     }
@@ -2027,19 +2052,27 @@ namespace Chummer
                             if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
                                 && !string.IsNullOrEmpty(strTemp))
                             {
-                                string[] strParts = strTemp.Split('|');
-                                objSource.Path = strParts[0];
-                                if (string.IsNullOrEmpty(objSource.Path))
+                                string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                                try
                                 {
-                                    objSource.Path = string.Empty;
-                                    objSource.Offset = 0;
-                                }
-                                else
-                                {
-                                    if (!File.Exists(objSource.Path))
+                                    objSource.Path = strParts[0];
+                                    if (string.IsNullOrEmpty(objSource.Path))
+                                    {
                                         objSource.Path = string.Empty;
-                                    if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                        objSource.Offset = intTmp;
+                                        objSource.Offset = 0;
+                                    }
+                                    else
+                                    {
+                                        if (!File.Exists(objSource.Path))
+                                            objSource.Path = string.Empty;
+                                        string strSecondPart = strParts[1];
+                                        if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                            objSource.Offset = intTmp;
+                                    }
+                                }
+                                finally
+                                {
+                                    ArrayPool<string>.Shared.Return(strParts);
                                 }
                             }
                         }
@@ -2106,19 +2139,27 @@ namespace Chummer
                                     if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
                                         && !string.IsNullOrEmpty(strTemp))
                                     {
-                                        string[] strParts = strTemp.Split('|');
-                                        objSource.Path = strParts[0];
-                                        if (string.IsNullOrEmpty(objSource.Path))
+                                        string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                                        try
                                         {
-                                            objSource.Path = string.Empty;
-                                            objSource.Offset = 0;
-                                        }
-                                        else
-                                        {
-                                            if (!File.Exists(objSource.Path))
+                                            objSource.Path = strParts[0];
+                                            if (string.IsNullOrEmpty(objSource.Path))
+                                            {
                                                 objSource.Path = string.Empty;
-                                            if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                                objSource.Offset = intTmp;
+                                                objSource.Offset = 0;
+                                            }
+                                            else
+                                            {
+                                                if (!File.Exists(objSource.Path))
+                                                    objSource.Path = string.Empty;
+                                                string strSecondPart = strParts[1];
+                                                if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                                    objSource.Offset = intTmp;
+                                            }
+                                        }
+                                        finally
+                                        {
+                                            ArrayPool<string>.Shared.Return(strParts);
                                         }
                                     }
                                 }
@@ -2192,19 +2233,27 @@ namespace Chummer
                                     if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
                                         && !string.IsNullOrEmpty(strTemp))
                                     {
-                                        string[] strParts = strTemp.Split('|');
-                                        objSource.Path = strParts[0];
-                                        if (string.IsNullOrEmpty(objSource.Path))
+                                        string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                                        try
                                         {
-                                            objSource.Path = string.Empty;
-                                            objSource.Offset = 0;
-                                        }
-                                        else
-                                        {
-                                            if (!File.Exists(objSource.Path))
+                                            objSource.Path = strParts[0];
+                                            if (string.IsNullOrEmpty(objSource.Path))
+                                            {
                                                 objSource.Path = string.Empty;
-                                            if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                                objSource.Offset = intTmp;
+                                                objSource.Offset = 0;
+                                            }
+                                            else
+                                            {
+                                                if (!File.Exists(objSource.Path))
+                                                    objSource.Path = string.Empty;
+                                                string strSecondPart = strParts[1];
+                                                if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                                    objSource.Offset = intTmp;
+                                            }
+                                        }
+                                        finally
+                                        {
+                                            ArrayPool<string>.Shared.Return(strParts);
                                         }
                                     }
                                 }

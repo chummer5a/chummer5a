@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -555,11 +556,16 @@ namespace Chummer
                     strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                     if (strCost.Contains('-'))
                     {
-                        string[] strValues = strCost.Split('-');
-                        decimal.TryParse(strValues[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out decMin);
-                        decimal.TryParse(strValues[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out decMax);
+                        string[] strValues = strCost.SplitFixedSizePooledArray('-', 2);
+                        try
+                        {
+                            decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                            decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                        }
+                        finally
+                        {
+                            ArrayPool<string>.Shared.Return(strValues);
+                        }
                     }
                     else
                     {
@@ -615,17 +621,19 @@ namespace Chummer
                     decCost *= _objParentWeapon.AccessoryMultiplier;
                     if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
                     {
-                        string[] astrParentDoubledCostModificationSlots
-                            = _objParentWeapon.DoubledCostModificationSlots.Split(
-                                '/', StringSplitOptions.RemoveEmptyEntries);
-                        if (astrParentDoubledCostModificationSlots.Contains(
-                                await cboMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token)
-                                              .ConfigureAwait(false)) ||
-                            astrParentDoubledCostModificationSlots.Contains(
-                                await cboExtraMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token)
-                                                   .ConfigureAwait(false)))
+                        string strSelectedMount = await cboMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token).ConfigureAwait(false);
+                        string strSelectedExtraMount = await cboExtraMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token).ConfigureAwait(false);
+                        bool blnBreakAfterFound = string.IsNullOrEmpty(strSelectedMount) || string.IsNullOrEmpty(strSelectedExtraMount);
+                        foreach (string strDoubledCostSlot in _objParentWeapon.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                         {
-                            decCost *= 2;
+                            if (strDoubledCostSlot == strSelectedMount || strDoubledCostSlot == strSelectedExtraMount)
+                            {
+                                decCost *= 2;
+                                if (blnBreakAfterFound)
+                                    break;
+                                else
+                                    blnBreakAfterFound = true;
+                            }
                         }
                     }
 

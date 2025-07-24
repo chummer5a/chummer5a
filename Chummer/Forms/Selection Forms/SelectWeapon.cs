@@ -747,13 +747,17 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
                                     (!string.IsNullOrEmpty(strMount) || !string.IsNullOrEmpty(strExtraMount)))
                                 {
-                                    string[] astrParentDoubledCostModificationSlots
-                                        = ParentWeapon.DoubledCostModificationSlots.Split(
-                                            '/', StringSplitOptions.RemoveEmptyEntries);
-                                    if (astrParentDoubledCostModificationSlots.Contains(strMount)
-                                        || astrParentDoubledCostModificationSlots.Contains(strExtraMount))
+                                    bool blnBreakAfterFound = string.IsNullOrEmpty(strMount) || string.IsNullOrEmpty(strExtraMount);
+                                    foreach (string strDoubledCostSlot in ParentWeapon.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                                     {
-                                        decCostMultiplier *= 2;
+                                        if (strDoubledCostSlot == strMount || strDoubledCostSlot == strExtraMount)
+                                        {
+                                            decCostMultiplier *= 2;
+                                            if (blnBreakAfterFound)
+                                                break;
+                                            else
+                                                blnBreakAfterFound = true;
+                                        }
                                     }
                                 }
 

@@ -71,12 +71,7 @@ namespace Chummer
             bool blnDoComplexInitializer = false;
             if (strAvailExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
             {
-                if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                }
-
+                strAvailExpr = strAvailExpr.ProcessFixedValuesString(intRating);
                 Suffix = strAvailExpr[strAvailExpr.Length - 1];
                 if (Suffix == 'F' || Suffix == 'R')
                 {

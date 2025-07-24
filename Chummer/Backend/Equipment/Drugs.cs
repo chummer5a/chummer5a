@@ -2043,14 +2043,7 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(strCostExpression))
                     return 0;
 
-                if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strCostExpression = strValues[Math.Max(Math.Min(Level, strValues.Length) - 1, 0)].Trim('[', ']');
-                }
-
-                if (string.IsNullOrEmpty(strCostExpression))
-                    return 0;
+                strCostExpression = strCostExpression.ProcessFixedValuesString(Level);
 
                 if (strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
@@ -2079,15 +2072,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strCostExpression))
                 return 0;
 
-            if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                      .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strCostExpression = strValues[Math.Max(Math.Min(Level, strValues.Length) - 1, 0)].Trim('[', ']');
-            }
-
-            if (string.IsNullOrEmpty(strCostExpression))
-                return 0;
+            strCostExpression = strCostExpression.ProcessFixedValuesString(Level);
 
             if (strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {

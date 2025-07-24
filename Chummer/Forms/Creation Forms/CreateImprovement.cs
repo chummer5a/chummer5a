@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -884,18 +885,25 @@ namespace Chummer
                 case "SelectSkill":
                     if (await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strToTranslate, token).ConfigureAwait(false))
                     {
-                        string[] astrToTranslateParts = strToTranslate.Split('(', StringSplitOptions.RemoveEmptyEntries);
-                        astrToTranslateParts[0] = astrToTranslateParts[0].Trim();
-                        astrToTranslateParts[1] = astrToTranslateParts[1].Substring(0, astrToTranslateParts[1].Length - 1);
+                        string[] astrToTranslateParts = strToTranslate.SplitFixedSizePooledArray('(', 2, StringSplitOptions.RemoveEmptyEntries);
+                        try
+                        {
+                            astrToTranslateParts[0] = astrToTranslateParts[0].Trim();
+                            astrToTranslateParts[1] = astrToTranslateParts[1].Substring(0, astrToTranslateParts[1].Length - 1);
 
-                        objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/skills/skill", astrToTranslateParts[0]);
-                        string strFirstPartTranslated = objXmlNode != null
-                            ? objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
-                              ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
-                              ?? astrToTranslateParts[0]
-                            : astrToTranslateParts[0];
+                            objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/skills/skill", astrToTranslateParts[0]);
+                            string strFirstPartTranslated = objXmlNode != null
+                                ? objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                  ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
+                                  ?? astrToTranslateParts[0]
+                                : astrToTranslateParts[0];
 
-                        return strFirstPartTranslated + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1], token: token).ConfigureAwait(false) + ')';
+                            return strFirstPartTranslated + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1], token: token).ConfigureAwait(false) + ')';
+                        }
+                        finally
+                        {
+                            ArrayPool<string>.Shared.Return(astrToTranslateParts);
+                        }
                     }
 
                     objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/skills/skill", strToTranslate);

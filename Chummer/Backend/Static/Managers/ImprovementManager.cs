@@ -1348,13 +1348,7 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                             .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
-            }
-
+            strValue = strValue.ProcessFixedValuesString(intRating);
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 string strReturn = strValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1389,13 +1383,7 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                             .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
-            }
-
+            strValue = strValue.ProcessFixedValuesString(intRating);
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 string strReturn = strValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1429,13 +1417,7 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                             .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
-            }
-
+            strValue = strValue.ProcessFixedValuesString(intRating);
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 string strReturn = strValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1470,13 +1452,7 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                             .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
-            }
-
+            strValue = strValue.ProcessFixedValuesString(intRating);
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 string strReturn = strValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
