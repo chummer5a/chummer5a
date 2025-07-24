@@ -453,7 +453,7 @@ namespace Chummer
 
                         string strIncludedAccessories;
                         // Build a list of included Accessories and Modifications that come with the weapon.
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                         out StringBuilder sbdAccessories))
                         {
                             foreach (WeaponAccessory objAccessory in objSelectedWeapon.WeaponAccessories)
@@ -615,7 +615,7 @@ namespace Chummer
                                     (await objWeapon.GetTotalReachAsync(token).ConfigureAwait(false)).ToString(
                                         GlobalSettings.CultureInfo);
                                 string strConceal = await objWeapon.GetDisplayConcealabilityAsync(token).ConfigureAwait(false);
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdAccessories))
                                 {
                                     await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
@@ -687,7 +687,7 @@ namespace Chummer
                 }
                 else
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstWeapons))
                     {
                         int intOverLimit = 0;
@@ -1013,7 +1013,7 @@ namespace Chummer
                     string strCategory = await cboCategory
                         .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                     string strFilter = string.Empty;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
                         sbdFilter.Append('(')
                             .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
@@ -1024,7 +1024,7 @@ namespace Chummer
                             sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                         else
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                        out StringBuilder sbdCategoryFilter))
                             {
                                 if (_setLimitToCategories?.Count > 0)

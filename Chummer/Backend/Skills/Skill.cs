@@ -1947,7 +1947,7 @@ namespace Chummer.Backend.Skills
                             .ToList();
                         if (lstReflexRecorders.Count > 0)
                         {
-                            using (new FetchSafelyFromPool<HashSet<string>>(
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
                                        Utils.StringHashSetPool, out HashSet<string> setSkillNames))
                             {
                                 if (SkillGroupObject != null)
@@ -2005,7 +2005,7 @@ namespace Chummer.Backend.Skills
                         .ToListAsync(async x => await x.GetSourceIDAsync(token).ConfigureAwait(false) == ReflexRecorderGUID, token: token).ConfigureAwait(false);
                     if (lstReflexRecorders.Count > 0)
                     {
-                        using (new FetchSafelyFromPool<HashSet<string>>(
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
                                    Utils.StringHashSetPool, out HashSet<string> setSkillNames))
                         {
                             if (SkillGroupObject != null)
@@ -4399,7 +4399,7 @@ namespace Chummer.Backend.Skills
 
                 string strSpace = LanguageManager.GetString("String_Space");
                 List<Improvement> lstRelevantImprovements = RelevantImprovements(null, abbrev, true).ToList();
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
                     int intCyberwareRating = CyberwareRating;
@@ -4754,7 +4754,7 @@ namespace Chummer.Backend.Skills
                     .ConfigureAwait(false);
                 List<Improvement> lstRelevantImprovements =
                     await RelevantImprovementsAsync(null, abbrev, true, token: token).ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
                     int intCyberwareRating = await GetCyberwareRatingAsync(token).ConfigureAwait(false);

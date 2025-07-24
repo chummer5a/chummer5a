@@ -148,7 +148,7 @@ namespace Chummer
             {
                 token = objJoinedCancellationTokenSource.Token;
                 // Populate the Character Settings list.
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCharacterSettings))
                 {
                     IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
@@ -466,7 +466,7 @@ namespace Chummer
                                 Interlocked.CompareExchange(ref _objSelectedSetting,
                                                             await GetInitialSetting(token).ConfigureAwait(false), null);
                             string strSourceFilter;
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> setValidCodes))
                             {
                                 if (_objSelectedSetting != null)
@@ -621,7 +621,7 @@ namespace Chummer
                                                     }
                                                     else
                                                     {
-                                                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                                                    Utils.ListItemListPool,
                                                                    out List<ListItem> lstItemsNeedingNameChanges))
                                                         {

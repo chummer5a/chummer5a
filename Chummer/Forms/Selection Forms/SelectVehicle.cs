@@ -587,7 +587,7 @@ namespace Chummer
                         .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty, token)
                         .ConfigureAwait(false);
                     string strFilter = string.Empty;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
                         sbdFilter.Append('(')
                             .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
@@ -598,7 +598,7 @@ namespace Chummer
                             sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                         else
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                        out StringBuilder sbdCategoryFilter))
                             {
                                 foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
@@ -744,7 +744,7 @@ namespace Chummer
                                 string strMods;
                                 string strWeapons;
                                 string strMounts;
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdGear))
                                 {
                                     foreach (Gear objGear in objVehicle.GearChildren)
@@ -759,7 +759,7 @@ namespace Chummer
                                     strGear = sbdGear.ToString();
                                 }
 
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdMods))
                                 {
                                     await objVehicle.Mods.ForEachAsync(async objMod =>
@@ -774,7 +774,7 @@ namespace Chummer
                                     strMods = sbdMods.ToString();
                                 }
 
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdWeapons))
                                 {
                                     if (sbdWeapons.Length > 0)
@@ -788,7 +788,7 @@ namespace Chummer
                                     strWeapons = sbdWeapons.ToString();
                                 }
 
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdWeaponMounts))
                                 {
                                     await objVehicle.WeaponMounts.ForEachAsync(async objWeaponMount =>
@@ -849,7 +849,7 @@ namespace Chummer
                 {
                     decimal decNuyen = blnFreeItem || !blnShowOnlyAffordItems ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstVehicles))
                     {
                         foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)

@@ -359,17 +359,18 @@ namespace Chummer.UI.Shared
                 {
                     int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                     TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
-                    string strKey = await objLimitModifier.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                    await treLimit.DoThreadSafeAsync(() =>
+                    if (objParentNode != null)
                     {
-                        if (!objParentNode.Nodes.ContainsKey(strKey))
+                        string strKey = await objLimitModifier.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        if (await treLimit.DoThreadSafeFuncAsync(() => !objParentNode.Nodes.ContainsKey(strKey), token).ConfigureAwait(false))
                         {
-                            objParentNode.Nodes.Add(objLimitModifier.CreateTreeNode(
-                                                        objLimitModifier.CanDelete
-                                                            ? cmsLimitModifier
-                                                            : cmsLimitModifierNotesOnly));
+                            TreeNode objNode = await objLimitModifier.CreateTreeNode(
+                                                            objLimitModifier.CanDelete
+                                                                ? cmsLimitModifier
+                                                                : cmsLimitModifierNotesOnly, token).ConfigureAwait(false);
+                            await treLimit.DoThreadSafeAsync(() => objParentNode.Nodes.Add(objNode), token: token).ConfigureAwait(false);
                         }
-                    }, token: token).ConfigureAwait(false);
+                    }
                 }, token).ConfigureAwait(false);
 
                 // Add Limit Modifiers from Improvements
@@ -400,22 +401,22 @@ namespace Chummer.UI.Shared
                     if (intTargetLimit != -1)
                     {
                         TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
-                        string strName = objImprovement.UniqueName
-                                         + await LanguageManager.GetStringAsync("String_Colon", token: token)
-                                                                .ConfigureAwait(false)
-                                         + await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                                .ConfigureAwait(false);
-                        if (objImprovement.Value > 0) strName += '+';
-                        strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
-                        if (!string.IsNullOrEmpty(objImprovement.Condition))
-                            strName += ','
-                                       + await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                              .ConfigureAwait(false) + objImprovement.Condition;
-                        string strNotes = (await objImprovement.GetNotesAsync(token).ConfigureAwait(false)).WordWrap();
-                        Color objColor = await objImprovement.GetPreferredColorAsync(token).ConfigureAwait(false);
-                        await treLimit.DoThreadSafeAsync(() =>
+                        if (objParentNode != null)
                         {
-                            if (!objParentNode.Nodes.ContainsKey(strName))
+                            string strName = objImprovement.UniqueName
+                                             + await LanguageManager.GetStringAsync("String_Colon", token: token)
+                                                                    .ConfigureAwait(false)
+                                             + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                                    .ConfigureAwait(false);
+                            if (objImprovement.Value > 0)
+                                strName += '+';
+                            strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
+                            if (!string.IsNullOrEmpty(objImprovement.Condition))
+                                strName += ','
+                                           + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                                  .ConfigureAwait(false) + objImprovement.Condition;
+                            TreeNodeCollection objParentNodeChildren = objParentNode.Nodes;
+                            if (!await treLimit.DoThreadSafeFuncAsync(() => objParentNodeChildren.ContainsKey(strName), token).ConfigureAwait(false))
                             {
                                 TreeNode objNode = new TreeNode
                                 {
@@ -423,31 +424,12 @@ namespace Chummer.UI.Shared
                                     Text = strName,
                                     Tag = objImprovement.SourceName,
                                     ContextMenuStrip = cmsLimitModifierNotesOnly,
-                                    ForeColor = objColor,
-                                    ToolTipText = strNotes
+                                    ForeColor = await objImprovement.GetPreferredColorAsync(token).ConfigureAwait(false),
+                                    ToolTipText = (await objImprovement.GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
                                 };
-                                if (string.IsNullOrEmpty(objImprovement.ImprovedName))
-                                {
-                                    switch (objImprovement.ImproveType)
-                                    {
-                                        case Improvement.ImprovementType.SocialLimit:
-                                            objImprovement.ImprovedName = "Social";
-                                            break;
-
-                                        case Improvement.ImprovementType.MentalLimit:
-                                            objImprovement.ImprovedName = "Mental";
-                                            break;
-
-                                        default:
-                                            objImprovement.ImprovedName = "Physical";
-                                            break;
-                                    }
-                                }
-
-                                objParentNode.Nodes.Add(objNode);
+                                await treLimit.DoThreadSafeAsync(() => objParentNodeChildren.Add(objNode), token: token).ConfigureAwait(false);
                             }
-                        }, token: token)
-                                      .ConfigureAwait(false);
+                        }
                     }
                 }, token).ConfigureAwait(false);
 
@@ -471,30 +453,35 @@ namespace Chummer.UI.Shared
                             {
                                 int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                                 TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
-                                string strKey = await objLimitModifier.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                                await treLimit.DoThreadSafeAsync(x =>
+                                if (objParentNode != null)
                                 {
+                                    string strKey = await objLimitModifier.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                                    if (!lstParentNodeChildren.ContainsKey(strKey))
+                                    if (await treLimit.DoThreadSafeFuncAsync(() => !lstParentNodeChildren.ContainsKey(strKey), token).ConfigureAwait(false))
                                     {
-                                        TreeNode objNode = objLimitModifier.CreateTreeNode(
-                                            objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
-                                        int intNodesCount = lstParentNodeChildren.Count;
-                                        int intTargetIndex = 0;
-                                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                                        TreeNode objNode = await objLimitModifier.CreateTreeNode(
+                                                            objLimitModifier.CanDelete
+                                                                ? cmsLimitModifier
+                                                                : cmsLimitModifierNotesOnly, token).ConfigureAwait(false);
+                                        await treLimit.DoThreadSafeAsync(x =>
                                         {
-                                            if (CompareTreeNodes.CompareText(
-                                                    lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                            int intNodesCount = lstParentNodeChildren.Count;
+                                            int intTargetIndex = 0;
+                                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                             {
-                                                break;
+                                                if (CompareTreeNodes.CompareText(
+                                                        lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                                {
+                                                    break;
+                                                }
                                             }
-                                        }
 
-                                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                                        objParentNode.Expand();
-                                        x.SelectedNode = objNode;
+                                            lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                                            objParentNode.Expand();
+                                            x.SelectedNode = objNode;
+                                        }, token: token).ConfigureAwait(false);
                                     }
-                                }, token: token).ConfigureAwait(false);
+                                }
                             }
 
                             break;
@@ -538,30 +525,35 @@ namespace Chummer.UI.Shared
                             {
                                 int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                                 TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
-                                string strKey = await objLimitModifier.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                                await treLimit.DoThreadSafeAsync(x =>
+                                if (objParentNode != null)
                                 {
+                                    string strKey = await objLimitModifier.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                                    if (!lstParentNodeChildren.ContainsKey(strKey))
+                                    if (await treLimit.DoThreadSafeFuncAsync(() => !lstParentNodeChildren.ContainsKey(strKey), token).ConfigureAwait(false))
                                     {
-                                        TreeNode objNode = objLimitModifier.CreateTreeNode(
-                                            objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
-                                        int intNodesCount = lstParentNodeChildren.Count;
-                                        int intTargetIndex = 0;
-                                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                                        TreeNode objNode = await objLimitModifier.CreateTreeNode(
+                                                            objLimitModifier.CanDelete
+                                                                ? cmsLimitModifier
+                                                                : cmsLimitModifierNotesOnly, token).ConfigureAwait(false);
+                                        await treLimit.DoThreadSafeAsync(x =>
                                         {
-                                            if (CompareTreeNodes.CompareText(
-                                                    lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                            int intNodesCount = lstParentNodeChildren.Count;
+                                            int intTargetIndex = 0;
+                                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                             {
-                                                break;
+                                                if (CompareTreeNodes.CompareText(
+                                                        lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                                {
+                                                    break;
+                                                }
                                             }
-                                        }
 
-                                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                                        objParentNode.Expand();
-                                        x.SelectedNode = objNode;
+                                            lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                                            objParentNode.Expand();
+                                            x.SelectedNode = objNode;
+                                        }, token: token).ConfigureAwait(false);
                                     }
-                                }, token: token).ConfigureAwait(false);
+                                }
                             }
 
                             await treLimit.DoThreadSafeAsync(() =>

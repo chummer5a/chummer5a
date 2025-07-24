@@ -121,7 +121,7 @@ namespace Chummer
                 strFilter += " and category = " + strCategory.CleanXPath();
             else
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
                 {
                     foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
                     {
@@ -138,7 +138,7 @@ namespace Chummer
 
             // Retrieve the list of Kits for the selected Category.
             XPathNodeIterator xmlPacksKits = _xmlBaseChummerNode.Select("packs/pack[" + strFilter + ']');
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstKit))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstKit))
             {
                 foreach (XPathNavigator objXmlPack in xmlPacksKits)
                 {

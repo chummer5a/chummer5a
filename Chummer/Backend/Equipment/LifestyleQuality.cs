@@ -543,7 +543,7 @@ namespace Chummer.Backend.Equipment
                                                              + ']');
                 if (objLifestyleQualityNode == null)
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstQualities))
                     {
                         foreach (XPathNavigator xmlNode in objXmlDocument.SelectAndCacheExpression(
@@ -2215,23 +2215,31 @@ namespace Chummer.Backend.Equipment
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode()
+        public async Task<TreeNode> CreateTreeNode(CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if (OriginSource == QualitySource.BuiltIn && !string.IsNullOrEmpty(Source) &&
-                    !_objCharacter.Settings.BookEnabled(Source))
+                token.ThrowIfCancellationRequested();
+                if (await GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.BuiltIn
+                    && !string.IsNullOrEmpty(Source)
+                    && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
                     return null;
 
                 TreeNode objNode = new TreeNode
                 {
                     Name = InternalId,
-                    Text = CurrentFormattedDisplayName,
+                    Text = await GetCurrentFormattedDisplayNameAsync(token).ConfigureAwait(false),
                     Tag = this,
-                    ForeColor = PreferredColor,
-                    ToolTipText = Notes.WordWrap()
+                    ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                    ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
                 };
                 return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2480,7 +2488,7 @@ namespace Chummer.Backend.Equipment
 
                     if (ParentLifestyle != null)
                     {
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string>
                                                                             setParentLifestyleNamesOfChangedProperties))
                         {
@@ -2638,7 +2646,7 @@ namespace Chummer.Backend.Equipment
 
                     if (ParentLifestyle != null)
                     {
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string>
                                        setParentLifestyleNamesOfChangedProperties))
                         {

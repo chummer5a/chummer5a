@@ -6060,7 +6060,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -6070,7 +6070,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -6080,7 +6080,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -6090,7 +6090,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -6100,7 +6100,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -6110,7 +6110,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -6120,7 +6120,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -6130,7 +6130,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -10274,7 +10274,7 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="combatspellfocus">
         <spellcategory>
           <name>Combat</name>
           <val>Rating</val>
@@ -10334,7 +10334,7 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="detectionspellfocus">
         <spellcategory>
           <name>Detection</name>
           <val>Rating</val>
@@ -10394,7 +10394,7 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="healthspellfocus">
         <spellcategory>
           <name>Health</name>
           <val>Rating</val>
@@ -10454,7 +10454,7 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="illusionspellfocus">
         <spellcategory>
           <name>Illusion</name>
           <val>Rating</val>
@@ -10514,7 +10514,7 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="manipulationspellfocus">
         <spellcategory>
           <name>Manipulation</name>
           <val>Rating</val>
@@ -10815,7 +10815,7 @@
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="combatspellfocus">
         <spellcategory>
           <name>Combat</name>
           <val>Rating</val>
@@ -10895,7 +10895,7 @@
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="detectionspellfocus">
         <spellcategory>
           <name>Detection</name>
           <val>Rating</val>
@@ -10975,7 +10975,7 @@
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="healthspellfocus">
         <spellcategory>
           <name>Health</name>
           <val>Rating</val>
@@ -11055,7 +11055,7 @@
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="illusionspellfocus">
         <spellcategory>
           <name>Illusion</name>
           <val>Rating</val>
@@ -11135,7 +11135,7 @@
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="manipulationspellfocus">
         <spellcategory>
           <name>Manipulation</name>
           <val>Rating</val>
@@ -11462,7 +11462,7 @@
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="combatspellfocus">
         <spellcategory>
           <name>Combat</name>
           <val>Rating</val>
@@ -11542,7 +11542,7 @@
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="detectionspellfocus">
         <spellcategory>
           <name>Detection</name>
           <val>Rating</val>
@@ -11622,7 +11622,7 @@
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="healthspellfocus">
         <spellcategory>
           <name>Health</name>
           <val>Rating</val>
@@ -11702,7 +11702,7 @@
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="illusionspellfocus">
         <spellcategory>
           <name>Illusion</name>
           <val>Rating</val>
@@ -11782,7 +11782,7 @@
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="manipulationspellfocus">
         <spellcategory>
           <name>Manipulation</name>
           <val>Rating</val>

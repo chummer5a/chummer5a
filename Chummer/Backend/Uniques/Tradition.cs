@@ -1445,7 +1445,7 @@ namespace Chummer.Backend.Uniques
                         return 0;
                     string strDrainAttributes = DrainExpression;
                     string strDrain;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdDrain))
                     {
                         sbdDrain.Append(strDrainAttributes);
@@ -1486,7 +1486,7 @@ namespace Chummer.Backend.Uniques
                     return 0;
                 string strDrainAttributes = await GetDrainExpressionAsync(token).ConfigureAwait(false);
                 string strDrain;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdDrain))
                 {
                     sbdDrain.Append(strDrainAttributes);
@@ -1527,7 +1527,7 @@ namespace Chummer.Backend.Uniques
                     if (Type == TraditionType.None)
                         return string.Empty;
                     string strSpace = LanguageManager.GetString("String_Space");
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
                         sbdToolTip.Append(DrainExpression);
@@ -1567,7 +1567,7 @@ namespace Chummer.Backend.Uniques
                     return string.Empty;
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                     .ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdToolTip))
                 {
                     sbdToolTip.Append(DrainExpression);

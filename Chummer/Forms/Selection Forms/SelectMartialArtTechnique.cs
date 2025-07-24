@@ -185,7 +185,7 @@ namespace Chummer
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             XPathNodeIterator objTechniquesList = _xmlBaseChummerNode.Select("techniques/technique[" + strFilter + ']');
 
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTechniqueItems))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTechniqueItems))
             {
                 foreach (XPathNavigator xmlTechnique in objTechniquesList)
                 {

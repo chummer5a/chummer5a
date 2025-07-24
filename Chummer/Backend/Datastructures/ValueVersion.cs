@@ -357,7 +357,7 @@ namespace Chummer
                 case 1:
                     return _Major.ToString();
                 case 2:
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdReturn))
                     {
                         AppendPositiveNumber(_Major, sbdReturn);
@@ -370,7 +370,7 @@ namespace Chummer
                         throw new ArgumentOutOfRangeException(nameof(fieldCount));
                     if (fieldCount == 3)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdReturn))
                         {
                             AppendPositiveNumber(_Major, sbdReturn);
@@ -385,7 +385,7 @@ namespace Chummer
                         throw new ArgumentOutOfRangeException(nameof(fieldCount));
                     if (fieldCount == 4)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdReturn))
                         {
                             AppendPositiveNumber(_Major, sbdReturn);

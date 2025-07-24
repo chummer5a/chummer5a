@@ -46,7 +46,7 @@ namespace Chummer
         private async void SelectLimitModifier_Load(object sender, EventArgs e)
         {
             // Build the list of Limits.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLimitItems))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLimitItems))
             {
                 foreach (string strLimit in _lstLimits)
                 {

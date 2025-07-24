@@ -137,7 +137,7 @@ namespace Chummer
                         x => x.SelectedIndex >= 0
                             ? ((ListItem) x.SelectedItem).Value as Lifestyle
                             : null, token).ConfigureAwait(false);
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstLifestyleItems))
                     {
                         await _objCharacter.Lifestyles.ForEachAsync(async objLifestyle =>

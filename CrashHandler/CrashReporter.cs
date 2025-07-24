@@ -91,7 +91,7 @@ namespace CrashHandler
             Application.UseWaitCursor = true;
             string strArguments = string.Empty;
             // Get the parameters/arguments passed to program if any
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdArguments))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdArguments))
             {
                 try
                 {

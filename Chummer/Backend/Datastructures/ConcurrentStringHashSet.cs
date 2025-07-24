@@ -26,7 +26,7 @@ namespace Chummer
     {
         public override void IntersectWith(IEnumerable<string> other)
         {
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setOther))
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setOther))
             {
                 setOther.AddRange(other);
                 bool blnRemovalHappened;

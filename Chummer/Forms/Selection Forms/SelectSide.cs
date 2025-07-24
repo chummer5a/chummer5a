@@ -46,7 +46,7 @@ namespace Chummer
         private async void SelectSide_Load(object sender, EventArgs e)
         {
             // Create a list for the sides.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSides))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSides))
             {
                 lstSides.Add(new ListItem("Left", await LanguageManager.GetStringAsync("String_Improvement_SideLeft").ConfigureAwait(false)));
                 lstSides.Add(new ListItem("Right", await LanguageManager.GetStringAsync("String_Improvement_SideRight").ConfigureAwait(false)));

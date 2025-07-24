@@ -126,7 +126,7 @@ namespace Chummer
             bool blnInsertLineBreaks = eFormattingOptions == Base64FormattingOptions.InsertLineBreaks;
             int intStringLength = ToBase64_CalculateAndValidateOutputLength(intLength, blnInsertLineBreaks);
             token.ThrowIfCancellationRequested();
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 sbdReturn.Capacity = intStringLength;
                 _ = ConvertToBase64Array(sbdReturn, objStream, 0, (int) intLength, blnInsertLineBreaks);
@@ -172,8 +172,7 @@ namespace Chummer
                 fixed (char* ptr = s_Base64Table)
                 {
                     inData.Position = offset;
-                    byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(3);
-                    try
+                    using (new FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, 3, out byte[] achrBuffer))
                     {
                         while (inData.Position < num2)
                         {
@@ -231,10 +230,6 @@ namespace Chummer
                             }
                         }
                     }
-                    finally
-                    {
-                        ArrayPool<byte>.Shared.Return(achrBuffer);
-                    }
                 }
 
                 return num3;
@@ -270,7 +265,7 @@ namespace Chummer
             bool blnInsertLineBreaks = eFormattingOptions == Base64FormattingOptions.InsertLineBreaks;
             int intStringLength = ToBase64_CalculateAndValidateOutputLength(intLength, blnInsertLineBreaks);
             token.ThrowIfCancellationRequested();
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 sbdReturn.Capacity = intStringLength;
                 _ = await ConvertToBase64ArrayAsync(sbdReturn, objStream, 0, (int)intLength, blnInsertLineBreaks).ConfigureAwait(false);
@@ -315,8 +310,7 @@ namespace Chummer
                 int num3 = 0;
                 int num4 = 0;
                 inData.Position = offset;
-                byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(3);
-                try
+                using (new FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, 3, out byte[] achrBuffer))
                 {
                     while (inData.Position < num2)
                     {
@@ -373,10 +367,6 @@ namespace Chummer
                             break;
                         }
                     }
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(achrBuffer);
                 }
 
                 return num3;

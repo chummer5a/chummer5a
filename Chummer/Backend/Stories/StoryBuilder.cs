@@ -103,7 +103,7 @@ namespace Chummer
                     int intLocal = i;
                     atskStoryTasks[i] = Task.Run(async () =>
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdTemp))
                         {
                             return (await Write(sbdTemp, modules[intLocal]["story"]?.InnerText ?? string.Empty, 5,

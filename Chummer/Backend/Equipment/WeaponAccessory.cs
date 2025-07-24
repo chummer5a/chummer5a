@@ -924,7 +924,7 @@ namespace Chummer.Backend.Equipment
                 if (strAccuracy.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     string strToEvaluate;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
                     {
                         sbdAccuracy.Append(strAccuracy.TrimStartOnce('+'));
                         Func<string> funcPhysicalLimitString;
@@ -996,7 +996,7 @@ namespace Chummer.Backend.Equipment
             if (strAccuracy.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 string strToEvaluate;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
                 {
                     sbdAccuracy.Append(strAccuracy.TrimStartOnce('+'));
                     Func<Task<string>> funcPhysicalLimitString;
@@ -1088,7 +1088,7 @@ namespace Chummer.Backend.Equipment
                 if (strReach.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     string strToEvaluate;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
                     {
                         if (!string.IsNullOrEmpty(strReach))
                             sbdReach.Append('(').Append(strReach.TrimStartOnce('+')).Append(')');
@@ -1144,7 +1144,7 @@ namespace Chummer.Backend.Equipment
             if (strReach.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 string strToEvaluate;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
                 {
                     // If the cost is determined by the Rating, evaluate the expression.
                     if (!string.IsNullOrEmpty(strReach))
@@ -1357,7 +1357,7 @@ namespace Chummer.Backend.Equipment
                 if (strConceal.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     string strToEvaluate;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
                     {
                         // If the cost is determined by the Rating, evaluate the expression.
                         sbdConceal.Append(strConceal.TrimStartOnce('+'));
@@ -1413,7 +1413,7 @@ namespace Chummer.Backend.Equipment
             if (strConceal.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 string strToEvaluate;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
                 {
                     // If the cost is determined by the Rating, evaluate the expression.
                     sbdConceal.Append(strConceal.TrimStartOnce('+'));
@@ -1612,7 +1612,7 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression.TrimStartOnce('+'));
                     Weapon objParent = Parent;
@@ -1665,7 +1665,7 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression.TrimStartOnce('+'));
                     Weapon objParent = Parent;
@@ -1967,7 +1967,7 @@ namespace Chummer.Backend.Equipment
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
                         Weapon objParent = Parent;
@@ -2056,7 +2056,7 @@ namespace Chummer.Backend.Equipment
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
                         Weapon objParent = Parent;
@@ -2236,7 +2236,7 @@ namespace Chummer.Backend.Equipment
 
                 if (strCostExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                     {
                         sbdCost.Append(strCostExpr.TrimStart('+'));
                         Weapon objParent = Parent;
@@ -2313,7 +2313,7 @@ namespace Chummer.Backend.Equipment
 
             if (strCostExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                 {
                     sbdCost.Append(strCostExpr.TrimStart('+'));
                     Weapon objParent = Parent;
@@ -2420,7 +2420,7 @@ namespace Chummer.Backend.Equipment
                     strWeightExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
                 {
                     sbdWeight.Append(strWeightExpression.TrimStart('+'));
                     Weapon objParent = Parent;
@@ -2481,7 +2481,7 @@ namespace Chummer.Backend.Equipment
                 }
                 if (strDicePoolExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDicePool))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDicePool))
                     {
                         sbdDicePool.Append(strDicePoolExpression.TrimStart('+'));
                         Weapon objParent = Parent;
@@ -2527,7 +2527,7 @@ namespace Chummer.Backend.Equipment
                 return 0;
             if (strDicePoolExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDicePool))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDicePool))
                 {
                     sbdDicePool.Append(strDicePoolExpression.TrimStart('+'));
                     Weapon objParent = Parent;
@@ -2592,7 +2592,7 @@ namespace Chummer.Backend.Equipment
                 string strAmmoBonus = AmmoBonus;
                 if (strAmmoBonus.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decBonus))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAmmoBonus))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAmmoBonus))
                     {
                         sbdAmmoBonus.Append(strAmmoBonus.TrimStart('+'));
                         Weapon objParent = Parent;
@@ -2632,7 +2632,7 @@ namespace Chummer.Backend.Equipment
             string strAmmoBonus = AmmoBonus;
             if (strAmmoBonus.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decBonus))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAmmoBonus))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAmmoBonus))
                 {
                     sbdAmmoBonus.Append(strAmmoBonus.TrimStart('+'));
                     Weapon objParent = Parent;
