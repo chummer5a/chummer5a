@@ -462,7 +462,10 @@ namespace Chummer
                 {
                     XPathNavigator objXmlOptionalPowerCost = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = " + strName.CleanXPath() + "]/@cost");
                     if (objXmlOptionalPowerCost != null)
-                        _decPowerPoints = Convert.ToDecimal(objXmlOptionalPowerCost.Value, GlobalSettings.InvariantCultureInfo);
+                    {
+                        decimal.TryParse(objXmlOptionalPowerCost.Value,
+                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decPowerPoints);
+                    }
                 }
             }
 

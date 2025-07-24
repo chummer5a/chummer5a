@@ -410,8 +410,9 @@ namespace Chummer.Backend.Equipment
                                 intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText,
                                     GlobalSettings.InvariantCultureInfo);
                             if (objXmlAccessoryGearNameAttributes?["qty"] != null)
-                                decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText,
-                                    GlobalSettings.InvariantCultureInfo);
+                            {
+                                decimal.TryParse(objXmlAccessoryGearNameAttributes["qty"].InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decGearQty);
+                            }
                             string strFilter = "/chummer/gears/gear";
                             if (objXmlAccessoryGearName != null || objXmlAccessoryGearCategory != null)
                             {

@@ -1817,7 +1817,8 @@ namespace Chummer.Backend.Equipment
                                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                                if (strCapacity == "*")
                                    strCapacity = "0";
-                               return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                               decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decInner);
+                               return decInner;
                            });
                 }
 
@@ -1837,7 +1838,8 @@ namespace Chummer.Backend.Equipment
                                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                                if (strCapacity == "*")
                                    strCapacity = "0";
-                               return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                               decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decInner);
+                               return decInner;
                            });
                 }
 
@@ -1868,8 +1870,10 @@ namespace Chummer.Backend.Equipment
                                           strCapacity.LastIndexOf(']') - intPos - 2);
                                   else if (strCapacity.StartsWith('['))
                                       strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                                  if (strCapacity == "*") strCapacity = "0";
-                                  return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                                  if (strCapacity == "*")
+                                      strCapacity = "0";
+                                  decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decInner);
+                                  return decInner;
                               }, token).ConfigureAwait(false);
             }
 
@@ -1887,8 +1891,10 @@ namespace Chummer.Backend.Equipment
                                    strCapacity.LastIndexOf(']') - intPos - 2);
                            else if (strCapacity.StartsWith('['))
                                strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                           if (strCapacity == "*") strCapacity = "0";
-                           return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                           if (strCapacity == "*")
+                               strCapacity = "0";
+                           decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decInner);
+                           return decInner;
                        }, token).ConfigureAwait(false);
             }
 

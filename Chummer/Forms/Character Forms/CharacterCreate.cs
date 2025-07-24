@@ -7381,9 +7381,8 @@ namespace Chummer
                         {
                             GenericToken.ThrowIfCancellationRequested();
                             decimal decArmorCost = await objArmor.GetOwnCostAsync(GenericToken).ConfigureAwait(false);
-                            decimal decArmorCapacity = Convert.ToDecimal(
-                                await objArmor.CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo).ConfigureAwait(false),
-                                GlobalSettings.InvariantCultureInfo);
+                            decimal.TryParse(await objArmor.CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo).ConfigureAwait(false),
+                                System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decArmorCapacity);
                             using (ThreadSafeForm<SelectArmorMod> frmPickArmorMod
                                    = await ThreadSafeForm<SelectArmorMod>.GetAsync(
                                        () => new SelectArmorMod(CharacterObject, objArmor)
@@ -23812,7 +23811,9 @@ namespace Chummer
             decimal decQty = 1;
             string strQty = objXmlGear["qty"]?.InnerText;
             if (!string.IsNullOrEmpty(strQty))
-                decQty = Convert.ToDecimal(strQty, GlobalSettings.InvariantCultureInfo);
+            {
+                decimal.TryParse(strQty, System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decQty);
+            }
 
             List<Weapon> lstWeapons = new List<Weapon>(1);
             string strForceValue = objXmlGear.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ?? string.Empty;

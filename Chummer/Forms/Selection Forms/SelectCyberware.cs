@@ -247,10 +247,10 @@ namespace Chummer
                     // Update the Essence and Cost multipliers based on the Grade that has been selected.
                     if (xmlGrade != null)
                     {
-                        _decCostMultiplier = Convert.ToDecimal(
-                            xmlGrade.SelectSingleNodeAndCacheExpression("cost", token: _objGenericToken)?.Value, GlobalSettings.InvariantCultureInfo);
-                        _decESSMultiplier = Convert.ToDecimal(
-                            xmlGrade.SelectSingleNodeAndCacheExpression("ess", token: _objGenericToken)?.Value, GlobalSettings.InvariantCultureInfo);
+                        decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("cost", token: _objGenericToken)?.Value,
+                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
+                        decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("ess", token: _objGenericToken)?.Value,
+                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decESSMultiplier);
                         _intAvailModifier
                             = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token: _objGenericToken)?.ValueAsInt ?? 0;
                     }
@@ -350,13 +350,10 @@ namespace Chummer
                     // Update the Essence and Cost multipliers based on the Grade that has been selected.
                     if (xmlGrade != null)
                     {
-                        _decCostMultiplier
-                            = Convert.ToDecimal(
-                                xmlGrade.SelectSingleNodeAndCacheExpression("cost", token)?.Value, GlobalSettings.InvariantCultureInfo);
-                        _decESSMultiplier
-                            = Convert.ToDecimal(
-                                xmlGrade.SelectSingleNodeAndCacheExpression("ess", token)
-                                ?.Value, GlobalSettings.InvariantCultureInfo);
+                        decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("cost", token: _objGenericToken)?.Value,
+                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
+                        decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("ess", token: _objGenericToken)?.Value,
+                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decESSMultiplier);
                         _intAvailModifier
                             = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token)
                             ?.ValueAsInt ?? 0;

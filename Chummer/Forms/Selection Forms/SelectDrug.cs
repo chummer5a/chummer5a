@@ -156,9 +156,8 @@ namespace Chummer
                 // Update the Cost multipliers based on the Grade that has been selected.
                 if (xmlGrade != null)
                 {
-                    _decCostMultiplier
-                        = Convert.ToDecimal(
-                            xmlGrade.SelectSingleNodeAndCacheExpression("cost", token)?.Value, GlobalSettings.InvariantCultureInfo);
+                    decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("cost", token)?.Value,
+                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
                     _intAvailModifier
                         = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token)?.ValueAsInt ?? 0;
 

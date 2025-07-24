@@ -20,6 +20,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -249,8 +250,8 @@ namespace Chummer
                                     await LanguageManager.GetStringAsync(strRatingLabel, token: token).ConfigureAwait(false))
                     : await LanguageManager.GetStringAsync("Label_Rating", token: token).ConfigureAwait(false);
                 await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel, token: token).ConfigureAwait(false);
-                decimal decMaximum = Convert.ToDecimal(objXmlMod.SelectSingleNodeAndCacheExpression("maxrating", token)?.Value,
-                                                       GlobalSettings.InvariantCultureInfo);
+                decimal.TryParse(objXmlMod.SelectSingleNodeAndCacheExpression("maxrating", token)?.Value,
+                    NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decMaximum);
                 await nudRating.DoThreadSafeAsync(x => x.Maximum = decMaximum, token: token).ConfigureAwait(false);
                 if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                 {

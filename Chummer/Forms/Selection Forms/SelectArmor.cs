@@ -694,11 +694,8 @@ namespace Chummer
                                     string strArmorName = await objArmor.GetCurrentDisplayNameAsync(token)
                                         .ConfigureAwait(false);
                                     int intArmor = await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false);
-                                    decimal decCapacity
-                                        = Convert.ToDecimal(
-                                            await objArmor
-                                                .CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token)
-                                                .ConfigureAwait(false), GlobalSettings.InvariantCultureInfo);
+                                    decimal.TryParse(await objArmor.CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false),
+                                        System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCapacity);
                                     AvailabilityValue objAvail = await objArmor.TotalAvailTupleAsync(token: token)
                                         .ConfigureAwait(false);
                                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,

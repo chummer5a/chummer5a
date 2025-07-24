@@ -876,9 +876,9 @@ namespace Chummer.Backend.Equipment
             bool blnCreateChildren = xmlChildNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
             bool blnAddChildImprovements = xmlChildNameAttributes?["addimprovements"]?.InnerText != bool.FalseString &&
                                            blnAddImprovements;
-            if (xmlChildNameAttributes?["qty"] != null)
-                decChildQty = Convert.ToDecimal(xmlChildNameAttributes["qty"].InnerText,
-                    GlobalSettings.InvariantCultureInfo);
+            string strChildQty = xmlChildNameAttributes?["qty"]?.InnerText;
+            if (string.IsNullOrEmpty(strChildQty) || !decimal.TryParse(strChildQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decChildQty))
+                decChildQty = 1.0m;
 
             Gear objChild = new Gear(_objCharacter);
             List<Weapon> lstChildWeapons = new List<Weapon>(1);
@@ -1088,9 +1088,9 @@ namespace Chummer.Backend.Equipment
             bool blnCreateChildren = xmlChildNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
             bool blnAddChildImprovements = xmlChildNameAttributes?["addimprovements"]?.InnerText != bool.FalseString &&
                                            blnAddImprovements;
-            if (xmlChildNameAttributes?["qty"] != null)
-                decChildQty = Convert.ToDecimal(xmlChildNameAttributes["qty"].InnerText,
-                    GlobalSettings.InvariantCultureInfo);
+            string strChildQty = xmlChildNameAttributes?["qty"]?.InnerText;
+            if (string.IsNullOrEmpty(strChildQty) || !decimal.TryParse(strChildQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decChildQty))
+                decChildQty = 1.0m;
 
             Gear objChild = new Gear(_objCharacter);
             List<Weapon> lstChildWeapons = new List<Weapon>(1);
@@ -1170,8 +1170,9 @@ namespace Chummer.Backend.Equipment
                 bool blnConsumeCapacity = lstGearAttributes?["consumecapacity"]?.InnerText == bool.TrueString;
 
                 string strForceValue = lstGearAttributes?["select"]?.InnerText ?? string.Empty;
-                decimal decQty = Convert.ToDecimal(lstGearAttributes?["qty"]?.InnerText ?? "1",
-                                                   GlobalSettings.InvariantCultureInfo);
+                string strQty = lstGearAttributes?["qty"]?.InnerText;
+                if (string.IsNullOrEmpty(strQty) || !decimal.TryParse(strQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decQty))
+                    decQty = 1.0m;
                 string strMaxRating = lstGearAttributes?["maxrating"]?.InnerText ?? string.Empty;
                 Create(xmlGearDataNode, intRating, lstWeapons, strForceValue, blnAddImprovements, true, blnSkipSelectForms);
 
@@ -1273,8 +1274,9 @@ namespace Chummer.Backend.Equipment
                 bool blnConsumeCapacity = lstGearAttributes?["consumecapacity"]?.InnerText == bool.TrueString;
 
                 string strForceValue = lstGearAttributes?["select"]?.InnerText ?? string.Empty;
-                decimal decQty = Convert.ToDecimal(lstGearAttributes?["qty"]?.InnerText ?? "1",
-                                                   GlobalSettings.InvariantCultureInfo);
+                string strQty = lstGearAttributes?["qty"]?.InnerText;
+                if (string.IsNullOrEmpty(strQty) || !decimal.TryParse(strQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decQty))
+                    decQty = 1.0m;
                 string strMaxRating = lstGearAttributes?["maxrating"]?.InnerText ?? string.Empty;
                 await CreateAsync(xmlGearDataNode, intRating, lstWeapons, strForceValue, blnAddImprovements, true, blnSkipSelectForms, token).ConfigureAwait(false);
 

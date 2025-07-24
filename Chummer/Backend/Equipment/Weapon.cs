@@ -708,7 +708,9 @@ namespace Chummer.Backend.Equipment
                 _strRange = objRangeNode.InnerText;
                 string strMultiply = objRangeNode.Attributes["multiply"]?.InnerText;
                 if (!string.IsNullOrEmpty(strMultiply))
-                    _decRangeMultiplier = Convert.ToDecimal(strMultiply, GlobalSettings.InvariantCultureInfo);
+                {
+                    decimal.TryParse(strMultiply, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decRangeMultiplier);
+                }
             }
 
             objXmlWeapon.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange);
@@ -3184,7 +3186,7 @@ namespace Chummer.Backend.Equipment
                 return strReturn;
             }
 
-            decimal decTotalCost = Convert.ToDecimal(strReturn, GlobalSettings.InvariantCultureInfo);
+            decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTotalCost);
 
             decTotalCost *= 1.0m + decMarkup;
 
