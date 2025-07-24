@@ -4564,7 +4564,7 @@ namespace Chummer.Backend.Equipment
                 string strReturn = string.Empty;
                 WeaponBonus.TryGetStringFieldQuickly("pool", ref strReturn);
                 // If this does not start with "-", add a "+" to the string.
-                if (!strReturn.StartsWith('-', '+'))
+                if (!string.IsNullOrEmpty(strReturn) && !strReturn.StartsWith('-', '+'))
                     strReturn = '+' + strReturn;
 
                 return strReturn;
@@ -4583,7 +4583,7 @@ namespace Chummer.Backend.Equipment
                 string strReturn = string.Empty;
                 WeaponBonus.TryGetStringFieldQuickly("smartlinkpool", ref strReturn);
                 // If this does not start with "-", add a "+" to the string.
-                if (!strReturn.StartsWith('-', '+'))
+                if (!string.IsNullOrEmpty(strReturn) && !strReturn.StartsWith('-', '+'))
                     strReturn = '+' + strReturn;
 
                 return strReturn;
@@ -4760,7 +4760,7 @@ namespace Chummer.Backend.Equipment
                 string strReturn = string.Empty;
                 FlechetteWeaponBonus.TryGetStringFieldQuickly("pool", ref strReturn);
                 // If this does not start with "-", add a "+" to the string.
-                if (!strReturn.StartsWith('-', '+'))
+                if (!string.IsNullOrEmpty(strReturn) && !strReturn.StartsWith('-', '+'))
                     strReturn = '+' + strReturn;
 
                 return strReturn;
@@ -4779,7 +4779,7 @@ namespace Chummer.Backend.Equipment
                 string strReturn = string.Empty;
                 FlechetteWeaponBonus.TryGetStringFieldQuickly("smartlinkpool", ref strReturn);
                 // If this does not start with "-", add a "+" to the string.
-                if (!strReturn.StartsWith('-', '+'))
+                if (!string.IsNullOrEmpty(strReturn) && !strReturn.StartsWith('-', '+'))
                     strReturn = '+' + strReturn;
 
                 return strReturn;

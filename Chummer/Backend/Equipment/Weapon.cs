@@ -8298,7 +8298,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public Dictionary<string, string> GetRangeStrings(CultureInfo objCulture, bool blnIncludeAmmo = true)
         {
-            decimal decRangeModifier = GetRangeBonus(blnIncludeAmmo) / 100.0m;
+            decimal decRangeModifier = 1.0m + GetRangeBonus(blnIncludeAmmo) / 100.0m;
             decimal decMin = GetRange("min", false, blnIncludeAmmo) * decRangeModifier;
             decimal decShort = GetRange("short", false, blnIncludeAmmo) * decRangeModifier;
             decimal decMedium = GetRange("medium", false, blnIncludeAmmo) * decRangeModifier;
@@ -8380,7 +8380,7 @@ namespace Chummer.Backend.Equipment
         public async Task<Dictionary<string, string>> GetRangeStringsAsync(CultureInfo objCulture,
             bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            decimal decRangeModifier = await GetRangeBonusAsync(blnIncludeAmmo, token).ConfigureAwait(false) / 100.0m;
+            decimal decRangeModifier = 1.0m + await GetRangeBonusAsync(blnIncludeAmmo, token).ConfigureAwait(false) / 100.0m;
             decimal decMin = await GetRangeAsync("min", false, blnIncludeAmmo, token).ConfigureAwait(false) * decRangeModifier;
             decimal decShort = await GetRangeAsync("short", false, blnIncludeAmmo, token).ConfigureAwait(false) * decRangeModifier;
             decimal decMedium = await GetRangeAsync("medium", false, blnIncludeAmmo, token).ConfigureAwait(false) * decRangeModifier;
