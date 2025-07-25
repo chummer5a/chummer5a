@@ -14851,14 +14851,13 @@ namespace Chummer
                 foreach (Cyberware objLoopCyberware in Cyberware.GetAllDescendants(x => x.Children, token))
                 {
                     // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                    if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                    if (objModularCyberware.PlugsIntoTargetCyberware(objLoopCyberware)
                         && (objLoopCyberware.Location == objModularCyberware.Location
                             || string.IsNullOrEmpty(objModularCyberware.Location))
                         && objLoopCyberware.Grade.Name == objGrade.Name
                         && objLoopCyberware != objModularCyberware
                         // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                        && objLoopCyberware.Children.All(
-                            x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token))
+                        && !objLoopCyberware.Children.Any(x => x.PlugsIntoTargetCyberware(objLoopCyberware), token))
                     {
                         string strName = objLoopCyberware.Parent?.CurrentDisplayName
                                          ?? objLoopCyberware.CurrentDisplayName;
@@ -14874,13 +14873,12 @@ namespace Chummer
                                      x => x.Children, token))
                         {
                             // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                            if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                            if (objModularCyberware.PlugsIntoTargetCyberware(objLoopCyberware)
                                 && objLoopCyberware.Location == objModularCyberware.Location
                                 && objLoopCyberware.Grade.Name == objGrade.Name
                                 && objLoopCyberware != objModularCyberware
                                 // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                && objLoopCyberware.Children.All(
-                                    x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token))
+                                && !objLoopCyberware.Children.Any(x => x.PlugsIntoTargetCyberware(objLoopCyberware), token))
                             {
                                 string strName = objLoopVehicle.CurrentDisplayName
                                                  + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
@@ -14898,13 +14896,12 @@ namespace Chummer
                                          x => x.Children, token))
                             {
                                 // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                                if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                                if (objModularCyberware.PlugsIntoTargetCyberware(objLoopCyberware)
                                     && objLoopCyberware.Location == objModularCyberware.Location
                                     && objLoopCyberware.Grade.Name == objGrade.Name
                                     && objLoopCyberware != objModularCyberware
                                     // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                    && objLoopCyberware.Children.All(
-                                        x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token))
+                                    && !objLoopCyberware.Children.Any(x => x.PlugsIntoTargetCyberware(objLoopCyberware), token))
                                 {
                                     string strName = objLoopVehicle.CurrentDisplayName
                                                      + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
@@ -14940,65 +14937,14 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 Grade objGrade = await objModularCyberware.GetGradeAsync(token).ConfigureAwait(false);
                 await (await (await GetCyberwareAsync(token).ConfigureAwait(false))
-                    .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false)).ForEachAsync(
-                    async objLoopCyberware =>
-                    {
-                        // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                        if (await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) ==
-                            await objModularCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)
-                            && (objLoopCyberware.Location == objModularCyberware.Location
-                                || string.IsNullOrEmpty(objModularCyberware.Location))
-                            && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name == objGrade.Name
-                            && objLoopCyberware != objModularCyberware
-                            // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                            && await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AllAsync(
-                                    async x => await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false) !=
-                                               await objLoopCyberware.GetHasModularMountAsync(token)
-                                                   .ConfigureAwait(false), token)
-                                .ConfigureAwait(false))
-                        {
-                            Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
-                            string strName = objLoopParent != null
-                                ? await objLoopParent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                : await objLoopCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                            lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                        }
-                    }, token).ConfigureAwait(false);
+                    .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, null), token).ConfigureAwait(false);
 
                 await (await GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopVehicle =>
                 {
                     await objLoopVehicle.Mods.ForEachAsync(async objLoopVehicleMod =>
                     {
                         await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token)
-                            .ConfigureAwait(false)).ForEachAsync(
-                            async objLoopCyberware =>
-                            {
-                                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                                if (await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) ==
-                                    await objModularCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)
-                                    && objLoopCyberware.Location == objModularCyberware.Location
-                                    && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
-                                    objGrade.Name
-                                    && objLoopCyberware != objModularCyberware
-                                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                    && await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AllAsync(
-                                            async x => await x.GetPlugsIntoModularMountAsync(token)
-                                                           .ConfigureAwait(false)
-                                                       != await objLoopCyberware.GetHasModularMountAsync(token)
-                                                           .ConfigureAwait(false), token)
-                                        .ConfigureAwait(false))
-                                {
-                                    Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
-                                    string strName
-                                        = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                          + strSpace + (objLoopParent != null
-                                              ? await objLoopParent.GetCurrentDisplayNameAsync(token)
-                                                  .ConfigureAwait(false)
-                                              : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
-                                                  .ConfigureAwait(false));
-                                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                                }
-                            }, token).ConfigureAwait(false);
+                            .ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, objLoopVehicleMod), token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
                     await objLoopVehicle.WeaponMounts.ForEachAsync(objLoopWeaponMount =>
@@ -15006,38 +14952,7 @@ namespace Chummer
                         return objLoopWeaponMount.Mods.ForEachAsync(async objLoopVehicleMod =>
                         {
                             await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token)
-                                .ConfigureAwait(false)).ForEachAsync(
-                                async objLoopCyberware =>
-                                {
-                                    // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                                    if (await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) ==
-                                        await objModularCyberware.GetPlugsIntoModularMountAsync(token)
-                                            .ConfigureAwait(false)
-                                        && objLoopCyberware.Location == objModularCyberware.Location
-                                        && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
-                                        objGrade.Name
-                                        && objLoopCyberware != objModularCyberware
-                                        // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                        && await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AllAsync(
-                                                async x =>
-                                                    await x.GetPlugsIntoModularMountAsync(token)
-                                                        .ConfigureAwait(false) !=
-                                                    await objLoopCyberware.GetHasModularMountAsync(token)
-                                                        .ConfigureAwait(false), token)
-                                            .ConfigureAwait(false))
-                                    {
-                                        Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
-                                        string strName
-                                            = await objLoopVehicle.GetCurrentDisplayNameAsync(token)
-                                                  .ConfigureAwait(false)
-                                              + strSpace + (objLoopParent != null
-                                                  ? await objLoopParent.GetCurrentDisplayNameAsync(token)
-                                                      .ConfigureAwait(false)
-                                                  : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
-                                                      .ConfigureAwait(false));
-                                        lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                                    }
-                                }, token).ConfigureAwait(false);
+                                .ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, objLoopVehicleMod), token).ConfigureAwait(false);
                         }, token);
                     }, token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
@@ -15048,6 +14963,34 @@ namespace Chummer
             }
 
             return lstReturn;
+
+            async Task ProcessCyberware(Cyberware objLoopCyberware, Grade objGrade, VehicleMod objVehicleMod)
+            {
+                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                if (await objModularCyberware.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token).ConfigureAwait(false)
+                    && objLoopCyberware.Location == objModularCyberware.Location
+                    && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
+                    objGrade.Name
+                    && objLoopCyberware != objModularCyberware
+                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                    && !await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(
+                            x => x.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token), token)
+                        .ConfigureAwait(false))
+                {
+                    string strName = objVehicleMod != null
+                        ? await objVehicleMod.Parent.GetCurrentDisplayNameAsync(token)
+                              .ConfigureAwait(false) + strSpace
+                        : string.Empty;
+                    Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
+                    if (objLoopParent != null)
+                        strName += strSpace + await objLoopParent.GetCurrentDisplayNameAsync(token)
+                                  .ConfigureAwait(false);
+                    else if (objVehicleMod != null)
+                        strName += strSpace + await objVehicleMod.GetCurrentDisplayNameAsync(token)
+                                  .ConfigureAwait(false);
+                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                }
+            }
         }
 
         public async Task<bool> SwitchBuildMethods(CharacterBuildMethod eOldBuildMethod, CharacterBuildMethod eNewBuildMethod, string strOldSettingsKey, CancellationToken token = default)
@@ -47965,7 +47908,7 @@ namespace Chummer
                                                 "/chummer/armors/armor", strArmorName);
                                         if (xmlArmorData == null)
                                         {
-                                            string strDummy = strArmorName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault().Trim();
+                                            string strDummy = strArmorName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
                                             if (!string.IsNullOrEmpty(strDummy))
                                             {
                                                 xmlArmorData =
@@ -47975,7 +47918,7 @@ namespace Chummer
 
                                             if (xmlArmorData == null)
                                             {
-                                                strDummy = strArmorName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault().Trim();
+                                                strDummy = strArmorName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
                                                 if (!string.IsNullOrEmpty(strDummy))
                                                 {
                                                     xmlArmorData =
@@ -48806,7 +48749,7 @@ namespace Chummer
                                             "category = " + strSpellCategory.CleanXPath());
                                         if (xmlSpellData == null)
                                         {
-                                            string strDummy = strSpellName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault().Trim();
+                                            string strDummy = strSpellName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
                                             if (!string.IsNullOrEmpty(strDummy))
                                             {
                                                 xmlSpellData = xmlSpellDocument.TryGetNodeByNameOrId(
@@ -48816,7 +48759,7 @@ namespace Chummer
 
                                             if (xmlSpellData == null)
                                             {
-                                                strDummy = strSpellName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault().Trim();
+                                                strDummy = strSpellName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
                                                 if (!string.IsNullOrEmpty(strDummy))
                                                 {
                                                     xmlSpellData = xmlSpellDocument.TryGetNodeByNameOrId(
@@ -49059,7 +49002,7 @@ namespace Chummer
                                         if (xmlComplexFormData == null)
                                         {
                                             string strDummy = strComplexFormName
-                                                .SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault().Trim();
+                                                .SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
                                             if (!string.IsNullOrEmpty(strDummy))
                                             {
                                                 xmlComplexFormData =
@@ -49070,7 +49013,7 @@ namespace Chummer
                                             if (xmlComplexFormData == null)
                                             {
                                                 strDummy = strComplexFormName
-                                                    .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault().Trim();
+                                                    .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
                                                 if (!string.IsNullOrEmpty(strDummy))
                                                 {
                                                     xmlComplexFormData =

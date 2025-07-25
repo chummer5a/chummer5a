@@ -126,7 +126,7 @@ namespace Chummer.Backend.Equipment
         private string _strRatingLabel = "String_Rating";
 
         private XmlNode _nodWirelessBonus;
-        private XmlNode _nodWirelessWeaponBonus;
+        private XmlElement _nodWirelessWeaponBonus;
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
         private FiringMode _eFiringMode = FiringMode.DogBrain;
@@ -5585,12 +5585,13 @@ namespace Chummer.Backend.Equipment
                 string strSlots = ModificationSlots;
                 if (string.IsNullOrEmpty(strSlots))
                     return string.Empty;
+                int intOldValue;
                 Dictionary<string, int> dicMounts = new Dictionary<string, int>();
                 foreach (string strMount in strSlots.SplitNoAlloc(
                                  '/', StringSplitOptions.RemoveEmptyEntries))
                 {
-                    if (dicMounts.ContainsKey(strMount))
-                        dicMounts[strMount] += 1;
+                    if (dicMounts.TryGetValue(strMount, out intOldValue))
+                        dicMounts[strMount] = intOldValue + 1;
                     else
                         dicMounts.Add(strMount, 1);
                 }
@@ -5604,21 +5605,21 @@ namespace Chummer.Backend.Equipment
                         foreach (string strMount in strLoop.SplitNoAlloc(
                                  '/', StringSplitOptions.RemoveEmptyEntries))
                         {
-                            if (dicMounts.ContainsKey(strMount))
-                                dicMounts[strMount] += 1;
+                            if (dicMounts.TryGetValue(strMount, out intOldValue))
+                                dicMounts[strMount] = intOldValue + 1;
                             else
                                 dicMounts.Add(strMount, 1);
                         }
                     }
                     strLoop = objAccessory.Mount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
                     {
-                        --dicMounts[strLoop];
+                        dicMounts[strLoop] = intOldValue - 1;
                     }
                     strLoop = objAccessory.ExtraMount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
                     {
-                        --dicMounts[strLoop];
+                        dicMounts[strLoop] = intOldValue - 1;
                     }
                 }
                 foreach (Weapon objWeapon in UnderbarrelWeapons)
@@ -5626,14 +5627,14 @@ namespace Chummer.Backend.Equipment
                     if (!objWeapon.Equipped)
                         continue;
                     string strLoop = objWeapon.Mount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
                     {
-                        --dicMounts[strLoop];
+                        dicMounts[strLoop] = intOldValue - 1;
                     }
                     strLoop = objWeapon.ExtraMount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
                     {
-                        --dicMounts[strLoop];
+                        dicMounts[strLoop] = intOldValue - 1;
                     }
                 }
 

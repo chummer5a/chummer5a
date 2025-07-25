@@ -4236,6 +4236,31 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public bool PlugsIntoTargetCyberware(Cyberware objTarget)
+        {
+            using (LockObject.EnterReadLock())
+            {
+                string strPlugsIntoMount = PlugsIntoModularMount;
+                return !string.IsNullOrEmpty(strPlugsIntoMount) && strPlugsIntoMount == objTarget.HasModularMount;
+            }
+        }
+
+        public async Task<bool> PlugsIntoTargetCyberwareAsync(Cyberware objTarget, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strPlugsIntoMount = await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false);
+                return !string.IsNullOrEmpty(strPlugsIntoMount) && strPlugsIntoMount == await objTarget.GetHasModularMountAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Returns whether the 'ware is currently equipped (with improvements applied) or not.
         /// </summary>
@@ -8527,8 +8552,6 @@ namespace Chummer.Backend.Equipment
                     return intRating / -100m;
                 }
 
-                decimal decReturn;
-
                 string strESS = ESS;
                 if (strESS.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
@@ -8545,7 +8568,7 @@ namespace Chummer.Backend.Equipment
                     strESS += strSuffix;
                 }
 
-                if (strESS.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
+                if (strESS.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
                     // If the cost is determined by the Rating or there's a math operation in play, evaluate the expression.
                     (bool blnIsSuccess, object objProcess) = blnSync
@@ -9722,9 +9745,8 @@ namespace Chummer.Backend.Equipment
                                       - Children.Sum(objChildCyberware =>
                                       {
                                           // Children that are built into the parent
-                                          if (objChildCyberware.PlugsIntoModularMount == HasModularMount &&
-                                              !string.IsNullOrWhiteSpace(HasModularMount) ||
-                                              objChildCyberware.ParentID == InternalId)
+                                          if (objChildCyberware.PlugsIntoTargetCyberware(this)
+                                              || objChildCyberware.ParentID == InternalId)
                                               return 0;
                                           string strCapacity = objChildCyberware.CalculatedCapacity;
                                           int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
@@ -9762,9 +9784,8 @@ namespace Chummer.Backend.Equipment
                                       // Run through its Children and deduct the Capacity costs.
                                       - Children.Sum(objChildCyberware =>
                                       {
-                                          if (objChildCyberware.PlugsIntoModularMount == HasModularMount &&
-                                              !string.IsNullOrWhiteSpace(HasModularMount) ||
-                                              objChildCyberware.ParentID == InternalId)
+                                          if (objChildCyberware.PlugsIntoTargetCyberware(this)
+                                              || objChildCyberware.ParentID == InternalId)
                                               return 0;
                                           string strCapacity = objChildCyberware.CalculatedCapacity;
                                           int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
@@ -9814,7 +9835,6 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 if (Capacity.Contains("/["))
                 {
-                    string strHasModularMount = await GetHasModularMountAsync(token).ConfigureAwait(false);
                     // Get the Cyberware base Capacity.
                     string strBaseCapacity = await GetCalculatedCapacityAsync(token).ConfigureAwait(false);
                     strBaseCapacity = strBaseCapacity.Substring(0, strBaseCapacity.IndexOf('/'));
@@ -9823,9 +9843,8 @@ namespace Chummer.Backend.Equipment
                                   - await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChildCyberware =>
                                   {
                                       // Children that are built into the parent
-                                      if (await objChildCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false) == strHasModularMount &&
-                                          !string.IsNullOrWhiteSpace(strHasModularMount) ||
-                                          objChildCyberware.ParentID == InternalId)
+                                      if (await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, token).ConfigureAwait(false)
+                                          || objChildCyberware.ParentID == InternalId)
                                           return 0;
                                       string strCapacity = await objChildCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
                                       int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
@@ -9858,15 +9877,13 @@ namespace Chummer.Backend.Equipment
                 }
                 else if (!Capacity.Contains('['))
                 {
-                    string strHasModularMount = await GetHasModularMountAsync(token).ConfigureAwait(false);
                     // Get the Cyberware base Capacity.
                     decCapacity = Convert.ToDecimal(await GetCalculatedCapacityAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
                                   // Run through its Children and deduct the Capacity costs.
                                   - await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChildCyberware =>
                                   {
-                                      if (await objChildCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false) == strHasModularMount &&
-                                          !string.IsNullOrWhiteSpace(strHasModularMount) ||
-                                          objChildCyberware.ParentID == InternalId)
+                                      if (await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, token).ConfigureAwait(false)
+                                          || objChildCyberware.ParentID == InternalId)
                                           return 0;
                                       string strCapacity = await objChildCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
                                       int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
