@@ -278,10 +278,7 @@ namespace Chummer
             _lstAllowedMounts.Clear();
             if (objWeapon != null)
             {
-                foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                {
-                    _lstAllowedMounts.Add(strMount);
-                }
+                _lstAllowedMounts.AddRange(objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
 
                 //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
                 if (await _objCharacter.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))

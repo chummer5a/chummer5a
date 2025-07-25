@@ -6383,8 +6383,10 @@ namespace Chummer
             IReadOnlyList<string> lstCustomPaths = await GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
             if (strFileName == "packs.xml")
             {
-                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
-                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths)
+                {
+                    Utils.GetPacksFolderPath
+                };
                 return await XmlManager.LoadAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
             }
             return await XmlManager.LoadAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);

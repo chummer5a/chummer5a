@@ -5613,12 +5613,12 @@ namespace Chummer.Backend.Equipment
                     strLoop = objAccessory.Mount;
                     if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
                     {
-                        dicMounts[strLoop] -= 1;
+                        --dicMounts[strLoop];
                     }
                     strLoop = objAccessory.ExtraMount;
                     if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
                     {
-                        dicMounts[strLoop] -= 1;
+                        --dicMounts[strLoop];
                     }
                 }
                 foreach (Weapon objWeapon in UnderbarrelWeapons)
@@ -5628,12 +5628,12 @@ namespace Chummer.Backend.Equipment
                     string strLoop = objWeapon.Mount;
                     if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
                     {
-                        dicMounts[strLoop] -= 1;
+                        --dicMounts[strLoop];
                     }
                     strLoop = objWeapon.ExtraMount;
                     if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
                     {
-                        dicMounts[strLoop] -= 1;
+                        --dicMounts[strLoop];
                     }
                 }
 

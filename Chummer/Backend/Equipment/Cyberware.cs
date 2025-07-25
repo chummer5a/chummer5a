@@ -8760,8 +8760,13 @@ namespace Chummer.Backend.Equipment
                 if (_objCharacter != null && !(blnSync
                         ? _objCharacter.Settings.DontRoundEssenceInternally
                         : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDontRoundEssenceInternallyAsync(token).ConfigureAwait(false)))
-                    decReturn = decimal.Round(decReturn, (blnSync ? _objCharacter.Settings.EssenceDecimals : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceDecimalsAsync(token).ConfigureAwait(false)),
+                {
+                    decReturn = decimal.Round(decReturn,
+                        blnSync
+                            ? _objCharacter.Settings.EssenceDecimals
+                            : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceDecimalsAsync(token).ConfigureAwait(false),
                         MidpointRounding.AwayFromZero);
+                }
 
                 if (blnSync)
                 {

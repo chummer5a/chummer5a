@@ -1427,7 +1427,7 @@ namespace Chummer
                         if (await frmSelectExotic.ShowDialogSafeAsync(this, token).ConfigureAwait(false) !=
                             DialogResult.OK)
                             return;
-                        strSkill2 += " (" + frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
+                        strSkill2 += " (" + await frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
                     }
                 }
 
@@ -1441,7 +1441,7 @@ namespace Chummer
                         if (await frmSelectExotic.ShowDialogSafeAsync(this, token).ConfigureAwait(false) !=
                             DialogResult.OK)
                             return;
-                        strSkill3 += " (" + frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
+                        strSkill3 += " (" + await frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
                     }
                 }
 

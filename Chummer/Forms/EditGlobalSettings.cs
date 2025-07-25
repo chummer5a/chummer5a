@@ -25,20 +25,17 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
-using Chummer.Forms;
 using Chummer.Plugins;
 using iText.Kernel.Pdf;
 #if DEBUG
 using Microsoft.IO;
 #endif
 using NLog;
-using RtfPipe.Tokens;
 using Application = System.Windows.Forms.Application;
 
 namespace Chummer

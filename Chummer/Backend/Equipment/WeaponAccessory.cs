@@ -102,7 +102,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
         private bool _blnWirelessOn = true;
         private XmlElement _nodWirelessBonus;
-        private XmlNode _nodWirelessWeaponBonus;
+        private XmlElement _nodWirelessWeaponBonus;
         private bool _blnStolen;
         private string _strParentID;
 

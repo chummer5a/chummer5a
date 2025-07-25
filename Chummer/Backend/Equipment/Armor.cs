@@ -1658,9 +1658,8 @@ namespace Chummer.Backend.Equipment
 
             if (blnUseRating)
             {
-                decimal decTotalCost;
                 // If the cost is determined by the Rating, evaluate the expression.
-                if (strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decTotalCost))
+                if (strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decTotalCost))
                 {
                     Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
                     string strCost = await strReturn

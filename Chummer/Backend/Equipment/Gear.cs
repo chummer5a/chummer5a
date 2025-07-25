@@ -868,7 +868,6 @@ namespace Chummer.Backend.Equipment
                 return;
             int intChildRating = 0;
             xmlChildNode.TryGetInt32FieldQuickly("rating", ref intChildRating);
-            decimal decChildQty = 1;
             string strChildForceSource = xmlChildNode["source"]?.InnerText ?? string.Empty;
             string strChildForcePage = xmlChildNode["page"]?.InnerText ?? string.Empty;
             XmlAttributeCollection xmlChildNameAttributes = xmlChildName?.Attributes;
@@ -877,6 +876,7 @@ namespace Chummer.Backend.Equipment
             bool blnAddChildImprovements = xmlChildNameAttributes?["addimprovements"]?.InnerText != bool.FalseString &&
                                            blnAddImprovements;
             string strChildQty = xmlChildNameAttributes?["qty"]?.InnerText;
+            decimal decChildQty;
             if (string.IsNullOrEmpty(strChildQty) || !decimal.TryParse(strChildQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decChildQty))
                 decChildQty = 1.0m;
 
@@ -1080,7 +1080,6 @@ namespace Chummer.Backend.Equipment
                 return;
             int intChildRating = 0;
             xmlChildNode.TryGetInt32FieldQuickly("rating", ref intChildRating);
-            decimal decChildQty = 1;
             string strChildForceSource = xmlChildNode["source"]?.InnerText ?? string.Empty;
             string strChildForcePage = xmlChildNode["page"]?.InnerText ?? string.Empty;
             XmlAttributeCollection xmlChildNameAttributes = xmlChildName?.Attributes;
@@ -1089,6 +1088,7 @@ namespace Chummer.Backend.Equipment
             bool blnAddChildImprovements = xmlChildNameAttributes?["addimprovements"]?.InnerText != bool.FalseString &&
                                            blnAddImprovements;
             string strChildQty = xmlChildNameAttributes?["qty"]?.InnerText;
+            decimal decChildQty;
             if (string.IsNullOrEmpty(strChildQty) || !decimal.TryParse(strChildQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decChildQty))
                 decChildQty = 1.0m;
 
@@ -2002,7 +2002,7 @@ namespace Chummer.Backend.Equipment
                     await objChildrenElement.DisposeAsync().ConfigureAwait(false);
                 }
 
-                await PrintWeaponBonusEntries(objWriter, objCulture, strLanguageToPrint, token: token).ConfigureAwait(false);
+                await PrintWeaponBonusEntries(objWriter, strLanguageToPrint, token: token).ConfigureAwait(false);
 
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -2014,7 +2014,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async Task PrintWeaponBonusEntries(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, bool blnForcePrintAllBlocks = false, CancellationToken token = default)
+        public async Task PrintWeaponBonusEntries(XmlWriter objWriter, string strLanguageToPrint, bool blnForcePrintAllBlocks = false, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;

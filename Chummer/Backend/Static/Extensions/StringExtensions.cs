@@ -2764,13 +2764,13 @@ namespace Chummer
             return strInput;
         }
 
-        private static char[] s_achrWhiteSpaceAndQuotes = new[] { ' ', '\u00a0', '\u0085', '\t', '\n', '\v', '\f', '\r', '\"' };
+        private static readonly char[] s_achrWhiteSpaceAndQuotes = new[] { ' ', '\u00a0', '\u0085', '\t', '\n', '\v', '\f', '\r', '\"' };
         
-        private static char[] s_achrParentheses = new[] { '(', ')' };
+        private static readonly char[] s_achrParentheses = new[] { '(', ')' };
 
-        private static char[] s_achrOpenParenthesesComma = new[] { '(', ',' };
+        private static readonly char[] s_achrOpenParenthesesComma = new[] { '(', ',' };
 
-        private static char[] s_achrClosedParenthesesComma = new[] { ')', ',' };
+        private static readonly char[] s_achrClosedParenthesesComma = new[] { ')', ',' };
 
         private static readonly Lazy<Regex> s_RgxFixedValuesExtract = new Lazy<Regex>(() => new Regex(@"FixedValues\(([^)]*)\)",
             RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));

@@ -141,7 +141,7 @@ namespace SevenZip.Compression.LZ
             _keepSizeAfter = keepSizeAfter;
             int blockSize = keepSizeBefore + keepSizeAfter + keepSizeReserve;
             if (blockSize > 2147483591) // System.Array.MaxByteArrayLength
-                throw new ArgumentOutOfRangeException(nameof(blockSize));
+                throw new ArgumentOutOfRangeException(nameof(keepSizeReserve));
             if (_bufferBase == null || _blockSize != blockSize)
             {
                 Free();

@@ -193,9 +193,11 @@ namespace Chummer
         {
             if (version == null)
                 return 1;
-            if (!(version is Version version1))
-                throw new ArgumentException();
-            return CompareTo(version1);
+            if (version is ValueVersion version1)
+                return CompareTo(version1);
+            if (version is Version version2)
+                return CompareTo(version2);
+            throw new ArgumentException("Argument is not a version of value version.", nameof(version));
         }
 
         /// <summary>Compares the current ValueVersion struct to a specified ValueVersion struct and returns an indication of their relative values.</summary>
