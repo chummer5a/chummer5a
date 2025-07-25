@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -246,10 +247,10 @@ namespace Chummer
                     // Update the Essence and Cost multipliers based on the Grade that has been selected.
                     if (xmlGrade != null)
                     {
-                        _decCostMultiplier = Convert.ToDecimal(
-                            xmlGrade.SelectSingleNodeAndCacheExpression("cost", token: _objGenericToken)?.Value, GlobalSettings.InvariantCultureInfo);
-                        _decESSMultiplier = Convert.ToDecimal(
-                            xmlGrade.SelectSingleNodeAndCacheExpression("ess", token: _objGenericToken)?.Value, GlobalSettings.InvariantCultureInfo);
+                        decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("cost", token: _objGenericToken)?.Value,
+                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
+                        decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("ess", token: _objGenericToken)?.Value,
+                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decESSMultiplier);
                         _intAvailModifier
                             = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token: _objGenericToken)?.ValueAsInt ?? 0;
                     }
@@ -349,13 +350,10 @@ namespace Chummer
                     // Update the Essence and Cost multipliers based on the Grade that has been selected.
                     if (xmlGrade != null)
                     {
-                        _decCostMultiplier
-                            = Convert.ToDecimal(
-                                xmlGrade.SelectSingleNodeAndCacheExpression("cost", token)?.Value, GlobalSettings.InvariantCultureInfo);
-                        _decESSMultiplier
-                            = Convert.ToDecimal(
-                                xmlGrade.SelectSingleNodeAndCacheExpression("ess", token)
-                                ?.Value, GlobalSettings.InvariantCultureInfo);
+                        decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("cost", token: _objGenericToken)?.Value,
+                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
+                        decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("ess", token: _objGenericToken)?.Value,
+                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decESSMultiplier);
                         _intAvailModifier
                             = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token)
                             ?.ValueAsInt ?? 0;
@@ -1121,10 +1119,7 @@ namespace Chummer
                                         strCost = strCost.TrimEndOnce(strSuffix);
                                     }
 
-                                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                                .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                    strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                                    strCost += strSuffix;
+                                    strCost = strCost.ProcessFixedValuesString(intRating) + strSuffix;
                                 }
 
                                 // Check for a Variable Cost.
@@ -1135,9 +1130,16 @@ namespace Chummer
                                     strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                                     if (strCost.Contains('-'))
                                     {
-                                        string[] strValues = strCost.Split('-');
-                                        decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                                        decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                                        string[] strValues = strCost.SplitFixedSizePooledArray('-', 2);
+                                        try
+                                        {
+                                            decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                                            decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                                        }
+                                        finally
+                                        {
+                                            ArrayPool<string>.Shared.Return(strValues);
+                                        }
                                     }
                                     else
                                     {
@@ -1299,10 +1301,7 @@ namespace Chummer
                                         strEss = strEss.TrimEndOnce(strSuffix);
                                     }
 
-                                    string[] strValues = strEss.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                               .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                    strEss = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                                    strEss += strSuffix;
+                                    strEss = strEss.ProcessFixedValuesString(intRating) + strSuffix;
                                 }
 
                                 if (strEss.DoesNeedXPathProcessingToBeConvertedToNumber(out decESS))
@@ -1363,13 +1362,7 @@ namespace Chummer
                         {
                             if (blnSquareBrackets)
                                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                            if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
-                            {
-                                string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                                .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                strCapacity = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                            }
-
+                            strCapacity = strCapacity.ProcessFixedValuesString(intRating);
                             if (strCapacity == "[*]" || strCapacity == "*")
                                 await lblCapacity.DoThreadSafeAsync(x => x.Text = "*", token: token).ConfigureAwait(false);
                             else
@@ -1684,11 +1677,16 @@ namespace Chummer
                                     lstWareListToCheck?.Any(x => x.Location == "Left") == true
                                     && lstWareListToCheck.Any(x => x.Location == "Right"))
                                 {
-                                    string[] astrBlockedMounts
-                                        = strBlocksMounts.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                    if (_strHasModularMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                            .Any(strLoop => astrBlockedMounts.Contains(strLoop)))
-                                        continue;
+                                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string>
+                                                                                setBlockedMounts))
+                                    {
+                                        foreach (string strBlockedMount in strBlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                                            setBlockedMounts.Add(strBlockedMount);
+                                        if (_strHasModularMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                                .Any(strLoop => setBlockedMounts.Contains(strLoop)))
+                                            continue;
+                                    }
                                 }
                             }
                         }
@@ -1803,14 +1801,7 @@ namespace Chummer
                                 string strAvailExpr
                                     = xmlCyberware.SelectSingleNodeAndCacheExpression("avail", token: token)?.Value
                                       ?? string.Empty;
-                                if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
-                                {
-                                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true)
-                                                                     .TrimEndOnce(')')
-                                                                     .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                    strAvailExpr
-                                        = strValues[Math.Max(Math.Min(intMinRating - 1, strValues.Length - 1), 0)];
-                                }
+                                strAvailExpr = strAvailExpr.ProcessFixedValuesString(intMinRating);
 
                                 if (strAvailExpr.EndsWith('F', 'R'))
                                 {
@@ -1940,6 +1931,7 @@ namespace Chummer
             if (objCyberwareNode == null)
                 return;
 
+            int intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
             if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEnforceCapacityAsync(token).ConfigureAwait(false) && _objParentObject != null)
             {
                 // Capacity.
@@ -1949,16 +1941,12 @@ namespace Chummer
                 if (strCapacity?.Contains('[') == true)
                 {
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                    if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
-                    {
-                        string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                        strCapacity = strValues[Math.Max(Math.Min(nudRating.ValueAsInt, strValues.Length) - 1, 0)];
-                    }
+                    strCapacity = strCapacity.ProcessFixedValuesString(intRating);
 
                     decimal decCapacity = 0;
                     if (strCapacity != "*" && strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decCapacity))
                     {
-                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
                         if (blnIsSuccess)
                             decCapacity = Convert.ToDecimal((double)objProcess);
                     }
@@ -2004,7 +1992,7 @@ namespace Chummer
                 : objCyberwareNode.SelectSingleNodeAndCacheExpression("category", token: token)?.Value ?? string.Empty;
             _sStrSelectGrade = SelectedGrade?.SourceIDString;
             SelectedCyberware = strSelectedId;
-            SelectedRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
+            SelectedRating = intRating;
             BlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
             Markup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
             await nudESSDiscount.DoThreadSafeAsync(x =>

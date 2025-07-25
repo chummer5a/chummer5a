@@ -33,19 +33,20 @@ namespace Chummer
         /// Similar to Stream.ToArray(), but allocates to a rented array from ArrayPool instead of to a newly allocated array.
         /// </summary>
         /// <param name="objStream">Stream to convert to a byte array.</param>
-        public static byte[] ToPooledArray(this Stream objStream)
+        /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary.</param>
+        public static byte[] ToPooledArray(this Stream objStream, out int arrayLength)
         {
             if (objStream == null)
             {
                 throw new ArgumentNullException(nameof(objStream));
             }
             objStream.Position = 0;
-            int intLength = Convert.ToInt32(objStream.Length);
-            byte[] achrReturn = ArrayPool<byte>.Shared.Rent(intLength);
+            arrayLength = Convert.ToInt32(objStream.Length);
+            byte[] achrReturn = ArrayPool<byte>.Shared.Rent(arrayLength);
             try
             {
-                Array.Clear(achrReturn, 0, intLength);
-                _ = objStream.Read(achrReturn, 0, intLength);
+                Array.Clear(achrReturn, 0, arrayLength);
+                _ = objStream.Read(achrReturn, 0, arrayLength);
             }
             catch
             {
@@ -60,7 +61,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objStream">Stream to convert to a byte array.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static Task<byte[]> ToPooledArrayAsync(this Stream objStream, CancellationToken token = default)
+        public static Task<Tuple<byte[], int>> ToPooledArrayAsync(this Stream objStream, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objStream == null)
@@ -68,22 +69,22 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objStream));
             }
             return ToPooledArrayAsyncInner();
-            async Task<byte[]> ToPooledArrayAsyncInner()
+            async Task<Tuple<byte[], int>> ToPooledArrayAsyncInner()
             {
                 objStream.Position = 0;
-                int intLength = Convert.ToInt32(objStream.Length);
-                byte[] achrReturn = ArrayPool<byte>.Shared.Rent(intLength);
+                int arrayLength = Convert.ToInt32(objStream.Length);
+                byte[] achrReturn = ArrayPool<byte>.Shared.Rent(arrayLength);
                 try
                 {
-                    Array.Clear(achrReturn, 0, intLength);
-                    _ = await objStream.ReadAsync(achrReturn, 0, intLength, token).ConfigureAwait(false);
+                    Array.Clear(achrReturn, 0, arrayLength);
+                    _ = await objStream.ReadAsync(achrReturn, 0, arrayLength, token).ConfigureAwait(false);
                 }
                 catch
                 {
                     ArrayPool<byte>.Shared.Return(achrReturn);
                     throw;
                 }
-                return achrReturn;
+                return new Tuple<byte[], int>(achrReturn, arrayLength);
             }
         }
 

@@ -443,60 +443,53 @@ namespace Chummer
                     await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     await pgbExportProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                    string strLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken).ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(strLanguage))
+                        strLanguage = GlobalSettings.DefaultLanguage;
+                    string strSaveArchive = dlgSaveFile.FileName;
+                    if (string.IsNullOrEmpty(strSaveArchive))
+                        return;
+                    if (!strSaveArchive.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                        strSaveArchive += ".zip";
+                    await Utils.SafeDeleteDirectoryAsync(strSaveArchive, token: token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await objSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        string strLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken).ConfigureAwait(false);
-                        if (string.IsNullOrEmpty(strLanguage))
-                            strLanguage = GlobalSettings.DefaultLanguage;
-                        string strSaveArchive = dlgSaveFile.FileName;
-                        if (string.IsNullOrEmpty(strSaveArchive))
-                            return;
-                        if (!strSaveArchive.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
-                            strSaveArchive += ".zip";
-                        await Utils.SafeDeleteDirectoryAsync(strSaveArchive, token: token).ConfigureAwait(false);
-                        IAsyncDisposable objLocker = await objSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
                         try
                         {
-                            token.ThrowIfCancellationRequested();
-                            try
+                            using (FileStream objZipFileStream = new FileStream(strSaveArchive, FileMode.Create, FileAccess.Write, FileShare.None))
                             {
-                                using (FileStream objZipFileStream = new FileStream(strSaveArchive, FileMode.Create, FileAccess.Write, FileShare.None))
+                                token.ThrowIfCancellationRequested();
+                                using (ZipArchive zipNewArchive = new ZipArchive(objZipFileStream, ZipArchiveMode.Create))
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    using (ZipArchive zipNewArchive = new ZipArchive(objZipFileStream, ZipArchiveMode.Create))
+                                    foreach (string strFileName in Utils.BasicDataFileNames)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        foreach (string strFileName in Utils.BasicDataFileNames)
+                                        XmlDocument xmlDocument = await objSettings.LoadDataAsync(strFileName, strLanguage, token: token).ConfigureAwait(false);
+                                        ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFileName));
+                                        token.ThrowIfCancellationRequested();
+                                        using (Stream objStream = objEntry.Open())
                                         {
                                             token.ThrowIfCancellationRequested();
-                                            XmlDocument xmlDocument = await objSettings.LoadDataAsync(strFileName, strLanguage, token: token).ConfigureAwait(false);
-                                            ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFileName));
-                                            token.ThrowIfCancellationRequested();
-                                            using (Stream objStream = objEntry.Open())
-                                            {
-                                                token.ThrowIfCancellationRequested();
-                                                await Task.Run(() => xmlDocument.Save(objStream), token).ConfigureAwait(false);
-                                            }
-                                            await pgbExportProgress.DoThreadSafeAsync(x => x.Value = x.Value + 1, _objGenericToken).ConfigureAwait(false);
+                                            await Task.Run(() => xmlDocument.Save(objStream), token).ConfigureAwait(false);
                                         }
+                                        await pgbExportProgress.DoThreadSafeAsync(x => ++x.Value, _objGenericToken).ConfigureAwait(false);
                                     }
                                 }
                             }
-                            catch (OperationCanceledException)
-                            {
-                                // ReSharper disable once MethodSupportsCancellation
-                                await Utils.SafeDeleteDirectoryAsync(strSaveArchive, token: CancellationToken.None).ConfigureAwait(false);
-                                throw;
-                            }
                         }
-                        finally
+                        catch (OperationCanceledException)
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            // ReSharper disable once MethodSupportsCancellation
+                            await Utils.SafeDeleteDirectoryAsync(strSaveArchive, token: CancellationToken.None).ConfigureAwait(false);
+                            throw;
                         }
                     }
                     finally
                     {
-                        
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally

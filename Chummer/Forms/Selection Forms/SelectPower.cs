@@ -251,7 +251,8 @@ namespace Chummer
                                                            .ConfigureAwait(false) > 0, token).ConfigureAwait(false))
                     {
                         //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
-                        decPoints += Convert.ToDecimal(strExtraPointCost, GlobalSettings.InvariantCultureInfo);
+                        if (decimal.TryParse(strExtraPointCost, System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decExtraCost))
+                            decPoints += decExtraCost;
                     }
 
                     if (_decLimitToRating > 0 && decPoints > _decLimitToRating)

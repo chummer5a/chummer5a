@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -382,11 +383,18 @@ namespace Chummer
                         string strCost = strKarma.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                         if (strCost.Contains('-'))
                         {
-                            string[] strValues = strCost.Split('-');
-                            int.TryParse(strValues[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                            string[] strValues = strCost.SplitFixedSizePooledArray('-', 2);
+                            try
+                            {
+                                int.TryParse(strValues[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                 out intMin);
-                            int.TryParse(strValues[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                out intMax);
+                                int.TryParse(strValues[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                    out intMax);
+                            }
+                            finally
+                            {
+                                ArrayPool<string>.Shared.Return(strValues);
+                            }
                         }
                         else
                         {

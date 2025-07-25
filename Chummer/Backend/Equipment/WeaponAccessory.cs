@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -101,7 +102,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
         private bool _blnWirelessOn = true;
         private XmlElement _nodWirelessBonus;
-        private XmlNode _nodWirelessWeaponBonus;
+        private XmlElement _nodWirelessWeaponBonus;
         private bool _blnStolen;
         private string _strParentID;
 
@@ -240,9 +241,16 @@ namespace Chummer.Backend.Equipment
                     string strCost = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                     if (strCost.Contains('-'))
                     {
-                        string[] strValues = strCost.Split('-');
-                        decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                        decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                        string[] strValues = strCost.SplitFixedSizePooledArray('-', 2);
+                        try
+                        {
+                            decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                            decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                        }
+                        finally
+                        {
+                            ArrayPool<string>.Shared.Return(strValues);
+                        }
                     }
                     else
                         decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
@@ -402,8 +410,9 @@ namespace Chummer.Backend.Equipment
                                 intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText,
                                     GlobalSettings.InvariantCultureInfo);
                             if (objXmlAccessoryGearNameAttributes?["qty"] != null)
-                                decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText,
-                                    GlobalSettings.InvariantCultureInfo);
+                            {
+                                decimal.TryParse(objXmlAccessoryGearNameAttributes["qty"].InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decGearQty);
+                            }
                             string strFilter = "/chummer/gears/gear";
                             if (objXmlAccessoryGearName != null || objXmlAccessoryGearCategory != null)
                             {
@@ -1603,12 +1612,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         private int ProcessRatingString(string strExpression, int intRating)
         {
-            if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strExpression = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)].Trim('[', ']');
-            }
+            strExpression = strExpression.ProcessFixedValuesString(intRating);
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
@@ -1656,12 +1660,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         private async Task<int> ProcessRatingStringAsync(string strExpression, int intRating, CancellationToken token = default)
         {
-            if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strExpression = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)].Trim('[', ']');
-            }
+            strExpression = strExpression.ProcessFixedValuesString(intRating);
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
@@ -1952,11 +1951,7 @@ namespace Chummer.Backend.Equipment
             int intAvail = 0;
             if (strAvail.Length > 0)
             {
-                if (strAvail.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                }
+                strAvail = strAvail.ProcessFixedValuesString(() => Rating);
 
                 chrLastAvailChar = strAvail[strAvail.Length - 1];
                 if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
@@ -2041,11 +2036,7 @@ namespace Chummer.Backend.Equipment
             int intAvail = 0;
             if (strAvail.Length > 0)
             {
-                if (strAvail.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                }
+                strAvail = await strAvail.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
 
                 chrLastAvailChar = strAvail[strAvail.Length - 1];
                 if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
@@ -2228,12 +2219,9 @@ namespace Chummer.Backend.Equipment
                 if (IncludedInWeapon)
                     return 0;
                 string strCostExpr = Cost;
-                if (strCostExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strCostExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strCostExpr = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                }
-
+                if (string.IsNullOrEmpty(strCostExpr))
+                    return 0;
+                strCostExpr = strCostExpr.ProcessFixedValuesString(() => Rating);
                 if (strCostExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
@@ -2283,10 +2271,17 @@ namespace Chummer.Backend.Equipment
                     decReturn *= Parent.AccessoryMultiplier;
                     if (!string.IsNullOrEmpty(Parent.DoubledCostModificationSlots))
                     {
-                        string[] astrParentDoubledCostModificationSlots = Parent.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                        if (astrParentDoubledCostModificationSlots.Contains(Mount) || astrParentDoubledCostModificationSlots.Contains(ExtraMount))
+                        bool blnBreakAfterFound = string.IsNullOrEmpty(Mount) || string.IsNullOrEmpty(ExtraMount);
+                        foreach (string strDoubledCostSlot in Parent.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                         {
-                            decReturn *= 2;
+                            if (strDoubledCostSlot == Mount || strDoubledCostSlot == ExtraMount)
+                            {
+                                decReturn *= 2;
+                                if (blnBreakAfterFound)
+                                    break;
+                                else
+                                    blnBreakAfterFound = true;
+                            }
                         }
                     }
                 }
@@ -2304,12 +2299,9 @@ namespace Chummer.Backend.Equipment
             if (IncludedInWeapon)
                 return 0;
             string strCostExpr = Cost;
-            if (strCostExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strCostExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strCostExpr = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-            }
+            if (string.IsNullOrEmpty(strCostExpr))
+                return 0;
+            strCostExpr = await strCostExpr.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
 
             if (strCostExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
@@ -2382,12 +2374,17 @@ namespace Chummer.Backend.Equipment
                 decReturn *= Parent.AccessoryMultiplier;
                 if (!string.IsNullOrEmpty(Parent.DoubledCostModificationSlots))
                 {
-                    string[] astrParentDoubledCostModificationSlots
-                        = Parent.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                    if (astrParentDoubledCostModificationSlots.Contains(Mount)
-                        || astrParentDoubledCostModificationSlots.Contains(ExtraMount))
+                    bool blnBreakAfterFound = string.IsNullOrEmpty(Mount) || string.IsNullOrEmpty(ExtraMount);
+                    foreach (string strDoubledCostSlot in Parent.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                     {
-                        decReturn *= 2;
+                        if (strDoubledCostSlot == Mount || strDoubledCostSlot == ExtraMount)
+                        {
+                            decReturn *= 2;
+                            if (blnBreakAfterFound)
+                                break;
+                            else
+                                blnBreakAfterFound = true;
+                        }
                     }
                 }
             }
@@ -2414,11 +2411,7 @@ namespace Chummer.Backend.Equipment
                     return 0;
 
                 decimal decReturn = 0;
-                if (strWeightExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strWeightExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strWeightExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                }
+                strWeightExpression = strWeightExpression.ProcessFixedValuesString(() => Rating);
 
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
                 {
@@ -2474,11 +2467,7 @@ namespace Chummer.Backend.Equipment
                 string strDicePoolExpression = DicePoolString;
                 if (string.IsNullOrEmpty(strDicePoolExpression))
                     return 0;
-                if (strDicePoolExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strDicePoolExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strDicePoolExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                }
+                strDicePoolExpression = strDicePoolExpression.ProcessFixedValuesString(() => Rating);
                 if (strDicePoolExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDicePool))
@@ -2525,6 +2514,7 @@ namespace Chummer.Backend.Equipment
             string strDicePoolExpression = DicePoolString;
             if (string.IsNullOrEmpty(strDicePoolExpression))
                 return 0;
+            strDicePoolExpression = await strDicePoolExpression.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
             if (strDicePoolExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDicePool))

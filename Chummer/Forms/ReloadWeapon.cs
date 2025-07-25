@@ -88,9 +88,8 @@ namespace Chummer
                                                                       out StringBuilder sbdPlugins))
                         {
                             await objGear.Children.ForEachAsync(async objChild =>
-                            {
-                                sbdPlugins.Append(await objChild.GetCurrentDisplayNameShortAsync().ConfigureAwait(false)).Append(',').Append(strSpace);
-                            }).ConfigureAwait(false);
+                                sbdPlugins.Append(await objChild.GetCurrentDisplayNameShortAsync().ConfigureAwait(false)).Append(',').Append(strSpace))
+                                .ConfigureAwait(false);
 
                             // Remove the trailing comma.
                             sbdPlugins.Length -= 1 + strSpace.Length;

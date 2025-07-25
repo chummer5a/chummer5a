@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -323,7 +324,7 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(strCostFor))
                             {
-                                decimal decCostFor = Convert.ToDecimal(strCostFor, GlobalSettings.InvariantCultureInfo);
+                                decimal.TryParse(strCostFor, System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCostFor);
                                 await nudGearQty.DoThreadSafeAsync(x =>
                                 {
                                     x.Value = decCostFor;
@@ -770,348 +771,14 @@ namespace Chummer
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                 try
                 {
-                    int intRatingValue = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
-                    // Retrieve the information for the selected piece of Cyberware.
-                    string strDeviceRating = objXmlGear.SelectSingleNodeAndCacheExpression("devicerating", token)?.Value ?? string.Empty;
-                    if (strDeviceRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                    {
-                        strDeviceRating = await strDeviceRating.CheapReplaceAsync("{Rating}", () => intRatingValue.ToString(), token: token).ConfigureAwait(false);
-                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                            strDeviceRating, token).ConfigureAwait(false);
-                        if (blnIsSuccess)
-                            strDeviceRating = ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo);
-                    }
-                    else
-                        strDeviceRating = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
-                    await lblGearDeviceRating.DoThreadSafeFuncAsync(x => x.Text = strDeviceRating, token: token).ConfigureAwait(false);
-                    await lblGearDeviceRatingLabel.DoThreadSafeFuncAsync(x => x.Visible = !string.IsNullOrEmpty(strDeviceRating), token: token).ConfigureAwait(false);
-
-                    string strSource = objXmlGear.SelectSingleNodeAndCacheExpression("source", token)?.Value
-                                       ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                    string strPage = objXmlGear.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value
-                                     ?? objXmlGear.SelectSingleNodeAndCacheExpression("page", token)?.Value
-                                     ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                    SourceString objSource = await SourceString.GetSourceStringAsync(
-                        strSource, strPage, GlobalSettings.Language,
-                        GlobalSettings.CultureInfo, _objCharacter, token: token).ConfigureAwait(false);
-                    await objSource.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
-                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()), token: token).ConfigureAwait(false);
-                    string strAvail = await new AvailabilityValue(intRatingValue,
-                        objXmlGear.SelectSingleNodeAndCacheExpression("avail", token)?.Value).ToStringAsync(token).ConfigureAwait(false);
-                    await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
-                    await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token).ConfigureAwait(false);
-
-                    decimal decMultiplier = await nudGearQty.DoThreadSafeFuncAsync(x => x.Value / x.Increment, token: token).ConfigureAwait(false);
-                    if (await chkDoItYourself.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
-                        decMultiplier *= 0.5m;
-
-                    // Cost.
-                    bool blnCanBlackMarketDiscount
-                        = _setBlackMarketMaps.Contains(objXmlGear.SelectSingleNodeAndCacheExpression("category", token)?.Value);
-                    await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
-                    {
-                        x.Enabled = blnCanBlackMarketDiscount;
-                        if (!x.Checked)
-                        {
-                            x.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
-                        }
-                        else if (!blnCanBlackMarketDiscount)
-                        {
-                            //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
-                            x.Checked = false;
-                        }
-                    }, token: token).ConfigureAwait(false);
-
-                    decimal decItemCost = 0.0m;
-                    if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
-                    {
-                        string strCost = 0.0m.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
-                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
-                        await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        XPathNavigator objCostNode = objXmlGear.SelectSingleNodeAndCacheExpression("cost", token);
-                        if (objCostNode == null)
-                        {
-                            int intHighestCostNode = 0;
-                            foreach (XmlNode objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
-                            {
-                                if (!objLoopNode.Name.StartsWith("cost", StringComparison.Ordinal))
-                                    continue;
-                                string strLoopCostString = objLoopNode.Name.Substring(4);
-                                if (int.TryParse(strLoopCostString, out int intTmp))
-                                {
-                                    intHighestCostNode = Math.Max(intHighestCostNode, intTmp);
-                                }
-                            }
-
-                            objCostNode = objXmlGear.SelectSingleNode("cost" + intHighestCostNode);
-                            for (int i = intRatingValue; i <= intHighestCostNode; ++i)
-                            {
-                                XPathNavigator objLoopNode
-                                    = objXmlGear.SelectSingleNode("cost" + i.ToString(GlobalSettings.InvariantCultureInfo));
-                                if (objLoopNode != null)
-                                {
-                                    objCostNode = objLoopNode;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (objCostNode != null)
-                        {
-                            string strCost = objCostNode.Value;
-
-                            if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal) && intRatingValue > 0)
-                            {
-                                strCost = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                 .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                 .ElementAt(intRatingValue - 1).Trim('[', ']');
-                            }
-
-                            if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
-                            {
-                                decimal decMin;
-                                decimal decMax = decimal.MaxValue;
-                                strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                                if (strCost.Contains('-'))
-                                {
-                                    string[] strValues = strCost.Split('-');
-                                    decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                                    decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
-                                }
-                                else
-                                {
-                                    decMin = Convert.ToDecimal(strCost.FastEscape('+'),
-                                                               GlobalSettings.InvariantCultureInfo);
-                                }
-
-                                if (decMax == decimal.MaxValue)
-                                {
-                                    strCost = decMin.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
-                                                              GlobalSettings.CultureInfo)
-                                              + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
-                                                                     .ConfigureAwait(false) + '+';
-                                }
-                                else
-                                {
-                                    string strFormat = await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false);
-                                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                                    strCost = decMin.ToString(strFormat, GlobalSettings.CultureInfo)
-                                                                          + strSpace + '-' + strSpace
-                                                                          + decMax.ToString(strFormat, GlobalSettings.CultureInfo)
-                                                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
-                                }
-                                await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
-
-                                decItemCost = decMin;
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
-                                    {
-                                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                            strCost.Replace(
-                                                "Rating", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
-                                        decCost = blnIsSuccess
-                                            ? Convert.ToDecimal((double)objProcess) * decMultiplier
-                                            : 0;
-                                    }
-                                    decCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
-                                    if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
-                                        decCost *= 0.9m;
-                                    strCost = (decCost * _intCostMultiplier).ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
-                                        + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
-                                    decItemCost = decCost;
-                                }
-                                catch (XPathException)
-                                {
-                                    if (decimal.TryParse(strCost, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp))
-                                    {
-                                        decItemCost = decTemp;
-                                        strCost = (decItemCost * _intCostMultiplier).ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
-                                            + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
-                                    }
-                                }
-                                await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
-                            }
-                        }
-                    }
-
-                    bool blnShowCost = !string.IsNullOrEmpty(await lblCost.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
-                    await lblCostLabel.DoThreadSafeAsync(x => x.Visible = blnShowCost, token: token).ConfigureAwait(false);
-
-                    // Update the Avail Test Label.
-                    string strTest = await _objCharacter.AvailTestAsync(decItemCost * _intCostMultiplier, strAvail, token).ConfigureAwait(false);
-                    await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
-                    await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest), token: token).ConfigureAwait(false);
-
-                    // Capacity.
-
-                    if (_eCapacityStyle == CapacityStyle.Zero)
-                        await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']', token: token).ConfigureAwait(false);
-                    else
-                    {
-                        // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                        string strCapacityField = ShowArmorCapacityOnly ? "armorcapacity" : "capacity";
-                        string strCapacityText = objXmlGear.SelectSingleNode(strCapacityField)?.Value;
-                        if (!string.IsNullOrEmpty(strCapacityText))
-                        {
-                            int intPos = strCapacityText.IndexOf("/[", StringComparison.Ordinal);
-                            string strCapacity;
-                            if (intPos != -1)
-                            {
-                                string strFirstHalf = strCapacityText.Substring(0, intPos);
-                                string strSecondHalf = strCapacityText.Substring(intPos + 1);
-
-                                if (strFirstHalf == "[*]")
-                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = "*", token: token).ConfigureAwait(false);
-                                else
-                                {
-                                    bool blnSquareBrackets = strFirstHalf.StartsWith('[');
-                                    strCapacity = strFirstHalf;
-                                    if (blnSquareBrackets && strCapacity.Length > 2)
-                                        strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-
-                                    if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
-                                    {
-                                        string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true)
-                                                                        .TrimEndOnce(')')
-                                                                        .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                        if (strValues.Length >= intRatingValue)
-                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strValues[intRatingValue - 1], token: token).ConfigureAwait(false);
-                                        else if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCapacity))
-                                        {
-                                            try
-                                            {
-                                                (bool blnIsSuccess2, object objProcess2) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                                    strCapacity.Replace(
-                                                        "Rating",
-                                                        intRatingValue.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
-                                                await lblCapacity.DoThreadSafeAsync(x => x.Text = blnIsSuccess2
-                                                    ? ((double)objProcess2).ToString("#,0.##", GlobalSettings.CultureInfo)
-                                                    : strCapacity, token: token).ConfigureAwait(false);
-                                            }
-                                            catch (XPathException)
-                                            {
-                                                await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
-                                            }
-                                            catch (OverflowException) // Result is text and not a double
-                                            {
-                                                await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
-                                            }
-                                            catch (InvalidCastException) // Result is text and not a double
-                                            {
-                                                await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
-                                            }
-                                        }
-                                        else
-                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
-                                    }
-                                    else if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCapacity))
-                                    {
-                                        try
-                                        {
-                                            (bool blnIsSuccess2, object objProcess2) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                                strCapacity.Replace(
-                                                    "Rating",
-                                                    intRatingValue.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
-                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = blnIsSuccess2
-                                                                                    ? ((double)objProcess2).ToString("#,0.##", GlobalSettings.CultureInfo)
-                                                                                    : strCapacity, token: token).ConfigureAwait(false);
-                                        }
-                                        catch (XPathException)
-                                        {
-                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
-                                        }
-                                        catch (OverflowException) // Result is text and not a double
-                                        {
-                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
-                                        }
-                                        catch (InvalidCastException) // Result is text and not a double
-                                        {
-                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
-                                        }
-                                    }
-                                    else
-                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
-
-                                    if (blnSquareBrackets)
-                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + x.Text + ']', token: token).ConfigureAwait(false);
-                                }
-
-                                await lblCapacity.DoThreadSafeAsync(x => x.Text += '/' + strSecondHalf, token: token).ConfigureAwait(false);
-                            }
-                            else if (strCapacityText == "[*]")
-                                await lblCapacity.DoThreadSafeAsync(x => x.Text = "*", token: token).ConfigureAwait(false);
-                            else
-                            {
-                                bool blnSquareBrackets = strCapacityText.StartsWith('[');
-                                strCapacity = strCapacityText;
-                                if (blnSquareBrackets && strCapacity.Length > 2)
-                                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                                if (strCapacityText.StartsWith("FixedValues(", StringComparison.Ordinal))
-                                {
-                                    string[] strValues = strCapacityText.TrimStartOnce("FixedValues(", true)
-                                                                        .TrimEndOnce(')')
-                                                                        .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                    lblCapacity.Text
-                                        = strValues[Math.Max(Math.Min(intRatingValue, strValues.Length) - 1, 0)];
-                                }
-                                else if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCapacity))
-                                {
-                                    try
-                                    {
-                                        (bool blnIsSuccess2, object objProcess2) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                            strCapacity.Replace(
-                                                "Rating", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
-                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = blnIsSuccess2
-                                                                                ? ((double)objProcess2).ToString("#,0.##", GlobalSettings.CultureInfo)
-                                                                                : strCapacity, token: token).ConfigureAwait(false);
-                                    }
-                                    catch (OverflowException) // Result is text and not a double
-                                    {
-                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
-                                    }
-                                    catch (InvalidCastException) // Result is text and not a double
-                                    {
-                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
-                                    }
-                                }
-                                else
-                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
-
-                                if (blnSquareBrackets)
-                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + lblCapacity.Text + ']', token: token).ConfigureAwait(false);
-                            }
-                        }
-                        else
-                        {
-                            await lblCapacity.DoThreadSafeAsync(x => x.Text = 0.ToString(GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
-                        }
-                    }
-
-                    bool blnShowCapacity = !string.IsNullOrEmpty(await lblCapacity.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
-                    await lblCapacityLabel.DoThreadSafeAsync(x => x.Visible = blnShowCapacity, token: token).ConfigureAwait(false);
-
-                    // Rating.
+                    // Rating first (since we need it).
                     string strExpression = objXmlGear.SelectSingleNodeAndCacheExpression("rating", token)?.Value ?? string.Empty;
                     if (strExpression == "0")
                         strExpression = string.Empty;
                     int intRating = int.MaxValue;
                     if (!string.IsNullOrEmpty(strExpression))
                     {
-                        if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-                        {
-                            string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                              .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                            strExpression = strValues[Math.Max(Math.Min(intRatingValue, strValues.Length) - 1, 0)]
-                                .Trim('[', ']');
-                        }
-
+                        strExpression = strExpression.ProcessFixedValuesString(intRating);
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decRating))
                         {
                             using (new FetchSafelyFromObjectPool<StringBuilder>(
@@ -1129,7 +796,7 @@ namespace Chummer
                                                                      return "0";
                                                                  }, token: token).ConfigureAwait(false);
                                 sbdValue.Replace(
-                                    "{Rating}", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
+                                    "{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                                 await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
 
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -1152,14 +819,7 @@ namespace Chummer
                             int intMinimumRating = 0;
                             if (!string.IsNullOrEmpty(strExpression))
                             {
-                                if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-                                {
-                                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                                      .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                    strExpression
-                                        = strValues[Math.Max(Math.Min(intRatingValue, strValues.Length) - 1, 0)]
-                                            .Trim('[', ']');
-                                }
+                                strExpression = strExpression.ProcessFixedValuesString(intRating);
 
                                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decMinRating))
                                 {
@@ -1177,7 +837,7 @@ namespace Chummer
                                                                              }
                                                                              return "0";
                                                                          }, token: token).ConfigureAwait(false);
-                                        sbdValue.Replace("{Rating}", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
+                                        sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                                         await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
 
                                         // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -1253,6 +913,290 @@ namespace Chummer
                             x.Visible = false;
                         }, token: token).ConfigureAwait(false);
                     }
+                    intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
+
+                    // Retrieve the information for the selected piece of Cyberware.
+                    string strDeviceRating = objXmlGear.SelectSingleNodeAndCacheExpression("devicerating", token)?.Value ?? string.Empty;
+                    if (strDeviceRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        strDeviceRating = await strDeviceRating.CheapReplaceAsync("{Rating}", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                            strDeviceRating, token).ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            strDeviceRating = ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo);
+                    }
+                    else
+                        strDeviceRating = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
+                    await lblGearDeviceRating.DoThreadSafeFuncAsync(x => x.Text = strDeviceRating, token: token).ConfigureAwait(false);
+                    await lblGearDeviceRatingLabel.DoThreadSafeFuncAsync(x => x.Visible = !string.IsNullOrEmpty(strDeviceRating), token: token).ConfigureAwait(false);
+
+                    string strSource = objXmlGear.SelectSingleNodeAndCacheExpression("source", token)?.Value
+                                       ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                    string strPage = objXmlGear.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value
+                                     ?? objXmlGear.SelectSingleNodeAndCacheExpression("page", token)?.Value
+                                     ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                    SourceString objSource = await SourceString.GetSourceStringAsync(
+                        strSource, strPage, GlobalSettings.Language,
+                        GlobalSettings.CultureInfo, _objCharacter, token: token).ConfigureAwait(false);
+                    await objSource.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()), token: token).ConfigureAwait(false);
+                    string strAvail = await new AvailabilityValue(intRating,
+                        objXmlGear.SelectSingleNodeAndCacheExpression("avail", token)?.Value).ToStringAsync(token).ConfigureAwait(false);
+                    await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
+                    await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token).ConfigureAwait(false);
+
+                    decimal decMultiplier = await nudGearQty.DoThreadSafeFuncAsync(x => x.Value / x.Increment, token: token).ConfigureAwait(false);
+                    if (await chkDoItYourself.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                        decMultiplier *= 0.5m;
+
+                    // Cost.
+                    bool blnCanBlackMarketDiscount
+                        = _setBlackMarketMaps.Contains(objXmlGear.SelectSingleNodeAndCacheExpression("category", token)?.Value);
+                    await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = blnCanBlackMarketDiscount;
+                        if (!x.Checked)
+                        {
+                            x.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                        }
+                        else if (!blnCanBlackMarketDiscount)
+                        {
+                            //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
+                            x.Checked = false;
+                        }
+                    }, token: token).ConfigureAwait(false);
+
+                    decimal decItemCost = 0.0m;
+                    if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                    {
+                        string strCost = 0.0m.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
+                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                        await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        XPathNavigator objCostNode = objXmlGear.SelectSingleNodeAndCacheExpression("cost", token);
+                        if (objCostNode == null)
+                        {
+                            int intHighestCostNode = 0;
+                            foreach (XmlNode objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
+                            {
+                                if (!objLoopNode.Name.StartsWith("cost", StringComparison.Ordinal))
+                                    continue;
+                                string strLoopCostString = objLoopNode.Name.Substring(4);
+                                if (int.TryParse(strLoopCostString, out int intTmp))
+                                {
+                                    intHighestCostNode = Math.Max(intHighestCostNode, intTmp);
+                                }
+                            }
+
+                            objCostNode = objXmlGear.SelectSingleNode("cost" + intHighestCostNode);
+                            for (int i = intRating; i <= intHighestCostNode; ++i)
+                            {
+                                XPathNavigator objLoopNode
+                                    = objXmlGear.SelectSingleNode("cost" + i.ToString(GlobalSettings.InvariantCultureInfo));
+                                if (objLoopNode != null)
+                                {
+                                    objCostNode = objLoopNode;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (objCostNode != null)
+                        {
+                            string strCost = objCostNode.Value.ProcessFixedValuesString(intRating);
+                            if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
+                            {
+                                decimal decMin;
+                                decimal decMax = decimal.MaxValue;
+                                strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                                if (strCost.Contains('-'))
+                                {
+                                    string[] strValues = strCost.SplitFixedSizePooledArray('-', 2);
+                                    try
+                                    {
+                                        decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                                        decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                                    }
+                                    finally
+                                    {
+                                        ArrayPool<string>.Shared.Return(strValues);
+                                    }
+                                }
+                                else
+                                {
+                                    decMin = Convert.ToDecimal(strCost.FastEscape('+'),
+                                                               GlobalSettings.InvariantCultureInfo);
+                                }
+
+                                if (decMax == decimal.MaxValue)
+                                {
+                                    strCost = decMin.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
+                                                              GlobalSettings.CultureInfo)
+                                              + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
+                                                                     .ConfigureAwait(false) + '+';
+                                }
+                                else
+                                {
+                                    string strFormat = await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false);
+                                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                                    strCost = decMin.ToString(strFormat, GlobalSettings.CultureInfo)
+                                                                          + strSpace + '-' + strSpace
+                                                                          + decMax.ToString(strFormat, GlobalSettings.CultureInfo)
+                                                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                                }
+                                await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
+
+                                decItemCost = decMin;
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
+                                    {
+                                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                            strCost.Replace(
+                                                "Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                                        decCost = blnIsSuccess
+                                            ? Convert.ToDecimal((double)objProcess) * decMultiplier
+                                            : 0;
+                                    }
+                                    decCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
+                                    if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                                        decCost *= 0.9m;
+                                    strCost = (decCost * _intCostMultiplier).ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
+                                        + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                                    decItemCost = decCost;
+                                }
+                                catch (XPathException)
+                                {
+                                    if (decimal.TryParse(strCost, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp))
+                                    {
+                                        decItemCost = decTemp;
+                                        strCost = (decItemCost * _intCostMultiplier).ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
+                                            + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                                    }
+                                }
+                                await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+
+                    bool blnShowCost = !string.IsNullOrEmpty(await lblCost.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
+                    await lblCostLabel.DoThreadSafeAsync(x => x.Visible = blnShowCost, token: token).ConfigureAwait(false);
+
+                    // Update the Avail Test Label.
+                    string strTest = await _objCharacter.AvailTestAsync(decItemCost * _intCostMultiplier, strAvail, token).ConfigureAwait(false);
+                    await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
+                    await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest), token: token).ConfigureAwait(false);
+
+                    // Capacity.
+
+                    if (_eCapacityStyle == CapacityStyle.Zero)
+                        await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']', token: token).ConfigureAwait(false);
+                    else
+                    {
+                        // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+                        string strCapacityField = ShowArmorCapacityOnly ? "armorcapacity" : "capacity";
+                        string strCapacityText = objXmlGear.SelectSingleNode(strCapacityField)?.Value;
+                        if (!string.IsNullOrEmpty(strCapacityText))
+                        {
+                            int intPos = strCapacityText.IndexOf("/[", StringComparison.Ordinal);
+                            string strCapacity;
+                            if (intPos != -1)
+                            {
+                                string strFirstHalf = strCapacityText.Substring(0, intPos);
+                                string strSecondHalf = strCapacityText.Substring(intPos + 1);
+
+                                if (strFirstHalf == "[*]")
+                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = "*", token: token).ConfigureAwait(false);
+                                else
+                                {
+                                    bool blnSquareBrackets = strFirstHalf.StartsWith('[');
+                                    strCapacity = strFirstHalf;
+                                    if (blnSquareBrackets && strCapacity.Length > 2)
+                                        strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                                    strCapacity = strCapacity.ProcessFixedValuesString(intRating);
+                                    if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCapacity))
+                                    {
+                                        try
+                                        {
+                                            (bool blnIsSuccess2, object objProcess2) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                                strCapacity.Replace(
+                                                    "Rating",
+                                                    intRating.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
+                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = blnIsSuccess2
+                                                                                    ? ((double)objProcess2).ToString("#,0.##", GlobalSettings.CultureInfo)
+                                                                                    : strCapacity, token: token).ConfigureAwait(false);
+                                        }
+                                        catch (XPathException)
+                                        {
+                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                                        }
+                                        catch (OverflowException) // Result is text and not a double
+                                        {
+                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                                        }
+                                        catch (InvalidCastException) // Result is text and not a double
+                                        {
+                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                                        }
+                                    }
+                                    else
+                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
+
+                                    if (blnSquareBrackets)
+                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + x.Text + ']', token: token).ConfigureAwait(false);
+                                }
+
+                                await lblCapacity.DoThreadSafeAsync(x => x.Text += '/' + strSecondHalf, token: token).ConfigureAwait(false);
+                            }
+                            else if (strCapacityText == "[*]")
+                                await lblCapacity.DoThreadSafeAsync(x => x.Text = "*", token: token).ConfigureAwait(false);
+                            else
+                            {
+                                bool blnSquareBrackets = strCapacityText.StartsWith('[');
+                                strCapacity = strCapacityText;
+                                if (blnSquareBrackets && strCapacity.Length > 2)
+                                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                                strCapacity = strCapacity.ProcessFixedValuesString(intRating);
+                                if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCapacity))
+                                {
+                                    try
+                                    {
+                                        (bool blnIsSuccess2, object objProcess2) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                            strCapacity.Replace(
+                                                "Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
+                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = blnIsSuccess2
+                                                                                ? ((double)objProcess2).ToString("#,0.##", GlobalSettings.CultureInfo)
+                                                                                : strCapacity, token: token).ConfigureAwait(false);
+                                    }
+                                    catch (OverflowException) // Result is text and not a double
+                                    {
+                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                                    }
+                                    catch (InvalidCastException) // Result is text and not a double
+                                    {
+                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                                    }
+                                }
+                                else
+                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
+
+                                if (blnSquareBrackets)
+                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + lblCapacity.Text + ']', token: token).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            await lblCapacity.DoThreadSafeAsync(x => x.Text = 0.ToString(GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
+                        }
+                    }
+
+                    bool blnShowCapacity = !string.IsNullOrEmpty(await lblCapacity.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
+                    await lblCapacityLabel.DoThreadSafeAsync(x => x.Visible = blnShowCapacity, token: token).ConfigureAwait(false);
 
                     await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
                 }

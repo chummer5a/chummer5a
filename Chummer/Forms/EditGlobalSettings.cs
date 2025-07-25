@@ -25,20 +25,17 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
-using Chummer.Forms;
 using Chummer.Plugins;
 using iText.Kernel.Pdf;
 #if DEBUG
 using Microsoft.IO;
 #endif
 using NLog;
-using RtfPipe.Tokens;
 using Application = System.Windows.Forms.Application;
 
 namespace Chummer
@@ -2502,7 +2499,7 @@ namespace Chummer
             }
         }
 
-        private async Task<List<SourcebookInfo>> ScanFilesForPDFTexts(IEnumerable<string> lstFiles,
+        private async Task<List<SourcebookInfo>> ScanFilesForPDFTexts(string[] lstFiles,
                                                                       ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch,
                                                                       ConcurrentDictionary<string, Tuple<string, int>> dicBackupPatternsToMatch,
                                                                       LoadingBar frmProgressBar,
@@ -2516,10 +2513,12 @@ namespace Chummer
             int intCounter = 0;
             if (dicPatternsToMatch?.IsEmpty == false)
             {
+                int intFileCounter = 0;
                 foreach (string strFile in lstFiles)
                 {
                     token.ThrowIfCancellationRequested();
                     lstLoadingTasks.Add(GetSourcebookInfo(strFile, dicPatternsToMatch));
+                    ++intFileCounter;
                     if (++intCounter != Utils.MaxParallelBatchSize)
                         continue;
                     await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
@@ -2542,6 +2541,16 @@ namespace Chummer
 
                     intCounter = 0;
                     lstLoadingTasks.Clear();
+                    if (dicPatternsToMatch.IsEmpty)
+                    {
+                        for (; intFileCounter <= lstFiles.Length; ++intFileCounter)
+                        {
+                            await frmProgressBar
+                              .PerformStepAsync(eUseTextPattern: LoadingBar.ProgressBarTextPatterns.Scanning, token: token)
+                              .ConfigureAwait(false);
+                        }
+                        break;
+                    }
                 }
 
                 await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
@@ -2593,6 +2602,8 @@ namespace Chummer
 
                     intCounter = 0;
                     lstLoadingTasks.Clear();
+                    if (dicBackupPatternsToMatch.IsEmpty)
+                        break;
                 }
 
                 await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
@@ -2678,7 +2689,8 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 List<string> lstKeysToLoop = dicPatternsToMatch.GetKeysToListSafe();
                 //Search the first 15 pages for all the text
-                for (int intPage = 1; intPage <= 15; intPage++)
+                int intMaxPage = Math.Min(15, objPdfDocument.GetNumberOfPages());
+                for (int intPage = 1; intPage <= intMaxPage; intPage++)
                 {
                     token.ThrowIfCancellationRequested();
                     // No more patterns to match, exit early

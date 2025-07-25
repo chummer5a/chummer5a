@@ -50,6 +50,7 @@ using Microsoft.IO;
 using Newtonsoft.Json;
 using NLog;
 using Application = System.Windows.Forms.Application;
+using System.Buffers;
 
 namespace Chummer
 {
@@ -14850,14 +14851,13 @@ namespace Chummer
                 foreach (Cyberware objLoopCyberware in Cyberware.GetAllDescendants(x => x.Children, token))
                 {
                     // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                    if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                    if (objModularCyberware.PlugsIntoTargetCyberware(objLoopCyberware)
                         && (objLoopCyberware.Location == objModularCyberware.Location
                             || string.IsNullOrEmpty(objModularCyberware.Location))
                         && objLoopCyberware.Grade.Name == objGrade.Name
                         && objLoopCyberware != objModularCyberware
                         // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                        && objLoopCyberware.Children.All(
-                            x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token))
+                        && !objLoopCyberware.Children.Any(x => x.PlugsIntoTargetCyberware(objLoopCyberware), token))
                     {
                         string strName = objLoopCyberware.Parent?.CurrentDisplayName
                                          ?? objLoopCyberware.CurrentDisplayName;
@@ -14873,13 +14873,12 @@ namespace Chummer
                                      x => x.Children, token))
                         {
                             // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                            if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                            if (objModularCyberware.PlugsIntoTargetCyberware(objLoopCyberware)
                                 && objLoopCyberware.Location == objModularCyberware.Location
                                 && objLoopCyberware.Grade.Name == objGrade.Name
                                 && objLoopCyberware != objModularCyberware
                                 // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                && objLoopCyberware.Children.All(
-                                    x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token))
+                                && !objLoopCyberware.Children.Any(x => x.PlugsIntoTargetCyberware(objLoopCyberware), token))
                             {
                                 string strName = objLoopVehicle.CurrentDisplayName
                                                  + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
@@ -14897,13 +14896,12 @@ namespace Chummer
                                          x => x.Children, token))
                             {
                                 // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                                if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                                if (objModularCyberware.PlugsIntoTargetCyberware(objLoopCyberware)
                                     && objLoopCyberware.Location == objModularCyberware.Location
                                     && objLoopCyberware.Grade.Name == objGrade.Name
                                     && objLoopCyberware != objModularCyberware
                                     // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                    && objLoopCyberware.Children.All(
-                                        x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token))
+                                    && !objLoopCyberware.Children.Any(x => x.PlugsIntoTargetCyberware(objLoopCyberware), token))
                                 {
                                     string strName = objLoopVehicle.CurrentDisplayName
                                                      + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
@@ -14939,65 +14937,14 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 Grade objGrade = await objModularCyberware.GetGradeAsync(token).ConfigureAwait(false);
                 await (await (await GetCyberwareAsync(token).ConfigureAwait(false))
-                    .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false)).ForEachAsync(
-                    async objLoopCyberware =>
-                    {
-                        // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                        if (await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) ==
-                            await objModularCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)
-                            && (objLoopCyberware.Location == objModularCyberware.Location
-                                || string.IsNullOrEmpty(objModularCyberware.Location))
-                            && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name == objGrade.Name
-                            && objLoopCyberware != objModularCyberware
-                            // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                            && await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AllAsync(
-                                    async x => await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false) !=
-                                               await objLoopCyberware.GetHasModularMountAsync(token)
-                                                   .ConfigureAwait(false), token)
-                                .ConfigureAwait(false))
-                        {
-                            Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
-                            string strName = objLoopParent != null
-                                ? await objLoopParent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                : await objLoopCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                            lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                        }
-                    }, token).ConfigureAwait(false);
+                    .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, null), token).ConfigureAwait(false);
 
                 await (await GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopVehicle =>
                 {
                     await objLoopVehicle.Mods.ForEachAsync(async objLoopVehicleMod =>
                     {
                         await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token)
-                            .ConfigureAwait(false)).ForEachAsync(
-                            async objLoopCyberware =>
-                            {
-                                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                                if (await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) ==
-                                    await objModularCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)
-                                    && objLoopCyberware.Location == objModularCyberware.Location
-                                    && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
-                                    objGrade.Name
-                                    && objLoopCyberware != objModularCyberware
-                                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                    && await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AllAsync(
-                                            async x => await x.GetPlugsIntoModularMountAsync(token)
-                                                           .ConfigureAwait(false)
-                                                       != await objLoopCyberware.GetHasModularMountAsync(token)
-                                                           .ConfigureAwait(false), token)
-                                        .ConfigureAwait(false))
-                                {
-                                    Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
-                                    string strName
-                                        = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                          + strSpace + (objLoopParent != null
-                                              ? await objLoopParent.GetCurrentDisplayNameAsync(token)
-                                                  .ConfigureAwait(false)
-                                              : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
-                                                  .ConfigureAwait(false));
-                                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                                }
-                            }, token).ConfigureAwait(false);
+                            .ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, objLoopVehicleMod), token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
                     await objLoopVehicle.WeaponMounts.ForEachAsync(objLoopWeaponMount =>
@@ -15005,38 +14952,7 @@ namespace Chummer
                         return objLoopWeaponMount.Mods.ForEachAsync(async objLoopVehicleMod =>
                         {
                             await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token)
-                                .ConfigureAwait(false)).ForEachAsync(
-                                async objLoopCyberware =>
-                                {
-                                    // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                                    if (await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) ==
-                                        await objModularCyberware.GetPlugsIntoModularMountAsync(token)
-                                            .ConfigureAwait(false)
-                                        && objLoopCyberware.Location == objModularCyberware.Location
-                                        && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
-                                        objGrade.Name
-                                        && objLoopCyberware != objModularCyberware
-                                        // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                        && await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AllAsync(
-                                                async x =>
-                                                    await x.GetPlugsIntoModularMountAsync(token)
-                                                        .ConfigureAwait(false) !=
-                                                    await objLoopCyberware.GetHasModularMountAsync(token)
-                                                        .ConfigureAwait(false), token)
-                                            .ConfigureAwait(false))
-                                    {
-                                        Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
-                                        string strName
-                                            = await objLoopVehicle.GetCurrentDisplayNameAsync(token)
-                                                  .ConfigureAwait(false)
-                                              + strSpace + (objLoopParent != null
-                                                  ? await objLoopParent.GetCurrentDisplayNameAsync(token)
-                                                      .ConfigureAwait(false)
-                                                  : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
-                                                      .ConfigureAwait(false));
-                                        lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                                    }
-                                }, token).ConfigureAwait(false);
+                                .ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, objLoopVehicleMod), token).ConfigureAwait(false);
                         }, token);
                     }, token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
@@ -15047,6 +14963,34 @@ namespace Chummer
             }
 
             return lstReturn;
+
+            async Task ProcessCyberware(Cyberware objLoopCyberware, Grade objGrade, VehicleMod objVehicleMod)
+            {
+                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                if (await objModularCyberware.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token).ConfigureAwait(false)
+                    && objLoopCyberware.Location == objModularCyberware.Location
+                    && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
+                    objGrade.Name
+                    && objLoopCyberware != objModularCyberware
+                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                    && !await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(
+                            x => x.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token), token)
+                        .ConfigureAwait(false))
+                {
+                    string strName = objVehicleMod != null
+                        ? await objVehicleMod.Parent.GetCurrentDisplayNameAsync(token)
+                              .ConfigureAwait(false) + strSpace
+                        : string.Empty;
+                    Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
+                    if (objLoopParent != null)
+                        strName += strSpace + await objLoopParent.GetCurrentDisplayNameAsync(token)
+                                  .ConfigureAwait(false);
+                    else if (objVehicleMod != null)
+                        strName += strSpace + await objVehicleMod.GetCurrentDisplayNameAsync(token)
+                                  .ConfigureAwait(false);
+                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                }
+            }
         }
 
         public async Task<bool> SwitchBuildMethods(CharacterBuildMethod eOldBuildMethod, CharacterBuildMethod eNewBuildMethod, string strOldSettingsKey, CancellationToken token = default)
@@ -47482,31 +47426,37 @@ namespace Chummer
                                                 "/chummer/qualities/quality", strQualityName);
                                         if (xmlQualityDataNode == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strQualityName.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            foreach (string strInner in strQualityName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
+                                                string strName = strInner.Trim();
+                                                if (xmlQualityDataNode != null)
+                                                {
+                                                    strForcedValue = strName;
+                                                    break;
+                                                }
                                                 xmlQualityDataNode =
                                                     xmlQualitiesDocument.TryGetNodeByNameOrId(
                                                         "/chummer/qualities/quality", strName);
-                                                if (xmlQualityDataNode != null)
-                                                    strForcedValue = astrOriginalNameSplit[1].Trim();
+                                                if (xmlQualityDataNode == null)
+                                                    break;
                                             }
                                         }
 
                                         if (xmlQualityDataNode == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strQualityName.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            foreach (string strInner in strQualityName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
+                                                string strName = strInner.Trim();
+                                                if (xmlQualityDataNode != null)
+                                                {
+                                                    strForcedValue = strName;
+                                                    break;
+                                                }
                                                 xmlQualityDataNode =
                                                     xmlQualitiesDocument.TryGetNodeByNameOrId(
                                                         "/chummer/qualities/quality", strName);
-                                                if (xmlQualityDataNode != null)
-                                                    strForcedValue = astrOriginalNameSplit[1].Trim();
+                                                if (xmlQualityDataNode == null)
+                                                    break;
                                             }
                                         }
 
@@ -47618,31 +47568,37 @@ namespace Chummer
                                                 "/chummer/qualities/quality", strQualityName);
                                         if (xmlQualityDataNode == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strQualityName.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            foreach (string strInner in strQualityName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
+                                                string strName = strInner.Trim();
+                                                if (xmlQualityDataNode != null)
+                                                {
+                                                    strForcedValue = strName;
+                                                    break;
+                                                }
                                                 xmlQualityDataNode =
                                                     xmlQualitiesDocument.TryGetNodeByNameOrId(
                                                         "/chummer/qualities/quality", strName);
-                                                if (xmlQualityDataNode != null)
-                                                    strForcedValue = astrOriginalNameSplit[1].Trim();
+                                                if (xmlQualityDataNode == null)
+                                                    break;
                                             }
                                         }
 
                                         if (xmlQualityDataNode == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strQualityName.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            foreach (string strInner in strQualityName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
+                                                string strName = strInner.Trim();
+                                                if (xmlQualityDataNode != null)
+                                                {
+                                                    strForcedValue = strName;
+                                                    break;
+                                                }
                                                 xmlQualityDataNode =
                                                     xmlQualitiesDocument.TryGetNodeByNameOrId(
                                                         "/chummer/qualities/quality", strName);
-                                                if (xmlQualityDataNode != null)
-                                                    strForcedValue = astrOriginalNameSplit[1].Trim();
+                                                if (xmlQualityDataNode == null)
+                                                    break;
                                             }
                                         }
 
@@ -47865,40 +47821,47 @@ namespace Chummer
                                                      StringSplitOptions.RemoveEmptyEntries))
                                         {
                                             string[] astrLineColonSplit =
-                                                strLine.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                                            switch (astrLineColonSplit[0])
+                                                strLine.SplitFixedSizePooledArray(':', 2, StringSplitOptions.RemoveEmptyEntries);
+                                            try
                                             {
-                                                case "Metatype":
-                                                    objContact.Metatype = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                switch (astrLineColonSplit[0])
+                                                {
+                                                    case "Metatype":
+                                                        objContact.Metatype = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                case "Gender":
-                                                    objContact.Gender = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                    case "Gender":
+                                                        objContact.Gender = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                case "Age":
-                                                    objContact.Age = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                    case "Age":
+                                                        objContact.Age = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                case "Preferred Payment Method":
-                                                    objContact.PreferredPayment = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                    case "Preferred Payment Method":
+                                                        objContact.PreferredPayment = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                case "Hobbies/Vice":
-                                                    objContact.HobbiesVice = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                    case "Hobbies/Vice":
+                                                        objContact.HobbiesVice = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                case "Personal Life":
-                                                    objContact.PersonalLife = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                    case "Personal Life":
+                                                        objContact.PersonalLife = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                case "Type":
-                                                    objContact.Type = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                    case "Type":
+                                                        objContact.Type = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                default:
-                                                    sbdNotes.AppendLine(strLine);
-                                                    break;
+                                                    default:
+                                                        sbdNotes.AppendLine(strLine);
+                                                        break;
+                                                }
+                                            }
+                                            finally
+                                            {
+                                                ArrayPool<string>.Shared.Return(astrLineColonSplit);
                                             }
                                         }
 
@@ -47945,26 +47908,22 @@ namespace Chummer
                                                 "/chummer/armors/armor", strArmorName);
                                         if (xmlArmorData == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strArmorName.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            string strDummy = strArmorName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
+                                            if (!string.IsNullOrEmpty(strDummy))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
                                                 xmlArmorData =
                                                     xmlArmorDocument.TryGetNodeByNameOrId(
-                                                        "/chummer/armors/armor", strName);
+                                                        "/chummer/armors/armor", strDummy);
                                             }
 
                                             if (xmlArmorData == null)
                                             {
-                                                astrOriginalNameSplit = strArmorName.Split(',',
-                                                    StringSplitOptions.RemoveEmptyEntries);
-                                                if (astrOriginalNameSplit.Length > 1)
+                                                strDummy = strArmorName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
+                                                if (!string.IsNullOrEmpty(strDummy))
                                                 {
-                                                    string strName = astrOriginalNameSplit[0].Trim();
                                                     xmlArmorData =
                                                         xmlArmorDocument.TryGetNodeByNameOrId(
-                                                            "/chummer/armors/armor", strName);
+                                                            "/chummer/armors/armor", strDummy);
                                                 }
                                             }
                                         }
@@ -48790,25 +48749,21 @@ namespace Chummer
                                             "category = " + strSpellCategory.CleanXPath());
                                         if (xmlSpellData == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strSpellName.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            string strDummy = strSpellName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
+                                            if (!string.IsNullOrEmpty(strDummy))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
                                                 xmlSpellData = xmlSpellDocument.TryGetNodeByNameOrId(
-                                                    "chummer/spells/spell", strName,
+                                                    "chummer/spells/spell", strDummy,
                                                     "category = " + strSpellCategory.CleanXPath());
                                             }
 
                                             if (xmlSpellData == null)
                                             {
-                                                astrOriginalNameSplit = strSpellName.Split(',',
-                                                    StringSplitOptions.RemoveEmptyEntries);
-                                                if (astrOriginalNameSplit.Length > 1)
+                                                strDummy = strSpellName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
+                                                if (!string.IsNullOrEmpty(strDummy))
                                                 {
-                                                    string strName = astrOriginalNameSplit[0].Trim();
                                                     xmlSpellData = xmlSpellDocument.TryGetNodeByNameOrId(
-                                                        "chummer/spells/spell", strName,
+                                                        "chummer/spells/spell", strDummy,
                                                         "category = " + strSpellCategory.CleanXPath());
                                                 }
                                             }
@@ -48863,28 +48818,10 @@ namespace Chummer
                                         if (xmlPowerData == null)
                                         {
                                             string[] astrOriginalNameSplit =
-                                                strPowerName.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                                strPowerName.SplitFixedSizePooledArray(':', 2, StringSplitOptions.RemoveEmptyEntries);
+                                            try
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
-                                                xmlPowerData =
-                                                    xmlPowersDocument.SelectSingleNode(
-                                                        "/chummer/powers/power[contains(name, " +
-                                                        strName.CleanXPath() +
-                                                        ")]");
-
-                                                strForcedValue = astrOriginalNameSplit[1].Trim();
-                                                int intForcedValueParenthesesStart = strForcedValue.IndexOf('(');
-                                                if (intForcedValueParenthesesStart != -1)
-                                                    strForcedValue =
-                                                        strForcedValue.Substring(0, intForcedValueParenthesesStart);
-                                            }
-
-                                            if (xmlPowerData == null)
-                                            {
-                                                astrOriginalNameSplit = strPowerName.Split('(',
-                                                    StringSplitOptions.RemoveEmptyEntries);
-                                                if (astrOriginalNameSplit.Length > 1)
+                                                if (!string.IsNullOrEmpty(astrOriginalNameSplit[1]))
                                                 {
                                                     string strName = astrOriginalNameSplit[0].Trim();
                                                     xmlPowerData =
@@ -48893,26 +48830,65 @@ namespace Chummer
                                                             strName.CleanXPath() +
                                                             ")]");
 
-                                                    string strSecondPart = astrOriginalNameSplit[1].Trim();
-                                                    int intSecondPartParenthesesEnd = strSecondPart.IndexOf(')');
-                                                    if (intSecondPartParenthesesEnd != -1
-                                                        && !int.TryParse(
-                                                            strSecondPart.Substring(0, intSecondPartParenthesesEnd),
-                                                            out intRating))
-                                                        intRating = 1;
+                                                    strForcedValue = astrOriginalNameSplit[1].Trim();
+                                                    int intForcedValueParenthesesStart = strForcedValue.IndexOf('(');
+                                                    if (intForcedValueParenthesesStart != -1)
+                                                        strForcedValue =
+                                                            strForcedValue.Substring(0, intForcedValueParenthesesStart);
+                                                }
+                                            }
+                                            finally
+                                            {
+                                                ArrayPool<string>.Shared.Return(astrOriginalNameSplit);
+                                            }
 
-                                                    astrOriginalNameSplit = strSecondPart.Split(':',
-                                                        StringSplitOptions.RemoveEmptyEntries);
-                                                    if (astrOriginalNameSplit.Length >= 2)
+                                            if (xmlPowerData == null)
+                                            {
+                                                astrOriginalNameSplit = strPowerName.SplitFixedSizePooledArray('(', 2,
+                                                    StringSplitOptions.RemoveEmptyEntries);
+                                                try
+                                                {
+                                                    if (!string.IsNullOrEmpty(astrOriginalNameSplit[1]))
                                                     {
-                                                        strForcedValue = astrOriginalNameSplit[1].Trim();
-                                                        int intForcedValueParenthesesStart =
-                                                            strForcedValue.IndexOf('(');
-                                                        if (intForcedValueParenthesesStart != -1)
-                                                            strForcedValue =
-                                                                strForcedValue.Substring(0,
-                                                                    intForcedValueParenthesesStart);
+                                                        string strName = astrOriginalNameSplit[0].Trim();
+                                                        xmlPowerData =
+                                                            xmlPowersDocument.SelectSingleNode(
+                                                                "/chummer/powers/power[contains(name, " +
+                                                                strName.CleanXPath() +
+                                                                ")]");
+
+                                                        string strSecondPart = astrOriginalNameSplit[1].Trim();
+                                                        int intSecondPartParenthesesEnd = strSecondPart.IndexOf(')');
+                                                        if (intSecondPartParenthesesEnd != -1
+                                                            && !int.TryParse(
+                                                                strSecondPart.Substring(0, intSecondPartParenthesesEnd),
+                                                                out intRating))
+                                                            intRating = 1;
+
+                                                        string[] astrOriginalNameSplit2 = strSecondPart.SplitFixedSizePooledArray(':', 2,
+                                                            StringSplitOptions.RemoveEmptyEntries);
+                                                        try
+                                                        {
+                                                            if (!string.IsNullOrEmpty(astrOriginalNameSplit2[1]))
+                                                            {
+                                                                strForcedValue = astrOriginalNameSplit2[1].Trim();
+                                                                int intForcedValueParenthesesStart =
+                                                                    strForcedValue.IndexOf('(');
+                                                                if (intForcedValueParenthesesStart != -1)
+                                                                    strForcedValue =
+                                                                        strForcedValue.Substring(0,
+                                                                            intForcedValueParenthesesStart);
+                                                            }
+                                                        }
+                                                        finally
+                                                        {
+                                                            ArrayPool<string>.Shared.Return(astrOriginalNameSplit2);
+                                                        }
                                                     }
+                                                }
+                                                finally
+                                                {
+                                                    ArrayPool<string>.Shared.Return(astrOriginalNameSplit);
                                                 }
                                             }
                                         }
@@ -48972,11 +48948,8 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         ? LoadData("complexforms.xml", token: token)
                                         : await LoadDataAsync("complexforms.xml", token: token).ConfigureAwait(false);
-
-                                    string[] astrComplexForms =
-                                        strComplexFormsLine.TrimStartOnce("Complex Forms:").Trim()
-                                                           .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                    foreach (string strComplexFormEntry in astrComplexForms)
+                                    foreach (string strComplexFormEntry in strComplexFormsLine.TrimStartOnce("Complex Forms:").Trim()
+                                                           .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                                     {
                                         string strComplexFormName = strComplexFormEntry.Trim();
                                         string strForcedValue = string.Empty;
@@ -49028,27 +49001,24 @@ namespace Chummer
                                                 "/chummer/complexforms/complexform", strComplexFormName);
                                         if (xmlComplexFormData == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strComplexFormName.Split(':',
-                                                                         StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            string strDummy = strComplexFormName
+                                                .SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
+                                            if (!string.IsNullOrEmpty(strDummy))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
                                                 xmlComplexFormData =
-                                                    xmlComplexFormsDocument.TryGetNodeByNameOrId(
-                                                        "/chummer/complexforms/complexform", strName);
+                                                        xmlComplexFormsDocument.TryGetNodeByNameOrId(
+                                                            "/chummer/complexforms/complexform", strDummy);
                                             }
 
                                             if (xmlComplexFormData == null)
                                             {
-                                                astrOriginalNameSplit = strComplexFormName.Split(',',
-                                                    StringSplitOptions.RemoveEmptyEntries);
-                                                if (astrOriginalNameSplit.Length > 1)
+                                                strDummy = strComplexFormName
+                                                    .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
+                                                if (!string.IsNullOrEmpty(strDummy))
                                                 {
-                                                    string strName = astrOriginalNameSplit[0].Trim();
                                                     xmlComplexFormData =
-                                                        xmlComplexFormsDocument.TryGetNodeByNameOrId(
-                                                            "/chummer/complexforms/complexform", strName);
+                                                            xmlComplexFormsDocument.TryGetNodeByNameOrId(
+                                                                "/chummer/complexforms/complexform", strDummy);
                                                 }
                                             }
                                         }

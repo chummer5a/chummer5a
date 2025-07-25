@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
@@ -1426,7 +1427,7 @@ namespace Chummer
                         if (await frmSelectExotic.ShowDialogSafeAsync(this, token).ConfigureAwait(false) !=
                             DialogResult.OK)
                             return;
-                        strSkill2 += " (" + frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
+                        strSkill2 += " (" + await frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
                     }
                 }
 
@@ -1440,7 +1441,7 @@ namespace Chummer
                         if (await frmSelectExotic.ShowDialogSafeAsync(this, token).ConfigureAwait(false) !=
                             DialogResult.OK)
                             return;
-                        strSkill3 += " (" + frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
+                        strSkill3 += " (" + await frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
                     }
                 }
 
@@ -1734,16 +1735,23 @@ namespace Chummer
                                                         = new List<string>(xmlRelevantUnlocksNodesList.Count);
                                                     foreach (XmlNode xmlLoopNode in xmlRelevantUnlocksNodesList)
                                                     {
-                                                        string[] astrOptions = xmlLoopNode.InnerText.Split(',');
-                                                        if (!string.IsNullOrEmpty(strSkill1) &&
-                                                            astrOptions.Contains(strSkill1))
-                                                            lstToPush.Add(strSkill1);
-                                                        else if (!string.IsNullOrEmpty(strSkill2) &&
-                                                                 astrOptions.Contains(strSkill2))
-                                                            lstToPush.Add(strSkill2);
-                                                        else if (!string.IsNullOrEmpty(strSkill3) &&
-                                                                 astrOptions.Contains(strSkill3))
-                                                            lstToPush.Add(strSkill3);
+                                                        string[] astrOptions = xmlLoopNode.InnerText.SplitToPooledArray(out _, ',');
+                                                        try
+                                                        {
+                                                            if (!string.IsNullOrEmpty(strSkill1) &&
+                                                                astrOptions.Contains(strSkill1))
+                                                                lstToPush.Add(strSkill1);
+                                                            else if (!string.IsNullOrEmpty(strSkill2) &&
+                                                                     astrOptions.Contains(strSkill2))
+                                                                lstToPush.Add(strSkill2);
+                                                            else if (!string.IsNullOrEmpty(strSkill3) &&
+                                                                     astrOptions.Contains(strSkill3))
+                                                                lstToPush.Add(strSkill3);
+                                                        }
+                                                        finally
+                                                        {
+                                                            ArrayPool<string>.Shared.Return(astrOptions);
+                                                        }
                                                     }
 
                                                     // Reverse order because we process bonus nodes from top to bottom, and this text will be saved in a FILO stack

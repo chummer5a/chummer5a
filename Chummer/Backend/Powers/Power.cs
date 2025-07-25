@@ -1231,7 +1231,8 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return Convert.ToDecimal(_strPointsPerLevel, GlobalSettings.InvariantCultureInfo);
+                    decimal.TryParse(_strPointsPerLevel, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
+                    return decReturn;
                 }
             }
             set
@@ -1256,7 +1257,8 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return Convert.ToDecimal(_strPointsPerLevel, GlobalSettings.InvariantCultureInfo);
+                decimal.TryParse(_strPointsPerLevel, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
+                return decReturn;
             }
             finally
             {
@@ -1324,7 +1326,8 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return Convert.ToDecimal(_strAdeptWayDiscount, GlobalSettings.InvariantCultureInfo);
+                    decimal.TryParse(_strAdeptWayDiscount, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
+                    return decReturn;
                 }
             }
             set
@@ -1349,7 +1352,8 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return Convert.ToDecimal(_strAdeptWayDiscount, GlobalSettings.InvariantCultureInfo);
+                decimal.TryParse(_strAdeptWayDiscount, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
+                return decReturn;
             }
             finally
             {

@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -100,19 +101,25 @@ namespace Chummer
             }
             await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount).ConfigureAwait(false);
 
-            string[] strValues = _strLimitToCategories.Split(',', StringSplitOptions.RemoveEmptyEntries);
-
-            // Populate the Category list.
-            string strFilterPrefix = (VehicleMountMods
-                ? "weaponmountmods/mod[("
-                : "mods/mod[(") + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and category = ";
-            foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("modcategories/category"))
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string>
+                                                                                setValues))
             {
-                string strInnerText = objXmlCategory.Value;
-                if ((string.IsNullOrEmpty(_strLimitToCategories) || strValues.Contains(strInnerText))
-                    && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
+                foreach (string strCategory in _strLimitToCategories.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                    setValues.Add(strCategory);
+
+                // Populate the Category list.
+                string strFilterPrefix = (VehicleMountMods
+                    ? "weaponmountmods/mod[("
+                    : "mods/mod[(") + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and category = ";
+                foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("modcategories/category"))
                 {
-                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
+                    string strInnerText = objXmlCategory.Value;
+                    if ((string.IsNullOrEmpty(_strLimitToCategories) || setValues.Contains(strInnerText))
+                        && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
+                    {
+                        _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
+                    }
                 }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -670,9 +677,7 @@ namespace Chummer
                     // Slots (part 2, if we do need a rating)
                     if (strSlots.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
-                        string[] strValues = strSlots.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                     .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                        strSlots = strValues[intRating - 1];
+                        strSlots = strSlots.ProcessFixedValuesString(intRating);
 
                         if (strSlots.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decExtraSlots))
                         {
@@ -716,6 +721,7 @@ namespace Chummer
                     {
                         string strCost
                             = xmlVehicleMod.SelectSingleNodeAndCacheExpression("cost", token)?.Value ?? string.Empty;
+                        strCost = strCost.ProcessFixedValuesString(intRating);
                         if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                         {
                             decimal decMin;
@@ -723,9 +729,16 @@ namespace Chummer
                             strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                             if (strCost.Contains('-'))
                             {
-                                string[] strValues = strCost.Split('-');
-                                decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                                decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                                string[] strValues = strCost.SplitFixedSizePooledArray('-', 2);
+                                try
+                                {
+                                    decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                                    decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                                }
+                                finally
+                                {
+                                    ArrayPool<string>.Shared.Return(strValues);
+                                }
                             }
                             else
                             {
@@ -755,17 +768,6 @@ namespace Chummer
                             }
 
                             strCost = decMin.ToString(GlobalSettings.InvariantCultureInfo);
-                        }
-                        else if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
-                        {
-                            strCost = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
-                            string[] strValues = strCost.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                            if (intRating < 1 || intRating > strValues.Length)
-                            {
-                                intRating = 1;
-                            }
-
-                            strCost = strValues[intRating - 1];
                         }
 
                         if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decItemCost))

@@ -1237,7 +1237,7 @@ namespace Chummer
                 string strSkillKey = UseSkill;
                 if (string.IsNullOrEmpty(strSkillKey))
                     strSkillKey = "Software";
-                return await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync("Software", token).ConfigureAwait(false);
+                return await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync(strSkillKey, token).ConfigureAwait(false);
             }
             finally
             {

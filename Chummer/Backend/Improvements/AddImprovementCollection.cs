@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -2519,11 +2520,7 @@ namespace Chummer
             string strBonus = bonusNode["devicerating"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2534,11 +2531,7 @@ namespace Chummer
             strBonus = bonusNode["programlimit"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2549,11 +2542,7 @@ namespace Chummer
             strBonus = bonusNode["attack"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2564,11 +2553,7 @@ namespace Chummer
             strBonus = bonusNode["sleaze"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2579,11 +2564,7 @@ namespace Chummer
             strBonus = bonusNode["dataprocessing"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2594,11 +2575,7 @@ namespace Chummer
             strBonus = bonusNode["firewall"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2609,11 +2586,7 @@ namespace Chummer
             strBonus = bonusNode["matrixcm"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;

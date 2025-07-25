@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -125,7 +126,7 @@ namespace Chummer.Backend.Equipment
         private string _strRatingLabel = "String_Rating";
 
         private XmlNode _nodWirelessBonus;
-        private XmlNode _nodWirelessWeaponBonus;
+        private XmlElement _nodWirelessWeaponBonus;
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
         private FiringMode _eFiringMode = FiringMode.DogBrain;
@@ -707,7 +708,9 @@ namespace Chummer.Backend.Equipment
                 _strRange = objRangeNode.InnerText;
                 string strMultiply = objRangeNode.Attributes["multiply"]?.InnerText;
                 if (!string.IsNullOrEmpty(strMultiply))
-                    _decRangeMultiplier = Convert.ToDecimal(strMultiply, GlobalSettings.InvariantCultureInfo);
+                {
+                    decimal.TryParse(strMultiply, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decRangeMultiplier);
+                }
             }
 
             objXmlWeapon.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange);
@@ -780,11 +783,18 @@ namespace Chummer.Backend.Equipment
             else
             {
                 _blnCanSwapAttributes = true;
-                string[] strArray = _strAttributeArray.Split(',');
-                _strAttack = strArray[0];
-                _strSleaze = strArray[1];
-                _strDataProcessing = strArray[2];
-                _strFirewall = strArray[3];
+                string[] strArray = _strAttributeArray.SplitFixedSizePooledArray(',', 4);
+                try
+                {
+                    _strAttack = strArray[0];
+                    _strSleaze = strArray[1];
+                    _strDataProcessing = strArray[2];
+                    _strFirewall = strArray[3];
+                }
+                finally
+                {
+                    ArrayPool<string>.Shared.Return(strArray);
+                }
             }
 
             objXmlWeapon.TryGetStringFieldQuickly("modattack", ref _strModAttack);
@@ -2778,12 +2788,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         private int ProcessRatingString(string strExpression, int intRating)
         {
-            if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strExpression = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)].Trim('[', ']');
-            }
+            strExpression = strExpression.ProcessFixedValuesString(intRating);
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
@@ -2809,12 +2814,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         private async Task<int> ProcessRatingStringAsync(string strExpression, int intRating, CancellationToken token = default)
         {
-            if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strExpression = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)].Trim('[', ']');
-            }
+            strExpression = strExpression.ProcessFixedValuesString(intRating);
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
@@ -3159,9 +3159,16 @@ namespace Chummer.Backend.Equipment
                 decimal decMax = decimal.MaxValue;
                 if (strReturn.Contains('-'))
                 {
-                    string[] strValues = strReturn.Split('-');
-                    decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                    decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                    string[] strValues = strReturn.SplitFixedSizePooledArray('-', 2);
+                    try
+                    {
+                        decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                    }
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(strValues);
+                    }
                 }
                 else
                     decMin = Convert.ToDecimal(strReturn.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
@@ -3179,7 +3186,7 @@ namespace Chummer.Backend.Equipment
                 return strReturn;
             }
 
-            decimal decTotalCost = Convert.ToDecimal(strReturn, GlobalSettings.InvariantCultureInfo);
+            decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTotalCost);
 
             decTotalCost *= 1.0m + decMarkup;
 
@@ -5578,12 +5585,13 @@ namespace Chummer.Backend.Equipment
                 string strSlots = ModificationSlots;
                 if (string.IsNullOrEmpty(strSlots))
                     return string.Empty;
+                int intOldValue;
                 Dictionary<string, int> dicMounts = new Dictionary<string, int>();
                 foreach (string strMount in strSlots.SplitNoAlloc(
                                  '/', StringSplitOptions.RemoveEmptyEntries))
                 {
-                    if (dicMounts.ContainsKey(strMount))
-                        dicMounts[strMount] += 1;
+                    if (dicMounts.TryGetValue(strMount, out intOldValue))
+                        dicMounts[strMount] = intOldValue + 1;
                     else
                         dicMounts.Add(strMount, 1);
                 }
@@ -5597,21 +5605,21 @@ namespace Chummer.Backend.Equipment
                         foreach (string strMount in strLoop.SplitNoAlloc(
                                  '/', StringSplitOptions.RemoveEmptyEntries))
                         {
-                            if (dicMounts.ContainsKey(strMount))
-                                dicMounts[strMount] += 1;
+                            if (dicMounts.TryGetValue(strMount, out intOldValue))
+                                dicMounts[strMount] = intOldValue + 1;
                             else
                                 dicMounts.Add(strMount, 1);
                         }
                     }
                     strLoop = objAccessory.Mount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
                     {
-                        dicMounts[strLoop] -= 1;
+                        dicMounts[strLoop] = intOldValue - 1;
                     }
                     strLoop = objAccessory.ExtraMount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
                     {
-                        dicMounts[strLoop] -= 1;
+                        dicMounts[strLoop] = intOldValue - 1;
                     }
                 }
                 foreach (Weapon objWeapon in UnderbarrelWeapons)
@@ -5619,14 +5627,14 @@ namespace Chummer.Backend.Equipment
                     if (!objWeapon.Equipped)
                         continue;
                     string strLoop = objWeapon.Mount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
                     {
-                        dicMounts[strLoop] -= 1;
+                        dicMounts[strLoop] = intOldValue - 1;
                     }
                     strLoop = objWeapon.ExtraMount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
+                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
                     {
-                        dicMounts[strLoop] -= 1;
+                        dicMounts[strLoop] = intOldValue - 1;
                     }
                 }
 
@@ -5698,12 +5706,17 @@ namespace Chummer.Backend.Equipment
 
                 if (!string.IsNullOrEmpty(Parent?.DoubledCostModificationSlots))
                 {
-                    string[] astrParentDoubledCostModificationSlots =
-                        Parent.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                    if (astrParentDoubledCostModificationSlots.Contains(Mount) ||
-                        astrParentDoubledCostModificationSlots.Contains(ExtraMount))
+                    bool blnBreakAfterFound = string.IsNullOrEmpty(Mount) || string.IsNullOrEmpty(ExtraMount);
+                    foreach (string strDoubledCostSlot in Parent.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                     {
-                        decReturn *= 2;
+                        if (strDoubledCostSlot == Mount || strDoubledCostSlot == ExtraMount)
+                        {
+                            decReturn *= 2;
+                            if (blnBreakAfterFound)
+                                break;
+                            else
+                                blnBreakAfterFound = true;
+                        }
                     }
                 }
 
@@ -5745,12 +5758,17 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(Parent?.DoubledCostModificationSlots))
             {
-                string[] astrParentDoubledCostModificationSlots
-                    = Parent.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                if (astrParentDoubledCostModificationSlots.Contains(Mount)
-                    || astrParentDoubledCostModificationSlots.Contains(ExtraMount))
+                bool blnBreakAfterFound = string.IsNullOrEmpty(Mount) || string.IsNullOrEmpty(ExtraMount);
+                foreach (string strDoubledCostSlot in Parent.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                 {
-                    decReturn *= 2;
+                    if (strDoubledCostSlot == Mount || strDoubledCostSlot == ExtraMount)
+                    {
+                        decReturn *= 2;
+                        if (blnBreakAfterFound)
+                            break;
+                        else
+                            blnBreakAfterFound = true;
+                    }
                 }
             }
 
@@ -8283,7 +8301,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public Dictionary<string, string> GetRangeStrings(CultureInfo objCulture, bool blnIncludeAmmo = true)
         {
-            decimal decRangeModifier = GetRangeBonus(blnIncludeAmmo) / 100.0m;
+            decimal decRangeModifier = 1.0m + GetRangeBonus(blnIncludeAmmo) / 100.0m;
             decimal decMin = GetRange("min", false, blnIncludeAmmo) * decRangeModifier;
             decimal decShort = GetRange("short", false, blnIncludeAmmo) * decRangeModifier;
             decimal decMedium = GetRange("medium", false, blnIncludeAmmo) * decRangeModifier;
@@ -8365,7 +8383,7 @@ namespace Chummer.Backend.Equipment
         public async Task<Dictionary<string, string>> GetRangeStringsAsync(CultureInfo objCulture,
             bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            decimal decRangeModifier = await GetRangeBonusAsync(blnIncludeAmmo, token).ConfigureAwait(false) / 100.0m;
+            decimal decRangeModifier = 1.0m + await GetRangeBonusAsync(blnIncludeAmmo, token).ConfigureAwait(false) / 100.0m;
             decimal decMin = await GetRangeAsync("min", false, blnIncludeAmmo, token).ConfigureAwait(false) * decRangeModifier;
             decimal decShort = await GetRangeAsync("short", false, blnIncludeAmmo, token).ConfigureAwait(false) * decRangeModifier;
             decimal decMedium = await GetRangeAsync("medium", false, blnIncludeAmmo, token).ConfigureAwait(false) * decRangeModifier;
@@ -13637,19 +13655,121 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool CheckAccessoryRequirements(XPathNavigator objXmlAccessory)
         {
-            if (objXmlAccessory == null) return false;
-            string[] lstMounts = AccessoryMounts.Split('/', StringSplitOptions.RemoveEmptyEntries);
-            XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount");
-            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
-                !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
-            {
+            if (objXmlAccessory == null)
                 return false;
+            string[] astrAvailableMounts = AccessoryMounts.SplitToPooledArray(out int intNumMounts, '/', StringSplitOptions.RemoveEmptyEntries);
+            try
+            {
+                string strPossibleMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount")?.Value ?? string.Empty;
+                string strPossibleExtraMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount")?.Value ?? string.Empty;
+                bool blnMountFound = string.IsNullOrEmpty(strPossibleMounts);
+                bool blnExtraMountFound = string.IsNullOrEmpty(strPossibleExtraMounts);
+                if (!blnMountFound)
+                {
+                    if (!blnExtraMountFound)
+                    {
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                            out HashSet<string> setPossibleMounts))
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                            out HashSet<string> setPossibleExtraMounts))
+                        {
+                            foreach (string strLoopMount in strPossibleMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                setPossibleMounts.Add(strLoopMount);
+                            }
+                            foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                setPossibleExtraMounts.Add(strLoopMount);
+                            }
+                            if (!setPossibleMounts.SetEquals(setPossibleExtraMounts))
+                            {
+                                // First loop: find and remove mounts that only match one of the two
+                                for (int i = 0; i < intNumMounts; ++i)
+                                {
+                                    string strLoop = astrAvailableMounts[i];
+                                    if (setPossibleMounts.Contains(strLoop))
+                                    {
+                                        if (!setPossibleExtraMounts.Contains(strLoop))
+                                        {
+                                            blnMountFound = true;
+                                            if (blnExtraMountFound)
+                                                break;
+                                        }
+                                    }
+                                    else if (setPossibleExtraMounts.Contains(strLoop))
+                                    {
+                                        blnExtraMountFound = true;
+                                        if (blnMountFound)
+                                            break;
+                                    }
+                                }
+                            }
+                            // Only remaining mounts (if not found) are ones that are in both strings, so much main mount first and then extra mount
+                            if (!blnMountFound || !blnExtraMountFound)
+                            {
+                                for (int i = 0; i < intNumMounts; ++i)
+                                {
+                                    string strLoop = astrAvailableMounts[i];
+                                    if (!blnMountFound && setPossibleMounts.Contains(strLoop))
+                                    {
+                                        blnMountFound = true;
+                                        if (blnExtraMountFound)
+                                            break;
+                                    }
+                                    else if (!blnExtraMountFound && setPossibleExtraMounts.Contains(strLoop))
+                                    {
+                                        blnExtraMountFound = true;
+                                        if (blnMountFound)
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                            out HashSet<string> setPossibleMounts))
+                        {
+                            foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                                setPossibleMounts.Add(strLoopMount);
+                            for (int i = 0; i < intNumMounts; ++i)
+                            {
+                                string strLoop = astrAvailableMounts[i];
+                                if (setPossibleMounts.Contains(strLoop))
+                                {
+                                    blnMountFound = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (!blnExtraMountFound)
+                {
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                        out HashSet<string> setPossibleExtraMounts))
+                    {
+                        foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            setPossibleExtraMounts.Add(strLoopMount);
+                        for (int i = 0; i < intNumMounts; ++i)
+                        {
+                            string strLoop = astrAvailableMounts[i];
+                            if (setPossibleExtraMounts.Contains(strLoop))
+                            {
+                                blnExtraMountFound = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!blnMountFound || !blnExtraMountFound)
+                    return false;
             }
-            xmlMountNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount");
-            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
-                !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
+            finally
             {
-                return false;
+                ArrayPool<string>.Shared.Return(astrAvailableMounts);
             }
 
             if (!objXmlAccessory.RequirementsMet(_objCharacter, this))
@@ -13681,23 +13801,140 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (objXmlAccessory == null)
                 return false;
-            string[] lstMounts = AccessoryMounts.Split('/', StringSplitOptions.RemoveEmptyEntries);
-            XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount", token);
-            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value
-                    .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
-                        !string.IsNullOrEmpty(strItem)
-                        && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
+            string[] astrAvailableMounts = AccessoryMounts.SplitToPooledArray(out int intNumMounts, '/', StringSplitOptions.RemoveEmptyEntries);
+            try
             {
-                return false;
-            }
+                string strPossibleMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount", token)?.Value ?? string.Empty;
+                string strPossibleExtraMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount", token)?.Value ?? string.Empty;
+                bool blnMountFound = string.IsNullOrEmpty(strPossibleMounts);
+                bool blnExtraMountFound = string.IsNullOrEmpty(strPossibleExtraMounts);
+                if (!blnMountFound)
+                {
+                    if (!blnExtraMountFound)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                            out HashSet<string> setPossibleMounts))
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                            out HashSet<string> setPossibleExtraMounts))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            foreach (string strLoopMount in strPossibleMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                setPossibleMounts.Add(strLoopMount);
+                            }
+                            foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                setPossibleExtraMounts.Add(strLoopMount);
+                            }
+                            token.ThrowIfCancellationRequested();
+                            if (!setPossibleMounts.SetEquals(setPossibleExtraMounts))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                // First loop: find and remove mounts that only match one of the two
+                                for (int i = 0; i < intNumMounts; ++i)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    string strLoop = astrAvailableMounts[i];
+                                    if (setPossibleMounts.Contains(strLoop))
+                                    {
+                                        if (!setPossibleExtraMounts.Contains(strLoop))
+                                        {
+                                            blnMountFound = true;
+                                            if (blnExtraMountFound)
+                                                break;
+                                        }
+                                    }
+                                    else if (setPossibleExtraMounts.Contains(strLoop))
+                                    {
+                                        blnExtraMountFound = true;
+                                        if (blnMountFound)
+                                            break;
+                                    }
+                                }
+                            }
+                            // Only remaining mounts (if not found) are ones that are in both strings, so much main mount first and then extra mount
+                            if (!blnMountFound || !blnExtraMountFound)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                for (int i = 0; i < intNumMounts; ++i)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    string strLoop = astrAvailableMounts[i];
+                                    if (!blnMountFound && setPossibleMounts.Contains(strLoop))
+                                    {
+                                        blnMountFound = true;
+                                        if (blnExtraMountFound)
+                                            break;
+                                    }
+                                    else if (!blnExtraMountFound && setPossibleExtraMounts.Contains(strLoop))
+                                    {
+                                        blnExtraMountFound = true;
+                                        if (blnMountFound)
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                            out HashSet<string> setPossibleMounts))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                setPossibleMounts.Add(strLoopMount);
+                            }
+                            token.ThrowIfCancellationRequested();
+                            for (int i = 0; i < intNumMounts; ++i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                string strLoop = astrAvailableMounts[i];
+                                if (setPossibleMounts.Contains(strLoop))
+                                {
+                                    blnMountFound = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (!blnExtraMountFound)
+                {
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                        out HashSet<string> setPossibleExtraMounts))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            setPossibleExtraMounts.Add(strLoopMount);
+                        }
+                        token.ThrowIfCancellationRequested();
+                        for (int i = 0; i < intNumMounts; ++i)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            string strLoop = astrAvailableMounts[i];
+                            if (setPossibleExtraMounts.Contains(strLoop))
+                            {
+                                blnExtraMountFound = true;
+                                break;
+                            }
+                        }
+                    }
+                }
 
-            xmlMountNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount", token);
-            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value
-                    .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
-                        !string.IsNullOrEmpty(strItem)
-                        && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
+                if (!blnMountFound || !blnExtraMountFound)
+                    return false;
+            }
+            finally
             {
-                return false;
+                ArrayPool<string>.Shared.Return(astrAvailableMounts);
             }
 
             if (!await objXmlAccessory.RequirementsMetAsync(_objCharacter, this, token: token).ConfigureAwait(false))

@@ -6319,8 +6319,10 @@ namespace Chummer
             IReadOnlyList<string> lstCustomPaths = EnabledCustomDataDirectoryPaths;
             if (strFileName == "packs.xml")
             {
-                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
-                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths)
+                {
+                    Utils.GetPacksFolderPath
+                };
                 return XmlManager.LoadXPath(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token);
             }
             return XmlManager.LoadXPath(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token);
@@ -6342,8 +6344,10 @@ namespace Chummer
             IReadOnlyList<string> lstCustomPaths = await GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
             if (strFileName == "packs.xml")
             {
-                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
-                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths)
+                {
+                    Utils.GetPacksFolderPath
+                };
                 return await XmlManager.LoadXPathAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
             }
             return await XmlManager.LoadXPathAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
@@ -6363,8 +6367,10 @@ namespace Chummer
             IReadOnlyList<string> lstCustomPaths = EnabledCustomDataDirectoryPaths;
             if (strFileName == "packs.xml")
             {
-                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
-                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths)
+                {
+                    Utils.GetPacksFolderPath
+                };
                 return XmlManager.Load(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token);
             }
             return XmlManager.Load(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token);
@@ -6383,8 +6389,10 @@ namespace Chummer
             IReadOnlyList<string> lstCustomPaths = await GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
             if (strFileName == "packs.xml")
             {
-                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
-                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths)
+                {
+                    Utils.GetPacksFolderPath
+                };
                 return await XmlManager.LoadAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
             }
             return await XmlManager.LoadAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);

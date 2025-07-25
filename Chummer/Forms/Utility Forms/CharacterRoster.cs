@@ -2094,8 +2094,7 @@ namespace Chummer
                     = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken).ConfigureAwait(false);
                 if (objSelectedNode == null)
                     return;
-                CharacterCache objCache = objSelectedNode.Tag as CharacterCache;
-                if (objCache != null)
+                if (objSelectedNode.Tag is CharacterCache objCache)
                 {
                     System.IAsyncDisposable objLocker = await objCache.LockObject.EnterUpgradeableReadLockAsync(_objGenericToken).ConfigureAwait(false);
                     try

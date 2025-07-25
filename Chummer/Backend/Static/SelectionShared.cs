@@ -3861,11 +3861,7 @@ namespace Chummer
 
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvailExpr = objAvailNode?.Value ?? string.Empty;
-            if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strAvailExpr = strValues[Math.Max(Math.Min(intRating - 1, strValues.Length - 1), 0)];
-            }
+            strAvailExpr = strAvailExpr.ProcessFixedValuesString(intRating);
 
             if (string.IsNullOrEmpty(strAvailExpr))
                 return true;
@@ -3942,11 +3938,7 @@ namespace Chummer
 
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvailExpr = objAvailNode?.Value ?? string.Empty;
-            if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strAvailExpr = strValues[Math.Max(Math.Min(intRating - 1, strValues.Length - 1), 0)];
-            }
+            strAvailExpr = strAvailExpr.ProcessFixedValuesString(intRating);
 
             if (string.IsNullOrEmpty(strAvailExpr))
                 return true;
@@ -4006,18 +3998,13 @@ namespace Chummer
             string strCost = objCostNode?.Value;
             if (!string.IsNullOrEmpty(strCost))
             {
-                if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                }
-                else if (strCost.StartsWith("Variable", StringComparison.Ordinal))
+                strCost = strCost.ProcessFixedValuesString(intRating);
+                if (strCost.StartsWith("Variable", StringComparison.Ordinal))
                 {
                     strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                     int intHyphenIndex = strCost.IndexOf('-');
                     strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
                 }
-
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decCost))
                 {
                     (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)));
@@ -4070,18 +4057,13 @@ namespace Chummer
             string strCost = objCostNode?.Value;
             if (!string.IsNullOrEmpty(strCost))
             {
-                if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                }
-                else if (strCost.StartsWith("Variable", StringComparison.Ordinal))
+                strCost = strCost.ProcessFixedValuesString(intRating);
+                if (strCost.StartsWith("Variable", StringComparison.Ordinal))
                 {
                     strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                     int intHyphenIndex = strCost.IndexOf('-');
                     strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
                 }
-
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decCost))
                 {
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);

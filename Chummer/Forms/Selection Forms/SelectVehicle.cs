@@ -1022,11 +1022,8 @@ namespace Chummer
 
             if (await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
             {
-                decimal decCost = xmlVehicle != null
-                    ? Convert.ToDecimal(
-                        xmlVehicle.SelectSingleNodeAndCacheExpression("cost", token)
-                        ?.Value, GlobalSettings.InvariantCultureInfo)
-                    : 0;
+                decimal.TryParse(xmlVehicle?.SelectSingleNodeAndCacheExpression("cost", token)?.Value,
+                    NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCost);
                 decCost *= 1 - await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value, token: token)
                     .ConfigureAwait(false) / 100.0m;
 

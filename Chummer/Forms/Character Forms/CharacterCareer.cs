@@ -11074,9 +11074,8 @@ namespace Chummer
                     {
                         GenericToken.ThrowIfCancellationRequested();
                         decimal decArmorCost = await objArmor.GetOwnCostAsync(GenericToken).ConfigureAwait(false);
-                        decimal decArmorCapacity = Convert.ToDecimal(
-                            await objArmor.CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo).ConfigureAwait(false),
-                            GlobalSettings.InvariantCultureInfo);
+                        decimal.TryParse(await objArmor.CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo).ConfigureAwait(false),
+                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decArmorCapacity);
                         using (ThreadSafeForm<SelectArmorMod> frmPickArmorMod
                                = await ThreadSafeForm<SelectArmorMod>.GetAsync(
                                    () => new SelectArmorMod(CharacterObject, objArmor)

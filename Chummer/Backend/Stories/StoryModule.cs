@@ -513,11 +513,27 @@ namespace Chummer
                         string strName = await _objCharacter.GetNameAsync(token).ConfigureAwait(false);
                         if (!string.IsNullOrWhiteSpace(strName))
                         {
-                            if (!string.IsNullOrEmpty(strArguments) && int.TryParse(strArguments, out int intNameIndex))
+                            if (!string.IsNullOrEmpty(strArguments))
                             {
-                                string[] lstNames
-                                    = strName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                                return lstNames[Math.Max(Math.Min(intNameIndex, lstNames.Length - 1), 0)];
+                                int intIndex = 0;
+                                int intNameIndex = 0;
+                                string strReturn = strName;
+                                foreach(string strArgument in strArguments.ProcessArgsString())
+                                {
+                                    if (intIndex == 0)
+                                    {
+                                        if (!int.TryParse(strArguments, out intNameIndex))
+                                            break;
+                                    }
+                                    else
+                                    {
+                                        strReturn = strArgument;
+                                        if (intIndex == intNameIndex)
+                                            break;
+                                    }
+                                    ++intIndex;
+                                }
+                                return strName;
                             }
 
                             return strName;
@@ -561,13 +577,26 @@ namespace Chummer
                     }
                     case "$Index":
                     {
-                        string[] strArgumentsSplit = strArguments.Split('|', StringSplitOptions.RemoveEmptyEntries);
-                        int intArgumentsCount = strArgumentsSplit.Length;
-                        if (intArgumentsCount > 2 && int.TryParse(strArgumentsSplit[0], out int intIndex))
+                        string strReturn = string.Empty;
+                        int intIndex = 0;
+                        int i = 0;
+                        foreach (string strArgument in strArguments.SplitNoAlloc('|', StringSplitOptions.RemoveEmptyEntries))
                         {
-                            return strArgumentsSplit[Math.Max(0, Math.Min(intArgumentsCount - 1, intIndex + 1))];
+                            if (i == 0)
+                            {
+                                if (!int.TryParse(strArgument, out intIndex))
+                                    break;
+                            }
+                            else
+                            {
+                                strReturn = strArgument;
+                                if (i == intIndex)
+                                    break;
+                            }
+                            ++i;
                         }
-
+                        if (!string.IsNullOrEmpty(strReturn))
+                            return strReturn;
                         return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
                                                     .ConfigureAwait(false);
                     }
