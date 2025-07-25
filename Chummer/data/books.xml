@@ -692,6 +692,13 @@
       <id>d7ac8252-fc5d-42d2-afca-2cf98ec14287</id>
       <name>Grimmes Erwachen (German-Only)</name>
       <code>GE</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Ich träumte einen alten Traum. Das Land war grün und weit. Menschen lebten dort, Menschen starben dort. Einer aber war unter</text>
+          <page>5</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>775703af-df57-4ee2-b8e7-c6b829b80539</id>
@@ -700,7 +707,7 @@
       <matches>
         <match>
           <language>en-us</language>
-          <text>Gamemastering is more of an art than a science</text>
+          <text>By 2075, commlinks have become a universal appliance. Because</text>
           <page>4</page>
         </match>
       </matches>

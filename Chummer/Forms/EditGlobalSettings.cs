@@ -2678,7 +2678,8 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 List<string> lstKeysToLoop = dicPatternsToMatch.GetKeysToListSafe();
                 //Search the first 15 pages for all the text
-                for (int intPage = 1; intPage <= 15; intPage++)
+                int intMaxPage = Math.Min(15, objPdfDocument.GetNumberOfPages());
+                for (int intPage = 1; intPage <= intMaxPage; intPage++)
                 {
                     token.ThrowIfCancellationRequested();
                     // No more patterns to match, exit early
