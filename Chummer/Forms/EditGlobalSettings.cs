@@ -2502,7 +2502,7 @@ namespace Chummer
             }
         }
 
-        private async Task<List<SourcebookInfo>> ScanFilesForPDFTexts(IEnumerable<string> lstFiles,
+        private async Task<List<SourcebookInfo>> ScanFilesForPDFTexts(string[] lstFiles,
                                                                       ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch,
                                                                       ConcurrentDictionary<string, Tuple<string, int>> dicBackupPatternsToMatch,
                                                                       LoadingBar frmProgressBar,
@@ -2516,10 +2516,12 @@ namespace Chummer
             int intCounter = 0;
             if (dicPatternsToMatch?.IsEmpty == false)
             {
+                int intFileCounter = 0;
                 foreach (string strFile in lstFiles)
                 {
                     token.ThrowIfCancellationRequested();
                     lstLoadingTasks.Add(GetSourcebookInfo(strFile, dicPatternsToMatch));
+                    ++intFileCounter;
                     if (++intCounter != Utils.MaxParallelBatchSize)
                         continue;
                     await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
@@ -2542,6 +2544,16 @@ namespace Chummer
 
                     intCounter = 0;
                     lstLoadingTasks.Clear();
+                    if (dicPatternsToMatch.IsEmpty)
+                    {
+                        for (; intFileCounter <= lstFiles.Length; ++intFileCounter)
+                        {
+                            await frmProgressBar
+                              .PerformStepAsync(eUseTextPattern: LoadingBar.ProgressBarTextPatterns.Scanning, token: token)
+                              .ConfigureAwait(false);
+                        }
+                        break;
+                    }
                 }
 
                 await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
@@ -2593,6 +2605,8 @@ namespace Chummer
 
                     intCounter = 0;
                     lstLoadingTasks.Clear();
+                    if (dicBackupPatternsToMatch.IsEmpty)
+                        break;
                 }
 
                 await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
