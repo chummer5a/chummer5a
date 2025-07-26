@@ -1096,7 +1096,7 @@ namespace Chummer.Backend.Equipment
             List<Weapon> lstChildWeapons = new List<Weapon>(1);
             await objChild.CreateAsync(xmlChildDataNode, intChildRating, lstChildWeapons, strChildForceValue,
                 blnAddChildImprovements, blnCreateChildren, blnSkipSelectForms, token).ConfigureAwait(false);
-            objChild.Quantity = decChildQty;
+            await objChild.SetQuantityAsync(decChildQty, token).ConfigureAwait(false);
             objChild.Cost = "0";
             objChild.ParentID = InternalId;
             if (!string.IsNullOrEmpty(strChildForceSource))
@@ -1301,7 +1301,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 Cost = "0";
-                Quantity = decQty;
+                await SetQuantityAsync(decQty, token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strMaxRating))
                     MaxRating = strMaxRating;
 
@@ -1936,7 +1936,7 @@ namespace Chummer.Backend.Equipment
                               token).ConfigureAwait(false);
 
                 await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("category", DisplayCategory(strLanguageToPrint), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category_english", Category, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ispersona",
                                                         (Name == "Living Persona").ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
@@ -2142,6 +2142,10 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public string CurrentDisplayCategory => DisplayCategory(GlobalSettings.Language);
+
+        public Task<string> GetCurrentDisplayCategoryAsync(CancellationToken token = default) => DisplayCategoryAsync(GlobalSettings.Language, token);
+
         /// <summary>
         /// Translated Category.
         /// </summary>
@@ -2154,6 +2158,26 @@ namespace Chummer.Backend.Equipment
                                 .SelectSingleNodeAndCacheExpression(
                                     "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")
                                 ?.Value ?? Category;
+        }
+
+        /// <summary>
+        /// Translated Category.
+        /// </summary>
+        public Task<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Task.FromResult(Category);
+
+            return Inner();
+            async Task<string> Inner()
+            {
+                XPathNavigator xmlNode = (await _objCharacter.LoadDataXPathAsync("gear.xml", strLanguage, token: token).ConfigureAwait(false))
+                                .SelectSingleNodeAndCacheExpression(
+                                    "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token);
+                return xmlNode?.Value ?? Category;
+            }
         }
 
         /// <summary>
@@ -2494,6 +2518,19 @@ namespace Chummer.Backend.Equipment
                 _decQty = value;
                 OnPropertyChanged();
             }
+        }
+
+        /// <summary>
+        /// Quantity.
+        /// </summary>
+        public Task SetQuantityAsync(decimal value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (_decQty == value)
+                return Task.CompletedTask;
+            _decQty = value;
+            return OnPropertyChangedAsync(nameof(Quantity), token);
         }
 
         /// <summary>
@@ -6205,8 +6242,7 @@ namespace Chummer.Backend.Equipment
                         await CreateAsync(xmlCustomGearDataNode,
                             xmlGearImportNode.SelectSingleNodeAndCacheExpression("@rating", token)?.ValueAsInt ?? 0,
                             lstWeapons, strOriginalName, token: token).ConfigureAwait(false);
-                        Cost = xmlGearImportNode
-                            .SelectSingleNodeAndCacheExpression("gearcost/@value", token)?.Value;
+                        Cost = xmlGearImportNode.SelectSingleNodeAndCacheExpression("gearcost/@value", token)?.Value;
                     }
                     else
                         return false;
@@ -6215,7 +6251,8 @@ namespace Chummer.Backend.Equipment
                 if (InternalId.IsEmptyGuid())
                     return false;
 
-                Quantity = xmlGearImportNode.SelectSingleNodeAndCacheExpression("@quantity", token)?.ValueAsInt ?? 1;
+                await SetQuantityAsync(xmlGearImportNode
+                            .SelectSingleNodeAndCacheExpression("@quantity", token)?.ValueAsInt ?? 1, token).ConfigureAwait(false);
                 await SetNotesAsync(xmlGearImportNode.SelectSingleNodeAndCacheExpression("description", token)?.Value, token).ConfigureAwait(false);
 
                 await ProcessHeroLabGearPluginsAsync(xmlGearImportNode, lstWeapons, token).ConfigureAwait(false);
@@ -6294,7 +6331,7 @@ namespace Chummer.Backend.Equipment
                         Gear objPlugin = await Children.FirstOrDefaultAsync(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)), token: token).ConfigureAwait(false);
                         if (objPlugin != null)
                         {
-                            objPlugin.Quantity = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity", token)?.ValueAsInt ?? 1;
+                            await objPlugin.SetQuantityAsync(xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity", token)?.ValueAsInt ?? 1, token).ConfigureAwait(false);
                             await objPlugin.SetNotesAsync(xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description", token)?.Value, token).ConfigureAwait(false);
                             await objPlugin.ProcessHeroLabGearPluginsAsync(xmlPluginToAdd, lstWeapons, token).ConfigureAwait(false);
                         }

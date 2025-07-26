@@ -112,7 +112,6 @@ namespace Chummer.Backend.Equipment
         private bool _blnDiscountCost;
         private bool _blnRequireAmmo = true;
         private string _strAccuracy = string.Empty;
-        private string _strRCTip = string.Empty;
         private string _strWeaponSlots = string.Empty;
         private string _strDoubledCostWeaponSlots = string.Empty;
         private bool _blnCyberware;
@@ -918,15 +917,20 @@ namespace Chummer.Backend.Equipment
                                 Gear objGear = new Gear(_objCharacter);
 
                                 if (blnSync)
+                                {
                                     // ReSharper disable once MethodHasAsyncOverload
                                     objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
                                         blnAddChildImprovements, blnChildCreateChildren, token: token);
+                                    objGear.Quantity = decGearQty;
+                                }
                                 else
+                                {
                                     await objGear.CreateAsync(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
                                             blnAddChildImprovements, blnChildCreateChildren, token: token)
                                         .ConfigureAwait(false);
+                                    await objGear.SetQuantityAsync(decGearQty, token).ConfigureAwait(false);
+                                }
 
-                                objGear.Quantity = decGearQty;
                                 objGear.Cost = "0";
                                 objGear.ParentID = InternalId;
 
@@ -2159,17 +2163,17 @@ namespace Chummer.Backend.Equipment
                     await CalculatedModeAsync(GlobalSettings.DefaultLanguage, false, token: token)
                         .ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc",
-                        await TotalRCAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false), token)
+                        (await TotalRCAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false)).Item1, token)
                     .ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc_noammo",
-                    await TotalRCAsync(objCulture, strLanguageToPrint, blnIncludeAmmo: false, token: token)
-                        .ConfigureAwait(false), token).ConfigureAwait(false);
+                    (await TotalRCAsync(objCulture, strLanguageToPrint, blnIncludeAmmo: false, token: token)
+                        .ConfigureAwait(false)).Item1, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc_english",
-                    await TotalRCAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
-                        token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    (await TotalRCAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
+                        token: token).ConfigureAwait(false)).Item1, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc_english_noammo",
-                    await TotalRCAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
-                        blnIncludeAmmo: false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    (await TotalRCAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
+                        blnIncludeAmmo: false, token: token).ConfigureAwait(false)).Item1, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rawrc", RC, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ammo",
                         await CalculatedAmmoAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token)
@@ -2182,6 +2186,10 @@ namespace Chummer.Backend.Equipment
                         (await CalculatedConcealabilityAsync(token).ConfigureAwait(false)).ToString("+0;-0;0", objCulture), token)
                     .ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rawconceal", Concealability, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("availablemounts", await DisplayAccessoryMountsAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                    .ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("availablemounts_english", await DisplayAccessoryMountsAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token)
+                    .ConfigureAwait(false);
                 if (objGear != null)
                 {
                     await objWriter.WriteElementStringAsync("avail",
@@ -3054,6 +3062,32 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The number of rounds remaining in the Weapon.
+        /// </summary>
+        public Task SetAmmoRemaining(int value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            Clip objCurrentClip = GetClip(_intActiveAmmoSlot);
+            int intCurrentAmmo = objCurrentClip.Ammo;
+            if (intCurrentAmmo == value)
+                return Task.CompletedTask;
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            objCurrentClip.Ammo = value;
+            Gear objGear = objCurrentClip.AmmoGear;
+            if (objGear == null)
+                return Task.CompletedTask;
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            int intDiff = intCurrentAmmo - value;
+            if (objGear.Quantity > intDiff)
+                return objGear.SetQuantityAsync(objGear.Quantity - intCurrentAmmo - value, token);
+            else
+                return objGear.DeleteGearAsync(token: token);
+        }
+
+        /// <summary>
         /// The total number of rounds that the weapon can load.
         /// </summary>
         private static string AmmoCapacity(string strAmmo)
@@ -3097,7 +3131,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The type of Ammunition loaded in the Weapon.
         /// </summary>
-        public Task SetAmmoLoaded(Gear value, CancellationToken token = default)
+        public Task SetAmmoLoadedAsync(Gear value, CancellationToken token = default)
         {
             return token.IsCancellationRequested
                 ? Task.FromCanceled(token)
@@ -3149,9 +3183,12 @@ namespace Chummer.Backend.Equipment
             set => _strWeight = value;
         }
 
-        public string DisplayCost(out decimal decItemCost, decimal decMarkup = 0.0m)
+        public async Task<Tuple<string, decimal>> DisplayCost(decimal decMarkup = 0.0m, CancellationToken token = default)
         {
             string strReturn = Cost;
+            string strFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                .GetNuyenFormatAsync(token).ConfigureAwait(false);
+            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             if (strReturn.StartsWith("Variable(", StringComparison.Ordinal))
             {
                 strReturn = strReturn.TrimStartOnce("Variable(", true).TrimEndOnce(')');
@@ -3174,16 +3211,12 @@ namespace Chummer.Backend.Equipment
                     decMin = Convert.ToDecimal(strReturn.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
 
                 if (decMax == decimal.MaxValue)
-                    strReturn = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) +
-                                LanguageManager.GetString("String_NuyenSymbol") + '+';
+                    strReturn = decMin.ToString(strFormat, GlobalSettings.CultureInfo) + strNuyen + '+';
                 else
-                    strReturn = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) +
-                                " - " +
-                                decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) +
-                                LanguageManager.GetString("String_NuyenSymbol");
+                    strReturn = decMin.ToString(strFormat, GlobalSettings.CultureInfo) + " - " +
+                                decMax.ToString(strFormat, GlobalSettings.CultureInfo) + strNuyen;
 
-                decItemCost = decMin;
-                return strReturn;
+                return new Tuple<string, decimal>(strReturn, decMin);
             }
 
             decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTotalCost);
@@ -3193,10 +3226,7 @@ namespace Chummer.Backend.Equipment
             if (DiscountCost)
                 decTotalCost *= 0.9m;
 
-            decItemCost = decTotalCost;
-
-            return decTotalCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) +
-                   LanguageManager.GetString("String_NuyenSymbol");
+            return new Tuple<string, decimal>(decTotalCost.ToString(strFormat, GlobalSettings.CultureInfo) + strNuyen, decTotalCost);
         }
 
         /// <summary>
@@ -4766,12 +4796,13 @@ namespace Chummer.Backend.Equipment
         {
             IEnumerable<string> lstAmmos = Ammo.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
             decimal decAmmoBonus = 0;
-
-            if (WeaponAccessories.Count != 0)
+            decimal decAmmoBonusFlat = 0;
+            decimal decAmmoBonusPercent = 1.0m;
+            if (blnSync)
             {
-                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                if (WeaponAccessories.Count != 0)
                 {
-                    if (objAccessory.Equipped)
+                    decAmmoBonus += WeaponAccessories.Sum(x => x.Equipped, objAccessory =>
                     {
                         // Replace the Ammo value.
                         if (!string.IsNullOrEmpty(objAccessory.AmmoReplace))
@@ -4780,27 +4811,58 @@ namespace Chummer.Backend.Equipment
                                 StringSplitOptions.RemoveEmptyEntries);
                         }
 
-                        decAmmoBonus += blnSync ? objAccessory.TotalAmmoBonus : await objAccessory.GetTotalAmmoBonusAsync(token).ConfigureAwait(false);
-                    }
+                        return objAccessory.TotalAmmoBonus;
+                    }, token);
+                }
+
+                if (ParentMount != null)
+                {
+                    decAmmoBonusFlat += ParentMount.Mods.Sum(x => x.Equipped, objMod =>
+                    {
+                        if (!string.IsNullOrEmpty(objMod.AmmoReplace))
+                        {
+                            lstAmmos = objMod.AmmoReplace.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
+                        }
+
+                        if (objMod.AmmoBonusPercent != 0)
+                        {
+                            decAmmoBonusPercent *= objMod.AmmoBonusPercent / 100.0m;
+                        }
+                        return objMod.AmmoBonus;
+                    }, token);
                 }
             }
-
-            decimal decAmmoBonusFlat = 0;
-            decimal decAmmoBonusPercent = 1.0m;
-            if (ParentMount != null)
+            else
             {
-                foreach (VehicleMod objMod in ParentMount.Mods)
+                if (await WeaponAccessories.GetCountAsync(token).ConfigureAwait(false) != 0)
                 {
-                    if (!string.IsNullOrEmpty(objMod.AmmoReplace))
+                    decAmmoBonus += await WeaponAccessories.SumAsync(x => x.Equipped, async objAccessory =>
                     {
-                        lstAmmos = objMod.AmmoReplace.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
-                    }
+                        // Replace the Ammo value.
+                        if (!string.IsNullOrEmpty(objAccessory.AmmoReplace))
+                        {
+                            lstAmmos = objAccessory.AmmoReplace.SplitNoAlloc(' ',
+                                StringSplitOptions.RemoveEmptyEntries);
+                        }
 
-                    decAmmoBonusFlat += objMod.AmmoBonus;
-                    if (objMod.AmmoBonusPercent != 0)
+                        return await objAccessory.GetTotalAmmoBonusAsync(token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                }
+                if (ParentMount != null)
+                {
+                    decAmmoBonusFlat += await ParentMount.Mods.SumAsync(x => x.Equipped, objMod =>
                     {
-                        decAmmoBonusPercent *= objMod.AmmoBonusPercent / 100.0m;
-                    }
+                        if (!string.IsNullOrEmpty(objMod.AmmoReplace))
+                        {
+                            lstAmmos = objMod.AmmoReplace.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
+                        }
+
+                        if (objMod.AmmoBonusPercent != 0)
+                        {
+                            decAmmoBonusPercent *= objMod.AmmoBonusPercent / 100.0m;
+                        }
+                        return objMod.AmmoBonus;
+                    }, token).ConfigureAwait(false);
                 }
             }
 
@@ -5578,81 +5640,215 @@ namespace Chummer.Backend.Equipment
                    + WeaponAccessories.Sum(x => objExcludeAccessory != x && x.Equipped, x => x.TotalWeight, token);
         }
 
-        public string AccessoryMounts
+        public IEnumerable<string> GetAccessoryMounts(bool blnWithInternalAndNone = true)
         {
-            get
+            string strSlots = ModificationSlots;
+            if (string.IsNullOrEmpty(strSlots))
             {
-                string strSlots = ModificationSlots;
-                if (string.IsNullOrEmpty(strSlots))
-                    return string.Empty;
-                int intOldValue;
-                Dictionary<string, int> dicMounts = new Dictionary<string, int>();
-                foreach (string strMount in strSlots.SplitNoAlloc(
-                                 '/', StringSplitOptions.RemoveEmptyEntries))
+                if (blnWithInternalAndNone)
+                    yield return "None";
+                yield break;
+            }
+            int intOldValue;
+            Dictionary<string, int> dicMounts = new Dictionary<string, int>();
+            foreach (string strMount in strSlots.SplitNoAlloc(
+                                '/', StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (dicMounts.TryGetValue(strMount, out intOldValue))
+                    dicMounts[strMount] = intOldValue + 1;
+                else
+                    dicMounts.Add(strMount, 1);
+            }
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+            {
+                if (!objAccessory.Equipped)
+                    continue;
+                string strLoop = objAccessory.AddMount;
+                if (!string.IsNullOrEmpty(strLoop))
                 {
-                    if (dicMounts.TryGetValue(strMount, out intOldValue))
-                        dicMounts[strMount] = intOldValue + 1;
-                    else
-                        dicMounts.Add(strMount, 1);
-                }
-                foreach (WeaponAccessory objAccessory in WeaponAccessories)
-                {
-                    if (!objAccessory.Equipped)
-                        continue;
-                    string strLoop = objAccessory.AddMount;
-                    if (!string.IsNullOrEmpty(strLoop))
+                    foreach (string strMount in strLoop.SplitNoAlloc(
+                                '/', StringSplitOptions.RemoveEmptyEntries))
                     {
-                        foreach (string strMount in strLoop.SplitNoAlloc(
-                                 '/', StringSplitOptions.RemoveEmptyEntries))
-                        {
-                            if (dicMounts.TryGetValue(strMount, out intOldValue))
-                                dicMounts[strMount] = intOldValue + 1;
-                            else
-                                dicMounts.Add(strMount, 1);
-                        }
-                    }
-                    strLoop = objAccessory.Mount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
-                    {
-                        dicMounts[strLoop] = intOldValue - 1;
-                    }
-                    strLoop = objAccessory.ExtraMount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
-                    {
-                        dicMounts[strLoop] = intOldValue - 1;
+                        if (dicMounts.TryGetValue(strMount, out intOldValue))
+                            dicMounts[strMount] = intOldValue + 1;
+                        else
+                            dicMounts.Add(strMount, 1);
                     }
                 }
-                foreach (Weapon objWeapon in UnderbarrelWeapons)
+                strLoop = objAccessory.Mount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
                 {
-                    if (!objWeapon.Equipped)
-                        continue;
-                    string strLoop = objWeapon.Mount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
-                    {
-                        dicMounts[strLoop] = intOldValue - 1;
-                    }
-                    strLoop = objWeapon.ExtraMount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
-                    {
-                        dicMounts[strLoop] = intOldValue - 1;
-                    }
+                    dicMounts[strLoop] = intOldValue - 1;
                 }
-
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMounts))
+                strLoop = objAccessory.ExtraMount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
                 {
-                    foreach (KeyValuePair<string, int> kvpMount in dicMounts)
-                    {
-                        for (int i = 0; i < kvpMount.Value; ++i)
-                        {
-                            sbdMounts.Append(kvpMount.Key).Append('/');
-                        }
-                    }
-
-                    string strReturn = sbdMounts.ToString();
-                    return strReturn.Contains("Internal/") ? strReturn + "None" : strReturn + "Internal/None";
+                    dicMounts[strLoop] = intOldValue - 1;
                 }
             }
+            foreach (Weapon objWeapon in UnderbarrelWeapons)
+            {
+                if (!objWeapon.Equipped)
+                    continue;
+                string strLoop = objWeapon.Mount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
+                {
+                    dicMounts[strLoop] = intOldValue - 1;
+                }
+                strLoop = objWeapon.ExtraMount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
+                {
+                    dicMounts[strLoop] = intOldValue - 1;
+                }
+            }
+
+            foreach (KeyValuePair<string, int> kvpMount in dicMounts)
+            {
+                for (int i = 0; i < kvpMount.Value; ++i)
+                {
+                    yield return kvpMount.Key;
+                }
+            }
+            if (blnWithInternalAndNone)
+            {
+                if (!dicMounts.ContainsKey("Internal"))
+                    yield return "Internal";
+                if (!dicMounts.ContainsKey("None"))
+                    yield return "None";
+            }
         }
+
+        public async Task<List<string>> GetAccessoryMountsAsync(bool blnWithInternalAndNone = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSlots = ModificationSlots;
+            if (string.IsNullOrEmpty(strSlots))
+            {
+                return blnWithInternalAndNone
+                    ? new List<string>(1)
+                        {
+                            "None"
+                        }
+                    : new List<string>();
+            }
+            List<string> lstReturn = new List<string>(blnWithInternalAndNone ? 3 : 1);
+            int intOldValue;
+            Dictionary<string, int> dicMounts = new Dictionary<string, int>();
+            foreach (string strMount in strSlots.SplitNoAlloc(
+                             '/', StringSplitOptions.RemoveEmptyEntries))
+            {
+                token.ThrowIfCancellationRequested();
+                if (dicMounts.TryGetValue(strMount, out intOldValue))
+                    dicMounts[strMount] = intOldValue + 1;
+                else
+                    dicMounts.Add(strMount, 1);
+            }
+            await WeaponAccessories.ForEachAsync(objAccessory =>
+            {
+                if (!objAccessory.Equipped)
+                    return;
+                string strLoop = objAccessory.AddMount;
+                if (!string.IsNullOrEmpty(strLoop))
+                {
+                    foreach (string strMount in strLoop.SplitNoAlloc(
+                                '/', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (dicMounts.TryGetValue(strMount, out intOldValue))
+                            dicMounts[strMount] = intOldValue + 1;
+                        else
+                            dicMounts.Add(strMount, 1);
+                    }
+                }
+                strLoop = objAccessory.Mount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
+                {
+                    dicMounts[strLoop] = intOldValue - 1;
+                }
+                strLoop = objAccessory.ExtraMount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
+                {
+                    dicMounts[strLoop] = intOldValue - 1;
+                }
+            }, token).ConfigureAwait(false);
+            await UnderbarrelWeapons.ForEachAsync(objWeapon =>
+            {
+                if (!objWeapon.Equipped)
+                    return;
+                string strLoop = objWeapon.Mount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
+                {
+                    dicMounts[strLoop] = intOldValue - 1;
+                }
+                strLoop = objWeapon.ExtraMount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
+                {
+                    dicMounts[strLoop] = intOldValue - 1;
+                }
+            }, token).ConfigureAwait(false);
+
+            foreach (KeyValuePair<string, int> kvpMount in dicMounts)
+            {
+                token.ThrowIfCancellationRequested();
+                for (int i = 0; i < kvpMount.Value; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    lstReturn.Add(kvpMount.Key);
+                }
+            }
+
+            if (blnWithInternalAndNone)
+            {
+                if (!dicMounts.ContainsKey("Internal"))
+                    lstReturn.Add("Internal");
+                if (!dicMounts.ContainsKey("None"))
+                    lstReturn.Add("None");
+            }
+            return lstReturn;
+        }
+
+        public string DisplayAccessoryMounts(string strLanguage)
+        {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.DefaultLanguage;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMounts))
+            {
+                foreach (string strMount in GetAccessoryMounts())
+                {
+                    sbdMounts.Append(strLanguage == GlobalSettings.DefaultLanguage
+                        ? strMount
+                        : LanguageManager.GetString("String_Mount" + strMount))
+                        .Append('/');
+                }
+                sbdMounts.Length -= 1; // Trim off the last slash
+                return sbdMounts.ToString();
+            }
+        }
+
+        public async Task<string> DisplayAccessoryMountsAsync(string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.DefaultLanguage;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMounts))
+            {
+                token.ThrowIfCancellationRequested();
+                foreach (string strMount in await GetAccessoryMountsAsync(token: token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdMounts.Append(strLanguage == GlobalSettings.DefaultLanguage
+                        ? strMount
+                        : await LanguageManager.GetStringAsync("String_Mount" + strMount, token: token).ConfigureAwait(false))
+                        .Append('/');
+                }
+                token.ThrowIfCancellationRequested();
+                sbdMounts.Length -= 1; // Trim off the last slash
+                return sbdMounts.ToString();
+            }
+        }
+
+        public string CurrentDisplayAccessoryMounts => DisplayAccessoryMounts(GlobalSettings.Language);
+
+        public Task<string> GetCurrentDisplayAccessoryMounts(CancellationToken token = default) => DisplayAlternateRangeAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// The Weapon's total cost including Accessories and Modifications.
@@ -6263,34 +6459,34 @@ namespace Chummer.Backend.Equipment
             return intAP.ToString(objCulture);
         }
 
-        public string DisplayTotalRC => TotalRC(GlobalSettings.CultureInfo, GlobalSettings.Language, true);
+        public Tuple<string, string> DisplayTotalRC => TotalRC(GlobalSettings.CultureInfo, GlobalSettings.Language, true);
 
-        public Task<string> GetDisplayTotalRCAsync(CancellationToken token = default) => TotalRCAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, token: token);
+        public Task<Tuple<string, string>> GetDisplayTotalRCAsync(CancellationToken token = default) => TotalRCAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, token: token);
 
         /// <summary>
-        /// The Weapon's total RC including Accessories and Modifications.
+        /// The Weapon's total RC including Accessories and Modifications. The first item is the RC, the second is the tooltip.
         /// </summary>
-        public string TotalRC(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false,
+        public Tuple<string, string> TotalRC(CultureInfo objCulture, string strLanguage, bool blnWithTooltip = false,
             bool blnIncludeAmmo = true)
         {
             return Utils.SafelyRunSynchronously(() =>
-                TotalRCCoreAsync(true, objCulture, strLanguage, blnRefreshRCToolTip, blnIncludeAmmo));
+                TotalRCCoreAsync(true, objCulture, strLanguage, blnWithTooltip, blnIncludeAmmo));
         }
 
         /// <summary>
-        /// The Weapon's total RC including Accessories and Modifications.
+        /// The Weapon's total RC including Accessories and Modifications. The first item is the RC, the second is the tooltip.
         /// </summary>
-        public Task<string> TotalRCAsync(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false,
+        public Task<Tuple<string, string>> TotalRCAsync(CultureInfo objCulture, string strLanguage, bool blnWithTooltip = false,
             bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            return TotalRCCoreAsync(false, objCulture, strLanguage, blnRefreshRCToolTip, blnIncludeAmmo, token);
+            return TotalRCCoreAsync(false, objCulture, strLanguage, blnWithTooltip, blnIncludeAmmo, token);
         }
 
         /// <summary>
-        /// The Weapon's total RC including Accessories and Modifications.
+        /// The Weapon's total RC including Accessories and Modifications. The first item is the RC, the second is the tooltip.
         /// </summary>
-        private async Task<string> TotalRCCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage,
-            bool blnRefreshRCToolTip, bool blnIncludeAmmo = true, CancellationToken token = default)
+        private async Task<Tuple<string, string>> TotalRCCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage,
+            bool blnWithTooltip, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             string strSpace = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
@@ -6329,18 +6525,22 @@ namespace Chummer.Backend.Equipment
                 strRCFull = strRC;
             }
 
+            string strTooltip = string.Empty;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRCTip))
             {
-                sbdRCTip.Append(1.ToString(GlobalSettings.CultureInfo)).Append(strSpace);
-                if (blnRefreshRCToolTip && strRCBase != "0" && strRCBase != "+0")
+                if (blnWithTooltip)
                 {
-                    sbdRCTip.Append('+').Append(strSpace)
-                        .Append(blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString("Label_Base", strLanguage, token: token)
-                            : await LanguageManager.GetStringAsync("Label_Base", strLanguage, token: token)
-                                .ConfigureAwait(false))
-                        .Append('(').Append(strRCBase.TrimStartOnce('+')).Append(')');
+                    sbdRCTip.Append(1.ToString(GlobalSettings.CultureInfo)).Append(strSpace);
+                    if (strRCBase != "0" && strRCBase != "+0")
+                    {
+                        sbdRCTip.Append('+').Append(strSpace)
+                            .Append(blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString("Label_Base", strLanguage, token: token)
+                                : await LanguageManager.GetStringAsync("Label_Base", strLanguage, token: token)
+                                    .ConfigureAwait(false))
+                            .Append('(').Append(strRCBase.TrimStartOnce('+')).Append(')');
+                    }
                 }
 
                 int.TryParse(strRCBase, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intRCBase);
@@ -6356,7 +6556,7 @@ namespace Chummer.Backend.Equipment
                         intRCBase += intLoopRCBonus;
                         intRCFull += intLoopRCBonus;
 
-                        if (blnRefreshRCToolTip)
+                        if (blnWithTooltip)
                             sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                 .Append(blnSync
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6420,7 +6620,7 @@ namespace Chummer.Backend.Equipment
                             intRCBase += intLoopRCBonus;
                         }
 
-                        if (blnRefreshRCToolTip)
+                        if (blnWithTooltip)
                             sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                 .Append(blnSync
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6438,7 +6638,7 @@ namespace Chummer.Backend.Equipment
                             intRCBase += intLoopRCBonus;
                             intRCFull += intLoopRCBonus;
 
-                            if (blnRefreshRCToolTip)
+                            if (blnWithTooltip)
                             {
                                 sbdRCTip.Append(strSpace).Append('+').Append(strSpace);
                                 if (blnSync)
@@ -6476,7 +6676,7 @@ namespace Chummer.Backend.Equipment
                                 intRCBase += intLoopRCBonus;
                                 intRCFull += intLoopRCBonus;
 
-                                if (blnRefreshRCToolTip)
+                                if (blnWithTooltip)
                                     sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                         .Append(blnSync
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6496,7 +6696,7 @@ namespace Chummer.Backend.Equipment
                                 intRCBase += intLoopRCBonus;
                                 intRCFull += intLoopRCBonus;
 
-                                if (blnRefreshRCToolTip)
+                                if (blnWithTooltip)
                                     sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                         .Append(blnSync
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6525,7 +6725,7 @@ namespace Chummer.Backend.Equipment
                                     intRCBase += intLoopRCBonus;
                                     intRCFull += intLoopRCBonus;
 
-                                    if (blnRefreshRCToolTip)
+                                    if (blnWithTooltip)
                                         sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                             .Append(blnSync
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6546,7 +6746,7 @@ namespace Chummer.Backend.Equipment
                                     intRCBase += intLoopRCBonus;
                                     intRCFull += intLoopRCBonus;
 
-                                    if (blnRefreshRCToolTip)
+                                    if (blnWithTooltip)
                                         sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                             .Append(blnSync
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6569,7 +6769,7 @@ namespace Chummer.Backend.Equipment
                         // Add in the Recoil Group bonuses.
                         intRCBase += intRecoil;
                         intRCFull += intRecoil;
-                        if (blnRefreshRCToolTip)
+                        if (blnWithTooltip)
                             sbdRCTip.Append(strSpace).Append('+').Append(strSpace).Append(strGroup).Append(strSpace)
                                 .Append('(').Append(intRecoil.ToString(objCulture)).Append(')');
                     }
@@ -6581,7 +6781,7 @@ namespace Chummer.Backend.Equipment
                     {
                         // Add in the Recoil Group bonuses.
                         intRCFull += intRecoil;
-                        if (blnRefreshRCToolTip)
+                        if (blnWithTooltip)
                             sbdRCTip.Append(strSpace).Append('+').Append(strSpace).AppendFormat(
                                 objCulture,
                                 blnSync
@@ -6729,7 +6929,7 @@ namespace Chummer.Backend.Equipment
 
                 intRCBase += intStrRC + 1;
                 intRCFull += intStrRC + 1;
-                if (blnRefreshRCToolTip)
+                if (blnWithTooltip)
                     sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                         .Append(blnSync
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6745,17 +6945,12 @@ namespace Chummer.Backend.Equipment
                 if (intRCFull > intRCBase)
                     strRC += strSpace + '(' + intRCFull.ToString(objCulture) + ')';
 
-                if (blnRefreshRCToolTip)
-                    _strRCTip = sbdRCTip.ToString();
+                if (blnWithTooltip)
+                    strTooltip = sbdRCTip.ToString();
             }
 
-            return strRC;
+            return new Tuple<string, string>(strRC, strTooltip);
         }
-
-        /// <summary>
-        /// The tooltip showing the sources of RC bonuses
-        /// </summary>
-        public string RCToolTip => _strRCTip;
 
         /// <summary>
         /// The full Reach of the Weapons including the Character's Reach.
@@ -12051,9 +12246,9 @@ namespace Chummer.Backend.Equipment
                             // Duplicate the clip into a new entry where we can directly deduct from the quantity as we fire
                             Gear objDuplicatedParent = new Gear(_objCharacter);
                             objDuplicatedParent.Copy(objParent);
-                            objDuplicatedParent.Quantity = 1;
+                            await objDuplicatedParent.SetQuantityAsync(1, token).ConfigureAwait(false);
                             await lstGears.AddAsync(objDuplicatedParent, token).ConfigureAwait(false);
-                            --objParent.Quantity;
+                            await objParent.SetQuantityAsync(objParent.Quantity - 1, token).ConfigureAwait(false);
                             Gear objNewSelectedAmmo
                                 = await objDuplicatedParent.Children.DeepFindByIdAsync(strSelectedAmmo, token: token).ConfigureAwait(false);
                             if (objNewSelectedAmmo == null)
@@ -12083,7 +12278,7 @@ namespace Chummer.Backend.Equipment
                         if (decTopUp > objSelectedAmmo.Quantity)
                         {
                             // We need more ammo for a full top-up than the quantity of gear, so just merge the gears and delete the old gear.
-                            objCurrentlyLoadedAmmo.Quantity += objSelectedAmmo.Quantity;
+                            await objCurrentlyLoadedAmmo.SetQuantityAsync(objCurrentlyLoadedAmmo.Quantity - objSelectedAmmo.Quantity, token).ConfigureAwait(false);
                             await objSelectedAmmo.DeleteGearAsync(token: token).ConfigureAwait(false);
                             GetClip(_intActiveAmmoSlot).Ammo
                                 = objCurrentlyLoadedAmmo.Quantity
@@ -12091,8 +12286,8 @@ namespace Chummer.Backend.Equipment
                         }
                         else
                         {
-                            objCurrentlyLoadedAmmo.Quantity = decQty;
-                            objSelectedAmmo.Quantity -= decTopUp;
+                            await objCurrentlyLoadedAmmo.SetQuantityAsync(decQty, token).ConfigureAwait(false);
+                            await objSelectedAmmo.SetQuantityAsync(objSelectedAmmo.Quantity - decTopUp, token).ConfigureAwait(false);
                             string strCurrentlyLoadedText = await objCurrentlyLoadedAmmo
                                                                   .GetCurrentDisplayNameAsync(token)
                                                                   .ConfigureAwait(false);
@@ -12121,9 +12316,9 @@ namespace Chummer.Backend.Equipment
                         // Duplicate the ammo into a new entry where we can directly deduct from the quantity as we fire
                         Gear objNewSelectedAmmo = new Gear(_objCharacter);
                         objNewSelectedAmmo.Copy(objSelectedAmmo);
-                        objNewSelectedAmmo.Quantity = decQty.ToInt32();
+                        await objNewSelectedAmmo.SetQuantityAsync(decQty, token).ConfigureAwait(false);
                         await lstGears.AddAsync(objNewSelectedAmmo, token).ConfigureAwait(false);
-                        objSelectedAmmo.Quantity -= decQty.ToInt32();
+                        await objSelectedAmmo.SetQuantityAsync(objSelectedAmmo.Quantity + decQty, token).ConfigureAwait(false);
                         string strId2 = objSelectedAmmo.InternalId;
                         string strText2 = await objSelectedAmmo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         await treGearView.DoThreadSafeAsync(x =>
@@ -12155,7 +12350,7 @@ namespace Chummer.Backend.Equipment
                     objSelectedAmmo = objExternalSource;
                 }
 
-                await SetAmmoLoaded(objSelectedAmmo, token).ConfigureAwait(false);
+                await SetAmmoLoadedAsync(objSelectedAmmo, token).ConfigureAwait(false);
                 if (objCurrentlyLoadedAmmo != objSelectedAmmo)
                 {
                     if (objCurrentlyLoadedAmmo != null)
@@ -12256,7 +12451,7 @@ namespace Chummer.Backend.Equipment
                                                && x.IsIdenticalToOtherGear(objAmmo, true), token).ConfigureAwait(false);
             if (objMergeGear != null)
             {
-                objMergeGear.Quantity += objAmmo.Quantity;
+                await objMergeGear.SetQuantityAsync(objMergeGear.Quantity + objAmmo.Quantity, token).ConfigureAwait(false);
                 await objAmmo.DeleteGearAsync(token: token).ConfigureAwait(false);
                 return objMergeGear;
             }
@@ -13657,120 +13852,94 @@ namespace Chummer.Backend.Equipment
         {
             if (objXmlAccessory == null)
                 return false;
-            string[] astrAvailableMounts = AccessoryMounts.SplitToPooledArray(out int intNumMounts, '/', StringSplitOptions.RemoveEmptyEntries);
-            try
+            string strPossibleMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount")?.Value ?? string.Empty;
+            string strPossibleExtraMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount")?.Value ?? string.Empty;
+            bool blnMountFound = string.IsNullOrEmpty(strPossibleMounts);
+            bool blnExtraMountFound = string.IsNullOrEmpty(strPossibleExtraMounts);
+            if (!blnMountFound)
             {
-                string strPossibleMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount")?.Value ?? string.Empty;
-                string strPossibleExtraMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount")?.Value ?? string.Empty;
-                bool blnMountFound = string.IsNullOrEmpty(strPossibleMounts);
-                bool blnExtraMountFound = string.IsNullOrEmpty(strPossibleExtraMounts);
-                if (!blnMountFound)
+                if (!blnExtraMountFound)
                 {
-                    if (!blnExtraMountFound)
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                        out HashSet<string> setPossibleMounts))
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                        out HashSet<string> setPossibleExtraMounts))
                     {
-                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                            out HashSet<string> setPossibleMounts))
-                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                            out HashSet<string> setPossibleExtraMounts))
+                        foreach (string strLoopMount in strPossibleMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                         {
-                            foreach (string strLoopMount in strPossibleMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            setPossibleMounts.Add(strLoopMount);
+                        }
+                        foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            setPossibleExtraMounts.Add(strLoopMount);
+                        }
+                        if (!setPossibleMounts.SetEquals(setPossibleExtraMounts))
+                        {
+                            // First loop: find and remove mounts that only match one of the two
+                            foreach (string strMount in GetAccessoryMounts())
                             {
-                                setPossibleMounts.Add(strLoopMount);
-                            }
-                            foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                            {
-                                setPossibleExtraMounts.Add(strLoopMount);
-                            }
-                            if (!setPossibleMounts.SetEquals(setPossibleExtraMounts))
-                            {
-                                // First loop: find and remove mounts that only match one of the two
-                                for (int i = 0; i < intNumMounts; ++i)
+                                if (setPossibleMounts.Contains(strMount))
                                 {
-                                    string strLoop = astrAvailableMounts[i];
-                                    if (setPossibleMounts.Contains(strLoop))
-                                    {
-                                        if (!setPossibleExtraMounts.Contains(strLoop))
-                                        {
-                                            blnMountFound = true;
-                                            if (blnExtraMountFound)
-                                                break;
-                                        }
-                                    }
-                                    else if (setPossibleExtraMounts.Contains(strLoop))
-                                    {
-                                        blnExtraMountFound = true;
-                                        if (blnMountFound)
-                                            break;
-                                    }
-                                }
-                            }
-                            // Only remaining mounts (if not found) are ones that are in both strings, so much main mount first and then extra mount
-                            if (!blnMountFound || !blnExtraMountFound)
-                            {
-                                for (int i = 0; i < intNumMounts; ++i)
-                                {
-                                    string strLoop = astrAvailableMounts[i];
-                                    if (!blnMountFound && setPossibleMounts.Contains(strLoop))
+                                    if (!setPossibleExtraMounts.Contains(strMount))
                                     {
                                         blnMountFound = true;
                                         if (blnExtraMountFound)
                                             break;
                                     }
-                                    else if (!blnExtraMountFound && setPossibleExtraMounts.Contains(strLoop))
-                                    {
-                                        blnExtraMountFound = true;
-                                        if (blnMountFound)
-                                            break;
-                                    }
+                                }
+                                else if (setPossibleExtraMounts.Contains(strMount))
+                                {
+                                    blnExtraMountFound = true;
+                                    if (blnMountFound)
+                                        break;
                                 }
                             }
                         }
-                    }
-                    else
-                    {
-                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                            out HashSet<string> setPossibleMounts))
+                        // Only remaining mounts (if not found) are ones that are in both strings, so much main mount first and then extra mount
+                        if (!blnMountFound || !blnExtraMountFound)
                         {
-                            foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                                setPossibleMounts.Add(strLoopMount);
-                            for (int i = 0; i < intNumMounts; ++i)
+                            foreach (string strMount in GetAccessoryMounts())
                             {
-                                string strLoop = astrAvailableMounts[i];
-                                if (setPossibleMounts.Contains(strLoop))
+                                if (!blnMountFound && setPossibleMounts.Contains(strMount))
                                 {
                                     blnMountFound = true;
-                                    break;
+                                    if (blnExtraMountFound)
+                                        break;
+                                }
+                                else if (!blnExtraMountFound && setPossibleExtraMounts.Contains(strMount))
+                                {
+                                    blnExtraMountFound = true;
+                                    if (blnMountFound)
+                                        break;
                                 }
                             }
                         }
                     }
                 }
-                else if (!blnExtraMountFound)
+                else
                 {
                     using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                        out HashSet<string> setPossibleExtraMounts))
+                        out HashSet<string> setPossibleMounts))
                     {
                         foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                            setPossibleExtraMounts.Add(strLoopMount);
-                        for (int i = 0; i < intNumMounts; ++i)
-                        {
-                            string strLoop = astrAvailableMounts[i];
-                            if (setPossibleExtraMounts.Contains(strLoop))
-                            {
-                                blnExtraMountFound = true;
-                                break;
-                            }
-                        }
+                            setPossibleMounts.Add(strLoopMount);
+                        blnMountFound = GetAccessoryMounts().Any(x => setPossibleMounts.Contains(x));
                     }
                 }
-
-                if (!blnMountFound || !blnExtraMountFound)
-                    return false;
             }
-            finally
+            else if (!blnExtraMountFound)
             {
-                ArrayPool<string>.Shared.Return(astrAvailableMounts);
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                    out HashSet<string> setPossibleExtraMounts))
+                {
+                    foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        setPossibleExtraMounts.Add(strLoopMount);
+                    blnExtraMountFound = GetAccessoryMounts().Any(x => setPossibleExtraMounts.Contains(x));
+                }
             }
+
+            if (!blnMountFound || !blnExtraMountFound)
+                return false;
 
             if (!objXmlAccessory.RequirementsMet(_objCharacter, this))
                 return false;
@@ -13801,141 +13970,113 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (objXmlAccessory == null)
                 return false;
-            string[] astrAvailableMounts = AccessoryMounts.SplitToPooledArray(out int intNumMounts, '/', StringSplitOptions.RemoveEmptyEntries);
-            try
+            string strPossibleMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount", token)?.Value ?? string.Empty;
+            string strPossibleExtraMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount", token)?.Value ?? string.Empty;
+            bool blnMountFound = string.IsNullOrEmpty(strPossibleMounts);
+            bool blnExtraMountFound = string.IsNullOrEmpty(strPossibleExtraMounts);
+            if (!blnMountFound)
             {
-                string strPossibleMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount", token)?.Value ?? string.Empty;
-                string strPossibleExtraMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount", token)?.Value ?? string.Empty;
-                bool blnMountFound = string.IsNullOrEmpty(strPossibleMounts);
-                bool blnExtraMountFound = string.IsNullOrEmpty(strPossibleExtraMounts);
-                if (!blnMountFound)
+                if (!blnExtraMountFound)
                 {
-                    if (!blnExtraMountFound)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                            out HashSet<string> setPossibleMounts))
-                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                            out HashSet<string> setPossibleExtraMounts))
-                        {
-                            token.ThrowIfCancellationRequested();
-                            foreach (string strLoopMount in strPossibleMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                            {
-                                token.ThrowIfCancellationRequested();
-                                setPossibleMounts.Add(strLoopMount);
-                            }
-                            foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                            {
-                                token.ThrowIfCancellationRequested();
-                                setPossibleExtraMounts.Add(strLoopMount);
-                            }
-                            token.ThrowIfCancellationRequested();
-                            if (!setPossibleMounts.SetEquals(setPossibleExtraMounts))
-                            {
-                                token.ThrowIfCancellationRequested();
-                                // First loop: find and remove mounts that only match one of the two
-                                for (int i = 0; i < intNumMounts; ++i)
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    string strLoop = astrAvailableMounts[i];
-                                    if (setPossibleMounts.Contains(strLoop))
-                                    {
-                                        if (!setPossibleExtraMounts.Contains(strLoop))
-                                        {
-                                            blnMountFound = true;
-                                            if (blnExtraMountFound)
-                                                break;
-                                        }
-                                    }
-                                    else if (setPossibleExtraMounts.Contains(strLoop))
-                                    {
-                                        blnExtraMountFound = true;
-                                        if (blnMountFound)
-                                            break;
-                                    }
-                                }
-                            }
-                            // Only remaining mounts (if not found) are ones that are in both strings, so much main mount first and then extra mount
-                            if (!blnMountFound || !blnExtraMountFound)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                for (int i = 0; i < intNumMounts; ++i)
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    string strLoop = astrAvailableMounts[i];
-                                    if (!blnMountFound && setPossibleMounts.Contains(strLoop))
-                                    {
-                                        blnMountFound = true;
-                                        if (blnExtraMountFound)
-                                            break;
-                                    }
-                                    else if (!blnExtraMountFound && setPossibleExtraMounts.Contains(strLoop))
-                                    {
-                                        blnExtraMountFound = true;
-                                        if (blnMountFound)
-                                            break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                            out HashSet<string> setPossibleMounts))
-                        {
-                            token.ThrowIfCancellationRequested();
-                            foreach (string strLoopMount in strPossibleMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                            {
-                                token.ThrowIfCancellationRequested();
-                                setPossibleMounts.Add(strLoopMount);
-                            }
-                            token.ThrowIfCancellationRequested();
-                            for (int i = 0; i < intNumMounts; ++i)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                string strLoop = astrAvailableMounts[i];
-                                if (setPossibleMounts.Contains(strLoop))
-                                {
-                                    blnMountFound = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                else if (!blnExtraMountFound)
-                {
+                    List<string> lstAvailableMounts = await GetAccessoryMountsAsync(token: token).ConfigureAwait(false);
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                        out HashSet<string> setPossibleMounts))
                     using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                         out HashSet<string> setPossibleExtraMounts))
                     {
                         token.ThrowIfCancellationRequested();
+                        foreach (string strLoopMount in strPossibleMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            setPossibleMounts.Add(strLoopMount);
+                        }
                         foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                         {
                             token.ThrowIfCancellationRequested();
                             setPossibleExtraMounts.Add(strLoopMount);
                         }
                         token.ThrowIfCancellationRequested();
-                        for (int i = 0; i < intNumMounts; ++i)
+                        if (!setPossibleMounts.SetEquals(setPossibleExtraMounts))
                         {
                             token.ThrowIfCancellationRequested();
-                            string strLoop = astrAvailableMounts[i];
-                            if (setPossibleExtraMounts.Contains(strLoop))
+                            // First loop: find and remove mounts that only match one of the two
+                            foreach (string strMount in lstAvailableMounts)
                             {
-                                blnExtraMountFound = true;
-                                break;
+                                token.ThrowIfCancellationRequested();
+                                if (setPossibleMounts.Contains(strMount))
+                                {
+                                    if (!setPossibleExtraMounts.Contains(strMount))
+                                    {
+                                        blnMountFound = true;
+                                        if (blnExtraMountFound)
+                                            break;
+                                    }
+                                }
+                                else if (setPossibleExtraMounts.Contains(strMount))
+                                {
+                                    blnExtraMountFound = true;
+                                    if (blnMountFound)
+                                        break;
+                                }
+                            }
+                        }
+                        // Only remaining mounts (if not found) are ones that are in both strings, so much main mount first and then extra mount
+                        if (!blnMountFound || !blnExtraMountFound)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            foreach (string strMount in lstAvailableMounts)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!blnMountFound && setPossibleMounts.Contains(strMount))
+                                {
+                                    blnMountFound = true;
+                                    if (blnExtraMountFound)
+                                        break;
+                                }
+                                else if (!blnExtraMountFound && setPossibleExtraMounts.Contains(strMount))
+                                {
+                                    blnExtraMountFound = true;
+                                    if (blnMountFound)
+                                        break;
+                                }
                             }
                         }
                     }
                 }
-
-                if (!blnMountFound || !blnExtraMountFound)
-                    return false;
+                else
+                {
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                        out HashSet<string> setPossibleMounts))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        foreach (string strLoopMount in strPossibleMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            setPossibleMounts.Add(strLoopMount);
+                        }
+                        token.ThrowIfCancellationRequested();
+                        blnMountFound = (await GetAccessoryMountsAsync(token: token)).Any(x => setPossibleMounts.Contains(x));
+                    }
+                }
             }
-            finally
+            else if (!blnExtraMountFound)
             {
-                ArrayPool<string>.Shared.Return(astrAvailableMounts);
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                    out HashSet<string> setPossibleExtraMounts))
+                {
+                    token.ThrowIfCancellationRequested();
+                    foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        setPossibleExtraMounts.Add(strLoopMount);
+                    }
+                    token.ThrowIfCancellationRequested();
+                    blnExtraMountFound = (await GetAccessoryMountsAsync(token: token)).Any(x => setPossibleExtraMounts.Contains(x));
+                }
             }
+
+            if (!blnMountFound || !blnExtraMountFound)
+                return false;
 
             if (!await objXmlAccessory.RequirementsMetAsync(_objCharacter, this, token: token).ConfigureAwait(false))
                 return false;

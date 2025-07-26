@@ -1824,7 +1824,7 @@ namespace Chummer
                 if (objNewGearToCreate.InternalId.IsEmptyGuid())
                     throw new AbortedException();
 
-                objNewGearToCreate.Quantity = decQty;
+                await objNewGearToCreate.SetQuantityAsync(decQty, token).ConfigureAwait(false);
 
                 // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
                 if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == null && await objNewGearToCreate.GetIsCommlinkAsync(token).ConfigureAwait(false))

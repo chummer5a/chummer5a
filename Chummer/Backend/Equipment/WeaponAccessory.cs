@@ -437,15 +437,20 @@ namespace Chummer.Backend.Equipment
                             List<Weapon> lstWeapons = new List<Weapon>(1);
 
                             if (blnSync)
+                            {
                                 // ReSharper disable once MethodHasAsyncOverload
                                 objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
                                     blnAddChildImprovements, blnChildCreateChildren, token: token);
+                                objGear.Quantity = decGearQty;
+                            }
                             else
+                            {
                                 await objGear.CreateAsync(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
                                         blnAddChildImprovements, blnChildCreateChildren, token: token)
                                     .ConfigureAwait(false);
+                                await objGear.SetQuantityAsync(decGearQty, token).ConfigureAwait(false);
+                            }
 
-                            objGear.Quantity = decGearQty;
                             objGear.Cost = "0";
                             objGear.ParentID = InternalId;
                             if (!string.IsNullOrEmpty(strChildForceSource))

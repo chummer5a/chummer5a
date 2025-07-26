@@ -3989,7 +3989,7 @@ namespace Chummer
                     if (objGear.InternalId.IsEmptyGuid())
                         continue;
 
-                    objGear.Quantity = decQty;
+                    await objGear.SetQuantityAsync(decQty, token).ConfigureAwait(false);
 
                     // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
                     if (await GetActiveCommlinkAsync(token).ConfigureAwait(false) == null &&
@@ -48098,11 +48098,10 @@ namespace Chummer
                                                                                 .ConfigureAwait(false);
                                                                             if (objPlugin != null)
                                                                             {
-                                                                                objPlugin.Quantity
-                                                                                    = (xmlPluginToAdd
+                                                                                await objPlugin.SetQuantityAsync((xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
                                                                                             "@quantity", token))
-                                                                                    ?.ValueAsInt ?? 1;
+                                                                                    ?.ValueAsInt ?? 1, token).ConfigureAwait(false);
                                                                                 await objPlugin.SetNotesAsync(
                                                                                     (xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
@@ -48272,11 +48271,10 @@ namespace Chummer
                                                                                 .ConfigureAwait(false);
                                                                             if (objPlugin != null)
                                                                             {
-                                                                                objPlugin.Quantity
-                                                                                    = (xmlPluginToAdd
+                                                                                await objPlugin.SetQuantityAsync((xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
                                                                                             "@quantity", token))
-                                                                                    ?.ValueAsInt ?? 1;
+                                                                                    ?.ValueAsInt ?? 1, token).ConfigureAwait(false);
                                                                                 await objPlugin.SetNotesAsync(
                                                                                     (xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
@@ -48325,9 +48323,10 @@ namespace Chummer
                                                                 .ConfigureAwait(false);
                                                             if (objPlugin != null)
                                                             {
-                                                                objPlugin.Quantity = (xmlArmorModToImport
-                                                                    .SelectSingleNodeAndCacheExpression(
-                                                                        "@quantity", token))?.ValueAsInt ?? 1;
+                                                                await objPlugin.SetQuantityAsync((xmlArmorModToImport
+                                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                                            "@quantity", token))
+                                                                                    ?.ValueAsInt ?? 1, token).ConfigureAwait(false);
                                                                 await objPlugin.SetNotesAsync((xmlArmorModToImport
                                                                     .SelectSingleNodeAndCacheExpression(
                                                                         "description", token))?.Value, token).ConfigureAwait(false);
@@ -49286,13 +49285,12 @@ namespace Chummer
                                                                            .ConfigureAwait(false);
                                             if (objPlugin != null)
                                             {
-                                                objPlugin.Quantity =
-                                                    Convert.ToDecimal(
+                                                await objPlugin.SetQuantityAsync(Convert.ToDecimal(
                                                         (xmlPluginToAdd
                                                                .SelectSingleNodeAndCacheExpression(
                                                                    "@quantity", token))
                                                         ?.Value ?? "1",
-                                                        GlobalSettings.InvariantCultureInfo);
+                                                        GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                                                 await objPlugin.SetNotesAsync((xmlPluginToAdd
                                                                          .SelectSingleNodeAndCacheExpression(
                                                                              "description", token))
