@@ -13885,7 +13885,7 @@ namespace Chummer.Backend.Equipment
                             out HashSet<string> setPossibleMounts))
                         {
                             token.ThrowIfCancellationRequested();
-                            foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            foreach (string strLoopMount in strPossibleMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                             {
                                 token.ThrowIfCancellationRequested();
                                 setPossibleMounts.Add(strLoopMount);

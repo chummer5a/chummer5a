@@ -104,7 +104,7 @@ namespace Chummer
                 {
                     sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
                              .Append(
-                                 ") and (contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
+                                 ") and (mount = \"\"");
                     foreach (string strAllowedMount in _lstAllowedMounts.Where(
                                  strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
                     {
@@ -453,24 +453,18 @@ namespace Chummer
                     lstMounts.AddRange(strDataMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
                 }
 
-                lstMounts.Add("None");
+                if (!lstMounts.Contains("None"))
+                    lstMounts.Add("None");
 
-                List<string> strAllowed = new List<string>(_lstAllowedMounts) {"None"};
                 string strSelectedMount = await cboMount.DoThreadSafeFuncAsync(x =>
                 {
                     x.Visible = true;
                     x.Items.Clear();
                     foreach (string strCurrentMount in lstMounts)
                     {
-                        if (!string.IsNullOrEmpty(strCurrentMount))
+                        if (!string.IsNullOrEmpty(strCurrentMount) && _lstAllowedMounts.Contains(strCurrentMount))
                         {
-                            foreach (string strAllowedMount in strAllowed)
-                            {
-                                if (strCurrentMount == strAllowedMount)
-                                {
-                                    x.Items.Add(strCurrentMount);
-                                }
-                            }
+                            x.Items.Add(strCurrentMount);
                         }
                     }
 
@@ -487,22 +481,17 @@ namespace Chummer
                     lstExtraMounts.AddRange(strExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
                 }
 
-                lstExtraMounts.Add("None");
+                if (!lstExtraMounts.Contains("None"))
+                    lstExtraMounts.Add("None");
 
                 bool blnShowExtraMountLabel = await cboExtraMount.DoThreadSafeFuncAsync(x =>
                 {
                     x.Items.Clear();
                     foreach (string strCurrentMount in lstExtraMounts)
                     {
-                        if (!string.IsNullOrEmpty(strCurrentMount))
+                        if (!string.IsNullOrEmpty(strCurrentMount) && _lstAllowedMounts.Contains(strCurrentMount))
                         {
-                            foreach (string strAllowedMount in strAllowed)
-                            {
-                                if (strCurrentMount == strAllowedMount)
-                                {
-                                    x.Items.Add(strCurrentMount);
-                                }
-                            }
+                            x.Items.Add(strCurrentMount);
                         }
                     }
 
