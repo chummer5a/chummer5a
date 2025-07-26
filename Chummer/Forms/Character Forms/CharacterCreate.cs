@@ -15129,10 +15129,10 @@ namespace Chummer
                         {
                             await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = true, token)
                                                     .ConfigureAwait(false);
+                            bool blnIsCyberware = (await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)) == Improvement.ImprovementSource.Cyberware;
                             await gpbCyberwareMatrix
                                   .DoThreadSafeAsync(
-                                      x => x.Visible = objCyberware.SourceType
-                                                       == Improvement.ImprovementSource.Cyberware, token)
+                                      x => x.Visible = blnIsCyberware, token)
                                   .ConfigureAwait(false);
 
                             // Buttons
@@ -16126,14 +16126,15 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                             }
 
+                            int intConceal = await objSelectedAccessory.GetTotalConcealabilityAsync(token).ConfigureAwait(false);
                             await lblWeaponConcealLabel
-                                  .DoThreadSafeAsync(x => x.Visible = objSelectedAccessory.TotalConcealability != 0,
+                                  .DoThreadSafeAsync(x => x.Visible = intConceal != 0,
                                                      token).ConfigureAwait(false);
                             await lblWeaponConceal.DoThreadSafeAsync(x =>
                             {
-                                x.Visible = objSelectedAccessory.TotalConcealability != 0;
+                                x.Visible = intConceal != 0;
                                 x.Text
-                                    = objSelectedAccessory.TotalConcealability.ToString(
+                                    = intConceal.ToString(
                                         "+#,0;-#,0;0", GlobalSettings.CultureInfo);
                             }, token).ConfigureAwait(false);
                             string strText2 = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
@@ -19127,9 +19128,10 @@ namespace Chummer
                                   .DoThreadSafeAsync(x => x.Enabled = !objWeaponMount.IncludedInVehicle, token)
                                   .ConfigureAwait(false);
                             // gpbVehiclesCommon
+                            string strCategory = await objWeaponMount.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                             await lblVehicleCategory
                                   .DoThreadSafeAsync(
-                                      x => x.Text = objWeaponMount.DisplayCategory(GlobalSettings.Language), token)
+                                      x => x.Text = strCategory, token)
                                   .ConfigureAwait(false);
                             string strName = await objWeaponMount.GetCurrentDisplayNameAsync(token)
                                                                  .ConfigureAwait(false);
@@ -19157,10 +19159,11 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
+                            string strSlots = (await objWeaponMount.GetCalculatedSlotsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                             await lblVehicleSlots.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objWeaponMount.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
+                                x.Text = strSlots;
                             }, token).ConfigureAwait(false);
                             await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                 .ConfigureAwait(false);
@@ -19270,10 +19273,11 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
+                            string strSlots = (await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                             await lblVehicleSlots.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objMod.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
+                                x.Text = strSlots;
                             }, token).ConfigureAwait(false);
                             await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                 .ConfigureAwait(false);
@@ -19446,23 +19450,26 @@ namespace Chummer
                             // gpbVehiclesWeapon
                             await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                              .ConfigureAwait(false);
+                            string strDamage = await objWeapon.GetDisplayDamageAsync(token).ConfigureAwait(false);
                             await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
                             {
-                                x.Text = objWeapon.DisplayDamage;
+                                x.Text = strDamage;
                                 x.Visible = true;
                             }, token).ConfigureAwait(false);
                             await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                          .ConfigureAwait(false);
+                            string strAP = await objWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
                             await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
                             {
-                                x.Text = objWeapon.DisplayTotalAP;
+                                x.Text = strAP;
                                 x.Visible = true;
                             }, token).ConfigureAwait(false);
                             await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                .ConfigureAwait(false);
+                            string strAccuracy = await objWeapon.GetDisplayAccuracyAsync(token).ConfigureAwait(false);
                             await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
                             {
-                                x.Text = objWeapon.DisplayAccuracy;
+                                x.Text = strAccuracy;
                                 x.Visible = true;
                             }, token).ConfigureAwait(false);
                             await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token)
@@ -19500,28 +19507,32 @@ namespace Chummer
                             {
                                 await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                .ConfigureAwait(false);
+                                string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
                                 await lblVehicleWeaponAmmo.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objWeapon.DisplayAmmo;
+                                    x.Text = strAmmo;
                                 }, token).ConfigureAwait(false);
                                 await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                .ConfigureAwait(false);
+                                string strMode = await objWeapon.GetDisplayModeAsync(token).ConfigureAwait(false);
                                 await lblVehicleWeaponMode.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objWeapon.DisplayMode;
+                                    x.Text = strMode;
                                 }, token).ConfigureAwait(false);
                                 await cboVehicleWeaponFiringMode
                                       .DoThreadSafeAsync(x => x.SelectedValue = objWeapon.FireMode, token)
                                       .ConfigureAwait(false);
                                 await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = true, token)
                                                              .ConfigureAwait(false);
+                                string strRange = await objWeapon.GetCurrentDisplayRangeAsync(token).ConfigureAwait(false);
                                 await lblVehicleWeaponRangeMain
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayRange, token)
+                                      .DoThreadSafeAsync(x => x.Text = strRange, token)
                                       .ConfigureAwait(false);
+                                string strAltRange = await objWeapon.GetCurrentDisplayAlternateRangeAsync(token).ConfigureAwait(false);
                                 await lblVehicleWeaponRangeAlternate
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayAlternateRange, token)
+                                      .DoThreadSafeAsync(x => x.Text = strAltRange, token)
                                       .ConfigureAwait(false);
                                 Dictionary<string, string> dicRanges
                                     = await objWeapon.GetRangeStringsAsync(GlobalSettings.CultureInfo, token: token)
@@ -19577,10 +19588,11 @@ namespace Chummer
                                 {
                                     await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                    .ConfigureAwait(false);
+                                    string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
                                     await lblVehicleWeaponAmmo.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
-                                        x.Text = objWeapon.DisplayAmmo;
+                                        x.Text = strAmmo;
                                     }, token).ConfigureAwait(false);
                                     await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x =>
                                     {
@@ -20395,26 +20407,28 @@ namespace Chummer
                         string strCategory = await objDrug.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                         await lblDrugCategory.DoThreadSafeAsync(x => x.Text = strCategory, token)
                                              .ConfigureAwait(false);
+                        string strAddictionRating = (await objDrug.GetAddictionRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                         await lblDrugAddictionRating
                               .DoThreadSafeAsync(
-                                  x => x.Text = objDrug.AddictionRating.ToString(GlobalSettings.CultureInfo), token)
+                                  x => x.Text = strAddictionRating, token)
                               .ConfigureAwait(false);
+                        string strAddictionThreshold = (await objDrug.GetAddictionThresholdAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                         await lblDrugAddictionThreshold
                               .DoThreadSafeAsync(
-                                  x => x.Text = objDrug.AddictionThreshold.ToString(GlobalSettings.CultureInfo), token)
+                                  x => x.Text = strAddictionThreshold, token)
                               .ConfigureAwait(false);
                         string strText = await objDrug.GetEffectDescriptionAsync(token).ConfigureAwait(false);
                         await lblDrugEffect.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdComponents))
                         {
-                            foreach (DrugComponent objComponent in objDrug.Components)
+                            await objDrug.Components.ForEachAsync(async objComponent =>
                             {
                                 sbdComponents.AppendLine(
                                     await objComponent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                            }
-
-                            await lblDrugComponents.DoThreadSafeAsync(x => x.Text = sbdComponents.ToString(), token)
+                            }, token).ConfigureAwait(false);
+                            string strComponents = sbdComponents.ToString();
+                            await lblDrugComponents.DoThreadSafeAsync(x => x.Text = strComponents, token)
                                                    .ConfigureAwait(false);
                         }
                     }

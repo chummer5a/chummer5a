@@ -425,7 +425,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(RequiresProgram))
                 return LanguageManager.GetString("String_None", strLanguage);
-            if (strLanguage == GlobalSettings.Language)
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return RequiresProgram;
 
             return _objCharacter.LoadDataXPath("programs.xml", strLanguage)
@@ -440,7 +440,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(RequiresProgram))
                 return await LanguageManager.GetStringAsync("String_None", strLanguage, token: token).ConfigureAwait(false);
-            if (strLanguage == GlobalSettings.Language)
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return RequiresProgram;
 
             XPathNavigator xmlRequiresProgramNode

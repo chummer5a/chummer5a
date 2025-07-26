@@ -20859,26 +20859,28 @@ namespace Chummer
                         string strCategory = await objDrug.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                         await lblDrugCategory.DoThreadSafeAsync(x => x.Text = strCategory, token)
                                              .ConfigureAwait(false);
+                        string strAddictionRating = (await objDrug.GetAddictionRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                         await lblDrugAddictionRating
                               .DoThreadSafeAsync(
-                                  x => x.Text = objDrug.AddictionRating.ToString(GlobalSettings.CultureInfo), token)
+                                  x => x.Text = strAddictionRating, token)
                               .ConfigureAwait(false);
+                        string strAddictionThreshold = (await objDrug.GetAddictionThresholdAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                         await lblDrugAddictionThreshold
                               .DoThreadSafeAsync(
-                                  x => x.Text = objDrug.AddictionThreshold.ToString(GlobalSettings.CultureInfo), token)
+                                  x => x.Text = strAddictionThreshold, token)
                               .ConfigureAwait(false);
                         string strText = await objDrug.GetEffectDescriptionAsync(token: token).ConfigureAwait(false);
                         await lblDrugEffect.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdComponents))
                         {
-                            foreach (DrugComponent objComponent in objDrug.Components)
+                            await objDrug.Components.ForEachAsync(async objComponent =>
                             {
                                 sbdComponents.AppendLine(
                                     await objComponent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                            }
-
-                            await lblDrugComponents.DoThreadSafeAsync(x => x.Text = sbdComponents.ToString(), token)
+                            }, token).ConfigureAwait(false);
+                            string strComponents = sbdComponents.ToString();
+                            await lblDrugComponents.DoThreadSafeAsync(x => x.Text = strComponents, token)
                                                    .ConfigureAwait(false);
                         }
                     }
@@ -21220,11 +21222,12 @@ namespace Chummer
                         {
                             await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = true, token)
                                                     .ConfigureAwait(false);
+                            bool blnIsCyberware = (await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)) == Improvement.ImprovementSource.Cyberware;
                             await gpbCyberwareMatrix.DoThreadSafeAsync(
-                                x => x.Visible = objCyberware.SourceType == Improvement.ImprovementSource.Cyberware,
+                                x => x.Visible = blnIsCyberware,
                                 token).ConfigureAwait(false);
                             await tabCyberwareCM.DoThreadSafeAsync(
-                                x => x.Visible = objCyberware.SourceType == Improvement.ImprovementSource.Cyberware,
+                                x => x.Visible = blnIsCyberware,
                                 token).ConfigureAwait(false);
                             // Buttons
                             await cmdDeleteCyberware.DoThreadSafeAsync(
@@ -21303,18 +21306,15 @@ namespace Chummer
                                                           .ConfigureAwait(false);
                                 await lblCyberlimbAGI.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
-                                await lblCyberlimbAGI.DoThreadSafeAsync(
-                                                         x => x.Text = objCyberware.GetAttributeTotalValue("AGI")
-                                                             .ToString(GlobalSettings.CultureInfo), token)
+                                string strAgi = (await objCyberware.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                                await lblCyberlimbAGI.DoThreadSafeAsync(x => x.Text = strAgi, token)
                                                      .ConfigureAwait(false);
                                 await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
                                 await lblCyberlimbSTR.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
-                                await lblCyberlimbSTR.DoThreadSafeAsync(
-                                                         x => x.Text = objCyberware.GetAttributeTotalValue("STR")
-                                                             .ToString(GlobalSettings.CultureInfo), token)
-                                                     .ConfigureAwait(false);
+                                string strStr = (await objCyberware.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                                await lblCyberlimbSTR.DoThreadSafeAsync(x => x.Text = strStr, token).ConfigureAwait(false);
                             }
                             else
                             {
@@ -21913,9 +21913,13 @@ namespace Chummer
                                           x => x.Enabled = objWeapon.RequireAmmo && objWeapon.AmmoLoaded != null
                                               && objWeapon.AmmoRemaining != 0, token).ConfigureAwait(false);
                                 token.ThrowIfCancellationRequested();
+                                bool blnAllowSingleShot = await objWeapon.GetAllowSingleShotAsync(token).ConfigureAwait(false);
+                                bool blnAllowShortBurst = await objWeapon.GetAllowShortBurstAsync(token).ConfigureAwait(false);
+                                bool blnAllowLongBurst = await objWeapon.GetAllowLongBurstAsync(token).ConfigureAwait(false);
+                                bool blnAllowFullBurst = await objWeapon.GetAllowFullBurstAsync(token).ConfigureAwait(false);
+                                bool blnAllowSuppressive = await objWeapon.GetAllowSuppressiveAsync(token).ConfigureAwait(false);
                                 string strSingleShotText
-                                    = objWeapon.AllowSingleShot
-                                      || (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
+                                    = blnAllowSingleShot
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_SingleShot", token: token).ConfigureAwait(false),
@@ -21927,9 +21931,9 @@ namespace Chummer
                                                                 "String_Bullets", token: token).ConfigureAwait(false))
                                         : await
                                             LanguageManager.GetStringAsync("String_SingleShotNA", token: token)
-                                                           .ConfigureAwait(false);
+                                                            .ConfigureAwait(false);
                                 string strShortBurstText
-                                    = objWeapon.AllowShortBurst
+                                    = blnAllowShortBurst
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_ShortBurst", token: token).ConfigureAwait(false),
@@ -21943,7 +21947,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_ShortBurstNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strLongBurstText
-                                    = objWeapon.AllowLongBurst
+                                    = blnAllowLongBurst
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_LongBurst", token: token).ConfigureAwait(false),
@@ -21957,7 +21961,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_LongBurstNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strFullBurstText
-                                    = objWeapon.AllowFullBurst
+                                    = blnAllowFullBurst
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_FullBurst", token: token).ConfigureAwait(false),
@@ -21971,7 +21975,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_FullBurstNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strSuppressiveFireText
-                                    = objWeapon.AllowSuppressive
+                                    = blnAllowSuppressive
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                                                  "String_SuppressiveFire", token: token)
@@ -21987,16 +21991,11 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                                 await cmsAmmoExpense.DoThreadSafeAsync(() =>
                                 {
-                                    cmsAmmoSingleShot.Enabled = objWeapon.AllowSingleShot;
-                                    cmsAmmoShortBurst.Enabled = objWeapon.AllowShortBurst;
-                                    cmsAmmoLongBurst.Enabled = objWeapon.AllowLongBurst;
-                                    cmsAmmoFullBurst.Enabled = objWeapon.AllowFullBurst;
-                                    cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowSuppressive;
-
-                                    // Melee Weapons with Ammo are considered to be Single Shot.
-                                    if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
-                                        cmsAmmoSingleShot.Enabled = true;
-
+                                    cmsAmmoSingleShot.Enabled = blnAllowSingleShot;
+                                    cmsAmmoShortBurst.Enabled = blnAllowShortBurst;
+                                    cmsAmmoLongBurst.Enabled = blnAllowLongBurst;
+                                    cmsAmmoFullBurst.Enabled = blnAllowFullBurst;
+                                    cmsAmmoSuppressiveFire.Enabled = blnAllowSuppressive;
                                     cmsAmmoSingleShot.Text = strSingleShotText;
                                     cmsAmmoShortBurst.Text = strShortBurstText;
                                     cmsAmmoLongBurst.Text = strLongBurstText;
@@ -22252,14 +22251,15 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
+                            int intConceal = await objSelectedAccessory.GetTotalConcealabilityAsync(token).ConfigureAwait(false);
                             await lblWeaponConcealLabel
-                                  .DoThreadSafeAsync(x => x.Visible = objSelectedAccessory.TotalConcealability != 0,
+                                  .DoThreadSafeAsync(x => x.Visible = intConceal != 0,
                                                      token).ConfigureAwait(false);
                             await lblWeaponConceal.DoThreadSafeAsync(x =>
                             {
-                                x.Visible = objSelectedAccessory.TotalConcealability != 0;
+                                x.Visible = intConceal != 0;
                                 x.Text
-                                    = objSelectedAccessory.TotalConcealability.ToString(
+                                    = intConceal.ToString(
                                         "+#,0;-#,0;0", GlobalSettings.CultureInfo);
                             }, token).ConfigureAwait(false);
                             string strText2 = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
@@ -24994,8 +24994,9 @@ namespace Chummer
                             // gpbVehiclesCommon
                             string strName = await objVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                             await lblVehicleName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
+                            string strCategory = await objVehicle.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                             await lblVehicleCategory
-                                  .DoThreadSafeAsync(x => x.Text = objVehicle.DisplayCategory(GlobalSettings.Language),
+                                  .DoThreadSafeAsync(x => x.Text = strCategory,
                                                      token).ConfigureAwait(false);
                             await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                        .ConfigureAwait(false);
@@ -25277,10 +25278,8 @@ namespace Chummer
                                   .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             // gpbVehiclesCommon
-                            await lblVehicleCategory
-                                  .DoThreadSafeAsync(
-                                      x => x.Text = objWeaponMount.DisplayCategory(GlobalSettings.Language),
-                                      token).ConfigureAwait(false);
+                            string strCategory = await objWeaponMount.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                            await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strCategory, token).ConfigureAwait(false);
                             string strName = await objWeaponMount.GetCurrentDisplayNameAsync(token)
                                                                  .ConfigureAwait(false);
                             await lblVehicleName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
@@ -25307,10 +25306,11 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
+                            string strSlots = (await objWeaponMount.GetCalculatedSlotsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                             await lblVehicleSlots.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objWeaponMount.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
+                                x.Text = strSlots;
                             }, token).ConfigureAwait(false);
                             await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = false, token)
                                                            .ConfigureAwait(false);
@@ -25388,10 +25388,11 @@ namespace Chummer
                                             .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
+                            string strSlots = (await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                             await lblVehicleSlots.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objMod.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
+                                x.Text = strSlots;
                             }, token).ConfigureAwait(false);
                             await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = false, token)
                                                            .ConfigureAwait(false);
@@ -25665,9 +25666,13 @@ namespace Chummer
                                 await cboVehicleWeaponFiringMode
                                       .DoThreadSafeAsync(x => x.SelectedValue = objWeapon.FireMode, token)
                                       .ConfigureAwait(false);
+                                bool blnAllowSingleShot = await objWeapon.GetAllowSingleShotAsync(token).ConfigureAwait(false);
+                                bool blnAllowShortBurst = await objWeapon.GetAllowShortBurstAsync(token).ConfigureAwait(false);
+                                bool blnAllowLongBurst = await objWeapon.GetAllowLongBurstAsync(token).ConfigureAwait(false);
+                                bool blnAllowFullBurst = await objWeapon.GetAllowFullBurstAsync(token).ConfigureAwait(false);
+                                bool blnAllowSuppressive = await objWeapon.GetAllowSuppressiveAsync(token).ConfigureAwait(false);
                                 string strSingleShotText
-                                    = objWeapon.AllowSingleShot
-                                      || (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
+                                    = blnAllowSingleShot
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_SingleShot", token: token).ConfigureAwait(false),
@@ -25681,7 +25686,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_SingleShotNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strShortBurstText
-                                    = objWeapon.AllowShortBurst
+                                    = blnAllowShortBurst
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_ShortBurst", token: token).ConfigureAwait(false),
@@ -25695,7 +25700,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_ShortBurstNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strLongBurstText
-                                    = objWeapon.AllowLongBurst
+                                    = blnAllowLongBurst
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_LongBurst", token: token).ConfigureAwait(false),
@@ -25709,7 +25714,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_LongBurstNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strFullBurstText
-                                    = objWeapon.AllowFullBurst
+                                    = blnAllowFullBurst
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_FullBurst", token: token).ConfigureAwait(false),
@@ -25723,7 +25728,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_FullBurstNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strSuppressiveFireText
-                                    = objWeapon.AllowSuppressive
+                                    = blnAllowSuppressive
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                                                  "String_SuppressiveFire", token: token)
@@ -25739,16 +25744,11 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                                 await cmdVehicleAmmoExpense.DoThreadSafeAsync(() =>
                                 {
-                                    cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowSingleShot;
-                                    cmsVehicleAmmoShortBurst.Enabled = objWeapon.AllowShortBurst;
-                                    cmsVehicleAmmoLongBurst.Enabled = objWeapon.AllowLongBurst;
-                                    cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowFullBurst;
-                                    cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowSuppressive;
-
-                                    // Melee Weapons with Ammo are considered to be Single Shot.
-                                    if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
-                                        cmsVehicleAmmoSingleShot.Enabled = true;
-
+                                    cmsVehicleAmmoSingleShot.Enabled = blnAllowSingleShot;
+                                    cmsVehicleAmmoShortBurst.Enabled = blnAllowShortBurst;
+                                    cmsVehicleAmmoLongBurst.Enabled = blnAllowLongBurst;
+                                    cmsVehicleAmmoFullBurst.Enabled = blnAllowFullBurst;
+                                    cmsVehicleAmmoSuppressiveFire.Enabled = blnAllowSuppressive;
                                     cmsVehicleAmmoSingleShot.Text = strSingleShotText;
                                     cmsVehicleAmmoShortBurst.Text = strShortBurstText;
                                     cmsVehicleAmmoLongBurst.Text = strLongBurstText;

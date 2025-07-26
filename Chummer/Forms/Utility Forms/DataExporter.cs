@@ -401,7 +401,7 @@ namespace Chummer
                 await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken).ConfigureAwait(false);
             }
             string strLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken).ConfigureAwait(false);
-            if (strLanguage == GlobalSettings.DefaultLanguage)
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 // For English, only allow export if we have any custom data
                 bool blnValidExport = false;

@@ -4568,7 +4568,7 @@ namespace Chummer.Backend.Equipment
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (strLanguage == GlobalSettings.DefaultLanguage)
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return strInput;
             Lazy<string> strStun
                 = new Lazy<string>(
@@ -4602,7 +4602,7 @@ namespace Chummer.Backend.Equipment
         public static async Task<string> ReplaceDamageStringsAsync(string strInput, string strLanguage,
             CancellationToken token = default)
         {
-            if (strLanguage == GlobalSettings.DefaultLanguage)
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return strInput;
             AsyncLazy<string> strStun = new AsyncLazy<string>(
                 () => LanguageManager.GetStringAsync("String_DamageStun", strLanguage, token: token),
@@ -4655,7 +4655,7 @@ namespace Chummer.Backend.Equipment
 
         public static string ReplaceStrings(string strInput, string strLanguage, CancellationToken token = default)
         {
-            return strLanguage == GlobalSettings.DefaultLanguage
+            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                 ? strInput
                 : strInput
                     .CheapReplace(
@@ -4695,7 +4695,7 @@ namespace Chummer.Backend.Equipment
         public static async Task<string> ReplaceStringsAsync(string strInput, string strLanguage,
             CancellationToken token = default)
         {
-            return strLanguage == GlobalSettings.DefaultLanguage
+            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                 ? strInput
                 : await strInput
                     .CheapReplaceAsync(
@@ -5113,26 +5113,71 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public bool AllowSingleShot => RangeType == "Melee"
-                                       && Ammo != "0"
-                                       || _blnAllowSingleShot
-                                       && (AllowMode(LanguageManager.GetString("String_ModeSingleShot"))
-                                           || AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic")));
+        public bool AllowSingleShot => (RangeType == "Melee" && Ammo != "0") // Melee Weapons with Ammo are considered to be Single Shot.
+                                       || (_blnAllowSingleShot
+                                           && AllowModes(GlobalSettings.Language,
+                                                         LanguageManager.GetString("String_ModeSingleShot"),
+                                                         LanguageManager.GetString("String_ModeSemiAutomatic")));
 
         public bool AllowShortBurst => _blnAllowShortBurst
-                                       && (AllowMode(LanguageManager.GetString("String_ModeBurstFire"))
-                                           || AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic"))
-                                           || AllowMode(LanguageManager.GetString("String_ModeFullAutomatic")));
+                                       && AllowModes(GlobalSettings.Language,
+                                                     LanguageManager.GetString("String_ModeBurstFire"),
+                                                     LanguageManager.GetString("String_ModeSemiAutomatic"),
+                                                     LanguageManager.GetString("String_ModeFullAutomatic"));
 
         public bool AllowLongBurst => _blnAllowLongBurst
-                                      && (AllowMode(LanguageManager.GetString("String_ModeBurstFire"))
-                                          || AllowMode(LanguageManager.GetString("String_ModeFullAutomatic")));
+                                      && AllowModes(GlobalSettings.Language,
+                                                    LanguageManager.GetString("String_ModeBurstFire"),
+                                                    LanguageManager.GetString("String_ModeFullAutomatic"));
 
         public bool AllowFullBurst => _blnAllowFullBurst
                                       && AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
 
         public bool AllowSuppressive => _blnAllowSuppressive
                                         && AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+
+        public async Task<bool> GetAllowSingleShotAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (RangeType == "Melee" && Ammo != "0") // Melee Weapons with Ammo are considered to be Single Shot.
+                || (_blnAllowSingleShot
+                    && await AllowModesAsync(token,
+                        await LanguageManager.GetStringAsync("String_ModeSingleShot", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("String_ModeSemiAutomatic", token: token).ConfigureAwait(false)).ConfigureAwait(false));
+        }
+
+        public async Task<bool> GetAllowShortBurstAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return _blnAllowShortBurst
+                && await AllowModesAsync(token,
+                    await LanguageManager.GetStringAsync("String_ModeBurstFire", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("String_ModeSemiAutomatic", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("String_ModeFullAutomatic", token: token).ConfigureAwait(false)).ConfigureAwait(false);
+        }
+
+        public async Task<bool> GetAllowLongBurstAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return _blnAllowLongBurst
+                && await AllowModesAsync(token,
+                    await LanguageManager.GetStringAsync("String_ModeBurstFire", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("String_ModeFullAutomatic", token: token).ConfigureAwait(false)).ConfigureAwait(false);
+        }
+
+        public async Task<bool> GetAllowFullBurstAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return _blnAllowFullBurst
+                && await AllowModeAsync(await LanguageManager.GetStringAsync("String_ModeFullAutomatic", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+        }
+
+        public async Task<bool> GetAllowSuppressiveAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return _blnAllowSuppressive
+                && await AllowModeAsync(await LanguageManager.GetStringAsync("String_ModeFullAutomatic", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+        }
 
         /// <summary>
         /// The Weapon's Firing Mode including Modifications in the program's current language.
@@ -5604,6 +5649,74 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Determine if the Weapon is capable of firing in one of a set of particular modes.
+        /// </summary>
+        /// <param name="astrModes">Firing modes to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strFindMode"/>. Uses current UI language if unset.</param>
+        public bool AllowModes(string strLanguage, params string[] astrModes)
+        {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                       out HashSet<string> setModes))
+            {
+                setModes.AddRange(astrModes);
+                return CalculatedMode(strLanguage).SplitNoAlloc('/').Any(x => setModes.Contains(x));
+            }
+        }
+
+        /// <summary>
+        /// Determine if the Weapon is capable of firing in a particular mode.
+        /// </summary>
+        /// <param name="strFindMode">Firing mode to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strFindMode"/>. Uses current UI language if unset.</param>
+        public async Task<bool> AllowModeAsync(string strFindMode, string strLanguage = "", CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            return (await CalculatedModeAsync(strLanguage, token: token).ConfigureAwait(false)).SplitNoAlloc('/').Contains(strFindMode);
+        }
+
+        /// <summary>
+        /// Determine if the Weapon is capable of firing in one of a set of particular modes.
+        /// </summary>
+        /// <param name="astrModes">Firing modes to find.</param>
+        public Task<bool> AllowModesAsync(string strLanguage, params string[] astrModes)
+        {
+            return AllowModesAsync(strLanguage, default, astrModes);
+        }
+
+        /// <summary>
+        /// Determine if the Weapon is capable of firing in one of a set of particular modes.
+        /// </summary>
+        /// <param name="astrModes">Firing modes to find.</param>
+        public Task<bool> AllowModesAsync(CancellationToken token, params string[] astrModes)
+        {
+            return AllowModesAsync(GlobalSettings.Language, token, astrModes);
+        }
+
+        /// <summary>
+        /// Determine if the Weapon is capable of firing in one of a set of particular modes.
+        /// </summary>
+        /// <param name="astrModes">Firing modes to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strFindMode"/>. Uses current UI language if unset.</param>
+        public async Task<bool> AllowModesAsync(string strLanguage, CancellationToken token, params string[] astrModes)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                       out HashSet<string> setModes))
+            {
+                token.ThrowIfCancellationRequested();
+                setModes.AddRange(astrModes);
+                token.ThrowIfCancellationRequested();
+                return (await CalculatedModeAsync(strLanguage, token: token).ConfigureAwait(false)).SplitNoAlloc('/').Any(x => setModes.Contains(x));
+            }
+        }
+
+        /// <summary>
         /// Weapon Cost to use when working with Total Cost price modifiers for Weapon Mods.
         /// </summary>
         public decimal MultipliableCost(WeaponAccessory objExcludeAccessory, CancellationToken token = default)
@@ -5814,7 +5927,7 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (string strMount in GetAccessoryMounts())
                 {
-                    sbdMounts.Append(strLanguage == GlobalSettings.DefaultLanguage
+                    sbdMounts.Append(strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                         ? strMount
                         : LanguageManager.GetString("String_Mount" + strMount))
                         .Append('/');
@@ -5835,7 +5948,7 @@ namespace Chummer.Backend.Equipment
                 foreach (string strMount in await GetAccessoryMountsAsync(token: token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdMounts.Append(strLanguage == GlobalSettings.DefaultLanguage
+                    sbdMounts.Append(strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                         ? strMount
                         : await LanguageManager.GetStringAsync("String_Mount" + strMount, token: token).ConfigureAwait(false))
                         .Append('/');
