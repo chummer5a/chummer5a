@@ -9076,20 +9076,20 @@ namespace Chummer.Backend.Equipment
                     if (strCostExpression.Contains("Parent Cost"))
                         strParentCost = _objParent.ProcessCostExpression(_objParent.Cost, _objParent.Rating, _objParent.Grade, this);
                     if (strCostExpression.Contains("Parent Gear Cost"))
-                        decTotalParentGearCost += _objParent.GearChildren.Sum(loopGear => loopGear.CalculatedCost);
+                        decTotalParentGearCost = _objParent.GearChildren.Sum(loopGear => loopGear.CalculatedCost);
                 }
 
                 decimal decTotalGearCost = 0;
                 if (GearChildren.Count > 0 && strCostExpression.Contains("Gear Cost"))
                 {
-                    decTotalGearCost += GearChildren.Sum(loopGear => loopGear.CalculatedCost);
+                    decTotalGearCost = GearChildren.Sum(loopGear => loopGear.CalculatedCost);
                 }
 
                 decimal decTotalChildrenCost = 0;
                 if (Children.Count > 0 && strCostExpression.Contains("Children Cost"))
                 {
                     decTotalChildrenCost
-                        += Children.Sum(x => !ReferenceEquals(x, objIgnoreChild), x => x.CalculatedTotalCost(x.Rating, objGrade));
+                        = Children.Sum(x => !ReferenceEquals(x, objIgnoreChild), x => x.CalculatedTotalCost(x.Rating, objGrade));
                 }
 
                 if (string.IsNullOrEmpty(strCostExpression))
@@ -9153,19 +9153,19 @@ namespace Chummer.Backend.Equipment
                             await _objParent.GetRatingAsync(token).ConfigureAwait(false),
                             await _objParent.GetGradeAsync(token).ConfigureAwait(false), this, token).ConfigureAwait(false);
                     if (strCostExpression.Contains("Parent Gear Cost"))
-                        decTotalParentGearCost += await (await _objParent.GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
+                        decTotalParentGearCost = await (await _objParent.GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
                 }
 
                 decimal decTotalGearCost = 0;
                 if (strCostExpression.Contains("Gear Cost"))
                 {
-                    decTotalGearCost += await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
+                    decTotalGearCost = await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
                 }
 
                 decimal decTotalChildrenCost = 0;
                 if (strCostExpression.Contains("Children Cost"))
                 {
-                    decTotalChildrenCost += await (await GetChildrenAsync(token).ConfigureAwait(false))
+                    decTotalChildrenCost = await (await GetChildrenAsync(token).ConfigureAwait(false))
                         .SumAsync(x => !ReferenceEquals(x, objIgnoreChild),
                             async x => await x.CalculatedTotalCostAsync(await x.GetRatingAsync(token).ConfigureAwait(false), objGrade, token).ConfigureAwait(false),
                             token).ConfigureAwait(false);
@@ -9690,20 +9690,20 @@ namespace Chummer.Backend.Equipment
                         strParentWeight = _objParent.Weight;
                     if (strWeightExpression.Contains("Parent Gear Weight"))
                         decTotalParentGearWeight
-                            += _objParent.GearChildren.Sum(loopGear => loopGear.OwnWeight * loopGear.Quantity);
+                            = _objParent.GearChildren.Sum(loopGear => loopGear.OwnWeight * loopGear.Quantity);
                 }
 
                 decimal decTotalGearWeight = 0;
                 if (GearChildren.Count > 0 && strWeightExpression.Contains("Gear Weight"))
                 {
-                    decTotalGearWeight += GearChildren.Sum(loopGear => loopGear.OwnWeight * loopGear.Quantity);
+                    decTotalGearWeight = GearChildren.Sum(loopGear => loopGear.OwnWeight * loopGear.Quantity);
                 }
 
                 decimal decTotalChildrenWeight = 0;
                 if (Children.Count > 0 && strWeightExpression.Contains("Children Weight"))
                 {
                     decTotalChildrenWeight
-                        += Children.Sum(loopWare => loopWare.CalculatedTotalWeight(loopWare.Rating, objGrade));
+                        = Children.Sum(loopWare => loopWare.CalculatedTotalWeight(loopWare.Rating, objGrade));
                 }
 
                 decimal decReturn = 0;
@@ -10675,9 +10675,8 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterReadLock())
                 {
-                    int intBonusBoxes = Children.Sum(x => x.TotalBonusMatrixBoxes)
-                                        + GearChildren.Sum(x => x.Equipped, x => x.TotalBonusMatrixBoxes);
-                    return intBonusBoxes;
+                    return Children.Sum(x => x.TotalBonusMatrixBoxes)
+                        + GearChildren.Sum(x => x.Equipped, x => x.TotalBonusMatrixBoxes);
                 }
             }
         }
@@ -11441,7 +11440,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) &&
-                    !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+                    !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookEnabledAsync(Source, token).ConfigureAwait(false))
                     return null;
 
                 TreeNode objNode = new TreeNode
@@ -11450,8 +11449,8 @@ namespace Chummer.Backend.Equipment
                     Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                     Tag = this,
                     ContextMenuStrip = cmsCyberware,
-                    ForeColor = PreferredColor,
-                    ToolTipText = Notes.WordWrap()
+                    ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                    ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
                 };
 
                 TreeNodeCollection lstChildNodes = objNode.Nodes;
