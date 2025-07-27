@@ -137,7 +137,7 @@ namespace Chummer
                         x => x.SelectedIndex >= 0
                             ? ((ListItem) x.SelectedItem).Value as Lifestyle
                             : null, token).ConfigureAwait(false);
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstLifestyleItems))
                     {
                         await _objCharacter.Lifestyles.ForEachAsync(async objLifestyle =>
@@ -238,7 +238,7 @@ namespace Chummer
                 intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync(token: token).ConfigureAwait(false);
             }
 
-            await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult, token: token).ConfigureAwait(false);
+            await nudDiceResult.DoThreadSafeAsync(x => x.Value = intResult, token: token).ConfigureAwait(false);
         }
 
         #endregion Control Events

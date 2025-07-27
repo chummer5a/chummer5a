@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Globalization;
 using System.Text;
 
@@ -192,9 +193,11 @@ namespace Chummer
         {
             if (version == null)
                 return 1;
-            if (!(version is Version version1))
-                throw new ArgumentException();
-            return CompareTo(version1);
+            if (version is ValueVersion version1)
+                return CompareTo(version1);
+            if (version is Version version2)
+                return CompareTo(version2);
+            throw new ArgumentException("Argument is not a version of value version.", nameof(version));
         }
 
         /// <summary>Compares the current ValueVersion struct to a specified ValueVersion struct and returns an indication of their relative values.</summary>
@@ -357,7 +360,7 @@ namespace Chummer
                 case 1:
                     return _Major.ToString();
                 case 2:
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdReturn))
                     {
                         AppendPositiveNumber(_Major, sbdReturn);
@@ -370,7 +373,7 @@ namespace Chummer
                         throw new ArgumentOutOfRangeException(nameof(fieldCount));
                     if (fieldCount == 3)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdReturn))
                         {
                             AppendPositiveNumber(_Major, sbdReturn);
@@ -385,7 +388,7 @@ namespace Chummer
                         throw new ArgumentOutOfRangeException(nameof(fieldCount));
                     if (fieldCount == 4)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdReturn))
                         {
                             AppendPositiveNumber(_Major, sbdReturn);
@@ -454,37 +457,43 @@ namespace Chummer
                 result.SetFailure(ParseFailureKind.ArgumentNullException);
                 return false;
             }
-            string[] strArray = version.Split(SeparatorsArray);
-            int length = strArray.Length;
-            if (length < 2 || length > 4)
+            string[] strArray = version.SplitToPooledArray(out int length, SeparatorsArray);
+            try
             {
-                result.SetFailure(ParseFailureKind.ArgumentException);
-                return false;
-            }
-
-            if (!TryParseComponent(strArray[0], nameof(version), ref result, out int parsedComponent1)
-                || !TryParseComponent(strArray[1], nameof(version), ref result, out int parsedComponent2))
-            {
-                return false;
-            }
-
-            int num = length - 2;
-            if (num > 0)
-            {
-                if (!TryParseComponent(strArray[2], "build", ref result, out int parsedComponent3))
-                    return false;
-                if (num > 1)
+                if (length < 2 || length > 4)
                 {
-                    if (!TryParseComponent(strArray[3], "revision", ref result, out int parsedComponent4))
+                    result.SetFailure(ParseFailureKind.ArgumentException);
+                    return false;
+                }
+
+                if (!TryParseComponent(strArray[0], nameof(version), ref result, out int parsedComponent1)
+                    || !TryParseComponent(strArray[1], nameof(version), ref result, out int parsedComponent2))
+                {
+                    return false;
+                }
+
+                int num = length - 2;
+                if (num > 0)
+                {
+                    if (!TryParseComponent(strArray[2], "build", ref result, out int parsedComponent3))
                         return false;
-                    result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2, parsedComponent3, parsedComponent4);
+                    if (num > 1)
+                    {
+                        if (!TryParseComponent(strArray[3], "revision", ref result, out int parsedComponent4))
+                            return false;
+                        result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2, parsedComponent3, parsedComponent4);
+                    }
+                    else
+                        result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2, parsedComponent3);
                 }
                 else
-                    result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2, parsedComponent3);
+                    result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2);
+                return true;
             }
-            else
-                result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2);
-            return true;
+            finally
+            {
+                ArrayPool<string>.Shared.Return(strArray);
+            }
         }
 
         private static bool TryParseComponent(

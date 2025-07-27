@@ -280,7 +280,7 @@ namespace Chummer
                                                                          x => x.SelectedValue, token: token)
                                                                      .ConfigureAwait(false);
                         // Populate the Gameplay Settings list.
-                        using (new FetchSafelyFromPool<List<ListItem>>(
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                    Utils.ListItemListPool, out List<ListItem> lstCharacterSettings))
                         {
                             IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
@@ -388,9 +388,10 @@ namespace Chummer
                                     x.Text = strText2;
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
+                                string strText3 = await objSelectedGameplayOption.GetPriorityArrayAsync(token).ConfigureAwait(false);
                                 await lblBuildMethodParam.DoThreadSafeAsync(x =>
                                 {
-                                    x.Text = objSelectedGameplayOption.PriorityArray;
+                                    x.Text = strText3;
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
                                 break;
@@ -404,9 +405,10 @@ namespace Chummer
                                     x.Text = strText2;
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
+                                string strText3 = (await objSelectedGameplayOption.GetSumtoTenAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                                 await lblBuildMethodParam.DoThreadSafeAsync(x =>
                                 {
-                                    x.Text = objSelectedGameplayOption.SumtoTen.ToString(GlobalSettings.CultureInfo);
+                                    x.Text = strText3;
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
                                 break;
@@ -418,11 +420,14 @@ namespace Chummer
                     }
 
                     string strNone = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
-
-                    await lblMaxAvail.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.MaximumAvailability.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
-                    await lblKarma.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.BuildKarma.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
-                    await lblMaxNuyen.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.NuyenMaximumBP.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
-                    await lblQualityKarma.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
+                    string strMaxAvail = (await objSelectedGameplayOption.GetMaximumAvailabilityAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                    await lblMaxAvail.DoThreadSafeAsync(x => x.Text = strMaxAvail, token).ConfigureAwait(false);
+                    string strKarma = (await objSelectedGameplayOption.GetBuildKarmaAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                    await lblKarma.DoThreadSafeAsync(x => x.Text = strKarma, token).ConfigureAwait(false);
+                    string strMaxNuyen = (await objSelectedGameplayOption.GetNuyenMaximumBPAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                    await lblMaxNuyen.DoThreadSafeAsync(x => x.Text = strMaxNuyen, token).ConfigureAwait(false);
+                    string strQualityKarma = (await objSelectedGameplayOption.GetQualityKarmaLimitAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                    await lblQualityKarma.DoThreadSafeAsync(x => x.Text = strQualityKarma, token).ConfigureAwait(false);
 
                     string strBookList = await objSelectedGameplayOption.TranslatedBookListAsync(string.Join(";",
                         await objSelectedGameplayOption.GetBooksAsync(token).ConfigureAwait(false)), token: token).ConfigureAwait(false);
@@ -433,7 +438,7 @@ namespace Chummer
                             x.Text = strNone;
                     }, token).ConfigureAwait(false);
 
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdCustomDataDirectories))
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in await objSelectedGameplayOption

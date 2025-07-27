@@ -120,7 +120,7 @@ namespace Chummer
                       .PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet,
                                                       _objCharacter.Yield(), _objExportCulture, token: _objGenericToken)
                       .ConfigureAwait(false);
-                using (new FetchSafelyFromPool<List<ListItem>>(
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                            Utils.ListItemListPool, out List<ListItem> lstExportMethods))
                 {
                     // Populate the XSLT list with all of the XSL files found in the sheets directory.
@@ -769,7 +769,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             // Read in the resulting code and pass it to the browser.
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                             {
                                 token.ThrowIfCancellationRequested();
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))

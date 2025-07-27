@@ -383,9 +383,9 @@ namespace Chummer
                         await lblWeaponModeLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strMode), token: token)
                                 .ConfigureAwait(false);
-                        string strRC = await objSelectedWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
+                        (string strRC, string strRCTooltip) = await objSelectedWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
                         await lblWeaponRC.DoThreadSafeAsync(x => x.Text = strRC, token: token).ConfigureAwait(false);
-                        await lblWeaponRC.SetToolTipAsync(objSelectedWeapon.RCToolTip, token: token)
+                        await lblWeaponRC.SetToolTipAsync(strRCTooltip, token: token)
                                             .ConfigureAwait(false);
                         await lblWeaponRCLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strRC), token: token)
@@ -420,10 +420,9 @@ namespace Chummer
                         }
                         else
                         {
-                            strWeaponCost = objSelectedWeapon.DisplayCost(
-                                out decItemCost,
+                            (strWeaponCost, decItemCost) = await objSelectedWeapon.DisplayCost(
                                 await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false)
-                                / 100.0m);
+                                / 100.0m, token).ConfigureAwait(false);
                         }
 
                         await lblWeaponCost.DoThreadSafeAsync(x => x.Text = strWeaponCost, token: token)
@@ -453,14 +452,14 @@ namespace Chummer
 
                         string strIncludedAccessories;
                         // Build a list of included Accessories and Modifications that come with the weapon.
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                         out StringBuilder sbdAccessories))
                         {
-                            foreach (WeaponAccessory objAccessory in objSelectedWeapon.WeaponAccessories)
+                            await objSelectedWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                             {
                                 sbdAccessories.AppendLine(
                                     await objAccessory.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                            }
+                            }, token).ConfigureAwait(false);
 
                             if (sbdAccessories.Length > 0)
                                 sbdAccessories.Length -= Environment.NewLine.Length;
@@ -608,14 +607,14 @@ namespace Chummer
                                 string strAP = await objWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
                                 if (strAP == "-")
                                     strAP = "0";
-                                string strRC = await objWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
+                                (string strRC, string strRCTooltip) = await objWeapon.TotalRCAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token).ConfigureAwait(false);
                                 string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
                                 string strMode = await objWeapon.GetDisplayModeAsync(token).ConfigureAwait(false);
                                 string strReach =
                                     (await objWeapon.GetTotalReachAsync(token).ConfigureAwait(false)).ToString(
                                         GlobalSettings.CultureInfo);
                                 string strConceal = await objWeapon.GetDisplayConcealabilityAsync(token).ConfigureAwait(false);
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdAccessories))
                                 {
                                     await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
@@ -634,7 +633,7 @@ namespace Chummer
                                         GlobalSettings.Language,
                                         GlobalSettings.CultureInfo,
                                         _objCharacter, token).ConfigureAwait(false);
-                                    NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
+                                    NuyenString strCost = new NuyenString((await objWeapon.DisplayCost(token: token).ConfigureAwait(false)).Item1);
 
                                     tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP,
                                         strRC,
@@ -687,7 +686,7 @@ namespace Chummer
                 }
                 else
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstWeapons))
                     {
                         int intOverLimit = 0;
@@ -747,13 +746,17 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
                                     (!string.IsNullOrEmpty(strMount) || !string.IsNullOrEmpty(strExtraMount)))
                                 {
-                                    string[] astrParentDoubledCostModificationSlots
-                                        = ParentWeapon.DoubledCostModificationSlots.Split(
-                                            '/', StringSplitOptions.RemoveEmptyEntries);
-                                    if (astrParentDoubledCostModificationSlots.Contains(strMount)
-                                        || astrParentDoubledCostModificationSlots.Contains(strExtraMount))
+                                    bool blnBreakAfterFound = string.IsNullOrEmpty(strMount) || string.IsNullOrEmpty(strExtraMount);
+                                    foreach (string strDoubledCostSlot in ParentWeapon.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                                     {
-                                        decCostMultiplier *= 2;
+                                        if (strDoubledCostSlot == strMount || strDoubledCostSlot == strExtraMount)
+                                        {
+                                            decCostMultiplier *= 2;
+                                            if (blnBreakAfterFound)
+                                                break;
+                                            else
+                                                blnBreakAfterFound = true;
+                                        }
                                     }
                                 }
 
@@ -1013,7 +1016,7 @@ namespace Chummer
                     string strCategory = await cboCategory
                         .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                     string strFilter = string.Empty;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
                         sbdFilter.Append('(')
                             .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
@@ -1024,7 +1027,7 @@ namespace Chummer
                             sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                         else
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                        out StringBuilder sbdCategoryFilter))
                             {
                                 if (_setLimitToCategories?.Count > 0)

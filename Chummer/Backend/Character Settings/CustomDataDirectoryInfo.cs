@@ -274,7 +274,7 @@ namespace Chummer
                     = lstEnabledCustomDataDirectoryInfos.FindIndex(x => x.Equals(this));
                 List<CustomDataDirectoryInfo> lstEnabledCustomData
                     = new List<CustomDataDirectoryInfo>(DependenciesList.Count);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
                     foreach (DirectoryDependency dependency in DependenciesList)
@@ -374,7 +374,7 @@ namespace Chummer
                     = lstEnabledCustomDataDirectoryInfos.FindIndex(x => x.Equals(this));
                 List<CustomDataDirectoryInfo> lstEnabledCustomData
                     = new List<CustomDataDirectoryInfo>(DependenciesList.Count);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
                     foreach (DirectoryDependency dependency in DependenciesList)
@@ -479,7 +479,7 @@ namespace Chummer
                     objCharacterSettings.EnabledCustomDataDirectoryInfos;
                 IReadOnlyCollection<Guid> lstEnabledCustomDataDirectoryInfoGuids =
                     objCharacterSettings.EnabledCustomDataDirectoryInfoGuids;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
                     foreach (DirectoryDependency incompatibility in IncompatibilitiesList)
@@ -551,7 +551,7 @@ namespace Chummer
                     await objCharacterSettings.GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false);
                 IReadOnlyCollection<Guid> lstEnabledCustomDataDirectoryInfoGuids =
                     await objCharacterSettings.GetEnabledCustomDataDirectoryInfoGuidsAsync(token).ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
                     foreach (DirectoryDependency incompatibility in IncompatibilitiesList)
@@ -801,7 +801,7 @@ namespace Chummer
 
         public string GetDisplayAuthors(string strLanguage, CultureInfo objCultureInfo)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdDisplayAuthors))
             {
                 foreach (KeyValuePair<string, bool> kvp in AuthorDictionary)
@@ -820,7 +820,7 @@ namespace Chummer
         public async Task<string> GetDisplayAuthorsAsync(string strLanguage, CultureInfo objCultureInfo,
                                                          CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdDisplayAuthors))
             {
                 foreach (KeyValuePair<string, bool> kvp in AuthorDictionary)

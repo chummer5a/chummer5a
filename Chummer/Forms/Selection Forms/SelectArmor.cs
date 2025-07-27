@@ -585,7 +585,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
                         sbdFilter.Append('(')
                             .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
@@ -600,7 +600,7 @@ namespace Chummer
                             sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                         else
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                        out StringBuilder sbdCategoryFilter))
                             {
                                 foreach (string strItem in _lstCategory.Select(x => x.Value?.ToString()))
@@ -694,14 +694,11 @@ namespace Chummer
                                     string strArmorName = await objArmor.GetCurrentDisplayNameAsync(token)
                                         .ConfigureAwait(false);
                                     int intArmor = await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false);
-                                    decimal decCapacity
-                                        = Convert.ToDecimal(
-                                            await objArmor
-                                                .CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token)
-                                                .ConfigureAwait(false), GlobalSettings.InvariantCultureInfo);
+                                    decimal.TryParse(await objArmor.CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false),
+                                        System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCapacity);
                                     AvailabilityValue objAvail = await objArmor.TotalAvailTupleAsync(token: token)
                                         .ConfigureAwait(false);
-                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdAccessories))
                                     {
                                         foreach (ArmorMod objMod in objArmor.ArmorMods)
@@ -753,7 +750,7 @@ namespace Chummer
                     break;
 
                 default:
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstArmors))
                     {
                         int intOverLimit = 0;

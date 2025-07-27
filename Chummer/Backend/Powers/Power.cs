@@ -1231,7 +1231,8 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return Convert.ToDecimal(_strPointsPerLevel, GlobalSettings.InvariantCultureInfo);
+                    decimal.TryParse(_strPointsPerLevel, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
+                    return decReturn;
                 }
             }
             set
@@ -1256,7 +1257,8 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return Convert.ToDecimal(_strPointsPerLevel, GlobalSettings.InvariantCultureInfo);
+                decimal.TryParse(_strPointsPerLevel, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
+                return decReturn;
             }
             finally
             {
@@ -1324,7 +1326,8 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return Convert.ToDecimal(_strAdeptWayDiscount, GlobalSettings.InvariantCultureInfo);
+                    decimal.TryParse(_strAdeptWayDiscount, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
+                    return decReturn;
                 }
             }
             set
@@ -1349,7 +1352,8 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return Convert.ToDecimal(_strAdeptWayDiscount, GlobalSettings.InvariantCultureInfo);
+                decimal.TryParse(_strAdeptWayDiscount, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
+                return decReturn;
             }
             finally
             {
@@ -1585,7 +1589,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(_strCachedTotalRatingToolTip))
                         return _strCachedTotalRatingToolTip;
                     string strSpace = LanguageManager.GetString("String_Space");
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
                     {
                         bool blnFirstItem = true;
                         bool blnLevelsEnabled = LevelsEnabled;
@@ -1655,7 +1659,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_strCachedTotalRatingToolTip))
                     return _strCachedTotalRatingToolTip;
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
                 {
                     bool blnFirstItem = true;
                     bool blnLevelsEnabled = await GetLevelsEnabledAsync(token).ConfigureAwait(false);
@@ -2049,7 +2053,7 @@ namespace Chummer
                     }
 
                     string strSpace = LanguageManager.GetString("String_Space");
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
                     {
                         decimal decExtraPointCost = ExtraPointCost;
                         if (decExtraPointCost != 0)
@@ -2154,7 +2158,7 @@ namespace Chummer
                 }
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
                 {
                     decimal decExtraPointCost = await GetExtraPointCostAsync(token).ConfigureAwait(false);
                     if (decExtraPointCost != 0)

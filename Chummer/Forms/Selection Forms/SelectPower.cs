@@ -216,7 +216,7 @@ namespace Chummer
             string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ')';
             if (!string.IsNullOrEmpty(_strLimitToPowers))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
                     foreach (string strPower in _strLimitToPowers.SplitNoAlloc(
                                  ',', StringSplitOptions.RemoveEmptyEntries))
@@ -233,7 +233,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
 
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPower))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPower))
             {
                 foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + ']'))
                 {
@@ -251,7 +251,8 @@ namespace Chummer
                                                            .ConfigureAwait(false) > 0, token).ConfigureAwait(false))
                     {
                         //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
-                        decPoints += Convert.ToDecimal(strExtraPointCost, GlobalSettings.InvariantCultureInfo);
+                        if (decimal.TryParse(strExtraPointCost, System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decExtraCost))
+                            decPoints += decExtraCost;
                     }
 
                     if (_decLimitToRating > 0 && decPoints > _decLimitToRating)

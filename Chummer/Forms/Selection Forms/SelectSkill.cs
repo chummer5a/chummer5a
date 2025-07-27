@@ -66,7 +66,7 @@ namespace Chummer
         {
             bool blnForcedExotic = false;
             string strForcedExoticSkillName = string.Empty;
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
             {
                 // Build the list of non-Exotic Skills from the Skills file.
                 XPathNodeIterator objXmlSkillList;
@@ -102,7 +102,7 @@ namespace Chummer
                 else
                 {
                     string strFilter = string.Empty;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
                         // If we don't have a minimum rating, include exotic skills as normal because they'll just make the second dropdown appear when selected
                         if (_intMinimumRating > 0)
@@ -250,7 +250,7 @@ namespace Chummer
                         x.AutoCompleteMode = AutoCompleteMode.None;
                         x.DropDownStyle = ComboBoxStyle.DropDownList;
                     }).ConfigureAwait(false);
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string> setAddedExotics))
                     {
                         await _objCharacter.SkillsSection.Skills.ForEachAsync(async objSkill =>
@@ -445,7 +445,7 @@ namespace Chummer
                 {
                     if (xmlCategoryList == null)
                         return;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdLimitToCategories))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdLimitToCategories))
                     {
                         foreach (XmlNode objNode in xmlCategoryList)
                         {
@@ -557,7 +557,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strSelectedCategory))
                 return;
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
             {
                 if (_intMinimumRating <= 0)
                 {

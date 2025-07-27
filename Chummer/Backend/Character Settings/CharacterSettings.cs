@@ -2061,7 +2061,7 @@ namespace Chummer
                                                                             EnabledCustomDataDirectoryPaths, token: token)
                                                                  .SelectAndCacheExpression(
                                                                      "/chummer/books/book[not(hide)]/code", token);
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string> setAllowedBooks))
                         {
                             foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
@@ -2965,7 +2965,7 @@ namespace Chummer
                                     token: token).ConfigureAwait(false))
                             .SelectAndCacheExpression(
                                 "/chummer/books/book[not(hide)]/code", token);
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string> setAllowedBooks))
                         {
                             foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
@@ -3385,7 +3385,7 @@ namespace Chummer
                             _strEssenceFormat += ".00";
                         else
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdZeros))
                             {
                                 for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
@@ -4156,7 +4156,7 @@ namespace Chummer
                             _strEssenceFormat += ".00";
                         else
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdZeros))
                             {
                                 for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
@@ -5901,7 +5901,7 @@ namespace Chummer
         /// </summary>
         public string BookXPath(bool excludeHidden = true, CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdPath))
             {
                 if (excludeHidden)
@@ -5948,7 +5948,7 @@ namespace Chummer
         /// </summary>
         public async Task<string> BookXPathAsync(bool excludeHidden = true, CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdPath))
             {
                 if (excludeHidden)
@@ -6006,7 +6006,7 @@ namespace Chummer
             using (LockObject.EnterReadLock(token))
             {
                 _strBookXPath = string.Empty;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdBookXPath))
                 {
                     sbdBookXPath.Append('(');
@@ -6039,7 +6039,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 _strBookXPath = string.Empty;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdBookXPath))
                 {
                     sbdBookXPath.Append('(');
@@ -6319,8 +6319,10 @@ namespace Chummer
             IReadOnlyList<string> lstCustomPaths = EnabledCustomDataDirectoryPaths;
             if (strFileName == "packs.xml")
             {
-                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
-                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths)
+                {
+                    Utils.GetPacksFolderPath
+                };
                 return XmlManager.LoadXPath(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token);
             }
             return XmlManager.LoadXPath(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token);
@@ -6342,8 +6344,10 @@ namespace Chummer
             IReadOnlyList<string> lstCustomPaths = await GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
             if (strFileName == "packs.xml")
             {
-                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
-                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths)
+                {
+                    Utils.GetPacksFolderPath
+                };
                 return await XmlManager.LoadXPathAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
             }
             return await XmlManager.LoadXPathAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
@@ -6363,8 +6367,10 @@ namespace Chummer
             IReadOnlyList<string> lstCustomPaths = EnabledCustomDataDirectoryPaths;
             if (strFileName == "packs.xml")
             {
-                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
-                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths)
+                {
+                    Utils.GetPacksFolderPath
+                };
                 return XmlManager.Load(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token);
             }
             return XmlManager.Load(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token);
@@ -6383,8 +6389,10 @@ namespace Chummer
             IReadOnlyList<string> lstCustomPaths = await GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
             if (strFileName == "packs.xml")
             {
-                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths);
-                lstCustomPacksPaths.Add(Utils.GetPacksFolderPath);
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths)
+                {
+                    Utils.GetPacksFolderPath
+                };
                 return await XmlManager.LoadAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
             }
             return await XmlManager.LoadAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
@@ -6435,7 +6443,7 @@ namespace Chummer
             }
 
             lstBooks.Sort();
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 foreach (string strToAppend in lstBooks)
                     sbdReturn.AppendLine(strToAppend);
@@ -6498,7 +6506,7 @@ namespace Chummer
             }
 
             lstBooks.Sort();
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 foreach (string strToAppend in lstBooks)
                     sbdReturn.AppendLine(strToAppend);
@@ -7757,7 +7765,7 @@ namespace Chummer
                         return;
                     if (value)
                     {
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string> setProperties))
                         {
                             setProperties.Add(nameof(MysAdeptSecondMAGAttribute));
@@ -7833,7 +7841,7 @@ namespace Chummer
                     return;
                 if (value)
                 {
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setProperties))
                     {
                         setProperties.Add(nameof(MysAdeptSecondMAGAttribute));
@@ -10128,7 +10136,7 @@ namespace Chummer
                     }
                     else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdNuyenFormat))
                         {
                             sbdNuyenFormat.Append(string.IsNullOrEmpty(NuyenFormat) ? "#,0" : NuyenFormat);
@@ -10200,7 +10208,7 @@ namespace Chummer
                 }
                 else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdNuyenFormat))
                     {
                         string strNuyenFormat = await GetNuyenFormatAsync(token).ConfigureAwait(false);
@@ -10537,7 +10545,7 @@ namespace Chummer
                     }
                     else if (intNewWeightDecimals > intCurrentWeightDecimals)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdWeightFormat))
                         {
                             sbdWeightFormat.Append(string.IsNullOrEmpty(WeightFormat) ? "#,0" : WeightFormat);
@@ -10604,7 +10612,7 @@ namespace Chummer
                 }
                 else if (intNewWeightDecimals > intCurrentWeightDecimals)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdWeightFormat))
                     {
                         string strWeightFormat = await GetWeightFormatAsync(token).ConfigureAwait(false);
@@ -11615,7 +11623,7 @@ namespace Chummer
                     }
                     else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdEssenceFormat))
                         {
                             sbdEssenceFormat.Append(string.IsNullOrEmpty(EssenceFormat) ? "#,0" : EssenceFormat);
@@ -11682,7 +11690,7 @@ namespace Chummer
                 }
                 else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdEssenceFormat))
                     {
                         string strEssenceFormat = await GetEssenceFormatAsync(token).ConfigureAwait(false);
@@ -11726,7 +11734,7 @@ namespace Chummer
                         value += ".00";
                     else
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdZeros))
                         {
                             sbdZeros.Append(value);
@@ -17985,6 +17993,24 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
+        /// </summary>
+        public async Task<decimal> GetKarmaMAGInitiationGroupPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaMAGInitiationGroupPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if a member of a Group.
         /// </summary>
         public decimal KarmaRESInitiationGroupPercent
@@ -18006,6 +18032,24 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if a member of a Group.
+        /// </summary>
+        public async Task<decimal> GetKarmaRESInitiationGroupPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaRESInitiationGroupPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -18035,6 +18079,24 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
+        /// </summary>
+        public async Task<decimal> GetKarmaMAGInitiationOrdealPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaMAGInitiationOrdealPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
         /// </summary>
         public decimal KarmaRESInitiationOrdealPercent
@@ -18060,7 +18122,25 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
+        /// </summary>
+        public async Task<decimal> GetKarmaRESInitiationOrdealPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaRESInitiationOrdealPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if receiving schooling.
         /// </summary>
         public decimal KarmaMAGInitiationSchoolingPercent
         {
@@ -18085,7 +18165,25 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if receiving schooling.
+        /// </summary>
+        public async Task<decimal> GetKarmaMAGInitiationSchoolingPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaMAGInitiationSchoolingPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if receiving schooling.
         /// </summary>
         public decimal KarmaRESInitiationSchoolingPercent
         {
@@ -18109,6 +18207,24 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if receiving schooling.
+        /// </summary>
+        public async Task<decimal> GetKarmaRESInitiationSchoolingPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaRESInitiationSchoolingPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         #endregion Default Build
 
         #region Constant Values
@@ -18116,26 +18232,12 @@ namespace Chummer
         /// <summary>
         /// The value by which Specializations add to dicepool.
         /// </summary>
-        public int SpecializationBonus
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return 2;
-            }
-        }
+        public static int SpecializationBonus => 2;
 
         /// <summary>
         /// The value by which Expertise Specializations add to dicepool (does not stack with SpecializationBonus).
         /// </summary>
-        public int ExpertiseBonus
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return 3;
-            }
-        }
+        public static int ExpertiseBonus => 3;
 
         #endregion Constant Values
 

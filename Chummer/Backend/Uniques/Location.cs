@@ -181,7 +181,7 @@ namespace Chummer
         /// </summary>
         public string DisplayNameShort(string strLanguage = "")
         {
-            if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
+            if (string.IsNullOrEmpty(strLanguage) || strLanguage.Equals(GlobalSettings.Language, StringComparison.OrdinalIgnoreCase))
                 return Name;
             using (LockObject.EnterReadLock())
             {
@@ -217,7 +217,7 @@ namespace Chummer
         /// </summary>
         public async Task<string> DisplayNameShortAsync(string strLanguage = "", CancellationToken token = default)
         {
-            if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
+            if (string.IsNullOrEmpty(strLanguage) || strLanguage.Equals(GlobalSettings.Language, StringComparison.OrdinalIgnoreCase))
                 return Name;
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
@@ -427,15 +427,14 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                 TreeNode objNode = new TreeNode
                 {
                     Name = InternalId,
-                    Text = strText,
+                    Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                     Tag = this,
                     ContextMenuStrip = cmsLocation,
-                    ForeColor = PreferredColor,
-                    ToolTipText = Notes.WordWrap()
+                    ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                    ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
                 };
 
                 return objNode;

@@ -39,6 +39,7 @@ namespace Chummer
             //LanguageManager.Load(GlobalSettings.Language, this);
             CenterToParent();
             parentControl = init;
+            Disposed += OnDisposed;
         }
 
         /// <summary>
@@ -90,19 +91,16 @@ namespace Chummer
                         return; // we obviously cannot init
                     }
 
-                    await nudInit.DoThreadSafeAsync(x => x.Value = objCharacter.InitiativeDice, token: token).ConfigureAwait(false);
-                    await txtName.DoThreadSafeAsync(x => x.Text = objCharacter.Name, token: token).ConfigureAwait(false);
-                    if (int.TryParse(
-                            objCharacter.Initiative.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries)
-                                        .FirstOrDefault(), out int intTemp))
+                    int intInitDice = await objCharacter.GetInitiativeDiceAsync(token: token).ConfigureAwait(false);
+                    await nudInit.DoThreadSafeAsync(x => x.Value = intInitDice, token: token).ConfigureAwait(false);
+                    string strName = await objCharacter.GetNameAsync(token).ConfigureAwait(false);
+                    await txtName.DoThreadSafeAsync(x => x.Text = strName, token: token).ConfigureAwait(false);
+                    if (int.TryParse((await objCharacter.GetInitiativeAsync(token).ConfigureAwait(false))
+                        .SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(), out int intTemp))
                         await nudInitStart.DoThreadSafeAsync(x => x.Value = intTemp, token: token).ConfigureAwait(false);
-                    if (_character != null)
-                    {
-                        await _character.DisposeAsync().ConfigureAwait(false);
-                    }
-
-                    _character = objCharacter;
-                    Disposed += OnDisposed;
+                    Character objOldCharacter = Interlocked.Exchange(ref _character, objCharacter);
+                    if (objOldCharacter != null)
+                        await objOldCharacter.DisposeAsync().ConfigureAwait(false);
                 }
                 finally
                 {
@@ -111,9 +109,11 @@ namespace Chummer
             }
         }
 
-        private void OnDisposed(object sender, EventArgs e)
+        private async void OnDisposed(object sender, EventArgs e)
         {
-            _character?.Dispose();
+            Character objOldCharacter = Interlocked.Exchange(ref _character, null);
+            if (objOldCharacter != null)
+                await objOldCharacter.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <summary>

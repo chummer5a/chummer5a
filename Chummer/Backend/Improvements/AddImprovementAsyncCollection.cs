@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -514,7 +515,7 @@ namespace Chummer
                 // Populate the Magician Traditions list.
                 XPathNavigator xmlTraditionsBaseChummerNode =
                     (await _objCharacter.LoadDataXPathAsync("traditions.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer", token);
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstTraditions))
                 {
                     if (xmlTraditionsBaseChummerNode != null)
@@ -1020,7 +1021,7 @@ namespace Chummer
             else
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sdbValue))
                 {
                     foreach (string s in AttributeSection.AttributeStrings)
@@ -1823,7 +1824,7 @@ namespace Chummer
                 if (objNewGearToCreate.InternalId.IsEmptyGuid())
                     throw new AbortedException();
 
-                objNewGearToCreate.Quantity = decQty;
+                await objNewGearToCreate.SetQuantityAsync(decQty, token).ConfigureAwait(false);
 
                 // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
                 if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == null && await objNewGearToCreate.GetIsCommlinkAsync(token).ConfigureAwait(false))
@@ -2614,11 +2615,7 @@ namespace Chummer
             string strBonus = bonusNode["devicerating"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2629,11 +2626,7 @@ namespace Chummer
             strBonus = bonusNode["programlimit"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2644,11 +2637,7 @@ namespace Chummer
             strBonus = bonusNode["attack"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2659,11 +2648,7 @@ namespace Chummer
             strBonus = bonusNode["sleaze"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2674,11 +2659,7 @@ namespace Chummer
             strBonus = bonusNode["dataprocessing"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2689,11 +2670,7 @@ namespace Chummer
             strBonus = bonusNode["firewall"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2704,11 +2681,7 @@ namespace Chummer
             strBonus = bonusNode["matrixcm"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -3574,7 +3547,7 @@ namespace Chummer
                         foreach (XmlNode xmlSelectCategory in xmlSelectCategoryList)
                         {
                             // Display the Select Category window and record which Category was selected.
-                            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                            out List<ListItem> lstGeneralItems))
                             {
                                 using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
@@ -3662,7 +3635,7 @@ namespace Chummer
                     {
                         string strSelectedValue;
                         // Display the Select Category window and record which Category was selected.
-                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstGeneralItems))
                         {
                             using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
@@ -3747,7 +3720,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGeneralItems))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGeneralItems))
             {
                 string strType = bonusNode.Attributes?["type"]?.InnerText;
                 if (!string.IsNullOrEmpty(strType))
@@ -4281,7 +4254,7 @@ namespace Chummer
             {
                 if (xmlArtList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstArts))
                     {
                         foreach (XmlNode objXmlAddArt in xmlArtList)
@@ -4386,7 +4359,7 @@ namespace Chummer
             {
                 if (xmlMetamagicList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstMetamagics))
                     {
                         foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
@@ -4503,7 +4476,7 @@ namespace Chummer
             {
                 if (xmlEchoList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstEchoes))
                     {
                         foreach (XmlNode objXmlAddEcho in xmlEchoList)
@@ -5354,7 +5327,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCritters))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCritters))
             {
                 using (XmlNodeList objXmlNodeList = (await _objCharacter.LoadDataAsync("critters.xml", token: token).ConfigureAwait(false))
                                                                  .SelectNodes(
@@ -5456,7 +5429,7 @@ namespace Chummer
 
             //.SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" + strFilter + ')' + SkillFilter(filter) + ']');
 
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstArmors))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstArmors))
             {
                 if (objXmlNodeList.Count > 0)
                 {
@@ -5518,7 +5491,7 @@ namespace Chummer
                 ? "/chummer/cyberwares/cyberware[(category = " + strCategory.CleanXPath() + ") and (" + strBookXPath + ")]"
                 : "/chummer/cyberwares/cyberware[(" + strBookXPath + ")]");
 
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> list))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> list))
             {
                 if (objXmlNodeList.Count > 0)
                 {
@@ -5602,7 +5575,7 @@ namespace Chummer
             }
             else
             {
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstWeapons))
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstWeapons))
                 {
                     bool blnIncludeUnarmed = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@includeunarmed", token)?.Value == bool.TrueString;
                     string strExclude = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory", token)?.Value ?? string.Empty;
@@ -5812,7 +5785,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
                 using (XmlNodeList objXmlList = bonusNode.SelectNodes("category"))
                 {
@@ -5955,7 +5928,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQualities))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQualities))
             {
                 using (XmlNodeList xmlQualityList = bonusNode.SelectNodes("quality"))
                 {
@@ -6373,7 +6346,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (xmlAllowedSpirits == null)
                 throw new ArgumentNullException(nameof(xmlAllowedSpirits));
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setAllowed))
             {
                 foreach (XmlNode n in xmlAllowedSpirits)
@@ -6381,7 +6354,7 @@ namespace Chummer
                     setAllowed.Add(n.InnerText);
                 }
 
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSpirits))
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSpirits))
                 {
                     foreach (XPathNavigator xmlSpirit in (await _objCharacter.LoadDataXPathAsync(strXmlDoc, token: token).ConfigureAwait(false))
                                                                       .SelectAndCacheExpression(
@@ -6591,7 +6564,7 @@ namespace Chummer
             }
             else
             {
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
                 {
                     using (XmlNodeList objXmlGroups = bonusNode.SelectNodes("skillgroup"))
                     {
@@ -7228,9 +7201,9 @@ namespace Chummer
                 // Populate the Magician Traditions list.
                 XPathNavigator xmlActionsBaseNode =
                     (await _objCharacter.LoadDataXPathAsync("actions.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer", token);
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstActions))
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstActions))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdXPath))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdXPath))
                     {
                         sbdXPath.Append("actions/action[").Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
                         string strCategory = bonusNode.Attributes?["category"]?.InnerText ?? string.Empty;

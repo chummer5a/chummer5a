@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -120,7 +121,7 @@ namespace Chummer
 
                 if (xmlQuality != null)
                 {
-                    await nudRating.DoThreadSafeAsync(x => x.ValueAsInt = x.MinimumAsInt).ConfigureAwait(false);
+                    await nudRating.DoThreadSafeAsync(x => x.Value = x.MinimumAsInt).ConfigureAwait(false);
                     int intMaxRating = int.MaxValue;
                     if (xmlQuality.TryGetInt32FieldQuickly("limit", ref intMaxRating)
                         && xmlQuality.SelectSingleNodeAndCacheExpression("nolevels") == null)
@@ -382,11 +383,18 @@ namespace Chummer
                         string strCost = strKarma.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                         if (strCost.Contains('-'))
                         {
-                            string[] strValues = strCost.Split('-');
-                            int.TryParse(strValues[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                            string[] strValues = strCost.SplitFixedSizePooledArray('-', 2);
+                            try
+                            {
+                                int.TryParse(strValues[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                 out intMin);
-                            int.TryParse(strValues[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                out intMax);
+                                int.TryParse(strValues[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                    out intMax);
+                            }
+                            finally
+                            {
+                                ArrayPool<string>.Shared.Return(strValues);
+                            }
                         }
                         else
                         {
@@ -493,7 +501,7 @@ namespace Chummer
             string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                                                   .ConfigureAwait(false) ?? string.Empty;
             string strFilter = string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
                 sbdFilter.Append('(')
                     .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
@@ -509,7 +517,7 @@ namespace Chummer
                 }
                 else
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdCategoryFilter))
                     {
                         foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
@@ -637,7 +645,7 @@ namespace Chummer
             }
 
             string strCategoryLower = strCategory == "Show All" ? "*" : strCategory.ToLowerInvariant();
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQuality))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQuality))
             {
                 bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token)
                                                       .ConfigureAwait(false);

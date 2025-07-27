@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
@@ -215,7 +216,7 @@ namespace Chummer
 
                                 if (objItems.Count > 0)
                                 {
-                                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                                    out List<ListItem> lstItems))
                                     {
                                         foreach (XPathNavigator objXmlPriority in objItems)
@@ -403,7 +404,7 @@ namespace Chummer
                                                                          .ConfigureAwait(false), _objGenericToken)
                                                 .ConfigureAwait(false);
 
-                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstMethods))
                         {
                             if (GlobalSettings.Language != GlobalSettings.DefaultLanguage)
@@ -706,7 +707,7 @@ namespace Chummer
 
                             if (intSkillCount > 0)
                             {
-                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstSkills))
                                 {
                                     if (objNodeList.Count > 0)
@@ -1426,7 +1427,7 @@ namespace Chummer
                         if (await frmSelectExotic.ShowDialogSafeAsync(this, token).ConfigureAwait(false) !=
                             DialogResult.OK)
                             return;
-                        strSkill2 += " (" + frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
+                        strSkill2 += " (" + await frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
                     }
                 }
 
@@ -1440,7 +1441,7 @@ namespace Chummer
                         if (await frmSelectExotic.ShowDialogSafeAsync(this, token).ConfigureAwait(false) !=
                             DialogResult.OK)
                             return;
-                        strSkill3 += " (" + frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
+                        strSkill3 += " (" + await frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
                     }
                 }
 
@@ -1734,16 +1735,23 @@ namespace Chummer
                                                         = new List<string>(xmlRelevantUnlocksNodesList.Count);
                                                     foreach (XmlNode xmlLoopNode in xmlRelevantUnlocksNodesList)
                                                     {
-                                                        string[] astrOptions = xmlLoopNode.InnerText.Split(',');
-                                                        if (!string.IsNullOrEmpty(strSkill1) &&
-                                                            astrOptions.Contains(strSkill1))
-                                                            lstToPush.Add(strSkill1);
-                                                        else if (!string.IsNullOrEmpty(strSkill2) &&
-                                                                 astrOptions.Contains(strSkill2))
-                                                            lstToPush.Add(strSkill2);
-                                                        else if (!string.IsNullOrEmpty(strSkill3) &&
-                                                                 astrOptions.Contains(strSkill3))
-                                                            lstToPush.Add(strSkill3);
+                                                        string[] astrOptions = xmlLoopNode.InnerText.SplitToPooledArray(out _, ',');
+                                                        try
+                                                        {
+                                                            if (!string.IsNullOrEmpty(strSkill1) &&
+                                                                astrOptions.Contains(strSkill1))
+                                                                lstToPush.Add(strSkill1);
+                                                            else if (!string.IsNullOrEmpty(strSkill2) &&
+                                                                     astrOptions.Contains(strSkill2))
+                                                                lstToPush.Add(strSkill2);
+                                                            else if (!string.IsNullOrEmpty(strSkill3) &&
+                                                                     astrOptions.Contains(strSkill3))
+                                                                lstToPush.Add(strSkill3);
+                                                        }
+                                                        finally
+                                                        {
+                                                            ArrayPool<string>.Shared.Return(astrOptions);
+                                                        }
                                                     }
 
                                                     // Reverse order because we process bonus nodes from top to bottom, and this text will be saved in a FILO stack
@@ -2652,7 +2660,7 @@ namespace Chummer
 
                     if (dicQualities.Count > 0)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdQualities))
                         {
                             foreach (KeyValuePair<string, int> objLoopQuality in dicQualities)
@@ -2777,7 +2785,7 @@ namespace Chummer
 
                     if (dicQualities.Count > 0)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdQualities))
                         {
                             foreach (KeyValuePair<string, int> objLoopQuality in dicQualities)
@@ -2946,7 +2954,7 @@ namespace Chummer
             {
                 token = objJoinedCancellationTokenSource.Token;
                 // Load the Priority information.
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTalent))
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTalent))
                 {
                     // Populate the Priority Category list.
                     XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
@@ -3171,7 +3179,7 @@ namespace Chummer
 
                     if (objXmlMetatype != null && objXmlMetatypeBP != null)
                     {
-                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstMetavariants))
                         {
                             lstMetavariants.Add(new ListItem(
@@ -3344,7 +3352,7 @@ namespace Chummer
                                                .ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSelectedCategory))
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatype))
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatype))
                     {
                         XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
                             "priorities/priority[category = \"Heritage\" and value = "
@@ -3476,7 +3484,7 @@ namespace Chummer
             {
                 token = objJoinedCancellationTokenSource.Token;
                 // Create a list of any Categories that should not be in the list.
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setRemoveCategories))
                 {
                     foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression(
@@ -3524,7 +3532,7 @@ namespace Chummer
                     }
 
                     // Populate the Metatype Category list.
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
                     {
                         foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode
                                                                         .SelectAndCacheExpression(
@@ -3595,7 +3603,7 @@ namespace Chummer
 
         private XPathNodeIterator BuildSkillCategoryList(XPathNodeIterator objSkillList)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdGroups))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdGroups))
             {
                 sbdGroups.Append("skillgroups/name");
                 if (objSkillList.Count > 0)
@@ -3616,7 +3624,7 @@ namespace Chummer
 
         private XPathNodeIterator BuildSkillList(XPathNodeIterator objSkillList)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdGroups))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdGroups))
             {
                 sbdGroups.Append("skills/skill");
                 if (objSkillList.Count > 0)

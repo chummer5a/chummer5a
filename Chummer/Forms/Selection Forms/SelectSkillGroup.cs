@@ -45,7 +45,7 @@ namespace Chummer
 
         private async void SelectSkillGroup_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGroups))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGroups))
             {
                 if (string.IsNullOrEmpty(_strForceValue))
                 {
@@ -55,7 +55,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(_strExcludeCategory))
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdExclude))
                             {
                                 string strExclude = string.Empty;

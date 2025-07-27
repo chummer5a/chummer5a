@@ -50,6 +50,7 @@ using Microsoft.IO;
 using Newtonsoft.Json;
 using NLog;
 using Application = System.Windows.Forms.Application;
+using System.Buffers;
 
 namespace Chummer
 {
@@ -931,7 +932,7 @@ namespace Chummer
         private async Task OptionsOnMultiplePropertyChanged(IReadOnlyCollection<string> lstProperties, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                        out HashSet<string> setPropertiesToRefresh))
             {
                 foreach (string strPropertyName in lstProperties)
@@ -1323,7 +1324,7 @@ namespace Chummer
 
         private async Task PowersOnListChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
@@ -1504,7 +1505,7 @@ namespace Chummer
                 return;
             }
 
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
@@ -1591,7 +1592,7 @@ namespace Chummer
                         break;
                 }
 
-                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+                using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                            Utils.DictionaryForMultiplePropertyChangedPool,
                            out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
                 {
@@ -1692,7 +1693,7 @@ namespace Chummer
                     return;
                 }
 
-                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+                using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                            Utils.DictionaryForMultiplePropertyChangedPool,
                            out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
                 {
@@ -1782,7 +1783,7 @@ namespace Chummer
                     return;
                 }
 
-                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+                using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                            Utils.DictionaryForMultiplePropertyChangedPool,
                            out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
                 {
@@ -1845,7 +1846,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setPropertiesToRefresh))
             {
                 switch (e.Action)
@@ -1915,7 +1916,7 @@ namespace Chummer
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoEncumbranceRefresh = false;
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
@@ -2072,7 +2073,7 @@ namespace Chummer
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoEncumbranceRefresh = false;
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
@@ -2237,7 +2238,7 @@ namespace Chummer
                 return;
             bool blnDoEquippedArmorRefresh = false;
             bool blnDoArmorEncumbranceRefresh = false;
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
@@ -2427,7 +2428,7 @@ namespace Chummer
                 return;
             bool blnDoEncumbranceRefresh = false;
             bool blnDoCyberlimbAttributesRefresh = false;
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
@@ -3988,7 +3989,7 @@ namespace Chummer
                     if (objGear.InternalId.IsEmptyGuid())
                         continue;
 
-                    objGear.Quantity = decQty;
+                    await objGear.SetQuantityAsync(decQty, token).ConfigureAwait(false);
 
                     // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
                     if (await GetActiveCommlinkAsync(token).ConfigureAwait(false) == null &&
@@ -6476,7 +6477,7 @@ namespace Chummer
 
                                 CharacterSettings objProspectiveSettings;
                                 bool blnShowSelectBP = false;
-                                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                            out HashSet<string> setSavedBooks))
                                 {
                                     foreach (XPathNavigator xmlBook in xmlCharacterNavigator.SelectAndCacheExpression(
@@ -6586,7 +6587,7 @@ namespace Chummer
                                                              intBaseline;
                                         }
 
-                                        using (new FetchSafelyFromPool<HashSet<string>>(
+                                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
                                                    Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
                                         {
                                             setDummyBooks.AddRange(setSavedBooks);
@@ -6682,7 +6683,7 @@ namespace Chummer
                                                              intBaseline;
                                         }
 
-                                        using (new FetchSafelyFromPool<HashSet<string>>(
+                                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
                                                    Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
                                         {
                                             setDummyBooks.AddRange(setSavedBooks);
@@ -7887,7 +7888,7 @@ namespace Chummer
                                                         if (string.IsNullOrWhiteSpace(selectedContactUniqueId))
                                                         {
                                                             // Populate the Magician Traditions list.
-                                                            using (new FetchSafelyFromPool<List<ListItem>>(
+                                                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                                                        Utils.ListItemListPool,
                                                                        out List<ListItem> lstContacts))
                                                             {
@@ -9138,7 +9139,7 @@ namespace Chummer
                                 objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
                                 if (objXmlNodeList.Count > 0)
                                 {
-                                    using (new FetchSafelyFromPool<List<ListItem>>(
+                                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                                Utils.ListItemListPool, out List<ListItem> lstPowerOrder))
                                     {
                                         bool blnDoEnhancedAccuracyRefresh =
@@ -10519,7 +10520,7 @@ namespace Chummer
                         using (Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
                         {
                             // Process all events related to improvements
-                            using (new FetchSafelyFromPool<
+                            using (new FetchSafelyFromSafeObjectPool<
                                        Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                                        Utils.DictionaryForMultiplePropertyChangedPool,
                                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>
@@ -14543,7 +14544,7 @@ namespace Chummer
             using (LockObject.EnterReadLock(token))
             {
                 string strXPath;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
                     if (Settings != null)
                     {
@@ -14599,7 +14600,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 Grade objStandardGrade = null;
                 string strXPath;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
                     CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
                     if (objSettings != null)
@@ -14674,7 +14675,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 string strXPath;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
                     if (Settings != null)
                     {
@@ -14850,14 +14851,13 @@ namespace Chummer
                 foreach (Cyberware objLoopCyberware in Cyberware.GetAllDescendants(x => x.Children, token))
                 {
                     // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                    if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                    if (objModularCyberware.PlugsIntoTargetCyberware(objLoopCyberware)
                         && (objLoopCyberware.Location == objModularCyberware.Location
                             || string.IsNullOrEmpty(objModularCyberware.Location))
                         && objLoopCyberware.Grade.Name == objGrade.Name
                         && objLoopCyberware != objModularCyberware
                         // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                        && objLoopCyberware.Children.All(
-                            x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token))
+                        && !objLoopCyberware.Children.Any(x => x.PlugsIntoTargetCyberware(objLoopCyberware), token))
                     {
                         string strName = objLoopCyberware.Parent?.CurrentDisplayName
                                          ?? objLoopCyberware.CurrentDisplayName;
@@ -14873,13 +14873,12 @@ namespace Chummer
                                      x => x.Children, token))
                         {
                             // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                            if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                            if (objModularCyberware.PlugsIntoTargetCyberware(objLoopCyberware)
                                 && objLoopCyberware.Location == objModularCyberware.Location
                                 && objLoopCyberware.Grade.Name == objGrade.Name
                                 && objLoopCyberware != objModularCyberware
                                 // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                && objLoopCyberware.Children.All(
-                                    x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token))
+                                && !objLoopCyberware.Children.Any(x => x.PlugsIntoTargetCyberware(objLoopCyberware), token))
                             {
                                 string strName = objLoopVehicle.CurrentDisplayName
                                                  + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
@@ -14897,13 +14896,12 @@ namespace Chummer
                                          x => x.Children, token))
                             {
                                 // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                                if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                                if (objModularCyberware.PlugsIntoTargetCyberware(objLoopCyberware)
                                     && objLoopCyberware.Location == objModularCyberware.Location
                                     && objLoopCyberware.Grade.Name == objGrade.Name
                                     && objLoopCyberware != objModularCyberware
                                     // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                    && objLoopCyberware.Children.All(
-                                        x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token))
+                                    && !objLoopCyberware.Children.Any(x => x.PlugsIntoTargetCyberware(objLoopCyberware), token))
                                 {
                                     string strName = objLoopVehicle.CurrentDisplayName
                                                      + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
@@ -14939,65 +14937,14 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 Grade objGrade = await objModularCyberware.GetGradeAsync(token).ConfigureAwait(false);
                 await (await (await GetCyberwareAsync(token).ConfigureAwait(false))
-                    .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false)).ForEachAsync(
-                    async objLoopCyberware =>
-                    {
-                        // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                        if (await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) ==
-                            await objModularCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)
-                            && (objLoopCyberware.Location == objModularCyberware.Location
-                                || string.IsNullOrEmpty(objModularCyberware.Location))
-                            && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name == objGrade.Name
-                            && objLoopCyberware != objModularCyberware
-                            // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                            && await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AllAsync(
-                                    async x => await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false) !=
-                                               await objLoopCyberware.GetHasModularMountAsync(token)
-                                                   .ConfigureAwait(false), token)
-                                .ConfigureAwait(false))
-                        {
-                            Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
-                            string strName = objLoopParent != null
-                                ? await objLoopParent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                : await objLoopCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                            lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                        }
-                    }, token).ConfigureAwait(false);
+                    .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, null), token).ConfigureAwait(false);
 
                 await (await GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopVehicle =>
                 {
                     await objLoopVehicle.Mods.ForEachAsync(async objLoopVehicleMod =>
                     {
                         await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token)
-                            .ConfigureAwait(false)).ForEachAsync(
-                            async objLoopCyberware =>
-                            {
-                                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                                if (await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) ==
-                                    await objModularCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)
-                                    && objLoopCyberware.Location == objModularCyberware.Location
-                                    && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
-                                    objGrade.Name
-                                    && objLoopCyberware != objModularCyberware
-                                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                    && await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AllAsync(
-                                            async x => await x.GetPlugsIntoModularMountAsync(token)
-                                                           .ConfigureAwait(false)
-                                                       != await objLoopCyberware.GetHasModularMountAsync(token)
-                                                           .ConfigureAwait(false), token)
-                                        .ConfigureAwait(false))
-                                {
-                                    Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
-                                    string strName
-                                        = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                          + strSpace + (objLoopParent != null
-                                              ? await objLoopParent.GetCurrentDisplayNameAsync(token)
-                                                  .ConfigureAwait(false)
-                                              : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
-                                                  .ConfigureAwait(false));
-                                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                                }
-                            }, token).ConfigureAwait(false);
+                            .ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, objLoopVehicleMod), token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
                     await objLoopVehicle.WeaponMounts.ForEachAsync(objLoopWeaponMount =>
@@ -15005,38 +14952,7 @@ namespace Chummer
                         return objLoopWeaponMount.Mods.ForEachAsync(async objLoopVehicleMod =>
                         {
                             await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token)
-                                .ConfigureAwait(false)).ForEachAsync(
-                                async objLoopCyberware =>
-                                {
-                                    // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                                    if (await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) ==
-                                        await objModularCyberware.GetPlugsIntoModularMountAsync(token)
-                                            .ConfigureAwait(false)
-                                        && objLoopCyberware.Location == objModularCyberware.Location
-                                        && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
-                                        objGrade.Name
-                                        && objLoopCyberware != objModularCyberware
-                                        // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                        && await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AllAsync(
-                                                async x =>
-                                                    await x.GetPlugsIntoModularMountAsync(token)
-                                                        .ConfigureAwait(false) !=
-                                                    await objLoopCyberware.GetHasModularMountAsync(token)
-                                                        .ConfigureAwait(false), token)
-                                            .ConfigureAwait(false))
-                                    {
-                                        Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
-                                        string strName
-                                            = await objLoopVehicle.GetCurrentDisplayNameAsync(token)
-                                                  .ConfigureAwait(false)
-                                              + strSpace + (objLoopParent != null
-                                                  ? await objLoopParent.GetCurrentDisplayNameAsync(token)
-                                                      .ConfigureAwait(false)
-                                                  : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
-                                                      .ConfigureAwait(false));
-                                        lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                                    }
-                                }, token).ConfigureAwait(false);
+                                .ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, objLoopVehicleMod), token).ConfigureAwait(false);
                         }, token);
                     }, token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
@@ -15047,6 +14963,34 @@ namespace Chummer
             }
 
             return lstReturn;
+
+            async Task ProcessCyberware(Cyberware objLoopCyberware, Grade objGrade, VehicleMod objVehicleMod)
+            {
+                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                if (await objModularCyberware.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token).ConfigureAwait(false)
+                    && objLoopCyberware.Location == objModularCyberware.Location
+                    && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
+                    objGrade.Name
+                    && objLoopCyberware != objModularCyberware
+                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                    && !await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(
+                            x => x.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token), token)
+                        .ConfigureAwait(false))
+                {
+                    string strName = objVehicleMod != null
+                        ? await objVehicleMod.Parent.GetCurrentDisplayNameAsync(token)
+                              .ConfigureAwait(false) + strSpace
+                        : string.Empty;
+                    Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
+                    if (objLoopParent != null)
+                        strName += strSpace + await objLoopParent.GetCurrentDisplayNameAsync(token)
+                                  .ConfigureAwait(false);
+                    else if (objVehicleMod != null)
+                        strName += strSpace + await objVehicleMod.GetCurrentDisplayNameAsync(token)
+                                  .ConfigureAwait(false);
+                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                }
+            }
         }
 
         public async Task<bool> SwitchBuildMethods(CharacterBuildMethod eOldBuildMethod, CharacterBuildMethod eNewBuildMethod, string strOldSettingsKey, CancellationToken token = default)
@@ -15120,7 +15064,7 @@ namespace Chummer
                 CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
                 int intReturn = await objSettings.GetBuildKarmaAsync(token).ConfigureAwait(false);
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMessage))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMessage))
                 {
                     sbdMessage.AppendLine(await LanguageManager.GetStringAsync("Message_KarmaValue", strLanguage, token: token).ConfigureAwait(false)).AppendLine()
                               .Append(await LanguageManager.GetStringAsync("Label_Base", strLanguage, token: token).ConfigureAwait(false))
@@ -15475,7 +15419,7 @@ namespace Chummer
                 }
 
                 // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setNames))
                 {
                     foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
@@ -15525,7 +15469,7 @@ namespace Chummer
                 }
 
                 // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setNames))
                 {
                     foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
@@ -19994,7 +19938,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
                     using (LockObject.EnterReadLock())
@@ -20023,7 +19967,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                        out StringBuilder sbdReturn))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -20159,7 +20103,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
                     using (LockObject.EnterReadLock())
@@ -20188,7 +20132,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                        out StringBuilder sbdReturn))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -20639,7 +20583,7 @@ namespace Chummer
                         string strExpression = Settings.ContactPointsExpression;
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdValue))
                             {
                                 sbdValue.Append(strExpression);
@@ -20671,7 +20615,7 @@ namespace Chummer
                     string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetContactPointsExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
                         {
                             sbdValue.Append(strExpression);
@@ -20820,7 +20764,7 @@ namespace Chummer
                     string strExpression = Settings.CarryLimitExpression;
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
                         {
                             sbdValue.Append(strExpression);
@@ -20854,7 +20798,7 @@ namespace Chummer
                     .GetCarryLimitExpressionAsync(token).ConfigureAwait(false);
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdValue))
                     {
                         sbdValue.Append(strExpression);
@@ -20920,7 +20864,7 @@ namespace Chummer
                     string strExpression = Settings.LiftLimitExpression;
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
                         {
                             sbdValue.Append(strExpression);
@@ -20954,7 +20898,7 @@ namespace Chummer
                     .GetLiftLimitExpressionAsync(token).ConfigureAwait(false);
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdValue))
                     {
                         sbdValue.Append(strExpression);
@@ -20990,7 +20934,7 @@ namespace Chummer
                     string strExpression = Settings.EncumbranceIntervalExpression;
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
                         {
                             sbdValue.Append(strExpression);
@@ -21029,7 +20973,7 @@ namespace Chummer
                     .GetEncumbranceIntervalExpressionAsync(token).ConfigureAwait(false);
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdValue))
                     {
                         sbdValue.Append(strExpression);
@@ -23232,7 +23176,7 @@ namespace Chummer
                         string strExpression = Settings.BoundSpiritExpression;
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdValue))
                             {
                                 sbdValue.Append(strExpression);
@@ -23266,7 +23210,7 @@ namespace Chummer
                     string strExpression = await Settings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
                         {
                             sbdValue.Append(strExpression);
@@ -23349,7 +23293,7 @@ namespace Chummer
                         string strExpression = Settings.RegisteredSpriteExpression;
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdValue))
                             {
                                 sbdValue.Append(strExpression);
@@ -23383,7 +23327,7 @@ namespace Chummer
                     string strExpression = await Settings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
                         {
                             sbdValue.Append(strExpression);
@@ -23952,7 +23896,7 @@ namespace Chummer
                             if (objImprovement.ImproveSource == Improvement.ImprovementSource.Initiation)
                             {
                                 blnFoundImprovement = true;
-                                objImprovement.Rating = value;
+                                await objImprovement.SetRatingAsync(value, token).ConfigureAwait(false);
                             }
                         }
 
@@ -24004,7 +23948,7 @@ namespace Chummer
                                         == Improvement.ImprovementSource.Initiation)
                                     {
                                         blnFoundImprovement = true;
-                                        objImprovement.Rating = value;
+                                        await objImprovement.SetRatingAsync(value, token).ConfigureAwait(false);
                                     }
                                 }
 
@@ -25389,7 +25333,7 @@ namespace Chummer
                             if (objImprovement.ImproveSource == Improvement.ImprovementSource.Submersion)
                             {
                                 blnFoundImprovement = true;
-                                objImprovement.Rating = value;
+                                await objImprovement.SetRatingAsync(value, token).ConfigureAwait(false);
                             }
                         }
 
@@ -25435,7 +25379,7 @@ namespace Chummer
                                         == Improvement.ImprovementSource.Echo)
                                     {
                                         blnFoundImprovement = true;
-                                        objImprovement.Rating = value;
+                                        await objImprovement.SetRatingAsync(value, token).ConfigureAwait(false);
                                     }
                                 }
 
@@ -28019,7 +27963,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -28063,7 +28007,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                        out StringBuilder sbdToolTip))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -28162,7 +28106,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -28208,7 +28152,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                        out StringBuilder sbdToolTip))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -28307,7 +28251,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -28389,7 +28333,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -28433,7 +28377,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                        out StringBuilder sbdToolTip))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -28562,7 +28506,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -28606,7 +28550,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                        out StringBuilder sbdToolTip))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -29279,7 +29223,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
                     using (LockObject.EnterReadLock())
@@ -29324,7 +29268,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
@@ -29492,7 +29436,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
                     using (LockObject.EnterReadLock())
@@ -29528,7 +29472,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
@@ -29701,7 +29645,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
                     using (LockObject.EnterReadLock())
@@ -29770,7 +29714,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                        out StringBuilder sbdReturn))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -30058,39 +30002,148 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Method to check we are only applying the highest focus to the spell dicepool
+        /// Method to check and potentially override an improvement value based on the presence of power foci (since only one focus can add its Force to a dice pool)
         /// </summary>
-        public async Task<Improvement> GetBestFocusPowerAsync(Improvement objImprovement, CancellationToken token = default)
+        public Improvement GetPowerFocusAdjustedImprovementValue(Improvement objImprovement)
+        {
+            using (LockObject.EnterReadLock())
+            {
+                List<Improvement> lstRelevantImprovements = new List<Improvement>();
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.Enabled
+                        && objLoopImprovement.ImproveSource == Improvement.ImprovementSource.Gear
+                        && objLoopImprovement.UniqueName == "precedence0"
+                        && objLoopImprovement.ImprovedName.Contains("MAG")
+                        && (objLoopImprovement.ImproveType == Improvement.ImprovementType.Attribute
+                            || objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute
+                            || objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillLinkedAttribute))
+                    {
+                        lstRelevantImprovements.Add(objLoopImprovement);
+                    }
+                }
+                List<Focus> lstPowerFoci;
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setPotentialPowerFociImprovementSources))
+                {
+                    foreach (Improvement objLoopImprovement in lstRelevantImprovements)
+                        setPotentialPowerFociImprovementSources.Add(objLoopImprovement.SourceName);
+                    lstPowerFoci = Foci.FindAll(x => x.GearObject?.Bonded == true
+                        && setPotentialPowerFociImprovementSources.Contains(x.GearObject.InternalId));
+                }
+                if (lstPowerFoci.Count > 0)
+                {
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setPowerFociIds))
+                    {
+                        foreach (Focus objFocus in lstPowerFoci)
+                            setPowerFociIds.Add(objFocus.GearObject.InternalId);
+                        for (int i = lstRelevantImprovements.Count; i >= 0; --i)
+                        {
+                            if (!setPowerFociIds.Contains(lstRelevantImprovements[i].SourceName))
+                                lstRelevantImprovements.RemoveAt(i);
+                        }
+                    }
+                    if (lstRelevantImprovements.Count > 0)
+                    {
+                        // get any bonded foci that add to the base magic stat and return the highest rated one's rating
+                        decimal decMaxFocusBonus = lstRelevantImprovements.Max(x => x.Rating * (x.Value + x.Augmented));
+                        if (decMaxFocusBonus > 0)
+                        {
+                            // If our focus is higher, add in a partial bonus
+                            if (decMaxFocusBonus < objImprovement.Value)
+                            {
+                                // This is hackz -- because we don't want to lose the original improvement's value
+                                // we instantiate a fake version of the improvement that isn't saved to represent the diff
+                                return new Improvement(this)
+                                {
+                                    SourceName = objImprovement.SourceName,
+                                    ImprovedName = objImprovement.ImprovedName,
+                                    ImproveSource = objImprovement.ImproveSource,
+                                    ImproveType = objImprovement.ImproveType,
+                                    Value = objImprovement.Value - decMaxFocusBonus
+                                };
+                            }
+                            // Power focus rating is higher, return null because we do not want to apply the given improvement
+                            return null;
+                        }
+                    }
+                }
+
+                return objImprovement;
+            }
+        }
+
+        /// <summary>
+        /// Method to check and potentially override an improvement value based on the presence of power foci (since only one focus can add its Force to a dice pool)
+        /// </summary>
+        public async Task<Improvement> GetPowerFocusAdjustedImprovementValueAsync(Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                List<Focus> list
-                    = await Foci.FindAllAsync(
-                            x => x.GearObject?.Bonded == true && x.GearObject.Bonus.InnerText == "MAGRating", token)
-                        .ConfigureAwait(false);
-                if (list.Count > 0)
+                List<Improvement> lstRelevantImprovements = new List<Improvement>();
+                await Improvements.ForEachAsync(objLoopImprovement =>
                 {
-                    // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-                    int powerFocusRating = list.Max(x => x.Rating);
-
-                    // If our focus is higher, add in a partial bonus
-                    if (powerFocusRating > 0)
+                    if (objLoopImprovement.Enabled
+                        && objLoopImprovement.ImproveSource == Improvement.ImprovementSource.Gear
+                        && objLoopImprovement.UniqueName == "precedence0"
+                        && objLoopImprovement.ImprovedName.Contains("MAG")
+                        && (objLoopImprovement.ImproveType == Improvement.ImprovementType.Attribute
+                            || objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute
+                            || objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillLinkedAttribute))
                     {
-                        // This is hackz -- because we don't want to lose the original improvement's value
-                        // we instantiate a fake version of the improvement that isn't saved to represent the diff
-                        if (powerFocusRating < objImprovement.Value)
-                            return new Improvement(this)
+                        lstRelevantImprovements.Add(objLoopImprovement);
+                    }
+                }, token).ConfigureAwait(false);
+                List<Focus> lstPowerFoci;
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setPotentialPowerFociImprovementSources))
+                {
+                    foreach (Improvement objLoopImprovement in lstRelevantImprovements)
+                        setPotentialPowerFociImprovementSources.Add(objLoopImprovement.SourceName);
+                    lstPowerFoci = await Foci.FindAllAsync(x => x.GearObject?.Bonded == true
+                        && setPotentialPowerFociImprovementSources.Contains(x.GearObject.InternalId), token).ConfigureAwait(false);
+                }
+                if (lstPowerFoci.Count > 0)
+                {
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setPowerFociIds))
+                    {
+                        foreach (Focus objFocus in lstPowerFoci)
+                            setPowerFociIds.Add(objFocus.GearObject.InternalId);
+                        for (int i = lstRelevantImprovements.Count; i >= 0; --i)
+                        {
+                            if (!setPowerFociIds.Contains(lstRelevantImprovements[i].SourceName))
+                                lstRelevantImprovements.RemoveAt(i);
+                        }
+                    }
+                    if (lstRelevantImprovements.Count > 0)
+                    {
+                        // get any bonded foci that add to the base magic stat and return the highest rated one's rating
+                        decimal decMaxFocusBonus = lstRelevantImprovements.Max(x => x.Rating * (x.Value + x.Augmented));
+                        if (decMaxFocusBonus > 0)
+                        {
+                            // If our focus is higher, add in a partial bonus
+                            if (decMaxFocusBonus < objImprovement.Value)
                             {
-                                Value = objImprovement.Value - powerFocusRating,
-                                SourceName = objImprovement.SourceName,
-                                ImprovedName = objImprovement.ImprovedName,
-                                ImproveSource = objImprovement.ImproveSource,
-                                ImproveType = objImprovement.ImproveType
-                            };
-                        return null;
+                                // This is hackz -- because we don't want to lose the original improvement's value
+                                // we instantiate a fake version of the improvement that isn't saved to represent the diff
+                                Improvement objPlaceholder = new Improvement(this)
+                                {
+                                    SourceName = objImprovement.SourceName,
+                                    ImprovedName = objImprovement.ImprovedName,
+                                    ImproveSource = objImprovement.ImproveSource,
+                                    ImproveType = objImprovement.ImproveType
+                                };
+                                await objPlaceholder.SetValueAsync(objImprovement.Value - decMaxFocusBonus, token).ConfigureAwait(false);
+                                return objPlaceholder;
+                            }
+                            // Power focus rating is higher, return null because we do not want to apply the given improvement
+                            return null;
+                        }
                     }
                 }
 
@@ -31052,7 +31105,7 @@ namespace Chummer
                         strBodyAbbrev = BOD.DisplayAbbrev;
                     }
 
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
                         sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
@@ -31099,7 +31152,7 @@ namespace Chummer
                     strBodyAbbrev = await objBod.GetDisplayAbbrevAsync(GlobalSettings.Language, token: token).ConfigureAwait(false);
                 }
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdToolTip))
                 {
                     sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
@@ -31268,7 +31321,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -31306,7 +31359,7 @@ namespace Chummer
         public async Task<string> GetDodgeToolTipAsync(CancellationToken token = default)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                        out StringBuilder sbdToolTip))
             {
                 token.ThrowIfCancellationRequested();
@@ -31461,7 +31514,7 @@ namespace Chummer
                         strBodyAbbrev = BOD.DisplayAbbrev;
                     }
 
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
                         sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
@@ -31534,7 +31587,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -31631,7 +31684,7 @@ namespace Chummer
                         strBodyAbbrev = BOD.DisplayAbbrev;
                     }
 
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
                         sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
@@ -31703,7 +31756,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -31782,7 +31835,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -31857,7 +31910,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -31932,7 +31985,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -32007,7 +32060,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -32078,7 +32131,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -32153,7 +32206,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -32228,7 +32281,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -32303,7 +32356,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -32396,7 +32449,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     using (LockObject.EnterReadLock())
@@ -32440,7 +32493,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                        out StringBuilder sbdToolTip))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -32548,7 +32601,7 @@ namespace Chummer
                           - ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor).StandardRound()
                           + intFromHighestArmorImprovements;
 
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
                         sbdToolTip.Append(LanguageManager.GetString("Tip_Armor")).Append(strSpace).Append('(')
@@ -32586,7 +32639,7 @@ namespace Chummer
                                 token: token).ConfigureAwait(false)).StandardRound()
                             - intFromHighestArmorImprovements;
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdToolTip))
                 {
                     sbdToolTip.Append(await LanguageManager.GetStringAsync("Tip_Armor", token: token)
@@ -33203,7 +33256,7 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
@@ -33275,7 +33328,7 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
@@ -33346,7 +33399,7 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
@@ -33444,7 +33497,7 @@ namespace Chummer
                         strStrengthAbbrev = STR.DisplayAbbrev;
                     }
 
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
                         sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
@@ -34580,7 +34633,7 @@ namespace Chummer
                                                         decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decFromKarma))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
                         sbdValue.Append(strExpression);
                         AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
@@ -34610,7 +34663,7 @@ namespace Chummer
                                                 decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decFromKarma))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
                         sbdValue.Append(strExpression);
                         await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
@@ -35131,7 +35184,7 @@ namespace Chummer
                                              "]");
                     }
 
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
                         sbdToolTip.Append('(').Append(STR.DisplayAbbrev).Append(strSpace).Append('[')
@@ -35179,7 +35232,7 @@ namespace Chummer
                         "]");
                 }
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdToolTip))
                 {
                     int intStr = await STR.GetTotalValueAsync(token).ConfigureAwait(false);
@@ -35298,7 +35351,7 @@ namespace Chummer
                 string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
                         sbdToolTip.Append('(').Append(LOG.DisplayAbbrev).Append(strSpace).Append('[')
@@ -35365,7 +35418,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     int intLog = await LOG.GetTotalValueAsync(token).ConfigureAwait(false);
@@ -35515,7 +35568,7 @@ namespace Chummer
                 string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
                         sbdToolTip.Append('(').Append(CHA.DisplayAbbrev).Append(strSpace).Append('[')
@@ -35578,7 +35631,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
                     int intCha = await CHA.GetTotalValueAsync(token).ConfigureAwait(false);
@@ -37226,7 +37279,7 @@ namespace Chummer
         private string FullMovement(CultureInfo objCulture, string strLanguage)
         {
             string strSpace = LanguageManager.GetString("String_Space");
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 using (LockObject.EnterReadLock())
                 {
@@ -37257,7 +37310,7 @@ namespace Chummer
         private async Task<string> FullMovementAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
@@ -38125,7 +38178,7 @@ namespace Chummer
                 if (DealerConnectionDiscount)
                     return;
 
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setDealerConnectionMaps))
                 {
                     foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
@@ -38162,7 +38215,7 @@ namespace Chummer
                 if (await GetDealerConnectionDiscountAsync(token).ConfigureAwait(false))
                     return;
 
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                            out HashSet<string> setDealerConnectionMaps))
                 {
                     foreach (Improvement objImprovement in await ImprovementManager
@@ -38219,23 +38272,23 @@ namespace Chummer
 
                 if (BlackMarketDiscount)
                 {
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setArmorBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setArmorModBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setBiowareBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setCyberwareBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setGearBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setVehicleBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setVehicleModBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setWeaponMountBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setWeaponBlackMarketMaps))
                     {
                         setArmorBlackMarketMaps.AddRange(GenerateBlackMarketMappings(
@@ -38638,23 +38691,23 @@ namespace Chummer
 
                 if (await GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                 {
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setArmorBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setArmorModBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setBiowareBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setCyberwareBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setGearBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setVehicleBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setVehicleModBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setWeaponMountBlackMarketMaps))
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setWeaponBlackMarketMaps))
                     {
                         setArmorBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(
@@ -47373,31 +47426,37 @@ namespace Chummer
                                                 "/chummer/qualities/quality", strQualityName);
                                         if (xmlQualityDataNode == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strQualityName.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            foreach (string strInner in strQualityName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
+                                                string strName = strInner.Trim();
+                                                if (xmlQualityDataNode != null)
+                                                {
+                                                    strForcedValue = strName;
+                                                    break;
+                                                }
                                                 xmlQualityDataNode =
                                                     xmlQualitiesDocument.TryGetNodeByNameOrId(
                                                         "/chummer/qualities/quality", strName);
-                                                if (xmlQualityDataNode != null)
-                                                    strForcedValue = astrOriginalNameSplit[1].Trim();
+                                                if (xmlQualityDataNode == null)
+                                                    break;
                                             }
                                         }
 
                                         if (xmlQualityDataNode == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strQualityName.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            foreach (string strInner in strQualityName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
+                                                string strName = strInner.Trim();
+                                                if (xmlQualityDataNode != null)
+                                                {
+                                                    strForcedValue = strName;
+                                                    break;
+                                                }
                                                 xmlQualityDataNode =
                                                     xmlQualitiesDocument.TryGetNodeByNameOrId(
                                                         "/chummer/qualities/quality", strName);
-                                                if (xmlQualityDataNode != null)
-                                                    strForcedValue = astrOriginalNameSplit[1].Trim();
+                                                if (xmlQualityDataNode == null)
+                                                    break;
                                             }
                                         }
 
@@ -47509,31 +47568,37 @@ namespace Chummer
                                                 "/chummer/qualities/quality", strQualityName);
                                         if (xmlQualityDataNode == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strQualityName.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            foreach (string strInner in strQualityName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
+                                                string strName = strInner.Trim();
+                                                if (xmlQualityDataNode != null)
+                                                {
+                                                    strForcedValue = strName;
+                                                    break;
+                                                }
                                                 xmlQualityDataNode =
                                                     xmlQualitiesDocument.TryGetNodeByNameOrId(
                                                         "/chummer/qualities/quality", strName);
-                                                if (xmlQualityDataNode != null)
-                                                    strForcedValue = astrOriginalNameSplit[1].Trim();
+                                                if (xmlQualityDataNode == null)
+                                                    break;
                                             }
                                         }
 
                                         if (xmlQualityDataNode == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strQualityName.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            foreach (string strInner in strQualityName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
+                                                string strName = strInner.Trim();
+                                                if (xmlQualityDataNode != null)
+                                                {
+                                                    strForcedValue = strName;
+                                                    break;
+                                                }
                                                 xmlQualityDataNode =
                                                     xmlQualitiesDocument.TryGetNodeByNameOrId(
                                                         "/chummer/qualities/quality", strName);
-                                                if (xmlQualityDataNode != null)
-                                                    strForcedValue = astrOriginalNameSplit[1].Trim();
+                                                if (xmlQualityDataNode == null)
+                                                    break;
                                             }
                                         }
 
@@ -47749,47 +47814,54 @@ namespace Chummer
                                     string strDescription =
                                         xmlContactToImport.SelectSingleNodeAndCacheExpression(
                                             "description", token)?.Value;
-                                    using (new FetchSafelyFromPool<StringBuilder>(
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(
                                                Utils.StringBuilderPool, out StringBuilder sbdNotes))
                                     {
                                         foreach (string strLine in strDescription.SplitNoAlloc('\n',
                                                      StringSplitOptions.RemoveEmptyEntries))
                                         {
                                             string[] astrLineColonSplit =
-                                                strLine.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                                            switch (astrLineColonSplit[0])
+                                                strLine.SplitFixedSizePooledArray(':', 2, StringSplitOptions.RemoveEmptyEntries);
+                                            try
                                             {
-                                                case "Metatype":
-                                                    objContact.Metatype = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                switch (astrLineColonSplit[0])
+                                                {
+                                                    case "Metatype":
+                                                        objContact.Metatype = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                case "Gender":
-                                                    objContact.Gender = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                    case "Gender":
+                                                        objContact.Gender = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                case "Age":
-                                                    objContact.Age = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                    case "Age":
+                                                        objContact.Age = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                case "Preferred Payment Method":
-                                                    objContact.PreferredPayment = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                    case "Preferred Payment Method":
+                                                        objContact.PreferredPayment = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                case "Hobbies/Vice":
-                                                    objContact.HobbiesVice = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                    case "Hobbies/Vice":
+                                                        objContact.HobbiesVice = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                case "Personal Life":
-                                                    objContact.PersonalLife = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                    case "Personal Life":
+                                                        objContact.PersonalLife = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                case "Type":
-                                                    objContact.Type = astrLineColonSplit[1].Trim();
-                                                    break;
+                                                    case "Type":
+                                                        objContact.Type = astrLineColonSplit[1].Trim();
+                                                        break;
 
-                                                default:
-                                                    sbdNotes.AppendLine(strLine);
-                                                    break;
+                                                    default:
+                                                        sbdNotes.AppendLine(strLine);
+                                                        break;
+                                                }
+                                            }
+                                            finally
+                                            {
+                                                ArrayPool<string>.Shared.Return(astrLineColonSplit);
                                             }
                                         }
 
@@ -47836,26 +47908,22 @@ namespace Chummer
                                                 "/chummer/armors/armor", strArmorName);
                                         if (xmlArmorData == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strArmorName.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            string strDummy = strArmorName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
+                                            if (!string.IsNullOrEmpty(strDummy))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
                                                 xmlArmorData =
                                                     xmlArmorDocument.TryGetNodeByNameOrId(
-                                                        "/chummer/armors/armor", strName);
+                                                        "/chummer/armors/armor", strDummy);
                                             }
 
                                             if (xmlArmorData == null)
                                             {
-                                                astrOriginalNameSplit = strArmorName.Split(',',
-                                                    StringSplitOptions.RemoveEmptyEntries);
-                                                if (astrOriginalNameSplit.Length > 1)
+                                                strDummy = strArmorName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
+                                                if (!string.IsNullOrEmpty(strDummy))
                                                 {
-                                                    string strName = astrOriginalNameSplit[0].Trim();
                                                     xmlArmorData =
                                                         xmlArmorDocument.TryGetNodeByNameOrId(
-                                                            "/chummer/armors/armor", strName);
+                                                            "/chummer/armors/armor", strDummy);
                                                 }
                                             }
                                         }
@@ -48030,11 +48098,10 @@ namespace Chummer
                                                                                 .ConfigureAwait(false);
                                                                             if (objPlugin != null)
                                                                             {
-                                                                                objPlugin.Quantity
-                                                                                    = (xmlPluginToAdd
+                                                                                await objPlugin.SetQuantityAsync((xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
                                                                                             "@quantity", token))
-                                                                                    ?.ValueAsInt ?? 1;
+                                                                                    ?.ValueAsInt ?? 1, token).ConfigureAwait(false);
                                                                                 await objPlugin.SetNotesAsync(
                                                                                     (xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
@@ -48204,11 +48271,10 @@ namespace Chummer
                                                                                 .ConfigureAwait(false);
                                                                             if (objPlugin != null)
                                                                             {
-                                                                                objPlugin.Quantity
-                                                                                    = (xmlPluginToAdd
+                                                                                await objPlugin.SetQuantityAsync((xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
                                                                                             "@quantity", token))
-                                                                                    ?.ValueAsInt ?? 1;
+                                                                                    ?.ValueAsInt ?? 1, token).ConfigureAwait(false);
                                                                                 await objPlugin.SetNotesAsync(
                                                                                     (xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
@@ -48257,9 +48323,10 @@ namespace Chummer
                                                                 .ConfigureAwait(false);
                                                             if (objPlugin != null)
                                                             {
-                                                                objPlugin.Quantity = (xmlArmorModToImport
-                                                                    .SelectSingleNodeAndCacheExpression(
-                                                                        "@quantity", token))?.ValueAsInt ?? 1;
+                                                                await objPlugin.SetQuantityAsync((xmlArmorModToImport
+                                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                                            "@quantity", token))
+                                                                                    ?.ValueAsInt ?? 1, token).ConfigureAwait(false);
                                                                 await objPlugin.SetNotesAsync((xmlArmorModToImport
                                                                     .SelectSingleNodeAndCacheExpression(
                                                                         "description", token))?.Value, token).ConfigureAwait(false);
@@ -48681,25 +48748,21 @@ namespace Chummer
                                             "category = " + strSpellCategory.CleanXPath());
                                         if (xmlSpellData == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strSpellName.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            string strDummy = strSpellName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
+                                            if (!string.IsNullOrEmpty(strDummy))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
                                                 xmlSpellData = xmlSpellDocument.TryGetNodeByNameOrId(
-                                                    "chummer/spells/spell", strName,
+                                                    "chummer/spells/spell", strDummy,
                                                     "category = " + strSpellCategory.CleanXPath());
                                             }
 
                                             if (xmlSpellData == null)
                                             {
-                                                astrOriginalNameSplit = strSpellName.Split(',',
-                                                    StringSplitOptions.RemoveEmptyEntries);
-                                                if (astrOriginalNameSplit.Length > 1)
+                                                strDummy = strSpellName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
+                                                if (!string.IsNullOrEmpty(strDummy))
                                                 {
-                                                    string strName = astrOriginalNameSplit[0].Trim();
                                                     xmlSpellData = xmlSpellDocument.TryGetNodeByNameOrId(
-                                                        "chummer/spells/spell", strName,
+                                                        "chummer/spells/spell", strDummy,
                                                         "category = " + strSpellCategory.CleanXPath());
                                                 }
                                             }
@@ -48754,28 +48817,10 @@ namespace Chummer
                                         if (xmlPowerData == null)
                                         {
                                             string[] astrOriginalNameSplit =
-                                                strPowerName.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                                strPowerName.SplitFixedSizePooledArray(':', 2, StringSplitOptions.RemoveEmptyEntries);
+                                            try
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
-                                                xmlPowerData =
-                                                    xmlPowersDocument.SelectSingleNode(
-                                                        "/chummer/powers/power[contains(name, " +
-                                                        strName.CleanXPath() +
-                                                        ")]");
-
-                                                strForcedValue = astrOriginalNameSplit[1].Trim();
-                                                int intForcedValueParenthesesStart = strForcedValue.IndexOf('(');
-                                                if (intForcedValueParenthesesStart != -1)
-                                                    strForcedValue =
-                                                        strForcedValue.Substring(0, intForcedValueParenthesesStart);
-                                            }
-
-                                            if (xmlPowerData == null)
-                                            {
-                                                astrOriginalNameSplit = strPowerName.Split('(',
-                                                    StringSplitOptions.RemoveEmptyEntries);
-                                                if (astrOriginalNameSplit.Length > 1)
+                                                if (!string.IsNullOrEmpty(astrOriginalNameSplit[1]))
                                                 {
                                                     string strName = astrOriginalNameSplit[0].Trim();
                                                     xmlPowerData =
@@ -48784,26 +48829,65 @@ namespace Chummer
                                                             strName.CleanXPath() +
                                                             ")]");
 
-                                                    string strSecondPart = astrOriginalNameSplit[1].Trim();
-                                                    int intSecondPartParenthesesEnd = strSecondPart.IndexOf(')');
-                                                    if (intSecondPartParenthesesEnd != -1
-                                                        && !int.TryParse(
-                                                            strSecondPart.Substring(0, intSecondPartParenthesesEnd),
-                                                            out intRating))
-                                                        intRating = 1;
+                                                    strForcedValue = astrOriginalNameSplit[1].Trim();
+                                                    int intForcedValueParenthesesStart = strForcedValue.IndexOf('(');
+                                                    if (intForcedValueParenthesesStart != -1)
+                                                        strForcedValue =
+                                                            strForcedValue.Substring(0, intForcedValueParenthesesStart);
+                                                }
+                                            }
+                                            finally
+                                            {
+                                                ArrayPool<string>.Shared.Return(astrOriginalNameSplit);
+                                            }
 
-                                                    astrOriginalNameSplit = strSecondPart.Split(':',
-                                                        StringSplitOptions.RemoveEmptyEntries);
-                                                    if (astrOriginalNameSplit.Length >= 2)
+                                            if (xmlPowerData == null)
+                                            {
+                                                astrOriginalNameSplit = strPowerName.SplitFixedSizePooledArray('(', 2,
+                                                    StringSplitOptions.RemoveEmptyEntries);
+                                                try
+                                                {
+                                                    if (!string.IsNullOrEmpty(astrOriginalNameSplit[1]))
                                                     {
-                                                        strForcedValue = astrOriginalNameSplit[1].Trim();
-                                                        int intForcedValueParenthesesStart =
-                                                            strForcedValue.IndexOf('(');
-                                                        if (intForcedValueParenthesesStart != -1)
-                                                            strForcedValue =
-                                                                strForcedValue.Substring(0,
-                                                                    intForcedValueParenthesesStart);
+                                                        string strName = astrOriginalNameSplit[0].Trim();
+                                                        xmlPowerData =
+                                                            xmlPowersDocument.SelectSingleNode(
+                                                                "/chummer/powers/power[contains(name, " +
+                                                                strName.CleanXPath() +
+                                                                ")]");
+
+                                                        string strSecondPart = astrOriginalNameSplit[1].Trim();
+                                                        int intSecondPartParenthesesEnd = strSecondPart.IndexOf(')');
+                                                        if (intSecondPartParenthesesEnd != -1
+                                                            && !int.TryParse(
+                                                                strSecondPart.Substring(0, intSecondPartParenthesesEnd),
+                                                                out intRating))
+                                                            intRating = 1;
+
+                                                        string[] astrOriginalNameSplit2 = strSecondPart.SplitFixedSizePooledArray(':', 2,
+                                                            StringSplitOptions.RemoveEmptyEntries);
+                                                        try
+                                                        {
+                                                            if (!string.IsNullOrEmpty(astrOriginalNameSplit2[1]))
+                                                            {
+                                                                strForcedValue = astrOriginalNameSplit2[1].Trim();
+                                                                int intForcedValueParenthesesStart =
+                                                                    strForcedValue.IndexOf('(');
+                                                                if (intForcedValueParenthesesStart != -1)
+                                                                    strForcedValue =
+                                                                        strForcedValue.Substring(0,
+                                                                            intForcedValueParenthesesStart);
+                                                            }
+                                                        }
+                                                        finally
+                                                        {
+                                                            ArrayPool<string>.Shared.Return(astrOriginalNameSplit2);
+                                                        }
                                                     }
+                                                }
+                                                finally
+                                                {
+                                                    ArrayPool<string>.Shared.Return(astrOriginalNameSplit);
                                                 }
                                             }
                                         }
@@ -48863,11 +48947,8 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         ? LoadData("complexforms.xml", token: token)
                                         : await LoadDataAsync("complexforms.xml", token: token).ConfigureAwait(false);
-
-                                    string[] astrComplexForms =
-                                        strComplexFormsLine.TrimStartOnce("Complex Forms:").Trim()
-                                                           .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                    foreach (string strComplexFormEntry in astrComplexForms)
+                                    foreach (string strComplexFormEntry in strComplexFormsLine.TrimStartOnce("Complex Forms:").Trim()
+                                                           .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                                     {
                                         string strComplexFormName = strComplexFormEntry.Trim();
                                         string strForcedValue = string.Empty;
@@ -48919,27 +49000,24 @@ namespace Chummer
                                                 "/chummer/complexforms/complexform", strComplexFormName);
                                         if (xmlComplexFormData == null)
                                         {
-                                            string[] astrOriginalNameSplit =
-                                                strComplexFormName.Split(':',
-                                                                         StringSplitOptions.RemoveEmptyEntries);
-                                            if (astrOriginalNameSplit.Length > 1)
+                                            string strDummy = strComplexFormName
+                                                .SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
+                                            if (!string.IsNullOrEmpty(strDummy))
                                             {
-                                                string strName = astrOriginalNameSplit[0].Trim();
                                                 xmlComplexFormData =
-                                                    xmlComplexFormsDocument.TryGetNodeByNameOrId(
-                                                        "/chummer/complexforms/complexform", strName);
+                                                        xmlComplexFormsDocument.TryGetNodeByNameOrId(
+                                                            "/chummer/complexforms/complexform", strDummy);
                                             }
 
                                             if (xmlComplexFormData == null)
                                             {
-                                                astrOriginalNameSplit = strComplexFormName.Split(',',
-                                                    StringSplitOptions.RemoveEmptyEntries);
-                                                if (astrOriginalNameSplit.Length > 1)
+                                                strDummy = strComplexFormName
+                                                    .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
+                                                if (!string.IsNullOrEmpty(strDummy))
                                                 {
-                                                    string strName = astrOriginalNameSplit[0].Trim();
                                                     xmlComplexFormData =
-                                                        xmlComplexFormsDocument.TryGetNodeByNameOrId(
-                                                            "/chummer/complexforms/complexform", strName);
+                                                            xmlComplexFormsDocument.TryGetNodeByNameOrId(
+                                                                "/chummer/complexforms/complexform", strDummy);
                                                 }
                                             }
                                         }
@@ -49207,13 +49285,12 @@ namespace Chummer
                                                                            .ConfigureAwait(false);
                                             if (objPlugin != null)
                                             {
-                                                objPlugin.Quantity =
-                                                    Convert.ToDecimal(
+                                                await objPlugin.SetQuantityAsync(Convert.ToDecimal(
                                                         (xmlPluginToAdd
                                                                .SelectSingleNodeAndCacheExpression(
                                                                    "@quantity", token))
                                                         ?.Value ?? "1",
-                                                        GlobalSettings.InvariantCultureInfo);
+                                                        GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                                                 await objPlugin.SetNotesAsync((xmlPluginToAdd
                                                                          .SelectSingleNodeAndCacheExpression(
                                                                              "description", token))
@@ -49397,7 +49474,7 @@ namespace Chummer
                         using (Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load))
                         {
                             // Process all events related to improvements
-                            using (new FetchSafelyFromPool<
+                            using (new FetchSafelyFromSafeObjectPool<
                                        Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                                        Utils.DictionaryForMultiplePropertyChangedPool,
                                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>

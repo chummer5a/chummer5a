@@ -89,7 +89,7 @@ namespace Chummer
                 {
                     List<Grade> lstGrades = await _objCharacter.GetGradesListAsync(_eSource).ConfigureAwait(false);
 
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                out List<ListItem> lstSuitesToAdd))
                     {
                         foreach (XmlNode objXmlSuite in xmlSuiteList)
@@ -163,7 +163,7 @@ namespace Chummer
 
             List<Cyberware> lstSuiteCyberwares = new List<Cyberware>(5);
             await ParseNode(xmlSuite, objGrade, lstSuiteCyberwares).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdCyberwareLabelString))
             {
                 foreach (Cyberware objCyberware in lstSuiteCyberwares)

@@ -157,7 +157,7 @@ namespace Chummer.UI.Powers
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                     try
                     {
-                        using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch parts))
+                        using (new FetchSafelyFromSafeObjectPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch parts))
                         {
                             parts.Start();
                             parts.TaskEnd("MakePowerDisplay()");

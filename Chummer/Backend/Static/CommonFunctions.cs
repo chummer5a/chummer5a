@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -2147,40 +2148,58 @@ namespace Chummer
                 }
             }
 
+            string strBook;
+            int intPage;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            string[] astrSourceParts;
-            if (!string.IsNullOrEmpty(strSpace))
-                astrSourceParts = strSource.Split(strSpace, StringSplitOptions.RemoveEmptyEntries);
-            else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
-                astrSourceParts = new[] { "SR5", strSource.Substring(3) };
-            else if (strSource.StartsWith("R5", StringComparison.Ordinal))
-                astrSourceParts = new[] { "R5", strSource.Substring(2) };
-            else
+            string[] astrSourceParts = null;
+            try
             {
-                int i = strSource.Length - 1;
-                for (; i >= 0; --i)
+                if (!string.IsNullOrEmpty(strSpace))
+                    astrSourceParts = strSource.SplitFixedSizePooledArray(strSpace, 2, StringSplitOptions.RemoveEmptyEntries);
+                else
                 {
-                    if (!char.IsNumber(strSource, i))
+                    astrSourceParts = ArrayPool<string>.Shared.Rent(2);
+                    if (strSource.StartsWith("SR5", StringComparison.Ordinal))
                     {
-                        break;
+                        astrSourceParts[0] = "SR5";
+                        astrSourceParts[1] = strSource.Substring(3);
+                    }
+                    else if (strSource.StartsWith("R5", StringComparison.Ordinal))
+                    {
+                        astrSourceParts[0] = "R5";
+                        astrSourceParts[1] = strSource.Substring(2);
+                    }
+                    else
+                    {
+                        int i = strSource.Length - 1;
+                        for (; i >= 0; --i)
+                        {
+                            if (!char.IsNumber(strSource, i))
+                            {
+                                break;
+                            }
+                        }
+
+                        astrSourceParts[0] = strSource.Substring(0, i);
+                        astrSourceParts[1] = strSource.Substring(i);
                     }
                 }
 
-                astrSourceParts = new[] { strSource.Substring(0, i), strSource.Substring(i) };
+                if (string.IsNullOrEmpty(astrSourceParts[1]) || !int.TryParse(astrSourceParts[1], out intPage))
+                    return;
+
+                // Make sure the page is actually a number that we can use as well as being 1 or higher.
+                if (intPage < 1)
+                    return;
+
+                // Revert the sourcebook code to the one from the XML file if necessary.
+                strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objSettings, token).ConfigureAwait(false);
             }
-
-            if (astrSourceParts.Length < 2)
-                return;
-            if (!int.TryParse(astrSourceParts[1], out int intPage))
-                return;
-
-            // Make sure the page is actually a number that we can use as well as being 1 or higher.
-            if (intPage < 1)
-                return;
-
-            // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objSettings, token).ConfigureAwait(false);
-
+            finally
+            {
+                if (astrSourceParts != null)
+                    ArrayPool<string>.Shared.Return(astrSourceParts);
+            }
             // Retrieve the sourcebook information including page offset and PDF application name.
             if (!(await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false))
                     .TryGetValue(strBook, out SourcebookInfo objBookInfo) || objBookInfo == null)
@@ -2341,23 +2360,29 @@ namespace Chummer
             if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
                 return strText;
 
-            string[] strTemp = strSource.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if (strTemp.Length < 2)
-                return string.Empty;
-            if (!int.TryParse(strTemp[1], out int intPage))
-                return string.Empty;
+            string strBook;
+            int intPage;
+            string[] strTemp = strSource.SplitFixedSizePooledArray(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+            try
+            {
+                if (string.IsNullOrEmpty(strTemp[1]) || !int.TryParse(strTemp[1], out intPage))
+                    return string.Empty;
+                // Make sure the page is actually a number that we can use as well as being 1 or higher.
+                if (intPage < 1)
+                    return string.Empty;
 
-            // Make sure the page is actually a number that we can use as well as being 1 or higher.
-            if (intPage < 1)
-                return string.Empty;
+                token.ThrowIfCancellationRequested();
 
-            token.ThrowIfCancellationRequested();
-
-            // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = blnSync
-                // ReSharper disable once MethodHasAsyncOverload
-                ? LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objSettings, token)
-                : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objSettings, token).ConfigureAwait(false);
+                // Revert the sourcebook code to the one from the XML file if necessary.
+                strBook = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objSettings, token)
+                    : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objSettings, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                ArrayPool<string>.Shared.Return(strTemp);
+            }
 
             token.ThrowIfCancellationRequested();
 
@@ -2501,7 +2526,7 @@ namespace Chummer
                                 {
                                     token.ThrowIfCancellationRequested();
                                     // now just add more lines to it until it is enough
-                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdCurrentLine))
                                     {
                                         sbdCurrentLine.Append(strCurrentLine);
@@ -2621,7 +2646,7 @@ namespace Chummer
                     return string.Join(" ", strArray, intTitleIndex, intBlockEndIndex - intTitleIndex);
                 token.ThrowIfCancellationRequested();
                 // add the title
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdResultContent))
                 {
                     token.ThrowIfCancellationRequested();

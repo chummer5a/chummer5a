@@ -58,7 +58,7 @@ namespace Chummer
 
         private async void SelectExoticSkill_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
             {
                 // Build the list of Exotic Active Skills from the Skills file.
                 using (XmlNodeList objXmlSkillList = (await _objCharacter.LoadDataAsync("skills.xml").ConfigureAwait(false))
@@ -149,7 +149,7 @@ namespace Chummer
                                                                    + " or useskill = "
                                                                    + strSelectedCategory.CleanXPath() + ") and ("
                                                                    + await _objCharacter.Settings.BookXPathAsync(false, token).ConfigureAwait(false) + ")]");
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
             {
                 if (xmlWeaponList.Count > 0)
                 {
@@ -182,7 +182,7 @@ namespace Chummer
                     }
                 }
 
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setExistingExoticSkills))
                 {
                     foreach (Skill objSkill in await (await _objCharacter.GetSkillsSectionAsync(token)

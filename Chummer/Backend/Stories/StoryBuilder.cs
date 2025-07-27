@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
@@ -103,7 +104,7 @@ namespace Chummer
                     int intLocal = i;
                     atskStoryTasks[i] = Task.Run(async () =>
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdTemp))
                         {
                             return (await Write(sbdTemp, modules[intLocal]["story"]?.InnerText ?? string.Empty, 5,
@@ -203,9 +204,16 @@ namespace Chummer
             string macroName, macroPool;
             if (endString.Contains('_'))
             {
-                string[] split = endString.Split('_');
-                macroName = split[0];
-                macroPool = split[1];
+                string[] split = endString.SplitFixedSizePooledArray('_', 2);
+                try
+                {
+                    macroName = split[0];
+                    macroPool = split[1];
+                }
+                finally
+                {
+                    ArrayPool<string>.Shared.Return(split);
+                }
             }
             else
             {

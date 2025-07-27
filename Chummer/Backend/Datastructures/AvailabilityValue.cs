@@ -66,17 +66,11 @@ namespace Chummer
 
         public AvailabilityValue(int intRating, string strInput, int intBonus = 0, bool blnIncludedInParent = false)
         {
-            decimal decValue = 0;
             string strAvailExpr = strInput;
             bool blnDoComplexInitializer = false;
-            if (strAvailExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
+            if (strAvailExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                }
-
+                strAvailExpr = strAvailExpr.ProcessFixedValuesString(intRating);
                 Suffix = strAvailExpr[strAvailExpr.Length - 1];
                 if (Suffix == 'F' || Suffix == 'R')
                 {
@@ -94,7 +88,7 @@ namespace Chummer
                 else if (strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-'))
                 {
                     AddToParent = true;
-                    strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
+                    strAvailExpr = strAvailExpr.Substring(1);
                 }
                 else
                     AddToParent = false;

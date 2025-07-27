@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -56,7 +57,7 @@ namespace Chummer
 
         private async void CreateImprovement_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
             {
                 // Populate the Improvement Type list.
                 foreach (XPathNavigator objXmlImprovement in _objImprovementsDocumentImprovementsNode.Select("improvement"))
@@ -213,7 +214,7 @@ namespace Chummer
             switch (_strSelect)
             {
                 case "SelectActionDicePool":
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstActions))
                     {
                         foreach (XPathNavigator xmlAction in (await _objCharacter.LoadDataXPathAsync("actions.xml").ConfigureAwait(false))
@@ -459,11 +460,11 @@ namespace Chummer
                 }
                 case "SelectKnowSkill":
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                out List<ListItem> lstDropdownItems))
                     {
                         string strFilter = string.Empty;
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string> setProcessedSkillNames))
                         {
                             await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objKnowledgeSkill =>
@@ -475,7 +476,7 @@ namespace Chummer
                                 setProcessedSkillNames.Add(objKnowledgeSkill.Name);
                             }).ConfigureAwait(false);
 
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                        out StringBuilder sbdFilters))
                             {
                                 if (setProcessedSkillNames.Count > 0)
@@ -560,7 +561,7 @@ namespace Chummer
                 }
                 case "SelectComplexForm":
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                out List<ListItem> lstComplexForms))
                     {
                         foreach (XPathNavigator xmlSpell in (await _objCharacter.LoadDataXPathAsync(
@@ -595,7 +596,7 @@ namespace Chummer
                 }
                 case "SelectSpell":
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                out List<ListItem> lstSpells))
                     {
                         foreach (XPathNavigator xmlSpell in (await _objCharacter.LoadDataXPathAsync("spells.xml").ConfigureAwait(false))
@@ -884,18 +885,25 @@ namespace Chummer
                 case "SelectSkill":
                     if (await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strToTranslate, token).ConfigureAwait(false))
                     {
-                        string[] astrToTranslateParts = strToTranslate.Split('(', StringSplitOptions.RemoveEmptyEntries);
-                        astrToTranslateParts[0] = astrToTranslateParts[0].Trim();
-                        astrToTranslateParts[1] = astrToTranslateParts[1].Substring(0, astrToTranslateParts[1].Length - 1);
+                        string[] astrToTranslateParts = strToTranslate.SplitFixedSizePooledArray('(', 2, StringSplitOptions.RemoveEmptyEntries);
+                        try
+                        {
+                            astrToTranslateParts[0] = astrToTranslateParts[0].Trim();
+                            astrToTranslateParts[1] = astrToTranslateParts[1].Substring(0, astrToTranslateParts[1].Length - 1);
 
-                        objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/skills/skill", astrToTranslateParts[0]);
-                        string strFirstPartTranslated = objXmlNode != null
-                            ? objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
-                              ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
-                              ?? astrToTranslateParts[0]
-                            : astrToTranslateParts[0];
+                            objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/skills/skill", astrToTranslateParts[0]);
+                            string strFirstPartTranslated = objXmlNode != null
+                                ? objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                  ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
+                                  ?? astrToTranslateParts[0]
+                                : astrToTranslateParts[0];
 
-                        return strFirstPartTranslated + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1], token: token).ConfigureAwait(false) + ')';
+                            return strFirstPartTranslated + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1], token: token).ConfigureAwait(false) + ')';
+                        }
+                        finally
+                        {
+                            ArrayPool<string>.Shared.Return(astrToTranslateParts);
+                        }
                     }
 
                     objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/skills/skill", strToTranslate);

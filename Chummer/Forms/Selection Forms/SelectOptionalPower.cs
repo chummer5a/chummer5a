@@ -56,7 +56,7 @@ namespace Chummer
 
         private async void SelectOptionalPower_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPowerItems))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPowerItems))
             {
                 foreach ((string strPowerName, string strPowerExtra) in _lstPowerExtraPairs)
                 {

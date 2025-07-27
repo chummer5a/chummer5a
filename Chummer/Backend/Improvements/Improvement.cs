@@ -567,6 +567,18 @@ namespace Chummer
                 case ImprovementType.BlockSkillDefault when _objCharacter.LastSavedVersion <= new ValueVersion(5, 224, 39):
                     _eImprovementType = ImprovementType.BlockSkillGroupDefault;
                     break;
+
+                case ImprovementType.PhysicalLimit when string.IsNullOrEmpty(_strImprovedName):
+                    _strImprovedName = "Physical";
+                    break;
+
+                case ImprovementType.MentalLimit when string.IsNullOrEmpty(_strImprovedName):
+                    _strImprovedName = "Mental";
+                    break;
+
+                case ImprovementType.SocialLimit when string.IsNullOrEmpty(_strImprovedName):
+                    _strImprovedName = "Social";
+                    break;
             }
 
             objNode.TryGetBoolFieldQuickly("custom", ref _blnCustom);
@@ -833,6 +845,22 @@ namespace Chummer
             }
         }
 
+        public Task SetValueAsync(decimal value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (_decVal != value)
+            {
+                _decVal = value;
+                if (Enabled)
+                {
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName, token);
+                    return this.ProcessRelevantEventsAsync(token: token);
+                }
+            }
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// The Rating value for the Improvement. This is 1 by default.
         /// </summary>
@@ -847,6 +875,18 @@ namespace Chummer
                     this.ProcessRelevantEvents();
                 }
             }
+        }
+
+        public Task SetRatingAsync(int value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (Interlocked.Exchange(ref _intRating, value) != value && Enabled)
+            {
+                ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName, token);
+                return this.ProcessRelevantEventsAsync(token: token);
+            }
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -944,6 +984,17 @@ namespace Chummer
             }
         }
 
+        public Task SetEnabledAsync(bool value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            int intNewValue = value.ToInt32();
+            if (Interlocked.Exchange(ref _intEnabled, intNewValue) == intNewValue)
+                return Task.CompletedTask;
+            ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName, token);
+            return this.ProcessRelevantEventsAsync(token: token);
+        }
+
         /// <summary>
         /// Whether we have completed our first setup. Needed to skip superfluous event updates at startup
         /// </summary>
@@ -978,7 +1029,7 @@ namespace Chummer
                 case ImprovementType.Attribute:
                 {
                     string strTargetAttribute = ImprovedName;
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string>
                                                                         setAttributePropertiesChanged))
                     {
@@ -3479,7 +3530,7 @@ namespace Chummer
                 case ImprovementType.Attribute:
                     {
                         string strTargetAttribute = ImprovedName;
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string>
                                                                             setAttributePropertiesChanged))
                         {
@@ -6060,17 +6111,19 @@ namespace Chummer
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsImprovement)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsImprovement, CancellationToken token = default)
         {
-            TreeNode nodImprovement = new TreeNode
+            token.ThrowIfCancellationRequested();
+            TreeNode objNode = new TreeNode
             {
-                Tag = this,
+                Name = InternalId,
                 Text = CustomName,
-                ToolTipText = Notes.WordWrap(),
+                Tag = this,
                 ContextMenuStrip = cmsImprovement,
-                ForeColor = PreferredColor
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
-            return nodImprovement;
+            return objNode;
         }
 
         public Color PreferredColor

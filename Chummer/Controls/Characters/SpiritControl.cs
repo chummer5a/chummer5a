@@ -497,7 +497,7 @@ namespace Chummer
                     ? "traditions.xml"
                     : "streams.xml", token: token).ConfigureAwait(false);
 
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setLimitCategories))
             {
                 foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
@@ -506,7 +506,7 @@ namespace Chummer
                     setLimitCategories.Add(objImprovement.ImprovedName);
                 }
 
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCritters))
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCritters))
                 {
                     if (objTradition.IsCustomTradition)
                     {

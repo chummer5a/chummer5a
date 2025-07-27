@@ -285,8 +285,7 @@ namespace Chummer.Controls.Shared
             await objTTypeList.SortAsync((x, y) => _comparisonAsync(x.Item1, y.Item1, token), token: token).ConfigureAwait(false);
 
             // Can't use stackalloc in async methods, so always use array pool instead
-            int[] aintOldDisplayIndex = ArrayPool<int>.Shared.Rent(_lstDisplayIndex.Count);
-            try
+            using (new FetchSafelyFromArrayPool<int>(ArrayPool<int>.Shared, _lstDisplayIndex.Count, out int[] aintOldDisplayIndex))
             {
                 for (int i = 0; i < _lstDisplayIndex.Count; ++i)
                     aintOldDisplayIndex[i] = _lstDisplayIndex[i];
@@ -302,10 +301,6 @@ namespace Chummer.Controls.Shared
                         _ablnRendered[i] &= _lstDisplayIndex[i] == aintOldDisplayIndex[i];
                     }
                 }
-            }
-            finally
-            {
-                ArrayPool<int>.Shared.Return(aintOldDisplayIndex);
             }
         }
 
@@ -423,7 +418,7 @@ namespace Chummer.Controls.Shared
                 end = _lstDisplayIndex.Count;
 
             end = Math.Min(end, firstUnrendered + _intOffScreenChunkSize);
-            using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
+            using (new FetchSafelyFromSafeObjectPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
             {
                 sw.Start();
 

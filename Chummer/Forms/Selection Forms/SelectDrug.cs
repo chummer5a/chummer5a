@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -155,9 +156,8 @@ namespace Chummer
                 // Update the Cost multipliers based on the Grade that has been selected.
                 if (xmlGrade != null)
                 {
-                    _decCostMultiplier
-                        = Convert.ToDecimal(
-                            xmlGrade.SelectSingleNodeAndCacheExpression("cost", token)?.Value, GlobalSettings.InvariantCultureInfo);
+                    decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("cost", token)?.Value,
+                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
                     _intAvailModifier
                         = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token)?.ValueAsInt ?? 0;
 
@@ -619,13 +619,7 @@ namespace Chummer
             string strAvail = objXmlDrug.SelectSingleNodeAndCacheExpression("avail", token)?.Value;
             if (!string.IsNullOrEmpty(strAvail))
             {
-                string strAvailExpr = strAvail;
-                if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                }
-
+                string strAvailExpr = strAvail.ProcessFixedValuesString(intRating);
                 string strSuffix = string.Empty;
                 char chrSuffix = strAvailExpr[strAvailExpr.Length - 1];
                 switch (chrSuffix)
@@ -702,11 +696,7 @@ namespace Chummer
                 string strCost = objXmlDrug.SelectSingleNodeAndCacheExpression("cost", token)?.Value;
                 if (!string.IsNullOrEmpty(strCost))
                 {
-                    if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
-                    {
-                        string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                        strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                    }
+                    strCost = strCost.ProcessFixedValuesString(intRating);
                     // Check for a Variable Cost.
                     if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                     {
@@ -715,9 +705,16 @@ namespace Chummer
                         strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                         if (strCost.Contains('-'))
                         {
-                            string[] strValues = strCost.Split('-');
-                            decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                            decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                            string[] strValues = strCost.SplitFixedSizePooledArray('-', 2);
+                            try
+                            {
+                                decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                                decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                            }
+                            finally
+                            {
+                                ArrayPool<string>.Shared.Return(strValues);
+                            }
                         }
                         else
                             decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
@@ -807,7 +804,7 @@ namespace Chummer
                 ? null
                 : _lstGrades.Find(x => x.SourceIDString == strCurrentGradeId);
             string strFilter = string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
                 sbdFilter.Append('(')
                          .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
@@ -1041,7 +1038,7 @@ namespace Chummer
                 _setDisallowedGrades.Clear();
                 _setDisallowedGrades.AddRange(setDisallowedGrades);
                 _strForceGrade = strForceGrade;
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGrade))
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGrade))
                 {
                     foreach (Grade objWareGrade in _lstGrades)
                     {

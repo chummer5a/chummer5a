@@ -18,7 +18,9 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -248,8 +250,8 @@ namespace Chummer
                                     await LanguageManager.GetStringAsync(strRatingLabel, token: token).ConfigureAwait(false))
                     : await LanguageManager.GetStringAsync("Label_Rating", token: token).ConfigureAwait(false);
                 await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel, token: token).ConfigureAwait(false);
-                decimal decMaximum = Convert.ToDecimal(objXmlMod.SelectSingleNodeAndCacheExpression("maxrating", token)?.Value,
-                                                       GlobalSettings.InvariantCultureInfo);
+                decimal.TryParse(objXmlMod.SelectSingleNodeAndCacheExpression("maxrating", token)?.Value,
+                    NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decMaximum);
                 await nudRating.DoThreadSafeAsync(x => x.Maximum = decMaximum, token: token).ConfigureAwait(false);
                 if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                 {
@@ -300,7 +302,8 @@ namespace Chummer
                     await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
                 }
 
-                string strAvail = await new AvailabilityValue(Convert.ToInt32(nudRating.Value),
+                int intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
+                string strAvail = await new AvailabilityValue(intRating,
                     objXmlMod.SelectSingleNodeAndCacheExpression("avail", token)?.Value).ToStringAsync(token).ConfigureAwait(false);
                 await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
                 await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token).ConfigureAwait(false);
@@ -343,12 +346,7 @@ namespace Chummer
                             strSuffix = strCostElement.Substring(strCostElement.LastIndexOf(')') + 1);
                             strCostElement = strCostElement.TrimEndOnce(strSuffix);
                         }
-
-                        string[] strValues = strCostElement.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                           .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                        strCostElement
-                            = strValues[Math.Max(Math.Min(Convert.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
-                        strCostElement += strSuffix;
+                        strCostElement = strCostElement.ProcessFixedValuesString(intRating) + strSuffix;
                     }
 
                     if (strCostElement.StartsWith("Variable(", StringComparison.Ordinal))
@@ -358,9 +356,16 @@ namespace Chummer
                         string strCost = strCostElement.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                         if (strCost.Contains('-'))
                         {
-                            string[] strValues = strCost.Split('-');
-                            decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                            decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                            string[] strValues = strCost.SplitFixedSizePooledArray('-', 2);
+                            try
+                            {
+                                decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                                decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                            }
+                            finally
+                            {
+                                ArrayPool<string>.Shared.Return(strValues);
+                            }
                         }
                         else
                             decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
@@ -380,7 +385,7 @@ namespace Chummer
                         if (strCostElement.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
                         {
                             string strCost = await (await strCostElement.CheapReplaceAsync(
-                                                       "Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
+                                                       "Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
                                                    .CheapReplaceAsync("Armor Cost",
                                                                       () => _decArmorCost.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
 
@@ -411,12 +416,7 @@ namespace Chummer
                     await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']', token: token).ConfigureAwait(false);
                 else
                 {
-                    if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
-                    {
-                        string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                        .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                        strCapacity = strValues[nudRating.ValueAsInt - 1];
-                    }
+                    strCapacity = strCapacity.ProcessFixedValuesString(intRating);
 
                     bool blnSquareBrackets = strCapacity.StartsWith('[');
                     if (blnSquareBrackets)
@@ -427,7 +427,7 @@ namespace Chummer
                         strCapacity = await (await strCapacity.CheapReplaceAsync(
                                                 "Capacity", () => _decArmorCapacity.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
                                             .CheapReplaceAsync(
-                                                "Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                "Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         
                         //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
                         (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token: token).ConfigureAwait(false);
@@ -473,13 +473,13 @@ namespace Chummer
         {
             string strFilter = string.Empty;
             // Populate the Mods list.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstMods))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
                     sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
-                    using (new FetchSafelyFromPool<StringBuilder>(
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(
                                Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
                     {
                         if (!ExcludeGeneralCategory)

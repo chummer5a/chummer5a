@@ -271,7 +271,7 @@ namespace Chummer
                     int intLimit = 1;
                     if (strLimitString.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdLimitString))
                         {
                             sbdLimitString.Append(strLimitString);
@@ -412,7 +412,7 @@ namespace Chummer
                         XPathNavigator xmlIncludeInLimit = xmlNode.SelectSingleNodeAndCacheExpression("includeinlimit", token);
                         if (xmlIncludeInLimit != null)
                         {
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string>
                                                                                 setNamesIncludedInLimit))
                             {
@@ -610,7 +610,7 @@ namespace Chummer
             XPathNavigator xmlRequiredNode = xmlNode.SelectSingleNodeAndCacheExpression("required", token);
             if (xmlRequiredNode != null)
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdRequirement))
                 {
                     bool blnRequirementMet = true;
@@ -619,7 +619,7 @@ namespace Chummer
                     foreach (XPathNavigator objXmlOneOf in xmlRequiredNode.SelectAndCacheExpression("oneof", token))
                     {
                         bool blnOneOfMet = false;
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdThisRequirement))
                         {
                             sbdThisRequirement.AppendLine()
@@ -670,7 +670,7 @@ namespace Chummer
                         foreach (XPathNavigator objXmlAllOf in xmlRequiredNode.SelectAndCacheExpression("allof", token))
                         {
                             bool blnAllOfMet = true;
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdThisRequirement))
                             {
                                 sbdThisRequirement.AppendLine()
@@ -1565,7 +1565,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText))
                     {
                         decimal decGrade;
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string>
                                        setEssNodeGradeAttributeText))
                         {
@@ -1852,7 +1852,7 @@ namespace Chummer
                 {
                     // Check that clustered options are present (Magical Tradition + Skill 6, for example)
                     bool blnResult = true;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdResultName))
                     {
                         sbdResultName.AppendLine().Append('\t')
@@ -1892,7 +1892,7 @@ namespace Chummer
                 {
                     // Check that one of the clustered options are present
                     bool blnResult = false;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdResultName))
                     {
                         sbdResultName.AppendLine().Append('\t')
@@ -3098,7 +3098,7 @@ namespace Chummer
                     IEnumerable<string> lstSkills
                         = xmlNode.SelectSingleNodeAndCacheExpression("skills", token)?.Value
                             .SplitNoAlloc('+', StringSplitOptions.RemoveEmptyEntries);
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdOutput))
                     {
                         sbdOutput.AppendLine().Append('\t');
@@ -3221,7 +3221,7 @@ namespace Chummer
                     IEnumerable<string> lstGroups
                         = xmlNode.SelectSingleNodeAndCacheExpression("skillgroups", token)?.Value
                             .SplitNoAlloc('+', StringSplitOptions.RemoveEmptyEntries);
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdOutput))
                     {
                         sbdOutput.AppendLine().Append('\t');
@@ -3861,11 +3861,7 @@ namespace Chummer
 
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvailExpr = objAvailNode?.Value ?? string.Empty;
-            if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strAvailExpr = strValues[Math.Max(Math.Min(intRating - 1, strValues.Length - 1), 0)];
-            }
+            strAvailExpr = strAvailExpr.ProcessFixedValuesString(intRating);
 
             if (string.IsNullOrEmpty(strAvailExpr))
                 return true;
@@ -3942,11 +3938,7 @@ namespace Chummer
 
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvailExpr = objAvailNode?.Value ?? string.Empty;
-            if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strAvailExpr = strValues[Math.Max(Math.Min(intRating - 1, strValues.Length - 1), 0)];
-            }
+            strAvailExpr = strAvailExpr.ProcessFixedValuesString(intRating);
 
             if (string.IsNullOrEmpty(strAvailExpr))
                 return true;
@@ -4006,18 +3998,13 @@ namespace Chummer
             string strCost = objCostNode?.Value;
             if (!string.IsNullOrEmpty(strCost))
             {
-                if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                }
-                else if (strCost.StartsWith("Variable", StringComparison.Ordinal))
+                strCost = strCost.ProcessFixedValuesString(intRating);
+                if (strCost.StartsWith("Variable", StringComparison.Ordinal))
                 {
                     strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                     int intHyphenIndex = strCost.IndexOf('-');
                     strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
                 }
-
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decCost))
                 {
                     (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)));
@@ -4070,18 +4057,13 @@ namespace Chummer
             string strCost = objCostNode?.Value;
             if (!string.IsNullOrEmpty(strCost))
             {
-                if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                }
-                else if (strCost.StartsWith("Variable", StringComparison.Ordinal))
+                strCost = strCost.ProcessFixedValuesString(intRating);
+                if (strCost.StartsWith("Variable", StringComparison.Ordinal))
                 {
                     strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                     int intHyphenIndex = strCost.IndexOf('-');
                     strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
                 }
-
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decCost))
                 {
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);

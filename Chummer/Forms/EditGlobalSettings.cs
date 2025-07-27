@@ -25,20 +25,17 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
-using Chummer.Forms;
 using Chummer.Plugins;
 using iText.Kernel.Pdf;
 #if DEBUG
 using Microsoft.IO;
 #endif
 using NLog;
-using RtfPipe.Tokens;
 using Application = System.Windows.Forms.Application;
 
 namespace Chummer
@@ -270,7 +267,7 @@ namespace Chummer
                 string strSelectedLanguage = _strSelectedLanguage;
                 // Build a list of Sourcebooks that will be passed to the Verify method.
                 // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setBooks))
                 {
                     foreach (ListItem objItem in await lstGlobalSourcebookInfos.DoThreadSafeFuncAsync(x => x.Items)
@@ -1072,7 +1069,7 @@ namespace Chummer
 
                 if (objSelected.DependenciesList.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdDependencies))
                     {
                         foreach (DirectoryDependency dependency in objSelected.DependenciesList)
@@ -1089,7 +1086,7 @@ namespace Chummer
 
                 if (objSelected.IncompatibilitiesList.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdIncompatibilities))
                     {
                         foreach (DirectoryDependency exclusivity in objSelected.IncompatibilitiesList)
@@ -1324,7 +1321,7 @@ namespace Chummer
         {
             // Load the Sourcebook information.
             // Put the Sourcebooks into a List so they can first be sorted.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstSourcebookInfos))
             {
                 foreach (XPathNavigator objXmlBook in (await XmlManager
@@ -1717,7 +1714,7 @@ namespace Chummer
         private async Task PopulateDefaultCharacterSettingLists(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCharacterSettings))
             {
                 foreach (KeyValuePair<string, CharacterSettings> kvpLoopCharacterOptions in await SettingsManager
@@ -1779,7 +1776,7 @@ namespace Chummer
         private async Task PopulateChum5lzCompressionLevelOptions(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                        out List<ListItem> lstChum5lzCompressionLevelOptions))
             {
                 lstChum5lzCompressionLevelOptions.Add(new ListItem(LzmaHelper.ChummerCompressionPreset.Fastest,
@@ -1824,7 +1821,7 @@ namespace Chummer
         private async Task PopulateMugshotCompressionOptions(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstMugshotCompressionOptions))
             {
                 lstMugshotCompressionOptions.Add(
@@ -1863,7 +1860,7 @@ namespace Chummer
                         strOldSelected = "jpeg_manual";
                     }
 
-                    await nudMugshotCompressionQuality.DoThreadSafeAsync(x => x.ValueAsInt = intQuality, token)
+                    await nudMugshotCompressionQuality.DoThreadSafeAsync(x => x.Value = intQuality, token)
                                                       .ConfigureAwait(false);
                 }
 
@@ -1894,7 +1891,7 @@ namespace Chummer
         {
             int intIndex = 0;
 
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstPdfParameters))
             {
                 foreach (XPathNavigator objXmlNode in (await XmlManager
@@ -1963,7 +1960,7 @@ namespace Chummer
                                                         .ConfigureAwait(false)
                   ?? GlobalSettings.UseLoggingApplicationInsights.ToString();
 
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstUseAIOptions))
             {
                 foreach (UseAILogging eOption in Enum.GetValues(typeof(UseAILogging)))
@@ -1997,7 +1994,7 @@ namespace Chummer
                                                       .ConfigureAwait(false)
                                     ?? GlobalSettings.ColorModeSetting.ToString();
 
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstColorModes))
             {
                 foreach (ColorMode eLoopColorMode in Enum.GetValues(typeof(ColorMode)))
@@ -2028,7 +2025,7 @@ namespace Chummer
                                                                           .ToString(), token)
                                                              .ConfigureAwait(false);
 
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstDpiScalingMethods))
             {
                 foreach (DpiScalingMethod eLoopDpiScalingMethod in Enum.GetValues(typeof(DpiScalingMethod)))
@@ -2105,7 +2102,7 @@ namespace Chummer
         private async Task PopulateLanguageList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLanguages))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLanguages))
             {
                 foreach (KeyValuePair<string, string> kvpLanguages in _dicCachedLanguageDocumentNames)
                 {
@@ -2122,7 +2119,7 @@ namespace Chummer
         private async Task PopulateSheetLanguageList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setLanguagesWithSheets))
             {
                 // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
@@ -2137,7 +2134,7 @@ namespace Chummer
 
                 token.ThrowIfCancellationRequested();
 
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstSheetLanguages))
                 {
                     foreach (KeyValuePair<string, string> kvpLanguages in _dicCachedLanguageDocumentNames)
@@ -2167,7 +2164,7 @@ namespace Chummer
                     x => x.Image = FlagImageGetter.GetFlagFromCountryCode(strSelectedSheetLanguage?.Substring(3, 2),
                         Math.Min(x.Width, x.Height)), token).ConfigureAwait(false);
 
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstFiles))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstFiles))
             {
                 // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
                 foreach (XPathNavigator xmlSheet in (await XmlManager.LoadXPathAsync("sheets.xml", token: token)
@@ -2379,7 +2376,7 @@ namespace Chummer
                     ? SearchOption.AllDirectories
                     : SearchOption.TopDirectoryOnly;
 
-                using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
+                using (new FetchSafelyFromSafeObjectPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
                 {
                     sw.Start();
                     XPathNavigator objBooks = await tskLoadBooks.ConfigureAwait(false);
@@ -2461,7 +2458,7 @@ namespace Chummer
                             await ScanFilesForPDFTexts(astrFiles, dicPatternsToMatch, dicBackupPatternsToMatch, frmLoadingBar.MyForm)
                                 .ConfigureAwait(false);
                         sw.Stop();
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdFeedback))
                         {
                             sbdFeedback.AppendLine().AppendLine()
@@ -2502,7 +2499,7 @@ namespace Chummer
             }
         }
 
-        private async Task<List<SourcebookInfo>> ScanFilesForPDFTexts(IEnumerable<string> lstFiles,
+        private async Task<List<SourcebookInfo>> ScanFilesForPDFTexts(string[] lstFiles,
                                                                       ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch,
                                                                       ConcurrentDictionary<string, Tuple<string, int>> dicBackupPatternsToMatch,
                                                                       LoadingBar frmProgressBar,
@@ -2516,10 +2513,12 @@ namespace Chummer
             int intCounter = 0;
             if (dicPatternsToMatch?.IsEmpty == false)
             {
+                int intFileCounter = 0;
                 foreach (string strFile in lstFiles)
                 {
                     token.ThrowIfCancellationRequested();
                     lstLoadingTasks.Add(GetSourcebookInfo(strFile, dicPatternsToMatch));
+                    ++intFileCounter;
                     if (++intCounter != Utils.MaxParallelBatchSize)
                         continue;
                     await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
@@ -2542,6 +2541,16 @@ namespace Chummer
 
                     intCounter = 0;
                     lstLoadingTasks.Clear();
+                    if (dicPatternsToMatch.IsEmpty)
+                    {
+                        for (; intFileCounter <= lstFiles.Length; ++intFileCounter)
+                        {
+                            await frmProgressBar
+                              .PerformStepAsync(eUseTextPattern: LoadingBar.ProgressBarTextPatterns.Scanning, token: token)
+                              .ConfigureAwait(false);
+                        }
+                        break;
+                    }
                 }
 
                 await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
@@ -2593,6 +2602,8 @@ namespace Chummer
 
                     intCounter = 0;
                     lstLoadingTasks.Clear();
+                    if (dicBackupPatternsToMatch.IsEmpty)
+                        break;
                 }
 
                 await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
@@ -2678,7 +2689,8 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 List<string> lstKeysToLoop = dicPatternsToMatch.GetKeysToListSafe();
                 //Search the first 15 pages for all the text
-                for (int intPage = 1; intPage <= 15; intPage++)
+                int intMaxPage = Math.Min(15, objPdfDocument.GetNumberOfPages());
+                for (int intPage = 1; intPage <= intMaxPage; intPage++)
                 {
                     token.ThrowIfCancellationRequested();
                     // No more patterns to match, exit early
@@ -2751,7 +2763,7 @@ namespace Chummer
                 if (intPage >= objInnerPdfDocument.GetNumberOfPages())
                     return string.Empty;
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdAllLines))
                 {
                     try

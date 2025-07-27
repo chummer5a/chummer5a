@@ -45,7 +45,7 @@ namespace Chummer
 
         private async void DiceRoller_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMethod))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMethod))
             {
                 lstMethod.Add(new ListItem("Standard", await LanguageManager.GetStringAsync("String_DiceRoller_Standard").ConfigureAwait(false)));
                 lstMethod.Add(new ListItem("Large", await LanguageManager.GetStringAsync("String_DiceRoller_Large").ConfigureAwait(false)));
@@ -136,7 +136,7 @@ namespace Chummer
             }
 
             await lblResultsLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdResults))
             {
                 if (intGlitchCount >= intGlitchThreshold)
@@ -334,7 +334,7 @@ namespace Chummer
             }
 
             await lblResultsLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdResults))
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
@@ -433,7 +433,7 @@ namespace Chummer
         {
             Quality objGremlinsQuality
                 = lstQualities?.FirstOrDefault(x => x.Name.StartsWith("Gremlins", StringComparison.Ordinal));
-            nudGremlins.DoThreadSafe(x => x.ValueAsInt = objGremlinsQuality?.Levels ?? 0);
+            nudGremlins.DoThreadSafe(x => x.Value = objGremlinsQuality?.Levels ?? 0);
         }
 
         #endregion Properties

@@ -217,7 +217,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("id", objAmmoGear.InternalId, token: token).ConfigureAwait(false);
                 await objWriter.WriteStartElementAsync("ammotype", token: token).ConfigureAwait(false);
 
-                await objAmmoGear.PrintWeaponBonusEntries(objWriter, objCulture, strLanguageToPrint, true, token).ConfigureAwait(false);
+                await objAmmoGear.PrintWeaponBonusEntries(objWriter, strLanguageToPrint, true, token).ConfigureAwait(false);
 
                 if (await objAmmoGear.Children.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
@@ -235,7 +235,7 @@ namespace Chummer.Backend.Equipment
                         {
                             await objWriter.WriteStartElementAsync("ammotype", token: token).ConfigureAwait(false);
                             await objGear
-                                  .PrintWeaponBonusEntries(objWriter, objCulture, strLanguageToPrint, true, token)
+                                  .PrintWeaponBonusEntries(objWriter, strLanguageToPrint, true, token)
                                   .ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                         }

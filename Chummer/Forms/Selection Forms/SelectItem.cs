@@ -50,7 +50,7 @@ namespace Chummer
 
         private async void SelectItem_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
                 switch (_strMode)
                 {
@@ -61,7 +61,7 @@ namespace Chummer
                         // Add each of the items to a new List since we need to also grab their plugin information.
                         foreach (Gear objGear in _lstGear)
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(
                                        Utils.StringBuilderPool, out StringBuilder sbdAmmoName))
                             {
                                 sbdAmmoName.Append(await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false));

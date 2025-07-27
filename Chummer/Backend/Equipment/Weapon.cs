@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -111,7 +112,6 @@ namespace Chummer.Backend.Equipment
         private bool _blnDiscountCost;
         private bool _blnRequireAmmo = true;
         private string _strAccuracy = string.Empty;
-        private string _strRCTip = string.Empty;
         private string _strWeaponSlots = string.Empty;
         private string _strDoubledCostWeaponSlots = string.Empty;
         private bool _blnCyberware;
@@ -125,7 +125,7 @@ namespace Chummer.Backend.Equipment
         private string _strRatingLabel = "String_Rating";
 
         private XmlNode _nodWirelessBonus;
-        private XmlNode _nodWirelessWeaponBonus;
+        private XmlElement _nodWirelessWeaponBonus;
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
         private FiringMode _eFiringMode = FiringMode.DogBrain;
@@ -524,7 +524,7 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
                 if (objXmlMountList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdMounts))
                     {
                         foreach (XmlNode objXmlMount in objXmlMountList)
@@ -544,7 +544,7 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("doubledcostaccessorymounts/mount");
                 if (objXmlMountList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdMounts))
                     {
                         foreach (XmlNode objXmlMount in objXmlMountList)
@@ -707,7 +707,9 @@ namespace Chummer.Backend.Equipment
                 _strRange = objRangeNode.InnerText;
                 string strMultiply = objRangeNode.Attributes["multiply"]?.InnerText;
                 if (!string.IsNullOrEmpty(strMultiply))
-                    _decRangeMultiplier = Convert.ToDecimal(strMultiply, GlobalSettings.InvariantCultureInfo);
+                {
+                    decimal.TryParse(strMultiply, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decRangeMultiplier);
+                }
             }
 
             objXmlWeapon.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange);
@@ -780,11 +782,18 @@ namespace Chummer.Backend.Equipment
             else
             {
                 _blnCanSwapAttributes = true;
-                string[] strArray = _strAttributeArray.Split(',');
-                _strAttack = strArray[0];
-                _strSleaze = strArray[1];
-                _strDataProcessing = strArray[2];
-                _strFirewall = strArray[3];
+                string[] strArray = _strAttributeArray.SplitFixedSizePooledArray(',', 4);
+                try
+                {
+                    _strAttack = strArray[0];
+                    _strSleaze = strArray[1];
+                    _strDataProcessing = strArray[2];
+                    _strFirewall = strArray[3];
+                }
+                finally
+                {
+                    ArrayPool<string>.Shared.Return(strArray);
+                }
             }
 
             objXmlWeapon.TryGetStringFieldQuickly("modattack", ref _strModAttack);
@@ -908,15 +917,20 @@ namespace Chummer.Backend.Equipment
                                 Gear objGear = new Gear(_objCharacter);
 
                                 if (blnSync)
+                                {
                                     // ReSharper disable once MethodHasAsyncOverload
                                     objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
                                         blnAddChildImprovements, blnChildCreateChildren, token: token);
+                                    objGear.Quantity = decGearQty;
+                                }
                                 else
+                                {
                                     await objGear.CreateAsync(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
                                             blnAddChildImprovements, blnChildCreateChildren, token: token)
                                         .ConfigureAwait(false);
+                                    await objGear.SetQuantityAsync(decGearQty, token).ConfigureAwait(false);
+                                }
 
-                                objGear.Quantity = decGearQty;
                                 objGear.Cost = "0";
                                 objGear.ParentID = InternalId;
 
@@ -1688,7 +1702,7 @@ namespace Chummer.Backend.Equipment
                     XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
                     if (objXmlMountList?.Count > 0)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdMounts))
                         {
                             foreach (XmlNode objXmlMount in objXmlMountList)
@@ -1712,7 +1726,7 @@ namespace Chummer.Backend.Equipment
                     XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("doubledcostaccessorymounts/mount");
                     if (objXmlMountList?.Count > 0)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdMounts))
                         {
                             foreach (XmlNode objXmlMount in objXmlMountList)
@@ -2149,17 +2163,17 @@ namespace Chummer.Backend.Equipment
                     await CalculatedModeAsync(GlobalSettings.DefaultLanguage, false, token: token)
                         .ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc",
-                        await TotalRCAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false), token)
+                        (await TotalRCAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false)).Item1, token)
                     .ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc_noammo",
-                    await TotalRCAsync(objCulture, strLanguageToPrint, blnIncludeAmmo: false, token: token)
-                        .ConfigureAwait(false), token).ConfigureAwait(false);
+                    (await TotalRCAsync(objCulture, strLanguageToPrint, blnIncludeAmmo: false, token: token)
+                        .ConfigureAwait(false)).Item1, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc_english",
-                    await TotalRCAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
-                        token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    (await TotalRCAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
+                        token: token).ConfigureAwait(false)).Item1, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc_english_noammo",
-                    await TotalRCAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
-                        blnIncludeAmmo: false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    (await TotalRCAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
+                        blnIncludeAmmo: false, token: token).ConfigureAwait(false)).Item1, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rawrc", RC, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ammo",
                         await CalculatedAmmoAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token)
@@ -2172,6 +2186,10 @@ namespace Chummer.Backend.Equipment
                         (await CalculatedConcealabilityAsync(token).ConfigureAwait(false)).ToString("+0;-0;0", objCulture), token)
                     .ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rawconceal", Concealability, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("availablemounts", await DisplayAccessoryMountsAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                    .ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("availablemounts_english", await DisplayAccessoryMountsAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token)
+                    .ConfigureAwait(false);
                 if (objGear != null)
                 {
                     await objWriter.WriteElementStringAsync("avail",
@@ -2778,16 +2796,11 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         private int ProcessRatingString(string strExpression, int intRating)
         {
-            if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strExpression = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)].Trim('[', ']');
-            }
+            strExpression = strExpression.ProcessFixedValuesString(intRating);
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
                     sbdValue.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -2809,16 +2822,11 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         private async Task<int> ProcessRatingStringAsync(string strExpression, int intRating, CancellationToken token = default)
         {
-            if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strExpression = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)].Trim('[', ']');
-            }
+            strExpression = strExpression.ProcessFixedValuesString(intRating);
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
                     sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -3054,6 +3062,32 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The number of rounds remaining in the Weapon.
+        /// </summary>
+        public Task SetAmmoRemaining(int value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            Clip objCurrentClip = GetClip(_intActiveAmmoSlot);
+            int intCurrentAmmo = objCurrentClip.Ammo;
+            if (intCurrentAmmo == value)
+                return Task.CompletedTask;
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            objCurrentClip.Ammo = value;
+            Gear objGear = objCurrentClip.AmmoGear;
+            if (objGear == null)
+                return Task.CompletedTask;
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            int intDiff = intCurrentAmmo - value;
+            if (objGear.Quantity > intDiff)
+                return objGear.SetQuantityAsync(objGear.Quantity - intCurrentAmmo - value, token);
+            else
+                return objGear.DeleteGearAsync(token: token);
+        }
+
+        /// <summary>
         /// The total number of rounds that the weapon can load.
         /// </summary>
         private static string AmmoCapacity(string strAmmo)
@@ -3097,7 +3131,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The type of Ammunition loaded in the Weapon.
         /// </summary>
-        public Task SetAmmoLoaded(Gear value, CancellationToken token = default)
+        public Task SetAmmoLoadedAsync(Gear value, CancellationToken token = default)
         {
             return token.IsCancellationRequested
                 ? Task.FromCanceled(token)
@@ -3149,9 +3183,12 @@ namespace Chummer.Backend.Equipment
             set => _strWeight = value;
         }
 
-        public string DisplayCost(out decimal decItemCost, decimal decMarkup = 0.0m)
+        public async Task<Tuple<string, decimal>> DisplayCost(decimal decMarkup = 0.0m, CancellationToken token = default)
         {
             string strReturn = Cost;
+            string strFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                .GetNuyenFormatAsync(token).ConfigureAwait(false);
+            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             if (strReturn.StartsWith("Variable(", StringComparison.Ordinal))
             {
                 strReturn = strReturn.TrimStartOnce("Variable(", true).TrimEndOnce(')');
@@ -3159,37 +3196,37 @@ namespace Chummer.Backend.Equipment
                 decimal decMax = decimal.MaxValue;
                 if (strReturn.Contains('-'))
                 {
-                    string[] strValues = strReturn.Split('-');
-                    decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                    decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                    string[] strValues = strReturn.SplitFixedSizePooledArray('-', 2);
+                    try
+                    {
+                        decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                    }
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(strValues);
+                    }
                 }
                 else
                     decMin = Convert.ToDecimal(strReturn.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
 
                 if (decMax == decimal.MaxValue)
-                    strReturn = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) +
-                                LanguageManager.GetString("String_NuyenSymbol") + '+';
+                    strReturn = decMin.ToString(strFormat, GlobalSettings.CultureInfo) + strNuyen + '+';
                 else
-                    strReturn = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) +
-                                " - " +
-                                decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) +
-                                LanguageManager.GetString("String_NuyenSymbol");
+                    strReturn = decMin.ToString(strFormat, GlobalSettings.CultureInfo) + " - " +
+                                decMax.ToString(strFormat, GlobalSettings.CultureInfo) + strNuyen;
 
-                decItemCost = decMin;
-                return strReturn;
+                return new Tuple<string, decimal>(strReturn, decMin);
             }
 
-            decimal decTotalCost = Convert.ToDecimal(strReturn, GlobalSettings.InvariantCultureInfo);
+            decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTotalCost);
 
             decTotalCost *= 1.0m + decMarkup;
 
             if (DiscountCost)
                 decTotalCost *= 0.9m;
 
-            decItemCost = decTotalCost;
-
-            return decTotalCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) +
-                   LanguageManager.GetString("String_NuyenSymbol");
+            return new Tuple<string, decimal>(decTotalCost.ToString(strFormat, GlobalSettings.CultureInfo) + strNuyen, decTotalCost);
         }
 
         /// <summary>
@@ -3921,7 +3958,7 @@ namespace Chummer.Backend.Equipment
             string strConceal = Concealability;
             if (strConceal.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
                 {
                     if (!string.IsNullOrEmpty(strConceal))
                         sbdConceal.Append('(').Append(strConceal.TrimStartOnce('+')).Append(')');
@@ -3961,7 +3998,7 @@ namespace Chummer.Backend.Equipment
             string strConceal = Concealability;
             if (strConceal.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
                 {
                     if (!string.IsNullOrEmpty(strConceal))
                         sbdConceal.Append('(').Append(strConceal.TrimStartOnce('+')).Append(')');
@@ -4031,7 +4068,7 @@ namespace Chummer.Backend.Equipment
             string strDamageType = string.Empty;
             string strDamageExtra = string.Empty;
             string strDamage;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDamage))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDamage))
             {
                 sbdDamage.Append(Damage);
                 if (blnSync)
@@ -4216,7 +4253,7 @@ namespace Chummer.Backend.Equipment
             }
 
             bool blnDamageReplaced = false;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                        out StringBuilder sbdBonusDamage))
             {
                 // First look at any changes caused by the weapon being wireless
@@ -4531,7 +4568,7 @@ namespace Chummer.Backend.Equipment
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (strLanguage == GlobalSettings.DefaultLanguage)
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return strInput;
             Lazy<string> strStun
                 = new Lazy<string>(
@@ -4565,7 +4602,7 @@ namespace Chummer.Backend.Equipment
         public static async Task<string> ReplaceDamageStringsAsync(string strInput, string strLanguage,
             CancellationToken token = default)
         {
-            if (strLanguage == GlobalSettings.DefaultLanguage)
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return strInput;
             AsyncLazy<string> strStun = new AsyncLazy<string>(
                 () => LanguageManager.GetStringAsync("String_DamageStun", strLanguage, token: token),
@@ -4618,7 +4655,7 @@ namespace Chummer.Backend.Equipment
 
         public static string ReplaceStrings(string strInput, string strLanguage, CancellationToken token = default)
         {
-            return strLanguage == GlobalSettings.DefaultLanguage
+            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                 ? strInput
                 : strInput
                     .CheapReplace(
@@ -4658,7 +4695,7 @@ namespace Chummer.Backend.Equipment
         public static async Task<string> ReplaceStringsAsync(string strInput, string strLanguage,
             CancellationToken token = default)
         {
-            return strLanguage == GlobalSettings.DefaultLanguage
+            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                 ? strInput
                 : await strInput
                     .CheapReplaceAsync(
@@ -4759,12 +4796,13 @@ namespace Chummer.Backend.Equipment
         {
             IEnumerable<string> lstAmmos = Ammo.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
             decimal decAmmoBonus = 0;
-
-            if (WeaponAccessories.Count != 0)
+            decimal decAmmoBonusFlat = 0;
+            decimal decAmmoBonusPercent = 1.0m;
+            if (blnSync)
             {
-                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                if (WeaponAccessories.Count != 0)
                 {
-                    if (objAccessory.Equipped)
+                    decAmmoBonus += WeaponAccessories.Sum(x => x.Equipped, objAccessory =>
                     {
                         // Replace the Ammo value.
                         if (!string.IsNullOrEmpty(objAccessory.AmmoReplace))
@@ -4773,27 +4811,58 @@ namespace Chummer.Backend.Equipment
                                 StringSplitOptions.RemoveEmptyEntries);
                         }
 
-                        decAmmoBonus += blnSync ? objAccessory.TotalAmmoBonus : await objAccessory.GetTotalAmmoBonusAsync(token).ConfigureAwait(false);
-                    }
+                        return objAccessory.TotalAmmoBonus;
+                    }, token);
+                }
+
+                if (ParentMount != null)
+                {
+                    decAmmoBonusFlat += ParentMount.Mods.Sum(x => x.Equipped, objMod =>
+                    {
+                        if (!string.IsNullOrEmpty(objMod.AmmoReplace))
+                        {
+                            lstAmmos = objMod.AmmoReplace.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
+                        }
+
+                        if (objMod.AmmoBonusPercent != 0)
+                        {
+                            decAmmoBonusPercent *= objMod.AmmoBonusPercent / 100.0m;
+                        }
+                        return objMod.AmmoBonus;
+                    }, token);
                 }
             }
-
-            decimal decAmmoBonusFlat = 0;
-            decimal decAmmoBonusPercent = 1.0m;
-            if (ParentMount != null)
+            else
             {
-                foreach (VehicleMod objMod in ParentMount.Mods)
+                if (await WeaponAccessories.GetCountAsync(token).ConfigureAwait(false) != 0)
                 {
-                    if (!string.IsNullOrEmpty(objMod.AmmoReplace))
+                    decAmmoBonus += await WeaponAccessories.SumAsync(x => x.Equipped, async objAccessory =>
                     {
-                        lstAmmos = objMod.AmmoReplace.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
-                    }
+                        // Replace the Ammo value.
+                        if (!string.IsNullOrEmpty(objAccessory.AmmoReplace))
+                        {
+                            lstAmmos = objAccessory.AmmoReplace.SplitNoAlloc(' ',
+                                StringSplitOptions.RemoveEmptyEntries);
+                        }
 
-                    decAmmoBonusFlat += objMod.AmmoBonus;
-                    if (objMod.AmmoBonusPercent != 0)
+                        return await objAccessory.GetTotalAmmoBonusAsync(token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                }
+                if (ParentMount != null)
+                {
+                    decAmmoBonusFlat += await ParentMount.Mods.SumAsync(x => x.Equipped, objMod =>
                     {
-                        decAmmoBonusPercent *= objMod.AmmoBonusPercent / 100.0m;
-                    }
+                        if (!string.IsNullOrEmpty(objMod.AmmoReplace))
+                        {
+                            lstAmmos = objMod.AmmoReplace.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
+                        }
+
+                        if (objMod.AmmoBonusPercent != 0)
+                        {
+                            decAmmoBonusPercent *= objMod.AmmoBonusPercent / 100.0m;
+                        }
+                        return objMod.AmmoBonus;
+                    }, token).ConfigureAwait(false);
                 }
             }
 
@@ -4801,7 +4870,7 @@ namespace Chummer.Backend.Equipment
                 // ReSharper disable once MethodHasAsyncOverload
                 ? LanguageManager.GetString("String_Space", strLanguage, token: token)
                 : await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 foreach (string strAmmo in lstAmmos)
                 {
@@ -4836,7 +4905,7 @@ namespace Chummer.Backend.Equipment
                                     string strModifyAmmoCapacity = objAccessory.ModifyAmmoCapacity;
                                     if (!string.IsNullOrEmpty(strModifyAmmoCapacity))
                                     {
-                                        using (new FetchSafelyFromPool<StringBuilder>(
+                                        using (new FetchSafelyFromObjectPool<StringBuilder>(
                                                    Utils.StringBuilderPool, out StringBuilder sbdThisAmmo))
                                         {
                                             sbdThisAmmo.Append('(').Append(strThisAmmo).Append(strModifyAmmoCapacity)
@@ -5044,26 +5113,71 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public bool AllowSingleShot => RangeType == "Melee"
-                                       && Ammo != "0"
-                                       || _blnAllowSingleShot
-                                       && (AllowMode(LanguageManager.GetString("String_ModeSingleShot"))
-                                           || AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic")));
+        public bool AllowSingleShot => (RangeType == "Melee" && Ammo != "0") // Melee Weapons with Ammo are considered to be Single Shot.
+                                       || (_blnAllowSingleShot
+                                           && AllowModes(GlobalSettings.Language,
+                                                         LanguageManager.GetString("String_ModeSingleShot"),
+                                                         LanguageManager.GetString("String_ModeSemiAutomatic")));
 
         public bool AllowShortBurst => _blnAllowShortBurst
-                                       && (AllowMode(LanguageManager.GetString("String_ModeBurstFire"))
-                                           || AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic"))
-                                           || AllowMode(LanguageManager.GetString("String_ModeFullAutomatic")));
+                                       && AllowModes(GlobalSettings.Language,
+                                                     LanguageManager.GetString("String_ModeBurstFire"),
+                                                     LanguageManager.GetString("String_ModeSemiAutomatic"),
+                                                     LanguageManager.GetString("String_ModeFullAutomatic"));
 
         public bool AllowLongBurst => _blnAllowLongBurst
-                                      && (AllowMode(LanguageManager.GetString("String_ModeBurstFire"))
-                                          || AllowMode(LanguageManager.GetString("String_ModeFullAutomatic")));
+                                      && AllowModes(GlobalSettings.Language,
+                                                    LanguageManager.GetString("String_ModeBurstFire"),
+                                                    LanguageManager.GetString("String_ModeFullAutomatic"));
 
         public bool AllowFullBurst => _blnAllowFullBurst
                                       && AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
 
         public bool AllowSuppressive => _blnAllowSuppressive
                                         && AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+
+        public async Task<bool> GetAllowSingleShotAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (RangeType == "Melee" && Ammo != "0") // Melee Weapons with Ammo are considered to be Single Shot.
+                || (_blnAllowSingleShot
+                    && await AllowModesAsync(token,
+                        await LanguageManager.GetStringAsync("String_ModeSingleShot", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("String_ModeSemiAutomatic", token: token).ConfigureAwait(false)).ConfigureAwait(false));
+        }
+
+        public async Task<bool> GetAllowShortBurstAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return _blnAllowShortBurst
+                && await AllowModesAsync(token,
+                    await LanguageManager.GetStringAsync("String_ModeBurstFire", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("String_ModeSemiAutomatic", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("String_ModeFullAutomatic", token: token).ConfigureAwait(false)).ConfigureAwait(false);
+        }
+
+        public async Task<bool> GetAllowLongBurstAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return _blnAllowLongBurst
+                && await AllowModesAsync(token,
+                    await LanguageManager.GetStringAsync("String_ModeBurstFire", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("String_ModeFullAutomatic", token: token).ConfigureAwait(false)).ConfigureAwait(false);
+        }
+
+        public async Task<bool> GetAllowFullBurstAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return _blnAllowFullBurst
+                && await AllowModeAsync(await LanguageManager.GetStringAsync("String_ModeFullAutomatic", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+        }
+
+        public async Task<bool> GetAllowSuppressiveAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return _blnAllowSuppressive
+                && await AllowModeAsync(await LanguageManager.GetStringAsync("String_ModeFullAutomatic", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+        }
 
         /// <summary>
         /// The Weapon's Firing Mode including Modifications in the program's current language.
@@ -5100,9 +5214,9 @@ namespace Chummer.Backend.Equipment
             CancellationToken token = default)
         {
             // Move the contents of the array to a list so it's easier to work with.
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                        out HashSet<string> setModes))
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                        out HashSet<string> setNewModes))
             {
                 setModes.AddRange(_strMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
@@ -5455,7 +5569,7 @@ namespace Chummer.Backend.Equipment
 
                 setModes.UnionWith(setNewModes);
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
                     if (blnSync)
                     {
@@ -5535,6 +5649,74 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Determine if the Weapon is capable of firing in one of a set of particular modes.
+        /// </summary>
+        /// <param name="astrModes">Firing modes to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strFindMode"/>. Uses current UI language if unset.</param>
+        public bool AllowModes(string strLanguage, params string[] astrModes)
+        {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                       out HashSet<string> setModes))
+            {
+                setModes.AddRange(astrModes);
+                return CalculatedMode(strLanguage).SplitNoAlloc('/').Any(x => setModes.Contains(x));
+            }
+        }
+
+        /// <summary>
+        /// Determine if the Weapon is capable of firing in a particular mode.
+        /// </summary>
+        /// <param name="strFindMode">Firing mode to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strFindMode"/>. Uses current UI language if unset.</param>
+        public async Task<bool> AllowModeAsync(string strFindMode, string strLanguage = "", CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            return (await CalculatedModeAsync(strLanguage, token: token).ConfigureAwait(false)).SplitNoAlloc('/').Contains(strFindMode);
+        }
+
+        /// <summary>
+        /// Determine if the Weapon is capable of firing in one of a set of particular modes.
+        /// </summary>
+        /// <param name="astrModes">Firing modes to find.</param>
+        public Task<bool> AllowModesAsync(string strLanguage, params string[] astrModes)
+        {
+            return AllowModesAsync(strLanguage, default, astrModes);
+        }
+
+        /// <summary>
+        /// Determine if the Weapon is capable of firing in one of a set of particular modes.
+        /// </summary>
+        /// <param name="astrModes">Firing modes to find.</param>
+        public Task<bool> AllowModesAsync(CancellationToken token, params string[] astrModes)
+        {
+            return AllowModesAsync(GlobalSettings.Language, token, astrModes);
+        }
+
+        /// <summary>
+        /// Determine if the Weapon is capable of firing in one of a set of particular modes.
+        /// </summary>
+        /// <param name="astrModes">Firing modes to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strFindMode"/>. Uses current UI language if unset.</param>
+        public async Task<bool> AllowModesAsync(string strLanguage, CancellationToken token, params string[] astrModes)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                       out HashSet<string> setModes))
+            {
+                token.ThrowIfCancellationRequested();
+                setModes.AddRange(astrModes);
+                token.ThrowIfCancellationRequested();
+                return (await CalculatedModeAsync(strLanguage, token: token).ConfigureAwait(false)).SplitNoAlloc('/').Any(x => setModes.Contains(x));
+            }
+        }
+
+        /// <summary>
         /// Weapon Cost to use when working with Total Cost price modifiers for Weapon Mods.
         /// </summary>
         public decimal MultipliableCost(WeaponAccessory objExcludeAccessory, CancellationToken token = default)
@@ -5571,80 +5753,215 @@ namespace Chummer.Backend.Equipment
                    + WeaponAccessories.Sum(x => objExcludeAccessory != x && x.Equipped, x => x.TotalWeight, token);
         }
 
-        public string AccessoryMounts
+        public IEnumerable<string> GetAccessoryMounts(bool blnWithInternalAndNone = true)
         {
-            get
+            string strSlots = ModificationSlots;
+            if (string.IsNullOrEmpty(strSlots))
             {
-                string strSlots = ModificationSlots;
-                if (string.IsNullOrEmpty(strSlots))
-                    return string.Empty;
-                Dictionary<string, int> dicMounts = new Dictionary<string, int>();
-                foreach (string strMount in strSlots.SplitNoAlloc(
-                                 '/', StringSplitOptions.RemoveEmptyEntries))
+                if (blnWithInternalAndNone)
+                    yield return "None";
+                yield break;
+            }
+            int intOldValue;
+            Dictionary<string, int> dicMounts = new Dictionary<string, int>();
+            foreach (string strMount in strSlots.SplitNoAlloc(
+                                '/', StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (dicMounts.TryGetValue(strMount, out intOldValue))
+                    dicMounts[strMount] = intOldValue + 1;
+                else
+                    dicMounts.Add(strMount, 1);
+            }
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+            {
+                if (!objAccessory.Equipped)
+                    continue;
+                string strLoop = objAccessory.AddMount;
+                if (!string.IsNullOrEmpty(strLoop))
                 {
-                    if (dicMounts.ContainsKey(strMount))
-                        dicMounts[strMount] += 1;
-                    else
-                        dicMounts.Add(strMount, 1);
-                }
-                foreach (WeaponAccessory objAccessory in WeaponAccessories)
-                {
-                    if (!objAccessory.Equipped)
-                        continue;
-                    string strLoop = objAccessory.AddMount;
-                    if (!string.IsNullOrEmpty(strLoop))
+                    foreach (string strMount in strLoop.SplitNoAlloc(
+                                '/', StringSplitOptions.RemoveEmptyEntries))
                     {
-                        foreach (string strMount in strLoop.SplitNoAlloc(
-                                 '/', StringSplitOptions.RemoveEmptyEntries))
-                        {
-                            if (dicMounts.ContainsKey(strMount))
-                                dicMounts[strMount] += 1;
-                            else
-                                dicMounts.Add(strMount, 1);
-                        }
-                    }
-                    strLoop = objAccessory.Mount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
-                    {
-                        dicMounts[strLoop] -= 1;
-                    }
-                    strLoop = objAccessory.ExtraMount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
-                    {
-                        dicMounts[strLoop] -= 1;
+                        if (dicMounts.TryGetValue(strMount, out intOldValue))
+                            dicMounts[strMount] = intOldValue + 1;
+                        else
+                            dicMounts.Add(strMount, 1);
                     }
                 }
-                foreach (Weapon objWeapon in UnderbarrelWeapons)
+                strLoop = objAccessory.Mount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
                 {
-                    if (!objWeapon.Equipped)
-                        continue;
-                    string strLoop = objWeapon.Mount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
-                    {
-                        dicMounts[strLoop] -= 1;
-                    }
-                    strLoop = objWeapon.ExtraMount;
-                    if (!string.IsNullOrEmpty(strLoop) && dicMounts.ContainsKey(strLoop))
-                    {
-                        dicMounts[strLoop] -= 1;
-                    }
+                    dicMounts[strLoop] = intOldValue - 1;
                 }
-
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMounts))
+                strLoop = objAccessory.ExtraMount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
                 {
-                    foreach (KeyValuePair<string, int> kvpMount in dicMounts)
-                    {
-                        for (int i = 0; i < kvpMount.Value; ++i)
-                        {
-                            sbdMounts.Append(kvpMount.Key).Append('/');
-                        }
-                    }
-
-                    string strReturn = sbdMounts.ToString();
-                    return strReturn.Contains("Internal/") ? strReturn + "None" : strReturn + "Internal/None";
+                    dicMounts[strLoop] = intOldValue - 1;
                 }
             }
+            foreach (Weapon objWeapon in UnderbarrelWeapons)
+            {
+                if (!objWeapon.Equipped)
+                    continue;
+                string strLoop = objWeapon.Mount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
+                {
+                    dicMounts[strLoop] = intOldValue - 1;
+                }
+                strLoop = objWeapon.ExtraMount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
+                {
+                    dicMounts[strLoop] = intOldValue - 1;
+                }
+            }
+
+            foreach (KeyValuePair<string, int> kvpMount in dicMounts)
+            {
+                for (int i = 0; i < kvpMount.Value; ++i)
+                {
+                    yield return kvpMount.Key;
+                }
+            }
+            if (blnWithInternalAndNone)
+            {
+                if (!dicMounts.ContainsKey("Internal"))
+                    yield return "Internal";
+                if (!dicMounts.ContainsKey("None"))
+                    yield return "None";
+            }
         }
+
+        public async Task<List<string>> GetAccessoryMountsAsync(bool blnWithInternalAndNone = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSlots = ModificationSlots;
+            if (string.IsNullOrEmpty(strSlots))
+            {
+                return blnWithInternalAndNone
+                    ? new List<string>(1)
+                        {
+                            "None"
+                        }
+                    : new List<string>();
+            }
+            List<string> lstReturn = new List<string>(blnWithInternalAndNone ? 3 : 1);
+            int intOldValue;
+            Dictionary<string, int> dicMounts = new Dictionary<string, int>();
+            foreach (string strMount in strSlots.SplitNoAlloc(
+                             '/', StringSplitOptions.RemoveEmptyEntries))
+            {
+                token.ThrowIfCancellationRequested();
+                if (dicMounts.TryGetValue(strMount, out intOldValue))
+                    dicMounts[strMount] = intOldValue + 1;
+                else
+                    dicMounts.Add(strMount, 1);
+            }
+            await WeaponAccessories.ForEachAsync(objAccessory =>
+            {
+                if (!objAccessory.Equipped)
+                    return;
+                string strLoop = objAccessory.AddMount;
+                if (!string.IsNullOrEmpty(strLoop))
+                {
+                    foreach (string strMount in strLoop.SplitNoAlloc(
+                                '/', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (dicMounts.TryGetValue(strMount, out intOldValue))
+                            dicMounts[strMount] = intOldValue + 1;
+                        else
+                            dicMounts.Add(strMount, 1);
+                    }
+                }
+                strLoop = objAccessory.Mount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
+                {
+                    dicMounts[strLoop] = intOldValue - 1;
+                }
+                strLoop = objAccessory.ExtraMount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
+                {
+                    dicMounts[strLoop] = intOldValue - 1;
+                }
+            }, token).ConfigureAwait(false);
+            await UnderbarrelWeapons.ForEachAsync(objWeapon =>
+            {
+                if (!objWeapon.Equipped)
+                    return;
+                string strLoop = objWeapon.Mount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
+                {
+                    dicMounts[strLoop] = intOldValue - 1;
+                }
+                strLoop = objWeapon.ExtraMount;
+                if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
+                {
+                    dicMounts[strLoop] = intOldValue - 1;
+                }
+            }, token).ConfigureAwait(false);
+
+            foreach (KeyValuePair<string, int> kvpMount in dicMounts)
+            {
+                token.ThrowIfCancellationRequested();
+                for (int i = 0; i < kvpMount.Value; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    lstReturn.Add(kvpMount.Key);
+                }
+            }
+
+            if (blnWithInternalAndNone)
+            {
+                if (!dicMounts.ContainsKey("Internal"))
+                    lstReturn.Add("Internal");
+                if (!dicMounts.ContainsKey("None"))
+                    lstReturn.Add("None");
+            }
+            return lstReturn;
+        }
+
+        public string DisplayAccessoryMounts(string strLanguage)
+        {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.DefaultLanguage;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMounts))
+            {
+                foreach (string strMount in GetAccessoryMounts())
+                {
+                    sbdMounts.Append(strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                        ? strMount
+                        : LanguageManager.GetString("String_Mount" + strMount))
+                        .Append('/');
+                }
+                sbdMounts.Length -= 1; // Trim off the last slash
+                return sbdMounts.ToString();
+            }
+        }
+
+        public async Task<string> DisplayAccessoryMountsAsync(string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.DefaultLanguage;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMounts))
+            {
+                token.ThrowIfCancellationRequested();
+                foreach (string strMount in await GetAccessoryMountsAsync(token: token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdMounts.Append(strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                        ? strMount
+                        : await LanguageManager.GetStringAsync("String_Mount" + strMount, token: token).ConfigureAwait(false))
+                        .Append('/');
+                }
+                token.ThrowIfCancellationRequested();
+                sbdMounts.Length -= 1; // Trim off the last slash
+                return sbdMounts.ToString();
+            }
+        }
+
+        public string CurrentDisplayAccessoryMounts => DisplayAccessoryMounts(GlobalSettings.Language);
+
+        public Task<string> GetCurrentDisplayAccessoryMounts(CancellationToken token = default) => DisplayAlternateRangeAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// The Weapon's total cost including Accessories and Modifications.
@@ -5681,7 +5998,7 @@ namespace Chummer.Backend.Equipment
                 string strCostExpression = Cost;
                 if (strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                     {
                         sbdCost.Append(strCostExpression.TrimStart('+'));
                         _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
@@ -5698,12 +6015,17 @@ namespace Chummer.Backend.Equipment
 
                 if (!string.IsNullOrEmpty(Parent?.DoubledCostModificationSlots))
                 {
-                    string[] astrParentDoubledCostModificationSlots =
-                        Parent.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                    if (astrParentDoubledCostModificationSlots.Contains(Mount) ||
-                        astrParentDoubledCostModificationSlots.Contains(ExtraMount))
+                    bool blnBreakAfterFound = string.IsNullOrEmpty(Mount) || string.IsNullOrEmpty(ExtraMount);
+                    foreach (string strDoubledCostSlot in Parent.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                     {
-                        decReturn *= 2;
+                        if (strDoubledCostSlot == Mount || strDoubledCostSlot == ExtraMount)
+                        {
+                            decReturn *= 2;
+                            if (blnBreakAfterFound)
+                                break;
+                            else
+                                blnBreakAfterFound = true;
+                        }
                     }
                 }
 
@@ -5723,7 +6045,7 @@ namespace Chummer.Backend.Equipment
             string strCostExpression = Cost;
             if (strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                 {
                     sbdCost.Append(strCostExpression.TrimStart('+'));
                     await _objCharacter.AttributeSection
@@ -5745,12 +6067,17 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(Parent?.DoubledCostModificationSlots))
             {
-                string[] astrParentDoubledCostModificationSlots
-                    = Parent.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                if (astrParentDoubledCostModificationSlots.Contains(Mount)
-                    || astrParentDoubledCostModificationSlots.Contains(ExtraMount))
+                bool blnBreakAfterFound = string.IsNullOrEmpty(Mount) || string.IsNullOrEmpty(ExtraMount);
+                foreach (string strDoubledCostSlot in Parent.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                 {
-                    decReturn *= 2;
+                    if (strDoubledCostSlot == Mount || strDoubledCostSlot == ExtraMount)
+                    {
+                        decReturn *= 2;
+                        if (blnBreakAfterFound)
+                            break;
+                        else
+                            blnBreakAfterFound = true;
+                    }
                 }
             }
 
@@ -5778,7 +6105,7 @@ namespace Chummer.Backend.Equipment
                     return 0;
 
                 decimal decReturn = 0;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
                 {
                     sbdWeight.Append(strWeightExpression.TrimStart('+'));
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
@@ -5829,7 +6156,7 @@ namespace Chummer.Backend.Equipment
             string strAP = AP;
 
             int intImprove = 0;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBonusAP))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBonusAP))
             {
                 // First look at any changes caused by the weapon being wireless
                 if (WirelessOn && WirelessWeaponBonus != null)
@@ -6135,7 +6462,7 @@ namespace Chummer.Backend.Equipment
             int intAP;
             if (strAP.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decAP))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAP))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAP))
                 {
                     sbdAP.Append(strAP);
                     if (blnSync)
@@ -6245,34 +6572,34 @@ namespace Chummer.Backend.Equipment
             return intAP.ToString(objCulture);
         }
 
-        public string DisplayTotalRC => TotalRC(GlobalSettings.CultureInfo, GlobalSettings.Language, true);
+        public Tuple<string, string> DisplayTotalRC => TotalRC(GlobalSettings.CultureInfo, GlobalSettings.Language, true);
 
-        public Task<string> GetDisplayTotalRCAsync(CancellationToken token = default) => TotalRCAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, token: token);
+        public Task<Tuple<string, string>> GetDisplayTotalRCAsync(CancellationToken token = default) => TotalRCAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, token: token);
 
         /// <summary>
-        /// The Weapon's total RC including Accessories and Modifications.
+        /// The Weapon's total RC including Accessories and Modifications. The first item is the RC, the second is the tooltip.
         /// </summary>
-        public string TotalRC(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false,
+        public Tuple<string, string> TotalRC(CultureInfo objCulture, string strLanguage, bool blnWithTooltip = false,
             bool blnIncludeAmmo = true)
         {
             return Utils.SafelyRunSynchronously(() =>
-                TotalRCCoreAsync(true, objCulture, strLanguage, blnRefreshRCToolTip, blnIncludeAmmo));
+                TotalRCCoreAsync(true, objCulture, strLanguage, blnWithTooltip, blnIncludeAmmo));
         }
 
         /// <summary>
-        /// The Weapon's total RC including Accessories and Modifications.
+        /// The Weapon's total RC including Accessories and Modifications. The first item is the RC, the second is the tooltip.
         /// </summary>
-        public Task<string> TotalRCAsync(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false,
+        public Task<Tuple<string, string>> TotalRCAsync(CultureInfo objCulture, string strLanguage, bool blnWithTooltip = false,
             bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            return TotalRCCoreAsync(false, objCulture, strLanguage, blnRefreshRCToolTip, blnIncludeAmmo, token);
+            return TotalRCCoreAsync(false, objCulture, strLanguage, blnWithTooltip, blnIncludeAmmo, token);
         }
 
         /// <summary>
-        /// The Weapon's total RC including Accessories and Modifications.
+        /// The Weapon's total RC including Accessories and Modifications. The first item is the RC, the second is the tooltip.
         /// </summary>
-        private async Task<string> TotalRCCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage,
-            bool blnRefreshRCToolTip, bool blnIncludeAmmo = true, CancellationToken token = default)
+        private async Task<Tuple<string, string>> TotalRCCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage,
+            bool blnWithTooltip, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             string strSpace = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
@@ -6311,18 +6638,22 @@ namespace Chummer.Backend.Equipment
                 strRCFull = strRC;
             }
 
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRCTip))
+            string strTooltip = string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRCTip))
             {
-                sbdRCTip.Append(1.ToString(GlobalSettings.CultureInfo)).Append(strSpace);
-                if (blnRefreshRCToolTip && strRCBase != "0" && strRCBase != "+0")
+                if (blnWithTooltip)
                 {
-                    sbdRCTip.Append('+').Append(strSpace)
-                        .Append(blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString("Label_Base", strLanguage, token: token)
-                            : await LanguageManager.GetStringAsync("Label_Base", strLanguage, token: token)
-                                .ConfigureAwait(false))
-                        .Append('(').Append(strRCBase.TrimStartOnce('+')).Append(')');
+                    sbdRCTip.Append(1.ToString(GlobalSettings.CultureInfo)).Append(strSpace);
+                    if (strRCBase != "0" && strRCBase != "+0")
+                    {
+                        sbdRCTip.Append('+').Append(strSpace)
+                            .Append(blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString("Label_Base", strLanguage, token: token)
+                                : await LanguageManager.GetStringAsync("Label_Base", strLanguage, token: token)
+                                    .ConfigureAwait(false))
+                            .Append('(').Append(strRCBase.TrimStartOnce('+')).Append(')');
+                    }
                 }
 
                 int.TryParse(strRCBase, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intRCBase);
@@ -6338,7 +6669,7 @@ namespace Chummer.Backend.Equipment
                         intRCBase += intLoopRCBonus;
                         intRCFull += intLoopRCBonus;
 
-                        if (blnRefreshRCToolTip)
+                        if (blnWithTooltip)
                             sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                 .Append(blnSync
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6402,7 +6733,7 @@ namespace Chummer.Backend.Equipment
                             intRCBase += intLoopRCBonus;
                         }
 
-                        if (blnRefreshRCToolTip)
+                        if (blnWithTooltip)
                             sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                 .Append(blnSync
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6420,7 +6751,7 @@ namespace Chummer.Backend.Equipment
                             intRCBase += intLoopRCBonus;
                             intRCFull += intLoopRCBonus;
 
-                            if (blnRefreshRCToolTip)
+                            if (blnWithTooltip)
                             {
                                 sbdRCTip.Append(strSpace).Append('+').Append(strSpace);
                                 if (blnSync)
@@ -6458,7 +6789,7 @@ namespace Chummer.Backend.Equipment
                                 intRCBase += intLoopRCBonus;
                                 intRCFull += intLoopRCBonus;
 
-                                if (blnRefreshRCToolTip)
+                                if (blnWithTooltip)
                                     sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                         .Append(blnSync
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6478,7 +6809,7 @@ namespace Chummer.Backend.Equipment
                                 intRCBase += intLoopRCBonus;
                                 intRCFull += intLoopRCBonus;
 
-                                if (blnRefreshRCToolTip)
+                                if (blnWithTooltip)
                                     sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                         .Append(blnSync
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6507,7 +6838,7 @@ namespace Chummer.Backend.Equipment
                                     intRCBase += intLoopRCBonus;
                                     intRCFull += intLoopRCBonus;
 
-                                    if (blnRefreshRCToolTip)
+                                    if (blnWithTooltip)
                                         sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                             .Append(blnSync
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6528,7 +6859,7 @@ namespace Chummer.Backend.Equipment
                                     intRCBase += intLoopRCBonus;
                                     intRCFull += intLoopRCBonus;
 
-                                    if (blnRefreshRCToolTip)
+                                    if (blnWithTooltip)
                                         sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                             .Append(blnSync
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6551,7 +6882,7 @@ namespace Chummer.Backend.Equipment
                         // Add in the Recoil Group bonuses.
                         intRCBase += intRecoil;
                         intRCFull += intRecoil;
-                        if (blnRefreshRCToolTip)
+                        if (blnWithTooltip)
                             sbdRCTip.Append(strSpace).Append('+').Append(strSpace).Append(strGroup).Append(strSpace)
                                 .Append('(').Append(intRecoil.ToString(objCulture)).Append(')');
                     }
@@ -6563,7 +6894,7 @@ namespace Chummer.Backend.Equipment
                     {
                         // Add in the Recoil Group bonuses.
                         intRCFull += intRecoil;
-                        if (blnRefreshRCToolTip)
+                        if (blnWithTooltip)
                             sbdRCTip.Append(strSpace).Append('+').Append(strSpace).AppendFormat(
                                 objCulture,
                                 blnSync
@@ -6711,7 +7042,7 @@ namespace Chummer.Backend.Equipment
 
                 intRCBase += intStrRC + 1;
                 intRCFull += intStrRC + 1;
-                if (blnRefreshRCToolTip)
+                if (blnWithTooltip)
                     sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                         .Append(blnSync
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6727,17 +7058,12 @@ namespace Chummer.Backend.Equipment
                 if (intRCFull > intRCBase)
                     strRC += strSpace + '(' + intRCFull.ToString(objCulture) + ')';
 
-                if (blnRefreshRCToolTip)
-                    _strRCTip = sbdRCTip.ToString();
+                if (blnWithTooltip)
+                    strTooltip = sbdRCTip.ToString();
             }
 
-            return strRC;
+            return new Tuple<string, string>(strRC, strTooltip);
         }
-
-        /// <summary>
-        /// The tooltip showing the sources of RC bonuses
-        /// </summary>
-        public string RCToolTip => _strRCTip;
 
         /// <summary>
         /// The full Reach of the Weapons including the Character's Reach.
@@ -6751,7 +7077,7 @@ namespace Chummer.Backend.Equipment
                     || WeaponAccessories.Any(x => x.Equipped && !string.IsNullOrEmpty(x.Reach)))
                 {
                     string strToEvaluate;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
                     {
                         if (!string.IsNullOrEmpty(strReach))
                             sbdReach.Append('(').Append(strReach.TrimStartOnce('+')).Append(')');
@@ -6814,7 +7140,7 @@ namespace Chummer.Backend.Equipment
                 || await WeaponAccessories.AnyAsync(x => x.Equipped && !string.IsNullOrEmpty(x.Reach), token).ConfigureAwait(false))
             {
                 string strToEvaluate;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReach))
                 {
                     if (!string.IsNullOrEmpty(strReach))
                         sbdReach.Append('(').Append(strReach.TrimStartOnce('+')).Append(')');
@@ -6893,7 +7219,7 @@ namespace Chummer.Backend.Equipment
             }
             else
                 funcPhysicalLimitString = () => _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdBonusAccuracy))
             {
                 // First look at any changes caused by the weapon being wireless
@@ -6977,7 +7303,7 @@ namespace Chummer.Backend.Equipment
                     if (lstNonStackingAccessoryBonuses.Count > 1)
                     {
                         int intIndexToUse = 0;
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
                         {
                             string strLoopAccuracy = lstNonStackingAccessoryBonuses[0];
                             sbdAccuracy.Append(strLoopAccuracy);
@@ -7120,7 +7446,7 @@ namespace Chummer.Backend.Equipment
 
             if (strAccuracy.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decAccuracy))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
                 {
                     sbdAccuracy.Append(strAccuracy);
                     sbdAccuracy.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -7186,7 +7512,7 @@ namespace Chummer.Backend.Equipment
                 funcPhysicalLimitString = async () =>
                     (await _objCharacter.GetLimitPhysicalAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
                         .InvariantCultureInfo);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdBonusAccuracy))
             {
                 // First look at any changes caused by the weapon being wireless
@@ -7274,7 +7600,7 @@ namespace Chummer.Backend.Equipment
                     if (lstNonStackingAccessoryBonuses.Count > 1)
                     {
                         int intIndexToUse = 0;
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
                         {
                             string strLoopAccuracy = lstNonStackingAccessoryBonuses[0];
                             sbdAccuracy.Append(strLoopAccuracy);
@@ -7432,7 +7758,7 @@ namespace Chummer.Backend.Equipment
 
             if (strAccuracy.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decAccuracy))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
                 {
                     sbdAccuracy.Append(strAccuracy);
                     await sbdAccuracy.CheapReplaceAsync(strAccuracy, "{Rating}",
@@ -7860,7 +8186,7 @@ namespace Chummer.Backend.Equipment
             string strRange = objXmlCategoryNode.SelectSingleNode(strFindRange)?.Value ?? string.Empty;
             if (strRange.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decRange))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRange))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRange))
                 {
                     sbdRange.Append(strRange);
                     sbdRange.CheapReplace(strRange, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
@@ -7976,7 +8302,7 @@ namespace Chummer.Backend.Equipment
             string strRange = objXmlCategoryNode.SelectSingleNode(strFindRange)?.Value ?? string.Empty;
             if (strRange.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decRange))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRange))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRange))
                 {
                     sbdRange.Append(strRange);
                     await sbdRange.CheapReplaceAsync(strRange, "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
@@ -8017,7 +8343,7 @@ namespace Chummer.Backend.Equipment
         public decimal GetRangeBonus(bool blnIncludeAmmo = true)
         {
             string strToEvaluate;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRangeBonus))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRangeBonus))
             {
                 string strRangeBonus = string.Empty;
                 // First look at any changes caused by the weapon being wireless
@@ -8095,7 +8421,7 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetRangeBonusAsync(bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             string strToEvaluate;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRangeBonus))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRangeBonus))
             {
                 string strRangeBonus = string.Empty;
                 // First look at any changes caused by the weapon being wireless
@@ -8176,7 +8502,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strRange))
                 return string.Empty;
             string strToEvaluate = string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBaseModifier))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBaseModifier))
             {
                 string strBaseModifier = _objCharacter.LoadDataXPath("ranges.xml")
                         .SelectSingleNodeAndCacheExpression("chummer/modifiers/" + strRange.ToLowerInvariant())?.Value;
@@ -8229,7 +8555,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strRange))
                 return string.Empty;
             string strToEvaluate = string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBaseModifier))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBaseModifier))
             {
                 string strBaseModifier = (await _objCharacter.LoadDataXPathAsync("ranges.xml", token: token).ConfigureAwait(false))
                         .SelectSingleNodeAndCacheExpression("chummer/modifiers/" + strRange.ToLowerInvariant(), token)?.Value;
@@ -8283,7 +8609,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public Dictionary<string, string> GetRangeStrings(CultureInfo objCulture, bool blnIncludeAmmo = true)
         {
-            decimal decRangeModifier = GetRangeBonus(blnIncludeAmmo) / 100.0m;
+            decimal decRangeModifier = 1.0m + GetRangeBonus(blnIncludeAmmo) / 100.0m;
             decimal decMin = GetRange("min", false, blnIncludeAmmo) * decRangeModifier;
             decimal decShort = GetRange("short", false, blnIncludeAmmo) * decRangeModifier;
             decimal decMedium = GetRange("medium", false, blnIncludeAmmo) * decRangeModifier;
@@ -8365,7 +8691,7 @@ namespace Chummer.Backend.Equipment
         public async Task<Dictionary<string, string>> GetRangeStringsAsync(CultureInfo objCulture,
             bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            decimal decRangeModifier = await GetRangeBonusAsync(blnIncludeAmmo, token).ConfigureAwait(false) / 100.0m;
+            decimal decRangeModifier = 1.0m + await GetRangeBonusAsync(blnIncludeAmmo, token).ConfigureAwait(false) / 100.0m;
             decimal decMin = await GetRangeAsync("min", false, blnIncludeAmmo, token).ConfigureAwait(false) * decRangeModifier;
             decimal decShort = await GetRangeAsync("short", false, blnIncludeAmmo, token).ConfigureAwait(false) * decRangeModifier;
             decimal decMedium = await GetRangeAsync("medium", false, blnIncludeAmmo, token).ConfigureAwait(false) * decRangeModifier;
@@ -8786,7 +9112,7 @@ namespace Chummer.Backend.Equipment
             }
 
             string strToEvaluate;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtraModifier))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtraModifier))
             {
                 // First look at any changes caused by the weapon being wireless
                 if (WirelessOn && WirelessWeaponBonus != null)
@@ -9201,7 +9527,7 @@ namespace Chummer.Backend.Equipment
             }
 
             string strToEvaluate;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtraModifier))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtraModifier))
             {
                 // First look at any changes caused by the weapon being wireless
                 if (WirelessOn && WirelessWeaponBonus != null)
@@ -9569,7 +9895,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 string strExtra;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtra))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtra))
                 {
                     // First look at any changes caused by the weapon being wireless
                     if (WirelessOn && WirelessWeaponBonus != null)
@@ -10160,7 +10486,7 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             string strExtra;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtra))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtra))
             {
                 // First look at any changes caused by the weapon being wireless
                 if (WirelessOn && WirelessWeaponBonus != null)
@@ -10875,7 +11201,7 @@ namespace Chummer.Backend.Equipment
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
                         sbdAvail.CheapReplace(strAvail, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -10977,7 +11303,7 @@ namespace Chummer.Backend.Equipment
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
                         await sbdAvail.CheapReplaceAsync(strAvail, "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
@@ -12033,9 +12359,9 @@ namespace Chummer.Backend.Equipment
                             // Duplicate the clip into a new entry where we can directly deduct from the quantity as we fire
                             Gear objDuplicatedParent = new Gear(_objCharacter);
                             objDuplicatedParent.Copy(objParent);
-                            objDuplicatedParent.Quantity = 1;
+                            await objDuplicatedParent.SetQuantityAsync(1, token).ConfigureAwait(false);
                             await lstGears.AddAsync(objDuplicatedParent, token).ConfigureAwait(false);
-                            --objParent.Quantity;
+                            await objParent.SetQuantityAsync(objParent.Quantity - 1, token).ConfigureAwait(false);
                             Gear objNewSelectedAmmo
                                 = await objDuplicatedParent.Children.DeepFindByIdAsync(strSelectedAmmo, token: token).ConfigureAwait(false);
                             if (objNewSelectedAmmo == null)
@@ -12065,7 +12391,7 @@ namespace Chummer.Backend.Equipment
                         if (decTopUp > objSelectedAmmo.Quantity)
                         {
                             // We need more ammo for a full top-up than the quantity of gear, so just merge the gears and delete the old gear.
-                            objCurrentlyLoadedAmmo.Quantity += objSelectedAmmo.Quantity;
+                            await objCurrentlyLoadedAmmo.SetQuantityAsync(objCurrentlyLoadedAmmo.Quantity - objSelectedAmmo.Quantity, token).ConfigureAwait(false);
                             await objSelectedAmmo.DeleteGearAsync(token: token).ConfigureAwait(false);
                             GetClip(_intActiveAmmoSlot).Ammo
                                 = objCurrentlyLoadedAmmo.Quantity
@@ -12073,8 +12399,8 @@ namespace Chummer.Backend.Equipment
                         }
                         else
                         {
-                            objCurrentlyLoadedAmmo.Quantity = decQty;
-                            objSelectedAmmo.Quantity -= decTopUp;
+                            await objCurrentlyLoadedAmmo.SetQuantityAsync(decQty, token).ConfigureAwait(false);
+                            await objSelectedAmmo.SetQuantityAsync(objSelectedAmmo.Quantity - decTopUp, token).ConfigureAwait(false);
                             string strCurrentlyLoadedText = await objCurrentlyLoadedAmmo
                                                                   .GetCurrentDisplayNameAsync(token)
                                                                   .ConfigureAwait(false);
@@ -12103,9 +12429,9 @@ namespace Chummer.Backend.Equipment
                         // Duplicate the ammo into a new entry where we can directly deduct from the quantity as we fire
                         Gear objNewSelectedAmmo = new Gear(_objCharacter);
                         objNewSelectedAmmo.Copy(objSelectedAmmo);
-                        objNewSelectedAmmo.Quantity = decQty.ToInt32();
+                        await objNewSelectedAmmo.SetQuantityAsync(decQty, token).ConfigureAwait(false);
                         await lstGears.AddAsync(objNewSelectedAmmo, token).ConfigureAwait(false);
-                        objSelectedAmmo.Quantity -= decQty.ToInt32();
+                        await objSelectedAmmo.SetQuantityAsync(objSelectedAmmo.Quantity + decQty, token).ConfigureAwait(false);
                         string strId2 = objSelectedAmmo.InternalId;
                         string strText2 = await objSelectedAmmo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         await treGearView.DoThreadSafeAsync(x =>
@@ -12137,7 +12463,7 @@ namespace Chummer.Backend.Equipment
                     objSelectedAmmo = objExternalSource;
                 }
 
-                await SetAmmoLoaded(objSelectedAmmo, token).ConfigureAwait(false);
+                await SetAmmoLoadedAsync(objSelectedAmmo, token).ConfigureAwait(false);
                 if (objCurrentlyLoadedAmmo != objSelectedAmmo)
                 {
                     if (objCurrentlyLoadedAmmo != null)
@@ -12238,7 +12564,7 @@ namespace Chummer.Backend.Equipment
                                                && x.IsIdenticalToOtherGear(objAmmo, true), token).ConfigureAwait(false);
             if (objMergeGear != null)
             {
-                objMergeGear.Quantity += objAmmo.Quantity;
+                await objMergeGear.SetQuantityAsync(objMergeGear.Quantity + objAmmo.Quantity, token).ConfigureAwait(false);
                 await objAmmo.DeleteGearAsync(token: token).ConfigureAwait(false);
                 return objMergeGear;
             }
@@ -12641,7 +12967,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     //Add to set for O(N log M) runtime instead of O(N * M)
 
-                                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                out HashSet<string> setForbiddenAccessory))
                                     {
                                         foreach (XPathNavigator node in xmlTestNode.Select("accessory"))
@@ -12663,7 +12989,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     //Add to set for O(N log M) runtime instead of O(N * M)
 
-                                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                out HashSet<string> setRequiredAccessory))
                                     {
                                         foreach (XPathNavigator node in xmlTestNode.Select("accessory"))
@@ -13264,7 +13590,7 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
                     foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
@@ -13342,7 +13668,7 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
                     foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
@@ -13637,20 +13963,96 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool CheckAccessoryRequirements(XPathNavigator objXmlAccessory)
         {
-            if (objXmlAccessory == null) return false;
-            string[] lstMounts = AccessoryMounts.Split('/', StringSplitOptions.RemoveEmptyEntries);
-            XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount");
-            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
-                !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
-            {
+            if (objXmlAccessory == null)
                 return false;
-            }
-            xmlMountNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount");
-            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
-                !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
+            string strPossibleMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount")?.Value ?? string.Empty;
+            string strPossibleExtraMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount")?.Value ?? string.Empty;
+            bool blnMountFound = string.IsNullOrEmpty(strPossibleMounts);
+            bool blnExtraMountFound = string.IsNullOrEmpty(strPossibleExtraMounts);
+            if (!blnMountFound)
             {
-                return false;
+                if (!blnExtraMountFound)
+                {
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                        out HashSet<string> setPossibleMounts))
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                        out HashSet<string> setPossibleExtraMounts))
+                    {
+                        foreach (string strLoopMount in strPossibleMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            setPossibleMounts.Add(strLoopMount);
+                        }
+                        foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            setPossibleExtraMounts.Add(strLoopMount);
+                        }
+                        if (!setPossibleMounts.SetEquals(setPossibleExtraMounts))
+                        {
+                            // First loop: find and remove mounts that only match one of the two
+                            foreach (string strMount in GetAccessoryMounts())
+                            {
+                                if (setPossibleMounts.Contains(strMount))
+                                {
+                                    if (!setPossibleExtraMounts.Contains(strMount))
+                                    {
+                                        blnMountFound = true;
+                                        if (blnExtraMountFound)
+                                            break;
+                                    }
+                                }
+                                else if (setPossibleExtraMounts.Contains(strMount))
+                                {
+                                    blnExtraMountFound = true;
+                                    if (blnMountFound)
+                                        break;
+                                }
+                            }
+                        }
+                        // Only remaining mounts (if not found) are ones that are in both strings, so much main mount first and then extra mount
+                        if (!blnMountFound || !blnExtraMountFound)
+                        {
+                            foreach (string strMount in GetAccessoryMounts())
+                            {
+                                if (!blnMountFound && setPossibleMounts.Contains(strMount))
+                                {
+                                    blnMountFound = true;
+                                    if (blnExtraMountFound)
+                                        break;
+                                }
+                                else if (!blnExtraMountFound && setPossibleExtraMounts.Contains(strMount))
+                                {
+                                    blnExtraMountFound = true;
+                                    if (blnMountFound)
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                        out HashSet<string> setPossibleMounts))
+                    {
+                        foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            setPossibleMounts.Add(strLoopMount);
+                        blnMountFound = GetAccessoryMounts().Any(x => setPossibleMounts.Contains(x));
+                    }
+                }
             }
+            else if (!blnExtraMountFound)
+            {
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                    out HashSet<string> setPossibleExtraMounts))
+                {
+                    foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        setPossibleExtraMounts.Add(strLoopMount);
+                    blnExtraMountFound = GetAccessoryMounts().Any(x => setPossibleExtraMounts.Contains(x));
+                }
+            }
+
+            if (!blnMountFound || !blnExtraMountFound)
+                return false;
 
             if (!objXmlAccessory.RequirementsMet(_objCharacter, this))
                 return false;
@@ -13681,24 +14083,113 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (objXmlAccessory == null)
                 return false;
-            string[] lstMounts = AccessoryMounts.Split('/', StringSplitOptions.RemoveEmptyEntries);
-            XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount", token);
-            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value
-                    .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
-                        !string.IsNullOrEmpty(strItem)
-                        && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
+            string strPossibleMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount", token)?.Value ?? string.Empty;
+            string strPossibleExtraMounts = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount", token)?.Value ?? string.Empty;
+            bool blnMountFound = string.IsNullOrEmpty(strPossibleMounts);
+            bool blnExtraMountFound = string.IsNullOrEmpty(strPossibleExtraMounts);
+            if (!blnMountFound)
             {
-                return false;
+                if (!blnExtraMountFound)
+                {
+                    List<string> lstAvailableMounts = await GetAccessoryMountsAsync(token: token).ConfigureAwait(false);
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                        out HashSet<string> setPossibleMounts))
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                        out HashSet<string> setPossibleExtraMounts))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        foreach (string strLoopMount in strPossibleMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            setPossibleMounts.Add(strLoopMount);
+                        }
+                        foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            setPossibleExtraMounts.Add(strLoopMount);
+                        }
+                        token.ThrowIfCancellationRequested();
+                        if (!setPossibleMounts.SetEquals(setPossibleExtraMounts))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            // First loop: find and remove mounts that only match one of the two
+                            foreach (string strMount in lstAvailableMounts)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (setPossibleMounts.Contains(strMount))
+                                {
+                                    if (!setPossibleExtraMounts.Contains(strMount))
+                                    {
+                                        blnMountFound = true;
+                                        if (blnExtraMountFound)
+                                            break;
+                                    }
+                                }
+                                else if (setPossibleExtraMounts.Contains(strMount))
+                                {
+                                    blnExtraMountFound = true;
+                                    if (blnMountFound)
+                                        break;
+                                }
+                            }
+                        }
+                        // Only remaining mounts (if not found) are ones that are in both strings, so much main mount first and then extra mount
+                        if (!blnMountFound || !blnExtraMountFound)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            foreach (string strMount in lstAvailableMounts)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!blnMountFound && setPossibleMounts.Contains(strMount))
+                                {
+                                    blnMountFound = true;
+                                    if (blnExtraMountFound)
+                                        break;
+                                }
+                                else if (!blnExtraMountFound && setPossibleExtraMounts.Contains(strMount))
+                                {
+                                    blnExtraMountFound = true;
+                                    if (blnMountFound)
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                        out HashSet<string> setPossibleMounts))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        foreach (string strLoopMount in strPossibleMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            setPossibleMounts.Add(strLoopMount);
+                        }
+                        token.ThrowIfCancellationRequested();
+                        blnMountFound = (await GetAccessoryMountsAsync(token: token)).Any(x => setPossibleMounts.Contains(x));
+                    }
+                }
+            }
+            else if (!blnExtraMountFound)
+            {
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                    out HashSet<string> setPossibleExtraMounts))
+                {
+                    token.ThrowIfCancellationRequested();
+                    foreach (string strLoopMount in strPossibleExtraMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        setPossibleExtraMounts.Add(strLoopMount);
+                    }
+                    token.ThrowIfCancellationRequested();
+                    blnExtraMountFound = (await GetAccessoryMountsAsync(token: token)).Any(x => setPossibleExtraMounts.Contains(x));
+                }
             }
 
-            xmlMountNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount", token);
-            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value
-                    .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
-                        !string.IsNullOrEmpty(strItem)
-                        && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
-            {
+            if (!blnMountFound || !blnExtraMountFound)
                 return false;
-            }
 
             if (!await objXmlAccessory.RequirementsMetAsync(_objCharacter, this, token: token).ConfigureAwait(false))
                 return false;

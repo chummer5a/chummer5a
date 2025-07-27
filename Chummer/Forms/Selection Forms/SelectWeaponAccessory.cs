@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -95,15 +96,15 @@ namespace Chummer
         /// </summary>
         private async Task RefreshList(CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAccessories))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAccessories))
             {
                 // Populate the Accessory list.
                 string strFilter = string.Empty;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
                     sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
                              .Append(
-                                 ") and (contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
+                                 ") and (mount = \"\"");
                     foreach (string strAllowedMount in _lstAllowedMounts.Where(
                                  strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
                     {
@@ -277,10 +278,7 @@ namespace Chummer
             _lstAllowedMounts.Clear();
             if (objWeapon != null)
             {
-                foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                {
-                    _lstAllowedMounts.Add(strMount);
-                }
+                _lstAllowedMounts.AddRange(await objWeapon.GetAccessoryMountsAsync(token: token).ConfigureAwait(false));
 
                 //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
                 if (await _objCharacter.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
@@ -455,24 +453,18 @@ namespace Chummer
                     lstMounts.AddRange(strDataMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
                 }
 
-                lstMounts.Add("None");
+                if (!lstMounts.Contains("None"))
+                    lstMounts.Add("None");
 
-                List<string> strAllowed = new List<string>(_lstAllowedMounts) {"None"};
                 string strSelectedMount = await cboMount.DoThreadSafeFuncAsync(x =>
                 {
                     x.Visible = true;
                     x.Items.Clear();
                     foreach (string strCurrentMount in lstMounts)
                     {
-                        if (!string.IsNullOrEmpty(strCurrentMount))
+                        if (!string.IsNullOrEmpty(strCurrentMount) && _lstAllowedMounts.Contains(strCurrentMount))
                         {
-                            foreach (string strAllowedMount in strAllowed)
-                            {
-                                if (strCurrentMount == strAllowedMount)
-                                {
-                                    x.Items.Add(strCurrentMount);
-                                }
-                            }
+                            x.Items.Add(strCurrentMount);
                         }
                     }
 
@@ -489,22 +481,17 @@ namespace Chummer
                     lstExtraMounts.AddRange(strExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
                 }
 
-                lstExtraMounts.Add("None");
+                if (!lstExtraMounts.Contains("None"))
+                    lstExtraMounts.Add("None");
 
                 bool blnShowExtraMountLabel = await cboExtraMount.DoThreadSafeFuncAsync(x =>
                 {
                     x.Items.Clear();
                     foreach (string strCurrentMount in lstExtraMounts)
                     {
-                        if (!string.IsNullOrEmpty(strCurrentMount))
+                        if (!string.IsNullOrEmpty(strCurrentMount) && _lstAllowedMounts.Contains(strCurrentMount))
                         {
-                            foreach (string strAllowedMount in strAllowed)
-                            {
-                                if (strCurrentMount == strAllowedMount)
-                                {
-                                    x.Items.Add(strCurrentMount);
-                                }
-                            }
+                            x.Items.Add(strCurrentMount);
                         }
                     }
 
@@ -555,11 +542,16 @@ namespace Chummer
                     strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                     if (strCost.Contains('-'))
                     {
-                        string[] strValues = strCost.Split('-');
-                        decimal.TryParse(strValues[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out decMin);
-                        decimal.TryParse(strValues[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out decMax);
+                        string[] strValues = strCost.SplitFixedSizePooledArray('-', 2);
+                        try
+                        {
+                            decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                            decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                        }
+                        finally
+                        {
+                            ArrayPool<string>.Shared.Return(strValues);
+                        }
                     }
                     else
                     {
@@ -615,17 +607,19 @@ namespace Chummer
                     decCost *= _objParentWeapon.AccessoryMultiplier;
                     if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
                     {
-                        string[] astrParentDoubledCostModificationSlots
-                            = _objParentWeapon.DoubledCostModificationSlots.Split(
-                                '/', StringSplitOptions.RemoveEmptyEntries);
-                        if (astrParentDoubledCostModificationSlots.Contains(
-                                await cboMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token)
-                                              .ConfigureAwait(false)) ||
-                            astrParentDoubledCostModificationSlots.Contains(
-                                await cboExtraMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token)
-                                                   .ConfigureAwait(false)))
+                        string strSelectedMount = await cboMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token).ConfigureAwait(false);
+                        string strSelectedExtraMount = await cboExtraMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token).ConfigureAwait(false);
+                        bool blnBreakAfterFound = string.IsNullOrEmpty(strSelectedMount) || string.IsNullOrEmpty(strSelectedExtraMount);
+                        foreach (string strDoubledCostSlot in _objParentWeapon.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                         {
-                            decCost *= 2;
+                            if (strDoubledCostSlot == strSelectedMount || strDoubledCostSlot == strSelectedExtraMount)
+                            {
+                                decCost *= 2;
+                                if (blnBreakAfterFound)
+                                    break;
+                                else
+                                    blnBreakAfterFound = true;
+                            }
                         }
                     }
 

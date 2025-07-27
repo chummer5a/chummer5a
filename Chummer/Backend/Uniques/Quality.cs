@@ -2270,36 +2270,45 @@ namespace Chummer
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality, TreeView treQualities)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsQuality, TreeView treQualities, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if ((OriginSource == QualitySource.BuiltIn ||
-                     OriginSource == QualitySource.Improvement ||
-                     OriginSource == QualitySource.LifeModule ||
-                     OriginSource == QualitySource.Metatype ||
-                     OriginSource == QualitySource.MetatypeRemovable ||
-                     OriginSource == QualitySource.MetatypeRemovedAtChargen ||
-                     OriginSource == QualitySource.Heritage) && !string.IsNullOrEmpty(Source)
-                                                             && !_objCharacter.Settings.BookEnabled(Source))
+                token.ThrowIfCancellationRequested();
+                QualitySource eOriginSource = await GetOriginSourceAsync(token).ConfigureAwait(false);
+                if ((eOriginSource == QualitySource.BuiltIn ||
+                     eOriginSource == QualitySource.Improvement ||
+                     eOriginSource == QualitySource.LifeModule ||
+                     eOriginSource == QualitySource.Metatype ||
+                     eOriginSource == QualitySource.MetatypeRemovable ||
+                     eOriginSource == QualitySource.MetatypeRemovedAtChargen ||
+                     eOriginSource == QualitySource.Heritage)
+                     && !string.IsNullOrEmpty(Source)
+                     && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
                     return null;
 
                 TreeNode objNode = new TreeNode
                 {
                     Name = InternalId,
-                    Text = CurrentDisplayName,
+                    Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                     Tag = this,
                     ContextMenuStrip = cmsQuality,
-                    ForeColor = PreferredColor,
-                    ToolTipText = Notes.WordWrap()
+                    ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                    ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
                 };
-                if (Suppressed)
+                if (await GetSuppressedAsync(token).ConfigureAwait(false))
                 {
                     //Treenodes store their font as null when inheriting from the treeview; have to pull it from the treeview directly to set the fontstyle.
-                    objNode.NodeFont = new Font(treQualities.Font, FontStyle.Strikeout);
+                    objNode.NodeFont = new Font(await treQualities.DoThreadSafeFuncAsync(x => x.Font, token).ConfigureAwait(false), FontStyle.Strikeout);
                 }
 
                 return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2429,7 +2438,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         //Add to set for O(N log M) runtime instead of O(N * M)
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string>
                                                                             lstRequired))
                         {
@@ -2477,7 +2486,7 @@ namespace Chummer
                     if (xmlAllOfNode != null)
                     {
                         //Add to set for O(N log M) runtime instead of O(N * M)
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string>
                                                                             lstRequired))
                         {
@@ -2515,7 +2524,7 @@ namespace Chummer
                     if (xmlOneOfNode != null)
                     {
                         //Add to set for O(N log M) runtime instead of O(N * M)
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string>
                                                                             setQualityForbidden))
                         {

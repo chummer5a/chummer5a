@@ -211,7 +211,7 @@ namespace Chummer
         private async Task PopulateLanguageList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLanguages))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLanguages))
             {
                 foreach (KeyValuePair<string, string> kvpLanguages in _dicCachedLanguageDocumentNames)
                 {
@@ -274,7 +274,7 @@ namespace Chummer
                                                                          x => x.SelectedValue, token: token)
                                                                      .ConfigureAwait(false);
                         // Populate the Gameplay Settings list.
-                        using (new FetchSafelyFromPool<List<ListItem>>(
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                    Utils.ListItemListPool, out List<ListItem> lstCharacterSettings))
                         {
                             IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
@@ -371,7 +371,7 @@ namespace Chummer
                 {
                     string strNone = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
                     await pgbExportProgress.DoThreadSafeAsync(x => x.Value = 0, token).ConfigureAwait(false);
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdCustomDataDirectories))
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in await objSelectedGameplayOption
@@ -401,7 +401,7 @@ namespace Chummer
                 await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken).ConfigureAwait(false);
             }
             string strLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken).ConfigureAwait(false);
-            if (strLanguage == GlobalSettings.DefaultLanguage)
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 // For English, only allow export if we have any custom data
                 bool blnValidExport = false;
@@ -443,60 +443,53 @@ namespace Chummer
                     await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     await pgbExportProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                    string strLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken).ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(strLanguage))
+                        strLanguage = GlobalSettings.DefaultLanguage;
+                    string strSaveArchive = dlgSaveFile.FileName;
+                    if (string.IsNullOrEmpty(strSaveArchive))
+                        return;
+                    if (!strSaveArchive.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                        strSaveArchive += ".zip";
+                    await Utils.SafeDeleteDirectoryAsync(strSaveArchive, token: token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await objSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        string strLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken).ConfigureAwait(false);
-                        if (string.IsNullOrEmpty(strLanguage))
-                            strLanguage = GlobalSettings.DefaultLanguage;
-                        string strSaveArchive = dlgSaveFile.FileName;
-                        if (string.IsNullOrEmpty(strSaveArchive))
-                            return;
-                        if (!strSaveArchive.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
-                            strSaveArchive += ".zip";
-                        await Utils.SafeDeleteDirectoryAsync(strSaveArchive, token: token).ConfigureAwait(false);
-                        IAsyncDisposable objLocker = await objSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
                         try
                         {
-                            token.ThrowIfCancellationRequested();
-                            try
+                            using (FileStream objZipFileStream = new FileStream(strSaveArchive, FileMode.Create, FileAccess.Write, FileShare.None))
                             {
-                                using (FileStream objZipFileStream = new FileStream(strSaveArchive, FileMode.Create, FileAccess.Write, FileShare.None))
+                                token.ThrowIfCancellationRequested();
+                                using (ZipArchive zipNewArchive = new ZipArchive(objZipFileStream, ZipArchiveMode.Create))
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    using (ZipArchive zipNewArchive = new ZipArchive(objZipFileStream, ZipArchiveMode.Create))
+                                    foreach (string strFileName in Utils.BasicDataFileNames)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        foreach (string strFileName in Utils.BasicDataFileNames)
+                                        XmlDocument xmlDocument = await objSettings.LoadDataAsync(strFileName, strLanguage, token: token).ConfigureAwait(false);
+                                        ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFileName));
+                                        token.ThrowIfCancellationRequested();
+                                        using (Stream objStream = objEntry.Open())
                                         {
                                             token.ThrowIfCancellationRequested();
-                                            XmlDocument xmlDocument = await objSettings.LoadDataAsync(strFileName, strLanguage, token: token).ConfigureAwait(false);
-                                            ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFileName));
-                                            token.ThrowIfCancellationRequested();
-                                            using (Stream objStream = objEntry.Open())
-                                            {
-                                                token.ThrowIfCancellationRequested();
-                                                await Task.Run(() => xmlDocument.Save(objStream), token).ConfigureAwait(false);
-                                            }
-                                            await pgbExportProgress.DoThreadSafeAsync(x => x.Value = x.Value + 1, _objGenericToken).ConfigureAwait(false);
+                                            await Task.Run(() => xmlDocument.Save(objStream), token).ConfigureAwait(false);
                                         }
+                                        await pgbExportProgress.DoThreadSafeAsync(x => ++x.Value, _objGenericToken).ConfigureAwait(false);
                                     }
                                 }
                             }
-                            catch (OperationCanceledException)
-                            {
-                                // ReSharper disable once MethodSupportsCancellation
-                                await Utils.SafeDeleteDirectoryAsync(strSaveArchive, token: CancellationToken.None).ConfigureAwait(false);
-                                throw;
-                            }
                         }
-                        finally
+                        catch (OperationCanceledException)
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            // ReSharper disable once MethodSupportsCancellation
+                            await Utils.SafeDeleteDirectoryAsync(strSaveArchive, token: CancellationToken.None).ConfigureAwait(false);
+                            throw;
                         }
                     }
                     finally
                     {
-                        
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally

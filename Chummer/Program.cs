@@ -150,7 +150,7 @@ namespace Chummer
                                                           NativeMethods.WM_SHOWME, 0, IntPtr.Zero);
 
                                 string strCommandLineArgumentsJoined =
-                                    string.Join("<>", Environment.GetCommandLineArgs());
+                                    string.Join("<|>", Environment.GetCommandLineArgs());
                                 NativeMethods.CopyDataStruct objData = default;
                                 IntPtr ptrCommandLineArguments = IntPtr.Zero;
                                 try
@@ -211,7 +211,7 @@ namespace Chummer
 
                         string strInfo;
 
-                        using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
+                        using (new FetchSafelyFromSafeObjectPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
                         {
                             sw.Start();
                             //If debugging and launched from other place (Bootstrap), launch debugger

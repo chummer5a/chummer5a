@@ -755,7 +755,7 @@ namespace Chummer
                                     string[] strArgs = Environment.GetCommandLineArgs();
                                     using (ProcessCommandLineArguments(strArgs, out blnShowTest,
                                                out HashSet<string> setFilesToLoad,
-                                               opFrmChummerMain))
+                                               opLoadActivity: opFrmChummerMain))
                                     {
                                         if (Directory.Exists(Utils.GetAutosavesFolderPath))
                                         {
@@ -4283,12 +4283,12 @@ namespace Chummer
                         if (objReceivedData.dwData == Program.CommandLineArgsDataTypeId)
                         {
                             string strParam = Marshal.PtrToStringUni(objReceivedData.lpData) ?? string.Empty;
-                            string[] strArgs = strParam.Split("<>", StringSplitOptions.RemoveEmptyEntries);
+                            string[] strArgs = strParam.SplitToPooledArray(out int intLength, "<|>", StringSplitOptions.RemoveEmptyEntries);
 
                             _objGenericToken.ThrowIfCancellationRequested();
                             bool blnShowTest;
                             using (ProcessCommandLineArguments(strArgs, out blnShowTest,
-                                       out HashSet<string> setFilesToLoad))
+                                       out HashSet<string> setFilesToLoad, intLength))
                             {
                                 _objGenericToken.ThrowIfCancellationRequested();
                                 if (Directory.Exists(Utils.GetAutosavesFolderPath))
@@ -4420,16 +4420,19 @@ namespace Chummer
             }
         }
 
-        private static FetchSafelyFromPool<HashSet<string>> ProcessCommandLineArguments(string[] strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
+        private static FetchSafelyFromSafeObjectPool<HashSet<string>> ProcessCommandLineArguments(string[] strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, int intLength = int.MaxValue, CustomActivity opLoadActivity = null)
         {
             blnShowTest = false;
-            FetchSafelyFromPool<HashSet<string>> objReturn = new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out setFilesToLoad);
-            if (strArgs.Length == 0)
+            FetchSafelyFromSafeObjectPool<HashSet<string>> objReturn = new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out setFilesToLoad);
+            if (Math.Min(strArgs.Length, intLength) == 0)
                 return objReturn;
             try
             {
+                int intIndex = -1;
                 foreach (string strArg in strArgs)
                 {
+                    if (++intIndex >= intLength)
+                        return objReturn;
                     if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath), StringComparison.OrdinalIgnoreCase))
                         continue;
                     switch (strArg)

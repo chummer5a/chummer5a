@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -267,11 +268,18 @@ namespace Chummer.Backend.Equipment
                 //Some vehicles have different Offroad Handling speeds. If so, we want to split this up for use with mods and such later.
                 if (strTemp.Contains('/'))
                 {
-                    string[] strHandlingArray = strTemp.Split('/');
-                    if (!int.TryParse(strHandlingArray[0], out _intHandling))
-                        _intHandling = 0;
-                    if (!int.TryParse(strHandlingArray[1], out _intOffroadHandling))
-                        _intOffroadHandling = 0;
+                    string[] strHandlingArray = strTemp.SplitFixedSizePooledArray('/', 2);
+                    try
+                    {
+                        if (!int.TryParse(strHandlingArray[0], out _intHandling))
+                            _intHandling = 0;
+                        if (!int.TryParse(strHandlingArray[1], out _intOffroadHandling))
+                            _intOffroadHandling = 0;
+                    }
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(strHandlingArray);
+                    }
                 }
                 else
                 {
@@ -285,11 +293,18 @@ namespace Chummer.Backend.Equipment
             {
                 if (strTemp.Contains('/'))
                 {
-                    string[] strAccelArray = strTemp.Split('/');
-                    if (!int.TryParse(strAccelArray[0], out _intAccel))
-                        _intAccel = 0;
-                    if (!int.TryParse(strAccelArray[1], out _intOffroadAccel))
-                        _intOffroadAccel = 0;
+                    string[] strAccelArray = strTemp.SplitFixedSizePooledArray('/', 2);
+                    try
+                    {
+                        if (!int.TryParse(strAccelArray[0], out _intAccel))
+                            _intAccel = 0;
+                        if (!int.TryParse(strAccelArray[1], out _intOffroadAccel))
+                            _intOffroadAccel = 0;
+                    }
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(strAccelArray);
+                    }
                 }
                 else
                 {
@@ -303,11 +318,18 @@ namespace Chummer.Backend.Equipment
             {
                 if (strTemp.Contains('/'))
                 {
-                    string[] strSpeedArray = strTemp.Split('/');
-                    if (!int.TryParse(strSpeedArray[0], out _intSpeed))
-                        _intSpeed = 0;
-                    if (!int.TryParse(strSpeedArray[1], out _intOffroadSpeed))
-                        _intOffroadSpeed = 0;
+                    string[] strSpeedArray = strTemp.SplitFixedSizePooledArray('/', 2);
+                    try
+                    {
+                        if (!int.TryParse(strSpeedArray[0], out _intSpeed))
+                            _intSpeed = 0;
+                        if (!int.TryParse(strSpeedArray[1], out _intOffroadSpeed))
+                            _intOffroadSpeed = 0;
+                    }
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(strSpeedArray);
+                    }
                 }
                 else
                 {
@@ -458,11 +480,18 @@ namespace Chummer.Backend.Equipment
             else
             {
                 _blnCanSwapAttributes = true;
-                string[] strArray = _strAttributeArray.Split(',');
-                _strAttack = strArray[0];
-                _strSleaze = strArray[1];
-                _strDataProcessing = strArray[2];
-                _strFirewall = strArray[3];
+                string[] strArray = _strAttributeArray.SplitFixedSizePooledArray(',', 4);
+                try
+                {
+                    _strAttack = strArray[0];
+                    _strSleaze = strArray[1];
+                    _strDataProcessing = strArray[2];
+                    _strFirewall = strArray[3];
+                }
+                finally
+                {
+                    ArrayPool<string>.Shared.Return(strArray);
+                }
             }
             objXmlVehicle.TryGetStringFieldQuickly("modattack", ref _strModAttack);
             objXmlVehicle.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
@@ -988,9 +1017,16 @@ namespace Chummer.Backend.Equipment
                 //Some vehicles have different Offroad Handling speeds. If so, we want to split this up for use with mods and such later.
                 if (strTemp.Contains('/'))
                 {
-                    string[] lstHandlings = strTemp.Split('/');
-                    int.TryParse(lstHandlings[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intHandling);
-                    int.TryParse(lstHandlings[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadHandling);
+                    string[] lstHandlings = strTemp.SplitFixedSizePooledArray('/', 2);
+                    try
+                    {
+                        int.TryParse(lstHandlings[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intHandling);
+                        int.TryParse(lstHandlings[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadHandling);
+                    }
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(lstHandlings);
+                    }
                 }
                 else
                 {
@@ -1007,9 +1043,16 @@ namespace Chummer.Backend.Equipment
             {
                 if (strTemp.Contains('/'))
                 {
-                    string[] lstAccels = strTemp.Split('/');
-                    int.TryParse(lstAccels[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intAccel);
-                    int.TryParse(lstAccels[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadAccel);
+                    string[] lstAccels = strTemp.SplitFixedSizePooledArray('/', 2);
+                    try
+                    {
+                        int.TryParse(lstAccels[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intAccel);
+                        int.TryParse(lstAccels[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadAccel);
+                    }
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(lstAccels);
+                    }
                 }
                 else
                 {
@@ -1026,9 +1069,16 @@ namespace Chummer.Backend.Equipment
             {
                 if (strTemp.Contains('/'))
                 {
-                    string[] lstSpeeds = strTemp.Split('/');
-                    int.TryParse(lstSpeeds[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intSpeed);
-                    int.TryParse(lstSpeeds[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadSpeed);
+                    string[] lstSpeeds = strTemp.SplitFixedSizePooledArray('/', 2);
+                    try
+                    {
+                        int.TryParse(lstSpeeds[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intSpeed);
+                        int.TryParse(lstSpeeds[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadSpeed);
+                    }
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(lstSpeeds);
+                    }
                 }
                 else
                 {
@@ -1858,7 +1908,7 @@ namespace Chummer.Backend.Equipment
 
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
                         _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
@@ -1950,7 +2000,7 @@ namespace Chummer.Backend.Equipment
 
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
                         await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
@@ -2756,7 +2806,7 @@ namespace Chummer.Backend.Equipment
                 string strCost = Cost;
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                     {
                         sbdCost.Append(strCost);
                         _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCost);
@@ -2785,7 +2835,7 @@ namespace Chummer.Backend.Equipment
             string strCost = Cost;
             if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                 {
                     sbdCost.Append(strCost);
                     await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
@@ -5136,7 +5186,7 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
                     if (ChildrenWithMatrixAttributes.Any())
@@ -5198,7 +5248,7 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
                     if (ChildrenWithMatrixAttributes.Any())

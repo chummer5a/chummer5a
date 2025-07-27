@@ -2192,7 +2192,7 @@ namespace Chummer.Backend.Skills
                     if (!string.IsNullOrEmpty(_strCachedToolTip))
                         return _strCachedToolTip;
                     using (_objCachedToolTipLock.EnterWriteLock())
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdTooltip))
                     {
                         string strSpace = LanguageManager.GetString("String_Space");
@@ -2249,7 +2249,7 @@ namespace Chummer.Backend.Skills
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdTooltip))
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
@@ -2966,7 +2966,7 @@ namespace Chummer.Backend.Skills
 
                     decimal decMultiplier = 1.0m;
                     decimal decExtra = 0;
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string>
                                    lstRelevantCategories))
                     {
@@ -3040,7 +3040,7 @@ namespace Chummer.Backend.Skills
 
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                            out HashSet<string>
                                lstRelevantCategories))
                 {
@@ -3134,7 +3134,7 @@ namespace Chummer.Backend.Skills
 
                     decimal decMultiplier = 1.0m;
                     decimal decExtra = 0;
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string>
                                    lstRelevantCategories))
                     {
@@ -3233,7 +3233,7 @@ namespace Chummer.Backend.Skills
 
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                            out HashSet<string>
                                lstRelevantCategories))
                 {
@@ -3341,7 +3341,7 @@ namespace Chummer.Backend.Skills
 
                     decimal decMultiplier = 1.0m;
                     decimal decExtra = 0;
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string>
                                    lstRelevantCategories))
                     {
@@ -3433,7 +3433,7 @@ namespace Chummer.Backend.Skills
 
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string>
                                                                     lstRelevantCategories))
                 {

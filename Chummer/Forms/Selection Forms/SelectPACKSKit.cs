@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -121,7 +122,7 @@ namespace Chummer
                 strFilter += " and category = " + strCategory.CleanXPath();
             else
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
                 {
                     foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
                     {
@@ -138,7 +139,7 @@ namespace Chummer
 
             // Retrieve the list of Kits for the selected Category.
             XPathNodeIterator xmlPacksKits = _xmlBaseChummerNode.Select("packs/pack[" + strFilter + ']');
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstKit))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstKit))
             {
                 foreach (XPathNavigator objXmlPack in xmlPacksKits)
                 {
@@ -168,13 +169,19 @@ namespace Chummer
             }
 
             await treContents.DoThreadSafeAsync(x => x.Nodes.Clear()).ConfigureAwait(false);
-            string[] strIdentifiers = strSelectedKit.Split('<', StringSplitOptions.RemoveEmptyEntries);
-            await cmdDelete.DoThreadSafeAsync(x => x.Visible = strIdentifiers[1] == "Custom").ConfigureAwait(false);
-            XPathNavigator objXmlPack = _xmlBaseChummerNode.TryGetNodeByNameOrId("packs/pack", strIdentifiers[0], "category = " + strIdentifiers[1].CleanXPath());
-            if (objXmlPack == null)
+            XPathNavigator objXmlPack;
+            string[] strIdentifiers = strSelectedKit.SplitFixedSizePooledArray('<', 2, StringSplitOptions.RemoveEmptyEntries);
+            try
             {
-                return;
+                await cmdDelete.DoThreadSafeAsync(x => x.Visible = strIdentifiers[1] == "Custom").ConfigureAwait(false);
+                objXmlPack = _xmlBaseChummerNode.TryGetNodeByNameOrId("packs/pack", strIdentifiers[0], "category = " + strIdentifiers[1].CleanXPath());
             }
+            finally
+            {
+                ArrayPool<string>.Shared.Return(strIdentifiers);
+            }
+            if (objXmlPack == null)
+                return;
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
             foreach (XPathNavigator objXmlItem in objXmlPack.SelectChildren(XPathNodeType.Element))
@@ -946,9 +953,16 @@ namespace Chummer
             string strSelectedKit = lstKits.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
-            string[] objSelectedKit = strSelectedKit.Split('<', StringSplitOptions.RemoveEmptyEntries);
-            _strSelectedKit = objSelectedKit[0];
-            _strSelectCategory = objSelectedKit[1];
+            string[] objSelectedKit = strSelectedKit.SplitFixedSizePooledArray('<', 2, StringSplitOptions.RemoveEmptyEntries);
+            try
+            {
+                _strSelectedKit = objSelectedKit[0];
+                _strSelectCategory = objSelectedKit[1];
+            }
+            finally
+            {
+                ArrayPool<string>.Shared.Return(objSelectedKit);
+            }
             DialogResult = DialogResult.OK;
             Close();
         }
