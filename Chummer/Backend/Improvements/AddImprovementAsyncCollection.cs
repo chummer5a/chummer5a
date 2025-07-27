@@ -3621,7 +3621,7 @@ namespace Chummer
                                         throw new AbortedException();
                                     }
 
-                                    SelectedValue = frmPickCategory.MyForm.SelectedItem;
+                                    strSelectedValue = frmPickCategory.MyForm.SelectedItem;
                                 }
                             }
 

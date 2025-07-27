@@ -3464,7 +3464,7 @@ namespace Chummer
                                         throw new AbortedException();
                                     }
 
-                                    SelectedValue = frmPickCategory.MyForm.SelectedItem;
+                                    strSelectedValue = frmPickCategory.MyForm.SelectedItem;
                                 }
                             }
 
@@ -3472,7 +3472,7 @@ namespace Chummer
                             {
                                 if (objPower.InternalId == SourceName)
                                 {
-                                    objPower.Extra = SelectedValue;
+                                    objPower.Extra = strSelectedValue;
                                 }
                             });
                         }
