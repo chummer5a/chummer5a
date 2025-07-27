@@ -6350,7 +6350,7 @@ namespace Chummer
                                             : new ValueVersion();
                                     }
                                     // Check for typo in Corrupter quality and correct it
-                                    else if (_verSavedVersion.CompareTo(new ValueVersion(5, 188, 34)) == -1)
+                                    else if (_verSavedVersion < new ValueVersion(5, 188, 34))
                                     {
                                         objXmlDocument.InnerXml =
                                             objXmlDocument.InnerXml.Replace("Corruptor", "Corrupter");
@@ -7004,10 +7004,7 @@ namespace Chummer
                                         else if (blnHashCodeSuccess
                                                  && !objProspectiveSettings.BuiltInOption
                                                  // Need to make sure that the save was made in the same version of Chummer, otherwise we can get a hash code mismatch from settings themselves changing
-                                                 && LastSavedVersion.CompareTo(
-                                                     new ValueVersion(
-                                                         Application.ProductVersion.FastEscapeOnceFromStart("0.0.")))
-                                                 == 0
+                                                 && LastSavedVersion == new ValueVersion(Application.ProductVersion.FastEscapeOnceFromStart("0.0."))
                                                  && (blnSync
                                                      // ReSharper disable once MethodHasAsyncOverload
                                                      ? objProspectiveSettings.GetEquatableHashCode(token)
