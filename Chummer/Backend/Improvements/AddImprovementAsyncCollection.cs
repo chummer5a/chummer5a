@@ -1813,7 +1813,7 @@ namespace Chummer
                     intRating = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
                 decimal decQty = 1.0m;
                 if (xmlGearNode["quantity"] != null)
-                    decQty = Convert.ToDecimal(xmlGearNode["quantity"].InnerText, GlobalSettings.InvariantCultureInfo);
+                    decQty = await ImprovementManager.ValueToDecAsync(_objCharacter, xmlGearNode["quantity"].InnerText, _intRating, token).ConfigureAwait(false);
 
                 // Create the new piece of Gear.
                 List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -2214,7 +2214,7 @@ namespace Chummer
             {
                 if (strTemp.EndsWith("-natural", StringComparison.Ordinal))
                 {
-                    intMax = Convert.ToInt32(strTemp.TrimEndOnce("-natural", true), GlobalSettings.InvariantCultureInfo) -
+                    intMax = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp.TrimEndOnce("-natural", true), _intRating, token).ConfigureAwait(false) -
                              await (await _objCharacter.GetAttributeAsync(strAttribute, token: token).ConfigureAwait(false)).GetMetatypeMaximumAsync(token).ConfigureAwait(false);
                 }
                 else
@@ -2460,7 +2460,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, Convert.ToInt32(bonusNode.Value, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode.Value, _intRating, token).ConfigureAwait(false), token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task skillgrouplevel(XmlNode bonusNode, CancellationToken token = default)
@@ -3368,8 +3368,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await _objCharacter.ModifyPrototypeTranshumanAsync(Convert.ToDecimal(bonusNode.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
-            await CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique, token: token).ConfigureAwait(false);
+            decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false);
+            await _objCharacter.ModifyPrototypeTranshumanAsync(decValue, token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique, intRating: _intRating, token: token).ConfigureAwait(false);
         }
 
         // Check for Friends In High Places modifiers.
@@ -4146,7 +4147,7 @@ namespace Chummer
                         foreach (XmlNode objNode in objXmlPowerList)
                         {
                             XmlNode objXmlPower;
-                            int intLevels = Convert.ToInt32(objNode["val"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
+                            int intLevels = await ImprovementManager.ValueToIntAsync(_objCharacter, objNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false);
                             string strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
                             // Display the Select Power window and record which Power was selected.
                             using (ThreadSafeForm<SelectPower> frmPickPower = await ThreadSafeForm<SelectPower>.GetAsync(() => new SelectPower(_objCharacter), token).ConfigureAwait(false))
@@ -4155,10 +4156,10 @@ namespace Chummer
                                 frmPickPower.MyForm.IgnoreLimits = objNode["ignorerating"]?.InnerText == bool.TrueString;
 
                                 if (!string.IsNullOrEmpty(strPointsPerLevel))
-                                    frmPickPower.MyForm.PointsPerLevel = Convert.ToDecimal(strPointsPerLevel, GlobalSettings.InvariantCultureInfo);
+                                    frmPickPower.MyForm.PointsPerLevel = await ImprovementManager.ValueToDecAsync(_objCharacter, strPointsPerLevel, _intRating, token).ConfigureAwait(false);
                                 string strLimit = objNode["limit"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                                 if (!string.IsNullOrEmpty(strLimit))
-                                    frmPickPower.MyForm.LimitToRating = Convert.ToInt32(strLimit, GlobalSettings.InvariantCultureInfo);
+                                    frmPickPower.MyForm.LimitToRating = await ImprovementManager.ValueToIntAsync(_objCharacter, strLimit, _intRating, token).ConfigureAwait(false);
                                 string strLimitToPowers = objNode.Attributes?["limittopowers"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strLimitToPowers))
                                     frmPickPower.MyForm.LimitToPowers = strLimitToPowers;
@@ -6029,8 +6030,7 @@ namespace Chummer
                                 = bonusNode.SelectSingleNode("discountqualities/quality[. = "
                                                              + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
                             intQualityDiscount
-                                = Convert.ToInt32(objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@discount", token)?.Value,
-                                                  GlobalSettings.InvariantCultureInfo);
+                                = await ImprovementManager.ValueToIntAsync(_objCharacter, objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@discount", token)?.Value, _intRating, token).ConfigureAwait(false);
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality discountQuality = new Quality(_objCharacter);
                             await discountQuality.SetBPAsync(0, token).ConfigureAwait(false);
@@ -7328,7 +7328,10 @@ namespace Chummer
             {
                 foreach (XmlNode child in xmlMetamagicsList)
                 {
-                    int intRating = Convert.ToInt32(child.Attributes?["grade"]?.InnerText ?? "-1", GlobalSettings.InvariantCultureInfo);
+                    int intRating = -1;
+                    string strGrade = child.Attributes?["grade"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strGrade))
+                        intRating = await ImprovementManager.ValueToIntAsync(_objCharacter, strGrade, _intRating, token).ConfigureAwait(false);
                     await CreateImprovementAsync(child.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.MetamagicLimit, _strUnique, 0, intRating, token: token).ConfigureAwait(false);
                 }
             }

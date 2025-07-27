@@ -1516,17 +1516,26 @@ namespace Chummer.Backend.Equipment
 
                 if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
+                    if (Parent != null)
+                    {
+                        strCapacity = strCapacity
+                            .CheapReplace("{Capacity}", () => Parent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("Capacity", () => Parent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("{Parent Rating}", () => Parent.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("Parent Rating", () => Parent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    }
+                    else
+                    {
+                        strCapacity = strCapacity
+                            .Replace("{Capacity}", "0")
+                            .Replace("Capacity", "0")
+                            .Replace("{Parent Rating}", "0")
+                            .Replace("Parent Rating", "0");
+                    }
                     strCapacity = strCapacity
-                              .CheapReplace(
-                                  "Capacity",
-                                  () => Parent != null
-                                      ? Convert.ToDecimal(
-                                                   Parent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo),
-                                                   GlobalSettings.InvariantCultureInfo)
-                                               .ToString(GlobalSettings.InvariantCultureInfo)
-                                      : "0")
-                              .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
+                        .CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                        .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    strCapacity = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCapacity);
                     //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
                     (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity);
                     return blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
@@ -1549,17 +1558,30 @@ namespace Chummer.Backend.Equipment
 
             if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                strCapacity = await (await strCapacity
-                        .CheapReplaceAsync(
-                            "Capacity",
-                            async () => Parent != null
-                                ? Convert.ToDecimal(
-                                        await Parent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false),
-                                        GlobalSettings.InvariantCultureInfo)
-                                    .ToString(GlobalSettings.InvariantCultureInfo)
-                                : "0", token: token).ConfigureAwait(false))
-                    .CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-
+                if (Parent != null)
+                {
+                    strCapacity = await strCapacity
+                        .CheapReplaceAsync("{Capacity}", () => Parent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo), token: token)
+                        .CheapReplaceAsync("Capacity", () => Parent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo), token: token)
+                        .CheapReplaceAsync("{Parent Rating}", async () => (await Parent.GetRatingAsync(token).ConfigureAwait(false))
+                            .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                        .CheapReplaceAsync("Parent Rating", async () => (await Parent.GetRatingAsync(token).ConfigureAwait(false))
+                            .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                }
+                else
+                {
+                    strCapacity = strCapacity
+                        .Replace("{Capacity}", "0")
+                        .Replace("Capacity", "0")
+                        .Replace("{Parent Rating}", "0")
+                        .Replace("Parent Rating", "0");
+                }
+                strCapacity = await strCapacity
+                        .CheapReplaceAsync("{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false))
+                            .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                        .CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false))
+                            .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                strCapacity = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strCapacity, token: token).ConfigureAwait(false);
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
                 return blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
@@ -1583,10 +1605,8 @@ namespace Chummer.Backend.Equipment
                 {
                     // If this is a multiple-capacity item, use only the first half.
                     strMyCapacity = strMyCapacity.Substring(0, intPos);
-                    decCapacity = Convert.ToDecimal(strMyCapacity, GlobalSettings.CultureInfo);
                 }
-                else
-                    decCapacity = Convert.ToDecimal(strMyCapacity, GlobalSettings.CultureInfo);
+                decCapacity = Convert.ToDecimal(strMyCapacity, GlobalSettings.CultureInfo);
 
                 // Run through its Children and deduct the Capacity costs.
                 decCapacity -= GearChildren.Sum(objChildGear =>
@@ -1600,8 +1620,9 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
-                    strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                    return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo) * objChildGear.Quantity;
+                    if (strCapacity.StartsWith('[') && decimal.TryParse(strCapacity.Substring(1, strCapacity.Length - 2), NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decTemp))
+                        return decTemp * objChildGear.Quantity;
+                    return 0;
                 });
 
                 return decCapacity;
@@ -1622,10 +1643,8 @@ namespace Chummer.Backend.Equipment
             {
                 // If this is a multiple-capacity item, use only the first half.
                 strMyCapacity = strMyCapacity.Substring(0, intPos);
-                decCapacity = Convert.ToDecimal(strMyCapacity, GlobalSettings.CultureInfo);
             }
-            else
-                decCapacity = Convert.ToDecimal(strMyCapacity, GlobalSettings.CultureInfo);
+            decCapacity = Convert.ToDecimal(strMyCapacity, GlobalSettings.CultureInfo);
 
             // Run through its Children and deduct the Capacity costs.
             decCapacity -= await GearChildren.SumAsync(async objChildGear =>
@@ -1639,8 +1658,9 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
-                strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo) * objChildGear.Quantity;
+                if (strCapacity.StartsWith('[') && decimal.TryParse(strCapacity.Substring(1, strCapacity.Length - 2), NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decTemp))
+                    return decTemp * objChildGear.Quantity;
+                return 0;
             }, token: token).ConfigureAwait(false);
 
             return decCapacity;
@@ -1664,17 +1684,26 @@ namespace Chummer.Backend.Equipment
                 string strReturn = strCapacity;
                 if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
+                    if (Parent != null)
+                    {
+                        strCapacity = strCapacity
+                            .CheapReplace("{Capacity}", () => Parent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("Capacity", () => Parent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("{Parent Rating}", () => Parent.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("Parent Rating", () => Parent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    }
+                    else
+                    {
+                        strCapacity = strCapacity
+                            .Replace("{Capacity}", "0")
+                            .Replace("Capacity", "0")
+                            .Replace("{Parent Rating}", "0")
+                            .Replace("Parent Rating", "0");
+                    }
                     strCapacity = strCapacity
-                              .CheapReplace(
-                                  "Capacity",
-                                  () => Parent != null
-                                      ? Convert.ToDecimal(
-                                                   Parent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo),
-                                                   GlobalSettings.InvariantCultureInfo)
-                                               .ToString(GlobalSettings.InvariantCultureInfo)
-                                      : "0")
-                              .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
+                        .CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                        .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    strCapacity = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCapacity);
                     //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
                     (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity);
                     strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
@@ -1705,17 +1734,30 @@ namespace Chummer.Backend.Equipment
             string strReturn = strCapacity;
             if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                strCapacity = await (await strCapacity
-                        .CheapReplaceAsync(
-                            "Capacity",
-                            async () => Parent != null
-                                ? Convert.ToDecimal(
-                                        await Parent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false),
-                                        GlobalSettings.InvariantCultureInfo)
-                                    .ToString(GlobalSettings.InvariantCultureInfo)
-                                : "0", token: token).ConfigureAwait(false))
-                    .CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-
+                if (Parent != null)
+                {
+                    strCapacity = await strCapacity
+                        .CheapReplaceAsync("{Capacity}", () => Parent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo), token: token)
+                        .CheapReplaceAsync("Capacity", () => Parent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo), token: token)
+                        .CheapReplaceAsync("{Parent Rating}", async () => (await Parent.GetRatingAsync(token).ConfigureAwait(false))
+                            .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                        .CheapReplaceAsync("Parent Rating", async () => (await Parent.GetRatingAsync(token).ConfigureAwait(false))
+                            .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                }
+                else
+                {
+                    strCapacity = strCapacity
+                        .Replace("{Capacity}", "0")
+                        .Replace("Capacity", "0")
+                        .Replace("{Parent Rating}", "0")
+                        .Replace("Parent Rating", "0");
+                }
+                strCapacity = await strCapacity
+                        .CheapReplaceAsync("{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false))
+                            .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                        .CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false))
+                            .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                strCapacity = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strCapacity, token: token).ConfigureAwait(false);
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
                 strReturn = blnIsSuccess
@@ -1744,8 +1786,9 @@ namespace Chummer.Backend.Equipment
                 if (strCapacity.StartsWith('['))
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                 if (strCapacity == "*")
-                    strCapacity = "0";
-                return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                    return 0;
+                decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decReturn);
+                return decReturn;
             }
         }
 
@@ -1763,8 +1806,9 @@ namespace Chummer.Backend.Equipment
             if (strCapacity.StartsWith('['))
                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
             if (strCapacity == "*")
-                strCapacity = "0";
-            return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                return 0;
+            decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decReturn);
+            return decReturn;
         }
 
         /// <summary>
@@ -2257,8 +2301,8 @@ namespace Chummer.Backend.Equipment
                 Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                 Tag = this,
                 ContextMenuStrip = string.IsNullOrEmpty(GearCapacity) ? cmsArmorMod : cmsArmorGear,
-                ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap()
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
