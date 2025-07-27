@@ -879,8 +879,7 @@ namespace Chummer.Backend.Equipment
                                 XmlElement objXmlAccessoryGearCategory = objXmlAccessoryGear["category"];
                                 XmlAttributeCollection objXmlAccessoryGearNameAttributes =
                                     objXmlAccessoryGearName.Attributes;
-                                int intGearRating = 0;
-                                decimal decGearQty = 1;
+                                
                                 string strChildForceSource = objXmlAccessoryGear["source"]?.InnerText ?? string.Empty;
                                 string strChildForcePage = objXmlAccessoryGear["page"]?.InnerText ?? string.Empty;
                                 string strChildForceValue = objXmlAccessoryGearNameAttributes?["select"]?.InnerText ??
@@ -890,12 +889,18 @@ namespace Chummer.Backend.Equipment
                                 bool blnAddChildImprovements = blnCreateImprovements &&
                                                                objXmlAccessoryGearNameAttributes?["addimprovements"]
                                                                    ?.InnerText != bool.FalseString;
-                                if (objXmlAccessoryGear["rating"] != null)
-                                    intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText,
-                                        GlobalSettings.InvariantCultureInfo);
-                                if (objXmlAccessoryGearNameAttributes?["qty"] != null)
-                                    decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText,
-                                        GlobalSettings.InvariantCultureInfo);
+                                int intGearRating = 0;
+                                if (objXmlAccessoryGear["rating"] != null
+                                    && !int.TryParse(objXmlAccessoryGear["rating"].InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intGearRating))
+                                {
+                                    intGearRating = 0;
+                                }
+                                decimal decGearQty = 1;
+                                if (objXmlAccessoryGearNameAttributes?["qty"] != null
+                                    && !decimal.TryParse(objXmlAccessoryGearNameAttributes["qty"].InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decGearQty))
+                                {
+                                    decGearQty = 1;
+                                }
                                 string strFilter = "/chummer/gears/gear";
                                 if (objXmlAccessoryGearName != null || objXmlAccessoryGearCategory != null)
                                 {

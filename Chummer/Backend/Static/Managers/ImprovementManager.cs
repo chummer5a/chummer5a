@@ -3034,11 +3034,15 @@ namespace Chummer
                                     await objCharacter.SetPrototypeTranshumanAsync(1, token).ConfigureAwait(false);
                             }
                             else if (blnSync)
-                                objCharacter.PrototypeTranshuman
-                                    += Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
+                            {
+                                decimal decValue = ImprovementManager.ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
+                                objCharacter.PrototypeTranshuman += decValue;
+                            }
                             else
-                                await objCharacter.ModifyPrototypeTranshumanAsync(
-                                    Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                            {
+                                decimal decValue = await ImprovementManager.ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
+                                await objCharacter.ModifyPrototypeTranshumanAsync(decValue, token).ConfigureAwait(false);
+                            }
                             break;
 
                         case Improvement.ImprovementType.AddContact:
@@ -3713,11 +3717,15 @@ namespace Chummer
                                 }
                             }
                             else if (blnSync)
-                                objCharacter.PrototypeTranshuman
-                                    -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
+                            {
+                                decimal decValue = ImprovementManager.ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
+                                objCharacter.PrototypeTranshuman -= decValue;
+                            }
                             else
-                                await objCharacter.ModifyPrototypeTranshumanAsync(
-                                    -Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                            {
+                                decimal decValue = await ImprovementManager.ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
+                                await objCharacter.ModifyPrototypeTranshumanAsync(-decValue, token).ConfigureAwait(false);
+                            }
 
                             break;
 
@@ -5139,11 +5147,15 @@ namespace Chummer
                                 }
                             }
                             else if (blnSync)
-                                objCharacter.PrototypeTranshuman
-                                    -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
+                            {
+                                decimal decValue = ImprovementManager.ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
+                                objCharacter.PrototypeTranshuman -= decValue;
+                            }
                             else
-                                await objCharacter.ModifyPrototypeTranshumanAsync(
-                                    -Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                            {
+                                decimal decValue = await ImprovementManager.ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
+                                await objCharacter.ModifyPrototypeTranshumanAsync(-decValue, token).ConfigureAwait(false);
+                            }
 
                             break;
 
