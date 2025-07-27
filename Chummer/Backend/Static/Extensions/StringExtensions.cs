@@ -2607,6 +2607,7 @@ namespace Chummer
                 return Task.FromCanceled<string>(token);
             if (!strInput.StartsWith("FixedValues(", StringComparison.Ordinal))
                 return Task.FromResult(strInput);
+            strInput = strInput.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
             int intOuterIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma);
             if (intOuterIndex < 0)
                 return Task.FromResult(strInput);
