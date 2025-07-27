@@ -10965,7 +10965,7 @@ namespace Chummer
                                 try
                                 {
                                     await nudCyberwareRating
-                                        .DoThreadSafeAsync(x => x.ValueAsInt = intRating, GenericToken)
+                                        .DoThreadSafeAsync(x => x.Value = intRating, GenericToken)
                                         .ConfigureAwait(false);
                                 }
                                 finally
@@ -11221,7 +11221,7 @@ namespace Chummer
                         IsRefreshing = true;
                         try
                         {
-                            await nudGearRating.DoThreadSafeAsync(x => x.ValueAsInt = intRating, GenericToken)
+                            await nudGearRating.DoThreadSafeAsync(x => x.Value = intRating, GenericToken)
                                                .ConfigureAwait(false);
                         }
                         finally
@@ -11407,7 +11407,7 @@ namespace Chummer
                                     try
                                     {
                                         await nudWeaponRating.DoThreadSafeAsync(
-                                            x => x.ValueAsInt = intRating, GenericToken).ConfigureAwait(false);
+                                            x => x.Value = intRating, GenericToken).ConfigureAwait(false);
                                     }
                                     finally
                                     {
@@ -12277,7 +12277,7 @@ namespace Chummer
                                 try
                                 {
                                     await nudVehicleRating.DoThreadSafeAsync(
-                                        x => x.ValueAsInt = intRating, GenericToken).ConfigureAwait(false);
+                                        x => x.Value = intRating, GenericToken).ConfigureAwait(false);
                                 }
                                 finally
                                 {
@@ -12803,7 +12803,7 @@ namespace Chummer
                                 try
                                 {
                                     await nudArmorRating.DoThreadSafeAsync(
-                                        x => x.ValueAsInt = intRating, GenericToken).ConfigureAwait(false);
+                                        x => x.Value = intRating, GenericToken).ConfigureAwait(false);
                                 }
                                 finally
                                 {
@@ -15428,14 +15428,9 @@ namespace Chummer
                                 int intRating = await objGear.GetRatingAsync(token).ConfigureAwait(false);
                                 await nudCyberwareRating.DoThreadSafeAsync(x =>
                                 {
-                                    if (intGearMinRatingValue > 0)
-                                        x.MinimumAsInt = intGearMinRatingValue;
-                                    else if (intGearMinRatingValue == 0 && objGear.Name.Contains("Credstick,"))
-                                        x.MinimumAsInt = Math.Min(0, intGearMaxRatingValue);
-                                    else
-                                        x.MinimumAsInt = Math.Min(1, intGearMaxRatingValue);
-                                    x.MaximumAsInt = intGearMaxRatingValue;
-                                    x.ValueAsInt = intRating;
+                                    x.Minimum = intGearMinRatingValue;
+                                    x.Maximum = intGearMaxRatingValue;
+                                    x.Value = intRating;
                                     x.Enabled = x.Maximum > x.Minimum && string.IsNullOrEmpty(objGear.ParentID);
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
@@ -16369,14 +16364,9 @@ namespace Chummer
                                 int intRating = await objGear.GetRatingAsync(token).ConfigureAwait(false);
                                 await nudWeaponRating.DoThreadSafeAsync(x =>
                                 {
-                                    if (intGearMinRatingValue > 0)
-                                        x.MinimumAsInt = intGearMinRatingValue;
-                                    else if (intGearMinRatingValue == 0 && objGear.Name.Contains("Credstick,"))
-                                        x.MinimumAsInt = Math.Min(0, intGearMaxRatingValue);
-                                    else
-                                        x.MinimumAsInt = Math.Min(1, intGearMaxRatingValue);
+                                    x.Minimum = intGearMinRatingValue;
                                     x.Maximum = intGearMaxRatingValue;
-                                    x.ValueAsInt = intRating;
+                                    x.Value = intRating;
                                     x.Increment = 1;
                                     x.Enabled = x.Maximum > x.Minimum && !objGear.IncludedInParent;
                                     x.Visible = true;
@@ -17250,12 +17240,7 @@ namespace Chummer
                             int intRating = await objGear.GetRatingAsync(token).ConfigureAwait(false);
                             await nudGearRating.DoThreadSafeAsync(x =>
                             {
-                                if (intGearMinRatingValue > 0)
-                                    x.Minimum = intGearMinRatingValue;
-                                else if (intGearMinRatingValue == 0 && objGear.Name.Contains("Credstick,"))
-                                    x.Minimum = Math.Min(0, intGearMaxRatingValue);
-                                else
-                                    x.Minimum = Math.Min(1, intGearMaxRatingValue);
+                                x.Minimum = intGearMinRatingValue;
                                 x.Maximum = intGearMaxRatingValue;
                                 x.Value = intRating;
                                 x.Enabled = x.Maximum > x.Minimum && string.IsNullOrEmpty(objGear.ParentID);
@@ -20161,14 +20146,9 @@ namespace Chummer
                                 int intGearMinRatingValue = await objGear.GetMinRatingValueAsync(token).ConfigureAwait(false);
                                 await nudVehicleRating.DoThreadSafeAsync(x =>
                                 {
-                                    if (intGearMinRatingValue > 0)
-                                        x.MinimumAsInt = intGearMinRatingValue;
-                                    else if (intGearMinRatingValue == 0 && objGear.Name.Contains("Credstick,"))
-                                        x.MinimumAsInt = Math.Min(0, intGearMaxRatingValue);
-                                    else
-                                        x.MinimumAsInt = Math.Min(1, intGearMaxRatingValue);
-                                    x.MaximumAsInt = intGearMaxRatingValue;
-                                    x.ValueAsInt = intRating;
+                                    x.Minimum = intGearMinRatingValue;
+                                    x.Maximum = intGearMaxRatingValue;
+                                    x.Value = intRating;
                                     x.Enabled = x.Maximum > x.Minimum && string.IsNullOrEmpty(objGear.ParentID);
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);

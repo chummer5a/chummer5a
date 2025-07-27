@@ -433,7 +433,7 @@ namespace Chummer
         {
             Quality objGremlinsQuality
                 = lstQualities?.FirstOrDefault(x => x.Name.StartsWith("Gremlins", StringComparison.Ordinal));
-            nudGremlins.DoThreadSafe(x => x.ValueAsInt = objGremlinsQuality?.Levels ?? 0);
+            nudGremlins.DoThreadSafe(x => x.Value = objGremlinsQuality?.Levels ?? 0);
         }
 
         #endregion Properties

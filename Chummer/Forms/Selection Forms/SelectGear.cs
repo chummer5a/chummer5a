@@ -839,7 +839,15 @@ namespace Chummer
                                                                          }, token: token).ConfigureAwait(false);
                                         sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                                         await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-
+                                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                                        {
+                                            sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}',
+                                                                  () => (Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
+                                                                          strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                                            sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}',
+                                                                  () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(
+                                                                      strMatrixAttribute) ?? "0");
+                                        }
                                         // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                                         (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
                                             sbdValue.ToString(), token).ConfigureAwait(false);

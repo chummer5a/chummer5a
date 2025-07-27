@@ -1860,7 +1860,7 @@ namespace Chummer
                         strOldSelected = "jpeg_manual";
                     }
 
-                    await nudMugshotCompressionQuality.DoThreadSafeAsync(x => x.ValueAsInt = intQuality, token)
+                    await nudMugshotCompressionQuality.DoThreadSafeAsync(x => x.Value = intQuality, token)
                                                       .ConfigureAwait(false);
                 }
 

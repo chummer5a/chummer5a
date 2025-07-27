@@ -121,7 +121,7 @@ namespace Chummer
 
                 if (xmlQuality != null)
                 {
-                    await nudRating.DoThreadSafeAsync(x => x.ValueAsInt = x.MinimumAsInt).ConfigureAwait(false);
+                    await nudRating.DoThreadSafeAsync(x => x.Value = x.MinimumAsInt).ConfigureAwait(false);
                     int intMaxRating = int.MaxValue;
                     if (xmlQuality.TryGetInt32FieldQuickly("limit", ref intMaxRating)
                         && xmlQuality.SelectSingleNodeAndCacheExpression("nolevels") == null)

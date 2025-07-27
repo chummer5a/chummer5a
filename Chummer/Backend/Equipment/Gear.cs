@@ -2240,7 +2240,14 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strExpression = MinRating;
-                return string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression, _intRating);
+                int intReturn = string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression, _intRating);
+                if (intReturn == 0)
+                {
+                    int intMaxRating = MaxRatingValue;
+                    if (intMaxRating > 0 && intMaxRating != int.MaxValue)
+                        intReturn = 1;
+                }
+                return intReturn;
             }
             set => MinRating = value.ToString(GlobalSettings.InvariantCultureInfo);
         }
@@ -2249,7 +2256,14 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             string strExpression = MinRating;
-            return string.IsNullOrEmpty(strExpression) ? 0 : await ProcessRatingStringAsync(strExpression, _intRating, token).ConfigureAwait(false);
+            int intReturn = string.IsNullOrEmpty(strExpression) ? 0 : await ProcessRatingStringAsync(strExpression, _intRating, token).ConfigureAwait(false);
+            if (intReturn == 0)
+            {
+                int intMaxRating = await GetMaxRatingValueAsync(token).ConfigureAwait(false);
+                if (intMaxRating > 0 && intMaxRating != int.MaxValue)
+                    intReturn = 1;
+            }
+            return intReturn;
         }
 
         /// <summary>
@@ -2299,10 +2313,8 @@ namespace Chummer.Backend.Equipment
                     foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                     {
                         sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}',
-                                              () => ((Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
-                                                      strMatrixAttribute) ?? 0)
-                                                  .ToString(
-                                                      GlobalSettings.InvariantCultureInfo));
+                                              () => (Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
+                                                      strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
                         sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}',
                                               () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(
                                                   strMatrixAttribute) ?? "0");
@@ -2353,12 +2365,11 @@ namespace Chummer.Backend.Equipment
                     foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                     {
                         await sbdValue.CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}',
-                            () => ((Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
-                                    strMatrixAttribute) ?? 0)
-                                .ToString(
-                                    GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            () => (Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
+                                    strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo) ?? "0"
+                                , token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + '}',
-                            () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(
+                            () => (Parent as IHasMatrixAttributes)?.GetMatrixAttributeString(
                                 strMatrixAttribute) ?? "0", token: token).ConfigureAwait(false);
                         if (Children.Count == 0 || !strExpression.Contains("{Children " + strMatrixAttribute + '}'))
                             continue;
