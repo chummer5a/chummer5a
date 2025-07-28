@@ -417,7 +417,7 @@ namespace Chummer
         public bool Equals(ValueVersion obj)
         {
             // Since hash codes are cached for value versions, we can use it to quickly check for inequality
-            if (_HashCode.IsValueCreated && obj._HashCode.IsValueCreated && GetHashCode() != obj.GetHashCode())
+            if (_HashCode?.IsValueCreated == true && obj._HashCode?.IsValueCreated == true && GetHashCode() != obj.GetHashCode())
                 return false;
             return _Major == obj.Major && _Minor == obj.Minor && _Build == obj.Build && _Revision == obj.Revision;
         }
@@ -435,7 +435,7 @@ namespace Chummer
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
         {
-            return _HashCode.Value;
+            return _HashCode?.Value ?? 0;
         }
 
         /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="T:System.String" /> representation.</summary>
@@ -444,7 +444,7 @@ namespace Chummer
         /// For example, if you create a ValueVersion struct using the constructor Version(1,1), the returned string is "1.1". If you create a ValueVersion struct using the constructor Version(1,3,4,2), the returned string is "1.3.4.2".</returns>
         public override string ToString()
         {
-            return _DefaultString.Value;
+            return _DefaultString?.Value ?? string.Empty;
         }
 
         /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="T:System.String" /> representation. A specified count indicates the number of components to return.</summary>
@@ -484,18 +484,21 @@ namespace Chummer
         public string ToString(int fieldCount)
         {
             // Return cached/cacheable default string if possible
-            if (_Build == -1)
+            if (_DefaultString != null)
             {
-                if (fieldCount == 2)
+                if (_Build == -1)
+                {
+                    if (fieldCount == 2)
+                        return _DefaultString.Value;
+                }
+                else if (_Revision == -1)
+                {
+                    if (fieldCount == 3)
+                        return _DefaultString.Value;
+                }
+                else if (fieldCount == 4)
                     return _DefaultString.Value;
             }
-            else if (_Revision == -1)
-            {
-                if (fieldCount == 3)
-                    return _DefaultString.Value;
-            }
-            else if (fieldCount == 4)
-                return _DefaultString.Value;
             switch (fieldCount)
             {
                 case 0:
