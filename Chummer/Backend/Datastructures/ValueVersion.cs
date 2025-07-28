@@ -34,9 +34,6 @@ namespace Chummer
         private readonly int _Revision;
         private readonly Lazy<int> _HashCode; // Since this is a readonly struct, we can cache the HashCode
         private readonly Lazy<string> _DefaultString; // Since this is a readonly struct, we can cache the default string
-        private static readonly char[] SeparatorsArray = {
-            '.'
-        };
 
         /// <summary>Initializes a new ValueVersion struct with the specified major, minor, build, and revision numbers.</summary>
         /// <param name="major">The major version number.</param>
@@ -607,7 +604,7 @@ namespace Chummer
                 result.m_parsedValueVersion = new ValueVersion(parsedComponent0);
                 return true;
             }
-            string[] strArray = version.SplitToPooledArray(out int length, SeparatorsArray);
+            string[] strArray = version.SplitToPooledArray(out int length, '.');
             try
             {
                 if (length < 2 || length > 4)
