@@ -1212,14 +1212,14 @@ namespace Chummer
                                                 x => x.GetDodgeToolTipAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
 
-                                        await lblSpellDefenseIndirectDodge.DoOneWayDataBindingAsync("Text",
-                                            CharacterObject,
-                                            nameof(Character
-                                                .DisplaySpellDefenseIndirectDodge), GenericToken).ConfigureAwait(false);
-                                        await lblSpellDefenseIndirectDodge.DoOneWayDataBindingAsync(
-                                            "ToolTipText", CharacterObject,
-                                            nameof(Character
-                                                .SpellDefenseIndirectDodgeToolTip), GenericToken).ConfigureAwait(false);
+                                        await lblSpellDefenseIndirectDodge.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Text = y, CharacterObject,
+                                            nameof(Character.DisplaySpellDefenseIndirectDodge),
+                                            x => x.GetDisplaySpellDefenseIndirectDodgeAsync(GenericToken), GenericToken).ConfigureAwait(false);
+                                        await lblSpellDefenseIndirectDodge.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.ToolTipText = y, CharacterObject,
+                                            nameof(Character.SpellDefenseIndirectDodgeToolTip),
+                                            x => x.GetSpellDefenseIndirectDodgeToolTipAsync(GenericToken), GenericToken).ConfigureAwait(false);
                                         await lblSpellDefenseIndirectSoak.DoOneWayDataBindingAsync("Text",
                                             CharacterObject,
                                             nameof(Character
@@ -10138,7 +10138,7 @@ namespace Chummer
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: GenericToken).ConfigureAwait(false) == DialogResult.No)
                     return;
 
-                CharacterObject.BurntStreetCred += 2;
+                await CharacterObject.ModifyBurntStreetCredAsync(2, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

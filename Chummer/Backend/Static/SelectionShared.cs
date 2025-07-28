@@ -899,7 +899,9 @@ namespace Chummer
                                 : await LanguageManager.GetStringAsync("Message_SelectQuality_RequireKarma",
                                     token: token).ConfigureAwait(false),
                             strNodeInnerText);
-                    return new Tuple<bool, string>(objCharacter.CareerKarma >= xmlNode.ValueAsInt, strName);
+                    return new Tuple<bool, string>((blnSync
+                        ? objCharacter.CareerKarma
+                        : await objCharacter.GetCareerKarmaAsync(token).ConfigureAwait(false)) >= xmlNode.ValueAsInt, strName);
                 }
                 case "chargenonly":
                 {

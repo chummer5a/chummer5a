@@ -1177,18 +1177,14 @@ namespace Chummer
                                                 x => x.GetDodgeToolTipAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
 
-                                        await lblSpellDefenseIndirectDodge.DoOneWayDataBindingAsync("Text",
-                                                CharacterObject,
-                                                nameof(Character
-                                                    .DisplaySpellDefenseIndirectDodge),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
-                                        await lblSpellDefenseIndirectDodge.DoOneWayDataBindingAsync(
-                                                "ToolTipText", CharacterObject,
-                                                nameof(Character
-                                                    .SpellDefenseIndirectDodgeToolTip),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
+                                        await lblSpellDefenseIndirectDodge.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Text = y, CharacterObject,
+                                            nameof(Character.DisplaySpellDefenseIndirectDodge),
+                                            x => x.GetDisplaySpellDefenseIndirectDodgeAsync(GenericToken), GenericToken).ConfigureAwait(false);
+                                        await lblSpellDefenseIndirectDodge.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.ToolTipText = y, CharacterObject,
+                                            nameof(Character.SpellDefenseIndirectDodgeToolTip),
+                                            x => x.GetSpellDefenseIndirectDodgeToolTipAsync(GenericToken), GenericToken).ConfigureAwait(false);
                                         await lblSpellDefenseIndirectSoak.DoOneWayDataBindingAsync("Text",
                                                 CharacterObject,
                                                 nameof(Character
@@ -13676,7 +13672,9 @@ namespace Chummer
             if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
                 int att = await CalculateAttributePriorityPoints(attribs, extraAttribs, token).ConfigureAwait(false);
-                int total = special ? CharacterObject.TotalSpecial : CharacterObject.TotalAttributes;
+                int total = special
+                    ? await CharacterObject.GetTotalSpecialAsync(token).ConfigureAwait(false)
+                    : await CharacterObject.GetTotalAttributesAsync(token).ConfigureAwait(false);
                 if (bp > 0)
                 {
                     s = string.Format(GlobalSettings.CultureInfo,
@@ -20887,7 +20885,7 @@ namespace Chummer
 
                     ThreadSafeObservableCollection<CharacterAttrib> lstSpecialAttributes
                         = await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false);
-                    i = CharacterObject.TotalSpecial
+                    i = await CharacterObject.GetTotalSpecialAsync(token).ConfigureAwait(false)
                         - await CalculateAttributePriorityPoints(lstSpecialAttributes, token: token)
                             .ConfigureAwait(false);
                     // Check if the character has gone over on Special Attributes
@@ -21549,7 +21547,7 @@ namespace Chummer
                         }
                     }
 
-                    i = CharacterObject.Attributes
+                    i = await CharacterObject.GetAttributesAsync(token).ConfigureAwait(false)
                         - await CalculateAttributePriorityPoints(lstAttributes,
                                                                  token: token).ConfigureAwait(false);
                     // Check if the character has extra Attribute points
@@ -21578,7 +21576,7 @@ namespace Chummer
                         blnValid = false;
                     }
 
-                    i = CharacterObject.Special
+                    i = await CharacterObject.GetSpecialAsync(token).ConfigureAwait(false)
                         - await CalculateAttributePriorityPoints(lstSpecialAttributes, token: token)
                             .ConfigureAwait(false);
                     // Check if the character has extra Special Attribute points

@@ -318,7 +318,7 @@ namespace Chummer.Backend.Skills
                                await SkillGroupObject.GetRatingAsync(token).ConfigureAwait(false) > 0)
                             .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("default", Default.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("default", (await GetDefaultAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("requiresgroundmovement",
                             RequiresGroundMovement.ToString(GlobalSettings.InvariantCultureInfo), token: token)
