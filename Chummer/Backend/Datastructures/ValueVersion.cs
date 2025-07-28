@@ -32,8 +32,6 @@ namespace Chummer
         private readonly int _Minor;
         private readonly int _Build;
         private readonly int _Revision;
-        private readonly Lazy<int> _HashCode; // Since this is a readonly struct, we can cache the HashCode
-        private readonly Lazy<string> _DefaultString; // Since this is a readonly struct, we can cache the default string
 
         /// <summary>Initializes a new ValueVersion struct with the specified major, minor, build, and revision numbers.</summary>
         /// <param name="major">The major version number.</param>
@@ -56,32 +54,6 @@ namespace Chummer
             _Minor = minor;
             _Build = build;
             _Revision = revision;
-            _HashCode = new Lazy<int>(() => 0 | (major & 0xF) << 28 | (minor & 0xFF) << 20 | (build & 0xFF) << 12 | revision & 0xFFF);
-            _DefaultString = new Lazy<string>(() =>
-            {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                    out StringBuilder sbdReturn))
-                {
-                    AppendPositiveNumber(major, sbdReturn);
-                    sbdReturn.Append('.');
-                    AppendPositiveNumber(minor, sbdReturn);
-                    sbdReturn.Append('.');
-                    AppendPositiveNumber(build, sbdReturn);
-                    sbdReturn.Append('.');
-                    AppendPositiveNumber(revision, sbdReturn);
-                    return sbdReturn.ToString();
-                }
-                void AppendPositiveNumber(int num, StringBuilder sb)
-                {
-                    int length = sb.Length;
-                    do
-                    {
-                        num = num.DivRem(10, out int num1);
-                        sb.Insert(length, (char)(48 + num1));
-                    }
-                    while (num > 0);
-                }
-            });
         }
 
         /// <summary>Initializes a new ValueVersion struct using the specified major, minor, and build values.</summary>
@@ -102,30 +74,6 @@ namespace Chummer
             _Minor = minor;
             _Build = build;
             _Revision = -1;
-            _HashCode = new Lazy<int>(() => 0 | (major & 0xF) << 28 | (minor & 0xFF) << 20 | (build & 0xFF) << 12 | (-1 & 0xFFF));
-            _DefaultString = new Lazy<string>(() =>
-            {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                   out StringBuilder sbdReturn))
-                {
-                    AppendPositiveNumber(major, sbdReturn);
-                    sbdReturn.Append('.');
-                    AppendPositiveNumber(minor, sbdReturn);
-                    sbdReturn.Append('.');
-                    AppendPositiveNumber(build, sbdReturn);
-                    return sbdReturn.ToString();
-                }
-                void AppendPositiveNumber(int num, StringBuilder sb)
-                {
-                    int length = sb.Length;
-                    do
-                    {
-                        num = num.DivRem(10, out int num1);
-                        sb.Insert(length, (char)(48 + num1));
-                    }
-                    while (num > 0);
-                }
-            });
         }
 
         /// <summary>Initializes a new ValueVersion struct using the specified major and minor values.</summary>
@@ -143,28 +91,6 @@ namespace Chummer
             _Minor = minor;
             _Build = -1;
             _Revision = -1;
-            _HashCode = new Lazy<int>(() => 0 | (major & 0xF) << 28 | (minor & 0xFF) << 20 | (-1 & 0xFF) << 12 | (-1 & 0xFFF));
-            _DefaultString = new Lazy<string>(() =>
-            {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                   out StringBuilder sbdReturn))
-                {
-                    AppendPositiveNumber(major, sbdReturn);
-                    sbdReturn.Append('.');
-                    AppendPositiveNumber(minor, sbdReturn);
-                    return sbdReturn.ToString();
-                }
-                void AppendPositiveNumber(int num, StringBuilder sb)
-                {
-                    int length = sb.Length;
-                    do
-                    {
-                        num = num.DivRem(10, out int num1);
-                        sb.Insert(length, (char)(48 + num1));
-                    }
-                    while (num > 0);
-                }
-            });
         }
 
         public ValueVersion(int major = 0)
@@ -173,27 +99,6 @@ namespace Chummer
             _Minor = 0;
             _Build = -1;
             _Revision = -1;
-            _HashCode = new Lazy<int>(() => 0 | (major & 0xF) << 28 | (0 & 0xFF) << 20 | (-1 & 0xFF) << 12 | (-1 & 0xFFF));
-            _DefaultString = new Lazy<string>(() =>
-            {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                   out StringBuilder sbdReturn))
-                {
-                    AppendPositiveNumber(major, sbdReturn);
-                    sbdReturn.Append(".0");
-                    return sbdReturn.ToString();
-                }
-                void AppendPositiveNumber(int num, StringBuilder sb)
-                {
-                    int length = sb.Length;
-                    do
-                    {
-                        num = num.DivRem(10, out int num1);
-                        sb.Insert(length, (char)(48 + num1));
-                    }
-                    while (num > 0);
-                }
-            });
         }
 
         /// <summary>Initializes a new ValueVersion struct using the specified string.</summary>
@@ -212,48 +117,14 @@ namespace Chummer
             _Minor = version1.Minor;
             _Build = version1.Build;
             _Revision = version1.Revision;
-            _HashCode = version1._HashCode;
-            _DefaultString = version1._DefaultString;
         }
 
         public ValueVersion(Version version)
         {
-            int major = _Major = version.Major;
-            int minor = _Minor = version.Minor;
-            int build = _Build = version.Build;
-            int revision = _Revision = version.Revision;
-            _HashCode = new Lazy<int>(() => 0 | (major & 0xF) << 28 | (minor & 0xFF) << 20 | (build & 0xFF) << 12 | revision & 0xFFF);
-            _DefaultString = new Lazy<string>(() =>
-            {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                   out StringBuilder sbdReturn))
-                {
-                    AppendPositiveNumber(major, sbdReturn);
-                    sbdReturn.Append('.');
-                    AppendPositiveNumber(minor, sbdReturn);
-                    if (build != -1)
-                    {
-                        sbdReturn.Append('.');
-                        AppendPositiveNumber(build, sbdReturn);
-                        if (revision != -1)
-                        {
-                            sbdReturn.Append('.');
-                            AppendPositiveNumber(revision, sbdReturn);
-                        }
-                    }
-                    return sbdReturn.ToString();
-                }
-                void AppendPositiveNumber(int num, StringBuilder sb)
-                {
-                    int length = sb.Length;
-                    do
-                    {
-                        num = num.DivRem(10, out int num1);
-                        sb.Insert(length, (char)(48 + num1));
-                    }
-                    while (num > 0);
-                }
-            });
+            _Major = version.Major;
+            _Minor = version.Minor;
+            _Build = version.Build;
+            _Revision = version.Revision;
         }
 
         /// <summary>Gets the value of the major component of the version number for the current ValueVersion struct.</summary>
@@ -413,9 +284,6 @@ namespace Chummer
         /// <see langword="true" /> if every component of the current ValueVersion struct matches the corresponding component of the <paramref name="obj" /> parameter; otherwise, <see langword="false" />.</returns>
         public bool Equals(ValueVersion obj)
         {
-            // Since hash codes are cached for value versions, we can use it to quickly check for inequality
-            if (_HashCode?.IsValueCreated == true && obj._HashCode?.IsValueCreated == true && GetHashCode() != obj.GetHashCode())
-                return false;
             return _Major == obj.Major && _Minor == obj.Minor && _Build == obj.Build && _Revision == obj.Revision;
         }
 
@@ -432,16 +300,18 @@ namespace Chummer
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
         {
-            return _HashCode?.Value ?? 0;
+            return 0 | (_Major & 0xF) << 28 | (_Minor & 0xFF) << 20 | (_Build & 0xFF) << 12 | _Revision & 0xFFF;
         }
 
         /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="T:System.String" /> representation.</summary>
         /// <returns>The <see cref="T:System.String" /> representation of the values of the major, minor, build, and revision components of the current ValueVersion struct, as depicted in the following format. Each component is separated by a period character ('.'). Square brackets ('[' and ']') indicate a component that will not appear in the return value if the component is not defined:
         /// major.minor[.build[.revision]]
-        /// For example, if you create a ValueVersion struct using the constructor Version(1,1), the returned string is "1.1". If you create a ValueVersion struct using the constructor Version(1,3,4,2), the returned string is "1.3.4.2".</returns>
+        /// For example, if you create a ValueVersion struct using the constructor ValueVersion(1,1), the returned string is "1.1". If you create a ValueVersion struct using the constructor ValueVersion(1,3,4,2), the returned string is "1.3.4.2".</returns>
         public override string ToString()
         {
-            return _DefaultString?.Value ?? string.Empty;
+            if (_Build == -1)
+                return ToString(2);
+            return _Revision == -1 ? ToString(3) : ToString(4);
         }
 
         /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="T:System.String" /> representation. A specified count indicates the number of components to return.</summary>
@@ -473,29 +343,13 @@ namespace Chummer
         /// 
         /// 
         /// 
-        /// For example, if you create ValueVersion struct using the constructor Version(1,3,5), ToString(2) returns "1.3" and ToString(4) throws an exception.</returns>
+        /// For example, if you create ValueVersion struct using the constructor ValueVersion(1,3,5), ToString(2) returns "1.3" and ToString(4) throws an exception.</returns>
         /// <exception cref="T:System.ArgumentException">
         ///         <paramref name="fieldCount" /> is less than 0, or more than 4.
         /// -or-
         /// <paramref name="fieldCount" /> is more than the number of components defined in the current ValueVersion struct.</exception>
         public string ToString(int fieldCount)
         {
-            // Return cached/cacheable default string if possible
-            if (_DefaultString != null)
-            {
-                if (_Build == -1)
-                {
-                    if (fieldCount == 2)
-                        return _DefaultString.Value;
-                }
-                else if (_Revision == -1)
-                {
-                    if (fieldCount == 3)
-                        return _DefaultString.Value;
-                }
-                else if (fieldCount == 4)
-                    return _DefaultString.Value;
-            }
             switch (fieldCount)
             {
                 case 0:
