@@ -929,12 +929,13 @@ namespace Chummer.Backend.Attributes
                     return intReturn;
                 return _intCachedValue = await Task.Run(async () => Math.Min(
                                                             Math.Max(
-                                                                Base + await GetFreeBaseAsync(token).ConfigureAwait(false)
-                                                                     + await GetRawMinimumAsync(token).ConfigureAwait(false)
-                                                                     + await GetAttributeValueModifiersAsync(token)
+                                                                await GetBaseAsync(token).ConfigureAwait(false)
+                                                                    + await GetFreeBaseAsync(token).ConfigureAwait(false)
+                                                                    + await GetRawMinimumAsync(token).ConfigureAwait(false)
+                                                                    + await GetAttributeValueModifiersAsync(token)
                                                                          .ConfigureAwait(false),
                                                                 await GetTotalMinimumAsync(token).ConfigureAwait(false))
-                                                            + Karma,
+                                                            + await GetKarmaAsync(token).ConfigureAwait(false),
                                                             await GetTotalMaximumAsync(token).ConfigureAwait(false)), token)
                                                    .ConfigureAwait(false);
             }

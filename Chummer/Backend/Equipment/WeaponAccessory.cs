@@ -437,15 +437,20 @@ namespace Chummer.Backend.Equipment
                             List<Weapon> lstWeapons = new List<Weapon>(1);
 
                             if (blnSync)
+                            {
                                 // ReSharper disable once MethodHasAsyncOverload
                                 objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
                                     blnAddChildImprovements, blnChildCreateChildren, token: token);
+                                objGear.Quantity = decGearQty;
+                            }
                             else
+                            {
                                 await objGear.CreateAsync(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
                                         blnAddChildImprovements, blnChildCreateChildren, token: token)
                                     .ConfigureAwait(false);
+                                await objGear.SetQuantityAsync(decGearQty, token).ConfigureAwait(false);
+                            }
 
-                            objGear.Quantity = decGearQty;
                             objGear.Cost = "0";
                             objGear.ParentID = InternalId;
                             if (!string.IsNullOrEmpty(strChildForceSource))
@@ -3013,8 +3018,8 @@ namespace Chummer.Backend.Equipment
                 Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                 Tag = this,
                 ContextMenuStrip = cmsWeaponAccessory,
-                ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap()
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;

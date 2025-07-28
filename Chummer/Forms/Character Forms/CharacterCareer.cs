@@ -1212,14 +1212,14 @@ namespace Chummer
                                                 x => x.GetDodgeToolTipAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
 
-                                        await lblSpellDefenseIndirectDodge.DoOneWayDataBindingAsync("Text",
-                                            CharacterObject,
-                                            nameof(Character
-                                                .DisplaySpellDefenseIndirectDodge), GenericToken).ConfigureAwait(false);
-                                        await lblSpellDefenseIndirectDodge.DoOneWayDataBindingAsync(
-                                            "ToolTipText", CharacterObject,
-                                            nameof(Character
-                                                .SpellDefenseIndirectDodgeToolTip), GenericToken).ConfigureAwait(false);
+                                        await lblSpellDefenseIndirectDodge.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Text = y, CharacterObject,
+                                            nameof(Character.DisplaySpellDefenseIndirectDodge),
+                                            x => x.GetDisplaySpellDefenseIndirectDodgeAsync(GenericToken), GenericToken).ConfigureAwait(false);
+                                        await lblSpellDefenseIndirectDodge.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.ToolTipText = y, CharacterObject,
+                                            nameof(Character.SpellDefenseIndirectDodgeToolTip),
+                                            x => x.GetSpellDefenseIndirectDodgeToolTipAsync(GenericToken), GenericToken).ConfigureAwait(false);
                                         await lblSpellDefenseIndirectSoak.DoOneWayDataBindingAsync("Text",
                                             CharacterObject,
                                             nameof(Character
@@ -8200,7 +8200,7 @@ namespace Chummer
                                                                                 GlobalSettings.CultureInfo)), GenericToken)
                                           .ConfigureAwait(false))
                         return;
-                    objGear.Quantity -= decSelectedValue;
+                    await objGear.SetQuantityAsync(objGear.Quantity - decSelectedValue, GenericToken).ConfigureAwait(false);
                     string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                     await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
                                  .ConfigureAwait(false);
@@ -8273,13 +8273,13 @@ namespace Chummer
 
                     objGear.Copy(objSelectedGear);
 
-                    objGear.Quantity = frmPickNumber.MyForm.SelectedValue;
+                    await objGear.SetQuantityAsync(frmPickNumber.MyForm.SelectedValue, GenericToken).ConfigureAwait(false);
                     await objGear.SetEquippedAsync(objSelectedGear.Equipped, GenericToken).ConfigureAwait(false);
                     objGear.Location = objSelectedGear.Location;
                     await objGear.SetNotesAsync(await objSelectedGear.GetNotesAsync(GenericToken), GenericToken).ConfigureAwait(false);
 
                     // Update the selected item.
-                    objSelectedGear.Quantity -= objGear.Quantity;
+                    await objSelectedGear.SetQuantityAsync(objSelectedGear.Quantity - objGear.Quantity, GenericToken).ConfigureAwait(false);
                     string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                     await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
                                  .ConfigureAwait(false);
@@ -8367,7 +8367,7 @@ namespace Chummer
                         return;
 
                     // Increase the quantity for the selected item.
-                    objSelectedGear.Quantity += frmPickNumber.MyForm.SelectedValue;
+                    await objSelectedGear.SetQuantityAsync(objSelectedGear.Quantity + frmPickNumber.MyForm.SelectedValue, GenericToken).ConfigureAwait(false);
                     string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                     await treGear.DoThreadSafeAsync(x =>
                     {
@@ -8378,7 +8378,7 @@ namespace Chummer
                     }, GenericToken).ConfigureAwait(false);
 
                     // Reduce the quantity for the selected item.
-                    objGear.Quantity -= frmPickNumber.MyForm.SelectedValue;
+                    await objGear.SetQuantityAsync(objGear.Quantity - frmPickNumber.MyForm.SelectedValue, GenericToken).ConfigureAwait(false);
                 }
 
                 // If the quantity has reached 0, delete the item and any Weapons it created.
@@ -8480,7 +8480,7 @@ namespace Chummer
 
                     objGear.Copy(objSelectedGear);
 
-                    objGear.Quantity = decMove;
+                    await objGear.SetQuantityAsync(decMove, GenericToken).ConfigureAwait(false);
                     objGear.Location = null;
                     await objGear.SetParentAsync(objVehicle, GenericToken).ConfigureAwait(false);
                     await objVehicle.GearChildren.AddAsync(objGear, GenericToken).ConfigureAwait(false);
@@ -8488,7 +8488,7 @@ namespace Chummer
                 else
                 {
                     // Everything matches up, so just increase the quantity.
-                    objFoundGear.Quantity += decMove;
+                    await objFoundGear.SetQuantityAsync(objFoundGear.Quantity + decMove, GenericToken).ConfigureAwait(false);
                     string strText = await objFoundGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                     await treVehicles.DoThreadSafeAsync(x =>
                     {
@@ -8499,7 +8499,7 @@ namespace Chummer
                 }
 
                 // Update the selected item.
-                objSelectedGear.Quantity -= decMove;
+                await objSelectedGear.SetQuantityAsync(objSelectedGear.Quantity - decMove, GenericToken).ConfigureAwait(false);
                 if (objSelectedGear.Quantity <= 0)
                 {
                     await objSelectedGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
@@ -8639,7 +8639,7 @@ namespace Chummer
 
                             objGear.Copy(objSelectedGear);
 
-                            objGear.Quantity = decMove;
+                            await objGear.SetQuantityAsync(decMove, GenericToken).ConfigureAwait(false);
 
                             await CharacterObject.Gear.AddAsync(objGear, GenericToken).ConfigureAwait(false);
 
@@ -8648,7 +8648,7 @@ namespace Chummer
                         else
                         {
                             // Everything matches up, so just increase the quantity.
-                            objFoundGear.Quantity += decMove;
+                            await objFoundGear.SetQuantityAsync(objFoundGear.Quantity + decMove, GenericToken).ConfigureAwait(false);
                             string strText = await objFoundGear.GetCurrentDisplayNameAsync(token: GenericToken)
                                                                .ConfigureAwait(false);
                             await treGear.DoThreadSafeAsync(x =>
@@ -8660,7 +8660,7 @@ namespace Chummer
                         }
 
                         // Update the selected item.
-                        objSelectedGear.Quantity -= decMove;
+                        await objSelectedGear.SetQuantityAsync(objSelectedGear.Quantity - decMove, GenericToken).ConfigureAwait(false);
                         if (objSelectedGear.Quantity <= 0)
                         {
                             await objSelectedGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
@@ -8752,7 +8752,7 @@ namespace Chummer
                            .ConfigureAwait(false))
                     return;
 
-                objGear.Quantity -= decSelectedValue;
+                await objGear.SetQuantityAsync(objGear.Quantity - decSelectedValue, GenericToken).ConfigureAwait(false);
 
                 if (objGear.Quantity > 0)
                 {
@@ -10138,7 +10138,7 @@ namespace Chummer
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: GenericToken).ConfigureAwait(false) == DialogResult.No)
                     return;
 
-                CharacterObject.BurntStreetCred += 2;
+                await CharacterObject.ModifyBurntStreetCredAsync(2, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -11839,7 +11839,7 @@ namespace Chummer
                            }, token).ConfigureAwait(false))
                 {
                     frmPickWeapon.MyForm.Mounts.UnionWith(
-                        objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
+                        await objSelectedWeapon.GetAccessoryMountsAsync(token: token));
 
                     // Make sure the dialogue window was not canceled.
                     if (await frmPickWeapon.ShowDialogSafeAsync(this, token).ConfigureAwait(false) ==
@@ -12167,7 +12167,7 @@ namespace Chummer
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
 
-                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                                await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, GenericToken).ConfigureAwait(false);
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
@@ -12296,7 +12296,7 @@ namespace Chummer
                 return;
             }
 
-            objWeapon.AmmoRemaining -= objWeapon.SingleShot;
+            await objWeapon.SetAmmoRemaining(objWeapon.AmmoRemaining - objWeapon.SingleShot, token).ConfigureAwait(false);
 
             await lblWeaponAmmoRemaining
                   .DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token)
@@ -12334,7 +12334,7 @@ namespace Chummer
 
             if (objWeapon.AmmoRemaining >= objWeapon.ShortBurst)
             {
-                objWeapon.AmmoRemaining -= objWeapon.ShortBurst;
+                await objWeapon.SetAmmoRemaining(objWeapon.AmmoRemaining - objWeapon.ShortBurst, token).ConfigureAwait(false);
             }
             else
             {
@@ -12347,7 +12347,7 @@ namespace Chummer
                             await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token)
                                 .ConfigureAwait(false), MessageBoxButtons.YesNo,
                             MessageBoxIcon.Exclamation, token: token).ConfigureAwait(false) == DialogResult.Yes)
-                        objWeapon.AmmoRemaining = 0;
+                        await objWeapon.SetAmmoRemaining(0, token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -12358,7 +12358,7 @@ namespace Chummer
                             await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token)
                                 .ConfigureAwait(false), MessageBoxButtons.YesNo,
                             MessageBoxIcon.Exclamation, token: token).ConfigureAwait(false) == DialogResult.Yes)
-                        objWeapon.AmmoRemaining = 0;
+                        await objWeapon.SetAmmoRemaining(0, token).ConfigureAwait(false);
                 }
             }
 
@@ -12398,7 +12398,7 @@ namespace Chummer
 
             if (objWeapon.AmmoRemaining >= objWeapon.LongBurst)
             {
-                objWeapon.AmmoRemaining -= objWeapon.LongBurst;
+                await objWeapon.SetAmmoRemaining(objWeapon.AmmoRemaining - objWeapon.LongBurst, token).ConfigureAwait(false);
             }
             else if (objWeapon.AmmoRemaining == objWeapon.SingleShot)
             {
@@ -12409,7 +12409,7 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token)
                             .ConfigureAwait(false), MessageBoxButtons.YesNo,
                         MessageBoxIcon.Exclamation, token: token).ConfigureAwait(false) == DialogResult.Yes)
-                    objWeapon.AmmoRemaining = 0;
+                    await objWeapon.SetAmmoRemaining(0, token).ConfigureAwait(false);
             }
             else if (objWeapon.AmmoRemaining > objWeapon.ShortBurst)
             {
@@ -12420,7 +12420,7 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token)
                             .ConfigureAwait(false), MessageBoxButtons.YesNo,
                         MessageBoxIcon.Exclamation, token: token).ConfigureAwait(false) == DialogResult.Yes)
-                    objWeapon.AmmoRemaining = 0;
+                    await objWeapon.SetAmmoRemaining(0, token).ConfigureAwait(false);
             }
             else if (objWeapon.AmmoRemaining == objWeapon.ShortBurst)
             {
@@ -12431,7 +12431,7 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token)
                             .ConfigureAwait(false), MessageBoxButtons.YesNo,
                         MessageBoxIcon.Exclamation, token: token).ConfigureAwait(false) == DialogResult.Yes)
-                    objWeapon.AmmoRemaining = 0;
+                    await objWeapon.SetAmmoRemaining(0, token).ConfigureAwait(false);
             }
             else if (await Program.ShowScrollableMessageBoxAsync(
                          this,
@@ -12440,7 +12440,7 @@ namespace Chummer
                          await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token)
                              .ConfigureAwait(false), MessageBoxButtons.YesNo,
                          MessageBoxIcon.Exclamation, token: token).ConfigureAwait(false) == DialogResult.Yes)
-                objWeapon.AmmoRemaining = 0;
+                await objWeapon.SetAmmoRemaining(0, token).ConfigureAwait(false);
 
             await lblWeaponAmmoRemaining
                   .DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token)
@@ -12468,7 +12468,7 @@ namespace Chummer
 
                 if (objWeapon.AmmoRemaining >= objWeapon.FullBurst)
                 {
-                    objWeapon.AmmoRemaining -= objWeapon.FullBurst;
+                    await objWeapon.SetAmmoRemaining(objWeapon.AmmoRemaining - objWeapon.FullBurst, GenericToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -12511,7 +12511,7 @@ namespace Chummer
 
                 if (objWeapon.AmmoRemaining >= objWeapon.Suppressive)
                 {
-                    objWeapon.AmmoRemaining -= objWeapon.Suppressive;
+                    await objWeapon.SetAmmoRemaining(objWeapon.AmmoRemaining - objWeapon.Suppressive, GenericToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -12564,7 +12564,7 @@ namespace Chummer
                 return;
             }
 
-            objWeapon.AmmoRemaining -= objWeapon.SingleShot;
+            await objWeapon.SetAmmoRemaining(objWeapon.AmmoRemaining - objWeapon.SingleShot, token).ConfigureAwait(false);
 
             await lblVehicleWeaponAmmoRemaining
                   .DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token)
@@ -12602,7 +12602,7 @@ namespace Chummer
 
             if (objWeapon.AmmoRemaining >= objWeapon.ShortBurst)
             {
-                objWeapon.AmmoRemaining -= objWeapon.ShortBurst;
+                await objWeapon.SetAmmoRemaining(objWeapon.AmmoRemaining - objWeapon.ShortBurst, token).ConfigureAwait(false);
             }
             else if (objWeapon.AmmoRemaining == objWeapon.SingleShot)
             {
@@ -12613,7 +12613,7 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token)
                             .ConfigureAwait(false), MessageBoxButtons.YesNo,
                         MessageBoxIcon.Exclamation, token: token).ConfigureAwait(false) == DialogResult.Yes)
-                    objWeapon.AmmoRemaining = 0;
+                    await objWeapon.SetAmmoRemaining(0, token).ConfigureAwait(false);
             }
             else if (await Program.ShowScrollableMessageBoxAsync(
                          this,
@@ -12622,7 +12622,7 @@ namespace Chummer
                          await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token)
                              .ConfigureAwait(false), MessageBoxButtons.YesNo,
                          MessageBoxIcon.Exclamation, token: token).ConfigureAwait(false) == DialogResult.Yes)
-                objWeapon.AmmoRemaining = 0;
+                await objWeapon.SetAmmoRemaining(0, token).ConfigureAwait(false);
 
             await lblVehicleWeaponAmmoRemaining
                   .DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token)
@@ -12660,7 +12660,7 @@ namespace Chummer
 
             if (objWeapon.AmmoRemaining >= objWeapon.LongBurst)
             {
-                objWeapon.AmmoRemaining -= objWeapon.LongBurst;
+                await objWeapon.SetAmmoRemaining(objWeapon.AmmoRemaining - objWeapon.LongBurst, token).ConfigureAwait(false);
             }
             else if (objWeapon.AmmoRemaining == objWeapon.SingleShot)
             {
@@ -12671,7 +12671,7 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token)
                             .ConfigureAwait(false), MessageBoxButtons.YesNo,
                         MessageBoxIcon.Exclamation, token: token).ConfigureAwait(false) == DialogResult.Yes)
-                    objWeapon.AmmoRemaining = 0;
+                    await objWeapon.SetAmmoRemaining(0, token).ConfigureAwait(false);
             }
             else if (objWeapon.AmmoRemaining > objWeapon.ShortBurst)
             {
@@ -12682,7 +12682,7 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token)
                             .ConfigureAwait(false), MessageBoxButtons.YesNo,
                         MessageBoxIcon.Exclamation, token: token).ConfigureAwait(false) == DialogResult.Yes)
-                    objWeapon.AmmoRemaining = 0;
+                    await objWeapon.SetAmmoRemaining(0, token).ConfigureAwait(false);
             }
             else if (objWeapon.AmmoRemaining == objWeapon.ShortBurst)
             {
@@ -12693,7 +12693,7 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token)
                             .ConfigureAwait(false), MessageBoxButtons.YesNo,
                         MessageBoxIcon.Exclamation, token: token).ConfigureAwait(false) == DialogResult.Yes)
-                    objWeapon.AmmoRemaining = 0;
+                    await objWeapon.SetAmmoRemaining(0, token).ConfigureAwait(false);
             }
             else if (await Program.ShowScrollableMessageBoxAsync(
                          this,
@@ -12702,7 +12702,7 @@ namespace Chummer
                          await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token)
                              .ConfigureAwait(false), MessageBoxButtons.YesNo,
                          MessageBoxIcon.Exclamation, token: token).ConfigureAwait(false) == DialogResult.Yes)
-                objWeapon.AmmoRemaining = 0;
+                await objWeapon.SetAmmoRemaining(0, token).ConfigureAwait(false);
 
             await lblVehicleWeaponAmmoRemaining
                   .DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token)
@@ -12731,7 +12731,7 @@ namespace Chummer
 
                 if (objWeapon.AmmoRemaining >= objWeapon.FullBurst)
                 {
-                    objWeapon.AmmoRemaining -= objWeapon.FullBurst;
+                    await objWeapon.SetAmmoRemaining(objWeapon.AmmoRemaining - objWeapon.FullBurst, GenericToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -12775,7 +12775,7 @@ namespace Chummer
 
                 if (objWeapon.AmmoRemaining >= objWeapon.Suppressive)
                 {
-                    objWeapon.AmmoRemaining -= objWeapon.Suppressive;
+                    await objWeapon.SetAmmoRemaining(objWeapon.AmmoRemaining - objWeapon.Suppressive, GenericToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -13860,7 +13860,7 @@ namespace Chummer
                                     break;
                             }
 
-                            objGear.Quantity -= objExpense.Undo.Qty;
+                            await objGear.SetQuantityAsync(objGear.Quantity - objExpense.Undo.Qty, GenericToken).ConfigureAwait(false);
 
                             if (objGear.Quantity <= 0)
                             {
@@ -13930,7 +13930,7 @@ namespace Chummer
                             if (objGear != null)
                             {
                                 // Deduct the Qty from the Gear.
-                                objGear.Quantity -= objExpense.Undo.Qty;
+                                await objGear.SetQuantityAsync(objGear.Quantity - objExpense.Undo.Qty, GenericToken).ConfigureAwait(false);
 
                                 // Remove the Gear if its Qty has been reduced to 0.
                                 if (objGear.Quantity <= 0)
@@ -14056,7 +14056,7 @@ namespace Chummer
                             if (objGear != null)
                             {
                                 // Deduct the Qty from the Gear.
-                                objGear.Quantity -= objExpense.Undo.Qty;
+                                await objGear.SetQuantityAsync(objGear.Quantity - objExpense.Undo.Qty, GenericToken).ConfigureAwait(false);
 
                                 // Remove the Gear if its Qty has been reduced to 0.
                                 if (objGear.Quantity <= 0)
@@ -15092,7 +15092,7 @@ namespace Chummer
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
 
-                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                                await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, GenericToken).ConfigureAwait(false);
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
@@ -15271,7 +15271,7 @@ namespace Chummer
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
 
-                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                                await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, GenericToken).ConfigureAwait(false);
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
@@ -15460,7 +15460,7 @@ namespace Chummer
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
 
-                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                                await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, GenericToken).ConfigureAwait(false);
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
@@ -15632,7 +15632,7 @@ namespace Chummer
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
 
-                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                                await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, GenericToken).ConfigureAwait(false);
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
@@ -15798,7 +15798,7 @@ namespace Chummer
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
 
-                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                                await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, GenericToken).ConfigureAwait(false);
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
@@ -15974,7 +15974,7 @@ namespace Chummer
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
 
-                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                                await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, GenericToken).ConfigureAwait(false);
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
@@ -16217,7 +16217,7 @@ namespace Chummer
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
 
-                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                                await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, GenericToken).ConfigureAwait(false);
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
@@ -16389,7 +16389,7 @@ namespace Chummer
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
 
-                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                                await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, GenericToken).ConfigureAwait(false);
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
@@ -20859,26 +20859,28 @@ namespace Chummer
                         string strCategory = await objDrug.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                         await lblDrugCategory.DoThreadSafeAsync(x => x.Text = strCategory, token)
                                              .ConfigureAwait(false);
+                        string strAddictionRating = (await objDrug.GetAddictionRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                         await lblDrugAddictionRating
                               .DoThreadSafeAsync(
-                                  x => x.Text = objDrug.AddictionRating.ToString(GlobalSettings.CultureInfo), token)
+                                  x => x.Text = strAddictionRating, token)
                               .ConfigureAwait(false);
+                        string strAddictionThreshold = (await objDrug.GetAddictionThresholdAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                         await lblDrugAddictionThreshold
                               .DoThreadSafeAsync(
-                                  x => x.Text = objDrug.AddictionThreshold.ToString(GlobalSettings.CultureInfo), token)
+                                  x => x.Text = strAddictionThreshold, token)
                               .ConfigureAwait(false);
                         string strText = await objDrug.GetEffectDescriptionAsync(token: token).ConfigureAwait(false);
                         await lblDrugEffect.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdComponents))
                         {
-                            foreach (DrugComponent objComponent in objDrug.Components)
+                            await objDrug.Components.ForEachAsync(async objComponent =>
                             {
                                 sbdComponents.AppendLine(
                                     await objComponent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                            }
-
-                            await lblDrugComponents.DoThreadSafeAsync(x => x.Text = sbdComponents.ToString(), token)
+                            }, token).ConfigureAwait(false);
+                            string strComponents = sbdComponents.ToString();
+                            await lblDrugComponents.DoThreadSafeAsync(x => x.Text = strComponents, token)
                                                    .ConfigureAwait(false);
                         }
                     }
@@ -21220,11 +21222,12 @@ namespace Chummer
                         {
                             await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = true, token)
                                                     .ConfigureAwait(false);
+                            bool blnIsCyberware = (await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)) == Improvement.ImprovementSource.Cyberware;
                             await gpbCyberwareMatrix.DoThreadSafeAsync(
-                                x => x.Visible = objCyberware.SourceType == Improvement.ImprovementSource.Cyberware,
+                                x => x.Visible = blnIsCyberware,
                                 token).ConfigureAwait(false);
                             await tabCyberwareCM.DoThreadSafeAsync(
-                                x => x.Visible = objCyberware.SourceType == Improvement.ImprovementSource.Cyberware,
+                                x => x.Visible = blnIsCyberware,
                                 token).ConfigureAwait(false);
                             // Buttons
                             await cmdDeleteCyberware.DoThreadSafeAsync(
@@ -21303,18 +21306,15 @@ namespace Chummer
                                                           .ConfigureAwait(false);
                                 await lblCyberlimbAGI.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
-                                await lblCyberlimbAGI.DoThreadSafeAsync(
-                                                         x => x.Text = objCyberware.GetAttributeTotalValue("AGI")
-                                                             .ToString(GlobalSettings.CultureInfo), token)
+                                string strAgi = (await objCyberware.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                                await lblCyberlimbAGI.DoThreadSafeAsync(x => x.Text = strAgi, token)
                                                      .ConfigureAwait(false);
                                 await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
                                 await lblCyberlimbSTR.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
-                                await lblCyberlimbSTR.DoThreadSafeAsync(
-                                                         x => x.Text = objCyberware.GetAttributeTotalValue("STR")
-                                                             .ToString(GlobalSettings.CultureInfo), token)
-                                                     .ConfigureAwait(false);
+                                string strStr = (await objCyberware.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                                await lblCyberlimbSTR.DoThreadSafeAsync(x => x.Text = strStr, token).ConfigureAwait(false);
                             }
                             else
                             {
@@ -21396,9 +21396,8 @@ namespace Chummer
                             await lblCyberwareName
                                   .DoThreadSafeAsync(x => x.Text = strName, token)
                                   .ConfigureAwait(false);
-                            await lblCyberwareCategory.DoThreadSafeAsync(
-                                                          x => x.Text = objGear.DisplayCategory(GlobalSettings
-                                                              .Language), token)
+                            string strCategory = await objGear.GetCurrentDisplayCategoryAsync(token).ConfigureAwait(false);
+                            await lblCyberwareCategory.DoThreadSafeAsync(x => x.Text = strCategory, token)
                                                       .ConfigureAwait(false);
                             await lblCyberwareGradeLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                         .ConfigureAwait(false);
@@ -21687,41 +21686,12 @@ namespace Chummer
                                                .ConfigureAwait(false);
                             await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
-                            await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                            if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
+                            string strMounts = await objWeapon.GetCurrentDisplayAccessoryMounts(token).ConfigureAwait(false);
+                            await lblWeaponSlots.DoThreadSafeAsync(x =>
                             {
-                                if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
-                                                                    StringComparison.OrdinalIgnoreCase))
-                                {
-                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                               out StringBuilder sbdSlotsText))
-                                    {
-                                        foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc(
-                                                     '/', StringSplitOptions.RemoveEmptyEntries))
-                                            sbdSlotsText
-                                                .Append(await LanguageManager
-                                                              .GetStringAsync("String_Mount" + strMount, token: token)
-                                                              .ConfigureAwait(false))
-                                                .Append('/');
-                                        --sbdSlotsText.Length;
-                                        await lblWeaponSlots
-                                              .DoThreadSafeAsync(x => x.Text = sbdSlotsText.ToString(), token)
-                                              .ConfigureAwait(false);
-                                    }
-                                }
-                                else
-                                    await lblWeaponSlots
-                                          .DoThreadSafeAsync(x => x.Text = objWeapon.AccessoryMounts, token)
-                                          .ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                string strNone = await LanguageManager.GetStringAsync("String_None", token: token)
-                                                                      .ConfigureAwait(false);
-                                await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = strNone, token)
-                                                    .ConfigureAwait(false);
-                            }
-
+                                x.Text = strMounts;
+                                x.Visible = true;
+                            }, token).ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             string strConcealText = await objWeapon.GetDisplayConcealabilityAsync(token).ConfigureAwait(false);
                             await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = true, token)
@@ -21799,7 +21769,7 @@ namespace Chummer
                                                          .ConfigureAwait(false);
                                 await lblWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token)
                                                     .ConfigureAwait(false);
-                                string strRC = await objWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
+                                (string strRC, string strRCTooltip) = await objWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
                                 await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                     .ConfigureAwait(false);
                                 await lblWeaponRC.DoThreadSafeAsync(x =>
@@ -21807,7 +21777,7 @@ namespace Chummer
                                     x.Visible = true;
                                     x.Text = strRC;
                                 }, token).ConfigureAwait(false);
-                                await lblWeaponRC.SetToolTipAsync(objWeapon.RCToolTip, token).ConfigureAwait(false);
+                                await lblWeaponRC.SetToolTipAsync(strRCTooltip, token).ConfigureAwait(false);
                                 string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
                                 await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                     .ConfigureAwait(false);
@@ -21943,9 +21913,13 @@ namespace Chummer
                                           x => x.Enabled = objWeapon.RequireAmmo && objWeapon.AmmoLoaded != null
                                               && objWeapon.AmmoRemaining != 0, token).ConfigureAwait(false);
                                 token.ThrowIfCancellationRequested();
+                                bool blnAllowSingleShot = await objWeapon.GetAllowSingleShotAsync(token).ConfigureAwait(false);
+                                bool blnAllowShortBurst = await objWeapon.GetAllowShortBurstAsync(token).ConfigureAwait(false);
+                                bool blnAllowLongBurst = await objWeapon.GetAllowLongBurstAsync(token).ConfigureAwait(false);
+                                bool blnAllowFullBurst = await objWeapon.GetAllowFullBurstAsync(token).ConfigureAwait(false);
+                                bool blnAllowSuppressive = await objWeapon.GetAllowSuppressiveAsync(token).ConfigureAwait(false);
                                 string strSingleShotText
-                                    = objWeapon.AllowSingleShot
-                                      || (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
+                                    = blnAllowSingleShot
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_SingleShot", token: token).ConfigureAwait(false),
@@ -21957,9 +21931,9 @@ namespace Chummer
                                                                 "String_Bullets", token: token).ConfigureAwait(false))
                                         : await
                                             LanguageManager.GetStringAsync("String_SingleShotNA", token: token)
-                                                           .ConfigureAwait(false);
+                                                            .ConfigureAwait(false);
                                 string strShortBurstText
-                                    = objWeapon.AllowShortBurst
+                                    = blnAllowShortBurst
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_ShortBurst", token: token).ConfigureAwait(false),
@@ -21973,7 +21947,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_ShortBurstNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strLongBurstText
-                                    = objWeapon.AllowLongBurst
+                                    = blnAllowLongBurst
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_LongBurst", token: token).ConfigureAwait(false),
@@ -21987,7 +21961,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_LongBurstNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strFullBurstText
-                                    = objWeapon.AllowFullBurst
+                                    = blnAllowFullBurst
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_FullBurst", token: token).ConfigureAwait(false),
@@ -22001,7 +21975,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_FullBurstNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strSuppressiveFireText
-                                    = objWeapon.AllowSuppressive
+                                    = blnAllowSuppressive
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                                                  "String_SuppressiveFire", token: token)
@@ -22017,16 +21991,11 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                                 await cmsAmmoExpense.DoThreadSafeAsync(() =>
                                 {
-                                    cmsAmmoSingleShot.Enabled = objWeapon.AllowSingleShot;
-                                    cmsAmmoShortBurst.Enabled = objWeapon.AllowShortBurst;
-                                    cmsAmmoLongBurst.Enabled = objWeapon.AllowLongBurst;
-                                    cmsAmmoFullBurst.Enabled = objWeapon.AllowFullBurst;
-                                    cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowSuppressive;
-
-                                    // Melee Weapons with Ammo are considered to be Single Shot.
-                                    if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
-                                        cmsAmmoSingleShot.Enabled = true;
-
+                                    cmsAmmoSingleShot.Enabled = blnAllowSingleShot;
+                                    cmsAmmoShortBurst.Enabled = blnAllowShortBurst;
+                                    cmsAmmoLongBurst.Enabled = blnAllowLongBurst;
+                                    cmsAmmoFullBurst.Enabled = blnAllowFullBurst;
+                                    cmsAmmoSuppressiveFire.Enabled = blnAllowSuppressive;
                                     cmsAmmoSingleShot.Text = strSingleShotText;
                                     cmsAmmoShortBurst.Text = strShortBurstText;
                                     cmsAmmoLongBurst.Text = strLongBurstText;
@@ -22282,14 +22251,15 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
+                            int intConceal = await objSelectedAccessory.GetTotalConcealabilityAsync(token).ConfigureAwait(false);
                             await lblWeaponConcealLabel
-                                  .DoThreadSafeAsync(x => x.Visible = objSelectedAccessory.TotalConcealability != 0,
+                                  .DoThreadSafeAsync(x => x.Visible = intConceal != 0,
                                                      token).ConfigureAwait(false);
                             await lblWeaponConceal.DoThreadSafeAsync(x =>
                             {
-                                x.Visible = objSelectedAccessory.TotalConcealability != 0;
+                                x.Visible = intConceal != 0;
                                 x.Text
-                                    = objSelectedAccessory.TotalConcealability.ToString(
+                                    = intConceal.ToString(
                                         "+#,0;-#,0;0", GlobalSettings.CultureInfo);
                             }, token).ConfigureAwait(false);
                             string strText2 = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
@@ -22486,9 +22456,8 @@ namespace Chummer
                             string strName = await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
                             await lblWeaponName.DoThreadSafeAsync(x => x.Text = strName, token)
                                                .ConfigureAwait(false);
-                            await lblWeaponCategory
-                                  .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language),
-                                                     token).ConfigureAwait(false);
+                            string strCategory = await objGear.GetCurrentDisplayCategoryAsync(token).ConfigureAwait(false);
+                            await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strCategory, token).ConfigureAwait(false);
                             int intGearMaxRatingValue = await objGear.GetMaxRatingValueAsync(token).ConfigureAwait(false);
                             if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                             {
@@ -23361,8 +23330,9 @@ namespace Chummer
                         string strName = await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
                         await lblGearName.DoThreadSafeAsync(x => x.Text = strName, token)
                                          .ConfigureAwait(false);
+                        string strCategory = await objGear.GetCurrentDisplayCategoryAsync(token).ConfigureAwait(false);
                         await lblGearCategory
-                              .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language), token)
+                              .DoThreadSafeAsync(x => x.Text = strCategory, token)
                               .ConfigureAwait(false);
                         int intGearMaxRatingValue = await objGear.GetMaxRatingValueAsync(token).ConfigureAwait(false);
                         if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
@@ -24204,7 +24174,7 @@ namespace Chummer
                         if (objGear.InternalId.IsEmptyGuid())
                             return frmPickGear.MyForm.AddAgain;
 
-                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                        await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, token).ConfigureAwait(false);
 
                         await objGear.SetParentAsync(blnNullParent ? null : objSelectedGear, token)
                             .ConfigureAwait(false);
@@ -24340,7 +24310,7 @@ namespace Chummer
                         if (objStackWith != null)
                         {
                             // A match was found, so increase the quantity instead.
-                            objStackWith.Quantity += objGear.Quantity;
+                            await objStackWith.SetQuantityAsync(objStackWith.Quantity + objGear.Quantity, token).ConfigureAwait(false);
 
                             if (!string.IsNullOrEmpty(objUndo.ObjectId))
                                 objUndo.ObjectId = objStackWith.InternalId;
@@ -24519,7 +24489,7 @@ namespace Chummer
                         if (objGear.InternalId.IsEmptyGuid())
                             return frmPickGear.MyForm.AddAgain;
 
-                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                        await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, token).ConfigureAwait(false);
 
                         if (objSelectedGear != null)
                         {
@@ -24545,13 +24515,13 @@ namespace Chummer
                         {
                             decGearQuantity = objGear.Quantity;
                             // A match was found, so increase the quantity instead.
-                            objMatchingGear.Quantity += decGearQuantity;
+                            await objMatchingGear.SetQuantityAsync(objMatchingGear.Quantity + decGearQuantity, token).ConfigureAwait(false);
 
                             await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                             if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) &&
                                 await objMatchingGear.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0)
                             {
-                                objMatchingGear.Quantity -= decGearQuantity;
+                                await objMatchingGear.SetQuantityAsync(objMatchingGear.Quantity - decGearQuantity, token).ConfigureAwait(false);
                                 await Program.ShowScrollableMessageBoxAsync(
                                         this,
                                         await LanguageManager.GetStringAsync("Message_CapacityReached", token: token)
@@ -24650,7 +24620,7 @@ namespace Chummer
                             {
                                 // Remove the added gear
                                 if (objMatchingGear != null)
-                                    objMatchingGear.Quantity -= decGearQuantity;
+                                    await objMatchingGear.SetQuantityAsync(objMatchingGear.Quantity + decGearQuantity, token).ConfigureAwait(false);
                                 // Remove any Improvements created by the Gear.
                                 else
                                     await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
@@ -25024,8 +24994,9 @@ namespace Chummer
                             // gpbVehiclesCommon
                             string strName = await objVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                             await lblVehicleName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
+                            string strCategory = await objVehicle.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                             await lblVehicleCategory
-                                  .DoThreadSafeAsync(x => x.Text = objVehicle.DisplayCategory(GlobalSettings.Language),
+                                  .DoThreadSafeAsync(x => x.Text = strCategory,
                                                      token).ConfigureAwait(false);
                             await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                        .ConfigureAwait(false);
@@ -25307,10 +25278,8 @@ namespace Chummer
                                   .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             // gpbVehiclesCommon
-                            await lblVehicleCategory
-                                  .DoThreadSafeAsync(
-                                      x => x.Text = objWeaponMount.DisplayCategory(GlobalSettings.Language),
-                                      token).ConfigureAwait(false);
+                            string strCategory = await objWeaponMount.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                            await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strCategory, token).ConfigureAwait(false);
                             string strName = await objWeaponMount.GetCurrentDisplayNameAsync(token)
                                                                  .ConfigureAwait(false);
                             await lblVehicleName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
@@ -25337,10 +25306,11 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
+                            string strSlots = (await objWeaponMount.GetCalculatedSlotsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                             await lblVehicleSlots.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objWeaponMount.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
+                                x.Text = strSlots;
                             }, token).ConfigureAwait(false);
                             await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = false, token)
                                                            .ConfigureAwait(false);
@@ -25418,10 +25388,11 @@ namespace Chummer
                                             .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
+                            string strSlots = (await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                             await lblVehicleSlots.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objMod.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
+                                x.Text = strSlots;
                             }, token).ConfigureAwait(false);
                             await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = false, token)
                                                            .ConfigureAwait(false);
@@ -25487,41 +25458,12 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
-                            await lblVehicleSlots.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                            if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
+                            string strMounts = await objWeapon.GetCurrentDisplayAccessoryMounts(token).ConfigureAwait(false);
+                            await lblVehicleSlots.DoThreadSafeAsync(x =>
                             {
-                                if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
-                                                                    StringComparison.OrdinalIgnoreCase))
-                                {
-                                    using (new FetchSafelyFromObjectPool<StringBuilder>(
-                                               Utils.StringBuilderPool, out StringBuilder sbdSlotsText))
-                                    {
-                                        foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc(
-                                                     '/', StringSplitOptions.RemoveEmptyEntries))
-                                            sbdSlotsText
-                                                .Append(await LanguageManager
-                                                              .GetStringAsync("String_Mount" + strMount, token: token)
-                                                              .ConfigureAwait(false))
-                                                .Append('/');
-                                        --sbdSlotsText.Length;
-                                        token.ThrowIfCancellationRequested();
-                                        await lblWeaponSlots
-                                              .DoThreadSafeAsync(x => x.Text = sbdSlotsText.ToString(), token)
-                                              .ConfigureAwait(false);
-                                    }
-                                }
-                                else
-                                    await lblWeaponSlots
-                                          .DoThreadSafeAsync(x => x.Text = objWeapon.AccessoryMounts, token)
-                                          .ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                string strNone = await LanguageManager.GetStringAsync("String_None", token: token)
-                                                                      .ConfigureAwait(false);
-                                await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = strNone, token)
-                                                    .ConfigureAwait(false);
-                            }
+                                x.Text = strMounts;
+                                x.Visible = true;
+                            }, token).ConfigureAwait(false);
 
                             await cmdVehicleMoveToInventory
                                   .DoThreadSafeAsync(x => x.Visible = !objWeapon.IncludedInWeapon, token)
@@ -25651,7 +25593,7 @@ namespace Chummer
                                 await lblVehicleWeaponAlternateRangeExtreme
                                       .DoThreadSafeAsync(x => x.Text = dicRanges["alternateextreme"], token)
                                       .ConfigureAwait(false);
-                                string strRC = await objWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
+                                (string strRC, string strRCTooltip) = await objWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
                                 await lblVehicleWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                             .ConfigureAwait(false);
                                 await lblVehicleWeaponRC.DoThreadSafeAsync(x =>
@@ -25659,7 +25601,7 @@ namespace Chummer
                                     x.Visible = true;
                                     x.Text = strRC;
                                 }, token).ConfigureAwait(false);
-                                await lblVehicleWeaponRC.SetToolTipAsync(objWeapon.RCToolTip, token).ConfigureAwait(false);
+                                await lblVehicleWeaponRC.SetToolTipAsync(strRCTooltip, token).ConfigureAwait(false);
                                 await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                             .ConfigureAwait(false);
                                 await lblVehicleWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token)
@@ -25724,9 +25666,13 @@ namespace Chummer
                                 await cboVehicleWeaponFiringMode
                                       .DoThreadSafeAsync(x => x.SelectedValue = objWeapon.FireMode, token)
                                       .ConfigureAwait(false);
+                                bool blnAllowSingleShot = await objWeapon.GetAllowSingleShotAsync(token).ConfigureAwait(false);
+                                bool blnAllowShortBurst = await objWeapon.GetAllowShortBurstAsync(token).ConfigureAwait(false);
+                                bool blnAllowLongBurst = await objWeapon.GetAllowLongBurstAsync(token).ConfigureAwait(false);
+                                bool blnAllowFullBurst = await objWeapon.GetAllowFullBurstAsync(token).ConfigureAwait(false);
+                                bool blnAllowSuppressive = await objWeapon.GetAllowSuppressiveAsync(token).ConfigureAwait(false);
                                 string strSingleShotText
-                                    = objWeapon.AllowSingleShot
-                                      || (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
+                                    = blnAllowSingleShot
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_SingleShot", token: token).ConfigureAwait(false),
@@ -25740,7 +25686,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_SingleShotNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strShortBurstText
-                                    = objWeapon.AllowShortBurst
+                                    = blnAllowShortBurst
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_ShortBurst", token: token).ConfigureAwait(false),
@@ -25754,7 +25700,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_ShortBurstNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strLongBurstText
-                                    = objWeapon.AllowLongBurst
+                                    = blnAllowLongBurst
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_LongBurst", token: token).ConfigureAwait(false),
@@ -25768,7 +25714,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_LongBurstNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strFullBurstText
-                                    = objWeapon.AllowFullBurst
+                                    = blnAllowFullBurst
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_FullBurst", token: token).ConfigureAwait(false),
@@ -25782,7 +25728,7 @@ namespace Chummer
                                             LanguageManager.GetStringAsync("String_FullBurstNA", token: token)
                                                            .ConfigureAwait(false);
                                 string strSuppressiveFireText
-                                    = objWeapon.AllowSuppressive
+                                    = blnAllowSuppressive
                                         ? string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                                                  "String_SuppressiveFire", token: token)
@@ -25798,16 +25744,11 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                                 await cmdVehicleAmmoExpense.DoThreadSafeAsync(() =>
                                 {
-                                    cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowSingleShot;
-                                    cmsVehicleAmmoShortBurst.Enabled = objWeapon.AllowShortBurst;
-                                    cmsVehicleAmmoLongBurst.Enabled = objWeapon.AllowLongBurst;
-                                    cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowFullBurst;
-                                    cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowSuppressive;
-
-                                    // Melee Weapons with Ammo are considered to be Single Shot.
-                                    if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
-                                        cmsVehicleAmmoSingleShot.Enabled = true;
-
+                                    cmsVehicleAmmoSingleShot.Enabled = blnAllowSingleShot;
+                                    cmsVehicleAmmoShortBurst.Enabled = blnAllowShortBurst;
+                                    cmsVehicleAmmoLongBurst.Enabled = blnAllowLongBurst;
+                                    cmsVehicleAmmoFullBurst.Enabled = blnAllowFullBurst;
+                                    cmsVehicleAmmoSuppressiveFire.Enabled = blnAllowSuppressive;
                                     cmsVehicleAmmoSingleShot.Text = strSingleShotText;
                                     cmsVehicleAmmoShortBurst.Text = strShortBurstText;
                                     cmsVehicleAmmoLongBurst.Text = strLongBurstText;
@@ -26362,9 +26303,8 @@ namespace Chummer
                             // gpbVehiclesCommon
                             string strName = await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
                             await lblVehicleName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
-                            await lblVehicleCategory
-                                  .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language),
-                                                     token).ConfigureAwait(false);
+                            string strCategory = await objGear.GetCurrentDisplayCategoryAsync(token).ConfigureAwait(false);
+                            await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strCategory, token).ConfigureAwait(false);
                             await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                        .ConfigureAwait(false);
                             int intRating = await objGear.GetRatingAsync(token).ConfigureAwait(false);

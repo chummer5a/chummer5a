@@ -383,9 +383,9 @@ namespace Chummer
                         await lblWeaponModeLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strMode), token: token)
                                 .ConfigureAwait(false);
-                        string strRC = await objSelectedWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
+                        (string strRC, string strRCTooltip) = await objSelectedWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
                         await lblWeaponRC.DoThreadSafeAsync(x => x.Text = strRC, token: token).ConfigureAwait(false);
-                        await lblWeaponRC.SetToolTipAsync(objSelectedWeapon.RCToolTip, token: token)
+                        await lblWeaponRC.SetToolTipAsync(strRCTooltip, token: token)
                                             .ConfigureAwait(false);
                         await lblWeaponRCLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strRC), token: token)
@@ -420,10 +420,9 @@ namespace Chummer
                         }
                         else
                         {
-                            strWeaponCost = objSelectedWeapon.DisplayCost(
-                                out decItemCost,
+                            (strWeaponCost, decItemCost) = await objSelectedWeapon.DisplayCost(
                                 await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false)
-                                / 100.0m);
+                                / 100.0m, token).ConfigureAwait(false);
                         }
 
                         await lblWeaponCost.DoThreadSafeAsync(x => x.Text = strWeaponCost, token: token)
@@ -456,11 +455,11 @@ namespace Chummer
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                         out StringBuilder sbdAccessories))
                         {
-                            foreach (WeaponAccessory objAccessory in objSelectedWeapon.WeaponAccessories)
+                            await objSelectedWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                             {
                                 sbdAccessories.AppendLine(
                                     await objAccessory.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                            }
+                            }, token).ConfigureAwait(false);
 
                             if (sbdAccessories.Length > 0)
                                 sbdAccessories.Length -= Environment.NewLine.Length;
@@ -608,7 +607,7 @@ namespace Chummer
                                 string strAP = await objWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
                                 if (strAP == "-")
                                     strAP = "0";
-                                string strRC = await objWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
+                                (string strRC, string strRCTooltip) = await objWeapon.TotalRCAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token).ConfigureAwait(false);
                                 string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
                                 string strMode = await objWeapon.GetDisplayModeAsync(token).ConfigureAwait(false);
                                 string strReach =
@@ -634,7 +633,7 @@ namespace Chummer
                                         GlobalSettings.Language,
                                         GlobalSettings.CultureInfo,
                                         _objCharacter, token).ConfigureAwait(false);
-                                    NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
+                                    NuyenString strCost = new NuyenString((await objWeapon.DisplayCost(token: token).ConfigureAwait(false)).Item1);
 
                                     tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP,
                                         strRC,

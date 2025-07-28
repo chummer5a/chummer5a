@@ -572,7 +572,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
+                string strFile = (blnSync ? IsCritter : await GetIsCritterAsync(token).ConfigureAwait(false)) ? "critters.xml" : "metatypes.xml";
                 XmlDocument xmlDoc = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? LoadData(strFile, strLanguage, token: token)
@@ -628,7 +628,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
+                string strFile = (blnSync ? IsCritter : await GetIsCritterAsync(token).ConfigureAwait(false)) ? "critters.xml" : "metatypes.xml";
                 XPathNavigator xmlDoc = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? LoadDataXPath(strFile, strLanguage, token: token)
@@ -3989,7 +3989,7 @@ namespace Chummer
                     if (objGear.InternalId.IsEmptyGuid())
                         continue;
 
-                    objGear.Quantity = decQty;
+                    await objGear.SetQuantityAsync(decQty, token).ConfigureAwait(false);
 
                     // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
                     if (await GetActiveCommlinkAsync(token).ConfigureAwait(false) == null &&
@@ -6350,7 +6350,7 @@ namespace Chummer
                                             : new ValueVersion();
                                     }
                                     // Check for typo in Corrupter quality and correct it
-                                    else if (_verSavedVersion.CompareTo(new ValueVersion(5, 188, 34)) == -1)
+                                    else if (_verSavedVersion < new ValueVersion(5, 188, 34))
                                     {
                                         objXmlDocument.InnerXml =
                                             objXmlDocument.InnerXml.Replace("Corruptor", "Corrupter");
@@ -7004,10 +7004,7 @@ namespace Chummer
                                         else if (blnHashCodeSuccess
                                                  && !objProspectiveSettings.BuiltInOption
                                                  // Need to make sure that the save was made in the same version of Chummer, otherwise we can get a hash code mismatch from settings themselves changing
-                                                 && LastSavedVersion.CompareTo(
-                                                     new ValueVersion(
-                                                         Application.ProductVersion.FastEscapeOnceFromStart("0.0.")))
-                                                 == 0
+                                                 && LastSavedVersion == new ValueVersion(Application.ProductVersion.FastEscapeOnceFromStart("0.0."))
                                                  && (blnSync
                                                      // ReSharper disable once MethodHasAsyncOverload
                                                      ? objProspectiveSettings.GetEquatableHashCode(token)
@@ -10794,7 +10791,7 @@ namespace Chummer
                             "metatype", await DisplayMetatypeAsync(strLanguageToPrint, token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     // <metatype_english />
-                    await objWriter.WriteElementStringAsync("metatype_english", Metatype, token: token)
+                    await objWriter.WriteElementStringAsync("metatype_english", await GetMetatypeAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     // <metatype_guid />
                     await objWriter.WriteElementStringAsync("metatype_guid",
@@ -10811,7 +10808,7 @@ namespace Chummer
                         .ConfigureAwait(false);
                     // <metavariant_guid />
                     await objWriter.WriteElementStringAsync("metavariant_guid",
-                            MetavariantGuid.ToString(
+                            (await GetMetavariantGuidAsync(token).ConfigureAwait(false)).ToString(
                                 "D", GlobalSettings.InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
                     // <movement />
@@ -10856,19 +10853,19 @@ namespace Chummer
                                 .ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                     // <prioritymetatype />
-                    await objWriter.WriteElementStringAsync("prioritymetatype", MetatypePriority, token: token)
+                    await objWriter.WriteElementStringAsync("prioritymetatype", await GetMetatypePriorityAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     // <priorityattributes />
-                    await objWriter.WriteElementStringAsync("priorityattributes", AttributesPriority, token: token)
+                    await objWriter.WriteElementStringAsync("priorityattributes", await GetAttributesPriorityAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     // <priorityspecial />
-                    await objWriter.WriteElementStringAsync("priorityspecial", SpecialPriority, token: token)
+                    await objWriter.WriteElementStringAsync("priorityspecial", await GetSpecialPriorityAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     // <priorityskills />
-                    await objWriter.WriteElementStringAsync("priorityskills", SkillsPriority, token: token)
+                    await objWriter.WriteElementStringAsync("priorityskills", await GetSkillsPriorityAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     // <priorityresources />
-                    await objWriter.WriteElementStringAsync("priorityresources", ResourcesPriority, token: token)
+                    await objWriter.WriteElementStringAsync("priorityresources", await GetResourcesPriorityAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
 
                     // <priorityskills>
@@ -10919,9 +10916,10 @@ namespace Chummer
                     // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from
                     // having a self-terminated title tag which causes browser to not rendering anything.
                     // <name />
+                    string strMyName = await GetNameAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name",
-                            !string.IsNullOrEmpty(Name)
-                                ? Name
+                            !string.IsNullOrEmpty(strMyName)
+                                ? strMyName
                                 : await LanguageManager.GetStringAsync(
                                     "String_UnnamedCharacter", strLanguageToPrint,
                                     token: token).ConfigureAwait(false), token: token)
@@ -10933,7 +10931,7 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("gender",
                             await TranslateExtraAsync(
                                     await ReverseTranslateExtraAsync(
-                                        Gender, GlobalSettings.Language, "contacts.xml",
+                                        await GetGenderAsync(token).ConfigureAwait(false), GlobalSettings.Language, "contacts.xml",
                                         token: token).ConfigureAwait(false),
                                     strLanguageToPrint, "contacts.xml", token: token)
                                 .ConfigureAwait(false), token: token)
@@ -10942,7 +10940,7 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("age",
                         await TranslateExtraAsync(
                             await ReverseTranslateExtraAsync(
-                                Age, GlobalSettings.Language, "contacts.xml",
+                                await GetAgeAsync(token).ConfigureAwait(false), GlobalSettings.Language, "contacts.xml",
                                 token: token).ConfigureAwait(false),
                             strLanguageToPrint,
                             "contacts.xml", token: token).ConfigureAwait(false),
@@ -10950,55 +10948,55 @@ namespace Chummer
                     // <eyes />
                     await objWriter.WriteElementStringAsync("eyes",
                         await TranslateExtraAsync(
-                            await ReverseTranslateExtraAsync(Eyes, token: token)
+                            await ReverseTranslateExtraAsync(await GetEyesAsync(token).ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false),
                             strLanguageToPrint, token: token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <height />
                     await objWriter.WriteElementStringAsync("height",
                         await TranslateExtraAsync(
-                            await ReverseTranslateExtraAsync(Height, token: token)
+                            await ReverseTranslateExtraAsync(await GetHeightAsync(token).ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false),
                             strLanguageToPrint, token: token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <weight />
                     await objWriter.WriteElementStringAsync("weight",
                         await TranslateExtraAsync(
-                            await ReverseTranslateExtraAsync(Weight, token: token)
+                            await ReverseTranslateExtraAsync(await GetWeightAsync(token).ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false),
                             strLanguageToPrint, token: token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <skin />
                     await objWriter.WriteElementStringAsync("skin",
                         await TranslateExtraAsync(
-                            await ReverseTranslateExtraAsync(Skin, token: token)
+                            await ReverseTranslateExtraAsync(await GetSkinAsync(token).ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false),
                             strLanguageToPrint, token: token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <hair />
                     await objWriter.WriteElementStringAsync("hair",
                         await TranslateExtraAsync(
-                            await ReverseTranslateExtraAsync(Hair, token: token)
+                            await ReverseTranslateExtraAsync(await GetHairAsync(token).ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false),
                             strLanguageToPrint, token: token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <description />
                     await objWriter
                         .WriteElementStringAsync("description",
-                            await Description.RtfToHtmlAsync(token).ConfigureAwait(false),
+                            await (await GetDescriptionAsync(token).ConfigureAwait(false)).RtfToHtmlAsync(token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     // <background />
                     await objWriter
                         .WriteElementStringAsync("background",
-                            await Background.RtfToHtmlAsync(token).ConfigureAwait(false),
+                            await (await GetBackgroundAsync(token).ConfigureAwait(false)).RtfToHtmlAsync(token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     // <concept />
                     await objWriter
-                        .WriteElementStringAsync("concept", await Concept.RtfToHtmlAsync(token).ConfigureAwait(false),
+                        .WriteElementStringAsync("concept", await (await GetConceptAsync(token).ConfigureAwait(false)).RtfToHtmlAsync(token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     // <notes />
                     await objWriter
-                        .WriteElementStringAsync("notes", await Notes.RtfToHtmlAsync(token).ConfigureAwait(false),
+                        .WriteElementStringAsync("notes", await (await GetNotesAsync(token).ConfigureAwait(false)).RtfToHtmlAsync(token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     // <alias />
                     await objWriter.WriteElementStringAsync("alias", await GetAliasAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -11061,21 +11059,21 @@ namespace Chummer
                             token: token).ConfigureAwait(false);
                     // <totalkarma />
                     await objWriter
-                        .WriteElementStringAsync("totalkarma", CareerKarma.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("totalkarma", (await GetCareerKarmaAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <special />
-                    await objWriter.WriteElementStringAsync("special", Special.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("special", (await GetSpecialAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <totalspecial />
                     await objWriter
-                        .WriteElementStringAsync("totalspecial", TotalSpecial.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("totalspecial", (await GetTotalSpecialAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <attributes />
-                    await objWriter.WriteElementStringAsync("attributes", Attributes.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("attributes", (await GetAttributesAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <totalattributes />
                     await objWriter
-                        .WriteElementStringAsync("totalattributes", TotalAttributes.ToString(objCulture),
+                        .WriteElementStringAsync("totalattributes", (await GetTotalAttributesAsync(token).ConfigureAwait(false)).ToString(objCulture),
                             token: token).ConfigureAwait(false);
                     // <edgeused />
                     await objWriter.WriteElementStringAsync("edgeused", (await GetEdgeUsedAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
@@ -11447,11 +11445,11 @@ namespace Chummer
                         token: token).ConfigureAwait(false);
                     // <initiategrade />
                     await objWriter
-                        .WriteElementStringAsync("initiategrade", InitiateGrade.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("initiategrade", (await GetInitiateGradeAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <resenabled />
                     await objWriter.WriteElementStringAsync("resenabled",
-                        RESEnabled.ToString(GlobalSettings.InvariantCultureInfo),
+                        (await GetRESEnabledAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                         token: token).ConfigureAwait(false);
                     // <submersiongrade />
                     await objWriter
@@ -11459,37 +11457,37 @@ namespace Chummer
                             token: token).ConfigureAwait(false);
                     // <depenabled />
                     await objWriter.WriteElementStringAsync("depenabled",
-                        DEPEnabled.ToString(GlobalSettings.InvariantCultureInfo),
+                        (await GetDEPEnabledAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                         token: token).ConfigureAwait(false);
                     // <groupmember />
                     await objWriter.WriteElementStringAsync("groupmember",
-                        GroupMember.ToString(GlobalSettings.InvariantCultureInfo),
+                        (await GetGroupMemberAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                         token: token).ConfigureAwait(false);
                     // <groupname />
-                    await objWriter.WriteElementStringAsync("groupname", GroupName, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("groupname", await GetGroupNameAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     // <groupnotes />
-                    await objWriter.WriteElementStringAsync("groupnotes", GroupNotes, token: token)
+                    await objWriter.WriteElementStringAsync("groupnotes", await GetGroupNotesAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     // <surprise />
-                    await objWriter.WriteElementStringAsync("surprise", Surprise.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("surprise", (await GetSurpriseAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <composure />
-                    await objWriter.WriteElementStringAsync("composure", Composure.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("composure", (await GetComposureAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <judgeintentions />
                     await objWriter
-                        .WriteElementStringAsync("judgeintentions", JudgeIntentions.ToString(objCulture),
+                        .WriteElementStringAsync("judgeintentions", (await GetJudgeIntentionsAsync(token).ConfigureAwait(false)).ToString(objCulture),
                             token: token).ConfigureAwait(false);
                     // <judgeintentionsresist />
                     await objWriter.WriteElementStringAsync("judgeintentionsresist",
-                            JudgeIntentionsResist.ToString(objCulture), token: token)
+                            (await GetJudgeIntentionsResistAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <liftandcarry />
                     await objWriter
-                        .WriteElementStringAsync("liftandcarry", LiftAndCarry.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("liftandcarry", (await GetLiftAndCarryAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <memory />
-                    await objWriter.WriteElementStringAsync("memory", Memory.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("memory", (await GetMemoryAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     string strWeightFormat = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
                     // <liftweight />
@@ -11507,77 +11505,77 @@ namespace Chummer
                         .ConfigureAwait(false);
                     // <fatigueresist />
                     await objWriter
-                        .WriteElementStringAsync("fatigueresist", FatigueResist.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("fatigueresist", (await GetFatigueResistAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <radiationresist />
                     await objWriter
-                        .WriteElementStringAsync("radiationresist", RadiationResist.ToString(objCulture),
+                        .WriteElementStringAsync("radiationresist", (await GetRadiationResistAsync(token).ConfigureAwait(false)).ToString(objCulture),
                             token: token).ConfigureAwait(false);
                     // <sonicresist />
                     await objWriter
-                        .WriteElementStringAsync("sonicresist", SonicResist.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("sonicresist", (await GetSonicResistAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <toxincontacttesist />
                     await objWriter.WriteElementStringAsync("toxincontactresist",
-                        ToxinContactResist(strLanguageToPrint, objCulture),
+                        await ToxinContactResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <toxiningestionresist />
                     await objWriter.WriteElementStringAsync("toxiningestionresist",
-                        ToxinIngestionResist(strLanguageToPrint, objCulture),
+                        await ToxinIngestionResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <toxininhalationresist />
                     await objWriter.WriteElementStringAsync("toxininhalationresist",
-                        ToxinInhalationResist(strLanguageToPrint, objCulture),
+                        await ToxinInhalationResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <toxininjectionresist />
                     await objWriter.WriteElementStringAsync("toxininjectionresist",
-                        ToxinInjectionResist(strLanguageToPrint, objCulture),
+                        await ToxinInjectionResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <pathogencontactresist />
                     await objWriter.WriteElementStringAsync("pathogencontactresist",
-                        PathogenContactResist(strLanguageToPrint, objCulture),
+                        await PathogenContactResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <pathogeningestionresist />
                     await objWriter.WriteElementStringAsync("pathogeningestionresist",
-                        PathogenIngestionResist(strLanguageToPrint, objCulture),
+                        await PathogenIngestionResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <pathogeninhalationresist />
                     await objWriter.WriteElementStringAsync("pathogeninhalationresist",
-                        PathogenInhalationResist(strLanguageToPrint, objCulture),
+                        await PathogenInhalationResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <pathogeninjectionresist />
                     await objWriter.WriteElementStringAsync("pathogeninjectionresist",
-                        PathogenInjectionResist(strLanguageToPrint, objCulture),
+                        await PathogenInjectionResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <physiologicaladdictionresistfirsttime />
                     await objWriter.WriteElementStringAsync("physiologicaladdictionresistfirsttime",
-                        PhysiologicalAddictionResistFirstTime.ToString(objCulture),
+                        (await GetPhysiologicalAddictionResistFirstTimeAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
                     // <physiologicaladdictionresistalreadyaddicted />
                     await objWriter.WriteElementStringAsync("physiologicaladdictionresistalreadyaddicted",
-                        PhysiologicalAddictionResistAlreadyAddicted.ToString(
+                        (await GetPhysiologicalAddictionResistAlreadyAddictedAsync(token).ConfigureAwait(false)).ToString(
                             objCulture), token: token).ConfigureAwait(false);
                     // <psychologicaladdictionresistfirsttime />
                     await objWriter.WriteElementStringAsync("psychologicaladdictionresistfirsttime",
-                        PsychologicalAddictionResistFirstTime.ToString(objCulture),
+                        (await GetPsychologicalAddictionResistFirstTimeAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
                     // <psychologicaladdictionresistalreadyaddicted />
                     await objWriter.WriteElementStringAsync("psychologicaladdictionresistalreadyaddicted",
-                        PsychologicalAddictionResistAlreadyAddicted.ToString(
+                        (await GetPsychologicalAddictionResistAlreadyAddictedAsync(token).ConfigureAwait(false)).ToString(
                             objCulture), token: token).ConfigureAwait(false);
                     // <physicalcmnaturalrecovery />
                     await objWriter.WriteElementStringAsync("physicalcmnaturalrecovery",
-                        PhysicalCMNaturalRecovery.ToString(objCulture),
+                        (await GetPhysicalCMNaturalRecoveryAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
                     // <stuncmnaturalrecovery />
                     await objWriter.WriteElementStringAsync("stuncmnaturalrecovery",
-                            StunCMNaturalRecovery.ToString(objCulture), token: token)
+                            (await GetStunCMNaturalRecoveryAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
 
                     // Spell Resistances
                     //Indirect Dodge
                     await objWriter.WriteElementStringAsync("indirectdefenseresist",
-                        SpellDefenseIndirectDodge.ToString(objCulture),
+                        (await GetSpellDefenseIndirectDodgeAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
                     //Direct Soak - Mana
                     await objWriter.WriteElementStringAsync("directmanaresist",
@@ -11661,11 +11659,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Contact objContact in Contacts)
-                        {
-                            await objContact.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await Contacts.ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -18388,6 +18382,43 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's Metatype Priority.
+        /// </summary>
+        public async Task<string> GetMetatypePriorityAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPriorityMetatype;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Metatype Priority.
+        /// </summary>
+        public async Task SetMetatypePriorityAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPriorityMetatype, value) == value)
+                    return;
+
+                await OnPropertyChangedAsync(nameof(MetatypePriority), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Character's Attributes Priority.
         /// </summary>
         [HubTag]
@@ -18406,6 +18437,43 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's Attributes Priority.
+        /// </summary>
+        public async Task<string> GetAttributesPriorityAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPriorityAttributes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Attributes Priority.
+        /// </summary>
+        public async Task SetAttributesPriorityAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPriorityAttributes, value) == value)
+                    return;
+
+                await OnPropertyChangedAsync(nameof(AttributesPriority), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -18432,6 +18500,43 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's Special Priority.
+        /// </summary>
+        public async Task<string> GetSpecialPriorityAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPrioritySpecial;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Special Priority.
+        /// </summary>
+        public async Task SetSpecialPriorityAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPrioritySpecial, value) == value)
+                    return;
+
+                await OnPropertyChangedAsync(nameof(SpecialPriority), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Character's Skills Priority.
         /// </summary>
         [HubTag]
@@ -18450,6 +18555,43 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's Skills Priority.
+        /// </summary>
+        public async Task<string> GetSkillsPriorityAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPrioritySkills;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Skills Priority.
+        /// </summary>
+        public async Task SetSkillsPriorityAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPrioritySkills, value) == value)
+                    return;
+
+                await OnPropertyChangedAsync(nameof(SkillsPriority), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -18478,6 +18620,43 @@ namespace Chummer
         /// <summary>
         /// Character's Resources Priority.
         /// </summary>
+        public async Task<string> GetResourcesPriorityAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPriorityResources;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Resources Priority.
+        /// </summary>
+        public async Task SetResourcesPriorityAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPriorityResources, value) == value)
+                    return;
+
+                await OnPropertyChangedAsync(nameof(ResourcesPriority), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Talent Priority.
+        /// </summary>
         [HubTag]
         public string TalentPriority
         {
@@ -18494,6 +18673,43 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's Talent Priority.
+        /// </summary>
+        public async Task<string> GetTalentPriorityAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPriorityTalent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Talent Priority.
+        /// </summary>
+        public async Task SetTalentPriorityAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPriorityTalent, value) == value)
+                    return;
+
+                await OnPropertyChangedAsync(nameof(TalentPriority), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -18600,6 +18816,44 @@ namespace Chummer
                             return _strCachedCharacterGrammaticGender = "neutral";
                     }
                 }
+            }
+        }
+
+        public async Task<string> GetCharacterGrammaticGenderAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(_strCachedCharacterGrammaticGender))
+                    return _strCachedCharacterGrammaticGender;
+                switch ((await ReverseTranslateExtraAsync(await GetGenderAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)).ToUpperInvariant())
+                {
+                    case "M":
+                    case "MALE":
+                    case "MAN":
+                    case "BOY":
+                    case "LORD":
+                    case "GENTLEMAN":
+                    case "GUY":
+                        return _strCachedCharacterGrammaticGender = "male";
+
+                    case "F":
+                    case "W":
+                    case "FEMALE":
+                    case "WOMAN":
+                    case "GIRL":
+                    case "LADY":
+                    case "GAL":
+                        return _strCachedCharacterGrammaticGender = "female";
+
+                    default:
+                        return _strCachedCharacterGrammaticGender = "neutral";
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -19675,6 +19929,27 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _intBurntStreetCred, value) != value)
                     await OnPropertyChangedAsync(nameof(BurntStreetCred), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Burnt Street Cred.
+        /// </summary>
+        public async Task ModifyBurntStreetCredAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Interlocked.Add(ref _intBurntStreetCred, _intBurntStreetCred);
+                await OnPropertyChangedAsync(nameof(BurntStreetCred), token).ConfigureAwait(false);
             }
             finally
             {
@@ -21037,6 +21312,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// CFP Limit.
+        /// </summary>
+        public async Task SetCFPLimitAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intCFPLimit, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(CFPLimit), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Total AI Program Limit.
         /// </summary>
         public int AINormalProgramLimit
@@ -21067,6 +21361,25 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intAINormalProgramLimit;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Total AI Program Limit.
+        /// </summary>
+        public async Task SetAINormalProgramLimitAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intAINormalProgramLimit, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(AINormalProgramLimit), token).ConfigureAwait(false);
             }
             finally
             {
@@ -21113,6 +21426,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// AI Advanced Program Limit.
+        /// </summary>
+        public async Task SetAIAdvancedProgramLimitAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intAIAdvancedProgramLimit, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(AIAdvancedProgramLimit), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Spell Limit.
         /// </summary>
         public int FreeSpells
@@ -21143,6 +21475,25 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intFreeSpells;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Spell Limit.
+        /// </summary>
+        public async Task SetFreeSpellsAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intFreeSpells, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(FreeSpells), token).ConfigureAwait(false);
             }
             finally
             {
@@ -21272,6 +21623,42 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Special.
+        /// </summary>
+        public async Task<int> GetSpecialAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intSpecial;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Special.
+        /// </summary>
+        public async Task SetSpecialAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intSpecial, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(Special), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// TotalSpecial.
         /// </summary>
         public int TotalSpecial
@@ -21289,6 +21676,42 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// TotalSpecial.
+        /// </summary>
+        public async Task<int> GetTotalSpecialAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intTotalSpecial;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// TotalSpecial.
+        /// </summary>
+        public async Task SetTotalSpecialAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intTotalSpecial, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(TotalSpecial), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -21314,6 +21737,42 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Attributes.
+        /// </summary>
+        public async Task<int> GetAttributesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intAttributes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Attributes.
+        /// </summary>
+        public async Task SetAttributesAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intAttributes, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(Attributes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// TotalAttributes.
         /// </summary>
         public int TotalAttributes
@@ -21331,6 +21790,42 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// TotalAttributes.
+        /// </summary>
+        public async Task<int> GetTotalAttributesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intTotalAttributes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// TotalAttributes.
+        /// </summary>
+        public async Task SetTotalAttributesAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intTotalAttributes, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(TotalAttributes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -28855,6 +29350,222 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Resist test to Contact-vector Toxins (BOD + WIL).
+        /// </summary>
+        public async Task<string> ToxinContactResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.ToxinContactImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.ToxinContactResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Ingestion-vector Toxins (BOD + WIL).
+        /// </summary>
+        public async Task<string> ToxinIngestionResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.ToxinIngestionImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.ToxinIngestionResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Inhalation-vector Toxins (BOD + WIL).
+        /// </summary>
+        public async Task<string> ToxinInhalationResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.ToxinInhalationImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.ToxinInhalationResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Injection-vector Toxins (BOD + WIL).
+        /// </summary>
+        public async Task<string> ToxinInjectionResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.ToxinInjectionImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.ToxinInjectionResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Contact-vector Pathogens (BOD + WIL).
+        /// </summary>
+        public async Task<string> PathogenContactResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.PathogenContactImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PathogenContactResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Ingestion-vector Pathogens (BOD + WIL).
+        /// </summary>
+        public async Task<string> PathogenIngestionResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.PathogenIngestionImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PathogenIngestionResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Inhalation-vector Pathogens (BOD + WIL).
+        /// </summary>
+        public async Task<string> PathogenInhalationResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.PathogenInhalationImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PathogenInhalationResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Injection-vector Pathogens (BOD + WIL).
+        /// </summary>
+        public async Task<string> PathogenInjectionResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.PathogenInjectionImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PathogenInjectionResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Resist test to Physiological Addiction (BOD + WIL) if you are not addicted yet.
         /// </summary>
         public int PhysiologicalAddictionResistFirstTime
@@ -28911,6 +29622,90 @@ namespace Chummer
                                                                                    Improvement.ImprovementType
                                                                                        .PsychologicalAddictionAlreadyAddicted)
                                                                                .StandardRound();
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Physiological Addiction (BOD + WIL) if you are not addicted yet.
+        /// </summary>
+        public async Task<int> GetPhysiologicalAddictionResistFirstTimeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PhysiologicalAddictionFirstTime, token: token).ConfigureAwait(false))
+                        .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Psychological Addiction (LOG + WIL) if you are not addicted yet.
+        /// </summary>
+        public async Task<int> GetPsychologicalAddictionResistFirstTimeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PsychologicalAddictionFirstTime, token: token).ConfigureAwait(false))
+                        .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Physiological Addiction (BOD + WIL) if you are already addicted.
+        /// </summary>
+        public async Task<int> GetPhysiologicalAddictionResistAlreadyAddictedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PhysiologicalAddictionAlreadyAddicted, token: token).ConfigureAwait(false))
+                        .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Psychological Addiction (LOG + WIL) if you are already addicted.
+        /// </summary>
+        public async Task<int> GetPsychologicalAddictionResistAlreadyAddictedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PsychologicalAddictionAlreadyAddicted, token: token).ConfigureAwait(false))
+                        .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31417,6 +32212,8 @@ namespace Chummer
 
         public int SpellDefenseIndirectDodge => Dodge;
 
+        public Task<int> GetSpellDefenseIndirectDodgeAsync(CancellationToken token = default) => GetDodgeAsync(token);
+
         public string DisplaySpellDefenseIndirectDodge
         {
             get
@@ -31428,6 +32225,26 @@ namespace Chummer
                           LanguageManager.GetString("String_Space") + '(' +
                           (SpellDefenseIndirectDodge + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
                           + ')';
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseIndirectDodgeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDodge = await GetSpellDefenseIndirectDodgeAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDodge.ToString(GlobalSettings.CultureInfo)
+                    : intDodge.ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                        + '(' + (intDodge + intCounterspellingDice).ToString(GlobalSettings.CultureInfo) + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31450,6 +32267,33 @@ namespace Chummer
 
                     return strToolTip;
                 }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseIndirectDodgeToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strToolTip = await GetDodgeToolTipAsync(token).ConfigureAwait(false);
+                int intDodge = await GetSpellDefenseIndirectDodgeAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                if (intCounterspellingDice != 0)
+                {
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                    strToolTip += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)
+                                  +
+                                  strSpace + '(' + intCounterspellingDice.ToString(GlobalSettings.CultureInfo)
+                                  + ')';
+                }
+
+                return strToolTip;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -44002,9 +44846,9 @@ namespace Chummer
                 int intEncumbrance = Encumbrance;
                 if (intEncumbrance == 0)
                     return;
+                token.ThrowIfCancellationRequested();
                 try
                 {
-                    token.ThrowIfCancellationRequested();
                     if (Settings.DoEncumbrancePenaltyPhysicalLimit)
                         ImprovementManager.CreateImprovement(this, "Physical",
                             Improvement.ImprovementSource.Encumbrance,
@@ -44134,9 +44978,9 @@ namespace Chummer
                 int intEncumbrance = await GetEncumbranceAsync(token).ConfigureAwait(false);
                 if (intEncumbrance == 0)
                     return;
+                token.ThrowIfCancellationRequested();
                 try
                 {
-                    token.ThrowIfCancellationRequested();
                     if (await objSettings.GetDoEncumbrancePenaltyPhysicalLimitAsync(token).ConfigureAwait(false))
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Physical", Improvement.ImprovementSource.Encumbrance,
@@ -48098,11 +48942,10 @@ namespace Chummer
                                                                                 .ConfigureAwait(false);
                                                                             if (objPlugin != null)
                                                                             {
-                                                                                objPlugin.Quantity
-                                                                                    = (xmlPluginToAdd
+                                                                                await objPlugin.SetQuantityAsync((xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
                                                                                             "@quantity", token))
-                                                                                    ?.ValueAsInt ?? 1;
+                                                                                    ?.ValueAsInt ?? 1, token).ConfigureAwait(false);
                                                                                 await objPlugin.SetNotesAsync(
                                                                                     (xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
@@ -48272,11 +49115,10 @@ namespace Chummer
                                                                                 .ConfigureAwait(false);
                                                                             if (objPlugin != null)
                                                                             {
-                                                                                objPlugin.Quantity
-                                                                                    = (xmlPluginToAdd
+                                                                                await objPlugin.SetQuantityAsync((xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
                                                                                             "@quantity", token))
-                                                                                    ?.ValueAsInt ?? 1;
+                                                                                    ?.ValueAsInt ?? 1, token).ConfigureAwait(false);
                                                                                 await objPlugin.SetNotesAsync(
                                                                                     (xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpression(
@@ -48325,9 +49167,10 @@ namespace Chummer
                                                                 .ConfigureAwait(false);
                                                             if (objPlugin != null)
                                                             {
-                                                                objPlugin.Quantity = (xmlArmorModToImport
-                                                                    .SelectSingleNodeAndCacheExpression(
-                                                                        "@quantity", token))?.ValueAsInt ?? 1;
+                                                                await objPlugin.SetQuantityAsync((xmlArmorModToImport
+                                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                                            "@quantity", token))
+                                                                                    ?.ValueAsInt ?? 1, token).ConfigureAwait(false);
                                                                 await objPlugin.SetNotesAsync((xmlArmorModToImport
                                                                     .SelectSingleNodeAndCacheExpression(
                                                                         "description", token))?.Value, token).ConfigureAwait(false);
@@ -49286,13 +50129,12 @@ namespace Chummer
                                                                            .ConfigureAwait(false);
                                             if (objPlugin != null)
                                             {
-                                                objPlugin.Quantity =
-                                                    Convert.ToDecimal(
+                                                await objPlugin.SetQuantityAsync(Convert.ToDecimal(
                                                         (xmlPluginToAdd
                                                                .SelectSingleNodeAndCacheExpression(
                                                                    "@quantity", token))
                                                         ?.Value ?? "1",
-                                                        GlobalSettings.InvariantCultureInfo);
+                                                        GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                                                 await objPlugin.SetNotesAsync((xmlPluginToAdd
                                                                          .SelectSingleNodeAndCacheExpression(
                                                                              "description", token))

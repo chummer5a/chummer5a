@@ -9050,13 +9050,85 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        /// <summary>
-        /// Total cost of the just the Cyberware itself before we factor in any multipliers.
-        /// </summary>
-        public decimal CalculatedOwnCostPreMultipliers(int intRating, Grade objGrade)
+        private string ProcessCostExpression(string strExpression, int intRating, Grade objGrade, Cyberware objIgnoreChild = null)
         {
             using (LockObject.EnterReadLock())
             {
+                string strCostExpression = strExpression;
+
+                if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+                {
+                    string strSuffix = string.Empty;
+                    if (!strCostExpression.EndsWith(')'))
+                    {
+                        strSuffix = strCostExpression.Substring(strCostExpression.LastIndexOf(')') + 1);
+                        strCostExpression = strCostExpression.TrimEndOnce(strSuffix);
+                    }
+
+                    strCostExpression = strCostExpression.ProcessFixedValuesString(intRating);
+                    strCostExpression += strSuffix;
+                }
+
+                string strParentCost = "0";
+                decimal decTotalParentGearCost = 0;
+                if (_objParent != null)
+                {
+                    if (strCostExpression.Contains("Parent Cost"))
+                        strParentCost = _objParent.ProcessCostExpression(_objParent.Cost, _objParent.Rating, _objParent.Grade, this);
+                    if (strCostExpression.Contains("Parent Gear Cost"))
+                        decTotalParentGearCost = _objParent.GearChildren.Sum(loopGear => loopGear.CalculatedCost);
+                }
+
+                decimal decTotalGearCost = 0;
+                if (GearChildren.Count > 0 && strCostExpression.Contains("Gear Cost"))
+                {
+                    decTotalGearCost = GearChildren.Sum(loopGear => loopGear.CalculatedCost);
+                }
+
+                decimal decTotalChildrenCost = 0;
+                if (Children.Count > 0 && strCostExpression.Contains("Children Cost"))
+                {
+                    decTotalChildrenCost
+                        = Children.Sum(x => !ReferenceEquals(x, objIgnoreChild), x => x.CalculatedTotalCost(x.Rating, objGrade));
+                }
+
+                if (string.IsNullOrEmpty(strCostExpression))
+                    return "0";
+
+                if (strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
+                {
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+                    {
+                        sbdCost.Append(strCostExpression.TrimStart('+'));
+                        sbdCost.Replace("Parent Cost", strParentCost);
+                        sbdCost.Replace("Parent Gear Cost",
+                                        decTotalParentGearCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdCost.Replace("Gear Cost", decTotalGearCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdCost.Replace("Children Cost",
+                                        decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdCost.CheapReplace(strCostExpression, "MinRating",
+                                             () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
+                        string strToEvaluate = sbdCost.ToString();
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strToEvaluate);
+                        return blnIsSuccess
+                            ? Convert.ToDecimal((double)objProcess).ToString(GlobalSettings.InvariantCultureInfo)
+                            : strToEvaluate;
+                    }
+                }
+
+                return decReturn.ToString(GlobalSettings.InvariantCultureInfo);
+            }
+        }
+
+        private async Task<string> ProcessCostExpressionAsync(string strExpression, int intRating, Grade objGrade, Cyberware objIgnoreChild = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 string strCostExpression = Cost;
 
                 if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
@@ -9077,26 +9149,30 @@ namespace Chummer.Backend.Equipment
                 if (_objParent != null)
                 {
                     if (strCostExpression.Contains("Parent Cost"))
-                        strParentCost = _objParent.Cost;
+                        strParentCost = await _objParent.ProcessCostExpressionAsync(_objParent.Cost,
+                            await _objParent.GetRatingAsync(token).ConfigureAwait(false),
+                            await _objParent.GetGradeAsync(token).ConfigureAwait(false), this, token).ConfigureAwait(false);
                     if (strCostExpression.Contains("Parent Gear Cost"))
-                        decTotalParentGearCost += _objParent.GearChildren.Sum(loopGear => loopGear.CalculatedCost);
+                        decTotalParentGearCost = await (await _objParent.GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
                 }
 
                 decimal decTotalGearCost = 0;
-                if (GearChildren.Count > 0 && strCostExpression.Contains("Gear Cost"))
+                if (strCostExpression.Contains("Gear Cost"))
                 {
-                    decTotalGearCost += GearChildren.Sum(loopGear => loopGear.CalculatedCost);
+                    decTotalGearCost = await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
                 }
 
                 decimal decTotalChildrenCost = 0;
-                if (Children.Count > 0 && strCostExpression.Contains("Children Cost"))
+                if (strCostExpression.Contains("Children Cost"))
                 {
-                    decTotalChildrenCost
-                        += Children.Sum(loopWare => loopWare.CalculatedTotalCost(loopWare.Rating, objGrade));
+                    decTotalChildrenCost = await (await GetChildrenAsync(token).ConfigureAwait(false))
+                        .SumAsync(x => !ReferenceEquals(x, objIgnoreChild),
+                            async x => await x.CalculatedTotalCostAsync(await x.GetRatingAsync(token).ConfigureAwait(false), objGrade, token).ConfigureAwait(false),
+                            token).ConfigureAwait(false);
                 }
 
                 if (string.IsNullOrEmpty(strCostExpression))
-                    return 0;
+                    return "0";
 
                 if (strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
@@ -9109,18 +9185,36 @@ namespace Chummer.Backend.Equipment
                         sbdCost.Replace("Gear Cost", decTotalGearCost.ToString(GlobalSettings.InvariantCultureInfo));
                         sbdCost.Replace("Children Cost",
                                         decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdCost.CheapReplace(strCostExpression, "MinRating",
-                                             () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        await sbdCost.CheapReplaceAsync(strCostExpression, "MinRating",
+                                                        async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(
+                                                            GlobalSettings.InvariantCultureInfo),
+                                                        token: token).ConfigureAwait(false);
                         sbdCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
-                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
-                        if (blnIsSuccess)
-                            decReturn = Convert.ToDecimal((double)objProcess);
+                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
+                        string strToEvaluate = sbdCost.ToString();
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strToEvaluate, token).ConfigureAwait(false);
+                        return blnIsSuccess
+                            ? Convert.ToDecimal((double)objProcess).ToString(GlobalSettings.InvariantCultureInfo)
+                            : strToEvaluate;
                     }
                 }
 
-                return decReturn;
+                return decReturn.ToString(GlobalSettings.InvariantCultureInfo);
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Total cost of the just the Cyberware itself before we factor in any multipliers.
+        /// </summary>
+        public decimal CalculatedOwnCostPreMultipliers(int intRating, Grade objGrade)
+        {
+            string strReturn = ProcessCostExpression(Cost, intRating, objGrade);
+            decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
+            return decReturn;
         }
 
         /// <summary>
@@ -9178,10 +9272,18 @@ namespace Chummer.Backend.Equipment
                     // If the child cost starts with "*", multiply the item's base cost.
                     if (objChild.Cost.StartsWith('*'))
                     {
-                        decimal decPluginCost =
-                            decCost * (Convert.ToDecimal(objChild.Cost.TrimStart('*'),
-                                                         GlobalSettings.InvariantCultureInfo) - 1);
-
+                        decimal decPluginCost = decCost;
+                        string strChildCost = objChild.ProcessCostExpression(objChild.Cost.TrimStartOnce('*'),
+                            objChild.Rating, objChild.Grade);
+                        if (strChildCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decChildCost))
+                        {
+                            string strToEvaluate = '(' + decPluginCost.ToString(GlobalSettings.InvariantCultureInfo) + ") * ((" + strChildCost + ") - 1)";
+                            (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strToEvaluate);
+                            if (blnIsSuccess)
+                                decPluginCost = Convert.ToDecimal((double)objProcess);
+                        }
+                        else
+                            decPluginCost *= decChildCost - 1.0m;
                         if (objChild.DiscountCost)
                             decPluginCost *= 0.9m;
 
@@ -9204,82 +9306,10 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<decimal> CalculatedOwnCostPreMultipliersAsync(int intRating, Grade objGrade, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                string strCostExpression = Cost;
-
-                if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string strSuffix = string.Empty;
-                    if (!strCostExpression.EndsWith(')'))
-                    {
-                        strSuffix = strCostExpression.Substring(strCostExpression.LastIndexOf(')') + 1);
-                        strCostExpression = strCostExpression.TrimEndOnce(strSuffix);
-                    }
-
-                    strCostExpression = strCostExpression.ProcessFixedValuesString(intRating);
-                    strCostExpression += strSuffix;
-                }
-
-                string strParentCost = "0";
-                decimal decTotalParentGearCost = 0;
-                if (_objParent != null)
-                {
-                    if (strCostExpression.Contains("Parent Cost"))
-                        strParentCost = _objParent.Cost;
-                    if (strCostExpression.Contains("Parent Gear Cost"))
-                        decTotalParentGearCost += await (await _objParent.GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
-                }
-
-                decimal decTotalGearCost = 0;
-                if (strCostExpression.Contains("Gear Cost"))
-                {
-                    decTotalGearCost += await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
-                }
-
-                decimal decTotalChildrenCost = 0;
-                if (strCostExpression.Contains("Children Cost"))
-                {
-                    decTotalChildrenCost += await (await GetChildrenAsync(token).ConfigureAwait(false))
-                        .SumAsync(
-                            async x => await x.CalculatedTotalCostAsync(await x.GetRatingAsync(token).ConfigureAwait(false), objGrade, token).ConfigureAwait(false),
-                            token).ConfigureAwait(false);
-                }
-
-                if (string.IsNullOrEmpty(strCostExpression))
-                    return 0;
-
-                if (strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
-                {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
-                    {
-                        sbdCost.Append(strCostExpression.TrimStart('+'));
-                        sbdCost.Replace("Parent Cost", strParentCost);
-                        sbdCost.Replace("Parent Gear Cost",
-                                        decTotalParentGearCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdCost.Replace("Gear Cost", decTotalGearCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdCost.Replace("Children Cost",
-                                        decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        await sbdCost.CheapReplaceAsync(strCostExpression, "MinRating",
-                                                        async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(
-                                                            GlobalSettings.InvariantCultureInfo),
-                                                        token: token).ConfigureAwait(false);
-                        sbdCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
-                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
-                        if (blnIsSuccess)
-                            decReturn = Convert.ToDecimal((double)objProcess);
-                    }
-                }
-
-                return decReturn;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
+            token.ThrowIfCancellationRequested();
+            string strReturn = await ProcessCostExpressionAsync(Cost, intRating, objGrade, token: token).ConfigureAwait(false);
+            decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
+            return decReturn;
         }
 
         /// <summary>
@@ -9346,9 +9376,19 @@ namespace Chummer.Backend.Equipment
                     // If the child cost starts with "*", multiply the item's base cost.
                     if (objChild.Cost.StartsWith('*'))
                     {
-                        decimal decPluginCost =
-                            decCost * (Convert.ToDecimal(objChild.Cost.TrimStart('*'),
-                                                         GlobalSettings.InvariantCultureInfo) - 1);
+                        decimal decPluginCost = decCost;
+                        string strChildCost = await objChild.ProcessCostExpressionAsync(objChild.Cost.TrimStartOnce('*'),
+                            await objChild.GetRatingAsync(token).ConfigureAwait(false),
+                            await objChild.GetGradeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        if (strChildCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decChildCost))
+                        {
+                            string strToEvaluate = '(' + decPluginCost.ToString(GlobalSettings.InvariantCultureInfo) + ") * ((" + strChildCost + ") - 1)";
+                            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strToEvaluate, token).ConfigureAwait(false);
+                            if (blnIsSuccess)
+                                decPluginCost = Convert.ToDecimal((double)objProcess);
+                        }
+                        else
+                            decPluginCost *= decChildCost - 1.0m;
 
                         if (objChild.DiscountCost)
                             decPluginCost *= 0.9m;
@@ -9405,9 +9445,18 @@ namespace Chummer.Backend.Equipment
                     {
                         if (objChild.Stolen == blnStolen)
                         {
-                            decimal decPluginCost =
-                                decCost.Value * (Convert.ToDecimal(objChild.Cost.TrimStart('*'),
-                                                                   GlobalSettings.InvariantCultureInfo) - 1);
+                            decimal decPluginCost = decCost.Value;
+                            string strChildCost = objChild.ProcessCostExpression(objChild.Cost.TrimStartOnce('*'),
+                                objChild.Rating, objChild.Grade);
+                            if (strChildCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decChildCost))
+                            {
+                                string strToEvaluate = '(' + decPluginCost.ToString(GlobalSettings.InvariantCultureInfo) + ") * ((" + strChildCost + ") - 1)";
+                                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strToEvaluate);
+                                if (blnIsSuccess)
+                                    decPluginCost = Convert.ToDecimal((double)objProcess);
+                            }
+                            else
+                                decPluginCost *= decChildCost - 1.0m;
 
                             if (objChild.DiscountCost)
                                 decPluginCost *= 0.9m;
@@ -9473,11 +9522,19 @@ namespace Chummer.Backend.Equipment
                     {
                         if (objChild.Stolen != blnStolen)
                             return 0;
-                        decimal decPluginCost =
-                            await decCost.GetValueAsync(token).ConfigureAwait(false) * (Convert.ToDecimal(
-                                objChild.Cost.TrimStart('*'),
-                                GlobalSettings.InvariantCultureInfo) - 1);
-
+                        decimal decPluginCost = await decCost.GetValueAsync(token).ConfigureAwait(false);
+                        string strChildCost = await objChild.ProcessCostExpressionAsync(objChild.Cost.TrimStartOnce('*'),
+                            await objChild.GetRatingAsync(token).ConfigureAwait(false),
+                            await objChild.GetGradeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        if (strChildCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decChildCost))
+                        {
+                            string strToEvaluate = '(' + decPluginCost.ToString(GlobalSettings.InvariantCultureInfo) + ") * ((" + strChildCost + ") - 1)";
+                            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strToEvaluate, token).ConfigureAwait(false);
+                            if (blnIsSuccess)
+                                decPluginCost = Convert.ToDecimal((double)objProcess);
+                        }
+                        else
+                            decPluginCost *= decChildCost - 1.0m;
                         if (objChild.DiscountCost)
                             decPluginCost *= 0.9m;
 
@@ -9633,20 +9690,20 @@ namespace Chummer.Backend.Equipment
                         strParentWeight = _objParent.Weight;
                     if (strWeightExpression.Contains("Parent Gear Weight"))
                         decTotalParentGearWeight
-                            += _objParent.GearChildren.Sum(loopGear => loopGear.OwnWeight * loopGear.Quantity);
+                            = _objParent.GearChildren.Sum(loopGear => loopGear.OwnWeight * loopGear.Quantity);
                 }
 
                 decimal decTotalGearWeight = 0;
                 if (GearChildren.Count > 0 && strWeightExpression.Contains("Gear Weight"))
                 {
-                    decTotalGearWeight += GearChildren.Sum(loopGear => loopGear.OwnWeight * loopGear.Quantity);
+                    decTotalGearWeight = GearChildren.Sum(loopGear => loopGear.OwnWeight * loopGear.Quantity);
                 }
 
                 decimal decTotalChildrenWeight = 0;
                 if (Children.Count > 0 && strWeightExpression.Contains("Children Weight"))
                 {
                     decTotalChildrenWeight
-                        += Children.Sum(loopWare => loopWare.CalculatedTotalWeight(loopWare.Rating, objGrade));
+                        = Children.Sum(loopWare => loopWare.CalculatedTotalWeight(loopWare.Rating, objGrade));
                 }
 
                 decimal decReturn = 0;
@@ -10618,9 +10675,8 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterReadLock())
                 {
-                    int intBonusBoxes = Children.Sum(x => x.TotalBonusMatrixBoxes)
-                                        + GearChildren.Sum(x => x.Equipped, x => x.TotalBonusMatrixBoxes);
-                    return intBonusBoxes;
+                    return Children.Sum(x => x.TotalBonusMatrixBoxes)
+                        + GearChildren.Sum(x => x.Equipped, x => x.TotalBonusMatrixBoxes);
                 }
             }
         }
@@ -11384,7 +11440,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) &&
-                    !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+                    !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookEnabledAsync(Source, token).ConfigureAwait(false))
                     return null;
 
                 TreeNode objNode = new TreeNode
@@ -11393,8 +11449,8 @@ namespace Chummer.Backend.Equipment
                     Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                     Tag = this,
                     ContextMenuStrip = cmsCyberware,
-                    ForeColor = PreferredColor,
-                    ToolTipText = Notes.WordWrap()
+                    ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                    ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
                 };
 
                 TreeNodeCollection lstChildNodes = objNode.Nodes;

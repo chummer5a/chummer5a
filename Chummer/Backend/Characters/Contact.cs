@@ -1420,8 +1420,8 @@ namespace Chummer
 
         public async Task SetDisplayMetatypeAsync(string value, CancellationToken token = default)
         {
-            Metatype = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
-                                                                      token).ConfigureAwait(false);
+            await SetMetatypeAsync(await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
+                                                                      token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1491,6 +1491,25 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Metatype of this Contact.
+        /// </summary>
+        public async Task SetMetatypeAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strMetatype, value) != value)
+                    await OnPropertyChangedAsync(nameof(Metatype), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplayGenderMethod(string strLanguage)
         {
             string strGender = Gender;
@@ -1504,7 +1523,7 @@ namespace Chummer
 
         public async Task<string> DisplayGenderMethodAsync(string strLanguage, CancellationToken token = default)
         {
-            string strGender = Gender;
+            string strGender = await GetGenderAsync(token).ConfigureAwait(false);
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return strGender;
 
@@ -1525,8 +1544,8 @@ namespace Chummer
 
         public async Task SetDisplayGenderAsync(string value, CancellationToken token = default)
         {
-            Gender = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
-                                                                    token).ConfigureAwait(false);
+            await SetGenderAsync(await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
+                                                                    token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1569,6 +1588,25 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Gender of this Contact.
+        /// </summary>
+        public async Task SetGenderAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strGender, value) != value)
+                    await OnPropertyChangedAsync(nameof(Gender), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplayAgeMethod(string strLanguage)
         {
             string strAge = Age;
@@ -1582,7 +1620,7 @@ namespace Chummer
 
         public async Task<string> DisplayAgeMethodAsync(string strLanguage, CancellationToken token = default)
         {
-            string strAge = Age;
+            string strAge = await GetAgeAsync(token).ConfigureAwait(false);
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return strAge;
 
@@ -1602,8 +1640,8 @@ namespace Chummer
 
         public async Task SetDisplayAgeAsync(string value, CancellationToken token = default)
         {
-            Age = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
-                                     .ConfigureAwait(false);
+            await SetAgeAsync(await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
+                                     .ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1638,7 +1676,26 @@ namespace Chummer
                 Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
                 return objLinkedCharacter != null
                     ? await objLinkedCharacter.GetAgeAsync(token).ConfigureAwait(false)
-                    : _strGender;
+                    : _strAge;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// How old is this Contact.
+        /// </summary>
+        public async Task SetAgeAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strAge, value) != value)
+                    await OnPropertyChangedAsync(nameof(Age), token).ConfigureAwait(false);
             }
             finally
             {

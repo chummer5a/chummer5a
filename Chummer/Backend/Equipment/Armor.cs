@@ -1541,8 +1541,11 @@ namespace Chummer.Backend.Equipment
                 string strCapacity = strArmorCapacity;
                 if (blnSquareBrackets)
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-
-                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                strCapacity = strCapacity
+                    .CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                    .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                strCapacity = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCapacity);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity);
                 string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", objCultureInfo) : strCapacity;
                 if (blnSquareBrackets)
                     strReturn = '[' + strReturn + ']';
@@ -1571,9 +1574,11 @@ namespace Chummer.Backend.Equipment
                 string strCapacity = strArmorCapacity;
                 if (blnSquareBrackets)
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                    await strCapacity.CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                strCapacity = await strCapacity
+                    .CheapReplaceAsync("{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                    .CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                strCapacity = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strCapacity, token: token).ConfigureAwait(false);
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token: token).ConfigureAwait(false);
                 string strReturn = blnIsSuccess
                     ? ((double)objProcess).ToString("#,0.##", objCultureInfo)
                     : strCapacity;
@@ -2747,23 +2752,26 @@ namespace Chummer.Backend.Equipment
             else if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decReturn))
                 strReturn = decReturn.ToString("#,0.##", objCultureInfo);
 
-            foreach (string strArmorModCapacity in ArmorMods.Select(x => x.ArmorCapacity))
+            foreach (ArmorMod objMod in ArmorMods)
             {
-                if (!strArmorModCapacity.StartsWith('-')
-                    && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
+                string strArmorModCapacity = objMod.ArmorCapacity;
+                if (!strArmorModCapacity.StartsWith('-') && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
                     continue;
-                // If the Capacity is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
-                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                string strCapacity = strArmorModCapacity.FastEscape('[', ']');
-                if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                string strArmorModCalculatedCapacity = objMod.CalculatedCapacity.Trim('[', ']');
+                if (strArmorModCalculatedCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decTemp2))
                 {
-                    strCapacity = strCapacity.CheapReplace("Capacity", () => TotalArmorCapacity(GlobalSettings.InvariantCultureInfo))
-                                     .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity);
+                    if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decTemp1))
+                        strReturn = '(' + decTemp1.ToString(GlobalSettings.InvariantCultureInfo) + ")-(" + strArmorModCalculatedCapacity + ')';
+                    else
+                        strReturn = '(' + strReturn + ")-(" + strArmorModCalculatedCapacity + ')';
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strReturn);
                     if (blnIsSuccess)
-                        decValue = Convert.ToDecimal((double)objProcess);
+                        strReturn = Convert.ToDecimal((double)objProcess).ToString(objCultureInfo);
                 }
-                strReturn = (Convert.ToDecimal(strReturn, objCultureInfo) - decValue).ToString("#,0.##", objCultureInfo);
+                else if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decTemp1))
+                    strReturn = (decTemp1 - decTemp2).ToString("#,0.##", objCultureInfo);
+                else
+                    strReturn = '(' + strReturn + ")-(" + decTemp2.ToString(objCultureInfo) + ')';
             }
 
             return strReturn;
@@ -2784,26 +2792,27 @@ namespace Chummer.Backend.Equipment
             else if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decReturn))
                 strReturn = decReturn.ToString("#,0.##", objCultureInfo);
 
-            foreach (string strArmorModCapacity in ArmorMods.Select(x => x.ArmorCapacity))
+            await ArmorMods.ForEachAsync(async objMod =>
             {
-                if (!strArmorModCapacity.StartsWith('-')
-                    && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
-                    continue;
-                // If the Capacity is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
-                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                string strCapacity = strArmorModCapacity.FastEscape('[', ']');
-                if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                string strArmorModCapacity = objMod.ArmorCapacity;
+                if (!strArmorModCapacity.StartsWith('-') && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
+                    return;
+                string strArmorModCalculatedCapacity = (await objMod.GetCalculatedCapacityAsync(token).ConfigureAwait(false)).Trim('[', ']');
+                if (strArmorModCalculatedCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decTemp2))
                 {
-                    strCapacity = await strCapacity
-                        .CheapReplaceAsync("Capacity", () => TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token), token: token)
-                        .CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
+                    if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decTemp1))
+                        strReturn = '(' + decTemp1.ToString(GlobalSettings.InvariantCultureInfo) + ")-(" + strArmorModCalculatedCapacity + ')';
+                    else
+                        strReturn = '(' + strReturn + ")-(" + strArmorModCalculatedCapacity + ')';
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strReturn, token).ConfigureAwait(false);
                     if (blnIsSuccess)
-                        decValue = Convert.ToDecimal((double)objProcess);
+                        strReturn = Convert.ToDecimal((double)objProcess).ToString(objCultureInfo);
                 }
-                strReturn = (Convert.ToDecimal(strReturn, objCultureInfo) - decValue).ToString("#,0.##", objCultureInfo);
-            }
+                else if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decTemp1))
+                    strReturn = (decTemp1 - decTemp2).ToString("#,0.##", objCultureInfo);
+                else
+                    strReturn = '(' + strReturn + ")-(" + decTemp2.ToString(objCultureInfo) + ')';
+            }, token).ConfigureAwait(false);
 
             return strReturn;
         }
@@ -2820,11 +2829,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // Get the Armor base Capacity.
-                decimal decCapacity = Convert.ToDecimal(CalculatedCapacity(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo);
-
                 // If there is no Capacity (meaning that the Armor Suit Capacity or Maximum Armor Modification rule is turned off depending on the type of Armor), don't bother to calculate the remaining
                 // Capacity since it's disabled and return 0 instead.
-                if (decCapacity == 0)
+                if (!decimal.TryParse(CalculatedCapacity(GlobalSettings.InvariantCultureInfo), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCapacity)
+                    || decCapacity == 0)
                     return 0;
 
                 // Calculate the remaining Capacity for a Suit of Armor.
@@ -2858,11 +2866,11 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetCapacityRemainingAsync(CancellationToken token = default)
         {
             // Get the Armor base Capacity.
-            decimal decCapacity = Convert.ToDecimal(await CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false), GlobalSettings.InvariantCultureInfo);
-
+            // Get the Armor base Capacity.
             // If there is no Capacity (meaning that the Armor Suit Capacity or Maximum Armor Modification rule is turned off depending on the type of Armor), don't bother to calculate the remaining
             // Capacity since it's disabled and return 0 instead.
-            if (decCapacity == 0)
+            if (!decimal.TryParse(await CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCapacity)
+                || decCapacity == 0)
                 return 0;
 
             // Calculate the remaining Capacity for a Suit of Armor.
@@ -3441,8 +3449,8 @@ namespace Chummer.Backend.Equipment
                 Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                 Tag = this,
                 ContextMenuStrip = cmsArmor,
-                ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap()
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;

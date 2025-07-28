@@ -104,22 +104,25 @@ namespace Chummer
 
             await cboCategory.PopulateWithListItemsAsync(_lstCategory).ConfigureAwait(false);
 
-            // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
-                cboCategory.SelectedIndex = 0;
-            else if (cboCategory.Items.Contains(_strSelectCategory))
+            await cboCategory.DoThreadSafeAsync(x =>
             {
-                cboCategory.SelectedValue = _strSelectCategory;
-            }
+                // Select the first Category in the list.
+                if (string.IsNullOrEmpty(_strSelectCategory))
+                    x.SelectedIndex = 0;
+                else if (x.Items.Contains(_strSelectCategory))
+                {
+                    x.SelectedValue = _strSelectCategory;
+                }
 
-            if (cboCategory.SelectedIndex == -1)
-                cboCategory.SelectedIndex = 0;
+                if (cboCategory.SelectedIndex == -1)
+                    x.SelectedIndex = 0;
+            }).ConfigureAwait(false);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             _blnAddAgain = false;
-            AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -420,10 +423,10 @@ namespace Chummer
             await trePowers.DoThreadSafeAsync(x => x.Sort(), token: token).ConfigureAwait(false);
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
-            AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
         private async void txtSearch_TextChanged(object sender, EventArgs e)
@@ -438,9 +441,9 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async Task AcceptForm()
         {
-            string strSelectedPower = trePowers.SelectedNode?.Tag.ToString();
+            string strSelectedPower = await trePowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedPower))
                 return;
 
@@ -448,14 +451,14 @@ namespace Chummer
             if (objXmlPower == null)
                 return;
 
-            if (nudCritterPowerRating.Visible)
-                _intSelectedRating = nudCritterPowerRating.ValueAsInt;
+            if (await nudCritterPowerRating.DoThreadSafeFuncAsync(x => x.Visible).ConfigureAwait(false))
+                _intSelectedRating = await nudCritterPowerRating.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
 
-            _strSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
+            _strSelectCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty).ConfigureAwait(false);
             _strSelectedPower = strSelectedPower;
 
             // If the character is a Free Spirit (PC, not the Critter version), populate the Power Points Cost as well.
-            if (_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter)
+            if (await _objCharacter.GetMetatypeAsync().ConfigureAwait(false) == "Free Spirit" && !await _objCharacter.GetIsCritterAsync().ConfigureAwait(false))
             {
                 string strName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value;
                 if (!string.IsNullOrEmpty(strName))
@@ -469,8 +472,11 @@ namespace Chummer
                 }
             }
 
-            DialogResult = DialogResult.OK;
-            Close();
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            }).ConfigureAwait(false);
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)

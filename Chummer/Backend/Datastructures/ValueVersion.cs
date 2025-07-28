@@ -32,9 +32,6 @@ namespace Chummer
         private readonly int _Minor;
         private readonly int _Build;
         private readonly int _Revision;
-        private static readonly char[] SeparatorsArray = {
-            '.'
-        };
 
         /// <summary>Initializes a new ValueVersion struct with the specified major, minor, build, and revision numbers.</summary>
         /// <param name="major">The major version number.</param>
@@ -303,13 +300,13 @@ namespace Chummer
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
         {
-            return 0 | (_Major & 15) << 28 | (_Minor & byte.MaxValue) << 20 | (_Build & byte.MaxValue) << 12 | _Revision & 4095;
+            return 0 | (_Major & 0xF) << 28 | (_Minor & 0xFF) << 20 | (_Build & 0xFF) << 12 | _Revision & 0xFFF;
         }
 
         /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="T:System.String" /> representation.</summary>
         /// <returns>The <see cref="T:System.String" /> representation of the values of the major, minor, build, and revision components of the current ValueVersion struct, as depicted in the following format. Each component is separated by a period character ('.'). Square brackets ('[' and ']') indicate a component that will not appear in the return value if the component is not defined:
         /// major.minor[.build[.revision]]
-        /// For example, if you create a ValueVersion struct using the constructor Version(1,1), the returned string is "1.1". If you create a ValueVersion struct using the constructor Version(1,3,4,2), the returned string is "1.3.4.2".</returns>
+        /// For example, if you create a ValueVersion struct using the constructor ValueVersion(1,1), the returned string is "1.1". If you create a ValueVersion struct using the constructor ValueVersion(1,3,4,2), the returned string is "1.3.4.2".</returns>
         public override string ToString()
         {
             if (_Build == -1)
@@ -346,7 +343,7 @@ namespace Chummer
         /// 
         /// 
         /// 
-        /// For example, if you create ValueVersion struct using the constructor Version(1,3,5), ToString(2) returns "1.3" and ToString(4) throws an exception.</returns>
+        /// For example, if you create ValueVersion struct using the constructor ValueVersion(1,3,5), ToString(2) returns "1.3" and ToString(4) throws an exception.</returns>
         /// <exception cref="T:System.ArgumentException">
         ///         <paramref name="fieldCount" /> is less than 0, or more than 4.
         /// -or-
@@ -409,8 +406,7 @@ namespace Chummer
                 int length = sb.Length;
                 do
                 {
-                    int num1 = num % 10;
-                    num /= 10;
+                    num = num.DivRem(10, out int num1);
                     sb.Insert(length, (char)(48 + num1));
                 }
                 while (num > 0);
@@ -457,7 +453,12 @@ namespace Chummer
                 result.SetFailure(ParseFailureKind.ArgumentNullException);
                 return false;
             }
-            string[] strArray = version.SplitToPooledArray(out int length, SeparatorsArray);
+            if (int.TryParse(version, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsedComponent0) && parsedComponent0 >= 0)
+            {
+                result.m_parsedValueVersion = new ValueVersion(parsedComponent0);
+                return true;
+            }
+            string[] strArray = version.SplitToPooledArray(out int length, '.');
             try
             {
                 if (length < 2 || length > 4)

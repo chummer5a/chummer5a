@@ -1743,7 +1743,7 @@ namespace Chummer
                     intRating = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
                 decimal decQty = 1.0m;
                 if (xmlGearNode["quantity"] != null)
-                    decQty = Convert.ToDecimal(xmlGearNode["quantity"].InnerText, GlobalSettings.InvariantCultureInfo);
+                    decQty = ImprovementManager.ValueToDec(_objCharacter, xmlGearNode["quantity"].InnerText, _intRating);
 
                 // Create the new piece of Gear.
                 List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -2135,8 +2135,8 @@ namespace Chummer
             {
                 if (strTemp.EndsWith("-natural", StringComparison.Ordinal))
                 {
-                    intMax = Convert.ToInt32(strTemp.TrimEndOnce("-natural", true), GlobalSettings.InvariantCultureInfo) -
-                             _objCharacter.GetAttribute(strAttribute).MetatypeMaximum;
+                    intMax = ImprovementManager.ValueToInt(_objCharacter, strTemp.TrimEndOnce("-natural", true), _intRating)
+                        - _objCharacter.GetAttribute(strAttribute).MetatypeMaximum;
                 }
                 else
                     intMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
@@ -2373,7 +2373,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, _strUnique,
-                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, Convert.ToInt32(bonusNode.Value, GlobalSettings.InvariantCultureInfo)));
+                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, ImprovementManager.ValueToInt(_objCharacter, bonusNode.Value, _intRating)));
         }
 
         public void skillgrouplevel(XmlNode bonusNode)
@@ -3232,8 +3232,9 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            _objCharacter.PrototypeTranshuman += Convert.ToDecimal(bonusNode.InnerText, GlobalSettings.InvariantCultureInfo);
-            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique);
+            decimal decValue = ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating);
+            _objCharacter.PrototypeTranshuman += decValue;
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique, intRating: _intRating);
         }
 
         // Check for Friends In High Places modifiers.
@@ -3437,7 +3438,7 @@ namespace Chummer
                                         throw new AbortedException();
                                     }
 
-                                    SelectedValue = frmPickCategory.MyForm.SelectedItem;
+                                    strSelectedValue = frmPickCategory.MyForm.SelectedItem;
                                 }
                             }
 
@@ -3445,7 +3446,7 @@ namespace Chummer
                             {
                                 if (objPower.InternalId == SourceName)
                                 {
-                                    objPower.Extra = SelectedValue;
+                                    objPower.Extra = strSelectedValue;
                                 }
                             });
                         }
@@ -3954,7 +3955,7 @@ namespace Chummer
                         foreach (XmlNode objNode in objXmlPowerList)
                         {
                             XmlNode objXmlPower;
-                            int intLevels = Convert.ToInt32(objNode["val"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
+                            int intLevels = ImprovementManager.ValueToInt(_objCharacter, objNode["val"]?.InnerText, _intRating);
                             string strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
                             // Display the Select Power window and record which Power was selected.
                             using (ThreadSafeForm<SelectPower> frmPickPower = ThreadSafeForm<SelectPower>.Get(() => new SelectPower(_objCharacter)))
@@ -3963,10 +3964,10 @@ namespace Chummer
                                 frmPickPower.MyForm.IgnoreLimits = objNode["ignorerating"]?.InnerText == bool.TrueString;
 
                                 if (!string.IsNullOrEmpty(strPointsPerLevel))
-                                    frmPickPower.MyForm.PointsPerLevel = Convert.ToDecimal(strPointsPerLevel, GlobalSettings.InvariantCultureInfo);
+                                    frmPickPower.MyForm.PointsPerLevel = ImprovementManager.ValueToDec(_objCharacter, strPointsPerLevel, _intRating);
                                 string strLimit = objNode["limit"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                                 if (!string.IsNullOrEmpty(strLimit))
-                                    frmPickPower.MyForm.LimitToRating = Convert.ToInt32(strLimit, GlobalSettings.InvariantCultureInfo);
+                                    frmPickPower.MyForm.LimitToRating = ImprovementManager.ValueToInt(_objCharacter, strLimit, _intRating);
                                 string strLimitToPowers = objNode.Attributes?["limittopowers"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strLimitToPowers))
                                     frmPickPower.MyForm.LimitToPowers = strLimitToPowers;
@@ -5726,8 +5727,7 @@ namespace Chummer
                                 = bonusNode.SelectSingleNode("discountqualities/quality[. = "
                                                              + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
                             intQualityDiscount
-                                = Convert.ToInt32(objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@discount")?.Value,
-                                                  GlobalSettings.InvariantCultureInfo);
+                                = ImprovementManager.ValueToInt(_objCharacter, objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@discount")?.Value, _intRating);
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality discountQuality = new Quality(_objCharacter)
                             {
@@ -6880,7 +6880,10 @@ namespace Chummer
             {
                 foreach (XmlNode child in xmlMetamagicsList)
                 {
-                    int intRating = Convert.ToInt32(child.Attributes?["grade"]?.InnerText ?? "-1", GlobalSettings.InvariantCultureInfo);
+                    int intRating = -1;
+                    string strGrade = child.Attributes?["grade"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strGrade))
+                        intRating = ImprovementManager.ValueToInt(_objCharacter, strGrade, _intRating);
                     CreateImprovement(child.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.MetamagicLimit, _strUnique, 0, intRating);
                 }
             }

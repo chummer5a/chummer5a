@@ -11590,7 +11590,7 @@ namespace Chummer
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
 
-                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                                await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, token).ConfigureAwait(false);
                                 objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
 
                                 // Reduce the cost for Do It Yourself components.
@@ -11672,7 +11672,7 @@ namespace Chummer
                                 if (objExistingGear != null)
                                 {
                                     // A match was found, so increase the quantity instead.
-                                    objExistingGear.Quantity += objGear.Quantity;
+                                    await objExistingGear.SetQuantityAsync(objExistingGear.Quantity + objGear.Quantity, token).ConfigureAwait(false);
                                 }
                                 else
                                 {

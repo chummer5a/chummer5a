@@ -2607,6 +2607,7 @@ namespace Chummer
                 return Task.FromCanceled<string>(token);
             if (!strInput.StartsWith("FixedValues(", StringComparison.Ordinal))
                 return Task.FromResult(strInput);
+            strInput = strInput.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
             int intOuterIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma);
             if (intOuterIndex < 0)
                 return Task.FromResult(strInput);
@@ -2771,9 +2772,6 @@ namespace Chummer
         private static readonly char[] s_achrOpenParenthesesComma = new[] { '(', ',' };
 
         private static readonly char[] s_achrClosedParenthesesComma = new[] { ')', ',' };
-
-        private static readonly Lazy<Regex> s_RgxFixedValuesExtract = new Lazy<Regex>(() => new Regex(@"FixedValues\(([^)]*)\)",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         private static readonly Lazy<Regex> s_RgxHtmlTagExpression = new Lazy<Regex>(() => new Regex(@"/<\/?[a-z][\s\S]*>/i",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
