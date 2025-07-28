@@ -119,6 +119,10 @@ namespace Chummer
             _Revision = version1.Revision;
         }
 
+        /// <summary>Initializes a new ValueVersion struct using the specified Version as a reference.</summary>
+        /// <param name="version">A Version object from which to copy major, minor, build, and revision values.</param>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="version" /> is <see langword="null" />.</exception>
         public ValueVersion(Version version)
         {
             _Major = version.Major;

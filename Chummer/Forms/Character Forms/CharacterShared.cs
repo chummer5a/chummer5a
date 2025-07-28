@@ -2478,7 +2478,7 @@ namespace Chummer
                         await CharacterObject.Qualities.ForEachAsync(async objQuality =>
                         {
                             setQualitiesToPrint.Add(objQuality.SourceIDString + '|' +
-                                                    await objQuality.GetSourceNameAsync(GlobalSettings.Language, token)
+                                                    await objQuality.DisplaySourceNameAsync(GlobalSettings.Language, token)
                                                                     .ConfigureAwait(false) + '|' +
                                                     objQuality.Extra);
                         }, token).ConfigureAwait(false);
@@ -2488,7 +2488,7 @@ namespace Chummer
                         {
                             if (!setQualitiesToPrint.Remove(objQuality.SourceIDString + '|' +
                                                             await objQuality
-                                                                  .GetSourceNameAsync(GlobalSettings.Language, token)
+                                                                  .DisplaySourceNameAsync(GlobalSettings.Language, token)
                                                                   .ConfigureAwait(false)
                                                             + '|' +
                                                             objQuality.Extra))
