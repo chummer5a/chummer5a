@@ -318,7 +318,7 @@ namespace Chummer.Backend.Skills
                                await SkillGroupObject.GetRatingAsync(token).ConfigureAwait(false) > 0)
                             .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("default", Default.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("default", (await GetDefaultAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("requiresgroundmovement",
                             RequiresGroundMovement.ToString(GlobalSettings.InvariantCultureInfo), token: token)
@@ -4438,7 +4438,7 @@ namespace Chummer.Backend.Skills
 
                     if (blnListAllLimbs || !Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev) ||
                         objShowOnlyCyberware == null)
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(att.DisplayAbbrev)
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(att.CurrentDisplayAbbrev)
                             .Append(strSpace)
                             .Append('(')
                             .Append(att.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
@@ -4446,7 +4446,7 @@ namespace Chummer.Backend.Skills
                     {
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace)
                             .Append(objShowOnlyCyberware.CurrentDisplayName)
-                            .Append(strSpace).Append(att.DisplayAbbrev).Append(strSpace).Append('(')
+                            .Append(strSpace).Append(att.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                             .Append(objShowOnlyCyberware.GetAttributeTotalValue(att.Abbrev)
                                 .ToString(GlobalSettings.CultureInfo)).Append(')');
                         if (!CharacterObject.Ambidextrous
@@ -4803,7 +4803,7 @@ namespace Chummer.Backend.Skills
                     if (blnListAllLimbs || !Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev) ||
                         objShowOnlyCyberware == null)
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace)
-                            .Append(await att.GetDisplayAbbrevAsync(GlobalSettings.Language, token)
+                            .Append(await att.GetCurrentDisplayAbbrevAsync(token)
                                 .ConfigureAwait(false)).Append(strSpace)
                             .Append('(')
                             .Append(intAttTotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
@@ -4812,7 +4812,7 @@ namespace Chummer.Backend.Skills
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace)
                             .Append(await objShowOnlyCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
                             .Append(strSpace)
-                            .Append(await att.GetDisplayAbbrevAsync(GlobalSettings.Language, token)
+                            .Append(await att.GetCurrentDisplayAbbrevAsync(token)
                                 .ConfigureAwait(false)).Append(strSpace).Append('(')
                             .Append((await objShowOnlyCyberware.GetAttributeTotalValueAsync(att.Abbrev, token)
                                     .ConfigureAwait(false))

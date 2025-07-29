@@ -2773,9 +2773,6 @@ namespace Chummer
 
         private static readonly char[] s_achrClosedParenthesesComma = new[] { ')', ',' };
 
-        private static readonly Lazy<Regex> s_RgxFixedValuesExtract = new Lazy<Regex>(() => new Regex(@"FixedValues\(([^)]*)\)",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
-
         private static readonly Lazy<Regex> s_RgxHtmlTagExpression = new Lazy<Regex>(() => new Regex(@"/<\/?[a-z][\s\S]*>/i",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 

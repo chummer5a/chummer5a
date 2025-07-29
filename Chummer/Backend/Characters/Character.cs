@@ -572,7 +572,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
+                string strFile = (blnSync ? IsCritter : await GetIsCritterAsync(token).ConfigureAwait(false)) ? "critters.xml" : "metatypes.xml";
                 XmlDocument xmlDoc = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? LoadData(strFile, strLanguage, token: token)
@@ -628,7 +628,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
+                string strFile = (blnSync ? IsCritter : await GetIsCritterAsync(token).ConfigureAwait(false)) ? "critters.xml" : "metatypes.xml";
                 XPathNavigator xmlDoc = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? LoadDataXPath(strFile, strLanguage, token: token)
@@ -6350,7 +6350,7 @@ namespace Chummer
                                             : new ValueVersion();
                                     }
                                     // Check for typo in Corrupter quality and correct it
-                                    else if (_verSavedVersion.CompareTo(new ValueVersion(5, 188, 34)) == -1)
+                                    else if (_verSavedVersion < new ValueVersion(5, 188, 34))
                                     {
                                         objXmlDocument.InnerXml =
                                             objXmlDocument.InnerXml.Replace("Corruptor", "Corrupter");
@@ -7004,10 +7004,7 @@ namespace Chummer
                                         else if (blnHashCodeSuccess
                                                  && !objProspectiveSettings.BuiltInOption
                                                  // Need to make sure that the save was made in the same version of Chummer, otherwise we can get a hash code mismatch from settings themselves changing
-                                                 && LastSavedVersion.CompareTo(
-                                                     new ValueVersion(
-                                                         Application.ProductVersion.FastEscapeOnceFromStart("0.0.")))
-                                                 == 0
+                                                 && LastSavedVersion == new ValueVersion(Application.ProductVersion.FastEscapeOnceFromStart("0.0."))
                                                  && (blnSync
                                                      // ReSharper disable once MethodHasAsyncOverload
                                                      ? objProspectiveSettings.GetEquatableHashCode(token)
@@ -7787,18 +7784,28 @@ namespace Chummer
                                                             objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
                                                             if (objQuality.FirstLevelBonus?.HasChildNodes == true)
                                                             {
-                                                                bool blnDoFirstLevel = true;
-                                                                foreach (Quality objCheckQuality in Qualities)
+                                                                string strCheckExtra = blnSync
+                                                                    ? objQuality.Extra
+                                                                    : await objQuality.GetExtraAsync(token).ConfigureAwait(false);
+                                                                string strCheckSourceName = blnSync
+                                                                    ? objQuality.SourceName
+                                                                    : await objQuality.GetSourceNameAsync(token).ConfigureAwait(false);
+                                                                bool blnDoFirstLevel;
+                                                                if (blnSync)
                                                                 {
-                                                                    if (objCheckQuality != objQuality &&
+                                                                    blnDoFirstLevel = !Qualities.Any(objCheckQuality =>
+                                                                        objCheckQuality != objQuality &&
                                                                         objCheckQuality.SourceID == objQuality.SourceID &&
-                                                                        objCheckQuality.Extra == objQuality.Extra &&
-                                                                        objCheckQuality.SourceName
-                                                                        == objQuality.SourceName)
-                                                                    {
-                                                                        blnDoFirstLevel = false;
-                                                                        break;
-                                                                    }
+                                                                        objCheckQuality.Extra == strCheckExtra &&
+                                                                        objCheckQuality.SourceName == strCheckSourceName);
+                                                                }
+                                                                else
+                                                                {
+                                                                    blnDoFirstLevel = !await (await GetQualitiesAsync(token).ConfigureAwait(false)).AnyAsync(async objCheckQuality =>
+                                                                        objCheckQuality != objQuality &&
+                                                                        objCheckQuality.SourceID == objQuality.SourceID &&
+                                                                        await objCheckQuality.GetExtraAsync(token).ConfigureAwait(false) == strCheckExtra &&
+                                                                        await objCheckQuality.GetSourceNameAsync(token).ConfigureAwait(false) == strCheckSourceName, token).ConfigureAwait(false);
                                                                 }
 
                                                                 if (blnDoFirstLevel)
@@ -7828,7 +7835,10 @@ namespace Chummer
                                                                         ImprovementManager.GetSelectedValue(this);
                                                                     if (!string.IsNullOrEmpty(strSelectedValue))
                                                                     {
-                                                                        objQuality.Extra = strSelectedValue;
+                                                                        if (blnSync)
+                                                                            objQuality.Extra = strSelectedValue;
+                                                                        else
+                                                                            await objQuality.SetExtraAsync(strSelectedValue, token).ConfigureAwait(false);
                                                                     }
                                                                 }
                                                             }
@@ -9519,18 +9529,28 @@ namespace Chummer
                                         objLivingPersonaQuality.FirstLevelBonus = objNode["firstlevelbonus"];
                                         if (objLivingPersonaQuality.FirstLevelBonus?.HasChildNodes == true)
                                         {
-                                            bool blnDoFirstLevel = true;
-                                            foreach (Quality objCheckQuality in Qualities)
+                                            string strCheckExtra = blnSync
+                                                ? objLivingPersonaQuality.Extra
+                                                : await objLivingPersonaQuality.GetExtraAsync(token).ConfigureAwait(false);
+                                            string strCheckSourceName = blnSync
+                                                ? objLivingPersonaQuality.SourceName
+                                                : await objLivingPersonaQuality.GetSourceNameAsync(token).ConfigureAwait(false);
+                                            bool blnDoFirstLevel;
+                                            if (blnSync)
                                             {
-                                                if (objCheckQuality != objLivingPersonaQuality &&
+                                                blnDoFirstLevel = !Qualities.Any(objCheckQuality =>
+                                                    objCheckQuality != objLivingPersonaQuality &&
                                                     objCheckQuality.SourceID == objLivingPersonaQuality.SourceID &&
-                                                    objCheckQuality.Extra == objLivingPersonaQuality.Extra &&
-                                                    objCheckQuality.SourceName ==
-                                                    objLivingPersonaQuality.SourceName)
-                                                {
-                                                    blnDoFirstLevel = false;
-                                                    break;
-                                                }
+                                                    objCheckQuality.Extra == strCheckExtra &&
+                                                    objCheckQuality.SourceName == strCheckSourceName);
+                                            }
+                                            else
+                                            {
+                                                blnDoFirstLevel = !await (await GetQualitiesAsync(token).ConfigureAwait(false)).AnyAsync(async objCheckQuality =>
+                                                    objCheckQuality != objLivingPersonaQuality &&
+                                                    objCheckQuality.SourceID == objLivingPersonaQuality.SourceID &&
+                                                    await objCheckQuality.GetExtraAsync(token).ConfigureAwait(false) == strCheckExtra &&
+                                                    await objCheckQuality.GetSourceNameAsync(token).ConfigureAwait(false) == strCheckSourceName, token).ConfigureAwait(false);
                                             }
 
                                             if (blnDoFirstLevel)
@@ -9560,8 +9580,10 @@ namespace Chummer
                                                     ImprovementManager.GetSelectedValue(this);
                                                 if (!string.IsNullOrEmpty(strSelectedValue))
                                                 {
-                                                    objLivingPersonaQuality.Extra =
-                                                        strSelectedValue;
+                                                    if (blnSync)
+                                                        objLivingPersonaQuality.Extra = strSelectedValue;
+                                                    else
+                                                        await objLivingPersonaQuality.SetExtraAsync(strSelectedValue, token).ConfigureAwait(false);
                                                 }
                                             }
                                         }
@@ -10794,7 +10816,7 @@ namespace Chummer
                             "metatype", await DisplayMetatypeAsync(strLanguageToPrint, token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     // <metatype_english />
-                    await objWriter.WriteElementStringAsync("metatype_english", Metatype, token: token)
+                    await objWriter.WriteElementStringAsync("metatype_english", await GetMetatypeAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     // <metatype_guid />
                     await objWriter.WriteElementStringAsync("metatype_guid",
@@ -10811,7 +10833,7 @@ namespace Chummer
                         .ConfigureAwait(false);
                     // <metavariant_guid />
                     await objWriter.WriteElementStringAsync("metavariant_guid",
-                            MetavariantGuid.ToString(
+                            (await GetMetavariantGuidAsync(token).ConfigureAwait(false)).ToString(
                                 "D", GlobalSettings.InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
                     // <movement />
@@ -10856,19 +10878,19 @@ namespace Chummer
                                 .ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                     // <prioritymetatype />
-                    await objWriter.WriteElementStringAsync("prioritymetatype", MetatypePriority, token: token)
+                    await objWriter.WriteElementStringAsync("prioritymetatype", await GetMetatypePriorityAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     // <priorityattributes />
-                    await objWriter.WriteElementStringAsync("priorityattributes", AttributesPriority, token: token)
+                    await objWriter.WriteElementStringAsync("priorityattributes", await GetAttributesPriorityAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     // <priorityspecial />
-                    await objWriter.WriteElementStringAsync("priorityspecial", SpecialPriority, token: token)
+                    await objWriter.WriteElementStringAsync("priorityspecial", await GetSpecialPriorityAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     // <priorityskills />
-                    await objWriter.WriteElementStringAsync("priorityskills", SkillsPriority, token: token)
+                    await objWriter.WriteElementStringAsync("priorityskills", await GetSkillsPriorityAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     // <priorityresources />
-                    await objWriter.WriteElementStringAsync("priorityresources", ResourcesPriority, token: token)
+                    await objWriter.WriteElementStringAsync("priorityresources", await GetResourcesPriorityAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
 
                     // <priorityskills>
@@ -10919,9 +10941,10 @@ namespace Chummer
                     // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from
                     // having a self-terminated title tag which causes browser to not rendering anything.
                     // <name />
+                    string strMyName = await GetNameAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name",
-                            !string.IsNullOrEmpty(Name)
-                                ? Name
+                            !string.IsNullOrEmpty(strMyName)
+                                ? strMyName
                                 : await LanguageManager.GetStringAsync(
                                     "String_UnnamedCharacter", strLanguageToPrint,
                                     token: token).ConfigureAwait(false), token: token)
@@ -10933,7 +10956,7 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("gender",
                             await TranslateExtraAsync(
                                     await ReverseTranslateExtraAsync(
-                                        Gender, GlobalSettings.Language, "contacts.xml",
+                                        await GetGenderAsync(token).ConfigureAwait(false), GlobalSettings.Language, "contacts.xml",
                                         token: token).ConfigureAwait(false),
                                     strLanguageToPrint, "contacts.xml", token: token)
                                 .ConfigureAwait(false), token: token)
@@ -10942,7 +10965,7 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("age",
                         await TranslateExtraAsync(
                             await ReverseTranslateExtraAsync(
-                                Age, GlobalSettings.Language, "contacts.xml",
+                                await GetAgeAsync(token).ConfigureAwait(false), GlobalSettings.Language, "contacts.xml",
                                 token: token).ConfigureAwait(false),
                             strLanguageToPrint,
                             "contacts.xml", token: token).ConfigureAwait(false),
@@ -10950,55 +10973,55 @@ namespace Chummer
                     // <eyes />
                     await objWriter.WriteElementStringAsync("eyes",
                         await TranslateExtraAsync(
-                            await ReverseTranslateExtraAsync(Eyes, token: token)
+                            await ReverseTranslateExtraAsync(await GetEyesAsync(token).ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false),
                             strLanguageToPrint, token: token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <height />
                     await objWriter.WriteElementStringAsync("height",
                         await TranslateExtraAsync(
-                            await ReverseTranslateExtraAsync(Height, token: token)
+                            await ReverseTranslateExtraAsync(await GetHeightAsync(token).ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false),
                             strLanguageToPrint, token: token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <weight />
                     await objWriter.WriteElementStringAsync("weight",
                         await TranslateExtraAsync(
-                            await ReverseTranslateExtraAsync(Weight, token: token)
+                            await ReverseTranslateExtraAsync(await GetWeightAsync(token).ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false),
                             strLanguageToPrint, token: token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <skin />
                     await objWriter.WriteElementStringAsync("skin",
                         await TranslateExtraAsync(
-                            await ReverseTranslateExtraAsync(Skin, token: token)
+                            await ReverseTranslateExtraAsync(await GetSkinAsync(token).ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false),
                             strLanguageToPrint, token: token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <hair />
                     await objWriter.WriteElementStringAsync("hair",
                         await TranslateExtraAsync(
-                            await ReverseTranslateExtraAsync(Hair, token: token)
+                            await ReverseTranslateExtraAsync(await GetHairAsync(token).ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false),
                             strLanguageToPrint, token: token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <description />
                     await objWriter
                         .WriteElementStringAsync("description",
-                            await Description.RtfToHtmlAsync(token).ConfigureAwait(false),
+                            await (await GetDescriptionAsync(token).ConfigureAwait(false)).RtfToHtmlAsync(token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     // <background />
                     await objWriter
                         .WriteElementStringAsync("background",
-                            await Background.RtfToHtmlAsync(token).ConfigureAwait(false),
+                            await (await GetBackgroundAsync(token).ConfigureAwait(false)).RtfToHtmlAsync(token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     // <concept />
                     await objWriter
-                        .WriteElementStringAsync("concept", await Concept.RtfToHtmlAsync(token).ConfigureAwait(false),
+                        .WriteElementStringAsync("concept", await (await GetConceptAsync(token).ConfigureAwait(false)).RtfToHtmlAsync(token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     // <notes />
                     await objWriter
-                        .WriteElementStringAsync("notes", await Notes.RtfToHtmlAsync(token).ConfigureAwait(false),
+                        .WriteElementStringAsync("notes", await (await GetNotesAsync(token).ConfigureAwait(false)).RtfToHtmlAsync(token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     // <alias />
                     await objWriter.WriteElementStringAsync("alias", await GetAliasAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -11061,21 +11084,21 @@ namespace Chummer
                             token: token).ConfigureAwait(false);
                     // <totalkarma />
                     await objWriter
-                        .WriteElementStringAsync("totalkarma", CareerKarma.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("totalkarma", (await GetCareerKarmaAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <special />
-                    await objWriter.WriteElementStringAsync("special", Special.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("special", (await GetSpecialAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <totalspecial />
                     await objWriter
-                        .WriteElementStringAsync("totalspecial", TotalSpecial.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("totalspecial", (await GetTotalSpecialAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <attributes />
-                    await objWriter.WriteElementStringAsync("attributes", Attributes.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("attributes", (await GetAttributesAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <totalattributes />
                     await objWriter
-                        .WriteElementStringAsync("totalattributes", TotalAttributes.ToString(objCulture),
+                        .WriteElementStringAsync("totalattributes", (await GetTotalAttributesAsync(token).ConfigureAwait(false)).ToString(objCulture),
                             token: token).ConfigureAwait(false);
                     // <edgeused />
                     await objWriter.WriteElementStringAsync("edgeused", (await GetEdgeUsedAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
@@ -11447,11 +11470,11 @@ namespace Chummer
                         token: token).ConfigureAwait(false);
                     // <initiategrade />
                     await objWriter
-                        .WriteElementStringAsync("initiategrade", InitiateGrade.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("initiategrade", (await GetInitiateGradeAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <resenabled />
                     await objWriter.WriteElementStringAsync("resenabled",
-                        RESEnabled.ToString(GlobalSettings.InvariantCultureInfo),
+                        (await GetRESEnabledAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                         token: token).ConfigureAwait(false);
                     // <submersiongrade />
                     await objWriter
@@ -11459,37 +11482,37 @@ namespace Chummer
                             token: token).ConfigureAwait(false);
                     // <depenabled />
                     await objWriter.WriteElementStringAsync("depenabled",
-                        DEPEnabled.ToString(GlobalSettings.InvariantCultureInfo),
+                        (await GetDEPEnabledAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                         token: token).ConfigureAwait(false);
                     // <groupmember />
                     await objWriter.WriteElementStringAsync("groupmember",
-                        GroupMember.ToString(GlobalSettings.InvariantCultureInfo),
+                        (await GetGroupMemberAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                         token: token).ConfigureAwait(false);
                     // <groupname />
-                    await objWriter.WriteElementStringAsync("groupname", GroupName, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("groupname", await GetGroupNameAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     // <groupnotes />
-                    await objWriter.WriteElementStringAsync("groupnotes", GroupNotes, token: token)
+                    await objWriter.WriteElementStringAsync("groupnotes", await GetGroupNotesAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     // <surprise />
-                    await objWriter.WriteElementStringAsync("surprise", Surprise.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("surprise", (await GetSurpriseAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <composure />
-                    await objWriter.WriteElementStringAsync("composure", Composure.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("composure", (await GetComposureAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <judgeintentions />
                     await objWriter
-                        .WriteElementStringAsync("judgeintentions", JudgeIntentions.ToString(objCulture),
+                        .WriteElementStringAsync("judgeintentions", (await GetJudgeIntentionsAsync(token).ConfigureAwait(false)).ToString(objCulture),
                             token: token).ConfigureAwait(false);
                     // <judgeintentionsresist />
                     await objWriter.WriteElementStringAsync("judgeintentionsresist",
-                            JudgeIntentionsResist.ToString(objCulture), token: token)
+                            (await GetJudgeIntentionsResistAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <liftandcarry />
                     await objWriter
-                        .WriteElementStringAsync("liftandcarry", LiftAndCarry.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("liftandcarry", (await GetLiftAndCarryAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <memory />
-                    await objWriter.WriteElementStringAsync("memory", Memory.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("memory", (await GetMemoryAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     string strWeightFormat = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
                     // <liftweight />
@@ -11507,137 +11530,137 @@ namespace Chummer
                         .ConfigureAwait(false);
                     // <fatigueresist />
                     await objWriter
-                        .WriteElementStringAsync("fatigueresist", FatigueResist.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("fatigueresist", (await GetFatigueResistAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <radiationresist />
                     await objWriter
-                        .WriteElementStringAsync("radiationresist", RadiationResist.ToString(objCulture),
+                        .WriteElementStringAsync("radiationresist", (await GetRadiationResistAsync(token).ConfigureAwait(false)).ToString(objCulture),
                             token: token).ConfigureAwait(false);
                     // <sonicresist />
                     await objWriter
-                        .WriteElementStringAsync("sonicresist", SonicResist.ToString(objCulture), token: token)
+                        .WriteElementStringAsync("sonicresist", (await GetSonicResistAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <toxincontacttesist />
                     await objWriter.WriteElementStringAsync("toxincontactresist",
-                        ToxinContactResist(strLanguageToPrint, objCulture),
+                        await ToxinContactResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <toxiningestionresist />
                     await objWriter.WriteElementStringAsync("toxiningestionresist",
-                        ToxinIngestionResist(strLanguageToPrint, objCulture),
+                        await ToxinIngestionResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <toxininhalationresist />
                     await objWriter.WriteElementStringAsync("toxininhalationresist",
-                        ToxinInhalationResist(strLanguageToPrint, objCulture),
+                        await ToxinInhalationResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <toxininjectionresist />
                     await objWriter.WriteElementStringAsync("toxininjectionresist",
-                        ToxinInjectionResist(strLanguageToPrint, objCulture),
+                        await ToxinInjectionResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <pathogencontactresist />
                     await objWriter.WriteElementStringAsync("pathogencontactresist",
-                        PathogenContactResist(strLanguageToPrint, objCulture),
+                        await PathogenContactResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <pathogeningestionresist />
                     await objWriter.WriteElementStringAsync("pathogeningestionresist",
-                        PathogenIngestionResist(strLanguageToPrint, objCulture),
+                        await PathogenIngestionResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <pathogeninhalationresist />
                     await objWriter.WriteElementStringAsync("pathogeninhalationresist",
-                        PathogenInhalationResist(strLanguageToPrint, objCulture),
+                        await PathogenInhalationResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <pathogeninjectionresist />
                     await objWriter.WriteElementStringAsync("pathogeninjectionresist",
-                        PathogenInjectionResist(strLanguageToPrint, objCulture),
+                        await PathogenInjectionResistAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     // <physiologicaladdictionresistfirsttime />
                     await objWriter.WriteElementStringAsync("physiologicaladdictionresistfirsttime",
-                        PhysiologicalAddictionResistFirstTime.ToString(objCulture),
+                        (await GetPhysiologicalAddictionResistFirstTimeAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
                     // <physiologicaladdictionresistalreadyaddicted />
                     await objWriter.WriteElementStringAsync("physiologicaladdictionresistalreadyaddicted",
-                        PhysiologicalAddictionResistAlreadyAddicted.ToString(
+                        (await GetPhysiologicalAddictionResistAlreadyAddictedAsync(token).ConfigureAwait(false)).ToString(
                             objCulture), token: token).ConfigureAwait(false);
                     // <psychologicaladdictionresistfirsttime />
                     await objWriter.WriteElementStringAsync("psychologicaladdictionresistfirsttime",
-                        PsychologicalAddictionResistFirstTime.ToString(objCulture),
+                        (await GetPsychologicalAddictionResistFirstTimeAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
                     // <psychologicaladdictionresistalreadyaddicted />
                     await objWriter.WriteElementStringAsync("psychologicaladdictionresistalreadyaddicted",
-                        PsychologicalAddictionResistAlreadyAddicted.ToString(
+                        (await GetPsychologicalAddictionResistAlreadyAddictedAsync(token).ConfigureAwait(false)).ToString(
                             objCulture), token: token).ConfigureAwait(false);
                     // <physicalcmnaturalrecovery />
                     await objWriter.WriteElementStringAsync("physicalcmnaturalrecovery",
-                        PhysicalCMNaturalRecovery.ToString(objCulture),
+                        (await GetPhysicalCMNaturalRecoveryAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
                     // <stuncmnaturalrecovery />
                     await objWriter.WriteElementStringAsync("stuncmnaturalrecovery",
-                            StunCMNaturalRecovery.ToString(objCulture), token: token)
+                            (await GetStunCMNaturalRecoveryAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
 
                     // Spell Resistances
                     //Indirect Dodge
                     await objWriter.WriteElementStringAsync("indirectdefenseresist",
-                        SpellDefenseIndirectDodge.ToString(objCulture),
+                        (await GetSpellDefenseIndirectDodgeAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
                     //Direct Soak - Mana
                     await objWriter.WriteElementStringAsync("directmanaresist",
-                        SpellDefenseDirectSoakMana.ToString(objCulture),
+                        (await GetSpellDefenseDirectSoakManaAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
                     //Direct Soak - Physical
                     await objWriter.WriteElementStringAsync("directphysicalresist",
-                        SpellDefenseDirectSoakPhysical.ToString(objCulture),
+                        (await GetSpellDefenseDirectSoakPhysicalAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
                     //Detection Spells
                     await objWriter.WriteElementStringAsync("detectionspellresist",
-                            SpellDefenseDetection.ToString(objCulture), token: token)
+                            (await GetSpellDefenseDetectionAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     //Decrease Attribute - BOD
                     await objWriter.WriteElementStringAsync("decreasebodresist",
-                            SpellDefenseDecreaseBOD.ToString(objCulture), token: token)
+                            (await GetSpellDefenseDecreaseBODAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     //Decrease Attribute - AGI
                     await objWriter.WriteElementStringAsync("decreaseagiresist",
-                            SpellDefenseDecreaseAGI.ToString(objCulture), token: token)
+                            (await GetSpellDefenseDecreaseAGIAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     //Decrease Attribute - REA
                     await objWriter.WriteElementStringAsync("decreaserearesist",
-                            SpellDefenseDecreaseREA.ToString(objCulture), token: token)
+                            (await GetSpellDefenseDecreaseREAAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     //Decrease Attribute - STR
                     await objWriter.WriteElementStringAsync("decreasestrresist",
-                            SpellDefenseDecreaseSTR.ToString(objCulture), token: token)
+                            (await GetSpellDefenseDecreaseSTRAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     //Decrease Attribute - CHA
                     await objWriter.WriteElementStringAsync("decreasecharesist",
-                            SpellDefenseDecreaseCHA.ToString(objCulture), token: token)
+                            (await GetSpellDefenseDecreaseCHAAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     //Decrease Attribute - INT
                     await objWriter.WriteElementStringAsync("decreaseintresist",
-                            SpellDefenseDecreaseINT.ToString(objCulture), token: token)
+                            (await GetSpellDefenseDecreaseINTAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     //Decrease Attribute - LOG
                     await objWriter.WriteElementStringAsync("decreaselogresist",
-                            SpellDefenseDecreaseLOG.ToString(objCulture), token: token)
+                            (await GetSpellDefenseDecreaseLOGAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     //Decrease Attribute - WIL
                     await objWriter.WriteElementStringAsync("decreasewilresist",
-                            SpellDefenseDecreaseWIL.ToString(objCulture), token: token)
+                            (await GetSpellDefenseDecreaseWILAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     //Illusion - Mana
                     await objWriter.WriteElementStringAsync("illusionmanaresist",
-                            SpellDefenseIllusionMana.ToString(objCulture), token: token)
+                            (await GetSpellDefenseIllusionManaAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     //Illusion - Physical
                     await objWriter.WriteElementStringAsync("illusionphysicalresist",
-                        SpellDefenseIllusionPhysical.ToString(objCulture),
+                        (await GetSpellDefenseIllusionPhysicalAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
                     //Manipulation - Mental
                     await objWriter.WriteElementStringAsync("manipulationmentalresist",
-                        SpellDefenseManipulationMental.ToString(objCulture),
+                        (await GetSpellDefenseManipulationMentalAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
                     //Manipulation - Physical
                     await objWriter.WriteElementStringAsync("manipulationphysicalresist",
-                        SpellDefenseManipulationPhysical.ToString(objCulture),
+                        (await GetSpellDefenseManipulationPhysicalAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
 
                     // <skills>
@@ -11646,7 +11669,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        await SkillsSection.Print(objWriter, objCulture, strLanguageToPrint, token: token)
+                        await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).Print(objWriter, objCulture, strLanguageToPrint, token: token)
                             .ConfigureAwait(false);
                     }
                     finally
@@ -11661,11 +11684,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Contact objContact in Contacts)
-                        {
-                            await objContact.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await (await GetContactsAsync(token).ConfigureAwait(false)).ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -11885,10 +11904,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (MentorSpirit objMentorSpirit in MentorSpirits)
-                        {
-                            await objMentorSpirit.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
-                        }
+                        await (await GetMentorSpiritsAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -11902,11 +11919,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Spell objSpell in Spells)
-                        {
-                            await objSpell.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await (await GetSpellsAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -11920,11 +11934,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Power objPower in Powers)
-                        {
-                            await objPower.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await (await GetPowersAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -11938,11 +11949,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Spirit objSpirit in Spirits)
-                        {
-                            await objSpirit.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await (await GetSpiritsAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -11956,10 +11964,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (ComplexForm objComplexForm in ComplexForms)
-                        {
-                            await objComplexForm.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
-                        }
+                        await (await GetComplexFormsAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -11973,10 +11979,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (AIProgram objProgram in AIPrograms)
-                        {
-                            await objProgram.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
-                        }
+                        await (await GetAIProgramsAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -11990,11 +11994,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (MartialArt objMartialArt in MartialArts)
-                        {
-                            await objMartialArt.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await (await GetMartialArtsAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12008,11 +12009,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Armor objArmor in Armor)
-                        {
-                            await objArmor.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await (await GetArmorAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12026,11 +12024,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Weapon objWeapon in Weapons)
-                        {
-                            await objWeapon.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await (await GetWeaponsAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12044,11 +12039,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Cyberware objCyberware in Cyberware)
-                        {
-                            await objCyberware.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await (await GetCyberwareAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12062,12 +12054,14 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
+                        ThreadSafeObservableCollection<Quality> lstQualities = await GetQualitiesAsync(token).ConfigureAwait(false);
                         // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
-                        Dictionary<string, int> strQualitiesToPrint = new Dictionary<string, int>(Qualities.Count);
-                        foreach (Quality objQuality in Qualities)
+                        Dictionary<string, int> strQualitiesToPrint = new Dictionary<string, int>(await lstQualities.GetCountAsync(token).ConfigureAwait(false));
+                        await lstQualities.ForEachAsync(async objQuality =>
                         {
-                            string strKey = objQuality.SourceIDString + '|' + objQuality.SourceName + '|'
-                                            + objQuality.Extra;
+                            string strKey = await objQuality.GetSourceIDStringAsync(token).ConfigureAwait(false)
+                                + '|' + await objQuality.GetSourceNameAsync(token).ConfigureAwait(false)
+                                + '|' + await objQuality.GetExtraAsync(token).ConfigureAwait(false);
                             if (strQualitiesToPrint.TryGetValue(strKey, out int intExistingRating))
                             {
                                 strQualitiesToPrint[strKey] = intExistingRating + 1;
@@ -12076,19 +12070,20 @@ namespace Chummer
                             {
                                 strQualitiesToPrint.Add(strKey, 1);
                             }
-                        }
+                        }, token).ConfigureAwait(false);
 
-                        foreach (Quality objQuality in Qualities)
+                        await lstQualities.ForEachAsync(async objQuality =>
                         {
-                            string strKey = objQuality.SourceIDString + '|' + objQuality.SourceName + '|'
-                                            + objQuality.Extra;
+                            string strKey = await objQuality.GetSourceIDStringAsync(token).ConfigureAwait(false)
+                                + '|' + await objQuality.GetSourceNameAsync(token).ConfigureAwait(false)
+                                + '|' + await objQuality.GetExtraAsync(token).ConfigureAwait(false);
                             if (strQualitiesToPrint.TryGetValue(strKey, out int intLoopRating))
                             {
                                 await objQuality.Print(objWriter, intLoopRating, objCulture, strLanguageToPrint, token)
                                     .ConfigureAwait(false);
                                 strQualitiesToPrint.Remove(strKey);
                             }
-                        }
+                        }, token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12102,11 +12097,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Lifestyle objLifestyle in Lifestyles)
-                        {
-                            await objLifestyle.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await (await GetLifestylesAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12120,10 +12112,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Gear objGear in Gear)
-                        {
-                            await objGear.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
-                        }
+                        await (await GetGearAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12137,10 +12127,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Drug objDrug in Drugs)
-                        {
-                            await objDrug.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
-                        }
+                        await (await GetDrugsAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12154,11 +12142,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Vehicle objVehicle in Vehicles)
-                        {
-                            await objVehicle.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await (await GetVehiclesAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12172,7 +12157,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (InitiationGrade objGrade in InitiationGrades)
+                        await (await GetInitiationGradesAsync(token).ConfigureAwait(false)).ForEachAsync(async objGrade =>
                         {
                             await objGrade.Print(objWriter, objCulture, token).ConfigureAwait(false);
 
@@ -12183,12 +12168,10 @@ namespace Chummer
                             try
                             {
                                 token.ThrowIfCancellationRequested();
-                                foreach (Metamagic objMetamagic in Metamagics)
-                                {
-                                    if (objMetamagic.Grade == objGrade.Grade)
-                                        await objMetamagic.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                            .ConfigureAwait(false);
-                                }
+                                await (await GetMetamagicsAsync(token).ConfigureAwait(false))
+                                    .ForEachAsync(x => x.Grade == objGrade.Grade
+                                        ? x.Print(objWriter, objCulture, strLanguageToPrint, token)
+                                        : Task.CompletedTask, token).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -12202,11 +12185,10 @@ namespace Chummer
                             try
                             {
                                 token.ThrowIfCancellationRequested();
-                                foreach (Art objArt in Arts)
-                                {
-                                    if (objArt.Grade == objGrade.Grade)
-                                        await objArt.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
-                                }
+                                await (await GetArtsAsync(token).ConfigureAwait(false))
+                                    .ForEachAsync(x => x.Grade == objGrade.Grade
+                                        ? x.Print(objWriter, strLanguageToPrint, token)
+                                        : Task.CompletedTask, token).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -12220,19 +12202,17 @@ namespace Chummer
                             try
                             {
                                 token.ThrowIfCancellationRequested();
-                                foreach (Enhancement objEnhancement in Enhancements)
-                                {
-                                    if (objEnhancement.Grade == objGrade.Grade)
-                                        await objEnhancement.Print(objWriter, strLanguageToPrint, token)
-                                            .ConfigureAwait(false);
-                                }
+                                await (await GetEnhancementsAsync(token).ConfigureAwait(false))
+                                    .ForEachAsync(x => x.Grade == objGrade.Grade
+                                        ? x.Print(objWriter, strLanguageToPrint, token)
+                                        : Task.CompletedTask, token).ConfigureAwait(false);
                             }
                             finally
                             {
                                 // </enhancements>
                                 await objInitiationEnhancementsElement.DisposeAsync().ConfigureAwait(false);
                             }
-                        }
+                        }, token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12246,11 +12226,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Metamagic objMetamagic in Metamagics)
-                        {
-                            await objMetamagic.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await (await GetMetamagicsAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12264,10 +12241,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Art objArt in Arts)
-                        {
-                            await objArt.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
-                        }
+                        await (await GetArtsAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12281,10 +12256,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Enhancement objEnhancement in Enhancements)
-                        {
-                            await objEnhancement.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
-                        }
+                        await (await GetEnhancementsAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12298,10 +12271,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (CritterPower objPower in CritterPowers)
-                        {
-                            await objPower.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
-                        }
+                        await (await GetCritterPowersAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12315,11 +12286,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (SustainedObject objSustained in SustainedCollection)
-                        {
-                            await objSustained.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                .ConfigureAwait(false);
-                        }
+                        await (await GetSustainedCollectionAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12406,9 +12374,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (CalendarWeek objWeek in Calendar)
-                            await objWeek.Print(objWriter, objCulture, GlobalSettings.PrintNotes, token)
-                                .ConfigureAwait(false);
+                        await (await GetCalendarAsync(token).ConfigureAwait(false))
+                            .ForEachAsync(x => x.Print(objWriter, objCulture, GlobalSettings.PrintNotes, token), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12425,7 +12392,7 @@ namespace Chummer
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            foreach (ExpenseLogEntry objExpense in ExpenseEntries.Reverse())
+                            foreach (ExpenseLogEntry objExpense in (await GetExpenseEntriesAsync(token).ConfigureAwait(false)).Reverse())
                                 await objExpense.Print(objWriter, objCulture, strLanguageToPrint, token)
                                     .ConfigureAwait(false);
                         }
@@ -18388,6 +18355,43 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's Metatype Priority.
+        /// </summary>
+        public async Task<string> GetMetatypePriorityAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPriorityMetatype;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Metatype Priority.
+        /// </summary>
+        public async Task SetMetatypePriorityAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPriorityMetatype, value) == value)
+                    return;
+
+                await OnPropertyChangedAsync(nameof(MetatypePriority), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Character's Attributes Priority.
         /// </summary>
         [HubTag]
@@ -18406,6 +18410,43 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's Attributes Priority.
+        /// </summary>
+        public async Task<string> GetAttributesPriorityAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPriorityAttributes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Attributes Priority.
+        /// </summary>
+        public async Task SetAttributesPriorityAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPriorityAttributes, value) == value)
+                    return;
+
+                await OnPropertyChangedAsync(nameof(AttributesPriority), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -18432,6 +18473,43 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's Special Priority.
+        /// </summary>
+        public async Task<string> GetSpecialPriorityAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPrioritySpecial;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Special Priority.
+        /// </summary>
+        public async Task SetSpecialPriorityAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPrioritySpecial, value) == value)
+                    return;
+
+                await OnPropertyChangedAsync(nameof(SpecialPriority), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Character's Skills Priority.
         /// </summary>
         [HubTag]
@@ -18450,6 +18528,43 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's Skills Priority.
+        /// </summary>
+        public async Task<string> GetSkillsPriorityAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPrioritySkills;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Skills Priority.
+        /// </summary>
+        public async Task SetSkillsPriorityAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPrioritySkills, value) == value)
+                    return;
+
+                await OnPropertyChangedAsync(nameof(SkillsPriority), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -18478,6 +18593,43 @@ namespace Chummer
         /// <summary>
         /// Character's Resources Priority.
         /// </summary>
+        public async Task<string> GetResourcesPriorityAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPriorityResources;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Resources Priority.
+        /// </summary>
+        public async Task SetResourcesPriorityAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPriorityResources, value) == value)
+                    return;
+
+                await OnPropertyChangedAsync(nameof(ResourcesPriority), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Talent Priority.
+        /// </summary>
         [HubTag]
         public string TalentPriority
         {
@@ -18494,6 +18646,43 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's Talent Priority.
+        /// </summary>
+        public async Task<string> GetTalentPriorityAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPriorityTalent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Talent Priority.
+        /// </summary>
+        public async Task SetTalentPriorityAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPriorityTalent, value) == value)
+                    return;
+
+                await OnPropertyChangedAsync(nameof(TalentPriority), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -18600,6 +18789,44 @@ namespace Chummer
                             return _strCachedCharacterGrammaticGender = "neutral";
                     }
                 }
+            }
+        }
+
+        public async Task<string> GetCharacterGrammaticGenderAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(_strCachedCharacterGrammaticGender))
+                    return _strCachedCharacterGrammaticGender;
+                switch ((await ReverseTranslateExtraAsync(await GetGenderAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)).ToUpperInvariant())
+                {
+                    case "M":
+                    case "MALE":
+                    case "MAN":
+                    case "BOY":
+                    case "LORD":
+                    case "GENTLEMAN":
+                    case "GUY":
+                        return _strCachedCharacterGrammaticGender = "male";
+
+                    case "F":
+                    case "W":
+                    case "FEMALE":
+                    case "WOMAN":
+                    case "GIRL":
+                    case "LADY":
+                    case "GAL":
+                        return _strCachedCharacterGrammaticGender = "female";
+
+                    default:
+                        return _strCachedCharacterGrammaticGender = "neutral";
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -19675,6 +19902,27 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _intBurntStreetCred, value) != value)
                     await OnPropertyChangedAsync(nameof(BurntStreetCred), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Burnt Street Cred.
+        /// </summary>
+        public async Task ModifyBurntStreetCredAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Interlocked.Add(ref _intBurntStreetCred, _intBurntStreetCred);
+                await OnPropertyChangedAsync(nameof(BurntStreetCred), token).ConfigureAwait(false);
             }
             finally
             {
@@ -21037,6 +21285,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// CFP Limit.
+        /// </summary>
+        public async Task SetCFPLimitAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intCFPLimit, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(CFPLimit), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Total AI Program Limit.
         /// </summary>
         public int AINormalProgramLimit
@@ -21067,6 +21334,25 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intAINormalProgramLimit;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Total AI Program Limit.
+        /// </summary>
+        public async Task SetAINormalProgramLimitAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intAINormalProgramLimit, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(AINormalProgramLimit), token).ConfigureAwait(false);
             }
             finally
             {
@@ -21113,6 +21399,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// AI Advanced Program Limit.
+        /// </summary>
+        public async Task SetAIAdvancedProgramLimitAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intAIAdvancedProgramLimit, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(AIAdvancedProgramLimit), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Spell Limit.
         /// </summary>
         public int FreeSpells
@@ -21143,6 +21448,25 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intFreeSpells;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Spell Limit.
+        /// </summary>
+        public async Task SetFreeSpellsAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intFreeSpells, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(FreeSpells), token).ConfigureAwait(false);
             }
             finally
             {
@@ -21272,6 +21596,42 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Special.
+        /// </summary>
+        public async Task<int> GetSpecialAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intSpecial;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Special.
+        /// </summary>
+        public async Task SetSpecialAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intSpecial, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(Special), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// TotalSpecial.
         /// </summary>
         public int TotalSpecial
@@ -21289,6 +21649,42 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// TotalSpecial.
+        /// </summary>
+        public async Task<int> GetTotalSpecialAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intTotalSpecial;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// TotalSpecial.
+        /// </summary>
+        public async Task SetTotalSpecialAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intTotalSpecial, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(TotalSpecial), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -21314,6 +21710,42 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Attributes.
+        /// </summary>
+        public async Task<int> GetAttributesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intAttributes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Attributes.
+        /// </summary>
+        public async Task SetAttributesAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intAttributes, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(Attributes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// TotalAttributes.
         /// </summary>
         public int TotalAttributes
@@ -21331,6 +21763,42 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// TotalAttributes.
+        /// </summary>
+        public async Task<int> GetTotalAttributesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intTotalAttributes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// TotalAttributes.
+        /// </summary>
+        public async Task SetTotalAttributesAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intTotalAttributes, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(TotalAttributes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -26705,9 +27173,9 @@ namespace Chummer
                     int intINTAttributeModifiers = INT.AttributeModifiers;
                     string strSpace = LanguageManager.GetString("String_Space");
 
-                    string strInit = REA.DisplayAbbrev + strSpace + '(' + REA.Value.ToString(GlobalSettings.CultureInfo)
+                    string strInit = REA.CurrentDisplayAbbrev + strSpace + '(' + REA.Value.ToString(GlobalSettings.CultureInfo)
                                      + ')'
-                                     + strSpace + '+' + strSpace + INT.DisplayAbbrev + strSpace + '('
+                                     + strSpace + '+' + strSpace + INT.CurrentDisplayAbbrev + strSpace + '('
                                      + INT.Value.ToString(GlobalSettings.CultureInfo) + ')';
                     if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) != 0
                         || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 || WoundModifier != 0)
@@ -26739,11 +27207,11 @@ namespace Chummer
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                     .ConfigureAwait(false);
                 string strInit =
-                    await objRea.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) +
+                    await objRea.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) +
                     strSpace + '(' +
                     (await objRea.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) +
                     ')' + strSpace + '+' + strSpace +
-                    await objInt.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) +
+                    await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) +
                     strSpace + '(' +
                     (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) +
                     ')';
@@ -26918,7 +27386,7 @@ namespace Chummer
                         return string.Empty;
                     int intINTAttributeModifiers = INT.AttributeModifiers;
                     string strSpace = LanguageManager.GetString("String_Space");
-                    string strInit = INT.DisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo)
+                    string strInit = INT.CurrentDisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo)
                                      + ')' + strSpace + '×' + strSpace + 2.ToString(GlobalSettings.CultureInfo);
                     if (intINTAttributeModifiers != 0 || WoundModifier != 0)
                         strInit += LanguageManager.GetString("Tip_Modifiers") + strSpace + '('
@@ -26942,7 +27410,7 @@ namespace Chummer
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                     .ConfigureAwait(false);
                 string strInit =
-                    await objInt.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) +
+                    await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) +
                     strSpace + '(' +
                     (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) +
                     ')' + strSpace + '×' + strSpace + 2.ToString(GlobalSettings.CultureInfo);
@@ -27088,7 +27556,7 @@ namespace Chummer
                     string strInit;
                     if (IsAI)
                     {
-                        strInit = INT.DisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo)
+                        strInit = INT.CurrentDisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo)
                                   + ')';
 
                         if (HomeNode != null)
@@ -27118,9 +27586,9 @@ namespace Chummer
                     {
                         int intREAAttributeModifiers = REA.AttributeModifiers;
 
-                        strInit = REA.DisplayAbbrev + strSpace + '(' + REA.Value.ToString(GlobalSettings.CultureInfo)
+                        strInit = REA.CurrentDisplayAbbrev + strSpace + '(' + REA.Value.ToString(GlobalSettings.CultureInfo)
                                   + ')' +
-                                  strSpace + '+' + strSpace + INT.DisplayAbbrev + strSpace + '(' +
+                                  strSpace + '+' + strSpace + INT.CurrentDisplayAbbrev + strSpace + '(' +
                                   INT.Value.ToString(GlobalSettings.CultureInfo) + ')';
                         if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) != 0
                             || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 || WoundModifier != 0)
@@ -27153,7 +27621,7 @@ namespace Chummer
                 string strInit;
                 if (await GetIsAIAsync(token).ConfigureAwait(false))
                 {
-                    strInit = await objInt.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+                    strInit = await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
 
                     IHasMatrixAttributes objHomeNode = await GetHomeNodeAsync(token).ConfigureAwait(false);
                     if (objHomeNode != null)
@@ -27180,7 +27648,7 @@ namespace Chummer
                     CharacterAttrib objRea = await GetAttributeAsync("REA", token: token).ConfigureAwait(false);
                     int intREAAttributeModifiers = await objRea.GetAttributeModifiersAsync(token).ConfigureAwait(false);
 
-                    strInit = await objRea.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) + strSpace + '(' + (await objRea.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '+' + strSpace + objInt.DisplayAbbrev + strSpace + '(' + objInt.Value.ToString(GlobalSettings.CultureInfo) + ')';
+                    strInit = await objRea.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + '(' + (await objRea.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '+' + strSpace + await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
                     decimal decFromImprovements = await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.Initiative, token: token).ConfigureAwait(false);
                     int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
                     if (decFromImprovements != 0 || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 || intWoundModifier != 0)
@@ -27415,7 +27883,7 @@ namespace Chummer
 
                     string strSpace = LanguageManager.GetString("String_Space");
 
-                    string strInit = INT.DisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo)
+                    string strInit = INT.CurrentDisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo)
                                      + ')';
                     if (ActiveCommlink != null)
                     {
@@ -27461,7 +27929,7 @@ namespace Chummer
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 
-                string strInit = await objInt.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+                string strInit = await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
 
                 IHasMatrixAttributes objActiveCommlink = await GetActiveCommlinkAsync(token).ConfigureAwait(false);
                 if (objActiveCommlink != null)
@@ -27670,7 +28138,7 @@ namespace Chummer
 
                     string strSpace = LanguageManager.GetString("String_Space");
 
-                    string strInit = INT.DisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo)
+                    string strInit = INT.CurrentDisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo)
                                      + ')';
                     if (ActiveCommlink != null)
                     {
@@ -27716,7 +28184,7 @@ namespace Chummer
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 
-                string strInit = await objInt.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+                string strInit = await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
 
                 IHasMatrixAttributes objActiveCommlink = await GetActiveCommlinkAsync(token).ConfigureAwait(false);
                 if (objActiveCommlink != null)
@@ -27968,10 +28436,10 @@ namespace Chummer
                 {
                     using (LockObject.EnterReadLock())
                     {
-                        sbdToolTip.Append(CHA.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(CHA.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                         int intWoundModifier = WoundModifier;
                         if (intWoundModifier != 0)
@@ -28016,11 +28484,11 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     CharacterAttrib objCha = await GetAttributeAsync("CHA", token: token).ConfigureAwait(false);
                     CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
-                    sbdToolTip.Append(await objCha.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
+                    sbdToolTip.Append(await objCha.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false))
                         .Append(strSpace).Append('(')
                         .Append((await objCha.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
                         .Append(')').Append(strSpace).Append('+').Append(strSpace)
-                        .Append(await objWil.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)).Append(strSpace)
+                        .Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace)
                         .Append('(')
                         .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
                         .Append(')');
@@ -28111,10 +28579,10 @@ namespace Chummer
                 {
                     using (LockObject.EnterReadLock())
                     {
-                        sbdToolTip.Append(CHA.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(CHA.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(INT.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(INT.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                         int intWoundModifier = WoundModifier;
                         if (intWoundModifier != 0)
@@ -28161,11 +28629,11 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     CharacterAttrib objCha = await GetAttributeAsync("CHA", token: token).ConfigureAwait(false);
                     CharacterAttrib objInt = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
-                    sbdToolTip.Append(await objCha.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
+                    sbdToolTip.Append(await objCha.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false))
                         .Append(strSpace).Append('(')
                         .Append((await objCha.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
                         .Append(')').Append(strSpace).Append('+').Append(strSpace)
-                        .Append(await objInt.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)).Append(strSpace)
+                        .Append(await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace)
                         .Append('(')
                         .Append((await objInt.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
                         .Append(')');
@@ -28256,10 +28724,10 @@ namespace Chummer
                 {
                     using (LockObject.EnterReadLock())
                     {
-                        sbdToolTip.Append(CHA.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(CHA.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                         foreach (Improvement objLoopImprovement in
                                  ImprovementManager.GetCachedImprovementListForValueOf(
@@ -28338,10 +28806,10 @@ namespace Chummer
                 {
                     using (LockObject.EnterReadLock())
                     {
-                        sbdToolTip.Append(BOD.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(BOD.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(BOD.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(STR.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(STR.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(STR.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                         int intWoundModifier = WoundModifier;
                         if (intWoundModifier != 0)
@@ -28386,11 +28854,11 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     CharacterAttrib objBod = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
                     CharacterAttrib objStr = await GetAttributeAsync("STR", token: token).ConfigureAwait(false);
-                    sbdToolTip.Append(await objBod.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
+                    sbdToolTip.Append(await objBod.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false))
                         .Append(strSpace).Append('(')
                         .Append((await objBod.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
                         .Append(')').Append(strSpace).Append('+').Append(strSpace)
-                        .Append(await objStr.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)).Append(strSpace)
+                        .Append(await objStr.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace)
                         .Append('(')
                         .Append((await objStr.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
                         .Append(')');
@@ -28511,10 +28979,10 @@ namespace Chummer
                 {
                     using (LockObject.EnterReadLock())
                     {
-                        sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(LOG.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                         int intWoundModifier = WoundModifier;
                         if (intWoundModifier != 0)
@@ -28559,11 +29027,11 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     CharacterAttrib objLog = await GetAttributeAsync("LOG", token: token).ConfigureAwait(false);
                     CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
-                    sbdToolTip.Append(await objLog.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
+                    sbdToolTip.Append(await objLog.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false))
                         .Append(strSpace).Append('(')
                         .Append((await objLog.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
                         .Append(')').Append(strSpace).Append('+').Append(strSpace)
-                        .Append(await objWil.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)).Append(strSpace)
+                        .Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace)
                         .Append('(')
                         .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
                         .Append(')');
@@ -28855,6 +29323,222 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Resist test to Contact-vector Toxins (BOD + WIL).
+        /// </summary>
+        public async Task<string> ToxinContactResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.ToxinContactImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.ToxinContactResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Ingestion-vector Toxins (BOD + WIL).
+        /// </summary>
+        public async Task<string> ToxinIngestionResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.ToxinIngestionImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.ToxinIngestionResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Inhalation-vector Toxins (BOD + WIL).
+        /// </summary>
+        public async Task<string> ToxinInhalationResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.ToxinInhalationImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.ToxinInhalationResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Injection-vector Toxins (BOD + WIL).
+        /// </summary>
+        public async Task<string> ToxinInjectionResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.ToxinInjectionImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.ToxinInjectionResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Contact-vector Pathogens (BOD + WIL).
+        /// </summary>
+        public async Task<string> PathogenContactResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.PathogenContactImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PathogenContactResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Ingestion-vector Pathogens (BOD + WIL).
+        /// </summary>
+        public async Task<string> PathogenIngestionResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.PathogenIngestionImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PathogenIngestionResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Inhalation-vector Pathogens (BOD + WIL).
+        /// </summary>
+        public async Task<string> PathogenInhalationResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.PathogenInhalationImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PathogenInhalationResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Injection-vector Pathogens (BOD + WIL).
+        /// </summary>
+        public async Task<string> PathogenInjectionResistAsync(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false)
+                    || (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this, Improvement.ImprovementType.PathogenInjectionImmune, token: token).ConfigureAwait(false)).Count > 0)
+                    return await LanguageManager.GetStringAsync("String_Immune", strLanguage, token: token).ConfigureAwait(false);
+                return (await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PathogenInjectionResist, token: token).ConfigureAwait(false))
+                                          .StandardRound())
+                    .ToString(objCulture);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Resist test to Physiological Addiction (BOD + WIL) if you are not addicted yet.
         /// </summary>
         public int PhysiologicalAddictionResistFirstTime
@@ -28911,6 +29595,90 @@ namespace Chummer
                                                                                    Improvement.ImprovementType
                                                                                        .PsychologicalAddictionAlreadyAddicted)
                                                                                .StandardRound();
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Physiological Addiction (BOD + WIL) if you are not addicted yet.
+        /// </summary>
+        public async Task<int> GetPhysiologicalAddictionResistFirstTimeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PhysiologicalAddictionFirstTime, token: token).ConfigureAwait(false))
+                        .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Psychological Addiction (LOG + WIL) if you are not addicted yet.
+        /// </summary>
+        public async Task<int> GetPsychologicalAddictionResistFirstTimeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PsychologicalAddictionFirstTime, token: token).ConfigureAwait(false))
+                        .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Physiological Addiction (BOD + WIL) if you are already addicted.
+        /// </summary>
+        public async Task<int> GetPhysiologicalAddictionResistAlreadyAddictedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PhysiologicalAddictionAlreadyAddicted, token: token).ConfigureAwait(false))
+                        .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Psychological Addiction (LOG + WIL) if you are already addicted.
+        /// </summary>
+        public async Task<int> GetPsychologicalAddictionResistAlreadyAddictedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PsychologicalAddictionAlreadyAddicted, token: token).ConfigureAwait(false))
+                        .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -29829,6 +30597,20 @@ namespace Chummer
             }
         }
 
+        public async Task<ThreadSafeObservableCollection<MentorSpirit>> GetMentorSpiritsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _lstMentorSpirits;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Contacts and Enemies.
         /// </summary>
@@ -30642,6 +31424,23 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Expenses (Karma and Nuyen).
+        /// </summary>
+        public async Task<ThreadSafeObservableCollection<ExpenseLogEntry>> GetExpenseEntriesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _lstExpenseLog;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Qualities (Positive and Negative).
         /// </summary>
         [HubTag(true)]
@@ -30682,7 +31481,7 @@ namespace Chummer
         */
 
         /// <summary>
-        /// Locations.
+        /// Gear Locations.
         /// </summary>
         public ThreadSafeObservableCollection<Location> GearLocations
         {
@@ -30690,6 +31489,23 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _lstGearLocations;
+            }
+        }
+
+        /// <summary>
+        /// Gear Locations.
+        /// </summary>
+        public async Task<ThreadSafeObservableCollection<Location>> GetGearLocationsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _lstGearLocations;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -30706,6 +31522,23 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Armor Locations.
+        /// </summary>
+        public async Task<ThreadSafeObservableCollection<Location>> GetArmorLocationsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _lstArmorLocations;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Vehicle Locations.
         /// </summary>
         public ThreadSafeObservableCollection<Location> VehicleLocations
@@ -30714,6 +31547,23 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _lstVehicleLocations;
+            }
+        }
+
+        /// <summary>
+        /// Vehicle Locations.
+        /// </summary>
+        public async Task<ThreadSafeObservableCollection<Location>> GetVehicleLocationsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _lstVehicleLocations;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -30730,6 +31580,23 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Weapon Locations.
+        /// </summary>
+        public async Task<ThreadSafeObservableCollection<Location>> GetWeaponLocationsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _lstWeaponLocations;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Improvement Groups.
         /// </summary>
         public ThreadSafeObservableCollection<string> ImprovementGroups
@@ -30742,6 +31609,23 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Improvement Groups.
+        /// </summary>
+        public async Task<ThreadSafeObservableCollection<string>> GetImprovementGroupsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _lstImprovementGroups;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Calendar.
         /// </summary>
         public ThreadSafeBindingList<CalendarWeek> Calendar
@@ -30750,6 +31634,23 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _lstCalendar;
+            }
+        }
+
+        /// <summary>
+        /// Calendar.
+        /// </summary>
+        public async Task<ThreadSafeBindingList<CalendarWeek>> GetCalendarAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _lstCalendar;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31102,7 +32003,7 @@ namespace Chummer
                     else
                     {
                         intBody = BOD.TotalValue;
-                        strBodyAbbrev = BOD.DisplayAbbrev;
+                        strBodyAbbrev = BOD.CurrentDisplayAbbrev;
                     }
 
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -31149,7 +32050,7 @@ namespace Chummer
                 {
                     CharacterAttrib objBod = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
                     intBody = await objBod.GetTotalValueAsync(token).ConfigureAwait(false);
-                    strBodyAbbrev = await objBod.GetDisplayAbbrevAsync(GlobalSettings.Language, token: token).ConfigureAwait(false);
+                    strBodyAbbrev = await objBod.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false);
                 }
 
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -31297,8 +32198,8 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await REA.GetTotalValueAsync(token).ConfigureAwait(false)
-                       + await INT.GetTotalValueAsync(token).ConfigureAwait(false)
+                return await (await GetAttributeAsync("REA", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + await (await GetAttributeAsync("INT", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
                        + await GetTotalBonusDodgeRatingAsync(token).ConfigureAwait(false)
                        + await GetWoundModifierAsync(token).ConfigureAwait(false)
                        + await GetSustainingPenaltyAsync(token).ConfigureAwait(false);
@@ -31321,15 +32222,15 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
+                using (LockObject.EnterReadLock())
                 {
-                    using (LockObject.EnterReadLock())
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                              out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append(REA.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(REA.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(REA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(INT.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(INT.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
                                   .Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Skill_Wounds"))
@@ -31349,34 +32250,34 @@ namespace Chummer
                                 strSpace,
                                 intModifiers);
                         }
-                    }
 
-                    return sbdToolTip.ToString();
+                        return sbdToolTip.ToString();
+                    }
                 }
             }
         }
 
         public async Task<string> GetDodgeToolTipAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                       out StringBuilder sbdToolTip))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                       out StringBuilder sbdToolTip))
                 {
-                    token.ThrowIfCancellationRequested();
                     CharacterAttrib objRea = await GetAttributeAsync("REA", token: token).ConfigureAwait(false);
                     CharacterAttrib objInt = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
                     sbdToolTip
                         .Append(
-                            await objRea.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
+                            await objRea.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false))
                         .Append(strSpace).Append('(')
                         .Append((await objRea.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
                             .CultureInfo)).Append(')').Append(strSpace).Append('+').Append(strSpace)
                         .Append(
-                            await objInt.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
+                            await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false))
                         .Append(strSpace).Append('(')
                         .Append((await objInt.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
                             .CultureInfo)).Append(')').Append(strSpace).Append('+').Append(strSpace)
@@ -31399,13 +32300,13 @@ namespace Chummer
                             strSpace,
                             intModifiers, token).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
 
-                return sbdToolTip.ToString();
+                    return sbdToolTip.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31417,17 +32318,43 @@ namespace Chummer
 
         public int SpellDefenseIndirectDodge => Dodge;
 
+        public Task<int> GetSpellDefenseIndirectDodgeAsync(CancellationToken token = default) => GetDodgeAsync(token);
+
         public string DisplaySpellDefenseIndirectDodge
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseIndirectDodge.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseIndirectDodge.ToString(GlobalSettings.CultureInfo) +
+                {
+                    int intDodge = SpellDefenseIndirectDodge;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDodge.ToString(GlobalSettings.CultureInfo)
+                        : intDodge.ToString(GlobalSettings.CultureInfo) +
                           LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseIndirectDodge + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          (intDodge + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
                           + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseIndirectDodgeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDodge = await GetSpellDefenseIndirectDodgeAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDodge.ToString(GlobalSettings.CultureInfo)
+                    : intDodge.ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                        + '(' + (intDodge + intCounterspellingDice).ToString(GlobalSettings.CultureInfo) + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31450,6 +32377,33 @@ namespace Chummer
 
                     return strToolTip;
                 }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseIndirectDodgeToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strToolTip = await GetDodgeToolTipAsync(token).ConfigureAwait(false);
+                int intDodge = await GetSpellDefenseIndirectDodgeAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                if (intCounterspellingDice != 0)
+                {
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                    strToolTip += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)
+                                  +
+                                  strSpace + '(' + intCounterspellingDice.ToString(GlobalSettings.CultureInfo)
+                                  + ')';
+                }
+
+                return strToolTip;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31480,17 +32434,71 @@ namespace Chummer
             }
         }
 
+        public async Task<int> GetSpellDefenseIndirectSoakAsync(CancellationToken token = default)
+        {
+            int intAttributes = 0;
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    if (await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicle)
+                        intAttributes = await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                }
+                else
+                    intAttributes = await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false))
+                        .GetTotalValueAsync(token).ConfigureAwait(false);
+
+                return intAttributes +
+                       await GetArmorRatingAsync(Improvement.ImprovementType.SpellResistance, token).ConfigureAwait(false) +
+                       (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.DamageResistance, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplaySpellDefenseIndirectSoak
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseIndirectSoak.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseIndirectSoak.ToString(GlobalSettings.CultureInfo) +
+                {
+                    int intSoak = SpellDefenseIndirectSoak;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intSoak.ToString(GlobalSettings.CultureInfo)
+                        : intSoak.ToString(GlobalSettings.CultureInfo) +
                           LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseIndirectSoak + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          (intSoak + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
                           + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseIndirectSoakAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intSoak = await GetSpellDefenseIndirectSoakAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intSoak.ToString(GlobalSettings.CultureInfo)
+                    : intSoak.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intSoak + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31511,7 +32519,7 @@ namespace Chummer
                     else
                     {
                         intBody = BOD.TotalValue;
-                        strBodyAbbrev = BOD.DisplayAbbrev;
+                        strBodyAbbrev = BOD.CurrentDisplayAbbrev;
                     }
 
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -31525,11 +32533,12 @@ namespace Chummer
                                   .Append(TotalArmorRating.ToString(GlobalSettings.CultureInfo))
                                   .Append(')');
 
-                        if (CurrentCounterspellingDice != 0)
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
                             sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                       .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
                                       .Append('(')
-                                      .Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
                                       .Append(')');
 
                         int intModifiers
@@ -31541,7 +32550,11 @@ namespace Chummer
                         {
                             FormatImprovementModifiers(
                                 sbdToolTip,
-                                Improvement.ImprovementType.DamageResistance.Yield(),
+                                new[]
+                                {
+                                    Improvement.ImprovementType.SpellResistance,
+                                    Improvement.ImprovementType.DamageResistance
+                                },
                                 strSpace,
                                 intModifiers);
                         }
@@ -31549,6 +32562,75 @@ namespace Chummer
                         return sbdToolTip.ToString();
                     }
                 }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseIndirectSoakToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intBody;
+                string strBodyAbbrev;
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    intBody = await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicle
+                        ? await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) : 0;
+                    strBodyAbbrev = await LanguageManager.GetStringAsync("String_VehicleBody", token: token).ConfigureAwait(false);
+                }
+                else
+                {
+                    CharacterAttrib objAttribute = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
+                    intBody = await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false);
+                    strBodyAbbrev = await objAttribute.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false);
+                }
+
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
+                              .Append(intBody.ToString(GlobalSettings.CultureInfo)).Append(')')
+                              .Append(strSpace).Append('+').Append(strSpace)
+                              .Append(await LanguageManager.GetStringAsync("Tip_Armor", token: token).ConfigureAwait(false))
+                              .Append(strSpace).Append('(')
+                              .Append((await GetTotalArmorRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
+                              .Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false))
+                                  .Append(strSpace).Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.DamageResistance, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DamageResistance
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31568,17 +32650,61 @@ namespace Chummer
             }
         }
 
+        public async Task<int> GetSpellDefenseDirectSoakManaAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) +
+                       (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                        + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.DirectManaSpellResist, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplaySpellDefenseDirectSoakMana
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseDirectSoakMana.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseDirectSoakMana.ToString(GlobalSettings.CultureInfo) +
+                {
+                    int intSoak = SpellDefenseDirectSoakMana;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intSoak.ToString(GlobalSettings.CultureInfo)
+                        : intSoak.ToString(GlobalSettings.CultureInfo) +
                           LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseDirectSoakMana + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          (intSoak + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
                           + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseDirectSoakManaAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intSoak = await GetSpellDefenseDirectSoakManaAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intSoak.ToString(GlobalSettings.CultureInfo)
+                    : intSoak.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intSoak + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31587,19 +32713,20 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
+                using (LockObject.EnterReadLock())
                 {
-                    using (LockObject.EnterReadLock())
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                        if (CurrentCounterspellingDice != 0)
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
                             sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                       .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
                                       .Append('(')
-                                      .Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
                                       .Append(')');
 
                         int intModifiers
@@ -31611,14 +32738,68 @@ namespace Chummer
                         {
                             FormatImprovementModifiers(
                                 sbdToolTip,
-                                Improvement.ImprovementType.SpellResistance.Yield(),
+                                new[]
+                                {
+                                    Improvement.ImprovementType.SpellResistance,
+                                    Improvement.ImprovementType.DirectManaSpellResist
+                                },
                                 strSpace,
                                 intModifiers);
                         }
+
+                        return sbdToolTip.ToString();
+                    }
+                }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseDirectSoakManaToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                              .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.DirectManaSpellResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DirectManaSpellResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
                     }
 
                     return sbdToolTip.ToString();
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31649,18 +32830,72 @@ namespace Chummer
             }
         }
 
+        public async Task<int> GetSpellDefenseDirectSoakPhysicalAsync(CancellationToken token = default)
+        {
+            int intAttributes = 0;
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    if (await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicle)
+                        intAttributes = await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                }
+                else
+                    intAttributes = await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false))
+                        .GetTotalValueAsync(token).ConfigureAwait(false);
+
+                return intAttributes +
+                       (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                        + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.DirectPhysicalSpellResist, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplaySpellDefenseDirectSoakPhysical
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseDirectSoakPhysical.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseDirectSoakPhysical.ToString(GlobalSettings.CultureInfo) +
+                {
+                    int intSoak = SpellDefenseDirectSoakPhysical;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intSoak.ToString(GlobalSettings.CultureInfo)
+                        : intSoak.ToString(GlobalSettings.CultureInfo) +
                           LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseDirectSoakPhysical + CurrentCounterspellingDice).ToString(
+                          (intSoak + intCounterspellingDice).ToString(
                               GlobalSettings.CultureInfo)
                           + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseDirectSoakPhysicalAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intSoak = await GetSpellDefenseDirectSoakPhysicalAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intSoak.ToString(GlobalSettings.CultureInfo)
+                    : intSoak.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intSoak + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31681,7 +32916,7 @@ namespace Chummer
                     else
                     {
                         intBody = BOD.TotalValue;
-                        strBodyAbbrev = BOD.DisplayAbbrev;
+                        strBodyAbbrev = BOD.CurrentDisplayAbbrev;
                     }
 
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -31690,11 +32925,12 @@ namespace Chummer
                         sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
                                   .Append(intBody.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                        if (CurrentCounterspellingDice != 0)
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
                             sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                       .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
                                       .Append('(')
-                                      .Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
                                       .Append(')');
 
                         int intModifiers
@@ -31722,6 +32958,68 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetSpellDefenseDirectSoakPhysicalToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intBody;
+                string strBodyAbbrev;
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    intBody = await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicle ? await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) : 0;
+                    strBodyAbbrev = await LanguageManager.GetStringAsync("String_VehicleBody", token: token).ConfigureAwait(false);
+                }
+                else
+                {
+                    CharacterAttrib objBod = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
+                    intBody = await objBod.GetTotalValueAsync(token).ConfigureAwait(false);
+                    strBodyAbbrev = await objBod.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false);
+                }
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
+                        .Append(intBody.ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.DirectPhysicalSpellResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DirectPhysicalSpellResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         #endregion Direct Soak Physical
 
         #region Detection
@@ -31731,9 +33029,29 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return LOG.TotalValue + WIL.TotalValue + SpellResistance +
-                           ImprovementManager.ValueOf(this, Improvement.ImprovementType.DetectionSpellResist)
+                    return LOG.TotalValue + WIL.TotalValue +
+                           (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                            + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DetectionSpellResist))
                                              .StandardRound();
+            }
+        }
+
+        public async Task<int> GetSpellDefenseDetectionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                          + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.DetectionSpellResist, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31742,12 +33060,38 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseDetection.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseDetection.ToString(GlobalSettings.CultureInfo) +
+                {
+                    int intDefense = SpellDefenseDetection;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDefense.ToString(GlobalSettings.CultureInfo)
+                        : intDefense.ToString(GlobalSettings.CultureInfo) +
                           LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseDetection + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
                           + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseDetectionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDefense = await GetSpellDefenseDetectionAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDefense.ToString(GlobalSettings.CultureInfo)
+                    : intDefense.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31756,22 +33100,23 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
+                using (LockObject.EnterReadLock())
                 {
-                    using (LockObject.EnterReadLock())
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(LOG.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                        if (CurrentCounterspellingDice != 0)
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
                             sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                       .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
                                       .Append('(')
-                                      .Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
                                       .Append(')');
 
                         int intModifiers
@@ -31791,10 +33136,64 @@ namespace Chummer
                                 strSpace,
                                 intModifiers);
                         }
+
+                        return sbdToolTip.ToString();
+                    }
+                }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseDetectionToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objLog = await GetAttributeAsync("LOG", token: token).ConfigureAwait(false);
+                CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(await objLog.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objLog.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')')
+                        .Append(strSpace).Append('+').Append(strSpace)
+                        .Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.DetectionSpellResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DetectionSpellResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
                     }
 
                     return sbdToolTip.ToString();
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31806,13 +33205,53 @@ namespace Chummer
         {
             get
             {
+                int intAttributes = 0;
                 using (LockObject.EnterReadLock())
-                    return BOD.TotalValue + WIL.TotalValue
+                {
+                    if (IsAI)
+                    {
+                        if (HomeNode is Vehicle objVehicle)
+                            intAttributes = objVehicle.TotalBody;
+                    }
+                    else
+                        intAttributes = BOD.TotalValue;
+
+                    return intAttributes + WIL.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
                                              + ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.DecreaseBODResist))
                                           .StandardRound();
+                }
+            }
+        }
+
+        public async Task<int> GetSpellDefenseDecreaseBODAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intAttributes = 0;
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    if (await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicle)
+                        intAttributes = await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                }
+                else
+                    intAttributes = await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false))
+                        .GetTotalValueAsync(token).ConfigureAwait(false);
+
+                return intAttributes
+                    + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                    + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                            + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.DecreaseBODResist, token: token).ConfigureAwait(false))
+                                            .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31821,12 +33260,38 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseDecreaseBOD.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseDecreaseBOD.ToString(GlobalSettings.CultureInfo) +
+                {
+                    int intDefense = SpellDefenseDecreaseBOD;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDefense.ToString(GlobalSettings.CultureInfo)
+                        : intDefense.ToString(GlobalSettings.CultureInfo) +
                           LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseDecreaseBOD + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
                           + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseDecreaseBODAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDefense = await GetSpellDefenseDecreaseBODAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDefense.ToString(GlobalSettings.CultureInfo)
+                    : intDefense.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31835,22 +33300,36 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
+                using (LockObject.EnterReadLock())
                 {
-                    using (LockObject.EnterReadLock())
+                    int intBody;
+                    string strBodyAbbrev;
+                    if (IsAI)
                     {
-                        sbdToolTip.Append(BOD.DisplayAbbrev).Append(strSpace).Append('(')
-                                  .Append(BOD.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
+                        intBody = HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0;
+                        strBodyAbbrev = LanguageManager.GetString("String_VehicleBody");
+                    }
+                    else
+                    {
+                        intBody = BOD.TotalValue;
+                        strBodyAbbrev = BOD.CurrentDisplayAbbrev;
+                    }
+
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdToolTip))
+                    {
+                        sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
+                                  .Append(intBody.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                        if (CurrentCounterspellingDice != 0)
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
                             sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                       .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
                                       .Append('(')
-                                      .Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
                                       .Append(')');
 
                         int intModifiers
@@ -31870,10 +33349,76 @@ namespace Chummer
                                 strSpace,
                                 intModifiers);
                         }
+
+                        return sbdToolTip.ToString();
+                    }
+                }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseDecreaseBODToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intBody;
+                string strBodyAbbrev;
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    intBody = await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicle ? await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) : 0;
+                    strBodyAbbrev = await LanguageManager.GetStringAsync("String_VehicleBody", token: token).ConfigureAwait(false);
+                }
+                else
+                {
+                    CharacterAttrib objBod = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
+                    intBody = await objBod.GetTotalValueAsync(token).ConfigureAwait(false);
+                    strBodyAbbrev = await objBod.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false);
+                }
+                CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
+                        .Append(intBody.ToString(GlobalSettings.CultureInfo)).Append(')')
+                        .Append(strSpace).Append('+').Append(strSpace)
+                        .Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.DecreaseBODResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseBODResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
                     }
 
                     return sbdToolTip.ToString();
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31891,17 +33436,62 @@ namespace Chummer
             }
         }
 
+        public async Task<int> GetSpellDefenseDecreaseAGIAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("AGI", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                          + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.DecreaseAGIResist, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplaySpellDefenseDecreaseAGI
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseDecreaseAGI.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseDecreaseAGI.ToString(GlobalSettings.CultureInfo) +
+                {
+                    int intDefense = SpellDefenseDecreaseAGI;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDefense.ToString(GlobalSettings.CultureInfo)
+                        : intDefense.ToString(GlobalSettings.CultureInfo) +
                           LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseDecreaseAGI + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
                           + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseDecreaseAGIAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDefense = await GetSpellDefenseDecreaseAGIAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDefense.ToString(GlobalSettings.CultureInfo)
+                    : intDefense.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31910,22 +33500,23 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
+                using (LockObject.EnterReadLock())
                 {
-                    using (LockObject.EnterReadLock())
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                              out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append(AGI.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(AGI.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(AGI.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                        if (CurrentCounterspellingDice != 0)
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
                             sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                       .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
                                       .Append('(')
-                                      .Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
                                       .Append(')');
 
                         int intModifiers
@@ -31945,10 +33536,64 @@ namespace Chummer
                                 strSpace,
                                 intModifiers);
                         }
+
+                        return sbdToolTip.ToString();
+                    }
+                }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseDecreaseAGIToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objAgi = await GetAttributeAsync("AGI", token: token).ConfigureAwait(false);
+                CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(await objAgi.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objAgi.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')')
+                        .Append(strSpace).Append('+').Append(strSpace)
+                        .Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.DecreaseAGIResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseAGIResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
                     }
 
                     return sbdToolTip.ToString();
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31966,17 +33611,62 @@ namespace Chummer
             }
         }
 
+        public async Task<int> GetSpellDefenseDecreaseREAAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("REA", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                          + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.DecreaseREAResist, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplaySpellDefenseDecreaseREA
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseDecreaseREA.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseDecreaseREA.ToString(GlobalSettings.CultureInfo) +
+                {
+                    int intDefense = SpellDefenseDecreaseREA;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDefense.ToString(GlobalSettings.CultureInfo)
+                        : intDefense.ToString(GlobalSettings.CultureInfo) +
                           LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseDecreaseREA + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
                           + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseDecreaseREAAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDefense = await GetSpellDefenseDecreaseREAAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDefense.ToString(GlobalSettings.CultureInfo)
+                    : intDefense.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -31985,22 +33675,23 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
+                using (LockObject.EnterReadLock())
                 {
-                    using (LockObject.EnterReadLock())
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                              out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append(REA.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(REA.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(REA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                        if (CurrentCounterspellingDice != 0)
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
                             sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                       .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
                                       .Append('(')
-                                      .Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
                                       .Append(')');
 
                         int intModifiers
@@ -32020,10 +33711,64 @@ namespace Chummer
                                 strSpace,
                                 intModifiers);
                         }
+
+                        return sbdToolTip.ToString();
+                    }
+                }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseDecreaseREAToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objRea = await GetAttributeAsync("REA", token: token).ConfigureAwait(false);
+                CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(await objRea.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objRea.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')')
+                        .Append(strSpace).Append('+').Append(strSpace)
+                        .Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.DecreaseREAResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseREAResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
                     }
 
                     return sbdToolTip.ToString();
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -32031,13 +33776,51 @@ namespace Chummer
         {
             get
             {
+                int intAttributes = 0;
                 using (LockObject.EnterReadLock())
-                    return STR.TotalValue + WIL.TotalValue
+                {
+                    if (IsAI)
+                    {
+                        if (HomeNode is Vehicle objVehicle)
+                            intAttributes = objVehicle.TotalBody;
+                    }
+                    else
+                        intAttributes = STR.TotalValue;
+                    return intAttributes + WIL.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
                                              + ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.DecreaseSTRResist))
                                           .StandardRound();
+                }
+            }
+        }
+
+        public async Task<int> GetSpellDefenseDecreaseSTRAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intAttributes = 0;
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    if (await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicle)
+                        intAttributes = await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                }
+                else
+                    intAttributes = await (await GetAttributeAsync("STR", token: token).ConfigureAwait(false))
+                        .GetTotalValueAsync(token).ConfigureAwait(false);
+                return intAttributes
+                       + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                          + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.DecreaseSTRResist, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -32046,12 +33829,38 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseDecreaseSTR.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseDecreaseSTR.ToString(GlobalSettings.CultureInfo) +
+                {
+                    int intDefense = SpellDefenseDecreaseSTR;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDefense.ToString(GlobalSettings.CultureInfo)
+                        : intDefense.ToString(GlobalSettings.CultureInfo) +
                           LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseDecreaseSTR + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
                           + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseDecreaseSTRAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDefense = await GetSpellDefenseDecreaseSTRAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDefense.ToString(GlobalSettings.CultureInfo)
+                    : intDefense.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -32060,22 +33869,36 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
+                using (LockObject.EnterReadLock())
                 {
-                    using (LockObject.EnterReadLock())
+                    int intStrength;
+                    string strStrengthAbbrev;
+                    if (IsAI)
                     {
-                        sbdToolTip.Append(STR.DisplayAbbrev).Append(strSpace).Append('(')
-                                  .Append(STR.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
+                        intStrength = HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0;
+                        strStrengthAbbrev = LanguageManager.GetString("String_VehicleBody");
+                    }
+                    else
+                    {
+                        intStrength = STR.TotalValue;
+                        strStrengthAbbrev = STR.CurrentDisplayAbbrev;
+                    }
+
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                              out StringBuilder sbdToolTip))
+                    {
+                        sbdToolTip.Append(strStrengthAbbrev).Append(strSpace).Append('(')
+                                  .Append(intStrength.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                        if (CurrentCounterspellingDice != 0)
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
                             sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                       .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
                                       .Append('(')
-                                      .Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
                                       .Append(')');
 
                         int intModifiers
@@ -32087,14 +33910,84 @@ namespace Chummer
                         {
                             FormatImprovementModifiers(
                                 sbdToolTip,
-                                Improvement.ImprovementType.SpellResistance.Yield(),
+                                new[]
+                                {
+                                    Improvement.ImprovementType.SpellResistance,
+                                    Improvement.ImprovementType.DecreaseSTRResist
+                                },
                                 strSpace,
                                 intModifiers);
                         }
+
+                        return sbdToolTip.ToString();
+                    }
+                }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseDecreaseSTRToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intStrength;
+                string strStrengthAbbrev;
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    intStrength = await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicle ? await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) : 0;
+                    strStrengthAbbrev = await LanguageManager.GetStringAsync("String_VehicleBody", token: token).ConfigureAwait(false);
+                }
+                else
+                {
+                    CharacterAttrib objStr = await GetAttributeAsync("STR", token: token).ConfigureAwait(false);
+                    intStrength = await objStr.GetTotalValueAsync(token).ConfigureAwait(false);
+                    strStrengthAbbrev = await objStr.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false);
+                }
+                CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(strStrengthAbbrev).Append(strSpace).Append('(')
+                        .Append(intStrength.ToString(GlobalSettings.CultureInfo)).Append(')')
+                        .Append(strSpace).Append('+').Append(strSpace)
+                        .Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.DecreaseSTRResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseSTRResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
                     }
 
                     return sbdToolTip.ToString();
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -32112,17 +34005,62 @@ namespace Chummer
             }
         }
 
+        public async Task<int> GetSpellDefenseDecreaseCHAAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("CHA", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                          + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.DecreaseCHAResist, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplaySpellDefenseDecreaseCHA
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseDecreaseCHA.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseDecreaseCHA.ToString(GlobalSettings.CultureInfo) +
+                {
+                    int intDefense = SpellDefenseDecreaseCHA;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDefense.ToString(GlobalSettings.CultureInfo)
+                        : intDefense.ToString(GlobalSettings.CultureInfo) +
                           LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseDecreaseCHA + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
                           + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseDecreaseCHAAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDefense = await GetSpellDefenseDecreaseCHAAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDefense.ToString(GlobalSettings.CultureInfo)
+                    : intDefense.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -32131,22 +34069,23 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
+                using (LockObject.EnterReadLock())
                 {
-                    using (LockObject.EnterReadLock())
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                              out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append(CHA.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(CHA.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                        if (CurrentCounterspellingDice != 0)
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
                             sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                       .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
                                       .Append('(')
-                                      .Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
                                       .Append(')');
 
                         int intModifiers
@@ -32166,10 +34105,64 @@ namespace Chummer
                                 strSpace,
                                 intModifiers);
                         }
+
+                        return sbdToolTip.ToString();
+                    }
+                }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseDecreaseCHAToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objCha = await GetAttributeAsync("CHA", token: token).ConfigureAwait(false);
+                CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(await objCha.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objCha.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')')
+                        .Append(strSpace).Append('+').Append(strSpace)
+                        .Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.DecreaseCHAResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseCHAResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
                     }
 
                     return sbdToolTip.ToString();
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -32187,17 +34180,62 @@ namespace Chummer
             }
         }
 
+        public async Task<int> GetSpellDefenseDecreaseINTAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("INT", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                          + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.DecreaseINTResist, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplaySpellDefenseDecreaseINT
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseDecreaseINT.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseDecreaseINT.ToString(GlobalSettings.CultureInfo) +
+                {
+                    int intDefense = SpellDefenseDecreaseINT;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDefense.ToString(GlobalSettings.CultureInfo)
+                        : intDefense.ToString(GlobalSettings.CultureInfo) +
                           LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseDecreaseINT + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
                           + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseDecreaseINTAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDefense = await GetSpellDefenseDecreaseINTAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDefense.ToString(GlobalSettings.CultureInfo)
+                    : intDefense.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -32206,22 +34244,23 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
+                using (LockObject.EnterReadLock())
                 {
-                    using (LockObject.EnterReadLock())
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                              out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append(INT.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(INT.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                        if (CurrentCounterspellingDice != 0)
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
                             sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                       .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
                                       .Append('(')
-                                      .Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
                                       .Append(')');
 
                         int intModifiers
@@ -32241,10 +34280,64 @@ namespace Chummer
                                 strSpace,
                                 intModifiers);
                         }
+
+                        return sbdToolTip.ToString();
+                    }
+                }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseDecreaseINTToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objInt = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
+                CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objInt.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')')
+                        .Append(strSpace).Append('+').Append(strSpace)
+                        .Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.DecreaseINTResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseINTResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
                     }
 
                     return sbdToolTip.ToString();
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -32262,17 +34355,62 @@ namespace Chummer
             }
         }
 
+        public async Task<int> GetSpellDefenseDecreaseLOGAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                          + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.DecreaseLOGResist, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplaySpellDefenseDecreaseLOG
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseDecreaseLOG.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseDecreaseLOG.ToString(GlobalSettings.CultureInfo) +
+                {
+                    int intDefense = SpellDefenseDecreaseLOG;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDefense.ToString(GlobalSettings.CultureInfo)
+                        : intDefense.ToString(GlobalSettings.CultureInfo) +
                           LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseDecreaseLOG + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
                           + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseDecreaseLOGAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDefense = await GetSpellDefenseDecreaseLOGAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDefense.ToString(GlobalSettings.CultureInfo)
+                    : intDefense.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -32281,22 +34419,23 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
+                using (LockObject.EnterReadLock())
                 {
-                    using (LockObject.EnterReadLock())
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                              out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(LOG.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                        if (CurrentCounterspellingDice != 0)
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
                             sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                       .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
                                       .Append('(')
-                                      .Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
                                       .Append(')');
 
                         int intModifiers
@@ -32316,10 +34455,64 @@ namespace Chummer
                                 strSpace,
                                 intModifiers);
                         }
+
+                        return sbdToolTip.ToString();
+                    }
+                }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseDecreaseLOGToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objLog = await GetAttributeAsync("LOG", token: token).ConfigureAwait(false);
+                CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(await objLog.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objLog.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')')
+                        .Append(strSpace).Append('+').Append(strSpace)
+                        .Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.DecreaseLOGResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseLOGResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
                     }
 
                     return sbdToolTip.ToString();
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -32328,7 +34521,7 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return WIL.TotalValue + WIL.TotalValue
+                    return 2 * WIL.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
                                              + ImprovementManager.ValueOf(
@@ -32337,17 +34530,61 @@ namespace Chummer
             }
         }
 
+        public async Task<int> GetSpellDefenseDecreaseWILAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return 2 * await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                          + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.DecreaseWILResist, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplaySpellDefenseDecreaseWIL
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseDecreaseWIL.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseDecreaseWIL.ToString(GlobalSettings.CultureInfo) +
+                {
+                    int intDefense = SpellDefenseDecreaseWIL;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDefense.ToString(GlobalSettings.CultureInfo)
+                        : intDefense.ToString(GlobalSettings.CultureInfo) +
                           LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseDecreaseWIL + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
                           + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseDecreaseWILAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDefense = await GetSpellDefenseDecreaseWILAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDefense.ToString(GlobalSettings.CultureInfo)
+                    : intDefense.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -32356,22 +34593,25 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
+                using (LockObject.EnterReadLock())
                 {
-                    using (LockObject.EnterReadLock())
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                              out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
-                                  .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
+                        string strAbbrev = WIL.CurrentDisplayAbbrev;
+                        string strValue = WIL.TotalValue.ToString(GlobalSettings.CultureInfo);
+                        sbdToolTip.Append(strAbbrev).Append(strSpace).Append('(')
+                                  .Append(strValue).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
-                                  .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                  .Append('+').Append(strSpace).Append(strAbbrev).Append(strSpace).Append('(')
+                                  .Append(strValue).Append(')');
 
-                        if (CurrentCounterspellingDice != 0)
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
                             sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                       .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
                                       .Append('(')
-                                      .Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
                                       .Append(')');
 
                         int intModifiers
@@ -32391,6 +34631,353 @@ namespace Chummer
                                 strSpace,
                                 intModifiers);
                         }
+
+                        return sbdToolTip.ToString();
+                    }
+                }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseDecreaseWILToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')')
+                        .Append(strSpace).Append('+').Append(strSpace)
+                        .Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.DecreaseWILResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseWILResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        #endregion Decrease Attributes
+
+        public int SpellDefenseIllusionMana
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return LOG.TotalValue + WIL.TotalValue
+                                          + (ImprovementManager.ValueOf(
+                                                 this, Improvement.ImprovementType.SpellResistance)
+                                             + ImprovementManager.ValueOf(
+                                                 this, Improvement.ImprovementType.ManaIllusionResist))
+                                          .StandardRound();
+            }
+        }
+
+        public async Task<int> GetSpellDefenseIllusionManaAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                          + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.ManaIllusionResist, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public string DisplaySpellDefenseIllusionMana
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    int intDefense = SpellDefenseIllusionMana;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDefense.ToString(GlobalSettings.CultureInfo)
+                        : intDefense.ToString(GlobalSettings.CultureInfo) +
+                          LanguageManager.GetString("String_Space") + '(' +
+                          (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseIllusionManaAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDefense = await GetSpellDefenseIllusionManaAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDefense.ToString(GlobalSettings.CultureInfo)
+                    : intDefense.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public string SpellDefenseIllusionManaToolTip
+        {
+            get
+            {
+                string strSpace = LanguageManager.GetString("String_Space");
+                using (LockObject.EnterReadLock())
+                {
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdToolTip))
+                    {
+                        sbdToolTip.Append(LOG.CurrentDisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                                  .Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
+                            sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                      .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                      .Append('(').Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(')');
+
+                        int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                            + ImprovementManager.ValueOf(
+                                                this, Improvement.ImprovementType.ManaIllusionResist))
+                            .StandardRound();
+
+                        if (intModifiers != 0)
+                        {
+                            FormatImprovementModifiers(
+                                sbdToolTip,
+                                new[]
+                                {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.ManaIllusionResist
+                                },
+                                strSpace,
+                                intModifiers);
+                        }
+
+                        return sbdToolTip.ToString();
+                    }
+                }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseIllusionManaToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objLog = await GetAttributeAsync("LOG", token: token).ConfigureAwait(false);
+                CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(await objLog.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objLog.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')')
+                        .Append(strSpace).Append('+').Append(strSpace)
+                        .Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.ManaIllusionResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.ManaIllusionResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public int SpellDefenseIllusionPhysical
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    return LOG.TotalValue + INT.TotalValue
+                                          + (ImprovementManager.ValueOf(
+                                                 this, Improvement.ImprovementType.SpellResistance)
+                                             + ImprovementManager.ValueOf(
+                                                 this, Improvement.ImprovementType.PhysicalIllusionResist))
+                                          .StandardRound();
+                }
+            }
+        }
+
+        public async Task<int> GetSpellDefenseIllusionPhysicalAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + await (await GetAttributeAsync("INT", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                          + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PhysicalIllusionResist, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public string DisplaySpellDefenseIllusionPhysical
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    int intDefense = SpellDefenseIllusionPhysical;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDefense.ToString(GlobalSettings.CultureInfo)
+                        : intDefense.ToString(GlobalSettings.CultureInfo) +
+                          LanguageManager.GetString("String_Space") + '(' +
+                          (intDefense + intCounterspellingDice).ToString(
+                              GlobalSettings.CultureInfo)
+                          + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseIllusionPhysicalAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDefense = await GetSpellDefenseIllusionPhysicalAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDefense.ToString(GlobalSettings.CultureInfo)
+                    : intDefense.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public string SpellDefenseIllusionPhysicalToolTip
+        {
+            get
+            {
+                string strSpace = LanguageManager.GetString("String_Space");
+                using (LockObject.EnterReadLock())
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(LOG.CurrentDisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(INT.CurrentDisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.PhysicalIllusionResist)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.PhysicalIllusionResist
+                            },
+                            strSpace,
+                            intModifiers);
                     }
 
                     return sbdToolTip.ToString();
@@ -32398,7 +34985,457 @@ namespace Chummer
             }
         }
 
-        #endregion Decrease Attributes
+        public async Task<string> GetSpellDefenseIllusionPhysicalToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objLog = await GetAttributeAsync("LOG", token: token).ConfigureAwait(false);
+                CharacterAttrib objInt = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(await objLog.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objLog.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')')
+                        .Append(strSpace).Append('+').Append(strSpace)
+                        .Append(await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objInt.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.PhysicalIllusionResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.PhysicalIllusionResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public int SpellDefenseManipulationMental
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return LOG.TotalValue + WIL.TotalValue
+                                          + (ImprovementManager.ValueOf(
+                                                 this, Improvement.ImprovementType.SpellResistance)
+                                             + ImprovementManager.ValueOf(
+                                                 this, Improvement.ImprovementType.MentalManipulationResist))
+                                          .StandardRound();
+            }
+        }
+
+        public async Task<int> GetSpellDefenseManipulationMentalAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                       + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                          + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.MentalManipulationResist, token: token).ConfigureAwait(false))
+                                         .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public string DisplaySpellDefenseManipulationMental
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    int intDefense = SpellDefenseManipulationMental;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDefense.ToString(GlobalSettings.CultureInfo)
+                        : intDefense.ToString(GlobalSettings.CultureInfo) +
+                          LanguageManager.GetString("String_Space") + '(' +
+                          (intDefense + intCounterspellingDice).ToString(
+                              GlobalSettings.CultureInfo)
+                          + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseManipulationMentalAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDefense = await GetSpellDefenseManipulationMentalAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDefense.ToString(GlobalSettings.CultureInfo)
+                    : intDefense.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public string SpellDefenseManipulationMentalToolTip
+        {
+            get
+            {
+                string strSpace = LanguageManager.GetString("String_Space");
+                using (LockObject.EnterReadLock())
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(LOG.CurrentDisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.MentalManipulationResist))
+                        .StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.MentalManipulationResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseManipulationMentalToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objLog = await GetAttributeAsync("LOG", token: token).ConfigureAwait(false);
+                CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(await objLog.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objLog.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')')
+                        .Append(strSpace).Append('+').Append(strSpace)
+                        .Append(await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.MentalManipulationResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.MentalManipulationResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public int SpellDefenseManipulationPhysical
+        {
+            get
+            {
+                int intAttributes = 0;
+                using (LockObject.EnterReadLock())
+                {
+                    if (IsAI)
+                    {
+                        if (HomeNode is Vehicle objVehicle)
+                            intAttributes = objVehicle.TotalBody * 2;
+                    }
+                    else
+                        intAttributes = BOD.TotalValue + STR.TotalValue;
+
+                    return intAttributes +
+                           (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) +
+                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist))
+                           .StandardRound();
+                }
+            }
+        }
+
+        public async Task<int> GetSpellDefenseManipulationPhysicalAsync(CancellationToken token = default)
+        {
+            int intAttributes = 0;
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    if (await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicle)
+                        intAttributes = 2 * await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                }
+                else
+                    intAttributes = await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
+                        + await (await GetAttributeAsync("STR", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
+
+                return intAttributes
+                    + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                            + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.DecreaseBODResist, token: token).ConfigureAwait(false))
+                                            .StandardRound();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public string DisplaySpellDefenseManipulationPhysical
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    int intDefense = SpellDefenseManipulationPhysical;
+                    int intCounterspellingDice = CurrentCounterspellingDice;
+                    return intCounterspellingDice == 0
+                        ? intDefense.ToString(GlobalSettings.CultureInfo)
+                        : intDefense.ToString(GlobalSettings.CultureInfo) +
+                          LanguageManager.GetString("String_Space") + '(' +
+                          (intDefense + intCounterspellingDice).ToString(
+                              GlobalSettings.CultureInfo) + ')';
+                }
+            }
+        }
+
+        public async Task<string> GetDisplaySpellDefenseManipulationPhysicalAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intDefense = await GetSpellDefenseManipulationPhysicalAsync(token).ConfigureAwait(false);
+                int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                return intCounterspellingDice == 0
+                    ? intDefense.ToString(GlobalSettings.CultureInfo)
+                    : intDefense.ToString(GlobalSettings.CultureInfo) +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                      + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public string SpellDefenseManipulationPhysicalToolTip
+        {
+            get
+            {
+                string strSpace = LanguageManager.GetString("String_Space");
+                using (LockObject.EnterReadLock())
+                {
+                    int intBody;
+                    int intStrength;
+                    string strBodyAbbrev;
+                    string strStrengthAbbrev;
+                    if (IsAI)
+                    {
+                        intBody = intStrength = HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0;
+                        strBodyAbbrev = strStrengthAbbrev = LanguageManager.GetString("String_VehicleBody");
+                    }
+                    else
+                    {
+                        intBody = BOD.TotalValue;
+                        intStrength = STR.TotalValue;
+                        strBodyAbbrev = BOD.CurrentDisplayAbbrev;
+                        strStrengthAbbrev = STR.CurrentDisplayAbbrev;
+                    }
+
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdToolTip))
+                    {
+                        sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
+                                  .Append(intBody.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                                  .Append('+').Append(strSpace).Append(strStrengthAbbrev).Append(strSpace).Append('(')
+                                  .Append(intStrength.ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                        int intCounterspellingDice = CurrentCounterspellingDice;
+                        if (intCounterspellingDice != 0)
+                            sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                      .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                      .Append('(')
+                                      .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                      .Append(')');
+
+                        int intModifiers
+                            = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) +
+                               ImprovementManager.ValueOf(
+                                   this, Improvement.ImprovementType.PhysicalManipulationResist))
+                            .StandardRound();
+
+                        if (intModifiers != 0)
+                        {
+                            FormatImprovementModifiers(
+                                sbdToolTip,
+                                new[]
+                                {
+                                    Improvement.ImprovementType.SpellResistance,
+                                    Improvement.ImprovementType.PhysicalManipulationResist
+                                },
+                                strSpace,
+                                intModifiers);
+                        }
+
+                        return sbdToolTip.ToString();
+                    }
+                }
+            }
+        }
+
+        public async Task<string> GetSpellDefenseManipulationPhysicalToolTipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intBody;
+                int intStrength;
+                string strBodyAbbrev;
+                string strStrengthAbbrev;
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    intBody = intStrength = await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicle ? await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) : 0;
+                    strBodyAbbrev = strStrengthAbbrev = await LanguageManager.GetStringAsync("String_VehicleBody", token: token).ConfigureAwait(false);
+                }
+                else
+                {
+                    CharacterAttrib objBod = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
+                    CharacterAttrib objStr = await GetAttributeAsync("STR", token: token).ConfigureAwait(false);
+                    intBody = await objBod.GetTotalValueAsync(token).ConfigureAwait(false);
+                    intStrength = await objStr.GetTotalValueAsync(token).ConfigureAwait(false);
+                    strBodyAbbrev = await objBod.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false);
+                    strStrengthAbbrev = await objStr.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false);
+                }
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
+                        .Append(intBody.ToString(GlobalSettings.CultureInfo)).Append(')')
+                        .Append(strSpace).Append('+').Append(strSpace)
+                        .Append(strStrengthAbbrev).Append(strSpace).Append('(')
+                        .Append(intStrength.ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
+                    if (intCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(intCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers
+                        = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SpellResistance, token: token).ConfigureAwait(false)
+                           + await ImprovementManager.ValueOfAsync(
+                               this, Improvement.ImprovementType.DecreaseBODResist, token: token).ConfigureAwait(false)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        await FormatImprovementModifiersAsync(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseBODResist
+                            },
+                            strSpace,
+                            intModifiers, token).ConfigureAwait(false);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
 
         #endregion Spell Defense
 
@@ -32449,15 +35486,15 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
+                using (LockObject.EnterReadLock())
                 {
-                    using (LockObject.EnterReadLock())
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                              out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append(REA.DisplayAbbrev).Append(strSpace).Append('(')
+                        sbdToolTip.Append(REA.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(REA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
                                   .Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(INT.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append('+').Append(strSpace).Append(INT.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                         int intWoundModifier = WoundModifier;
                         if (intWoundModifier != 0)
@@ -32482,9 +35519,9 @@ namespace Chummer
                                 strSpace,
                                 intModifiers);
                         }
-                    }
 
-                    return sbdToolTip.ToString();
+                        return sbdToolTip.ToString();
+                    }
                 }
             }
         }
@@ -32493,20 +35530,20 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                       out StringBuilder sbdToolTip))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                token.ThrowIfCancellationRequested();
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                       out StringBuilder sbdToolTip))
                 {
-                    token.ThrowIfCancellationRequested();
                     CharacterAttrib objRea = await GetAttributeAsync("REA", token: token).ConfigureAwait(false);
                     CharacterAttrib objInt = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
-                    sbdToolTip.Append(await objRea.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
+                    sbdToolTip.Append(await objRea.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false))
                         .Append(strSpace).Append('(')
                         .Append((await objRea.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
                         .Append(')').Append(strSpace).Append('+').Append(strSpace)
-                        .Append(await objInt.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)).Append(strSpace)
+                        .Append(await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace)
                         .Append('(')
                         .Append((await objInt.GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
                         .Append(')');
@@ -32533,13 +35570,13 @@ namespace Chummer
                             strSpace,
                             intModifiers, token).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
 
-                return sbdToolTip.ToString();
+                    return sbdToolTip.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -33173,7 +36210,7 @@ namespace Chummer
                 }
 
                 // Run through list of Armor again to cap off any whose stacking bonuses are greater than STR
-                if (!Settings.UncappedArmorAccessoryBonuses)
+                if (!await Settings.GetUncappedArmorAccessoryBonusesAsync(token).ConfigureAwait(false))
                 {
                     foreach (Armor objArmor in lstArmorsToConsider)
                     {
@@ -33219,325 +36256,6 @@ namespace Chummer
         }
 
         #endregion Armor Properties
-
-        #region Spell Defense
-
-        public int SpellDefenseIllusionMana
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return LOG.TotalValue + WIL.TotalValue
-                                          + (ImprovementManager.ValueOf(
-                                                 this, Improvement.ImprovementType.SpellResistance)
-                                             + ImprovementManager.ValueOf(
-                                                 this, Improvement.ImprovementType.ManaIllusionResist))
-                                          .StandardRound();
-            }
-        }
-
-        public string DisplaySpellDefenseIllusionMana
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseIllusionMana.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseIllusionMana.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseIllusionMana + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
-            }
-        }
-
-        public string SpellDefenseIllusionManaToolTip
-        {
-            get
-            {
-                string strSpace = LanguageManager.GetString("String_Space");
-                using (LockObject.EnterReadLock())
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
-                {
-                    sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
-                              .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
-                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
-                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
-
-                    if (CurrentCounterspellingDice != 0)
-                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                                  .Append(')');
-
-                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                        + ImprovementManager.ValueOf(
-                                            this, Improvement.ImprovementType.ManaIllusionResist))
-                        .StandardRound();
-
-                    if (intModifiers != 0)
-                    {
-                        FormatImprovementModifiers(
-                            sbdToolTip,
-                            new[]
-                            {
-                                Improvement.ImprovementType.SpellResistance,
-                                Improvement.ImprovementType.ManaIllusionResist
-                            },
-                            strSpace,
-                            intModifiers);
-                    }
-
-                    return sbdToolTip.ToString();
-                }
-            }
-        }
-
-        public int SpellDefenseIllusionPhysical
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return LOG.TotalValue + INT.TotalValue
-                                          + (ImprovementManager.ValueOf(
-                                                 this, Improvement.ImprovementType.SpellResistance)
-                                             + ImprovementManager.ValueOf(
-                                                 this, Improvement.ImprovementType.PhysicalIllusionResist))
-                                          .StandardRound();
-            }
-        }
-
-        public string DisplaySpellDefenseIllusionPhysical
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseIllusionPhysical.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseIllusionPhysical.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseIllusionPhysical + CurrentCounterspellingDice).ToString(
-                              GlobalSettings.CultureInfo)
-                          + ')';
-            }
-        }
-
-        public string SpellDefenseIllusionPhysicalToolTip
-        {
-            get
-            {
-                string strSpace = LanguageManager.GetString("String_Space");
-                using (LockObject.EnterReadLock())
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
-                {
-                    sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
-                              .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
-                              .Append('+').Append(strSpace).Append(INT.DisplayAbbrev).Append(strSpace).Append('(')
-                              .Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
-
-                    if (CurrentCounterspellingDice != 0)
-                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                                  .Append(')');
-
-                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                        + ImprovementManager.ValueOf(
-                                            this, Improvement.ImprovementType.PhysicalIllusionResist)).StandardRound();
-
-                    if (intModifiers != 0)
-                    {
-                        FormatImprovementModifiers(
-                            sbdToolTip,
-                            new[]
-                            {
-                                Improvement.ImprovementType.SpellResistance,
-                                Improvement.ImprovementType.PhysicalIllusionResist
-                            },
-                            strSpace,
-                            intModifiers);
-                    }
-
-                    return sbdToolTip.ToString();
-                }
-            }
-        }
-
-        public int SpellDefenseManipulationMental
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return LOG.TotalValue + WIL.TotalValue
-                                          + (ImprovementManager.ValueOf(
-                                                 this, Improvement.ImprovementType.SpellResistance)
-                                             + ImprovementManager.ValueOf(
-                                                 this, Improvement.ImprovementType.MentalManipulationResist))
-                                          .StandardRound();
-            }
-        }
-
-        public string DisplaySpellDefenseManipulationMental
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseManipulationMental.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseManipulationMental.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseManipulationMental + CurrentCounterspellingDice).ToString(
-                              GlobalSettings.CultureInfo)
-                          + ')';
-            }
-        }
-
-        public string SpellDefenseManipulationMentalToolTip
-        {
-            get
-            {
-                string strSpace = LanguageManager.GetString("String_Space");
-                using (LockObject.EnterReadLock())
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdToolTip))
-                {
-                    sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
-                              .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
-                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
-                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
-
-                    if (CurrentCounterspellingDice != 0)
-                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                                  .Append(')');
-
-                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                        + ImprovementManager.ValueOf(
-                                            this, Improvement.ImprovementType.MentalManipulationResist))
-                        .StandardRound();
-
-                    if (intModifiers != 0)
-                    {
-                        FormatImprovementModifiers(
-                            sbdToolTip,
-                            new[]
-                            {
-                                Improvement.ImprovementType.SpellResistance,
-                                Improvement.ImprovementType.MentalManipulationResist
-                            },
-                            strSpace,
-                            intModifiers);
-                    }
-
-                    return sbdToolTip.ToString();
-                }
-            }
-        }
-
-        public int SpellDefenseManipulationPhysical
-        {
-            get
-            {
-                int intAttributes = 0;
-                using (LockObject.EnterReadLock())
-                {
-                    if (IsAI)
-                    {
-                        if (HomeNode is Vehicle objVehicle)
-                            intAttributes = objVehicle.TotalBody * 2;
-                    }
-                    else
-                        intAttributes = BOD.TotalValue + STR.TotalValue;
-
-                    return intAttributes +
-                           (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) +
-                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist))
-                           .StandardRound();
-                }
-            }
-        }
-
-        public string DisplaySpellDefenseManipulationPhysical
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return CurrentCounterspellingDice == 0
-                        ? SpellDefenseManipulationPhysical.ToString(GlobalSettings.CultureInfo)
-                        : SpellDefenseManipulationPhysical.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
-                          (SpellDefenseManipulationPhysical + CurrentCounterspellingDice).ToString(
-                              GlobalSettings.CultureInfo) + ')';
-            }
-        }
-
-        public string SpellDefenseManipulationPhysicalToolTip
-        {
-            get
-            {
-                string strSpace = LanguageManager.GetString("String_Space");
-                using (LockObject.EnterReadLock())
-                {
-                    int intBody;
-                    int intStrength;
-                    string strBodyAbbrev;
-                    string strStrengthAbbrev;
-                    if (IsAI)
-                    {
-                        intBody = intStrength = HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0;
-                        strBodyAbbrev = strStrengthAbbrev = LanguageManager.GetString("String_VehicleBody");
-                    }
-                    else
-                    {
-                        intBody = BOD.TotalValue;
-                        intStrength = STR.TotalValue;
-                        strBodyAbbrev = BOD.DisplayAbbrev;
-                        strStrengthAbbrev = STR.DisplayAbbrev;
-                    }
-
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdToolTip))
-                    {
-                        sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
-                                  .Append(intBody.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
-                                  .Append('+').Append(strSpace).Append(strStrengthAbbrev).Append(strSpace).Append('(')
-                                  .Append(intStrength.ToString(GlobalSettings.CultureInfo)).Append(')');
-
-                        if (CurrentCounterspellingDice != 0)
-                            sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                                      .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                                      .Append('(')
-                                      .Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                                      .Append(')');
-
-                        int intModifiers
-                            = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) +
-                               ImprovementManager.ValueOf(
-                                   this, Improvement.ImprovementType.PhysicalManipulationResist))
-                            .StandardRound();
-
-                        if (intModifiers != 0)
-                        {
-                            FormatImprovementModifiers(
-                                sbdToolTip,
-                                new[]
-                                {
-                                    Improvement.ImprovementType.SpellResistance,
-                                    Improvement.ImprovementType.PhysicalManipulationResist
-                                },
-                                strSpace,
-                                intModifiers);
-                        }
-
-                        return sbdToolTip.ToString();
-                    }
-                }
-            }
-        }
-
-        #endregion Spell Defense
 
         /// <summary>
         /// Custom Drugs created by the character.
@@ -33696,7 +36414,7 @@ namespace Chummer
                         {
                             strCM = objVehicleHomeNode.BasePhysicalBoxes.ToString(GlobalSettings.CultureInfo) + strSpace
                                 +
-                                '+' + strSpace + '(' + BOD.DisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo)
+                                '+' + strSpace + '(' + LanguageManager.GetString("String_VehicleBody") + '÷' + 2.ToString(GlobalSettings.CultureInfo)
                                 +
                                 ')' + strSpace + '(' +
                                 (objVehicleHomeNode.TotalBody.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
@@ -33709,7 +36427,7 @@ namespace Chummer
                         else
                         {
                             strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
-                                    DEP.DisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace
+                                    DEP.CurrentDisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace
                                     + '(' +
                                     (DEP.TotalValue.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
 
@@ -33723,7 +36441,7 @@ namespace Chummer
                     else
                     {
                         strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
-                                BOD.DisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
+                                BOD.CurrentDisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
                                 +
                                 (BOD.TotalValue.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
 
@@ -33756,8 +36474,7 @@ namespace Chummer
                     if (await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicleHomeNode)
                     {
                         strCM = objVehicleHomeNode.BasePhysicalBoxes.ToString(GlobalSettings.CultureInfo) + strSpace +
-                                '+' + strSpace + '(' + await BOD.GetDisplayAbbrevAsync(GlobalSettings.Language, token)
-                                    .ConfigureAwait(false) +
+                                '+' + strSpace + '(' + await LanguageManager.GetStringAsync("String_VehicleBody", token: token).ConfigureAwait(false) +
                                 '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '(' +
                                 ((await objVehicleHomeNode.GetTotalBodyAsync(token).ConfigureAwait(false)).DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
 
@@ -33771,7 +36488,7 @@ namespace Chummer
                     {
                         CharacterAttrib objDep = await GetAttributeAsync("DEP", token: token).ConfigureAwait(false);
                         strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
-                                await objDep.GetDisplayAbbrevAsync(GlobalSettings.Language, token)
+                                await objDep.GetCurrentDisplayAbbrevAsync(token)
                                     .ConfigureAwait(false) + '÷' +
                                 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace
                                 + '(' + ((await objDep.GetTotalValueAsync(token).ConfigureAwait(false)).DivAwayFromZero(2))
@@ -33790,7 +36507,7 @@ namespace Chummer
                 {
                     CharacterAttrib objBod = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
                     strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
-                            await objBod.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) +
+                            await objBod.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) +
                             '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
                             + ((await objBod.GetTotalValueAsync(token).ConfigureAwait(false)).DivAwayFromZero(2)).ToString(
                                 GlobalSettings.CultureInfo) + ')';
@@ -33981,7 +36698,7 @@ namespace Chummer
                     else
                     {
                         strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
-                                WIL.DisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
+                                WIL.CurrentDisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
                                 +
                                 (WIL.TotalValue.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
 
@@ -34027,7 +36744,7 @@ namespace Chummer
                 {
                     CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
                     strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '('
-                            + await objWil.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)
+                            + await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)
                             + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
                             + ((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).DivAwayFromZero(2)).ToString(
                                 GlobalSettings.CultureInfo) + ')';
@@ -35187,14 +37904,14 @@ namespace Chummer
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append('(').Append(STR.DisplayAbbrev).Append(strSpace).Append('[')
+                        sbdToolTip.Append('(').Append(STR.CurrentDisplayAbbrev).Append(strSpace).Append('[')
                                   .Append(STR.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(']')
                                   .Append(strSpace)
                                   .Append('×').Append(strSpace).Append(2.ToString(GlobalSettings.CultureInfo))
-                                  .Append(strSpace).Append('+').Append(strSpace).Append(BOD.DisplayAbbrev)
+                                  .Append(strSpace).Append('+').Append(strSpace).Append(BOD.CurrentDisplayAbbrev)
                                   .Append(strSpace)
                                   .Append('[').Append(BOD.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(']')
-                                  .Append(strSpace).Append('+').Append(strSpace).Append(REA.DisplayAbbrev)
+                                  .Append(strSpace).Append('+').Append(strSpace).Append(REA.CurrentDisplayAbbrev)
                                   .Append(strSpace)
                                   .Append('[').Append(REA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append("])")
                                   .Append(strSpace).Append('/').Append(strSpace)
@@ -35238,14 +37955,14 @@ namespace Chummer
                     int intStr = await STR.GetTotalValueAsync(token).ConfigureAwait(false);
                     int intBod = await BOD.GetTotalValueAsync(token).ConfigureAwait(false);
                     int intRea = await REA.GetTotalValueAsync(token).ConfigureAwait(false);
-                    sbdToolTip.Append('(').Append(await STR.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)).Append(strSpace).Append('[')
+                    sbdToolTip.Append('(').Append(await STR.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('[')
                         .Append(intStr.ToString(GlobalSettings.CultureInfo)).Append(']')
                         .Append(strSpace)
                         .Append('×').Append(strSpace).Append(2.ToString(GlobalSettings.CultureInfo))
-                        .Append(strSpace).Append('+').Append(strSpace).Append(await BOD.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
+                        .Append(strSpace).Append('+').Append(strSpace).Append(await BOD.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false))
                         .Append(strSpace)
                         .Append('[').Append(intBod.ToString(GlobalSettings.CultureInfo)).Append(']')
-                        .Append(strSpace).Append('+').Append(strSpace).Append(await REA.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
+                        .Append(strSpace).Append('+').Append(strSpace).Append(await REA.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false))
                         .Append(strSpace)
                         .Append('[').Append(intRea.ToString(GlobalSettings.CultureInfo)).Append("])")
                         .Append(strSpace).Append('/').Append(strSpace)
@@ -35354,14 +38071,14 @@ namespace Chummer
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append('(').Append(LOG.DisplayAbbrev).Append(strSpace).Append('[')
+                        sbdToolTip.Append('(').Append(LOG.CurrentDisplayAbbrev).Append(strSpace).Append('[')
                                   .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(']')
                                   .Append(strSpace)
                                   .Append('×').Append(strSpace).Append(2.ToString(GlobalSettings.CultureInfo))
-                                  .Append(strSpace).Append('+').Append(strSpace).Append(INT.DisplayAbbrev)
+                                  .Append(strSpace).Append('+').Append(strSpace).Append(INT.CurrentDisplayAbbrev)
                                   .Append(strSpace)
                                   .Append('[').Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(']')
-                                  .Append(strSpace).Append('+').Append(strSpace).Append(WIL.DisplayAbbrev)
+                                  .Append(strSpace).Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev)
                                   .Append(strSpace)
                                   .Append('[').Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append("])")
                                   .Append(strSpace).Append('/').Append(strSpace)
@@ -35424,14 +38141,14 @@ namespace Chummer
                     int intLog = await LOG.GetTotalValueAsync(token).ConfigureAwait(false);
                     int intInt = await INT.GetTotalValueAsync(token).ConfigureAwait(false);
                     int intWil = await WIL.GetTotalValueAsync(token).ConfigureAwait(false);
-                    sbdToolTip.Append('(').Append(await LOG.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)).Append(strSpace).Append('[')
+                    sbdToolTip.Append('(').Append(await LOG.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('[')
                               .Append(intLog.ToString(GlobalSettings.CultureInfo)).Append(']')
                               .Append(strSpace)
                               .Append('×').Append(strSpace).Append(2.ToString(GlobalSettings.CultureInfo))
-                              .Append(strSpace).Append('+').Append(strSpace).Append(await INT.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
+                              .Append(strSpace).Append('+').Append(strSpace).Append(await INT.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false))
                               .Append(strSpace)
                               .Append('[').Append(intInt.ToString(GlobalSettings.CultureInfo)).Append(']')
-                              .Append(strSpace).Append('+').Append(strSpace).Append(await WIL.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
+                              .Append(strSpace).Append('+').Append(strSpace).Append(await WIL.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false))
                               .Append(strSpace)
                               .Append('[').Append(intWil.ToString(GlobalSettings.CultureInfo)).Append("])")
                               .Append(strSpace).Append('/').Append(strSpace)
@@ -35571,7 +38288,7 @@ namespace Chummer
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append('(').Append(CHA.DisplayAbbrev).Append(strSpace).Append('[')
+                        sbdToolTip.Append('(').Append(CHA.CurrentDisplayAbbrev).Append(strSpace).Append('[')
                                   .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(']');
                         if (IsAI && HomeNode != null)
                         {
@@ -35598,10 +38315,10 @@ namespace Chummer
                                       .Append(2.ToString(GlobalSettings.CultureInfo));
                         }
 
-                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(WIL.DisplayAbbrev)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(WIL.CurrentDisplayAbbrev)
                                   .Append(strSpace)
                                   .Append('[').Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(']')
-                                  .Append(strSpace).Append('+').Append(strSpace).Append(ESS.DisplayAbbrev)
+                                  .Append(strSpace).Append('+').Append(strSpace).Append(ESS.CurrentDisplayAbbrev)
                                   .Append(strSpace)
                                   .Append('[').Append(DisplayEssence).Append("])").Append(strSpace).Append('/')
                                   .Append(strSpace)
@@ -35636,7 +38353,7 @@ namespace Chummer
                 {
                     int intCha = await CHA.GetTotalValueAsync(token).ConfigureAwait(false);
                     int intWil = await WIL.GetTotalValueAsync(token).ConfigureAwait(false);
-                    sbdToolTip.Append('(').Append(await CHA.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false)).Append(strSpace).Append('[')
+                    sbdToolTip.Append('(').Append(await CHA.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)).Append(strSpace).Append('[')
                               .Append(intCha.ToString(GlobalSettings.CultureInfo)).Append(']');
                     if (await GetIsAIAsync(token).ConfigureAwait(false) && await GetHomeNodeAsync(token).ConfigureAwait(false) is IHasMatrixAttributes objHomeNode)
                     {
@@ -35663,10 +38380,10 @@ namespace Chummer
                                   .Append(2.ToString(GlobalSettings.CultureInfo));
                     }
 
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(await WIL.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
+                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(await WIL.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false))
                               .Append(strSpace)
                               .Append('[').Append(intWil.ToString(GlobalSettings.CultureInfo)).Append(']')
-                              .Append(strSpace).Append('+').Append(strSpace).Append(await ESS.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false))
+                              .Append(strSpace).Append('+').Append(strSpace).Append(await ESS.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false))
                               .Append(strSpace)
                               .Append('[').Append(await GetDisplayEssenceAsync(token).ConfigureAwait(false)).Append("])").Append(strSpace).Append('/')
                               .Append(strSpace)
@@ -44002,9 +46719,9 @@ namespace Chummer
                 int intEncumbrance = Encumbrance;
                 if (intEncumbrance == 0)
                     return;
+                token.ThrowIfCancellationRequested();
                 try
                 {
-                    token.ThrowIfCancellationRequested();
                     if (Settings.DoEncumbrancePenaltyPhysicalLimit)
                         ImprovementManager.CreateImprovement(this, "Physical",
                             Improvement.ImprovementSource.Encumbrance,
@@ -44134,9 +46851,9 @@ namespace Chummer
                 int intEncumbrance = await GetEncumbranceAsync(token).ConfigureAwait(false);
                 if (intEncumbrance == 0)
                     return;
+                token.ThrowIfCancellationRequested();
                 try
                 {
-                    token.ThrowIfCancellationRequested();
                     if (await objSettings.GetDoEncumbrancePenaltyPhysicalLimitAsync(token).ConfigureAwait(false))
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Physical", Improvement.ImprovementSource.Encumbrance,
@@ -45357,6 +48074,10 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(SpellDefenseDecreaseBODToolTip),
                         new DependencyGraphNode<string, Character>(nameof(CurrentCounterspellingDice)),
                         new DependencyGraphNode<string, Character>(nameof(SpellDefenseDecreaseBOD),
+                            new DependencyGraphNode<string, Character>(nameof(IsAI)),
+                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI, (x, t) => x.GetIsAIAsync(t),
+                                new DependencyGraphNode<string, Character>(nameof(IsAI))
+                            ),
                             new DependencyGraphNode<string, Character>(nameof(SpellResistance))
                         )
                     ),
@@ -45387,6 +48108,10 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(SpellDefenseDecreaseSTRToolTip),
                         new DependencyGraphNode<string, Character>(nameof(CurrentCounterspellingDice)),
                         new DependencyGraphNode<string, Character>(nameof(SpellDefenseDecreaseSTR),
+                            new DependencyGraphNode<string, Character>(nameof(IsAI)),
+                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI, (x, t) => x.GetIsAIAsync(t),
+                                new DependencyGraphNode<string, Character>(nameof(IsAI))
+                            ),
                             new DependencyGraphNode<string, Character>(nameof(SpellResistance))
                         )
                     ),

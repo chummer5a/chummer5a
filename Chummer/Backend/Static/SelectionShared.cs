@@ -788,7 +788,7 @@ namespace Chummer
                             xmlNode.SelectSingleNodeAndCacheExpression("total", token)?.ValueAsInt ?? 0;
                         if (blnShowMessage)
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{1}{2}{3}", Environment.NewLine,
-                                objAttribute?.DisplayAbbrev ?? objCharacter.TranslateExtra(strNodeName, token: token),
+                                objAttribute?.CurrentDisplayAbbrev ?? objCharacter.TranslateExtra(strNodeName, token: token),
                                 strSpace, intTargetValue);
 
                         if (xmlNode.SelectSingleNodeAndCacheExpression("natural", token) != null)
@@ -809,7 +809,7 @@ namespace Chummer
                         if (blnShowMessage)
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{1}{2}{3}", Environment.NewLine,
                                 objAttribute != null
-                                    ? await objAttribute.GetDisplayAbbrevAsync(GlobalSettings.Language, token)
+                                    ? await objAttribute.GetCurrentDisplayAbbrevAsync(token)
                                         .ConfigureAwait(false)
                                     : await objCharacter.TranslateExtraAsync(strNodeName, token: token)
                                         .ConfigureAwait(false), strSpace, intTargetValue);
@@ -899,7 +899,9 @@ namespace Chummer
                                 : await LanguageManager.GetStringAsync("Message_SelectQuality_RequireKarma",
                                     token: token).ConfigureAwait(false),
                             strNodeInnerText);
-                    return new Tuple<bool, string>(objCharacter.CareerKarma >= xmlNode.ValueAsInt, strName);
+                    return new Tuple<bool, string>((blnSync
+                        ? objCharacter.CareerKarma
+                        : await objCharacter.GetCareerKarmaAsync(token).ConfigureAwait(false)) >= xmlNode.ValueAsInt, strName);
                 }
                 case "chargenonly":
                 {
