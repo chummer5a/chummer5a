@@ -163,7 +163,6 @@ namespace Chummer
         private static readonly ConcurrentDictionary<Color, Color> s_DicDarkModeColors = new ConcurrentDictionary<Color, Color>();
         private static readonly ConcurrentDictionary<Color, Color> s_DicInverseDarkModeColors = new ConcurrentDictionary<Color, Color>();
         private static readonly ConcurrentDictionary<Color, Color> s_DicDimmedColors = new ConcurrentDictionary<Color, Color>();
-        private static readonly ConcurrentDictionary<Color, Color> s_DicBrightenedColors = new ConcurrentDictionary<Color, Color>();
 
         /// <summary>
         /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)
@@ -206,10 +205,10 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Returns a version of a color that has its lightness dimmed down in Light mode or brightened in Dark Mode
+        /// Returns a version of a (Mode-Independent) color that has its lightness dimmed down in Light mode or brightened in Dark Mode
         /// </summary>
-        /// <param name="objColor">Color whose lightness should be dimmed.</param>
-        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed.</returns>
+        /// <param name="objColor">Color (in Mode-Independent form) whose lightness should be dimmed.</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed or brightened as appropriate.</returns>
         public static Color GenerateCurrentModeDimmedColor(Color objColor)
         {
             return IsLightMode
@@ -431,16 +430,6 @@ namespace Chummer
                 : (fltNewValue - fltNewLightness) / fltDivisor;
             fltNewLightness = 1 - fltNewLightness;
             return FromHsla(fltHue, fltNewSaturationHsl, fltNewLightness, objColor.A);
-        }
-
-        private static Color GetBrightenedVersion(Color objColor)
-        {
-            // Built-in functions are in HSV/HSB, so we need to convert to HSL to invert lightness.
-            float fltHue = objColor.GetHue() / 360.0f;
-            float fltBrightness = objColor.GetBrightness();
-            float fltSaturation = objColor.GetSaturation();
-            fltSaturation = Math.Min(fltSaturation * 1.6f, 1);
-            return FromHsva(fltHue, fltBrightness, fltSaturation, objColor.A);
         }
 
         private static Color GetDimmedVersion(Color objColor)

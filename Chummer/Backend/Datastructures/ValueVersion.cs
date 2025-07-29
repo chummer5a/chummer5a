@@ -304,7 +304,7 @@ namespace Chummer
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
         {
-            return 0 | (_Major & 0xF) << 28 | (_Minor & 0xFF) << 20 | (_Build & 0xFF) << 12 | _Revision & 0xFFF;
+            return (_Major & 0xF) << 28 | (_Minor & 0xFF) << 20 | (_Build & 0xFF) << 12 | _Revision & 0xFFF;
         }
 
         /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="T:System.String" /> representation.</summary>
