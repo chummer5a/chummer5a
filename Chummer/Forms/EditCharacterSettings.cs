@@ -1129,16 +1129,13 @@ namespace Chummer
             await gpbDirectoryInfo.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
             try
             {
-                string strDescription = await objSelected.GetDisplayDescriptionAsync(GlobalSettings.Language)
-                                                         .ConfigureAwait(false);
+                string strDescription = await objSelected.GetCurrentDisplayDescriptionAsync().ConfigureAwait(false);
                 await rtbDirectoryDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
                 await lblDirectoryVersion.DoThreadSafeAsync(x => x.Text = objSelected.MyVersion.ToString())
                                          .ConfigureAwait(false);
-                string strAuthors = await objSelected
-                                          .GetDisplayAuthorsAsync(GlobalSettings.Language, GlobalSettings.CultureInfo)
-                                          .ConfigureAwait(false);
+                string strAuthors = await objSelected.GetCurrentDisplayAuthorsAsync().ConfigureAwait(false);
                 await lblDirectoryAuthors.DoThreadSafeAsync(x => x.Text = strAuthors).ConfigureAwait(false);
-                string strName = await objSelected.GetDisplayNameAsync().ConfigureAwait(false);
+                string strName = await objSelected.GetCurrentDisplayNameAsync().ConfigureAwait(false);
                 await lblDirectoryName.DoThreadSafeAsync(x => x.Text = strName).ConfigureAwait(false);
 
                 if (objSelected.DependenciesList.Count > 0)
@@ -1147,7 +1144,7 @@ namespace Chummer
                                                                   out StringBuilder sbdDependencies))
                     {
                         foreach (DirectoryDependency dependency in objSelected.DependenciesList)
-                            sbdDependencies.AppendLine(await dependency.GetDisplayNameAsync().ConfigureAwait(false));
+                            sbdDependencies.AppendLine(dependency.CurrentDisplayName);
                         await lblDependencies.DoThreadSafeAsync(x => x.Text = sbdDependencies.ToString())
                                              .ConfigureAwait(false);
                     }
@@ -1164,8 +1161,7 @@ namespace Chummer
                                                                   out StringBuilder sbdIncompatibilities))
                     {
                         foreach (DirectoryDependency exclusivity in objSelected.IncompatibilitiesList)
-                            sbdIncompatibilities.AppendLine(
-                                await exclusivity.GetDisplayNameAsync().ConfigureAwait(false));
+                            sbdIncompatibilities.AppendLine(exclusivity.CurrentDisplayName);
                         await lblIncompatibilities.DoThreadSafeAsync(x => x.Text = sbdIncompatibilities.ToString())
                                                   .ConfigureAwait(false);
                     }
@@ -1284,21 +1280,21 @@ namespace Chummer
                             if (objInfo != null)
                             {
                                 objNode.Tag = objInfo;
-                                objNode.Text = await objInfo.GetDisplayNameAsync(token).ConfigureAwait(false);
+                                objNode.Text = await objInfo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                                 if (objNode.Checked)
                                 {
                                     // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
                                     string missingDirectories = string.Empty;
                                     if (objInfo.DependenciesList.Count > 0)
                                         missingDirectories = await objInfo
-                                            .CheckDependencyAsync(_objCharacterSettings, token)
+                                            .CheckDependencyAsync(_objCharacterSettings, token: token)
                                             .ConfigureAwait(false);
 
                                     string prohibitedDirectories = string.Empty;
                                     if (objInfo.IncompatibilitiesList.Count > 0)
                                         prohibitedDirectories = await objInfo
                                             .CheckIncompatibilityAsync(
-                                                _objCharacterSettings, token)
+                                                _objCharacterSettings, token: token)
                                             .ConfigureAwait(false);
 
                                     if (!string.IsNullOrEmpty(missingDirectories)
@@ -1306,7 +1302,7 @@ namespace Chummer
                                     {
                                         objNode.ToolTipText
                                             = await CustomDataDirectoryInfo.BuildIncompatibilityDependencyStringAsync(
-                                                missingDirectories, prohibitedDirectories, token).ConfigureAwait(false);
+                                                missingDirectories, prohibitedDirectories, token: token).ConfigureAwait(false);
                                         objNode.ForeColor = objErrorColor;
                                     }
                                 }
@@ -1349,7 +1345,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                             if (objInfo != null)
                             {
-                                string strText = await objInfo.GetDisplayNameAsync(token).ConfigureAwait(false);
+                                string strText = await objInfo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                                 await treCustomDataDirectories.DoThreadSafeAsync(() =>
                                     {
                                         objNode.Tag = objInfo;
@@ -1362,14 +1358,14 @@ namespace Chummer
                                     string missingDirectories = string.Empty;
                                     if (objInfo.DependenciesList.Count > 0)
                                         missingDirectories = await objInfo
-                                            .CheckDependencyAsync(_objCharacterSettings, token)
+                                            .CheckDependencyAsync(_objCharacterSettings, token: token)
                                             .ConfigureAwait(false);
 
                                     string prohibitedDirectories = string.Empty;
                                     if (objInfo.IncompatibilitiesList.Count > 0)
                                         prohibitedDirectories = await objInfo
                                             .CheckIncompatibilityAsync(
-                                                _objCharacterSettings, token)
+                                                _objCharacterSettings, token: token)
                                             .ConfigureAwait(false);
 
                                     if (!string.IsNullOrEmpty(missingDirectories)
@@ -1377,7 +1373,7 @@ namespace Chummer
                                     {
                                         string strToolTip
                                             = await CustomDataDirectoryInfo.BuildIncompatibilityDependencyStringAsync(
-                                                missingDirectories, prohibitedDirectories, token).ConfigureAwait(false);
+                                                missingDirectories, prohibitedDirectories, token: token).ConfigureAwait(false);
                                         await treCustomDataDirectories.DoThreadSafeAsync(() =>
                                         {
                                             objNode.ToolTipText = strToolTip;
