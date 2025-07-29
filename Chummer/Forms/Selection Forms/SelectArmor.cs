@@ -723,7 +723,7 @@ namespace Chummer
                                                 token)
                                             .ConfigureAwait(false);
                                         NuyenString strCost =
-                                            new NuyenString((await objArmor.DisplayCost(false, token: token).ConfigureAwait(false)).Item1);
+                                            await NuyenString.GetNuyenStringAsync((await objArmor.DisplayCost(false, token: token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
 
                                         tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail,
                                             sbdAccessories.ToString(), strSource, strCost);
