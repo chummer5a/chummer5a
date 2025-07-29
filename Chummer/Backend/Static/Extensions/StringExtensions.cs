@@ -21,6 +21,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -2519,6 +2520,118 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Takes a string with RTF formatting and transforms all of its colors to dark mode versions.
+        /// </summary>
+        /// <param name="strInput">String to process with light mode colors.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Version of <paramref name="strInput"/> with RTF color codes replaced with dark mode versions.</returns>
+        public static string RtfToDarkMode(this string strInput, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            string strInputTrimmed = strInput.TrimStart();
+            if (!strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal) && !strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
+                return strInput; // Faster and dirtier version of the full IsRtf check for performance reasons
+            int intColorTableStart = strInput.IndexOf(@"{\colortbl;", StringComparison.Ordinal);
+            if (intColorTableStart < 0)
+                return strInput;
+            int intColorTableEnd = strInput.IndexOf('}', intColorTableStart);
+            if (intColorTableEnd < 0 || intColorTableStart - intColorTableEnd <= 11)
+                return strInput;
+            string strInputColorTable = strInput.Substring(intColorTableStart, intColorTableEnd - intColorTableStart - 11);
+            if (string.IsNullOrEmpty(strInputColorTable))
+                return strInput;
+            MatchCollection lstColorMatches = s_RtfColorsRegex.Value.Matches(strInputColorTable);
+            if (lstColorMatches.Count == 0)
+                return strInput;
+            string strInputPreColorTable = strInput.Substring(0, intColorTableStart);
+            string strInputPostColorTable = intColorTableEnd + 1 < strInput.Length ? strInput.Substring(intColorTableEnd + 1) : string.Empty;
+            Dictionary<string, string> dicColorReplacements = new Dictionary<string, string>(lstColorMatches.Count);
+            foreach (Match objColorEntry in lstColorMatches)
+            {
+                if (dicColorReplacements.ContainsKey(objColorEntry.Value))
+                    continue;
+                GroupCollection lstColorValues = objColorEntry.Groups;
+                if (lstColorValues.Count < 3
+                    || !int.TryParse(lstColorValues[0].Value, out int intRed)
+                    || !int.TryParse(lstColorValues[1].Value, out int intGreen)
+                    || !int.TryParse(lstColorValues[2].Value, out int intBlue))
+                    continue;
+                Color objExistingColor = Color.FromArgb(intRed, intGreen, intBlue);
+                Color objDarkModeColor = ColorManager.GenerateDarkModeColor(objExistingColor);
+                dicColorReplacements.Add(objColorEntry.Value, "\\red" + objDarkModeColor.R.ToString(GlobalSettings.InvariantCultureInfo)
+                    + "\\green" + objDarkModeColor.G.ToString(GlobalSettings.InvariantCultureInfo)
+                    + "\\blue" + objDarkModeColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ';');
+            }
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
+            {
+                sbdInputColorTable.Append(strInputColorTable);
+                foreach (KeyValuePair<string, string> kvpReplace in dicColorReplacements)
+                {
+                    sbdInputColorTable.Replace(kvpReplace.Key, kvpReplace.Value);
+                }
+                return strInputPreColorTable + sbdInputColorTable.ToString() + strInputPostColorTable;
+            }
+        }
+
+        /// <summary>
+        /// Takes a string with RTF formatting that is assumed to have dark mode formatting and transforms all of its colors to light mode versions.
+        /// </summary>
+        /// <param name="strInput">String to process with dark mode colors.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Version of <paramref name="strInput"/> with RTF color codes replaced with light mode versions.</returns>
+        public static string RtfInverseToDarkMode(this string strInput, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            string strInputTrimmed = strInput.TrimStart();
+            if (!strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal) && !strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
+                return strInput; // Faster and dirtier version of the full IsRtf check for performance reasons
+            int intColorTableStart = strInput.IndexOf(@"{\colortbl;", StringComparison.Ordinal);
+            if (intColorTableStart < 0)
+                return strInput;
+            int intColorTableEnd = strInput.IndexOf('}', intColorTableStart);
+            if (intColorTableEnd < 0 || intColorTableEnd - intColorTableStart <= 11)
+                return strInput;
+            string strInputColorTable = strInput.Substring(intColorTableStart, intColorTableEnd - intColorTableStart - 11);
+            if (string.IsNullOrEmpty(strInputColorTable))
+                return strInput;
+            MatchCollection lstColorMatches = s_RtfColorsRegex.Value.Matches(strInputColorTable);
+            if (lstColorMatches.Count == 0)
+                return strInput;
+            string strInputPreColorTable = strInput.Substring(0, intColorTableStart);
+            string strInputPostColorTable = intColorTableEnd + 1 < strInput.Length ? strInput.Substring(intColorTableEnd + 1) : string.Empty;
+            Dictionary<string, string> dicColorReplacements = new Dictionary<string, string>(lstColorMatches.Count);
+            foreach (Match objColorEntry in lstColorMatches)
+            {
+                if (dicColorReplacements.ContainsKey(objColorEntry.Value))
+                    continue;
+                GroupCollection lstColorValues = objColorEntry.Groups;
+                if (lstColorValues.Count < 3
+                    || !int.TryParse(lstColorValues[0].Value, out int intRed)
+                    || !int.TryParse(lstColorValues[1].Value, out int intGreen)
+                    || !int.TryParse(lstColorValues[2].Value, out int intBlue))
+                    continue;
+                Color objDarkModeColor = Color.FromArgb(intRed, intGreen, intBlue);
+                Color objInvertedColor = ColorManager.GenerateInverseDarkModeColor(objDarkModeColor);
+                dicColorReplacements.Add(objColorEntry.Value, "\\red" + objInvertedColor.R.ToString(GlobalSettings.InvariantCultureInfo)
+                    + "\\green" + objInvertedColor.G.ToString(GlobalSettings.InvariantCultureInfo)
+                    + "\\blue" + objInvertedColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ';');
+            }
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
+            {
+                sbdInputColorTable.Append(strInputColorTable);
+                foreach (KeyValuePair<string, string> kvpReplace in dicColorReplacements)
+                {
+                    sbdInputColorTable.Replace(kvpReplace.Key, kvpReplace.Value);
+                }
+                return strInputPreColorTable + sbdInputColorTable.ToString() + strInputPostColorTable;
+            }
+        }
+
+        /// <summary>
         /// Whether a string is an RTF document
         /// </summary>
         /// <param name="strInput">The string to check.</param>
@@ -2960,6 +3073,10 @@ namespace Chummer
         private static readonly Lazy<Regex> s_RtfStripperRegex = new Lazy<Regex>(() => new Regex(
             @"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)",
             RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+
+        private static readonly Lazy<Regex> s_RtfColorsRegex = new Lazy<Regex>(() => new Regex(
+            @"\\red(\d+)\\green(\d+)\\blue(\d+);",
+            RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         private static readonly IReadOnlyCollection<string> s_SetRtfDestinations = new HashSet<string>
         {
