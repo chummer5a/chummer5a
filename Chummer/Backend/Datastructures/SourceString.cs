@@ -243,7 +243,7 @@ namespace Chummer
                 intCompareResult = string.Compare(Code, other.Code, false, GlobalSettings.CultureInfo);
                 if (intCompareResult == 0)
                 {
-                    intCompareResult = Page.CompareTo(other.Page);
+                    return Page.CompareTo(other.Page);
                 }
             }
             return intCompareResult;
@@ -278,6 +278,8 @@ namespace Chummer
 
         public bool Equals(SourceString other)
         {
+            if (GetHashCode() != other.GetHashCode())
+                return false;
             return Language == other.Language && Code == other.Code && Page == other.Page;
         }
 

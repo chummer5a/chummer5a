@@ -7052,7 +7052,7 @@ namespace Chummer.Backend.Equipment
                         .Append(blnSync
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             ? _objCharacter.STR.GetDisplayAbbrev(strLanguage)
-                            : await _objCharacter.STR.GetDisplayAbbrevAsync(strLanguage, token).ConfigureAwait(false))
+                            : await (await _objCharacter.GetAttributeAsync("STR", token: token).ConfigureAwait(false)).GetDisplayAbbrevAsync(strLanguage, token).ConfigureAwait(false))
                         .Append(strSpace)
                         .Append('[')
                         .Append(intUseSTR.ToString(objCulture)).Append(strSpace).Append('/').Append(strSpace)

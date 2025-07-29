@@ -18,17 +18,18 @@
     https://github.com/chummer5a/chummer5a
 -->
   <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
-    <guid>DB8F9574-B48E-406A-B9E3-6733DAF9EE0B</guid>
-    <version>1</version>
+    <guid>7a0bdd70-b99f-43a8-8f05-5520b2e74c49</guid>
+    <version>0.8</version>
     <authors>
       <author>
-        <name>chummer5a</name>
+        <name>Mesothelioma</name>
         <main>true</main>
       </author>
     </authors>
     <descriptions>
       <description>
-        <text>This ruleset implements the Run Faster 2016-09-24 provisional errata for Shapeshifters. The errata can be found here: https://jackpoint.live/index.php?topic=24596.msg464878#msg464878.</text>
+        <text>This consists of the prices of every critter featured in the price list originally produced on reddit, subject to whether or not they are actually statted out in a 5E rulebook. Lifestyle modifications have also been included. Biodrones have been added in addition to the existing categories.
+		https://www.reddit.com/r/Shadowrun/comments/4lbx3q/let_me_try_this_a_critter_price_list_for_everyone/</text>
         <lang>en-us</lang>
       </description>
     </descriptions>

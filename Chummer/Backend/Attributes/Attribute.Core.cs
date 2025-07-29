@@ -2594,7 +2594,7 @@ namespace Chummer.Backend.Attributes
                                 _objCharacter.Cyberware.ForEach(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace));
                             }
 
-                            return _strCachedToolTip = DisplayAbbrev + strSpace + '('
+                            return _strCachedToolTip = CurrentDisplayAbbrev + strSpace + '('
                                                        + Value.ToString(GlobalSettings.CultureInfo) + ')' +
                                                        sbdModifier;
                         }
@@ -2840,7 +2840,7 @@ namespace Chummer.Backend.Attributes
                             await _objCharacter.Cyberware.ForEachAsync(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace), token: token).ConfigureAwait(false);
                         }
 
-                        return _strCachedToolTip = await GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) + strSpace + '('
+                        return _strCachedToolTip = await GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + '('
                                                    + (await GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')' +
                                                    sbdModifier;
                     }
@@ -3939,7 +3939,12 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Translated abbreviation of the attribute.
         /// </summary>
-        public string DisplayAbbrev => GetDisplayAbbrev(GlobalSettings.Language);
+        public string CurrentDisplayAbbrev => GetDisplayAbbrev(GlobalSettings.Language);
+
+        /// <summary>
+        /// Translated abbreviation of the attribute.
+        /// </summary>
+        public Task<string> GetCurrentDisplayAbbrevAsync(CancellationToken token = default) => GetDisplayAbbrevAsync(GlobalSettings.Language, token);
 
         public string GetDisplayAbbrev(string strLanguage)
         {
@@ -3950,6 +3955,8 @@ namespace Chummer.Backend.Attributes
 
         public Task<string> GetDisplayAbbrevAsync(string strLanguage, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             return Abbrev == "MAGAdept"
                 ? LanguageManager.MAGAdeptStringAsync(strLanguage, token: token)
                 : LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Short", strLanguage, token: token);
@@ -3957,6 +3964,7 @@ namespace Chummer.Backend.Attributes
 
         public async Task Upgrade(int intAmount = 1, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (intAmount <= 0)
                 return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);

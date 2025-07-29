@@ -633,7 +633,8 @@ namespace Chummer
                                         GlobalSettings.Language,
                                         GlobalSettings.CultureInfo,
                                         _objCharacter, token).ConfigureAwait(false);
-                                    NuyenString strCost = new NuyenString((await objWeapon.DisplayCost(token: token).ConfigureAwait(false)).Item1);
+                                    NuyenString strCost = await NuyenString.GetNuyenStringAsync(
+                                        (await objWeapon.DisplayCost(token: token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
 
                                     tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP,
                                         strRC,

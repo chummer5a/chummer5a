@@ -23,6 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -69,8 +70,10 @@ namespace Chummer
                                           ?? strName));
                 }
 
-                lstDVBase.Add(new ListItem("({STR}/2)", '(' + _objCharacter.STR.DisplayAbbrev + "/2)"));
-                lstDVBase.Add(new ListItem("({STR})", '(' + _objCharacter.STR.DisplayAbbrev + ')'));
+                CharacterAttrib objAttribute = await _objCharacter.GetAttributeAsync("STR").ConfigureAwait(false);
+                string strAbbrev = await objAttribute.GetCurrentDisplayAbbrevAsync().ConfigureAwait(false);
+                lstDVBase.Add(new ListItem("({STR}/2)", '(' + strAbbrev + "/2)"));
+                lstDVBase.Add(new ListItem("({STR})", '(' + strAbbrev + ')'));
                 for (int i = 1; i <= 20; ++i)
                 {
                     lstDVBase.Add(new ListItem(i.ToString(GlobalSettings.InvariantCultureInfo),
