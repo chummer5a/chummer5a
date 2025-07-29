@@ -8585,7 +8585,7 @@ namespace Chummer.Backend.Equipment
 
                 // Factor in the Essence multiplier of the selected CyberwareGrade.
                 // We apply grade-based Essence modifiers to the additive stack because of Wakshaani's post about Biocompatibility:
-                // https://forums.shadowruntabletop.com/index.php?topic=21061.msg381782#msg381782
+                // https://jackpoint.live/index.php?topic=21061.msg381782#msg381782
                 decimal decESSMultiplier = objGrade.Essence + (blnSync ? ExtraESSAdditiveMultiplier : await GetExtraESSAdditiveMultiplierAsync(token).ConfigureAwait(false));
                 decimal decTotalESSMultiplier = blnSync ? ExtraESSMultiplicativeMultiplier : await GetExtraESSMultiplicativeMultiplierAsync(token).ConfigureAwait(false);
 
