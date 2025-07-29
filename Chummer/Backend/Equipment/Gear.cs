@@ -26,7 +26,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -43,7 +42,7 @@ namespace Chummer.Backend.Equipment
     /// Standard Character Gear.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    [DebuggerDisplay("{CurrentDisplayName}")]
+    [DebuggerDisplay("{DisplayName(null, \"en-us\")}")]
     public sealed class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode, IHasMatrixAttributes,
         IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertiesChangedAsync, ICanSort,
         IHasStolenProperty, ICanPaste, IHasWirelessBonus, IHasGear, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
@@ -1668,20 +1667,17 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
 
             // Convert old qi foci to the new bonus. In order to force the user to update their powers, unequip the focus and remove all improvements.
-            if (_strName == "Qi Focus")
+            if (_strName == "Qi Focus" && _objCharacter.LastSavedVersion < new ValueVersion(5, 193, 5))
             {
-                if (_objCharacter.LastSavedVersion < new ValueVersion(5, 193, 5))
+                XmlNode gear = _objCharacter.LoadData("gear.xml")
+                    .TryGetNodeByNameOrId("/chummer/gears/gear", _strName);
+                if (gear != null)
                 {
-                    XmlNode gear = _objCharacter.LoadData("gear.xml")
-                        .TryGetNodeByNameOrId("/chummer/gears/gear", _strName);
-                    if (gear != null)
-                    {
-                        Equipped = false;
-                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
-                            InternalId);
-                        Bonus = gear["bonus"];
-                        WirelessBonus = gear["wirelessbonus"];
-                    }
+                    Equipped = false;
+                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
+                        InternalId);
+                    Bonus = gear["bonus"];
+                    WirelessBonus = gear["wirelessbonus"];
                 }
             }
 
@@ -4385,17 +4381,25 @@ namespace Chummer.Backend.Equipment
                 strReturn = strQuantity + strSpace + strReturn;
             int intRating = Rating;
             if (intRating > 0)
+            {
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
                 strReturn += strSpace + '('
                                       + string.Format(
                                           objCulture, LanguageManager.GetString("Label_RatingFormat", strLanguage),
                                           LanguageManager.GetString(RatingLabel, strLanguage)) + strSpace
                                       + intRating.ToString(objCulture) + ')';
+            }
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             if (!string.IsNullOrEmpty(GearName))
                 strReturn += strSpace + "(\"" + GearName + "\")";
             if (LoadedIntoClip != null)
+            {
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
                 strReturn += strSpace + '(' + string.Format(objCulture, LanguageManager.GetString("Label_Loaded"), LoadedIntoClip.DisplayWeaponName(objCulture, strLanguage)) + ')';
+            }
             return strReturn;
         }
 
@@ -4412,6 +4416,9 @@ namespace Chummer.Backend.Equipment
 
             int intRating = await GetRatingAsync(token).ConfigureAwait(false);
             if (intRating > 0)
+            {
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
                 strReturn += strSpace + '('
                                       + string.Format(
                                           objCulture,
@@ -4421,17 +4428,22 @@ namespace Chummer.Backend.Equipment
                                           await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
                                                                .ConfigureAwait(false)) + strSpace
                                       + intRating.ToString(objCulture) + ')';
+            }
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
             if (!string.IsNullOrEmpty(GearName))
                 strReturn += strSpace + "(\"" + GearName + "\")";
             if (LoadedIntoClip != null)
+            {
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
                 strReturn += strSpace + '('
                                       + string.Format(
                                           objCulture,
                                           await LanguageManager.GetStringAsync("Label_Loaded", token: token).ConfigureAwait(false),
                                           await LoadedIntoClip.DisplayWeaponNameAsync(objCulture, strLanguage, token).ConfigureAwait(false))
                                       + ')';
+            }
             return strReturn;
         }
 

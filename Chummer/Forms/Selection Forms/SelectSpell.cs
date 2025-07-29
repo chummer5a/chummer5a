@@ -943,7 +943,7 @@ namespace Chummer
                 {
                     decValue *= 2;
                 }
-                int intDv = decValue.StandardRound();
+                intDrainDv = decValue.StandardRound();
             }
 
             // Drain always minimum 2

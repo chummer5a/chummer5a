@@ -33,7 +33,7 @@ namespace Chummer
     /// <summary>
     /// A Stacked Focus.
     /// </summary>
-    [DebuggerDisplay("{Name(GlobalSettings.DefaultLanguage)}")]
+    [DebuggerDisplay("{Name(\"en-us\")}")]
     public sealed class StackedFocus : IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;

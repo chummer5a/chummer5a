@@ -218,7 +218,7 @@ namespace Chummer
                 }
                 else
                 {
-                    int intDv = decValue.StandardRound();
+                    intFadingDv = decValue.StandardRound();
                 }
 
                 // Fading always minimum 2

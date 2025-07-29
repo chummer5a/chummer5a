@@ -45,7 +45,7 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
-    [DebuggerDisplay("{CurrentDisplayName}")]
+    [DebuggerDisplay("{DisplayName(null, \"en-us\")}")]
     public sealed class Weapon : IHasChildren<Weapon>, IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort,
         IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasRating, ICanBlackMarketDiscount, IDisposable,
@@ -2584,8 +2584,12 @@ namespace Chummer.Backend.Equipment
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             int intRating = Rating;
             if (intRating > 0)
+            {
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
                 strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace +
                              intRating.ToString(objCulture) + ')';
+            }
             if (!string.IsNullOrEmpty(CustomName))
                 strReturn += strSpace + "(\"" + CustomName + "\")";
             return strReturn;
@@ -2602,9 +2606,13 @@ namespace Chummer.Backend.Equipment
                 .ConfigureAwait(false);
             int intRating = await GetRatingAsync(token).ConfigureAwait(false);
             if (intRating > 0)
+            {
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
                 strReturn += strSpace + '(' +
                              await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
                                  .ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ')';
+            }
             if (!string.IsNullOrEmpty(CustomName))
                 strReturn += strSpace + "(\"" + CustomName + "\")";
             return strReturn;
@@ -8430,11 +8438,11 @@ namespace Chummer.Backend.Equipment
             {
                 string strRangeBonus = string.Empty;
                 // First look at any changes caused by the weapon being wireless
-                if (WirelessOn && WirelessWeaponBonus != null)
-                {
-                    if (WirelessWeaponBonus.TryGetStringFieldQuickly("rangebonus", ref strRangeBonus)
+                if (WirelessOn && WirelessWeaponBonus != null
+                    && WirelessWeaponBonus.TryGetStringFieldQuickly("rangebonus", ref strRangeBonus)
                         && strRangeBonus != "0" && strRangeBonus != "+0" && strRangeBonus != "-0")
-                        sbdRangeBonus.Append('(').Append(strRangeBonus.TrimStartOnce('+')).Append(')');
+                {
+                    sbdRangeBonus.Append('(').Append(strRangeBonus.TrimStartOnce('+')).Append(')');
                 }
 
                 // Weapon Mods.
