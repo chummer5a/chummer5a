@@ -35,7 +35,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    [DebuggerDisplay("{CurrentDisplayName}")]
+    [DebuggerDisplay("{DisplayName(\"en-us\")}")]
     public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, ICanRemove, INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -1425,6 +1425,8 @@ namespace Chummer.Backend.Equipment
                 if (CostFree)
                     return LanguageManager.GetString("Checkbox_Free", strLanguage);
                 string strReturn = string.Empty;
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
                 int intMultiplier = Multiplier;
                 if (intMultiplier != 0)
                 {
@@ -1457,6 +1459,8 @@ namespace Chummer.Backend.Equipment
                 if (await GetCostFreeAsync(token).ConfigureAwait(false))
                     return await LanguageManager.GetStringAsync("Checkbox_Free", strLanguage, token: token).ConfigureAwait(false);
                 string strReturn = string.Empty;
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
                 int intMultiplier = await GetMultiplierAsync(token).ConfigureAwait(false);
                 if (intMultiplier != 0)
                 {

@@ -27,6 +27,6 @@ namespace Chummer
     {
         public delegate Task SafeAsyncEventHandler(object sender, EventArgs e, CancellationToken token = default);
 
-        public delegate Task SafeAsyncEventHandler<T>(object sender, T e, CancellationToken token = default);
+        public delegate Task SafeAsyncEventHandler<in T>(object sender, T e, CancellationToken token = default);
     }
 }

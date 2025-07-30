@@ -81,7 +81,7 @@ namespace Chummer
     /// A Quality.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra;Type")]
-    [DebuggerDisplay("{CurrentDisplayName}")]
+    [DebuggerDisplay("{DisplayName(null, \"en-us\")}")]
     public sealed class Quality : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -1391,6 +1391,8 @@ namespace Chummer
                 int intLevels = Levels;
                 if (intLevels > 1)
                 {
+                    if (objCulture == null)
+                        objCulture = GlobalSettings.CultureInfo;
                     strReturn += strSpace + intLevels.ToString(objCulture);
                 }
                 else
@@ -1406,6 +1408,8 @@ namespace Chummer
                             xmlMyLimitNode = xmlDataNode.SelectSingleNodeAndCacheExpression("limit");
                         if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
                         {
+                            if (objCulture == null)
+                                objCulture = GlobalSettings.CultureInfo;
                             strReturn += strSpace + intLevels.ToString(objCulture);
                         }
                     }
@@ -1440,6 +1444,8 @@ namespace Chummer
                 int intLevels = await GetLevelsAsync(token).ConfigureAwait(false);
                 if (intLevels > 1)
                 {
+                    if (objCulture == null)
+                        objCulture = GlobalSettings.CultureInfo;
                     strReturn += strSpace + intLevels.ToString(objCulture);
                 }
                 else
@@ -1456,6 +1462,8 @@ namespace Chummer
                             xmlMyLimitNode = xmlDataNode.SelectSingleNodeAndCacheExpression("limit", token);
                         if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
                         {
+                            if (objCulture == null)
+                                objCulture = GlobalSettings.CultureInfo;
                             strReturn += strSpace + intLevels.ToString(objCulture);
                         }
                     }

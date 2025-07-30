@@ -33,7 +33,7 @@ namespace Chummer
     /// <summary>
     /// A Location.
     /// </summary>
-    [DebuggerDisplay("{nameof(Name)}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public sealed class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;

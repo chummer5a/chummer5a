@@ -50,7 +50,7 @@ namespace Chummer
     /// <summary>
     /// A Contact or Enemy.
     /// </summary>
-    [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(GlobalSettings.DefaultLanguage)})")]
+    [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(\"en-us\")})")]
     public sealed class Contact : INotifyMultiplePropertiesChangedAsync, IHasName, IHasMugshots, IHasNotes, IHasInternalId, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);

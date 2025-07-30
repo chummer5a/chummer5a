@@ -163,7 +163,6 @@ namespace Chummer
         private static readonly ConcurrentDictionary<Color, Color> s_DicDarkModeColors = new ConcurrentDictionary<Color, Color>();
         private static readonly ConcurrentDictionary<Color, Color> s_DicInverseDarkModeColors = new ConcurrentDictionary<Color, Color>();
         private static readonly ConcurrentDictionary<Color, Color> s_DicDimmedColors = new ConcurrentDictionary<Color, Color>();
-        private static readonly ConcurrentDictionary<Color, Color> s_DicBrightenedColors = new ConcurrentDictionary<Color, Color>();
 
         /// <summary>
         /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)
@@ -206,10 +205,10 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Returns a version of a color that has its lightness dimmed down in Light mode or brightened in Dark Mode
+        /// Returns a version of a (Mode-Independent) color that has its lightness dimmed down in Light mode or brightened in Dark Mode
         /// </summary>
-        /// <param name="objColor">Color whose lightness should be dimmed.</param>
-        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed.</returns>
+        /// <param name="objColor">Color (in Mode-Independent form) whose lightness should be dimmed.</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed or brightened as appropriate.</returns>
         public static Color GenerateCurrentModeDimmedColor(Color objColor)
         {
             return IsLightMode
@@ -371,14 +370,14 @@ namespace Chummer
             float fltLightness = objColor.GetBrightness(); // It's called Brightness, but it's actually Lightness
             float fltNewLightness = 1.0f - fltLightness;
             float fltNewValue = fltNewLightness + objColor.GetSaturation() * Math.Min(fltNewLightness, 1 - fltNewLightness);
-            float fltSaturationHsv = fltNewValue == 0 ? 0 : 2 * (1 - fltNewLightness / fltNewValue);
+            float fltSaturationHsv = Math.Abs(fltNewValue) < float.Epsilon ? 0 : 2 * (1 - fltNewLightness / fltNewValue);
             // Lighten dark colors a little by increasing value so that we don't warp colors that are highly saturated to begin with.
             fltNewValue += 0.14f * (1.0f - Convert.ToSingle(Math.Sqrt(fltNewValue)));
             fltNewValue = Math.Min(fltNewValue, 1.0f);
             Color objColorIntermediate = FromHsv(fltHue, fltSaturationHsv, fltNewValue);
             fltNewLightness = objColorIntermediate.GetBrightness();
             fltNewValue = fltNewLightness + objColorIntermediate.GetSaturation() * Math.Min(fltNewLightness, 1 - fltNewLightness);
-            fltSaturationHsv = fltNewValue == 0 ? 0 : 2 * (1 - fltNewLightness / fltNewValue);
+            fltSaturationHsv = Math.Abs(fltNewValue) < float.Epsilon ? 0 : 2 * (1 - fltNewLightness / fltNewValue);
             // Desaturate high saturation colors a little
             float fltNewSaturationHsv = fltSaturationHsv - 0.1f * fltSaturationHsv * fltSaturationHsv;
             return FromHsva(fltHue, fltNewSaturationHsv, fltNewValue, objColor.A);
@@ -396,9 +395,9 @@ namespace Chummer
             float fltHue = objColor.GetHue() / 360.0f;
             float fltLightness = objColor.GetBrightness(); // It's called Brightness, but it's actually Lightness
             float fltValue = fltLightness + objColor.GetSaturation() * Math.Min(fltLightness, 1 - fltLightness);
-            float fltSaturationHsv = fltValue == 0 ? 0 : 2 * (1 - fltLightness / fltValue);
+            float fltSaturationHsv = Math.Abs(fltValue) < float.Epsilon ? 0 : 2 * (1 - fltLightness / fltValue);
             float fltNewSaturationHsv = 0;
-            if (fltSaturationHsv != 0)
+            if (Math.Abs(fltSaturationHsv) >= float.Epsilon)
             {
                 // x - 0.1x^2 = n is the regular transform where x is the Light Mode saturation and n is the Dark Mode saturation
                 // To get it back, we need to solve for x knowing only n:
@@ -426,21 +425,11 @@ namespace Chummer
             // Now convert to Lightness so we can flip it
             float fltNewLightness = fltNewValue * (1 - fltNewSaturationHsv / 2.0f);
             float fltDivisor = Math.Min(fltNewLightness, 1 - fltNewLightness);
-            float fltNewSaturationHsl = fltDivisor == 0
+            float fltNewSaturationHsl = Math.Abs(fltDivisor) < float.Epsilon
                 ? 1
                 : (fltNewValue - fltNewLightness) / fltDivisor;
             fltNewLightness = 1 - fltNewLightness;
             return FromHsla(fltHue, fltNewSaturationHsl, fltNewLightness, objColor.A);
-        }
-
-        private static Color GetBrightenedVersion(Color objColor)
-        {
-            // Built-in functions are in HSV/HSB, so we need to convert to HSL to invert lightness.
-            float fltHue = objColor.GetHue() / 360.0f;
-            float fltBrightness = objColor.GetBrightness();
-            float fltSaturation = objColor.GetSaturation();
-            fltSaturation = Math.Min(fltSaturation * 1.6f, 1);
-            return FromHsva(fltHue, fltBrightness, fltSaturation, objColor.A);
         }
 
         private static Color GetDimmedVersion(Color objColor)

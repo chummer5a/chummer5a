@@ -42,7 +42,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Cyberware.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    [DebuggerDisplay("{CurrentDisplayName}")]
+    [DebuggerDisplay("{DisplayName(null, \"en-us\")}")]
     public sealed class Cyberware : ICanPaste, IHasChildrenAsyncAndCost<Cyberware>, IHasGear, IHasName, IHasInternalId,
         IHasSourceId, IHasXmlDataNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty,
@@ -3484,6 +3484,8 @@ namespace Chummer.Backend.Equipment
                 int intRating = Rating;
                 if (intRating > 0 && SourceID != EssenceHoleGUID && SourceID != EssenceAntiHoleGUID)
                 {
+                    if (objCulture == null)
+                        objCulture = GlobalSettings.CultureInfo;
                     strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace
                                  + intRating.ToString(objCulture) + ')';
                 }
@@ -3536,6 +3538,8 @@ namespace Chummer.Backend.Equipment
                     Guid guidSourceId = await GetSourceIDAsync(token).ConfigureAwait(false);
                     if (guidSourceId != EssenceHoleGUID && guidSourceId != EssenceAntiHoleGUID)
                     {
+                        if (objCulture == null)
+                            objCulture = GlobalSettings.CultureInfo;
                         strReturn += strSpace + '('
                                               + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
                                                   .ConfigureAwait(false) + strSpace
@@ -9129,7 +9133,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strCostExpression = Cost;
+                string strCostExpression = strExpression;
 
                 if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {

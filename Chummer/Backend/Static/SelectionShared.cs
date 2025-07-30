@@ -3310,41 +3310,34 @@ namespace Chummer
                     }
                     else
                     {
+                        List<Weapon> lstWeapons = new List<Weapon>();
                         foreach (Weapon objWeapon in await (await objCharacter.GetWeaponsAsync(token)
                                      .ConfigureAwait(false)).GetAllDescendantsAsync(
                                      x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
                         {
-                            intMods += await objWeapon.WeaponAccessories.CountAsync(x => x.SpecialModification, token)
-                                .ConfigureAwait(false);
+                            lstWeapons.Add(objWeapon);
                         }
 
-                        intMods += await (await objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).SumAsync(
-                            async objVehicle =>
+                        await (await objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(async objVehicle =>
+                        {
+                            foreach (Weapon objWeapon in await objVehicle.Weapons
+                                            .GetAllDescendantsAsync(x => x.UnderbarrelWeapons, token)
+                                            .ConfigureAwait(false))
                             {
-                                int intInnerSum = 0;
-                                foreach (Weapon objWeapon in await objVehicle.Weapons
-                                             .GetAllDescendantsAsync(x => x.UnderbarrelWeapons, token)
-                                             .ConfigureAwait(false))
+                                lstWeapons.Add(objWeapon);
+                            }
+
+                            await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
+                            {
+                                foreach (Weapon objWeapon in await objMount.Weapons.GetAllDescendantsAsync(
+                                                x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
                                 {
-                                    intInnerSum += await objWeapon.WeaponAccessories
-                                        .CountAsync(x => x.SpecialModification, token).ConfigureAwait(false);
+                                    lstWeapons.Add(objWeapon);
                                 }
-
-                                intInnerSum += await objVehicle.WeaponMounts.SumAsync(async objMount =>
-                                {
-                                    int intInnerSum2 = 0;
-                                    foreach (Weapon objWeapon in await objMount.Weapons.GetAllDescendantsAsync(
-                                                 x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
-                                    {
-                                        intInnerSum2 += await objWeapon.WeaponAccessories.CountAsync(
-                                            x => x.SpecialModification, token).ConfigureAwait(false);
-                                    }
-
-                                    return intInnerSum2;
-                                }, token).ConfigureAwait(false);
-
-                                return intInnerSum;
                             }, token).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
+                        foreach (Weapon objWeapon in lstWeapons)
+                            intMods += await objWeapon.WeaponAccessories.CountAsync(x => x.SpecialModification, token).ConfigureAwait(false);
                     }
 
                     if (blnShowMessage)
@@ -3362,7 +3355,7 @@ namespace Chummer
                     }
 
                     return new Tuple<bool, string>(
-                        intMods + xmlNode.ValueAsInt <= objCharacter.SpecialModificationLimit, strName);
+                        intMods + xmlNode.ValueAsInt <= (blnSync ? objCharacter.SpecialModificationLimit : await objCharacter.GetSpecialModificationLimitAsync(token).ConfigureAwait(false)), strName);
                 }
                 case "spell":
                 {
