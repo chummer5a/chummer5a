@@ -1057,20 +1057,20 @@ namespace Chummer
             await gpbDirectoryInfo.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
             try
             {
-                string strDescription = await objSelected.GetDisplayDescriptionAsync(_strSelectedLanguage)
-                                                         .ConfigureAwait(false);
+                string strDescription = _strSelectedLanguage == GlobalSettings.Language
+                    ? await objSelected.GetCurrentDisplayDescriptionAsync().ConfigureAwait(false)
+                    : await objSelected.DisplayDescriptionAsync(_strSelectedLanguage).ConfigureAwait(false);
                 await txtDirectoryDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
                 await lblDirectoryVersion.DoThreadSafeAsync(x => x.Text = objSelected.MyVersion.ToString())
                                          .ConfigureAwait(false);
-                string strAuthors = await objSelected
-                                          .GetDisplayAuthorsAsync(_strSelectedLanguage, _objSelectedCultureInfo)
-                                          .ConfigureAwait(false);
+                string strAuthors = _objSelectedCultureInfo == GlobalSettings.CultureInfo && _strSelectedLanguage == GlobalSettings.Language
+                    ? await objSelected.GetCurrentDisplayAuthorsAsync().ConfigureAwait(false)
+                    : await objSelected.DisplayAuthorsAsync(_objSelectedCultureInfo, _strSelectedLanguage).ConfigureAwait(false);
                 await lblDirectoryAuthors.DoThreadSafeAsync(x => x.Text = strAuthors).ConfigureAwait(false);
                 await lblDirectoryName.DoThreadSafeAsync(x => x.Text = objSelected.Name).ConfigureAwait(false);
                 string strText = objSelected.DirectoryPath.Replace(Utils.GetStartupPath,
                                                                    await LanguageManager
-                                                                         .GetStringAsync(
-                                                                             "String_Chummer5a", _strSelectedLanguage)
+                                                                         .GetStringAsync("String_Chummer5a", _strSelectedLanguage)
                                                                          .ConfigureAwait(false));
                 await lblDirectoryPath.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
 
@@ -1080,7 +1080,7 @@ namespace Chummer
                                                                   out StringBuilder sbdDependencies))
                     {
                         foreach (DirectoryDependency dependency in objSelected.DependenciesList)
-                            sbdDependencies.AppendLine(await dependency.GetDisplayNameAsync().ConfigureAwait(false));
+                            sbdDependencies.AppendLine(dependency.CurrentDisplayName);
                         await lblDependencies.DoThreadSafeAsync(x => x.Text = sbdDependencies.ToString())
                                              .ConfigureAwait(false);
                     }
@@ -1098,8 +1098,7 @@ namespace Chummer
                     {
                         foreach (DirectoryDependency exclusivity in objSelected.IncompatibilitiesList)
                         {
-                            sbdIncompatibilities.AppendLine(
-                                await exclusivity.GetDisplayNameAsync().ConfigureAwait(false));
+                            sbdIncompatibilities.AppendLine(exclusivity.CurrentDisplayName);
                         }
 
                         await lblIncompatibilities.DoThreadSafeAsync(x => x.Text = sbdIncompatibilities.ToString())

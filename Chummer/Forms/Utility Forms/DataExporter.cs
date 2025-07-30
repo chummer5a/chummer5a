@@ -376,7 +376,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in await objSelectedGameplayOption
                                      .GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false))
-                            sbdCustomDataDirectories.AppendLine(await objLoopInfo.GetDisplayNameAsync(token)
+                            sbdCustomDataDirectories.AppendLine(await objLoopInfo.GetCurrentDisplayNameAsync(token)
                                 .ConfigureAwait(false));
 
                         await lblCustomData.DoThreadSafeAsync(x =>
