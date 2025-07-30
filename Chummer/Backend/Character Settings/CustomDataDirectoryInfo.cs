@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -36,18 +35,6 @@ namespace Chummer
     public sealed class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>,
         IComparable<CustomDataDirectoryInfo>, IHasInternalId
     {
-        private static readonly ConcurrentDictionary<string, string> s_DicCachedStrings = new ConcurrentDictionary<string, string>();
-
-        private static string GetSpace(string strLanguage)
-        {
-            return s_DicCachedStrings.GetOrAdd(strLanguage, x => LanguageManager.GetString("String_Space", x));
-        }
-
-        private static Task<string> GetSpaceAsync(string strLanguage, CancellationToken token = default)
-        {
-            return s_DicCachedStrings.GetOrAddAsync(strLanguage, x => LanguageManager.GetStringAsync("String_Space", x, token: token), token);
-        }
-
         private ValueVersion _objMyVersion = new ValueVersion(1);
         private Guid _guid = Guid.NewGuid();
 
@@ -68,19 +55,17 @@ namespace Chummer
             LoadConstructorData();
         }
 
-        private CustomDataDirectoryInfo(string strName, string strDirectoryPath, bool blnDoConstructorData)
+        private CustomDataDirectoryInfo(string strName, string strDirectoryPath, CancellationToken _)
         {
             Name = strName;
             DirectoryPath = strDirectoryPath;
-            if (blnDoConstructorData)
-                LoadConstructorData();
         }
 
         public static async Task<CustomDataDirectoryInfo> CreateAsync(string strName, string strDirectoryPath,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CustomDataDirectoryInfo objReturn = new CustomDataDirectoryInfo(strName, strDirectoryPath, false);
+            CustomDataDirectoryInfo objReturn = new CustomDataDirectoryInfo(strName, strDirectoryPath);
             await objReturn.LoadConstructorDataAsync(token).ConfigureAwait(false);
             return objReturn;
         }
@@ -139,8 +124,8 @@ namespace Chummer
 
                     ConstructorGetManifestDescriptions(xmlNode, token);
                     ConstructorGetManifestAuthors(xmlNode, token);
-                    await ConstructorGetDependenciesAsync(xmlNode, token).ConfigureAwait(false);
-                    await ConstructorGetIncompatibilitiesAsync(xmlNode, token).ConfigureAwait(false);
+                    ConstructorGetDependencies(xmlNode, token);
+                    ConstructorGetIncompatibilities(xmlNode, token);
                 }
             }
             catch (Exception ex)
@@ -235,57 +220,6 @@ namespace Chummer
             }
         }
 
-        private async Task ConstructorGetDependenciesAsync(XPathNavigator xmlDocument, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            foreach (XPathNavigator objXmlNode in xmlDocument.SelectAndCacheExpression("dependencies/dependency", token))
-            {
-                Guid guidId = Guid.Empty;
-                string strDependencyName = string.Empty;
-
-                objXmlNode.TryGetStringFieldQuickly("name", ref strDependencyName);
-                objXmlNode.TryGetGuidFieldQuickly("guid", ref guidId);
-
-                //If there is no name any displays based on this are worthless and if there isn't a ID no comparisons will work
-                if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
-                    continue;
-
-                objXmlNode.TryGetField("maxversion", ValueVersion.TryParse, out ValueVersion objNewMaximumVersion);
-                objXmlNode.TryGetField("minversion", ValueVersion.TryParse, out ValueVersion objNewMinimumVersion);
-
-                DirectoryDependency objDependency
-                    = await DirectoryDependency.GetDirectoryDependencyAsync(strDependencyName, guidId, objNewMinimumVersion,
-                                              objNewMaximumVersion, token: token).ConfigureAwait(false);
-                _lstDependencies.Add(objDependency);
-            }
-        }
-
-        private async Task ConstructorGetIncompatibilitiesAsync(XPathNavigator xmlDocument, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            foreach (XPathNavigator objXmlNode in xmlDocument.SelectAndCacheExpression(
-                         "incompatibilities/incompatibility", token))
-            {
-                Guid guidId = Guid.Empty;
-                string strDependencyName = string.Empty;
-
-                objXmlNode.TryGetStringFieldQuickly("name", ref strDependencyName);
-                objXmlNode.TryGetGuidFieldQuickly("guid", ref guidId);
-
-                //If there is no name any displays based on this are worthless and if there isn't a ID no comparisons will work
-                if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
-                    continue;
-
-                objXmlNode.TryGetField("maxversion", ValueVersion.TryParse, out ValueVersion objNewMaximumVersion);
-                objXmlNode.TryGetField("minversion", ValueVersion.TryParse, out ValueVersion objNewMinimumVersion);
-
-                DirectoryDependency objIncompatibility
-                    = await DirectoryDependency.GetDirectoryDependencyAsync(strDependencyName, guidId, objNewMinimumVersion,
-                                              objNewMaximumVersion, token: token).ConfigureAwait(false);
-                _lstIncompatibilities.Add(objIncompatibility);
-            }
-        }
-
         #endregion Constructor Helper Methods
 
         /* This is unused right now, but maybe we need it later for some reason.
@@ -328,12 +262,8 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacterSettings"></param>
         /// <returns>List of the names of all missing dependencies as a single string</returns>
-        public string CheckDependency(CharacterSettings objCharacterSettings, CultureInfo objCulture = null, string strLanguage = "")
+        public string CheckDependency(CharacterSettings objCharacterSettings)
         {
-            if (objCulture == null)
-                objCulture = GlobalSettings.CultureInfo;
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalSettings.Language;
             using (objCharacterSettings.LockObject.EnterReadLock())
             {
                 IReadOnlyList<CustomDataDirectoryInfo> lstEnabledCustomDataDirectoryInfos =
@@ -381,8 +311,8 @@ namespace Chummer
                                 if (blnMismatch)
                                 {
                                     sbdReturn.AppendFormat(
-                                            LanguageManager.GetString("Tooltip_Dependency_VersionMismatch", strLanguage),
-                                            lstEnabledCustomData[0].GetDisplayName(objCulture, strLanguage), dependency.GetDisplayName(objCulture, strLanguage))
+                                            LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
+                                            lstEnabledCustomData[0].DisplayName, dependency.DisplayName)
                                         .AppendLine();
                                     continue;
                                 }
@@ -407,14 +337,14 @@ namespace Chummer
                                 < lstEnabledCustomDataDirectoryInfos.FindLastIndex(
                                     x => lstEnabledCustomData.Contains(x)))
                             {
-                                sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder", strLanguage),
+                                sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
                                     lstEnabledCustomData[0].Name, Name).AppendLine();
                             }
                         }
                         else
                         {
                             //We don't even need to attempt to check any versions if all guids are mismatched
-                            sbdReturn.AppendLine(dependency.GetDisplayName(objCulture, strLanguage));
+                            sbdReturn.AppendLine(dependency.DisplayName);
                         }
                     }
 
@@ -429,14 +359,9 @@ namespace Chummer
         /// <param name="objCharacterSettings"></param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>List of the names of all missing dependencies as a single string</returns>
-        public async Task<string> CheckDependencyAsync(CharacterSettings objCharacterSettings, CultureInfo objCulture = null, string strLanguage = "",
+        public async Task<string> CheckDependencyAsync(CharacterSettings objCharacterSettings,
                                                             CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            if (objCulture == null)
-                objCulture = GlobalSettings.CultureInfo;
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalSettings.Language;
             IAsyncDisposable objLocker = await objCharacterSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -487,10 +412,11 @@ namespace Chummer
                                 {
                                     sbdReturn.AppendFormat(
                                             await LanguageManager
-                                                .GetStringAsync("Tooltip_Dependency_VersionMismatch", strLanguage, token: token)
+                                                .GetStringAsync("Tooltip_Dependency_VersionMismatch", token: token)
                                                 .ConfigureAwait(false),
-                                            await lstEnabledCustomData[0].GetDisplayNameAsync(objCulture, strLanguage, token).ConfigureAwait(false),
-                                            await dependency.GetDisplayNameAsync(objCulture, strLanguage, token).ConfigureAwait(false))
+                                            await lstEnabledCustomData[0].GetDisplayNameAsync(token)
+                                                .ConfigureAwait(false),
+                                            await dependency.GetDisplayNameAsync(token).ConfigureAwait(false))
                                         .AppendLine();
                                     continue;
                                 }
@@ -517,7 +443,7 @@ namespace Chummer
                             {
                                 sbdReturn.AppendFormat(
                                     await LanguageManager
-                                        .GetStringAsync("Tooltip_Dependency_BadLoadOrder", strLanguage, token: token)
+                                        .GetStringAsync("Tooltip_Dependency_BadLoadOrder", token: token)
                                         .ConfigureAwait(false),
                                     lstEnabledCustomData[0].Name, Name).AppendLine();
                             }
@@ -525,7 +451,7 @@ namespace Chummer
                         else
                         {
                             //We don't even need to attempt to check any versions if all guids are mismatched
-                            sbdReturn.AppendLine(await dependency.GetDisplayNameAsync(objCulture, strLanguage, token).ConfigureAwait(false));
+                            sbdReturn.AppendLine(await dependency.GetDisplayNameAsync(token).ConfigureAwait(false));
                         }
                     }
 
@@ -543,12 +469,8 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacterSettings"></param>
         /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
-        public string CheckIncompatibility(CharacterSettings objCharacterSettings, CultureInfo objCulture = null, string strLanguage = "")
+        public string CheckIncompatibility(CharacterSettings objCharacterSettings)
         {
-            if (objCulture == null)
-                objCulture = GlobalSettings.CultureInfo;
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalSettings.Language;
             List<CustomDataDirectoryInfo> lstEnabledCustomData
                 = new List<CustomDataDirectoryInfo>(IncompatibilitiesList.Count);
             using (objCharacterSettings.LockObject.EnterReadLock())
@@ -599,9 +521,8 @@ namespace Chummer
                         //if the version is within the version range add it to the list.
                         if (objInfoToDisplay != default)
                         {
-                            sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch", strLanguage),
-                                objInfoToDisplay.GetDisplayName(objCulture, strLanguage),
-                                incompatibility.GetDisplayName(objCulture, strLanguage)).AppendLine();
+                            sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
+                                objInfoToDisplay.DisplayName, incompatibility.DisplayName).AppendLine();
                         }
                     }
 
@@ -616,14 +537,9 @@ namespace Chummer
         /// <param name="objCharacterSettings"></param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
-        public async Task<string> CheckIncompatibilityAsync(CharacterSettings objCharacterSettings, CultureInfo objCulture = null, string strLanguage = "",
+        public async Task<string> CheckIncompatibilityAsync(CharacterSettings objCharacterSettings,
             CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            if (objCulture == null)
-                objCulture = GlobalSettings.CultureInfo;
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalSettings.Language;
             List<CustomDataDirectoryInfo> lstEnabledCustomData
                 = new List<CustomDataDirectoryInfo>(IncompatibilitiesList.Count);
             IAsyncDisposable objLocker =
@@ -679,10 +595,10 @@ namespace Chummer
                         {
                             sbdReturn.AppendFormat(
                                 await LanguageManager
-                                    .GetStringAsync("Tooltip_Incompatibility_VersionMismatch", strLanguage, token: token)
+                                    .GetStringAsync("Tooltip_Incompatibility_VersionMismatch", token: token)
                                     .ConfigureAwait(false),
-                                await objInfoToDisplay.GetDisplayNameAsync(objCulture, strLanguage, token).ConfigureAwait(false),
-                                await incompatibility.GetDisplayNameAsync(objCulture, strLanguage, token).ConfigureAwait(false)).AppendLine();
+                                await objInfoToDisplay.GetDisplayNameAsync(token).ConfigureAwait(false),
+                                await incompatibility.GetDisplayNameAsync(token).ConfigureAwait(false)).AppendLine();
                         }
                     }
 
@@ -702,14 +618,13 @@ namespace Chummer
         /// <param name="presentIncompatibilities">The string of all incompatibilities that are active</param>
         /// <returns></returns>
         public static string BuildIncompatibilityDependencyString(string missingDependency = "",
-                                                                  string presentIncompatibilities = "",
-                                                                  string strLanguage = "")
+                                                                  string presentIncompatibilities = "")
         {
             string strReturn = string.Empty;
 
             if (!string.IsNullOrEmpty(missingDependency))
             {
-                strReturn = LanguageManager.GetString("Tooltip_Dependency_Missing", strLanguage) + Environment.NewLine
+                strReturn = LanguageManager.GetString("Tooltip_Dependency_Missing") + Environment.NewLine
                     + missingDependency;
             }
 
@@ -717,7 +632,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strReturn))
                     strReturn += Environment.NewLine;
-                strReturn += LanguageManager.GetString("Tooltip_Incompatibility_Present", strLanguage) + Environment.NewLine
+                strReturn += LanguageManager.GetString("Tooltip_Incompatibility_Present") + Environment.NewLine
                     + presentIncompatibilities;
             }
 
@@ -732,13 +647,13 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
         public static async Task<string> BuildIncompatibilityDependencyStringAsync(
-            string missingDependency = "", string presentIncompatibilities = "", string strLanguage = "", CancellationToken token = default)
+            string missingDependency = "", string presentIncompatibilities = "", CancellationToken token = default)
         {
             string strReturn = string.Empty;
 
             if (!string.IsNullOrEmpty(missingDependency))
             {
-                strReturn = await LanguageManager.GetStringAsync("Tooltip_Dependency_Missing", strLanguage, token: token)
+                strReturn = await LanguageManager.GetStringAsync("Tooltip_Dependency_Missing", token: token)
                                                  .ConfigureAwait(false) + Environment.NewLine + missingDependency;
             }
 
@@ -746,7 +661,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strReturn))
                     strReturn += Environment.NewLine;
-                strReturn += await LanguageManager.GetStringAsync("Tooltip_Incompatibility_Present", strLanguage, token: token)
+                strReturn += await LanguageManager.GetStringAsync("Tooltip_Incompatibility_Present", token: token)
                                                   .ConfigureAwait(false) + Environment.NewLine
                                                                          + presentIncompatibilities;
             }
@@ -810,7 +725,8 @@ namespace Chummer
                 if (string.IsNullOrEmpty(_strDisplayDescription)
                     || _strDisplayDescriptionLanguage != GlobalSettings.Language)
                 {
-                    return _strDisplayDescription = GetDisplayDescription(_strDisplayDescriptionLanguage = GlobalSettings.Language);
+                    _strDisplayDescriptionLanguage = GlobalSettings.Language;
+                    _strDisplayDescription = GetDisplayDescription(GlobalSettings.Language);
                 }
 
                 return _strDisplayDescription;
@@ -820,10 +736,10 @@ namespace Chummer
         public async Task<string> GetCurrentDisplayDescriptionAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (string.IsNullOrEmpty(_strCurrentDisplayAuthors)
+            if (string.IsNullOrEmpty(_strDisplayDescription)
                     || _strDisplayDescriptionLanguage != GlobalSettings.Language)
             {
-                return _strDisplayDescription = await GetDisplayDescriptionAsync(_strCurrentDisplayAuthorsLanguage = GlobalSettings.Language, token).ConfigureAwait(false);
+                return _strDisplayDescription = await GetDisplayDescriptionAsync(_strDisplayDescriptionLanguage = GlobalSettings.Language, token).ConfigureAwait(false);
             }
             return _strDisplayDescription;
         }
@@ -869,15 +785,14 @@ namespace Chummer
         /// </summary>
         public IReadOnlyDictionary<string, bool> AuthorDictionary => _dicAuthorDictionary;
 
-        private CultureInfo _objCurrentDisplayAuthorsCulture = GlobalSettings.CultureInfo;
-        private string _strCurrentDisplayAuthorsLanguage = GlobalSettings.Language;
+        private string _strDisplayAuthorsLanguage = GlobalSettings.Language;
 
-        private string _strCurrentDisplayAuthors;
+        private string _strDisplayAuthors;
 
         /// <summary>
         /// A string containing all Authors formatted as Author(main), Author2
         /// </summary>
-        public string CurrentDisplayAuthors
+        public string DisplayAuthors
         {
             get
             {
@@ -886,32 +801,17 @@ namespace Chummer
                 // and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after
                 // SetProcessDPI(GlobalSettings.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
                 // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterSettings are opened.
-                if (string.IsNullOrEmpty(_strCurrentDisplayAuthors)
-                    || _objCurrentDisplayAuthorsCulture != GlobalSettings.CultureInfo
-                    || _strCurrentDisplayAuthorsLanguage != GlobalSettings.Language)
+                if (string.IsNullOrEmpty(_strDisplayAuthors) || _strDisplayAuthorsLanguage != GlobalSettings.Language)
                 {
-                    return _strCurrentDisplayAuthors = GetDisplayAuthors(_objCurrentDisplayAuthorsCulture = GlobalSettings.CultureInfo, _strCurrentDisplayAuthorsLanguage = GlobalSettings.Language);
+                    _strDisplayAuthors = GetDisplayAuthors(_strDisplayAuthorsLanguage = GlobalSettings.Language, GlobalSettings.CultureInfo);
                 }
-                return _strCurrentDisplayAuthors;
+
+                return _strDisplayAuthors;
             }
         }
 
-        public async Task<string> GetCurrentDisplayAuthorsAsync(CancellationToken token = default)
+        public string GetDisplayAuthors(string strLanguage, CultureInfo objCultureInfo)
         {
-            token.ThrowIfCancellationRequested();
-            if (string.IsNullOrEmpty(_strCurrentDisplayAuthors)
-                    || _objCurrentDisplayAuthorsCulture != GlobalSettings.CultureInfo
-                    || _strCurrentDisplayAuthorsLanguage != GlobalSettings.Language)
-            {
-                return _strCurrentDisplayAuthors = await GetDisplayAuthorsAsync(_objCurrentDisplayAuthorsCulture = GlobalSettings.CultureInfo, _strCurrentDisplayAuthorsLanguage = GlobalSettings.Language, token).ConfigureAwait(false);
-            }
-            return _strCurrentDisplayAuthors;
-        }
-
-        public string GetDisplayAuthors(CultureInfo objCultureInfo, string strLanguage)
-        {
-            if (objCultureInfo == GlobalSettings.CultureInfo && strLanguage == GlobalSettings.Language)
-                return CurrentDisplayAuthors;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdDisplayAuthors))
             {
@@ -928,12 +828,9 @@ namespace Chummer
             }
         }
 
-        public async Task<string> GetDisplayAuthorsAsync(CultureInfo objCultureInfo, string strLanguage,
+        public async Task<string> GetDisplayAuthorsAsync(string strLanguage, CultureInfo objCultureInfo,
                                                          CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            if (objCultureInfo == GlobalSettings.CultureInfo && strLanguage == GlobalSettings.Language)
-                return await GetCurrentDisplayAuthorsAsync(token).ConfigureAwait(false);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdDisplayAuthors))
             {
@@ -972,23 +869,18 @@ namespace Chummer
         /// <summary>
         /// The name including the Version in this format "NAME (Version)"
         /// </summary>
-        public string CurrentDisplayName => GetDisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
+        public string DisplayName => MyVersion == new ValueVersion(1)
+            ? Name
+            : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Name,
+                            LanguageManager.GetString("String_Space"), MyVersion);
 
-        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => GetDisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
-
-        public string GetDisplayName(CultureInfo objCulture, string strLanguage)
+        public async Task<string> GetDisplayNameAsync(CancellationToken token = default)
         {
             return MyVersion == new ValueVersion(1)
                 ? Name
-                : string.Format(objCulture, "{0}{1}({2})", Name, GetSpace(strLanguage), MyVersion);
-        }
-
-        public async Task<string> GetDisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
-        {
-            return MyVersion == new ValueVersion(1)
-                ? Name
-                : string.Format(objCulture, "{0}{1}({2})", Name,
-                                await GetSpaceAsync(strLanguage, token).ConfigureAwait(false), MyVersion);
+                : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Name,
+                                await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                     .ConfigureAwait(false), MyVersion);
         }
 
         public string InternalId => Guid.ToString("D", GlobalSettings.InvariantCultureInfo);
@@ -1122,77 +1014,12 @@ namespace Chummer
     /// </summary>
     public readonly struct DirectoryDependency : IEquatable<DirectoryDependency>
     {
-        private static readonly ConcurrentDictionary<string, string> s_DicCachedStrings = new ConcurrentDictionary<string, string>();
-
-        private static string GetSpace(string strLanguage)
-        {
-            return s_DicCachedStrings.GetOrAdd(strLanguage, x => LanguageManager.GetString("String_Space", x));
-        }
-
-        private static Task<string> GetSpaceAsync(string strLanguage, CancellationToken token = default)
-        {
-            return s_DicCachedStrings.GetOrAddAsync(strLanguage, x => LanguageManager.GetStringAsync("String_Space", x, token: token), token);
-        }
-
         public DirectoryDependency(string name, Guid guid, ValueVersion minVersion, ValueVersion maxVersion)
         {
             Name = name;
             UniqueIdentifier = guid;
             MinimumVersion = minVersion;
             MaximumVersion = maxVersion;
-
-            string strSpace = GetSpace(GlobalSettings.Language);
-
-            if (minVersion != default(ValueVersion))
-            {
-                CurrentDisplayName = maxVersion != default(ValueVersion)
-                    ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2}{1}-{1}{3})", name, strSpace,
-                                    minVersion, maxVersion)
-                    // If maxversion is not given, don't display decimal.max display > instead
-                    : string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}>{1}{2})", name, strSpace,
-                                    minVersion);
-            }
-            else
-            {
-                CurrentDisplayName = maxVersion != default(ValueVersion)
-                    // If minversion is not given, don't display decimal.min display < instead
-                    ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}<{1}{2})", name, strSpace, maxVersion)
-                    // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
-                    : name;
-            }
-        }
-
-        private DirectoryDependency(string name, Guid guid, ValueVersion minVersion, ValueVersion maxVersion, string strSpace)
-        {
-            Name = name;
-            UniqueIdentifier = guid;
-            MinimumVersion = minVersion;
-            MaximumVersion = maxVersion;
-
-            if (minVersion != default(ValueVersion))
-            {
-                CurrentDisplayName = maxVersion != default(ValueVersion)
-                    ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2}{1}-{1}{3})", name, strSpace,
-                                    minVersion, maxVersion)
-                    // If maxversion is not given, don't display decimal.max display > instead
-                    : string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}>{1}{2})", name, strSpace,
-                                    minVersion);
-            }
-            else
-            {
-                CurrentDisplayName = maxVersion != default(ValueVersion)
-                    // If minversion is not given, don't display decimal.min display < instead
-                    ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}<{1}{2})", name, strSpace, maxVersion)
-                    // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
-                    : name;
-            }
-        }
-
-        public static async Task<DirectoryDependency> GetDirectoryDependencyAsync(string name, Guid guid, ValueVersion minVersion, ValueVersion maxVersion, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            string strSpace = await GetSpaceAsync(GlobalSettings.Language, token).ConfigureAwait(false);
-            return new DirectoryDependency(name, guid, minVersion, maxVersion, strSpace);
         }
 
         public string Name { get; }
@@ -1203,63 +1030,48 @@ namespace Chummer
 
         public ValueVersion MaximumVersion { get; }
 
-        public string CurrentDisplayName { get; }
-
-        public string GetDisplayName(CultureInfo objCulture, string strLanguage)
+        public string DisplayName
         {
-            if (objCulture == null)
-                objCulture = GlobalSettings.CultureInfo;
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalSettings.Language;
-            if (objCulture == GlobalSettings.CultureInfo && strLanguage == GlobalSettings.Language)
-                return CurrentDisplayName;
-            string strSpace = GetSpace(strLanguage);
-            if (MinimumVersion != default(ValueVersion))
+            get
             {
-                return MaximumVersion != default(ValueVersion)
-                    ? string.Format(objCulture, "{0}{1}({2}{1}-{1}{3})", Name, strSpace,
-                                    MinimumVersion, MaximumVersion)
-                    // If maxversion is not given, don't display decimal.max display > instead
-                    : string.Format(objCulture, "{0}{1}({1}>{1}{2})", Name, strSpace,
-                                    MinimumVersion);
-            }
-            else
-            {
+                string strSpace = LanguageManager.GetString("String_Space");
+
+                if (MinimumVersion != default(ValueVersion))
+                {
+                    return MaximumVersion != default(ValueVersion)
+                        ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2}{1}-{1}{3})", Name, strSpace,
+                                        MinimumVersion, MaximumVersion)
+                        // If maxversion is not given, don't display decimal.max display > instead
+                        : string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}>{1}{2})", Name, strSpace,
+                                        MinimumVersion);
+                }
+
                 return MaximumVersion != default(ValueVersion)
                     // If minversion is not given, don't display decimal.min display < instead
-                    ? string.Format(objCulture, "{0}{1}({1}<{1}{2})", Name, strSpace, MaximumVersion)
+                    ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}<{1}{2})", Name, strSpace, MaximumVersion)
                     // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
                     : Name;
             }
         }
 
-        public async Task<string> GetDisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> GetDisplayNameAsync(CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            if (objCulture == null)
-                objCulture = GlobalSettings.CultureInfo;
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalSettings.Language;
-            if (objCulture == GlobalSettings.CultureInfo && strLanguage == GlobalSettings.Language)
-                return CurrentDisplayName;
-            string strSpace = await GetSpaceAsync(strLanguage, token).ConfigureAwait(false);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+
             if (MinimumVersion != default(ValueVersion))
             {
                 return MaximumVersion != default(ValueVersion)
-                    ? string.Format(objCulture, "{0}{1}({2}{1}-{1}{3})", Name, strSpace,
-                                    MinimumVersion, MaximumVersion)
+                    ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2}{1}-{1}{3})", Name, strSpace, MinimumVersion,
+                                    MaximumVersion)
                     // If maxversion is not given, don't display decimal.max display > instead
-                    : string.Format(objCulture, "{0}{1}({1}>{1}{2})", Name, strSpace,
-                                    MinimumVersion);
+                    : string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}>{1}{2})", Name, strSpace, MinimumVersion);
             }
-            else
-            {
-                return MaximumVersion != default(ValueVersion)
-                    // If minversion is not given, don't display decimal.min display < instead
-                    ? string.Format(objCulture, "{0}{1}({1}<{1}{2})", Name, strSpace, MaximumVersion)
-                    // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
-                    : Name;
-            }
+
+            return MaximumVersion != default(ValueVersion)
+                // If minversion is not given, don't display decimal.min display < instead
+                ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}<{1}{2})", Name, strSpace, MaximumVersion)
+                // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
+                : Name;
         }
 
         /// <inheritdoc />
