@@ -823,9 +823,9 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strCurrentDisplayAuthors)
                     || _strDisplayDescriptionLanguage != GlobalSettings.Language)
             {
-                return _strCurrentDisplayAuthors = await GetDisplayDescriptionAsync(_strCurrentDisplayAuthorsLanguage = GlobalSettings.Language, token).ConfigureAwait(false);
+                return _strDisplayDescription = await GetDisplayDescriptionAsync(_strCurrentDisplayAuthorsLanguage = GlobalSettings.Language, token).ConfigureAwait(false);
             }
-            return _strCurrentDisplayAuthors;
+            return _strDisplayDescription;
         }
 
         public string GetDisplayDescription(string strLanguage)
