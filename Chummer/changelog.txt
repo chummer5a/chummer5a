@@ -98,6 +98,8 @@ Application Changes:
 - Weapon accessories can now add additional accessory mounting slots to their parent weapon through the addmount node.
 - Weapon accessories can now overwrite the range category of their parent weapon through the replacerange node.
 - Weapons now export the mounts they still have available for accessories and modifications as "availablemounts" and "availablemounts_english".
+- Added a handler for Cyberware that inherit their availabilty from a child item using the 'or Gear' suffix, preventing Restricted Gear from checking the sub-item twice. Specifically this supports the Chemical Gland bioware that has the drug selected at time of implantation, gaining the availability of the implanted bioware at that time. Implements #5174
+- Fixed SelectCyberware form not showing Availability correctly for items with 'Or Gear' Availability suffix.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.
