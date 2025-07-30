@@ -1455,6 +1455,10 @@
       <text>Issue Tracker</text>
     </string>
     <string>
+      <key>Menu_Main_ReportBug</key>
+      <text>Report a &amp;Bug</text>
+    </string>
+    <string>
       <key>Menu_Main_File</key>
       <text>&amp;File</text>
     </string>
