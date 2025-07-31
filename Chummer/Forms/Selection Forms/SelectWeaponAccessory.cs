@@ -46,20 +46,18 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseChummerNode;
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
-        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
 
         public SelectWeaponAccessory(Character objCharacter)
         {
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            lblMarkupLabel.Visible = objCharacter.Created;
-            nudMarkup.Visible = objCharacter.Created;
-            lblMarkupPercentLabel.Visible = objCharacter.Created;
+            _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             // Load the Weapon information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseChummerNode));
@@ -67,8 +65,14 @@ namespace Chummer
 
         private async void SelectWeaponAccessory_Load(object sender, EventArgs e)
         {
-            if (_objCharacter.Created)
+            bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync().ConfigureAwait(false);
+            await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount).ConfigureAwait(false);
+
+            if (await _objCharacter.GetCreatedAsync().ConfigureAwait(false))
             {
+                await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+                await nudMarkup.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+                await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
                 await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                 {
                     x.Visible = false;
@@ -77,15 +81,17 @@ namespace Chummer
             }
             else
             {
+                await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                await nudMarkup.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                int intMaxAvail = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetMaximumAvailabilityAsync().ConfigureAwait(false);
                 await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                 {
-                    x.Text = string.Format(GlobalSettings.CultureInfo, x.Text,
-                                           _objCharacter.Settings.MaximumAvailability);
+                    x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
+                    x.Visible = true;
                     x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                 }).ConfigureAwait(false);
             }
-
-            await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount).ConfigureAwait(false);
 
             _blnLoading = false;
             await RefreshList().ConfigureAwait(false);

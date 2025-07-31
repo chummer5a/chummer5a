@@ -41,7 +41,7 @@ namespace Chummer
 
         private readonly XPathNavigator _objXPathDocument;
 
-        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstCategory;
         private static readonly ReadOnlyCollection<string> s_LifestylesSorted = Array.AsReadOnly(new[] { "Street", "Squatter", "Low", "Medium", "High", "Luxury" });
         private static readonly IReadOnlyCollection<string> s_LifestyleSpecific = new HashSet<string> { "Bolt Hole", "Traveler", "Commercial", "Hospitalized" };
 
@@ -51,25 +51,34 @@ namespace Chummer
 
         public SelectLifestyleQuality(Character objCharacter, Lifestyle objParentLifestyle)
         {
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objParentLifestyle = objParentLifestyle ?? throw new ArgumentNullException(nameof(objParentLifestyle));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            if (_objParentLifestyle.StyleType == LifestyleType.Standard)
-            {
-                lblBP.Visible = false;
-                lblBPLabel.Visible = false;
-                lblMinimum.Visible = false;
-                lblMinimumLabel.Visible = false;
-            }
             // Load the Quality information.
             _objXPathDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
+            _lstCategory = Utils.ListItemListPool.Get();
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectLifestyleQuality_Load(object sender, EventArgs e)
         {
+            if (await _objParentLifestyle.GetStyleTypeAsync().ConfigureAwait(false) == LifestyleType.Standard)
+            {
+                await lblBP.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                await lblBPLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                await lblMinimum.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+            }
+            else
+            {
+                await lblBP.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+                await lblBPLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+                await lblMinimum.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+                await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+            }
+
             // Populate the Quality Category list.
             foreach (XPathNavigator objXmlCategory in _objXPathDocument.SelectAndCacheExpression("/chummer/categories/category"))
             {

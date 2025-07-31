@@ -47,39 +47,42 @@ namespace Chummer
         private static string _sStrSelectGrade = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
-        private HashSet<string> _setDisallowedGrades = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setDisallowedGrades;
         private string _strForceGrade = string.Empty;
-        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps;
         private readonly XPathNavigator _xmlBaseDrugDataNode;
 
         #region Control Events
 
         public SelectDrug(Character objCharacter)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            InitializeComponent();
+            this.UpdateLightDarkMode();
+            this.TranslateWinForm();
+            _xmlBaseDrugDataNode = objCharacter.LoadDataXPath("drugcomponents.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _lstGrades = _objCharacter.GetGradesList(Improvement.ImprovementSource.Drug);
+            _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceIDString;
+            _setDisallowedGrades = Utils.StringHashSetPool.Get();
+            _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             Disposed += (sender, args) =>
             {
                 Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
                 Utils.StringHashSetPool.Return(ref _setDisallowedGrades);
             };
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            InitializeComponent();
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
-
-            _xmlBaseDrugDataNode = objCharacter.LoadDataXPath("drugcomponents.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _lstGrades = _objCharacter.GetGradesList(Improvement.ImprovementSource.Drug);
-            _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceIDString;
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseDrugDataNode));
         }
 
         private async void SelectDrug_Load(object sender, EventArgs e)
         {
-            if (_objCharacter.Created)
+            bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync().ConfigureAwait(false);
+            await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount).ConfigureAwait(false);
+
+            if (await _objCharacter.GetCreatedAsync().ConfigureAwait(false))
             {
                 await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
                 await nudMarkup.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
                 await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
-                await chkHideBannedGrades.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                 {
                     x.Visible = false;
@@ -91,12 +94,11 @@ namespace Chummer
                 await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 await nudMarkup.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
-                await chkHideBannedGrades.DoThreadSafeAsync(x => x.Visible = !_objCharacter.IgnoreRules).ConfigureAwait(false);
+                int intMaxAvail = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetMaximumAvailabilityAsync().ConfigureAwait(false);
                 await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                 {
-                    x.Text = string.Format(
-                        GlobalSettings.CultureInfo, x.Text,
-                        _objCharacter.Settings.MaximumAvailability);
+                    x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
+                    x.Visible = true;
                     x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                 }).ConfigureAwait(false);
             }
@@ -109,8 +111,6 @@ namespace Chummer
                     x.Enabled = false;
                 }).ConfigureAwait(false);
             }
-
-            await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount).ConfigureAwait(false);
 
             // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
             await PopulateGrades(null, true, _objForcedGrade?.SourceIDString ?? string.Empty).ConfigureAwait(false);

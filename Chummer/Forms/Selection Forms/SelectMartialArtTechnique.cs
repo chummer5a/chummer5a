@@ -36,13 +36,12 @@ namespace Chummer
         private readonly MartialArt _objMartialArt;
         private readonly XPathNavigator _xmlBaseChummerNode;
         private readonly Character _objCharacter;
-        private HashSet<string> _setAllowedTechniques = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setAllowedTechniques;
 
         #region Control Events
 
         public SelectMartialArtTechnique(Character objCharacter, MartialArt objMartialArt)
         {
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setAllowedTechniques);
             _objMartialArt = objMartialArt ?? throw new ArgumentNullException(nameof(objMartialArt));
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
@@ -50,6 +49,8 @@ namespace Chummer
             this.TranslateWinForm();
             // Load the Martial Art information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _setAllowedTechniques = Utils.StringHashSetPool.Get();
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setAllowedTechniques);
             // Populate the Martial Art Technique list.
             XPathNavigator xmlMartialArtNode = _objMartialArt.GetNodeXPath();
             if (xmlMartialArtNode != null)

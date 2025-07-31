@@ -55,29 +55,44 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseGearDataNode;
         private readonly Character _objCharacter;
 
-        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private HashSet<string> _setAllowedCategories = Utils.StringHashSetPool.Get();
-        private HashSet<string> _setAllowedNames = Utils.StringHashSetPool.Get();
-        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private List<ListItem> _lstCategory;
+        private HashSet<string> _setAllowedCategories;
+        private HashSet<string> _setAllowedNames;
+        private HashSet<string> _setBlackMarketMaps;
 
         private CancellationTokenSource _objUpdateGearInfoCancellationTokenSource;
         private CancellationTokenSource _objDoRefreshListCancellationTokenSource;
         private CancellationTokenSource _objGearSelectedIndexChangedCancellationTokenSource;
-        private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _objGenericCancellationTokenSource;
         private readonly CancellationToken _objGenericToken;
 
         #region Control Events
 
         public SelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, object objGearParent = null, string strAllowedCategories = "", string strAllowedNames = "")
         {
-            Disposed += (sender, args) =>
-            {
-                Utils.ListItemListPool.Return(ref _lstCategory);
-                Utils.StringHashSetPool.Return(ref _setAllowedCategories);
-                Utils.StringHashSetPool.Return(ref _setAllowedNames);
-                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
-            };
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            InitializeComponent();
+            this.UpdateLightDarkMode();
+            this.TranslateWinForm();
+            _intAvailModifier = intAvailModifier;
+            _intCostMultiplier = intCostMultiplier;
+            _objGearParent = objGearParent;
+            _objParentNode = (_objGearParent as IHasXmlDataNode)?.GetNodeXPath();
+            // Stack Checkbox is only available in Career Mode.
+            if (!_objCharacter.Created)
+            {
+                lblMarkupLabel.Visible = false;
+                nudMarkup.Visible = false;
+                lblMarkupPercentLabel.Visible = false;
+                chkStack.Checked = false;
+                chkStack.Visible = false;
+            }
+
+            _lstCategory = Utils.ListItemListPool.Get();
+            _setAllowedCategories = Utils.StringHashSetPool.Get();
+            _setAllowedNames = Utils.StringHashSetPool.Get();
+            _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+            _objGenericCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             Disposed += (sender, args) =>
             {
@@ -100,23 +115,11 @@ namespace Chummer
                     objOldCancellationTokenSource.Dispose();
                 }
                 _objGenericCancellationTokenSource.Dispose();
+                Utils.ListItemListPool.Return(ref _lstCategory);
+                Utils.StringHashSetPool.Return(ref _setAllowedCategories);
+                Utils.StringHashSetPool.Return(ref _setAllowedNames);
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             };
-            InitializeComponent();
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
-            _intAvailModifier = intAvailModifier;
-            _intCostMultiplier = intCostMultiplier;
-            _objGearParent = objGearParent;
-            _objParentNode = (_objGearParent as IHasXmlDataNode)?.GetNodeXPath();
-            // Stack Checkbox is only available in Career Mode.
-            if (!_objCharacter.Created)
-            {
-                lblMarkupLabel.Visible = false;
-                nudMarkup.Visible = false;
-                lblMarkupPercentLabel.Visible = false;
-                chkStack.Checked = false;
-                chkStack.Visible = false;
-            }
 
             // Load the Gear information.
             _xmlBaseGearDataNode = objCharacter.LoadDataXPath("gear.xml").SelectSingleNodeAndCacheExpression("/chummer");
@@ -138,8 +141,14 @@ namespace Chummer
         {
             try
             {
-                if (_objCharacter.Created)
+                bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync(_objGenericToken).ConfigureAwait(false);
+                await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount, _objGenericToken).ConfigureAwait(false);
+
+                if (await _objCharacter.GetCreatedAsync(_objGenericToken).ConfigureAwait(false))
                 {
+                    await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
+                    await nudMarkup.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
+                    await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
                     await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                     {
                         x.Visible = false;
@@ -148,11 +157,14 @@ namespace Chummer
                 }
                 else
                 {
+                    await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
+                    await nudMarkup.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
+                    await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
+                    int intMaxAvail = await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetMaximumAvailabilityAsync(_objGenericToken).ConfigureAwait(false);
                     await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                     {
-                        x.Text = string.Format(
-                            GlobalSettings.CultureInfo, x.Text,
-                            _objCharacter.Settings.MaximumAvailability);
+                        x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
+                        x.Visible = true;
                         x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                     }, _objGenericToken).ConfigureAwait(false);
                 }
@@ -200,8 +212,6 @@ namespace Chummer
                 }
 
                 await cboCategory.PopulateWithListItemsAsync(_lstCategory, _objGenericToken).ConfigureAwait(false);
-
-                await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount, _objGenericToken).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(DefaultSearchText))
                 {

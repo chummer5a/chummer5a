@@ -1621,13 +1621,22 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Pilot.
         /// </summary>
+        public int BasePilot
+        {
+            get => _intPilot;
+            set => _intPilot = value;
+        }
+
+        /// <summary>
+        /// Pilot.
+        /// </summary>
         public int Pilot
         {
             get
             {
                 using (_objCharacter.LockObject.EnterReadLock())
                 {
-                    int intReturn = _intPilot;
+                    int intReturn = BasePilot;
                     foreach (VehicleMod objMod in Mods)
                     {
                         if (!objMod.IncludedInVehicle && objMod.Equipped)
@@ -1635,7 +1644,7 @@ namespace Chummer.Backend.Equipment
                             string strBonusPilot = objMod.WirelessOn
                                 ? objMod.WirelessBonus?["pilot"]?.InnerText ?? objMod.Bonus?["pilot"]?.InnerText
                                 : objMod.Bonus?["pilot"]?.InnerText;
-                            intReturn = Math.Max(ParseBonus(strBonusPilot, objMod.Rating, _intPilot, "Pilot", false),
+                            intReturn = Math.Max(ParseBonus(strBonusPilot, objMod.Rating, BasePilot, "Pilot", false),
                                 intReturn);
                         }
                     }
@@ -1643,7 +1652,7 @@ namespace Chummer.Backend.Equipment
                     return intReturn;
                 }
             }
-            set => _intPilot = value;
+            set => BasePilot = value;
         }
 
         /// <summary>
@@ -1656,7 +1665,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                int intReturn = _intPilot;
+                int intReturn = BasePilot;
                 await Mods.ForEachAsync(async objMod =>
                 {
                     if (!objMod.IncludedInVehicle && objMod.Equipped)
@@ -1665,7 +1674,7 @@ namespace Chummer.Backend.Equipment
                             ? objMod.WirelessBonus?["pilot"]?.InnerText ?? objMod.Bonus?["pilot"]?.InnerText
                             : objMod.Bonus?["pilot"]?.InnerText;
                         intReturn = Math.Max(
-                            await ParseBonusAsync(strBonusPilot, await objMod.GetRatingAsync(token).ConfigureAwait(false), _intPilot, "Pilot", false, token)
+                            await ParseBonusAsync(strBonusPilot, await objMod.GetRatingAsync(token).ConfigureAwait(false), BasePilot, "Pilot", false, token)
                                 .ConfigureAwait(false),
                             intReturn);
                     }

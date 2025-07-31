@@ -58,17 +58,17 @@ namespace Chummer
         private string _strSelectedCategory = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
-        private HashSet<string> _setDisallowedGrades = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setDisallowedGrades;
         private string _strForceGrade = string.Empty;
         private readonly object _objParentObject;
         private readonly XPathNavigator _objParentNode;
-        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps;
         private readonly XPathNavigator _xmlBaseCyberwareDataNode;
         private CancellationTokenSource _objUpdateCyberwareInfoCancellationTokenSource;
         private CancellationTokenSource _objProcessGradeChangedCancellationTokenSource;
         private CancellationTokenSource _objDoRefreshSelectedCyberwareCancellationTokenSource;
         private CancellationTokenSource _objDoRefreshListCancellationTokenSource;
-        private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _objGenericCancellationTokenSource;
         private readonly CancellationToken _objGenericToken;
 
         private enum Mode
@@ -81,41 +81,7 @@ namespace Chummer
 
         public SelectCyberware(Character objCharacter, Improvement.ImprovementSource objWareSource, object objParentNode = null)
         {
-            Disposed += (sender, args) =>
-            {
-                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
-                Utils.StringHashSetPool.Return(ref _setDisallowedGrades);
-            };
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            _objGenericToken = _objGenericCancellationTokenSource.Token;
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objProcessGradeChangedCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateCyberwareInfoCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshSelectedCyberwareCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshListCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                _objGenericCancellationTokenSource.Dispose();
-            };
             InitializeComponent();
 
             _objParentObject = objParentNode;
@@ -144,6 +110,41 @@ namespace Chummer
 
             _lstGrades = _objCharacter.GetGradesList(objWareSource);
             _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceIDString;
+
+            _objGenericCancellationTokenSource = new CancellationTokenSource();
+            _objGenericToken = _objGenericCancellationTokenSource.Token;
+            _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+            _setDisallowedGrades = Utils.StringHashSetPool.Get();
+            Disposed += (sender, args) =>
+            {
+                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objProcessGradeChangedCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateCyberwareInfoCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshSelectedCyberwareCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshListCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                _objGenericCancellationTokenSource.Dispose();
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
+                Utils.StringHashSetPool.Return(ref _setDisallowedGrades);
+            };
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseCyberwareDataNode));
         }
 
@@ -151,7 +152,7 @@ namespace Chummer
         {
             try
             {
-                if (_objCharacter.Created)
+                if (await _objCharacter.GetCreatedAsync(_objGenericToken).ConfigureAwait(false))
                 {
                     await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = true, token: _objGenericToken)
                                         .ConfigureAwait(false);
@@ -166,6 +167,7 @@ namespace Chummer
                         x.Visible = false;
                         x.Checked = false;
                     }, token: _objGenericToken).ConfigureAwait(false);
+                    await chkPrototypeTranshuman.DoThreadSafeAsync(x => x.Visible = false, token: _objGenericToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -175,16 +177,23 @@ namespace Chummer
                                    .ConfigureAwait(false);
                     await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = false, token: _objGenericToken)
                                                .ConfigureAwait(false);
+                    bool blnIgnoreRules = await _objCharacter.GetIgnoreRulesAsync(_objGenericToken).ConfigureAwait(false);
                     await chkHideBannedGrades
-                          .DoThreadSafeAsync(x => x.Visible = !_objCharacter.IgnoreRules, token: _objGenericToken)
+                          .DoThreadSafeAsync(x => x.Visible = !blnIgnoreRules, token: _objGenericToken)
                           .ConfigureAwait(false);
+                    int intMaxAvail = await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetMaximumAvailabilityAsync(_objGenericToken).ConfigureAwait(false);
                     await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                     {
-                        x.Text = string.Format(
-                            GlobalSettings.CultureInfo, x.Text,
-                            _objCharacter.Settings.MaximumAvailability);
+                        x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
                         x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                     }, token: _objGenericToken).ConfigureAwait(false);
+                    if (WindowMode == Mode.Bioware)
+                    {
+                        _blnPrototypeTranshumanAllowed = await _objCharacter.GetIsPrototypeTranshumanAsync(_objGenericToken).ConfigureAwait(false);
+                        await chkPrototypeTranshuman.DoThreadSafeAsync(x => x.Visible = _blnPrototypeTranshumanAllowed, token: _objGenericToken).ConfigureAwait(false);
+                    }
+                    else
+                        await chkPrototypeTranshuman.DoThreadSafeAsync(x => x.Visible = false, token: _objGenericToken).ConfigureAwait(false);
                 }
 
                 if (!string.IsNullOrEmpty(DefaultSearchText))
@@ -195,12 +204,6 @@ namespace Chummer
                         x.Enabled = false;
                     }, token: _objGenericToken).ConfigureAwait(false);
                 }
-
-                await chkPrototypeTranshuman
-                      .DoThreadSafeAsync(
-                          x => x.Visible = _objCharacter.IsPrototypeTranshuman && _eMode == Mode.Bioware
-                                                                               && !_objCharacter.Created,
-                          token: _objGenericToken).ConfigureAwait(false);
 
                 await PopulateCategories(_objGenericToken).ConfigureAwait(false);
 
@@ -214,8 +217,9 @@ namespace Chummer
                     _strSelectedCategory = x.SelectedValue?.ToString();
                 }, token: _objGenericToken).ConfigureAwait(false);
 
+                bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync(_objGenericToken).ConfigureAwait(false);
                 await chkBlackMarketDiscount
-                      .DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount,
+                      .DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount,
                                          token: _objGenericToken).ConfigureAwait(false);
 
                 // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
@@ -256,15 +260,18 @@ namespace Chummer
                     }
                 }
 
-                await lblESSDiscountLabel
-                      .DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts,
-                                         token: _objGenericToken).ConfigureAwait(false);
-                await lblESSDiscountPercentLabel
-                      .DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts,
-                                         token: _objGenericToken).ConfigureAwait(false);
-                await nudESSDiscount
-                      .DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts,
-                                         token: _objGenericToken).ConfigureAwait(false);
+                if (await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetAllowCyberwareESSDiscountsAsync(_objGenericToken).ConfigureAwait(false))
+                {
+                    await lblESSDiscountLabel.DoThreadSafeAsync(x => x.Visible = true, token: _objGenericToken).ConfigureAwait(false);
+                    await lblESSDiscountPercentLabel.DoThreadSafeAsync(x => x.Visible = true, token: _objGenericToken).ConfigureAwait(false);
+                    await nudESSDiscount.DoThreadSafeAsync(x => x.Visible = true, token: _objGenericToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    await lblESSDiscountLabel.DoThreadSafeAsync(x => x.Visible = false, token: _objGenericToken).ConfigureAwait(false);
+                    await lblESSDiscountPercentLabel.DoThreadSafeAsync(x => x.Visible = false, token: _objGenericToken).ConfigureAwait(false);
+                    await nudESSDiscount.DoThreadSafeAsync(x => x.Visible = false, token: _objGenericToken).ConfigureAwait(false);
+                }
                 Interlocked.Decrement(ref _intLoading);
 
                 await RefreshList(_strSelectedCategory, _objGenericToken).ConfigureAwait(false);
@@ -792,7 +799,7 @@ namespace Chummer
                                                  .ConfigureAwait(false);
                 _lstGrades.Clear();
                 _lstGrades.AddRange(await _objCharacter.GetGradesListAsync(
-                                        _eMode == Mode.Bioware
+                                        WindowMode == Mode.Bioware
                                             ? Improvement.ImprovementSource.Bioware
                                             : Improvement.ImprovementSource.Cyberware,
                                         blnHideBannedGrades, _objGenericToken).ConfigureAwait(false));
@@ -1011,10 +1018,12 @@ namespace Chummer
 
         public decimal Markup { get; set; }
 
+        private bool _blnPrototypeTranshumanAllowed;
+
         /// <summary>
         /// Whether the bioware should be discounted by Prototype Transhuman.
         /// </summary>
-        public bool PrototypeTranshuman => chkPrototypeTranshuman.Checked && _eMode == Mode.Bioware && !_objCharacter.Created;
+        public bool PrototypeTranshuman => _blnPrototypeTranshumanAllowed && chkPrototypeTranshuman.Checked;
 
         /// <summary>
         /// Parent cyberware that the current selection will be added to.
@@ -1105,9 +1114,10 @@ namespace Chummer
                         // Cost.
                         decimal decItemCost = 0;
                         string strCost;
+                        string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                         if (await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                         {
-                            strCost = 0.0m.ToString(_objCharacter.Settings.NuyenFormat,
+                            strCost = 0.0m.ToString(strNuyenFormat,
                                                               GlobalSettings.CultureInfo)
                                               + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                         }
@@ -1154,13 +1164,13 @@ namespace Chummer
                                     }
 
                                     strCost = decMax == decimal.MaxValue
-                                        ? decMin.ToString(_objCharacter.Settings.NuyenFormat,
+                                        ? decMin.ToString(strNuyenFormat,
                                                           GlobalSettings.CultureInfo)
                                           + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
                                                                  .ConfigureAwait(false) + '+'
-                                        : decMin.ToString(_objCharacter.Settings.NuyenFormat,
+                                        : decMin.ToString(strNuyenFormat,
                                                           GlobalSettings.CultureInfo)
-                                          + " - " + decMax.ToString(_objCharacter.Settings.NuyenFormat,
+                                          + " - " + decMax.ToString(strNuyenFormat,
                                                                     GlobalSettings.CultureInfo)
                                           + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
                                                                  .ConfigureAwait(false);
@@ -1204,7 +1214,7 @@ namespace Chummer
                                             decItemCost *= 0.9m;
                                         }
 
-                                        strCost = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                                        strCost = decItemCost.ToString(strNuyenFormat, GlobalSettings.CultureInfo)
                                             + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                                     }
                                     else
@@ -1222,13 +1232,13 @@ namespace Chummer
                                         decItemCost *= 0.9m;
                                     }
 
-                                    strCost = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                                    strCost = decItemCost.ToString(strNuyenFormat, GlobalSettings.CultureInfo)
                                         + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                                 }
                             }
                             else
                             {
-                                strCost = 0.0m.ToString(_objCharacter.Settings.NuyenFormat,
+                                strCost = 0.0m.ToString(strNuyenFormat,
                                                           GlobalSettings.CultureInfo)
                                           + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
                                                                  .ConfigureAwait(false);
@@ -1245,9 +1255,19 @@ namespace Chummer
                         await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest), token: token).ConfigureAwait(false);
 
                         // Essence.
-                        await lblESSDiscountLabel.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts, token: token).ConfigureAwait(false);
-                        await lblESSDiscountPercentLabel.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts, token: token).ConfigureAwait(false);
-                        await nudESSDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts, token: token).ConfigureAwait(false);
+                        bool blnAllowEssDiscounts = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetAllowCyberwareESSDiscountsAsync(token).ConfigureAwait(false);
+                        if (blnAllowEssDiscounts)
+                        {
+                            await lblESSDiscountLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                            await lblESSDiscountPercentLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                            await nudESSDiscount.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await lblESSDiscountLabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                            await lblESSDiscountPercentLabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                            await nudESSDiscount.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                        }
 
                         string strEssenceFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceFormatAsync(token).ConfigureAwait(false);
                         bool blnAddToParentESS = objXmlCyberware.SelectSingleNodeAndCacheExpression("addtoparentess", token) != null;
@@ -1263,12 +1283,12 @@ namespace Chummer
                                 {
                                     decCharacterESSModifier = CharacterESSMultiplier;
                                     // If Basic Bioware is selected, apply the Basic Bioware ESS Multiplier.
-                                    if (strSelectCategory == "Basic" && _eMode == Mode.Bioware)
+                                    if (strSelectCategory == "Basic" && WindowMode == Mode.Bioware)
                                         decCharacterESSModifier -= 1 - BasicBiowareESSMultiplier;
                                     if (blnIsGeneware)
                                         decCharacterESSModifier -= 1 - GenetechEssMultiplier;
 
-                                    if ((await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).AllowCyberwareESSDiscounts)
+                                    if (blnAllowEssDiscounts)
                                     {
                                         decimal decDiscountModifier = await nudESSDiscount.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
                                         decCharacterESSModifier *= 1.0m - decDiscountModifier;
@@ -1547,8 +1567,8 @@ namespace Chummer
 
                 if (_objParentNode != null)
                     sbdFilter.Append(" and (requireparent or contains(capacity, \"[\")) and not(mountsto)");
-                else if (ParentVehicle == null && ((!await _objCharacter.GetAddCyberwareEnabledAsync(token).ConfigureAwait(false) && _eMode == Mode.Cyberware)
-                                                   || (!await _objCharacter.GetAddBiowareEnabledAsync(token).ConfigureAwait(false) && _eMode == Mode.Bioware)))
+                else if (ParentVehicle == null && ((!await _objCharacter.GetAddCyberwareEnabledAsync(token).ConfigureAwait(false) && WindowMode == Mode.Cyberware)
+                                                   || (!await _objCharacter.GetAddBiowareEnabledAsync(token).ConfigureAwait(false) && WindowMode == Mode.Bioware)))
                 {
                     sbdFilter.Append(" and (id = ").Append(Cyberware.EssenceHoleGuidString.CleanXPath())
                              .Append(" or id = ").Append(Cyberware.EssenceAntiHoleGuidString.CleanXPath())
@@ -1976,7 +1996,7 @@ namespace Chummer
                     }
                 }
             }
-            if (!Upgrading && ParentVehicle == null && !await objCyberwareNode.RequirementsMetAsync(_objCharacter, strLocalName: await LanguageManager.GetStringAsync(_eMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+            if (!Upgrading && ParentVehicle == null && !await objCyberwareNode.RequirementsMetAsync(_objCharacter, strLocalName: await LanguageManager.GetStringAsync(WindowMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 return;
 
             string strForceGrade = objCyberwareNode.SelectSingleNodeAndCacheExpression("forcegrade", token: token)?.Value;
@@ -2055,7 +2075,7 @@ namespace Chummer
                                 continue;
                             }
 
-                            if (_objCharacter.AdapsinEnabled && WindowMode == Mode.Cyberware)
+                            if (await _objCharacter.GetAdapsinEnabledAsync(token).ConfigureAwait(false) && WindowMode == Mode.Cyberware)
                             {
                                 if (!objWareGrade.Adapsin &&
                                     objWareGrade.Name.ContainsAny(_lstGrades.Where(x => x.Adapsin).Select(x => x.Name)))
@@ -2064,7 +2084,7 @@ namespace Chummer
                             else if (objWareGrade.Adapsin)
                                 continue;
 
-                            if (_objCharacter.BurnoutEnabled)
+                            if (await _objCharacter.GetBurnoutsWayEnabledAsync(token).ConfigureAwait(false))
                             {
                                 if (!objWareGrade.Burnout &&
                                     objWareGrade.Name.ContainsAny(_lstGrades.Where(x => x.Burnout).Select(x => x.Name)))
@@ -2075,7 +2095,7 @@ namespace Chummer
                             if (blnHideBannedGrades &&
                                 !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) &&
                                 !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false) &&
-                                objWareGrade.Name.ContainsAny(_objCharacter.Settings.BannedWareGrades)) continue;
+                                objWareGrade.Name.ContainsAny(await _objCharacter.Settings.GetBannedWareGradesAsync(token).ConfigureAwait(false))) continue;
                         }
 
                         if (!await (await objWareGrade.GetNodeXPathAsync(token: token).ConfigureAwait(false)).RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))

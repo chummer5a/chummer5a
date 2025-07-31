@@ -44,14 +44,13 @@ namespace Chummer
 
         private readonly XPathNavigator _xmlBaseSpellDataNode;
         private readonly Character _objCharacter;
-        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstCategory;
         private bool _blnRefresh;
 
         #region Control Events
 
         public SelectSpell(Character objCharacter)
         {
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -59,6 +58,8 @@ namespace Chummer
 
             // Load the Spells information.
             _xmlBaseSpellDataNode = _objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _lstCategory = Utils.ListItemListPool.Get();
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectSpell_Load(object sender, EventArgs e)

@@ -40,7 +40,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseQualityDataNode;
         private readonly XPathNavigator _xmlMetatypeQualityRestrictionNode;
 
-        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstCategory;
 
         private static string _strSelectCategory = string.Empty;
 
@@ -48,7 +48,6 @@ namespace Chummer
 
         public SelectQuality(Character objCharacter)
         {
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -57,6 +56,8 @@ namespace Chummer
             // Load the Quality information.
             _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNodeXPath().SelectSingleNodeAndCacheExpression("qualityrestriction");
+            _lstCategory = Utils.ListItemListPool.Get();
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectQuality_Load(object sender, EventArgs e)

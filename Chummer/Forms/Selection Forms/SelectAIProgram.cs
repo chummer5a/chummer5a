@@ -38,7 +38,7 @@ namespace Chummer
         private readonly bool _blnAdvancedProgramAllowed;
         private readonly bool _blnInherentProgram;
         private readonly Character _objCharacter;
-        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstCategory;
 
         private readonly XPathNavigator _xmlBaseChummerNode;
         private readonly XPathNavigator _xmlOptionalAIProgramsNode;
@@ -47,7 +47,6 @@ namespace Chummer
 
         public SelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
         {
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -56,8 +55,11 @@ namespace Chummer
             _blnInherentProgram = blnInherentProgram;
             // Load the Programs information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("programs.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            if (!_objCharacter.IsCritter) return;
+            if (!_objCharacter.IsCritter)
+                return;
             _xmlOptionalAIProgramsNode = _objCharacter.GetNodeXPath().SelectSingleNodeAndCacheExpression("optionalaiprograms");
+            _lstCategory = Utils.ListItemListPool.Get();
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectAIProgram_Load(object sender, EventArgs e)
