@@ -521,10 +521,11 @@ namespace Chummer.Backend.Equipment
                                 XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", objXmlVehicleMod.InnerText);
                                 if (objXmlMod != null)
                                 {
-                                    VehicleMod objMod = new VehicleMod(_objCharacter)
-                                    {
-                                        IncludedInVehicle = true
-                                    };
+                                    VehicleMod objMod = new VehicleMod(_objCharacter);
+                                    if (blnSync)
+                                        objMod.IncludedInVehicle = true;
+                                    else
+                                        await objMod.SetIncludedInVehicleAsync(true, token).ConfigureAwait(false);
                                     string strForcedValue = objXmlVehicleMod.Attributes?["select"]?.InnerText ?? string.Empty;
                                     if (!int.TryParse(objXmlVehicleMod.Attributes?["rating"]?.InnerText, out int intRating))
                                         intRating = 0;
@@ -561,10 +562,11 @@ namespace Chummer.Backend.Equipment
                                 XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", strName);
                                 if (objXmlMod != null)
                                 {
-                                    VehicleMod objMod = new VehicleMod(_objCharacter)
-                                    {
-                                        IncludedInVehicle = true
-                                    };
+                                    VehicleMod objMod = new VehicleMod(_objCharacter);
+                                    if (blnSync)
+                                        objMod.IncludedInVehicle = true;
+                                    else
+                                        await objMod.SetIncludedInVehicleAsync(true, token).ConfigureAwait(false);
                                     string strForcedValue = objXmlVehicleMod.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ?? string.Empty;
                                     if (!int.TryParse(objXmlVehicleMod["rating"]?.InnerText, out int intRating))
                                         intRating = 0;
@@ -1630,35 +1632,41 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Pilot.
         /// </summary>
-        public int Pilot
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                {
-                    int intReturn = BasePilot;
-                    foreach (VehicleMod objMod in Mods)
-                    {
-                        if (!objMod.IncludedInVehicle && objMod.Equipped)
-                        {
-                            string strBonusPilot = objMod.WirelessOn
-                                ? objMod.WirelessBonus?["pilot"]?.InnerText ?? objMod.Bonus?["pilot"]?.InnerText
-                                : objMod.Bonus?["pilot"]?.InnerText;
-                            intReturn = Math.Max(ParseBonus(strBonusPilot, objMod.Rating, BasePilot, "Pilot", false),
-                                intReturn);
-                        }
-                    }
-
-                    return intReturn;
-                }
-            }
-            set => BasePilot = value;
-        }
+        public int Pilot => GetPilot();
 
         /// <summary>
         /// Pilot.
         /// </summary>
-        public async Task<int> GetPilotAsync(CancellationToken token = default)
+        public int GetPilot(VehicleMod objExcludeMod = null)
+        {
+            using (_objCharacter.LockObject.EnterReadLock())
+            {
+                int intReturn = BasePilot;
+                foreach (VehicleMod objMod in Mods)
+                {
+                    if (!objMod.IncludedInVehicle && objMod.Equipped && !ReferenceEquals(objMod, objExcludeMod))
+                    {
+                        string strBonusPilot = objMod.WirelessOn
+                            ? objMod.WirelessBonus?["pilot"]?.InnerText ?? objMod.Bonus?["pilot"]?.InnerText
+                            : objMod.Bonus?["pilot"]?.InnerText;
+                        intReturn = Math.Max(ParseBonus(strBonusPilot, objMod, BasePilot, "Pilot", false),
+                            intReturn);
+                    }
+                }
+
+                return intReturn;
+            }
+        }
+
+        /// <summary>
+        /// Total Body of the Vehicle including Modifications.
+        /// </summary>
+        public Task<int> GetPilotAsync(CancellationToken token = default) => GetPilotAsync(null, token);
+
+        /// <summary>
+        /// Pilot.
+        /// </summary>
+        public async Task<int> GetPilotAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -1668,13 +1676,13 @@ namespace Chummer.Backend.Equipment
                 int intReturn = BasePilot;
                 await Mods.ForEachAsync(async objMod =>
                 {
-                    if (!objMod.IncludedInVehicle && objMod.Equipped)
+                    if (!objMod.IncludedInVehicle && objMod.Equipped && !ReferenceEquals(objMod, objExcludeMod))
                     {
                         string strBonusPilot = objMod.WirelessOn
                             ? objMod.WirelessBonus?["pilot"]?.InnerText ?? objMod.Bonus?["pilot"]?.InnerText
                             : objMod.Bonus?["pilot"]?.InnerText;
                         intReturn = Math.Max(
-                            await ParseBonusAsync(strBonusPilot, await objMod.GetRatingAsync(token).ConfigureAwait(false), BasePilot, "Pilot", false, token)
+                            await ParseBonusAsync(strBonusPilot, objMod, BasePilot, "Pilot", false, token)
                                 .ConfigureAwait(false),
                             intReturn);
                     }
@@ -1920,7 +1928,7 @@ namespace Chummer.Backend.Equipment
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
+                        ProcessAttributesInXPath(sbdAvail, strAvail);
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                         if (blnIsSuccess)
@@ -2012,8 +2020,7 @@ namespace Chummer.Backend.Equipment
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
-                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
-                            .ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token)
+                        await ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token)
                             .ConfigureAwait(false);
                         (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
@@ -2099,56 +2106,61 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculate the Vehicle's Sensor Rating based on the items within its Sensor.
         /// </summary>
-        public int CalculatedSensor
+        public int CalculatedSensor => GetCalculatedSensor();
+
+        /// <summary>
+        /// Calculate the Vehicle's Sensor Rating based on the items within its Sensor.
+        /// </summary>
+        public int GetCalculatedSensor(VehicleMod objExcludeMod = null)
         {
-            get
+            using (_objCharacter.LockObject.EnterReadLock())
             {
-                using (_objCharacter.LockObject.EnterReadLock())
+                int intTotalSensor = _intSensor;
+                // First check for mods that overwrite the Sensor value
+                foreach (VehicleMod objMod in Mods)
                 {
-                    int intTotalSensor = _intSensor;
-                    // First check for mods that overwrite the Sensor value
-                    foreach (VehicleMod objMod in Mods)
-                    {
-                        if (objMod.IncludedInVehicle || !objMod.Equipped)
-                            continue;
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
+                        continue;
 
-                        string strLoop = objMod.Bonus?["sensor"]?.InnerText;
-                        int intRating = objMod.Rating;
-                        intTotalSensor = Math.Max(intTotalSensor,
-                            ParseBonus(strLoop, intRating, intTotalSensor, "Sensor", false));
-                        if (!objMod.WirelessOn || objMod.WirelessBonus == null)
-                            continue;
-                        strLoop = objMod.WirelessBonus?["sensor"]?.InnerText;
-                        intTotalSensor = Math.Max(intTotalSensor,
-                            ParseBonus(strLoop, intRating, intTotalSensor, "Sensor", false));
-                    }
-
-                    // Then check for mods that modify the sensor value (needs separate loop in case of % modifiers on top of stat-overriding mods)
-                    int intTotalBonusSensor = 0;
-                    foreach (VehicleMod objMod in Mods)
-                    {
-                        if (objMod.IncludedInVehicle || !objMod.Equipped)
-                            continue;
-                        int intRating = objMod.Rating;
-                        intTotalBonusSensor += ParseBonus(objMod.Bonus?["sensor"]?.InnerText, intRating,
-                            intTotalSensor, "Sensor");
-
-                        if (objMod.WirelessOn)
-                        {
-                            intTotalBonusSensor += ParseBonus(objMod.WirelessBonus?["sensor"]?.InnerText, intRating,
-                                intTotalSensor, "Sensor");
-                        }
-                    }
-
-                    return intTotalSensor + intTotalBonusSensor;
+                    string strLoop = objMod.Bonus?["sensor"]?.InnerText;
+                    intTotalSensor = Math.Max(intTotalSensor,
+                        ParseBonus(strLoop, objMod, intTotalSensor, "Sensor", false));
+                    if (!objMod.WirelessOn || objMod.WirelessBonus == null)
+                        continue;
+                    strLoop = objMod.WirelessBonus?["sensor"]?.InnerText;
+                    intTotalSensor = Math.Max(intTotalSensor,
+                        ParseBonus(strLoop, objMod, intTotalSensor, "Sensor", false));
                 }
+
+                // Then check for mods that modify the sensor value (needs separate loop in case of % modifiers on top of stat-overriding mods)
+                int intTotalBonusSensor = 0;
+                foreach (VehicleMod objMod in Mods)
+                {
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
+                        continue;
+                    intTotalBonusSensor += ParseBonus(objMod.Bonus?["sensor"]?.InnerText, objMod,
+                        intTotalSensor, "Sensor");
+
+                    if (objMod.WirelessOn)
+                    {
+                        intTotalBonusSensor += ParseBonus(objMod.WirelessBonus?["sensor"]?.InnerText, objMod,
+                            intTotalSensor, "Sensor");
+                    }
+                }
+
+                return intTotalSensor + intTotalBonusSensor;
             }
         }
 
         /// <summary>
         /// Calculate the Vehicle's Sensor Rating based on the items within its Sensor.
         /// </summary>
-        public async Task<int> GetCalculatedSensorAsync(CancellationToken token = default)
+        public Task<int> GetCalculatedSensorAsync(CancellationToken token = default) => GetCalculatedSensorAsync(null, token);
+
+        /// <summary>
+        /// Calculate the Vehicle's Sensor Rating based on the items within its Sensor.
+        /// </summary>
+        public async Task<int> GetCalculatedSensorAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -2159,36 +2171,34 @@ namespace Chummer.Backend.Equipment
                 // First check for mods that overwrite the Sensor value
                 await Mods.ForEachAsync(async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped)
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
                         return;
 
                     string strLoop = objMod.Bonus?["sensor"]?.InnerText;
                     int intRating = await objMod.GetRatingAsync(token).ConfigureAwait(false);
                     intTotalSensor = Math.Max(intTotalSensor,
-                        await ParseBonusAsync(strLoop, intRating, intTotalSensor, "Sensor", false, token)
+                        await ParseBonusAsync(strLoop, objMod, intTotalSensor, "Sensor", false, token)
                             .ConfigureAwait(false));
                     if (!objMod.WirelessOn || objMod.WirelessBonus == null)
                         return;
                     strLoop = objMod.WirelessBonus?["sensor"]?.InnerText;
                     intTotalSensor = Math.Max(intTotalSensor,
-                        await ParseBonusAsync(strLoop, intRating, intTotalSensor, "Sensor", false, token)
+                        await ParseBonusAsync(strLoop, objMod, intTotalSensor, "Sensor", false, token)
                             .ConfigureAwait(false));
                 }, token).ConfigureAwait(false);
 
                 // Then check for mods that modify the sensor value (needs separate loop in case of % modifiers on top of stat-overriding mods)
-                int intTotalBonusSensor = await Mods.SumAsync(async objMod =>
+                int intTotalBonusSensor = await Mods.SumAsync(objMod => !objMod.IncludedInVehicle && objMod.Equipped && !ReferenceEquals(objMod, objExcludeMod),
+                    async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped)
-                        return 0;
-
                     int intRating = await objMod.GetRatingAsync(token);
                     string strLoop = objMod.Bonus?["sensor"]?.InnerText;
-                    int intTemp = await ParseBonusAsync(strLoop, intRating, intTotalSensor, "Sensor", token: token)
+                    int intTemp = await ParseBonusAsync(strLoop, objMod, intTotalSensor, "Sensor", token: token)
                         .ConfigureAwait(false);
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
                         strLoop = objMod.WirelessBonus?["sensor"]?.InnerText;
-                        intTemp += await ParseBonusAsync(strLoop, intRating, intTotalSensor, "Sensor", token: token)
+                        intTemp += await ParseBonusAsync(strLoop, objMod, intTotalSensor, "Sensor", token: token)
                             .ConfigureAwait(false);
                     }
 
@@ -2212,7 +2222,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strReplaceRating">String value that will be replaced by intModRating.</param>
         /// <param name="blnBonus">Whether the value must be prefixed with + or - to return a value.</param>
         /// <returns></returns>
-        private static int ParseBonus(string strBonus, int intModRating, int intTotalRating, string strReplaceRating, bool blnBonus = true)
+        private static int ParseBonus(string strBonus, VehicleMod objMod, int intTotalRating, string strReplaceRating, bool blnBonus = true)
         {
             if (strBonus.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
@@ -2221,20 +2231,14 @@ namespace Chummer.Backend.Equipment
                 if ((chrFirstCharacter == '+' || chrFirstCharacter == '-') && blnBonus)
                 {
                     // If the bonus is determined by the existing number, evaluate the expression.
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strBonus.TrimStart('+')
-                        .Replace("Rating", intModRating.ToString(GlobalSettings.InvariantCultureInfo))
-                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)));
-                    if (blnIsSuccess)
-                        return ((double)objProcess).StandardRound();
+                    string strReplaceValue = intTotalRating.ToString(GlobalSettings.InvariantCultureInfo);
+                    return objMod.ProcessRatingString(strBonus.Replace('{' + strReplaceRating + '}', strReplaceValue).Replace(strReplaceRating, strReplaceValue), () => objMod.Rating);
                 }
                 if (chrFirstCharacter != '+' && chrFirstCharacter != '-' && !blnBonus)
                 {
                     // If the bonus is determined by the existing number, evaluate the expression.
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strBonus.TrimStart('+')
-                        .Replace("Rating", intModRating.ToString(GlobalSettings.InvariantCultureInfo))
-                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)));
-                    if (blnIsSuccess)
-                        return ((double)objProcess).StandardRound();
+                    string strReplaceValue = intTotalRating.ToString(GlobalSettings.InvariantCultureInfo);
+                    return objMod.ProcessRatingString(strBonus.Replace('{' + strReplaceRating + '}', strReplaceValue).Replace(strReplaceRating, strReplaceValue), () => objMod.Rating);
                 }
             }
             return decValue.StandardRound();
@@ -2250,7 +2254,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnBonus">Whether the value must be prefixed with + or - to return a value.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        private static async Task<int> ParseBonusAsync(string strBonus, int intModRating, int intTotalRating, string strReplaceRating, bool blnBonus = true, CancellationToken token = default)
+        private static async Task<int> ParseBonusAsync(string strBonus, VehicleMod objMod, int intTotalRating, string strReplaceRating, bool blnBonus = true, CancellationToken token = default)
         {
             if (strBonus.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
@@ -2259,20 +2263,16 @@ namespace Chummer.Backend.Equipment
                 if ((chrFirstCharacter == '+' || chrFirstCharacter == '-') && blnBonus)
                 {
                     // If the bonus is determined by the existing number, evaluate the expression.
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strBonus.TrimStart('+')
-                        .Replace("Rating", intModRating.ToString(GlobalSettings.InvariantCultureInfo))
-                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        return ((double)objProcess).StandardRound();
+                    string strReplaceValue = intTotalRating.ToString(GlobalSettings.InvariantCultureInfo);
+                    return await objMod.ProcessRatingStringAsync(strBonus.Replace('{' + strReplaceRating + '}', strReplaceValue).Replace(strReplaceRating, strReplaceValue),
+                        () => objMod.GetRatingAsync(token), token).ConfigureAwait(false);
                 }
                 if (chrFirstCharacter != '+' && chrFirstCharacter != '-' && !blnBonus)
                 {
                     // If the bonus is determined by the existing number, evaluate the expression.
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strBonus.TrimStart('+')
-                        .Replace("Rating", intModRating.ToString(GlobalSettings.InvariantCultureInfo))
-                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        return ((double)objProcess).StandardRound();
+                    string strReplaceValue = intTotalRating.ToString(GlobalSettings.InvariantCultureInfo);
+                    return await objMod.ProcessRatingStringAsync(strBonus.Replace('{' + strReplaceRating + '}', strReplaceValue).Replace(strReplaceRating, strReplaceValue),
+                        () => objMod.GetRatingAsync(token), token).ConfigureAwait(false);
                 }
             }
             return decValue.StandardRound();
@@ -2818,7 +2818,7 @@ namespace Chummer.Backend.Equipment
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                     {
                         sbdCost.Append(strCost);
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCost);
+                        ProcessAttributesInXPath(sbdCost, strCost);
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                         if (blnIsSuccess)
@@ -2847,7 +2847,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                 {
                     sbdCost.Append(strCost);
-                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
+                    await ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
                     if (blnIsSuccess)
@@ -2880,14 +2880,14 @@ namespace Chummer.Backend.Equipment
                 int intTotalSeats = Seats;
                 foreach (VehicleMod objMod in Mods)
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped || objMod == objExcludeMod)
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
                         continue;
 
                     string strBonusSeats = objMod.WirelessOn
                         ? objMod.WirelessBonus?["seats"]?.InnerText ?? objMod.Bonus?["seats"]?.InnerText
                         : objMod.Bonus?["seats"]?.InnerText;
                     if (!string.IsNullOrEmpty(strBonusSeats))
-                        intTotalSeats = Math.Max(ParseBonus(strBonusSeats, objMod.Rating, Seats, "Seats", false),
+                        intTotalSeats = Math.Max(ParseBonus(strBonusSeats, objMod, Seats, "Seats", false),
                             intTotalSeats);
                 }
 
@@ -2895,18 +2895,18 @@ namespace Chummer.Backend.Equipment
                 int intTotalBonusSeats = 0;
                 foreach (VehicleMod objMod in Mods)
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped || objMod == objExcludeMod)
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
                         continue;
                     string strText = objMod.Bonus?["seats"]?.InnerText;
                     if (!string.IsNullOrEmpty(strText))
-                        intTotalBonusSeats += ParseBonus(strText, objMod.Rating,
+                        intTotalBonusSeats += ParseBonus(strText, objMod,
                             intTotalSeats, "Seats");
 
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
                         strText = objMod.WirelessBonus?["seats"]?.InnerText;
                         if (!string.IsNullOrEmpty(strText))
-                            intTotalBonusSeats += ParseBonus(strText, objMod.Rating,
+                            intTotalBonusSeats += ParseBonus(strText, objMod,
                                 intTotalSeats, "Seats");
                     }
                 }
@@ -2934,7 +2934,7 @@ namespace Chummer.Backend.Equipment
                 int intTotalSeats = Seats;
                 await Mods.ForEachAsync(async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped || objMod == objExcludeMod)
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
                         return;
 
                     string strBonusSeats = objMod.WirelessOn
@@ -2943,7 +2943,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strBonusSeats))
                         intTotalSeats =
                             Math.Max(
-                                await ParseBonusAsync(strBonusSeats, await objMod.GetRatingAsync(token).ConfigureAwait(false), Seats, "Seats",
+                                await ParseBonusAsync(strBonusSeats, objMod, Seats, "Seats",
                                         false, token)
                                     .ConfigureAwait(false),
                                 intTotalSeats);
@@ -2951,19 +2951,19 @@ namespace Chummer.Backend.Equipment
 
                 // Then check for mods that modify the seat value (needs separate loop in case of % modifiers on top of stat-overriding mods)
                 int intTotalBonusSeats = await Mods.SumAsync(
-                    objMod => !objMod.IncludedInVehicle && objMod.Equipped && objMod != objExcludeMod, async objMod =>
+                    objMod => !objMod.IncludedInVehicle && objMod.Equipped && !ReferenceEquals(objMod, objExcludeMod), async objMod =>
                     {
                         int intTemp = 0;
                         string strText = objMod.Bonus?["seats"]?.InnerText;
                         if (!string.IsNullOrEmpty(strText))
-                            intTemp += await ParseBonusAsync(strText, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalSeats,
+                            intTemp += await ParseBonusAsync(strText, objMod, intTotalSeats,
                                 "Seats", token: token).ConfigureAwait(false);
 
                         if (objMod.WirelessOn && objMod.WirelessBonus != null)
                         {
                             strText = objMod.WirelessBonus?["seats"]?.InnerText;
                             if (!string.IsNullOrEmpty(strText))
-                                intTemp += await ParseBonusAsync(strText, await objMod.GetRatingAsync(token).ConfigureAwait(false),
+                                intTemp += await ParseBonusAsync(strText, objMod,
                                     intTotalSeats, "Seats", token: token).ConfigureAwait(false);
                         }
 
@@ -2981,110 +2981,115 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Speed of the Vehicle including Modifications.
         /// </summary>
-        public string TotalSpeed
+        public string TotalSpeed => GetTotalSpeed();
+
+        /// <summary>
+        /// Total Speed of the Vehicle including Modifications.
+        /// </summary>
+        public string GetTotalSpeed(VehicleMod objExcludeMod = null)
         {
-            get
+            using (_objCharacter.LockObject.EnterReadLock())
             {
-                using (_objCharacter.LockObject.EnterReadLock())
+                int intTotalSpeed = Speed;
+                int intBaseOffroadSpeed = OffroadSpeed;
+                int intTotalArmor = Armor;
+                int intModArmor = 0;
+
+                // First check for mods that overwrite the speed value or add to armor
+                foreach (VehicleMod objMod in Mods)
                 {
-                    int intTotalSpeed = Speed;
-                    int intBaseOffroadSpeed = OffroadSpeed;
-                    int intTotalArmor = Armor;
-                    int intModArmor = 0;
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
+                        continue;
 
-                    // First check for mods that overwrite the speed value or add to armor
-                    foreach (VehicleMod objMod in Mods)
-                    {
-                        if (objMod.IncludedInVehicle || !objMod.Equipped)
-                            continue;
+                    string strBonus = objMod.WirelessOn
+                        ? objMod.WirelessBonus?["speed"]?.InnerText ?? objMod.Bonus?["speed"]?.InnerText
+                        : objMod.Bonus?["speed"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strBonus))
+                        intTotalSpeed = Math.Max(ParseBonus(strBonus, objMod, Speed, "Speed", false),
+                            intTotalSpeed);
 
-                        string strBonus = objMod.WirelessOn
-                            ? objMod.WirelessBonus?["speed"]?.InnerText ?? objMod.Bonus?["speed"]?.InnerText
-                            : objMod.Bonus?["speed"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strBonus))
-                            intTotalSpeed = Math.Max(ParseBonus(strBonus, objMod.Rating, Speed, "Speed", false),
+                    strBonus = objMod.WirelessOn
+                        ? objMod.WirelessBonus?["offroadspeed"]?.InnerText ??
+                            objMod.Bonus?["offroadspeed"]?.InnerText
+                        : objMod.Bonus?["offroadspeed"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strBonus))
+                        intBaseOffroadSpeed =
+                            Math.Max(ParseBonus(strBonus, objMod, OffroadSpeed, "OffroadSpeed", false),
                                 intTotalSpeed);
-
-                        strBonus = objMod.WirelessOn
-                            ? objMod.WirelessBonus?["offroadspeed"]?.InnerText ??
-                              objMod.Bonus?["offroadspeed"]?.InnerText
-                            : objMod.Bonus?["offroadspeed"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strBonus))
-                            intBaseOffroadSpeed =
-                                Math.Max(ParseBonus(strBonus, objMod.Rating, OffroadSpeed, "OffroadSpeed", false),
-                                    intTotalSpeed);
-                        if (IsDrone && _objCharacter.Settings.DroneMods)
-                        {
-                            strBonus = objMod.Bonus?["armor"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strBonus))
-                                intTotalArmor = Math.Max(
-                                    ParseBonus(strBonus, objMod.Rating, intTotalArmor, "Armor", false),
-                                    intTotalArmor);
-                            if (objMod.WirelessOn && objMod.WirelessBonus != null)
-                            {
-                                strBonus = objMod.WirelessBonus["armor"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strBonus))
-                                    intTotalArmor =
-                                        Math.Max(ParseBonus(strBonus, objMod.Rating, intTotalArmor, "Armor", false),
-                                            intTotalArmor);
-                            }
-                        }
-                    }
-
-                    // Then check for mods that modify the speed value (needs separate loop in case of % modifiers on top of stat-overriding mods)
-                    int intTotalBonusSpeed = 0;
-                    int intTotalBonusOffroadSpeed = 0;
-                    foreach (VehicleMod objMod in Mods)
+                    if (IsDrone && _objCharacter.Settings.DroneMods)
                     {
-                        if (objMod.IncludedInVehicle || !objMod.Equipped)
-                            continue;
-                        if (objMod.Bonus != null)
-                        {
-                            int intRating = objMod.Rating;
-                            intTotalBonusSpeed += ParseBonus(objMod.Bonus["speed"]?.InnerText, intRating,
-                                intTotalSpeed, "Speed");
-                            intTotalBonusOffroadSpeed += ParseBonus(objMod.Bonus["offroadspeed"]?.InnerText,
-                                intRating, intTotalSpeed, "OffroadSpeed");
-                            if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, intRating,
-                                    intTotalArmor, "Armor");
-                        }
-
+                        strBonus = objMod.Bonus?["armor"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strBonus))
+                            intTotalArmor = Math.Max(
+                                ParseBonus(strBonus, objMod, intTotalArmor, "Armor", false),
+                                intTotalArmor);
                         if (objMod.WirelessOn && objMod.WirelessBonus != null)
                         {
-                            int intRating = objMod.Rating;
-                            intTotalBonusSpeed += ParseBonus(objMod.WirelessBonus["speed"]?.InnerText, intRating,
-                                intTotalSpeed, "Speed");
-                            intTotalBonusOffroadSpeed += ParseBonus(objMod.WirelessBonus["offroadspeed"]?.InnerText,
-                                intRating, intTotalSpeed, "OffroadSpeed");
-                            if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, intRating,
-                                    intTotalArmor, "Armor");
+                            strBonus = objMod.WirelessBonus["armor"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strBonus))
+                                intTotalArmor =
+                                    Math.Max(ParseBonus(strBonus, objMod, intTotalArmor, "Armor", false),
+                                        intTotalArmor);
                         }
                     }
+                }
 
-                    // Reduce speed of the drone if there is too much armor
-                    int intPenalty = Math.Max((Math.Min(intTotalArmor + intModArmor, MaxArmor) - TotalBody * 3) / 3, 0);
-
-                    if (Speed != OffroadSpeed || intTotalSpeed + intTotalBonusSpeed !=
-                        intBaseOffroadSpeed + intTotalBonusOffroadSpeed)
+                // Then check for mods that modify the speed value (needs separate loop in case of % modifiers on top of stat-overriding mods)
+                int intTotalBonusSpeed = 0;
+                int intTotalBonusOffroadSpeed = 0;
+                foreach (VehicleMod objMod in Mods)
+                {
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
+                        continue;
+                    if (objMod.Bonus != null)
                     {
-                        return (intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString(GlobalSettings
-                                   .InvariantCultureInfo) + '/' +
-                               (intBaseOffroadSpeed + intTotalBonusOffroadSpeed - intPenalty).ToString(GlobalSettings
-                                   .InvariantCultureInfo);
+                        intTotalBonusSpeed += ParseBonus(objMod.Bonus["speed"]?.InnerText, objMod,
+                            intTotalSpeed, "Speed");
+                        intTotalBonusOffroadSpeed += ParseBonus(objMod.Bonus["offroadspeed"]?.InnerText,
+                            objMod, intTotalSpeed, "OffroadSpeed");
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
+                            intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, objMod,
+                                intTotalArmor, "Armor");
                     }
 
-                    return (intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString(GlobalSettings
-                        .InvariantCultureInfo);
+                    if (objMod.WirelessOn && objMod.WirelessBonus != null)
+                    {
+                        intTotalBonusSpeed += ParseBonus(objMod.WirelessBonus["speed"]?.InnerText, objMod,
+                            intTotalSpeed, "Speed");
+                        intTotalBonusOffroadSpeed += ParseBonus(objMod.WirelessBonus["offroadspeed"]?.InnerText,
+                            objMod, intTotalSpeed, "OffroadSpeed");
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
+                            intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, objMod,
+                                intTotalArmor, "Armor");
+                    }
                 }
+
+                // Reduce speed of the drone if there is too much armor
+                int intPenalty = Math.Max((Math.Min(intTotalArmor + intModArmor, MaxArmor) - TotalBody * 3) / 3, 0);
+
+                if (Speed != OffroadSpeed || intTotalSpeed + intTotalBonusSpeed !=
+                    intBaseOffroadSpeed + intTotalBonusOffroadSpeed)
+                {
+                    return (intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString(GlobalSettings
+                                .InvariantCultureInfo) + '/' +
+                            (intBaseOffroadSpeed + intTotalBonusOffroadSpeed - intPenalty).ToString(GlobalSettings
+                                .InvariantCultureInfo);
+                }
+
+                return (intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString(GlobalSettings
+                    .InvariantCultureInfo);
             }
         }
 
         /// <summary>
         /// Total Speed of the Vehicle including Modifications.
         /// </summary>
-        public async Task<string> GetTotalSpeedAsync(CancellationToken token = default)
+        public Task<string> GetTotalSpeedAsync(CancellationToken token = default) => GetTotalSpeedAsync(null, token);
+
+        /// <summary>
+        /// Total Speed of the Vehicle including Modifications.
+        /// </summary>
+        public async Task<string> GetTotalSpeedAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
@@ -3097,7 +3102,7 @@ namespace Chummer.Backend.Equipment
                 // First check for mods that overwrite the speed value or add to armor
                 await Mods.ForEachAsync(async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped)
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
                         return;
 
                     string strBonus = objMod.WirelessOn
@@ -3105,7 +3110,7 @@ namespace Chummer.Backend.Equipment
                         : objMod.Bonus?["speed"]?.InnerText;
                     if (!string.IsNullOrEmpty(strBonus))
                         intTotalSpeed = Math.Max(
-                            await ParseBonusAsync(strBonus, await objMod.GetRatingAsync(token).ConfigureAwait(false), Speed, "Speed", false,
+                            await ParseBonusAsync(strBonus, objMod, Speed, "Speed", false,
                                     token)
                                 .ConfigureAwait(false),
                             intTotalSpeed);
@@ -3116,7 +3121,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strBonus))
                         intBaseOffroadSpeed =
                             Math.Max(
-                                await ParseBonusAsync(strBonus, await objMod.GetRatingAsync(token).ConfigureAwait(false), OffroadSpeed,
+                                await ParseBonusAsync(strBonus, objMod, OffroadSpeed,
                                         "OffroadSpeed", false, token)
                                     .ConfigureAwait(false),
                                 intTotalSpeed);
@@ -3126,7 +3131,7 @@ namespace Chummer.Backend.Equipment
                         if (!string.IsNullOrEmpty(strBonus))
                             intTotalArmor =
                                 Math.Max(
-                                    await ParseBonusAsync(strBonus, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalArmor,
+                                    await ParseBonusAsync(strBonus, objMod, intTotalArmor,
                                             "Armor", false, token)
                                         .ConfigureAwait(false),
                                     intTotalArmor);
@@ -3136,7 +3141,7 @@ namespace Chummer.Backend.Equipment
                             if (!string.IsNullOrEmpty(strBonus))
                                 intTotalArmor =
                                     Math.Max(
-                                        await ParseBonusAsync(strBonus, await objMod.GetRatingAsync(token).ConfigureAwait(false),
+                                        await ParseBonusAsync(strBonus, objMod,
                                                 intTotalArmor, "Armor", false, token)
                                             .ConfigureAwait(false),
                                         intTotalArmor);
@@ -3149,36 +3154,32 @@ namespace Chummer.Backend.Equipment
                 int intTotalBonusOffroadSpeed = 0;
                 int intModArmor = await Mods.SumAsync(async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped)
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
                         return 0;
                     int intTemp = 0;
                     if (objMod.Bonus != null)
                     {
                         intTotalBonusSpeed += await ParseBonusAsync(objMod.Bonus["speed"]?.InnerText,
-                            await objMod.GetRatingAsync(token).ConfigureAwait(false),
-                            intTotalSpeed, "Speed", token: token).ConfigureAwait(false);
+                            objMod, intTotalSpeed, "Speed", token: token).ConfigureAwait(false);
                         intTotalBonusOffroadSpeed += await ParseBonusAsync(objMod.Bonus["offroadspeed"]?.InnerText,
-                                await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalSpeed, "OffroadSpeed", token: token)
+                                objMod, intTotalSpeed, "OffroadSpeed", token: token)
                             .ConfigureAwait(false);
                         if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
                             intTemp += await ParseBonusAsync(objMod.Bonus["armor"]?.InnerText,
-                                await objMod.GetRatingAsync(token).ConfigureAwait(false),
-                                intTotalArmor, "Armor", token: token).ConfigureAwait(false);
+                                objMod, intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
 
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
                         intTotalBonusSpeed += await ParseBonusAsync(objMod.WirelessBonus["speed"]?.InnerText,
-                            await objMod.GetRatingAsync(token).ConfigureAwait(false),
-                            intTotalSpeed, "Speed", token: token).ConfigureAwait(false);
+                            objMod, intTotalSpeed, "Speed", token: token).ConfigureAwait(false);
                         intTotalBonusOffroadSpeed += await ParseBonusAsync(
                                 objMod.WirelessBonus["offroadspeed"]?.InnerText,
-                                await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalSpeed, "OffroadSpeed", token: token)
+                                objMod, intTotalSpeed, "OffroadSpeed", token: token)
                             .ConfigureAwait(false);
                         if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
                             intTemp += await ParseBonusAsync(objMod.WirelessBonus["armor"]?.InnerText,
-                                await objMod.GetRatingAsync(token).ConfigureAwait(false),
-                                intTotalArmor, "Armor", token: token).ConfigureAwait(false);
+                                objMod, intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
 
                     return intTemp;
@@ -3210,109 +3211,114 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Accel of the Vehicle including Modifications.
         /// </summary>
-        public string TotalAccel
+        public string TotalAccel => GetTotalAccel();
+
+        /// <summary>
+        /// Total Accel of the Vehicle including Modifications.
+        /// </summary>
+        public string GetTotalAccel(VehicleMod objExcludeMod = null)
         {
-            get
+            using (_objCharacter.LockObject.EnterReadLock())
             {
-                using (_objCharacter.LockObject.EnterReadLock())
+                int intTotalAccel = Accel;
+                int intBaseOffroadAccel = OffroadAccel;
+                int intTotalArmor = Armor;
+                int intModArmor = 0;
+
+                // First check for mods that overwrite the accel value or add to armor
+                foreach (VehicleMod objMod in Mods)
                 {
-                    int intTotalAccel = Accel;
-                    int intBaseOffroadAccel = OffroadAccel;
-                    int intTotalArmor = Armor;
-                    int intModArmor = 0;
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
+                        continue;
+                    string strBonus = objMod.WirelessOn
+                        ? objMod.WirelessBonus?["accel"]?.InnerText ?? objMod.Bonus?["accel"]?.InnerText
+                        : objMod.Bonus?["accel"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strBonus))
+                        intTotalAccel = Math.Max(ParseBonus(strBonus, objMod, Accel, "Accel", false),
+                            intTotalAccel);
 
-                    // First check for mods that overwrite the accel value or add to armor
-                    foreach (VehicleMod objMod in Mods)
-                    {
-                        if (objMod.IncludedInVehicle || !objMod.Equipped)
-                            continue;
-                        string strBonus = objMod.WirelessOn
-                            ? objMod.WirelessBonus?["accel"]?.InnerText ?? objMod.Bonus?["accel"]?.InnerText
-                            : objMod.Bonus?["accel"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strBonus))
-                            intTotalAccel = Math.Max(ParseBonus(strBonus, objMod.Rating, Accel, "Accel", false),
+                    strBonus = objMod.WirelessOn
+                        ? objMod.WirelessBonus?["offroadaccel"]?.InnerText ??
+                            objMod.Bonus?["offroadaccel"]?.InnerText
+                        : objMod.Bonus?["offroadaccel"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strBonus))
+                        intBaseOffroadAccel =
+                            Math.Max(ParseBonus(strBonus, objMod, OffroadAccel, "OffroadAccel", false),
                                 intTotalAccel);
-
-                        strBonus = objMod.WirelessOn
-                            ? objMod.WirelessBonus?["offroadaccel"]?.InnerText ??
-                              objMod.Bonus?["offroadaccel"]?.InnerText
-                            : objMod.Bonus?["offroadaccel"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strBonus))
-                            intBaseOffroadAccel =
-                                Math.Max(ParseBonus(strBonus, objMod.Rating, OffroadAccel, "OffroadAccel", false),
-                                    intTotalAccel);
-                        if (IsDrone && _objCharacter.Settings.DroneMods)
-                        {
-                            strBonus = objMod.Bonus?["armor"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strBonus))
-                                intTotalArmor = Math.Max(
-                                    ParseBonus(strBonus, objMod.Rating, intTotalArmor, "Armor", false),
-                                    intTotalArmor);
-                            if (objMod.WirelessOn && objMod.WirelessBonus != null)
-                            {
-                                strBonus = objMod.WirelessBonus["armor"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strBonus))
-                                    intTotalArmor =
-                                        Math.Max(ParseBonus(strBonus, objMod.Rating, intTotalArmor, "Armor", false),
-                                            intTotalArmor);
-                            }
-                        }
-                    }
-
-                    // Then check for mods that modify the accel value (needs separate loop in case of % modifiers on top of stat-overriding mods)
-                    int intTotalBonusAccel = 0;
-                    int intTotalBonusOffroadAccel = 0;
-                    foreach (VehicleMod objMod in Mods)
+                    if (IsDrone && _objCharacter.Settings.DroneMods)
                     {
-                        if (objMod.IncludedInVehicle || !objMod.Equipped)
-                            continue;
-                        if (objMod.Bonus != null)
-                        {
-                            int intRating = objMod.Rating;
-                            intTotalBonusAccel += ParseBonus(objMod.Bonus["accel"]?.InnerText, intRating,
-                                intTotalAccel, "Accel");
-                            intTotalBonusOffroadAccel += ParseBonus(objMod.Bonus["offroadaccel"]?.InnerText,
-                                intRating, intTotalAccel, "OffroadAccel");
-                            if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, intRating,
-                                    intTotalArmor, "Armor");
-                        }
-
+                        strBonus = objMod.Bonus?["armor"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strBonus))
+                            intTotalArmor = Math.Max(
+                                ParseBonus(strBonus, objMod, intTotalArmor, "Armor", false),
+                                intTotalArmor);
                         if (objMod.WirelessOn && objMod.WirelessBonus != null)
                         {
-                            int intRating = objMod.Rating;
-                            intTotalBonusAccel += ParseBonus(objMod.WirelessBonus["accel"]?.InnerText, intRating,
-                                intTotalAccel, "Accel");
-                            intTotalBonusOffroadAccel += ParseBonus(objMod.WirelessBonus["offroadaccel"]?.InnerText,
-                                intRating, intTotalAccel, "OffroadAccel");
-                            if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, intRating,
-                                    intTotalArmor, "Armor");
+                            strBonus = objMod.WirelessBonus["armor"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strBonus))
+                                intTotalArmor =
+                                    Math.Max(ParseBonus(strBonus, objMod, intTotalArmor, "Armor", false),
+                                        intTotalArmor);
                         }
                     }
+                }
 
-                    // Reduce acceleration of the drone if there is too much armor
-                    int intPenalty = Math.Max((Math.Min(intTotalArmor + intModArmor, MaxArmor) - TotalBody * 3) / 6, 0);
-
-                    if (Accel != OffroadAccel || intTotalAccel + intTotalBonusAccel !=
-                        intBaseOffroadAccel + intTotalBonusOffroadAccel)
+                // Then check for mods that modify the accel value (needs separate loop in case of % modifiers on top of stat-overriding mods)
+                int intTotalBonusAccel = 0;
+                int intTotalBonusOffroadAccel = 0;
+                foreach (VehicleMod objMod in Mods)
+                {
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
+                        continue;
+                    if (objMod.Bonus != null)
                     {
-                        return (intTotalAccel + intTotalBonusAccel - intPenalty).ToString(GlobalSettings
-                                   .InvariantCultureInfo) + '/' +
-                               (intBaseOffroadAccel + intTotalBonusOffroadAccel - intPenalty).ToString(GlobalSettings
-                                   .InvariantCultureInfo);
+                        intTotalBonusAccel += ParseBonus(objMod.Bonus["accel"]?.InnerText, objMod,
+                            intTotalAccel, "Accel");
+                        intTotalBonusOffroadAccel += ParseBonus(objMod.Bonus["offroadaccel"]?.InnerText,
+                            objMod, intTotalAccel, "OffroadAccel");
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
+                            intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, objMod,
+                                intTotalArmor, "Armor");
                     }
 
-                    return (intTotalAccel + intTotalBonusAccel - intPenalty).ToString(GlobalSettings
-                        .InvariantCultureInfo);
+                    if (objMod.WirelessOn && objMod.WirelessBonus != null)
+                    {
+                        intTotalBonusAccel += ParseBonus(objMod.WirelessBonus["accel"]?.InnerText, objMod,
+                            intTotalAccel, "Accel");
+                        intTotalBonusOffroadAccel += ParseBonus(objMod.WirelessBonus["offroadaccel"]?.InnerText,
+                            objMod, intTotalAccel, "OffroadAccel");
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
+                            intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, objMod,
+                                intTotalArmor, "Armor");
+                    }
                 }
+
+                // Reduce acceleration of the drone if there is too much armor
+                int intPenalty = Math.Max((Math.Min(intTotalArmor + intModArmor, MaxArmor) - TotalBody * 3) / 6, 0);
+
+                if (Accel != OffroadAccel || intTotalAccel + intTotalBonusAccel !=
+                    intBaseOffroadAccel + intTotalBonusOffroadAccel)
+                {
+                    return (intTotalAccel + intTotalBonusAccel - intPenalty).ToString(GlobalSettings
+                                .InvariantCultureInfo) + '/' +
+                            (intBaseOffroadAccel + intTotalBonusOffroadAccel - intPenalty).ToString(GlobalSettings
+                                .InvariantCultureInfo);
+                }
+
+                return (intTotalAccel + intTotalBonusAccel - intPenalty).ToString(GlobalSettings
+                    .InvariantCultureInfo);
             }
         }
 
         /// <summary>
         /// Total Accel of the Vehicle including Modifications.
         /// </summary>
-        public async Task<string> GetTotalAccelAsync(CancellationToken token = default)
+        public Task<string> GetTotalAccelAsync(CancellationToken token = default) => GetTotalAccelAsync(null, token);
+
+        /// <summary>
+        /// Total Accel of the Vehicle including Modifications.
+        /// </summary>
+        public async Task<string> GetTotalAccelAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
@@ -3325,14 +3331,14 @@ namespace Chummer.Backend.Equipment
                 // First check for mods that overwrite the accel value or add to armor
                 await Mods.ForEachAsync(async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped)
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
                         return;
                     string strBonus = objMod.WirelessOn
                         ? objMod.WirelessBonus?["accel"]?.InnerText ?? objMod.Bonus?["accel"]?.InnerText
                         : objMod.Bonus?["accel"]?.InnerText;
                     if (!string.IsNullOrEmpty(strBonus))
                         intTotalAccel = Math.Max(
-                            await ParseBonusAsync(strBonus, await objMod.GetRatingAsync(token).ConfigureAwait(false), Accel, "Accel", false, token)
+                            await ParseBonusAsync(strBonus, objMod, Accel, "Accel", false, token)
                                 .ConfigureAwait(false),
                             intTotalAccel);
 
@@ -3342,7 +3348,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strBonus))
                         intBaseOffroadAccel =
                             Math.Max(
-                                await ParseBonusAsync(strBonus, await objMod.GetRatingAsync(token).ConfigureAwait(false), OffroadAccel, "OffroadAccel", false,
+                                await ParseBonusAsync(strBonus, objMod, OffroadAccel, "OffroadAccel", false,
                                         token)
                                     .ConfigureAwait(false),
                                 intTotalAccel);
@@ -3352,7 +3358,7 @@ namespace Chummer.Backend.Equipment
                         if (!string.IsNullOrEmpty(strBonus))
                             intTotalArmor =
                                 Math.Max(
-                                    await ParseBonusAsync(strBonus, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalArmor, "Armor", false, token)
+                                    await ParseBonusAsync(strBonus, objMod, intTotalArmor, "Armor", false, token)
                                         .ConfigureAwait(false),
                                     intTotalArmor);
                         if (objMod.WirelessOn && objMod.WirelessBonus != null)
@@ -3361,7 +3367,7 @@ namespace Chummer.Backend.Equipment
                             if (!string.IsNullOrEmpty(strBonus))
                                 intTotalArmor =
                                     Math.Max(
-                                        await ParseBonusAsync(strBonus, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalArmor, "Armor", false,
+                                        await ParseBonusAsync(strBonus, objMod, intTotalArmor, "Armor", false,
                                                 token)
                                             .ConfigureAwait(false),
                                         intTotalArmor);
@@ -3374,32 +3380,30 @@ namespace Chummer.Backend.Equipment
                 int intTotalBonusOffroadAccel = 0;
                 int intModArmor = await Mods.SumAsync(async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped)
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
                         return 0;
                     int intTemp = 0;
                     if (objMod.Bonus != null)
                     {
-                        int intRating = await objMod.GetRatingAsync(token).ConfigureAwait(false);
-                        intTotalBonusAccel += await ParseBonusAsync(objMod.Bonus["accel"]?.InnerText, intRating,
+                        intTotalBonusAccel += await ParseBonusAsync(objMod.Bonus["accel"]?.InnerText, objMod,
                             intTotalAccel, "Accel", token: token).ConfigureAwait(false);
                         intTotalBonusOffroadAccel += await ParseBonusAsync(objMod.Bonus["offroadaccel"]?.InnerText,
-                            intRating, intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
+                            objMod, intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
                         if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
-                            intTemp += await ParseBonusAsync(objMod.Bonus["armor"]?.InnerText, intRating,
+                            intTemp += await ParseBonusAsync(objMod.Bonus["armor"]?.InnerText, objMod,
                                 intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
 
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
-                        int intRating = await objMod.GetRatingAsync(token).ConfigureAwait(false);
                         intTotalBonusAccel += await ParseBonusAsync(objMod.WirelessBonus["accel"]?.InnerText,
-                            intRating,
+                            objMod,
                             intTotalAccel, "Accel", token: token).ConfigureAwait(false);
                         intTotalBonusOffroadAccel += await ParseBonusAsync(
                             objMod.WirelessBonus["offroadaccel"]?.InnerText,
-                            intRating, intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
+                            objMod, intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
                         if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
-                            intTemp += await ParseBonusAsync(objMod.WirelessBonus["armor"]?.InnerText, intRating,
+                            intTemp += await ParseBonusAsync(objMod.WirelessBonus["armor"]?.InnerText, objMod,
                                 intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
 
@@ -3438,18 +3442,18 @@ namespace Chummer.Backend.Equipment
         {
             using (_objCharacter.LockObject.EnterReadLock())
             {
-                return Body + Mods.Sum(x => !x.IncludedInVehicle && x.Equipped && x != objExcludeMod, objMod =>
+                return Body + Mods.Sum(x => !x.IncludedInVehicle && x.Equipped && !ReferenceEquals(x, objExcludeMod), objMod =>
                 {
                     int intTemp = 0;
                     // Add the Modification's Body to the Vehicle's base Body.
                     string strBonus = objMod.Bonus?["body"]?.InnerText;
                     if (!string.IsNullOrEmpty(strBonus))
-                        intTemp += ParseBonus(strBonus, objMod.Rating, Body, "Body");
+                        intTemp += ParseBonus(strBonus, objMod, Body, "Body");
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
                         strBonus = objMod.WirelessBonus?["body"]?.InnerText;
                         if (!string.IsNullOrEmpty(strBonus))
-                            intTemp += ParseBonus(strBonus, objMod.Rating, Body,
+                            intTemp += ParseBonus(strBonus, objMod, Body,
                                 "Body");
                     }
 
@@ -3472,22 +3476,21 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return Body + await Mods.SumAsync(x => !x.IncludedInVehicle && x.Equipped && x != objExcludeMod,
+                return Body + await Mods.SumAsync(x => !x.IncludedInVehicle && x.Equipped && !ReferenceEquals(x, objExcludeMod),
                     async objMod =>
                     {
                         int intTemp = 0;
                         // Add the Modification's Body to the Vehicle's base Body.
                         string strBonus = objMod.Bonus?["body"]?.InnerText;
                         if (!string.IsNullOrEmpty(strBonus))
-                            intTemp += await ParseBonusAsync(strBonus, await objMod.GetRatingAsync(token).ConfigureAwait(false), Body, "Body",
+                            intTemp += await ParseBonusAsync(strBonus, objMod, Body, "Body",
                                 token: token).ConfigureAwait(false);
                         if (objMod.WirelessOn && objMod.WirelessBonus != null)
                         {
                             strBonus = objMod.WirelessBonus?["body"]?.InnerText;
                             if (!string.IsNullOrEmpty(strBonus))
                                 intTemp += await ParseBonusAsync(strBonus,
-                                    await objMod.GetRatingAsync(token).ConfigureAwait(false),
-                                    Body, "Body", token: token).ConfigureAwait(false);
+                                    objMod, Body, "Body", token: token).ConfigureAwait(false);
                         }
 
                         return intTemp;
@@ -3502,110 +3505,117 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Handling of the Vehicle including Modifications.
         /// </summary>
-        public string TotalHandling
+        public string TotalHandling => GetTotalHandling();
+
+        /// <summary>
+        /// Total Handling of the Vehicle including Modifications.
+        /// </summary>
+        public string GetTotalHandling(VehicleMod objExcludeMod = null)
         {
-            get
+            using (_objCharacter.LockObject.EnterReadLock())
             {
-                using (_objCharacter.LockObject.EnterReadLock())
+                int intBaseHandling = Handling;
+                int intBaseOffroadHandling = OffroadHandling;
+                int intTotalArmor = Armor;
+                int intModArmor = 0;
+
+                // First check for mods that overwrite the handling value or add to armor
+                foreach (VehicleMod objMod in Mods)
                 {
-                    int intBaseHandling = Handling;
-                    int intBaseOffroadHandling = OffroadHandling;
-                    int intTotalArmor = Armor;
-                    int intModArmor = 0;
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
+                        continue;
+                    string strBonus = objMod.WirelessOn
+                        ? objMod.WirelessBonus?["handling"]?.InnerText ?? objMod.Bonus?["handling"]?.InnerText
+                        : objMod.Bonus?["handling"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strBonus))
+                        intBaseHandling = Math.Max(ParseBonus(strBonus, objMod, Handling, "Handling", false),
+                            intBaseHandling);
 
-                    // First check for mods that overwrite the handling value or add to armor
-                    foreach (VehicleMod objMod in Mods)
+                    strBonus = objMod.WirelessOn
+                        ? objMod.WirelessBonus?["offroadhandling"]?.InnerText ??
+                            objMod.Bonus?["offroadhandling"]?.InnerText
+                        : objMod.Bonus?["offroadhandling"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strBonus))
+                        intBaseOffroadHandling =
+                            Math.Max(ParseBonus(strBonus, objMod, OffroadHandling, "OffroadHandling", false),
+                                intBaseOffroadHandling);
+                    if (IsDrone && _objCharacter.Settings.DroneMods)
                     {
-                        if (objMod.IncludedInVehicle || !objMod.Equipped)
-                            continue;
-                        string strBonus = objMod.WirelessOn
-                            ? objMod.WirelessBonus?["handling"]?.InnerText ?? objMod.Bonus?["handling"]?.InnerText
-                            : objMod.Bonus?["handling"]?.InnerText;
+                        strBonus = objMod.Bonus?["armor"]?.InnerText;
                         if (!string.IsNullOrEmpty(strBonus))
-                            intBaseHandling = Math.Max(ParseBonus(strBonus, objMod.Rating, Handling, "Handling", false),
-                                intBaseHandling);
-
-                        strBonus = objMod.WirelessOn
-                            ? objMod.WirelessBonus?["offroadhandling"]?.InnerText ??
-                              objMod.Bonus?["offroadhandling"]?.InnerText
-                            : objMod.Bonus?["offroadhandling"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strBonus))
-                            intBaseOffroadHandling =
-                                Math.Max(ParseBonus(strBonus, objMod.Rating, OffroadHandling, "OffroadHandling", false),
-                                    intBaseOffroadHandling);
-                        if (IsDrone && _objCharacter.Settings.DroneMods)
-                        {
-                            strBonus = objMod.Bonus?["armor"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strBonus))
-                                intTotalArmor = Math.Max(
-                                    ParseBonus(strBonus, objMod.Rating, intTotalArmor, "Armor", false),
-                                    intTotalArmor);
-                            if (objMod.WirelessOn && objMod.WirelessBonus != null)
-                            {
-                                strBonus = objMod.WirelessBonus["armor"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strBonus))
-                                    intTotalArmor =
-                                        Math.Max(ParseBonus(strBonus, objMod.Rating, intTotalArmor, "Armor", false),
-                                            intTotalArmor);
-                            }
-                        }
-                    }
-
-                    // Then check for mods that modify the handling value (needs separate loop in case of % modifiers on top of stat-overriding mods)
-                    int intTotalBonusHandling = 0;
-                    int intTotalBonusOffroadHandling = 0;
-                    foreach (VehicleMod objMod in Mods)
-                    {
-                        if (objMod.IncludedInVehicle || !objMod.Equipped)
-                            continue;
-                        if (objMod.Bonus != null)
-                        {
-                            intTotalBonusHandling += ParseBonus(objMod.Bonus["handling"]?.InnerText, objMod.Rating,
-                                intBaseOffroadHandling, "Handling");
-                            intTotalBonusOffroadHandling += ParseBonus(objMod.Bonus["offroadhandling"]?.InnerText,
-                                objMod.Rating, intBaseOffroadHandling, "OffroadHandling");
-                            if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, objMod.Rating,
-                                    intTotalArmor, "Armor");
-                        }
-
+                            intTotalArmor = Math.Max(
+                                ParseBonus(strBonus, objMod, intTotalArmor, "Armor", false),
+                                intTotalArmor);
                         if (objMod.WirelessOn && objMod.WirelessBonus != null)
                         {
-                            intTotalBonusHandling += ParseBonus(objMod.WirelessBonus["handling"]?.InnerText,
-                                objMod.Rating, intBaseOffroadHandling, "Handling");
-                            intTotalBonusOffroadHandling +=
-                                ParseBonus(objMod.WirelessBonus["offroadhandling"]?.InnerText, objMod.Rating,
-                                    intBaseOffroadHandling, "OffroadHandling");
-                            if (IsDrone && _objCharacter.Settings.DroneMods)
-                                intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, objMod.Rating,
-                                    intTotalArmor, "Armor");
+                            strBonus = objMod.WirelessBonus["armor"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strBonus))
+                                intTotalArmor =
+                                    Math.Max(ParseBonus(strBonus, objMod, intTotalArmor, "Armor", false),
+                                        intTotalArmor);
                         }
                     }
+                }
 
-                    // Reduce handling of the drone if there is too much armor
-                    int intPenalty = Math.Max((Math.Min(intTotalArmor + intModArmor, MaxArmor) - TotalBody * 3) / 3, 0);
-
-                    if (Handling != OffroadHandling
-                        || intBaseHandling + intTotalBonusHandling !=
-                        intBaseOffroadHandling + intTotalBonusOffroadHandling)
+                // Then check for mods that modify the handling value (needs separate loop in case of % modifiers on top of stat-overriding mods)
+                int intTotalBonusHandling = 0;
+                int intTotalBonusOffroadHandling = 0;
+                foreach (VehicleMod objMod in Mods)
+                {
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
+                        continue;
+                    if (objMod.Bonus != null)
                     {
-                        return (intBaseHandling + intTotalBonusHandling - intPenalty).ToString(GlobalSettings
-                                   .InvariantCultureInfo)
-                               + '/'
-                               + (intBaseOffroadHandling + intTotalBonusOffroadHandling - intPenalty).ToString(
-                                   GlobalSettings.InvariantCultureInfo);
+                        intTotalBonusHandling += ParseBonus(objMod.Bonus["handling"]?.InnerText, objMod,
+                            intBaseOffroadHandling, "Handling");
+                        intTotalBonusOffroadHandling += ParseBonus(objMod.Bonus["offroadhandling"]?.InnerText,
+                            objMod, intBaseOffroadHandling, "OffroadHandling");
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
+                            intModArmor += ParseBonus(objMod.Bonus["armor"]?.InnerText, objMod,
+                                intTotalArmor, "Armor");
                     }
 
-                    return (intBaseHandling + intTotalBonusHandling - intPenalty).ToString(GlobalSettings
-                        .InvariantCultureInfo);
+                    if (objMod.WirelessOn && objMod.WirelessBonus != null)
+                    {
+                        intTotalBonusHandling += ParseBonus(objMod.WirelessBonus["handling"]?.InnerText,
+                            objMod, intBaseOffroadHandling, "Handling");
+                        intTotalBonusOffroadHandling +=
+                            ParseBonus(objMod.WirelessBonus["offroadhandling"]?.InnerText, objMod,
+                                intBaseOffroadHandling, "OffroadHandling");
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
+                            intModArmor += ParseBonus(objMod.WirelessBonus["armor"]?.InnerText, objMod,
+                                intTotalArmor, "Armor");
+                    }
                 }
+
+                // Reduce handling of the drone if there is too much armor
+                int intPenalty = Math.Max((Math.Min(intTotalArmor + intModArmor, MaxArmor) - TotalBody * 3) / 3, 0);
+
+                if (Handling != OffroadHandling
+                    || intBaseHandling + intTotalBonusHandling !=
+                    intBaseOffroadHandling + intTotalBonusOffroadHandling)
+                {
+                    return (intBaseHandling + intTotalBonusHandling - intPenalty).ToString(GlobalSettings
+                                .InvariantCultureInfo)
+                            + '/'
+                            + (intBaseOffroadHandling + intTotalBonusOffroadHandling - intPenalty).ToString(
+                                GlobalSettings.InvariantCultureInfo);
+                }
+
+                return (intBaseHandling + intTotalBonusHandling - intPenalty).ToString(GlobalSettings
+                    .InvariantCultureInfo);
             }
         }
 
         /// <summary>
         /// Total Handling of the Vehicle including Modifications.
         /// </summary>
-        public async Task<string> GetTotalHandlingAsync(CancellationToken token = default)
+        public Task<string> GetTotalHandlingAsync(CancellationToken token = default) => GetTotalHandlingAsync(null, token);
+
+        /// <summary>
+        /// Total Handling of the Vehicle including Modifications.
+        /// </summary>
+        public async Task<string> GetTotalHandlingAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
@@ -3618,7 +3628,7 @@ namespace Chummer.Backend.Equipment
                 // First check for mods that overwrite the handling value or add to armor
                 await Mods.ForEachAsync(async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped)
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
                         return;
                     string strBonus = objMod.WirelessOn
                         ? objMod.WirelessBonus?["handling"]?.InnerText ?? objMod.Bonus?["handling"]?.InnerText
@@ -3626,7 +3636,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strBonus))
                         intBaseHandling =
                             Math.Max(
-                                await ParseBonusAsync(strBonus, await objMod.GetRatingAsync(token).ConfigureAwait(false), Handling, "Handling", false, token)
+                                await ParseBonusAsync(strBonus, objMod, Handling, "Handling", false, token)
                                     .ConfigureAwait(false),
                                 intBaseHandling);
 
@@ -3637,7 +3647,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strBonus))
                         intBaseOffroadHandling =
                             Math.Max(
-                                await ParseBonusAsync(strBonus, await objMod.GetRatingAsync(token).ConfigureAwait(false), OffroadHandling, "OffroadHandling",
+                                await ParseBonusAsync(strBonus, objMod, OffroadHandling, "OffroadHandling",
                                     false,
                                     token).ConfigureAwait(false), intBaseOffroadHandling);
                     if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
@@ -3646,7 +3656,7 @@ namespace Chummer.Backend.Equipment
                         if (!string.IsNullOrEmpty(strBonus))
                             intTotalArmor =
                                 Math.Max(
-                                    await ParseBonusAsync(strBonus, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalArmor, "Armor", false, token)
+                                    await ParseBonusAsync(strBonus, objMod, intTotalArmor, "Armor", false, token)
                                         .ConfigureAwait(false),
                                     intTotalArmor);
                         if (objMod.WirelessOn && objMod.WirelessBonus != null)
@@ -3655,7 +3665,7 @@ namespace Chummer.Backend.Equipment
                             if (!string.IsNullOrEmpty(strBonus))
                                 intTotalArmor =
                                     Math.Max(
-                                        await ParseBonusAsync(strBonus, await objMod.GetRatingAsync(token).ConfigureAwait(false), intTotalArmor, "Armor", false,
+                                        await ParseBonusAsync(strBonus, objMod, intTotalArmor, "Armor", false,
                                                 token)
                                             .ConfigureAwait(false),
                                         intTotalArmor);
@@ -3668,33 +3678,31 @@ namespace Chummer.Backend.Equipment
                 int intTotalBonusOffroadHandling = 0;
                 int intModArmor = await Mods.SumAsync(async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped)
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
                         return 0;
                     int intTemp = 0;
                     if (objMod.Bonus != null)
                     {
                         intTotalBonusHandling += await ParseBonusAsync(objMod.Bonus["handling"]?.InnerText,
-                            await objMod.GetRatingAsync(token).ConfigureAwait(false),
-                            intBaseOffroadHandling, "Handling", token: token).ConfigureAwait(false);
+                            objMod, intBaseOffroadHandling, "Handling", token: token).ConfigureAwait(false);
                         intTotalBonusOffroadHandling += await ParseBonusAsync(
                                 objMod.Bonus["offroadhandling"]?.InnerText,
-                                await objMod.GetRatingAsync(token).ConfigureAwait(false), intBaseOffroadHandling, "OffroadHandling", token: token)
+                                objMod, intBaseOffroadHandling, "OffroadHandling", token: token)
                             .ConfigureAwait(false);
                         if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
-                            intTemp += await ParseBonusAsync(objMod.Bonus["armor"]?.InnerText, await objMod.GetRatingAsync(token).ConfigureAwait(false),
-                                intTotalArmor,
-                                "Armor", token: token).ConfigureAwait(false);
+                            intTemp += await ParseBonusAsync(objMod.Bonus["armor"]?.InnerText, objMod,
+                                intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
 
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
                         intTotalBonusHandling += await ParseBonusAsync(objMod.WirelessBonus["handling"]?.InnerText,
-                            await objMod.GetRatingAsync(token).ConfigureAwait(false), intBaseOffroadHandling, "Handling", token: token).ConfigureAwait(false);
+                            objMod, intBaseOffroadHandling, "Handling", token: token).ConfigureAwait(false);
                         intTotalBonusOffroadHandling += await ParseBonusAsync(
-                            objMod.WirelessBonus["offroadhandling"]?.InnerText, await objMod.GetRatingAsync(token).ConfigureAwait(false), intBaseOffroadHandling,
+                            objMod.WirelessBonus["offroadhandling"]?.InnerText, objMod, intBaseOffroadHandling,
                             "OffroadHandling", token: token).ConfigureAwait(false);
                         if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
-                            intTemp += await ParseBonusAsync(objMod.WirelessBonus["armor"]?.InnerText, await objMod.GetRatingAsync(token).ConfigureAwait(false),
+                            intTemp += await ParseBonusAsync(objMod.WirelessBonus["armor"]?.InnerText, objMod,
                                 intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
 
@@ -3729,57 +3737,64 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Armor of the Vehicle including Modifications.
         /// </summary>
-        public int TotalArmor
+        public int TotalArmor => GetTotalArmor();
+
+        /// <summary>
+        /// Total Armor of the Vehicle including Modifications.
+        /// </summary>
+        public int GetTotalArmor(VehicleMod objExcludeMod = null)
         {
-            get
+            using (_objCharacter.LockObject.EnterReadLock())
             {
-                using (_objCharacter.LockObject.EnterReadLock())
+                int intArmor = Armor;
+
+                // First check for mods that overwrite the armor value
+                foreach (VehicleMod objMod in Mods)
                 {
-                    int intArmor = Armor;
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
+                        continue;
 
-                    // First check for mods that overwrite the armor value
-                    foreach (VehicleMod objMod in Mods)
-                    {
-                        if (objMod.IncludedInVehicle || !objMod.Equipped)
-                            continue;
-
-                        string strLoop = objMod.Bonus?["armor"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strLoop))
-                            intArmor = Math.Max(intArmor, ParseBonus(strLoop, objMod.Rating, intArmor, "Armor", false));
-                        if (!objMod.WirelessOn || objMod.WirelessBonus == null)
-                            continue;
-                        strLoop = objMod.WirelessBonus?["armor"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strLoop))
-                            intArmor = Math.Max(intArmor, ParseBonus(strLoop, objMod.Rating, intArmor, "Armor", false));
-                    }
-
-                    int intModArmor = 0;
-
-                    // Add the Modification's Armor to the Vehicle's base Armor.
-                    foreach (VehicleMod objMod in Mods)
-                    {
-                        if (objMod.IncludedInVehicle || !objMod.Equipped)
-                            continue;
-
-                        string strLoop = objMod.Bonus?["armor"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strLoop))
-                            intModArmor += ParseBonus(strLoop, objMod.Rating, intArmor, "Armor");
-                        if (!objMod.WirelessOn || objMod.WirelessBonus == null)
-                            continue;
-                        strLoop = objMod.WirelessBonus?["armor"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strLoop))
-                            intModArmor += ParseBonus(strLoop, objMod.Rating, intArmor, "Armor");
-                    }
-
-                    return Math.Min(MaxArmor, intModArmor + intArmor);
+                    string strLoop = objMod.Bonus?["armor"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strLoop))
+                        intArmor = Math.Max(intArmor, ParseBonus(strLoop, objMod, intArmor, "Armor", false));
+                    if (!objMod.WirelessOn || objMod.WirelessBonus == null)
+                        continue;
+                    strLoop = objMod.WirelessBonus?["armor"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strLoop))
+                        intArmor = Math.Max(intArmor, ParseBonus(strLoop, objMod, intArmor, "Armor", false));
                 }
+
+                int intModArmor = 0;
+
+                // Add the Modification's Armor to the Vehicle's base Armor.
+                foreach (VehicleMod objMod in Mods)
+                {
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
+                        continue;
+
+                    string strLoop = objMod.Bonus?["armor"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strLoop))
+                        intModArmor += ParseBonus(strLoop, objMod, intArmor, "Armor");
+                    if (!objMod.WirelessOn || objMod.WirelessBonus == null)
+                        continue;
+                    strLoop = objMod.WirelessBonus?["armor"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strLoop))
+                        intModArmor += ParseBonus(strLoop, objMod, intArmor, "Armor");
+                }
+
+                return Math.Min(MaxArmor, intModArmor + intArmor);
             }
         }
 
         /// <summary>
         /// Total Armor of the Vehicle including Modifications.
         /// </summary>
-        public async Task<int> GetTotalArmorAsync(CancellationToken token = default)
+        public Task<int> GetTotalArmorAsync(CancellationToken token = default) => GetTotalArmorAsync(null, token);
+
+        /// <summary>
+        /// Total Armor of the Vehicle including Modifications.
+        /// </summary>
+        public async Task<int> GetTotalArmorAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -3791,13 +3806,13 @@ namespace Chummer.Backend.Equipment
                 // First check for mods that overwrite the armor value
                 await Mods.ForEachAsync(async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped)
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
                         return;
 
                     string strLoop = objMod.Bonus?["armor"]?.InnerText;
                     if (!string.IsNullOrEmpty(strLoop))
                         intArmor = Math.Max(intArmor,
-                            await ParseBonusAsync(strLoop, await objMod.GetRatingAsync(token).ConfigureAwait(false), intArmor, "Armor", false,
+                            await ParseBonusAsync(strLoop, objMod, intArmor, "Armor", false,
                                     token)
                                 .ConfigureAwait(false));
                     if (!objMod.WirelessOn || objMod.WirelessBonus == null)
@@ -3805,7 +3820,7 @@ namespace Chummer.Backend.Equipment
                     strLoop = objMod.WirelessBonus?["armor"]?.InnerText;
                     if (!string.IsNullOrEmpty(strLoop))
                         intArmor = Math.Max(intArmor,
-                            await ParseBonusAsync(strLoop, await objMod.GetRatingAsync(token).ConfigureAwait(false), intArmor, "Armor", false,
+                            await ParseBonusAsync(strLoop, objMod, intArmor, "Armor", false,
                                     token)
                                 .ConfigureAwait(false));
                 }, token).ConfigureAwait(false);
@@ -3813,20 +3828,20 @@ namespace Chummer.Backend.Equipment
                 // Add the Modification's Armor to the Vehicle's base Armor.
                 int intModArmor = await Mods.SumAsync(async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped)
+                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
                         return 0;
 
                     string strLoop = objMod.Bonus?["armor"]?.InnerText;
                     int intTemp = 0;
                     if (!string.IsNullOrEmpty(strLoop))
-                        intTemp += await ParseBonusAsync(strLoop, await objMod.GetRatingAsync(token).ConfigureAwait(false), intArmor,
+                        intTemp += await ParseBonusAsync(strLoop, objMod, intArmor,
                                 "Armor", token: token)
                             .ConfigureAwait(false);
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
                         strLoop = objMod.WirelessBonus?["armor"]?.InnerText;
                         if (!string.IsNullOrEmpty(strLoop))
-                            intTemp += await ParseBonusAsync(strLoop, await objMod.GetRatingAsync(token).ConfigureAwait(false), intArmor,
+                            intTemp += await ParseBonusAsync(strLoop, objMod, intArmor,
                                     "Armor", token: token)
                                 .ConfigureAwait(false);
                     }
@@ -5220,7 +5235,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                    ProcessAttributesInXPath(sbdValue, strExpression);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
@@ -5283,7 +5298,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                    await ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
@@ -5515,6 +5530,601 @@ namespace Chummer.Backend.Equipment
         }
 
         public const int MaxWheels = 50;
+
+        public static string FillAttributsInXPathWithDummies(string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            string strValue = int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo);
+            return strInput
+                .Replace("{BodyBase}", strValue)
+                .Replace("{HandlingBase}", strValue)
+                .Replace("{OffroadHandlingBase}", strValue)
+                .Replace("{SpeedBase}", strValue)
+                .Replace("{OffroadSpeedBase}", strValue)
+                .Replace("{AccelerationBase}", strValue)
+                .Replace("{OffroadAccelerationBase}", strValue)
+                .Replace("{SensorBase}", strValue)
+                .Replace("{ArmorBase}", strValue)
+                .Replace("{PilotBase}", strValue)
+                .Replace("{SeatsBase}", strValue)
+                .Replace("{BodyTotal}", strValue)
+                .Replace("{HandlingTotal}", strValue)
+                .Replace("{OffroadHandlingTotal}", strValue)
+                .Replace("{SpeedTotal}", strValue)
+                .Replace("{OffroadSpeedTotal}", strValue)
+                .Replace("{AccelerationTotal}", strValue)
+                .Replace("{OffroadAccelerationTotal}", strValue)
+                .Replace("{AccelTotal}", strValue)
+                .Replace("{OffroadAccelTotal}", strValue)
+                .Replace("{SensorTotal}", strValue)
+                .Replace("{ArmorTotal}", strValue)
+                .Replace("{PilotTotal}", strValue)
+                .Replace("{SeatsTotal}", strValue)
+                .Replace("{HandlingMax}", strValue)
+                .Replace("{SpeedMax}", strValue)
+                .Replace("{AccelerationMax}", strValue)
+                .Replace("{SensorMax}", strValue)
+                .Replace("{ArmorMax}", strValue)
+                .Replace("{PilotMax}", strValue)
+                .Replace("{Body}", strValue)
+                .Replace("{Handling}", strValue)
+                .Replace("{OffroadHandling}", strValue)
+                .Replace("{Speed}", strValue)
+                .Replace("{OffroadSpeed}", strValue)
+                .Replace("{Acceleration}", strValue)
+                .Replace("{OffroadAcceleration}", strValue)
+                .Replace("{Accel}", strValue)
+                .Replace("{OffroadAccel}", strValue)
+                .Replace("{Sensor}", strValue)
+                .Replace("{Armor}", strValue)
+                .Replace("{Pilot}", strValue)
+                .Replace("{Seats}", strValue)
+                .Replace("Body", strValue)
+                .Replace("OffroadHandling", strValue)
+                .Replace("Handling", strValue)
+                .Replace("OffroadSpeed", strValue)
+                .Replace("Speed", strValue)
+                .Replace("OffroadAcceleration", strValue)
+                .Replace("Acceleration", strValue)
+                .Replace("OffroadAccel", strValue)
+                .Replace("Accel", strValue)
+                .Replace("Sensor", strValue)
+                .Replace("Armor", strValue)
+                .Replace("Pilot", strValue)
+                .Replace("Seats", strValue)
+                .Replace("{Parent Cost}", "0")
+                .Replace("Parent Cost", "0")
+                .Replace("{Vehicle Cost}", "0")
+                .Replace("Vehicle Cost", "0")
+                .Replace("{Cost}", "0")
+                .Replace("Cost", "0")
+                .Replace("{Parent Slots}", "0")
+                .Replace("Parent Slots", "0")
+                .Replace("{Vehicle Slots}", "0")
+                .Replace("Vehicle Slots", "0")
+                .Replace("{Slots}", "0")
+                .Replace("Slots", "0");
+        }
+
+        public static StringBuilder FillAttributesInXPathWithDummies(StringBuilder sdbInput)
+        {
+            if (sdbInput.Length == 0)
+                return sdbInput;
+            string strValue = int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo);
+            return sdbInput
+                .Replace("{BodyBase}", strValue)
+                .Replace("{HandlingBase}", strValue)
+                .Replace("{OffroadHandlingBase}", strValue)
+                .Replace("{SpeedBase}", strValue)
+                .Replace("{OffroadSpeedBase}", strValue)
+                .Replace("{AccelerationBase}", strValue)
+                .Replace("{OffroadAccelerationBase}", strValue)
+                .Replace("{SensorBase}", strValue)
+                .Replace("{ArmorBase}", strValue)
+                .Replace("{PilotBase}", strValue)
+                .Replace("{SeatsBase}", strValue)
+                .Replace("{BodyTotal}", strValue)
+                .Replace("{HandlingTotal}", strValue)
+                .Replace("{OffroadHandlingTotal}", strValue)
+                .Replace("{SpeedTotal}", strValue)
+                .Replace("{OffroadSpeedTotal}", strValue)
+                .Replace("{AccelerationTotal}", strValue)
+                .Replace("{OffroadAccelerationTotal}", strValue)
+                .Replace("{AccelTotal}", strValue)
+                .Replace("{OffroadAccelTotal}", strValue)
+                .Replace("{SensorTotal}", strValue)
+                .Replace("{ArmorTotal}", strValue)
+                .Replace("{PilotTotal}", strValue)
+                .Replace("{SeatsTotal}", strValue)
+                .Replace("{HandlingMax}", strValue)
+                .Replace("{SpeedMax}", strValue)
+                .Replace("{AccelerationMax}", strValue)
+                .Replace("{SensorMax}", strValue)
+                .Replace("{ArmorMax}", strValue)
+                .Replace("{PilotMax}", strValue)
+                .Replace("{Body}", strValue)
+                .Replace("{Handling}", strValue)
+                .Replace("{OffroadHandling}", strValue)
+                .Replace("{Speed}", strValue)
+                .Replace("{OffroadSpeed}", strValue)
+                .Replace("{Acceleration}", strValue)
+                .Replace("{OffroadAcceleration}", strValue)
+                .Replace("{Accel}", strValue)
+                .Replace("{OffroadAccel}", strValue)
+                .Replace("{Sensor}", strValue)
+                .Replace("{Armor}", strValue)
+                .Replace("{Pilot}", strValue)
+                .Replace("{Seats}", strValue)
+                .Replace("Body", strValue)
+                .Replace("OffroadHandling", strValue)
+                .Replace("Handling", strValue)
+                .Replace("OffroadSpeed", strValue)
+                .Replace("Speed", strValue)
+                .Replace("OffroadAcceleration", strValue)
+                .Replace("Acceleration", strValue)
+                .Replace("OffroadAccel", strValue)
+                .Replace("Accel", strValue)
+                .Replace("Sensor", strValue)
+                .Replace("Armor", strValue)
+                .Replace("Pilot", strValue)
+                .Replace("Seats", strValue)
+                .Replace("{Parent Cost}", "0")
+                .Replace("Parent Cost", "0")
+                .Replace("{Vehicle Cost}", "0")
+                .Replace("Vehicle Cost", "0")
+                .Replace("{Cost}", "0")
+                .Replace("Cost", "0")
+                .Replace("{Parent Slots}", "0")
+                .Replace("Parent Slots", "0")
+                .Replace("{Vehicle Slots}", "0")
+                .Replace("Vehicle Slots", "0")
+                .Replace("{Slots}", "0")
+                .Replace("Slots", "0");
+        }
+
+        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", VehicleMod objExcludeMod = null, WeaponMount objExcludeMount = null)
+        {
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (string.IsNullOrEmpty(strOriginal))
+                strOriginal = sbdInput.ToString();
+            sbdInput.CheapReplace(strOriginal, "{BodyBase}",
+                () => Body.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{HandlingBase}",
+                () => Handling.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{OffroadHandlingBase}",
+                () => OffroadHandling.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{SpeedBase}",
+                () => Speed.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{OffroadSpeedBase}",
+                () => OffroadSpeed.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{AccelerationBase}",
+                () => Accel.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{OffroadAccelerationBase}",
+                () => OffroadAccel.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{SensorBase}",
+                () => BaseSensor.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{ArmorBase}",
+                () => Armor.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{PilotBase}",
+                () => BasePilot.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{SeatsBase}",
+                () => Seats.ToString(GlobalSettings.InvariantCultureInfo));
+            Lazy<string> strTotalBody = objExcludeMod != null || objExcludeMount != null
+                ? new Lazy<string>(() =>
+                {
+                    // For vehicle mods, total body is always at least 0.5
+                    int i = GetTotalBody(objExcludeMod);
+                    if (i != 0)
+                        return i.ToString(GlobalSettings.InvariantCultureInfo);
+                    return "0.5";
+                })
+                : new Lazy<string>(() => GetTotalBody(objExcludeMod).ToString(GlobalSettings.InvariantCultureInfo));
+            Lazy<Tuple<string, string>> strHandlingValues = new Lazy<Tuple<string, string>>(() =>
+            {
+                bool blnFirst = true;
+                string strReturn1 = string.Empty;
+                string strReturn2 = string.Empty;
+                foreach (string strValue in GetTotalHandling(objExcludeMod).SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (blnFirst)
+                    {
+                        strReturn1 = strReturn2 = strValue;
+                        blnFirst = false;
+                    }
+                    else
+                    {
+                        strReturn2 = strValue;
+                        break;
+                    }
+                }
+                return new Tuple<string, string>(strReturn1, strReturn2);
+            });
+            Lazy<Tuple<string, string>> strSpeedValues = new Lazy<Tuple<string, string>>(() =>
+            {
+                bool blnFirst = true;
+                string strReturn1 = string.Empty;
+                string strReturn2 = string.Empty;
+                foreach (string strValue in GetTotalSpeed(objExcludeMod).SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (blnFirst)
+                    {
+                        strReturn1 = strReturn2 = strValue;
+                        blnFirst = false;
+                    }
+                    else
+                    {
+                        strReturn2 = strValue;
+                        break;
+                    }
+                }
+                return new Tuple<string, string>(strReturn1, strReturn2);
+            });
+            Lazy<Tuple<string, string>> strAccelerationValues = new Lazy<Tuple<string, string>>(() =>
+            {
+                bool blnFirst = true;
+                string strReturn1 = string.Empty;
+                string strReturn2 = string.Empty;
+                foreach (string strValue in GetTotalAccel(objExcludeMod).SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (blnFirst)
+                    {
+                        strReturn1 = strReturn2 = strValue;
+                        blnFirst = false;
+                    }
+                    else
+                    {
+                        strReturn2 = strValue;
+                        break;
+                    }
+                }
+                return new Tuple<string, string>(strReturn1, strReturn2);
+            });
+            Lazy<string> strTotalSensor = new Lazy<string>(() => GetCalculatedSensor(objExcludeMod).ToString(GlobalSettings.InvariantCultureInfo));
+            Lazy<string> strTotalArmor = new Lazy<string>(() => GetTotalArmor(objExcludeMod).ToString(GlobalSettings.InvariantCultureInfo));
+            Lazy<string> strTotalPilot = new Lazy<string>(() => GetPilot(objExcludeMod).ToString(GlobalSettings.InvariantCultureInfo));
+            Lazy<string> strTotalSeats = new Lazy<string>(() => GetTotalSeats(objExcludeMod).ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{BodyTotal}",
+                () => strTotalBody.Value);
+            sbdInput.CheapReplace(strOriginal, "{HandlingTotal}",
+                () => strHandlingValues.Value.Item1);
+            sbdInput.CheapReplace(strOriginal, "{OffroadHandlingTotal}",
+                () => strHandlingValues.Value.Item2);
+            sbdInput.CheapReplace(strOriginal, "{SpeedTotal}",
+                () => strSpeedValues.Value.Item1);
+            sbdInput.CheapReplace(strOriginal, "{OffroadSpeedTotal}",
+                () => strSpeedValues.Value.Item2);
+            sbdInput.CheapReplace(strOriginal, "{AccelerationTotal}",
+                () => strAccelerationValues.Value.Item1);
+            sbdInput.CheapReplace(strOriginal, "{OffroadAccelerationTotal}",
+                () => strAccelerationValues.Value.Item2);
+            sbdInput.CheapReplace(strOriginal, "{SensorTotal}",
+                () => strTotalSensor.Value);
+            sbdInput.CheapReplace(strOriginal, "{ArmorTotal}",
+                () => strTotalArmor.Value);
+            sbdInput.CheapReplace(strOriginal, "{PilotTotal}",
+                () => strTotalPilot.Value);
+            sbdInput.CheapReplace(strOriginal, "{SeatsTotal}",
+                () => strTotalSeats.Value);
+            sbdInput.CheapReplace(strOriginal, "{HandlingMax}",
+                () => MaxHandling.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{SpeedMax}",
+                () => MaxSpeed.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{AccelerationMax}",
+                () => MaxAcceleration.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{SensorMax}",
+                () => MaxSensor.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{ArmorMax}",
+                () => MaxArmor.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{PilotMax}",
+                () => MaxPilot.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{Body}",
+                () => strTotalBody.Value);
+            sbdInput.CheapReplace(strOriginal, "{Handling}",
+                () => strHandlingValues.Value.Item1);
+            sbdInput.CheapReplace(strOriginal, "{OffroadHandling}",
+                () => strHandlingValues.Value.Item2);
+            sbdInput.CheapReplace(strOriginal, "{Speed}",
+                () => strSpeedValues.Value.Item1);
+            sbdInput.CheapReplace(strOriginal, "{OffroadSpeed}",
+                () => strSpeedValues.Value.Item2);
+            sbdInput.CheapReplace(strOriginal, "{Acceleration}",
+                () => strAccelerationValues.Value.Item1);
+            sbdInput.CheapReplace(strOriginal, "{AccelTotal}",
+                () => strAccelerationValues.Value.Item1);
+            sbdInput.CheapReplace(strOriginal, "{Accel}",
+                () => strAccelerationValues.Value.Item1);
+            sbdInput.CheapReplace(strOriginal, "{OffroadAcceleration}",
+                () => strAccelerationValues.Value.Item2);
+            sbdInput.CheapReplace(strOriginal, "{OffroadAccelTotal}",
+                () => strAccelerationValues.Value.Item2);
+            sbdInput.CheapReplace(strOriginal, "{OffroadAccel}",
+                () => strAccelerationValues.Value.Item2);
+            sbdInput.CheapReplace(strOriginal, "{Sensor}",
+                () => strTotalSensor.Value);
+            sbdInput.CheapReplace(strOriginal, "{Armor}",
+                () => strTotalArmor.Value);
+            sbdInput.CheapReplace(strOriginal, "{Pilot}",
+                () => strTotalPilot.Value);
+            sbdInput.CheapReplace(strOriginal, "{Seats}",
+                () => strTotalSeats.Value);
+            sbdInput.CheapReplace(strOriginal, "Body",
+                () => strTotalBody.Value);
+            sbdInput.CheapReplace(strOriginal, "OffroadHandling",
+                () => strHandlingValues.Value.Item2);
+            sbdInput.CheapReplace(strOriginal, "Handling",
+                () => Handling.ToString(GlobalSettings.InvariantCultureInfo)); // For legacy reasons
+            sbdInput.CheapReplace(strOriginal, "OffroadSpeed",
+                () => strSpeedValues.Value.Item2);
+            sbdInput.CheapReplace(strOriginal, "Speed",
+                () => Speed.ToString(GlobalSettings.InvariantCultureInfo)); // For legacy reasons
+            sbdInput.CheapReplace(strOriginal, "OffroadAcceleration",
+                () => strAccelerationValues.Value.Item2);
+            sbdInput.CheapReplace(strOriginal, "OffroadAccel",
+                () => strAccelerationValues.Value.Item2);
+            sbdInput.CheapReplace(strOriginal, "Acceleration",
+                () => Accel.ToString(GlobalSettings.InvariantCultureInfo)); // For legacy reasons
+            sbdInput.CheapReplace(strOriginal, "Accel",
+                () => strAccelerationValues.Value.Item1);
+            sbdInput.CheapReplace(strOriginal, "Sensor",
+                () => BaseSensor.ToString(GlobalSettings.InvariantCultureInfo)); // For legacy reasons
+            sbdInput.CheapReplace(strOriginal, "Armor",
+                () => Armor.ToString(GlobalSettings.InvariantCultureInfo)); // For legacy reasons
+            sbdInput.CheapReplace(strOriginal, "Pilot",
+                () => strTotalPilot.Value);
+            sbdInput.CheapReplace(strOriginal, "Seats",
+                () => strTotalSeats.Value);
+            Lazy<string> strOwnCost = new Lazy<string>(() => OwnCost.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{Parent Cost}",
+                () => strOwnCost.Value);
+            sbdInput.CheapReplace(strOriginal, "Parent Cost",
+                () => strOwnCost.Value);
+            sbdInput.CheapReplace(strOriginal, "{Vehicle Cost}",
+                () => strOwnCost.Value);
+            sbdInput.CheapReplace(strOriginal, "Vehicle Cost",
+                () => strOwnCost.Value);
+            sbdInput.CheapReplace(strOriginal, "{Cost}",
+                () => strOwnCost.Value);
+            sbdInput.CheapReplace(strOriginal, "Cost",
+                () => strOwnCost.Value);
+            Lazy<string> strOwnSlots = new Lazy<string>(() => Slots.ToString(GlobalSettings.InvariantCultureInfo));
+            sbdInput.CheapReplace(strOriginal, "{Parent Slots}",
+                () => strOwnSlots.Value);
+            sbdInput.CheapReplace(strOriginal, "Parent Slots",
+                () => strOwnSlots.Value);
+            sbdInput.CheapReplace(strOriginal, "{Vehicle Slots}",
+                () => strOwnSlots.Value);
+            sbdInput.CheapReplace(strOriginal, "Vehicle Slots",
+                () => strOwnSlots.Value);
+            sbdInput.CheapReplace(strOriginal, "{Slots}",
+                () => strOwnSlots.Value);
+            sbdInput.CheapReplace(strOriginal, "Slots",
+                () => strOwnSlots.Value);
+            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal);
+        }
+
+        public async Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", VehicleMod objExcludeMod = null, WeaponMount objExcludeMount = null, CancellationToken token = default)
+        {
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (string.IsNullOrEmpty(strOriginal))
+                strOriginal = sbdInput.ToString();
+            await sbdInput.CheapReplaceAsync(strOriginal, "{BodyBase}",
+                () => Body.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{HandlingBase}",
+                () => Handling.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadHandlingBase}",
+                () => OffroadHandling.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{SpeedBase}",
+                () => Speed.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadSpeedBase}",
+                () => OffroadSpeed.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{AccelerationBase}",
+                () => Accel.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadAccelerationBase}",
+                () => OffroadAccel.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{SensorBase}",
+                () => BaseSensor.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{ArmorBase}",
+                () => Armor.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{PilotBase}",
+                () => BasePilot.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{SeatsBase}",
+                () => Seats.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            Microsoft.VisualStudio.Threading.AsyncLazy<string> strTotalBody = objExcludeMod != null || objExcludeMount != null
+                ? new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () =>
+                {
+                    // For vehicle mods, total body is always at least 0.5
+                    int i = await GetTotalBodyAsync(objExcludeMod, token).ConfigureAwait(false);
+                    if (i != 0)
+                        return i.ToString(GlobalSettings.InvariantCultureInfo);
+                    return "0.5";
+                }, Utils.JoinableTaskFactory)
+                : new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetTotalBodyAsync(objExcludeMod, token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+            Microsoft.VisualStudio.Threading.AsyncLazy<Tuple<string, string>> strHandlingValues = new Microsoft.VisualStudio.Threading.AsyncLazy<Tuple<string, string>>(async () =>
+            {
+                bool blnFirst = true;
+                string strReturn1 = string.Empty;
+                string strReturn2 = string.Empty;
+                foreach (string strValue in (await GetTotalHandlingAsync(objExcludeMod, token).ConfigureAwait(false)).SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (blnFirst)
+                    {
+                        strReturn1 = strReturn2 = strValue;
+                        blnFirst = false;
+                    }
+                    else
+                    {
+                        strReturn2 = strValue;
+                        break;
+                    }
+                }
+                return new Tuple<string, string>(strReturn1, strReturn2);
+            }, Utils.JoinableTaskFactory);
+            Microsoft.VisualStudio.Threading.AsyncLazy<Tuple<string, string>> strSpeedValues = new Microsoft.VisualStudio.Threading.AsyncLazy<Tuple<string, string>>(async () =>
+            {
+                bool blnFirst = true;
+                string strReturn1 = string.Empty;
+                string strReturn2 = string.Empty;
+                foreach (string strValue in (await GetTotalSpeedAsync(objExcludeMod, token).ConfigureAwait(false)).SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (blnFirst)
+                    {
+                        strReturn1 = strReturn2 = strValue;
+                        blnFirst = false;
+                    }
+                    else
+                    {
+                        strReturn2 = strValue;
+                        break;
+                    }
+                }
+                return new Tuple<string, string>(strReturn1, strReturn2);
+            }, Utils.JoinableTaskFactory);
+            Microsoft.VisualStudio.Threading.AsyncLazy<Tuple<string, string>> strAccelerationValues = new Microsoft.VisualStudio.Threading.AsyncLazy<Tuple<string, string>>(async () =>
+            {
+                bool blnFirst = true;
+                string strReturn1 = string.Empty;
+                string strReturn2 = string.Empty;
+                foreach (string strValue in (await GetTotalAccelAsync(objExcludeMod, token).ConfigureAwait(false)).SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (blnFirst)
+                    {
+                        strReturn1 = strReturn2 = strValue;
+                        blnFirst = false;
+                    }
+                    else
+                    {
+                        strReturn2 = strValue;
+                        break;
+                    }
+                }
+                return new Tuple<string, string>(strReturn1, strReturn2);
+            }, Utils.JoinableTaskFactory);
+            Microsoft.VisualStudio.Threading.AsyncLazy<string> strTotalSensor = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetCalculatedSensorAsync(objExcludeMod, token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+            Microsoft.VisualStudio.Threading.AsyncLazy<string> strTotalArmor = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetTotalArmorAsync(objExcludeMod, token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+            Microsoft.VisualStudio.Threading.AsyncLazy<string> strTotalPilot = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetPilotAsync(objExcludeMod, token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+            Microsoft.VisualStudio.Threading.AsyncLazy<string> strTotalSeats = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetTotalSeatsAsync(objExcludeMod, token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{BodyTotal}",
+                () => strTotalBody.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{HandlingTotal}",
+                async () => (await strHandlingValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadHandlingTotal}",
+                async () => (await strHandlingValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{SpeedTotal}",
+                async () => (await strSpeedValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadSpeedTotal}",
+                async () => (await strSpeedValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{AccelerationTotal}",
+                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadAccelerationTotal}",
+                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{SensorTotal}",
+                () => strTotalSensor.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{ArmorTotal}",
+                () => strTotalArmor.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{PilotTotal}",
+                () => strTotalPilot.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{SeatsTotal}",
+                () => strTotalSeats.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{HandlingMax}",
+                async () => (await GetMaxHandlingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{SpeedMax}",
+                async () => (await GetMaxSpeedAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{AccelerationMax}",
+                async () => (await GetMaxAccelerationAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{SensorMax}",
+                async () => (await GetMaxSensorAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{ArmorMax}",
+                async () => (await GetMaxArmorAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{PilotMax}",
+                async () => (await GetMaxPilotAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Body}",
+                () => strTotalBody.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Handling}",
+                async () => (await strHandlingValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadHandling}",
+                async () => (await strHandlingValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Speed}",
+                async () => (await strSpeedValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadSpeed}",
+                async () => (await strSpeedValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{AccelTotal}",
+                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadAccelTotal}",
+                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Acceleration}",
+                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadAcceleration}",
+                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Accel}",
+                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadAccel}",
+                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Sensor}",
+                () => strTotalSensor.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Armor}",
+                () => strTotalArmor.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Pilot}",
+                () => strTotalPilot.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Seats}",
+                () => strTotalSeats.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "Body",
+                () => strTotalBody.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "OffroadHandling",
+                async () => (await strHandlingValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "Handling",
+                () => Handling.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false); // For legacy reasons
+            await sbdInput.CheapReplaceAsync(strOriginal, "OffroadSpeed",
+                async () => (await strSpeedValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "Speed",
+                () => Speed.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);  // For legacy reasons
+            await sbdInput.CheapReplaceAsync(strOriginal, "OffroadAcceleration",
+                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "Acceleration",
+                () => Accel.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);  // For legacy reasons
+            await sbdInput.CheapReplaceAsync(strOriginal, "OffroadAccel",
+                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "Accel",
+                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "Sensor",
+                () => BaseSensor.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false); // For legacy reasons
+            await sbdInput.CheapReplaceAsync(strOriginal, "Armor",
+                () => Armor.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false); // For legacy reasons
+            await sbdInput.CheapReplaceAsync(strOriginal, "Pilot",
+                () => strTotalPilot.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "Seats",
+                () => strTotalSeats.GetValueAsync(token), token: token).ConfigureAwait(false);
+            Microsoft.VisualStudio.Threading.AsyncLazy<string> strOwnCost = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Parent Cost}",
+                () => strOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "Parent Cost",
+                () => strOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Vehicle Cost}",
+                () => strOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "Vehicle Cost",
+                () => strOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Cost}",
+                () => strOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "Cost",
+                () => strOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+            Microsoft.VisualStudio.Threading.AsyncLazy<string> strOwnSlots = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetSlotsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Parent Slots}",
+                () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "Parent Slots",
+                () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Vehicle Slots}",
+                () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "Vehicle Slots",
+                () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "{Slots}",
+                () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await sbdInput.CheapReplaceAsync(strOriginal, "Slots",
+                () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
+            await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                .ProcessAttributesInXPathAsync(sbdInput, strOriginal, token: token).ConfigureAwait(false);
+        }
 
         /// <inheritdoc />
         public void Dispose()

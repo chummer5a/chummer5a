@@ -11502,7 +11502,7 @@ namespace Chummer
                             XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
                             await objRetrofit.CreateAsync(objXmlNode, 0, objMod.Parent, token: token).ConfigureAwait(false);
                             objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
-                            objRetrofit.IncludedInVehicle = true;
+                            await objRetrofit.SetIncludedInVehicleAsync(true, token).ConfigureAwait(false);
                             await objMod.Parent.Mods.AddAsync(objRetrofit, token).ConfigureAwait(false);
 
                             if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
