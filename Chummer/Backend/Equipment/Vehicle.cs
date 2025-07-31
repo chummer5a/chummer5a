@@ -4045,7 +4045,7 @@ namespace Chummer.Backend.Equipment
                 //When you need to use a 0 for the math, use 0.5 instead
                 if (IsDrone && !_objCharacter.IgnoreRules && _objCharacter.Settings.DroneModsMaximumPilot)
                 {
-                    return Math.Max(Pilot * 2, 1);
+                    return Math.Max(BasePilot * 2, 1);
                 }
                 return int.MaxValue;
             }
@@ -4062,7 +4062,7 @@ namespace Chummer.Backend.Equipment
             if (IsDrone && !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false) &&
                 await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDroneModsMaximumPilotAsync(token).ConfigureAwait(false))
             {
-                return Math.Max(await GetPilotAsync(token).ConfigureAwait(false) * 2, 1);
+                return Math.Max(BasePilot * 2, 1);
             }
 
             return int.MaxValue;
