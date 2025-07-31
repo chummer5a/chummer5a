@@ -32,7 +32,7 @@ namespace Chummer
     /// <summary>
     /// An Art.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(\"en-us\")}")]
     public class Art : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);

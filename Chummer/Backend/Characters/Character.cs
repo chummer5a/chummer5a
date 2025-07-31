@@ -7797,7 +7797,7 @@ namespace Chummer
                                                                         objCheckQuality != objQuality &&
                                                                         objCheckQuality.SourceID == objQuality.SourceID &&
                                                                         objCheckQuality.Extra == strCheckExtra &&
-                                                                        objCheckQuality.SourceName == strCheckSourceName);
+                                                                        objCheckQuality.SourceName == strCheckSourceName, token);
                                                                 }
                                                                 else
                                                                 {
@@ -9542,7 +9542,7 @@ namespace Chummer
                                                     objCheckQuality != objLivingPersonaQuality &&
                                                     objCheckQuality.SourceID == objLivingPersonaQuality.SourceID &&
                                                     objCheckQuality.Extra == strCheckExtra &&
-                                                    objCheckQuality.SourceName == strCheckSourceName);
+                                                    objCheckQuality.SourceName == strCheckSourceName, token);
                                             }
                                             else
                                             {
@@ -32388,7 +32388,6 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 string strToolTip = await GetDodgeToolTipAsync(token).ConfigureAwait(false);
-                int intDodge = await GetSpellDefenseIndirectDodgeAsync(token).ConfigureAwait(false);
                 int intCounterspellingDice = await GetCurrentCounterspellingDiceAsync(token).ConfigureAwait(false);
                 if (intCounterspellingDice != 0)
                 {

@@ -44,7 +44,7 @@ namespace Chummer
     /// An Adept Power.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(\"en-us\")}")]
     public sealed class Power : INotifyMultiplePropertiesChangedAsync, IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;

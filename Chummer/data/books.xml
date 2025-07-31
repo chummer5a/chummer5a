@@ -88,6 +88,11 @@
           <text>Die Luft war voller Rauch, durchschnitten</text>
           <page>8</page>
         </match>
+		<match>
+          <language>fr-fr</language>
+		  <text>La fumée emplissait l’air, transpercée par les lignes cramoisies,</text>
+		  <page>10</page>
+		</match>
       </matches>
     </book>
     <book>
@@ -182,6 +187,11 @@
           <text>Freedom is a prison all its own</text>
           <page>4</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Die Freiheit ist eine ganz eigene Art von Gefängnis.</text>
+          <page>4</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -192,6 +202,11 @@
         <match>
           <language>en-us</language>
           <text>Less than a day before</text>
+          <page>6</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Vor ein paar Tagen war Edwards noch ein unwichtiger</text>
           <page>6</page>
         </match>
       </matches>
@@ -235,6 +250,11 @@
           <text>The Matrix is the vast, wild, and wooly frontier</text>
           <page>3</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Die größte Attraktion an der Matrix ist natürlich, dass</text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -246,6 +266,11 @@
           <language>en-us</language>
           <text>The Matrix is the vast, wild, and wooly frontier</text>
           <page>3</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Die größte Attraktion an der Matrix ist natürlich, dass</text>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -259,6 +284,11 @@
           <text>The tragedy of a shadowrunner</text>
           <page>3</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Aber natürlich gibt es darüber geteilte Meinungen. Für</text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -271,6 +301,11 @@
           <text>Shadowrunners will punch you in the face</text>
           <page>5</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Runner sind Opportunisten. Um zu überleben, würden sie</text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -281,6 +316,11 @@
         <match>
           <language>en-us</language>
           <text>Operations in bad times are pretty much the same</text>
+          <page>5</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Anfang 2077 gibt es in der Sechsten Welt zahlreiche</text>
           <page>5</page>
         </match>
       </matches>
@@ -315,6 +355,11 @@
           <text>There are obvious uses for riggers</text>
           <page>5</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Es gibt offensichtliche Einsatzgebiete für Rigger, die </text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -325,6 +370,11 @@
         <match>
           <language>en-us</language>
           <text>In the Sixth World, people usually assume that the thing</text>
+          <page>5</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>In der Sechsten Welt nehmen die Leute für gewöhnlich an,</text>
           <page>5</page>
         </match>
       </matches>
@@ -349,6 +399,11 @@
         <match>
           <language>en-us</language>
           <text>FBI Agent Seth Dietrich had seen plenty of danger or</text>
+          <page>3</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>FBI-Agent Seth Dietrich hatte schon eine Menge Gefährliches</text>
           <page>3</page>
         </match>
       </matches>
@@ -387,6 +442,11 @@
           <text>A breakdown of civilization, new threats, crazy danger, corporate desperation, and secrets</text>
           <page>8</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Selbst unter Idealbedingungen ist Zivilisation stets eine</text>
+          <page>7</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -421,6 +481,11 @@
         <match>
           <language>en-us</language>
           <text>Real con artists know they never have to ask anyone</text>
+          <page>3</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Oft sind die von Runnern eingesetzten Werkzeuge sehr</text>
           <page>3</page>
         </match>
       </matches>
@@ -487,6 +552,11 @@
           <text>Of course there are risks!</text>
           <page>5</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Aber es gibt Risiken. Natürlich gibt es Risiken!</text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -498,6 +568,11 @@
           <language>en-us</language>
           <text>The world of magic is infinite</text>
           <page>6</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Die Welt der Magie ist unendlich. Für jedes Ding, das</text>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -523,6 +598,11 @@
           <text>That’s why trogs are taking it back.</text>
           <page>6</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Deshalb holen es sich die Trogs zurück. Werden</text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -533,6 +613,12 @@
         <match>
           <language>en-us</language>
           <text>Motherfucking dammit, Charlie!</text>
+          <page>3</page>
+        </match>
+		<!-- Germans have it united with other Shadows in Focus books centered on Sioux Nation -->
+		<match>
+          <language>de-de</language>
+          <text>Sie führen die Runner in die Schatten der Sioux</text>
           <page>3</page>
         </match>
       </matches>
@@ -546,6 +632,11 @@
           <language>en-us</language>
           <text>Knowing your opponent is a critical part of</text>
           <page>6</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Den Gegner zu kennen ist ein wichtiger Teil des </text>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -571,6 +662,11 @@
           <text>There is no better way to get a shadowrunner</text>
           <page>6</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Es gibt keine bessere Art, einen Runner dazu zu</text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -582,6 +678,11 @@
           <language>en-us</language>
           <text>The Matrix is not a place, but it is everywhere</text>
           <page>6</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Die Matrix ist kein Ort, sondern sie ist überall. Sie ist</text>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -606,6 +707,11 @@
           <language>en-us</language>
           <text>This book is not about them</text>
           <page>6</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>all den Drek in ihr schweifen lassen und sagen:</text>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -635,6 +741,11 @@
           <language>en-us</language>
           <text>There is no future</text>
           <page>6</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Wenn man diesen Gedanken laut ausspricht, dann</text>
+          <page>7</page>
         </match>
       </matches>
     </book>
@@ -673,6 +784,7 @@
           <text>KRIME!!!!!!!</text>
           <page>2</page>
         </match>
+		<!-- Do not match to German one because it is 6e-exclusive instead of being dual-statted -->
       </matches>
     </book>
     <book>
@@ -709,6 +821,11 @@
           <text>We have specifically designed these quick-start rules</text>
           <page>2</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Wir schreiben das Jahr 2075, und wenn man überleben will, muss man überlegen, was man zu zahlen bereit</text>
+          <page>6</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -731,6 +848,11 @@
         <match>
           <language>en-us</language>
           <text>By 2075, commlinks have become a universal appliance. Because</text>
+          <page>4</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Im Jahre 2075 sind Kommlinks ein allgegenwärtiges</text>
           <page>4</page>
         </match>
       </matches>

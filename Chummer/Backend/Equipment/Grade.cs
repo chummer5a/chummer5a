@@ -29,7 +29,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Grade of Cyberware or Bioware.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(\"en-us\")}")]
     public class Grade : IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode, IHasCharacterObject
     {
         private readonly Character _objCharacter;

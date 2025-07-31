@@ -1072,6 +1072,7 @@ namespace Chummer
                         string strSelectCategory = objXmlCyberware.SelectSingleNodeAndCacheExpression("category", token)?.Value ?? string.Empty;
                         bool blnForceNoESSModifier = objXmlCyberware.SelectSingleNodeAndCacheExpression("forcegrade", token)?.Value == "None";
                         bool blnIsGeneware = objXmlCyberware.SelectSingleNodeAndCacheExpression("isgeneware", token) != null && objXmlCyberware.SelectSingleNodeAndCacheExpression("isgeneware", token)?.Value != bool.FalseString;
+                        bool blnOrGear = false;
 
                         // Place the Genetech cost multiplier in a variable that can be safely modified.
                         decimal decGenetechCostModifier = 1;
@@ -1085,6 +1086,10 @@ namespace Chummer
                         int intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
                         string strAvailExpression = objXmlCyberware
                             .SelectSingleNodeAndCacheExpression("avail", token)?.Value ?? string.Empty;
+                        blnOrGear = strAvailExpression.EndsWith(" or Gear", StringComparison.Ordinal);
+                        if (blnOrGear)
+                            strAvailExpression = strAvailExpression.TrimEndOnce(" or Gear", true);
+
                         AvailabilityValue objTotalAvail = new AvailabilityValue(
                             intRating,
                             await strAvailExpression.CheapReplaceAsync("MinRating",
@@ -1094,6 +1099,7 @@ namespace Chummer
                                                                        token: token).ConfigureAwait(false), _intAvailModifier);
                         await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
                         string strAvail = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
+
                         await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
 
                         // Cost.

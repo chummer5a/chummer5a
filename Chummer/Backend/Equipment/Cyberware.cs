@@ -42,7 +42,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Cyberware.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    [DebuggerDisplay("{CurrentDisplayName}")]
+    [DebuggerDisplay("{DisplayName(null, \"en-us\")}")]
     public sealed class Cyberware : ICanPaste, IHasChildrenAsyncAndCost<Cyberware>, IHasGear, IHasName, IHasInternalId,
         IHasSourceId, IHasXmlDataNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty,
@@ -3484,6 +3484,8 @@ namespace Chummer.Backend.Equipment
                 int intRating = Rating;
                 if (intRating > 0 && SourceID != EssenceHoleGUID && SourceID != EssenceAntiHoleGUID)
                 {
+                    if (objCulture == null)
+                        objCulture = GlobalSettings.CultureInfo;
                     strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace
                                  + intRating.ToString(objCulture) + ')';
                 }
@@ -3536,6 +3538,8 @@ namespace Chummer.Backend.Equipment
                     Guid guidSourceId = await GetSourceIDAsync(token).ConfigureAwait(false);
                     if (guidSourceId != EssenceHoleGUID && guidSourceId != EssenceAntiHoleGUID)
                     {
+                        if (objCulture == null)
+                            objCulture = GlobalSettings.CultureInfo;
                         strReturn += strSpace + '('
                                               + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
                                                   .ConfigureAwait(false) + strSpace
@@ -9129,7 +9133,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strCostExpression = Cost;
+                string strCostExpression = strExpression;
 
                 if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
@@ -11291,75 +11295,108 @@ namespace Chummer.Backend.Equipment
         /// <param name="sbdAvailItems">StringBuilder used to list names of gear that are currently over the availability limit.</param>
         /// <param name="sbdRestrictedItems">StringBuilder used to list names of gear that are being used for Restricted Gear.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
+        public async Task<int> CheckRestrictedGear(
+        IDictionary<int, int> dicRestrictedGearLimits,
+        StringBuilder sbdAvailItems,
+        StringBuilder sbdRestrictedItems,
+        CancellationToken token = default)
         {
             int intRestrictedCount = 0;
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
+
+                bool blnSwallowGear = false;
+                int intGearAvailToCheck = 0;
+                Gear objSwallowedGear = null;
+
                 if (string.IsNullOrEmpty(ParentID))
                 {
                     AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token).ConfigureAwait(false);
-                    if (!objTotalAvail.AddToParent)
+                    string availString = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
+
+                    // If parent ends with 'or Gear', swallow highest gear child
+                    if (Avail.EndsWith("or Gear", StringComparison.OrdinalIgnoreCase))
                     {
-                        int intAvailInt = await objTotalAvail.GetValueAsync(token).ConfigureAwait(false);
-                        if (intAvailInt > await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaximumAvailabilityAsync(token).ConfigureAwait(false))
+                        var gearChildren = await GetGearChildrenAsync(token).ConfigureAwait(false);
+                        Gear objHighestGear = null;
+                        int highestAvail = int.MinValue;
+                        foreach (var gearChild in gearChildren)
                         {
-                            int intLowestValidRestrictedGearAvail = -1;
-                            foreach (int intValidAvail in dicRestrictedGearLimits.Keys)
+                            var gearAvailValue = await gearChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                            int gearAvailInt = await gearAvailValue.GetValueAsync(token).ConfigureAwait(false);
+                            if (gearAvailInt > highestAvail)
                             {
-                                if (intValidAvail >= intAvailInt && (intLowestValidRestrictedGearAvail < 0
-                                                                     || intValidAvail
-                                                                     < intLowestValidRestrictedGearAvail))
-                                    intLowestValidRestrictedGearAvail = intValidAvail;
+                                highestAvail = gearAvailInt;
+                                objHighestGear = gearChild;
                             }
+                        }
+                        if (objHighestGear != null)
+                        {
+                            blnSwallowGear = true;
+                            intGearAvailToCheck = highestAvail;
+                            objSwallowedGear = objHighestGear;
+                        }
+                    }
 
-                            string strNameToUse = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                            Cyberware objParent = await GetParentAsync(token).ConfigureAwait(false);
-                            if (objParent != null)
-                                strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
-                                                                                                                   + await objParent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ')';
+                    int intAvailInt = blnSwallowGear ? intGearAvailToCheck : await objTotalAvail.GetValueAsync(token).ConfigureAwait(false);
 
-                            Grade objGrade = await GetGradeAsync(token).ConfigureAwait(false);
-                            if (objGrade.Avail != 0)
-                                strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
-                                                                                                                   + await objGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ')';
+                    if (!objTotalAvail.AddToParent &&
+                        intAvailInt > await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaximumAvailabilityAsync(token).ConfigureAwait(false))
+                    {
+                        int intLowestValidRestrictedGearAvail = -1;
+                        foreach (int intValidAvail in dicRestrictedGearLimits.Keys)
+                        {
+                            if (intValidAvail >= intAvailInt && (intLowestValidRestrictedGearAvail < 0
+                                                                 || intValidAvail < intLowestValidRestrictedGearAvail))
+                                intLowestValidRestrictedGearAvail = intValidAvail;
+                        }
 
-                            if (intLowestValidRestrictedGearAvail >= 0
-                                && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
-                            {
-                                --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
-                                sbdRestrictedItems.AppendLine().Append("\t\t").Append(strNameToUse);
-                            }
-                            else
-                            {
-                                dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
-                                ++intRestrictedCount;
-                                sbdAvailItems.AppendLine().Append("\t\t").Append(strNameToUse);
-                            }
+                        string strNameToUse = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        Cyberware objParent = await GetParentAsync(token).ConfigureAwait(false);
+                        if (objParent != null)
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
+                                                                                                       + await objParent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ')';
+
+                        Grade objGrade = await GetGradeAsync(token).ConfigureAwait(false);
+                        if (objGrade.Avail != 0)
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
+                                                                                                       + await objGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ')';
+
+                        if (intLowestValidRestrictedGearAvail >= 0
+                            && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
+                        {
+                            --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
+                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(strNameToUse);
+                        }
+                        else
+                        {
+                            dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
+                            ++intRestrictedCount;
+                            sbdAvailItems.AppendLine().Append("\t\t").Append(strNameToUse);
                         }
                     }
                 }
 
+                // Recursively check children (cyberware)
                 intRestrictedCount += await (await GetChildrenAsync(token).ConfigureAwait(false))
-                                            .SumAsync(objChild =>
-                                                    objChild
-                                                        .CheckRestrictedGear(
-                                                            dicRestrictedGearLimits, sbdAvailItems,
-                                                            sbdRestrictedItems,
-                                                            token), token: token)
-                                            .ConfigureAwait(false)
-                                      + await (await GetGearChildrenAsync(token).ConfigureAwait(false))
-                                              .SumAsync(objChild =>
-                                                      objChild
-                                                          .CheckRestrictedGear(
-                                                              dicRestrictedGearLimits,
-                                                              sbdAvailItems,
-                                                              sbdRestrictedItems,
-                                                              token),
-                                                  token: token)
-                                              .ConfigureAwait(false);
+                    .SumAsync(objChild =>
+                        objChild.CheckRestrictedGear(
+                            dicRestrictedGearLimits, sbdAvailItems,
+                            sbdRestrictedItems,
+                            token), token: token)
+                    .ConfigureAwait(false);
+
+                // Recursively check gear children, skipping the swallowed gear
+                var gearChildrenToCheck = await GetGearChildrenAsync(token).ConfigureAwait(false);
+                foreach (var gearChild in gearChildrenToCheck)
+                {
+                    if (blnSwallowGear && gearChild == objSwallowedGear)
+                        continue; // skip the swallowed gear
+                    intRestrictedCount += await gearChild.CheckRestrictedGear(
+                        dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, token).ConfigureAwait(false);
+                }
             }
             finally
             {

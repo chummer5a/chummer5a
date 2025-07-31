@@ -39,7 +39,7 @@ namespace Chummer.Backend.Equipment
     /// A specific piece of Armor.
     /// </summary>
     [HubClassTag("SourceID", true, "TotalArmor", "Extra")]
-    [DebuggerDisplay("{CurrentDisplayName}")]
+    [DebuggerDisplay("{DisplayName(null, \"en-us\")}")]
     public sealed class Armor : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear, IHasMatrixAttributes, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -2969,7 +2969,11 @@ namespace Chummer.Backend.Equipment
                 strReturn += strSpace + "(\"" + CustomName + "\")";
             int intRating = Rating;
             if (intRating > 0)
+            {
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
                 strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage, token: token) + strSpace + intRating.ToString(objCulture) + ')';
+            }
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage, token: token) + ')';
             return strReturn;
@@ -2986,7 +2990,11 @@ namespace Chummer.Backend.Equipment
                 strReturn += strSpace + "(\"" + CustomName + "\")";
             int intRating = await GetRatingAsync(token).ConfigureAwait(false);
             if (intRating > 0)
+            {
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
                 strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ')';
+            }
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
             return strReturn;

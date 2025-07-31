@@ -607,7 +607,7 @@ namespace Chummer
                                 string strAP = await objWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
                                 if (strAP == "-")
                                     strAP = "0";
-                                (string strRC, string strRCTooltip) = await objWeapon.TotalRCAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token).ConfigureAwait(false);
+                                (string strRC, _) = await objWeapon.TotalRCAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token).ConfigureAwait(false);
                                 string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
                                 string strMode = await objWeapon.GetDisplayModeAsync(token).ConfigureAwait(false);
                                 string strReach =

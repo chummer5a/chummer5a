@@ -77,7 +77,7 @@ namespace Chummer
             tabOptions.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode(token: token);
             this.TranslateWinForm(token: token);
-            pnlHasNotesColorPreview.BackColor = _objSelectedHasNotesColor;
+            pnlHasNotesColorPreview.BackColor = ColorManager.IsLightMode ? _objSelectedHasNotesColor : ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
             _setCustomDataDirectoryInfos
                 = new HashSet<CustomDataDirectoryInfo>(GlobalSettings.CustomDataDirectoryInfos);
             Disposed += (sender, args) =>
@@ -561,20 +561,28 @@ namespace Chummer
                     switch (eNewColorMode)
                     {
                         case ColorMode.Automatic:
+                        {
                             bool blnLightMode = !ColorManager.DoesRegistrySayDarkMode();
+                            Color objPreviewColor = blnLightMode ? _objSelectedHasNotesColor : ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
                             await this.UpdateLightDarkModeAsync(blnLightMode).ConfigureAwait(false);
-                            pnlHasNotesColorPreview.BackColor = blnLightMode ? _objSelectedHasNotesColor : ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
+                            await pnlHasNotesColorPreview.DoThreadSafeAsync(x => x.BackColor = objPreviewColor).ConfigureAwait(false);
                             break;
+                        }
 
                         case ColorMode.Light:
+                        {
                             await this.UpdateLightDarkModeAsync(true).ConfigureAwait(false);
-                            pnlHasNotesColorPreview.BackColor = _objSelectedHasNotesColor;
+                            await pnlHasNotesColorPreview.DoThreadSafeAsync(x => x.BackColor = _objSelectedHasNotesColor).ConfigureAwait(false);
                             break;
+                        }
 
                         case ColorMode.Dark:
+                        {
+                            Color objPreviewColor = ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
                             await this.UpdateLightDarkModeAsync(false).ConfigureAwait(false);
-                            pnlHasNotesColorPreview.BackColor = ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
+                            await pnlHasNotesColorPreview.DoThreadSafeAsync(x => x.BackColor = objPreviewColor).ConfigureAwait(false);
                             break;
+                        }
                     }
                 }
             }
@@ -588,10 +596,10 @@ namespace Chummer
 
         private async void btnHasNotesColorSelect_Click(object sender, EventArgs e)
         {
-            Color objOldColor = _objSelectedHasNotesColor;
+            Color objPreviewColor = _objSelectedHasNotesColor;
             if (_eSelectedColorModeSetting == ColorMode.Dark || (_eSelectedColorModeSetting == ColorMode.Automatic && ColorManager.DoesRegistrySayDarkMode()))
-                objOldColor = ColorManager.GenerateDarkModeColor(objOldColor);
-            await this.DoThreadSafeAsync(() => dlgColor.Color = objOldColor).ConfigureAwait(false);
+                objPreviewColor = ColorManager.GenerateDarkModeColor(objPreviewColor);
+            await this.DoThreadSafeAsync(() => dlgColor.Color = objPreviewColor).ConfigureAwait(false);
             if (await this.DoThreadSafeFuncAsync(x => dlgColor.ShowDialog(x)).ConfigureAwait(false) != DialogResult.OK)
                 return;
             Color objNewColor = await this.DoThreadSafeFuncAsync(() => dlgColor.Color).ConfigureAwait(false);
@@ -599,11 +607,10 @@ namespace Chummer
                 objNewColor = ColorManager.GenerateInverseDarkModeColor(objNewColor);
             if (objNewColor != _objSelectedHasNotesColor)
             {
-                _objSelectedHasNotesColor = objNewColor;
+                objPreviewColor = _objSelectedHasNotesColor = objNewColor;
                 if (_eSelectedColorModeSetting == ColorMode.Dark || (_eSelectedColorModeSetting == ColorMode.Automatic && ColorManager.DoesRegistrySayDarkMode()))
-                    pnlHasNotesColorPreview.BackColor = ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
-                else
-                    pnlHasNotesColorPreview.BackColor = _objSelectedHasNotesColor;
+                    objPreviewColor = ColorManager.GenerateDarkModeColor(objPreviewColor);
+                await pnlHasNotesColorPreview.DoThreadSafeAsync(x => x.BackColor = objPreviewColor).ConfigureAwait(false);
                 OptionsChanged(sender, e);
             }
         }
@@ -1052,13 +1059,13 @@ namespace Chummer
             {
                 string strDescription = _strSelectedLanguage == GlobalSettings.Language
                     ? await objSelected.GetCurrentDisplayDescriptionAsync().ConfigureAwait(false)
-                    : await objSelected.GetDisplayDescriptionAsync(_strSelectedLanguage).ConfigureAwait(false);
+                    : await objSelected.DisplayDescriptionAsync(_strSelectedLanguage).ConfigureAwait(false);
                 await txtDirectoryDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
                 await lblDirectoryVersion.DoThreadSafeAsync(x => x.Text = objSelected.MyVersion.ToString())
                                          .ConfigureAwait(false);
                 string strAuthors = _objSelectedCultureInfo == GlobalSettings.CultureInfo && _strSelectedLanguage == GlobalSettings.Language
                     ? await objSelected.GetCurrentDisplayAuthorsAsync().ConfigureAwait(false)
-                    : await objSelected.GetDisplayAuthorsAsync(_objSelectedCultureInfo, _strSelectedLanguage).ConfigureAwait(false);
+                    : await objSelected.DisplayAuthorsAsync(_objSelectedCultureInfo, _strSelectedLanguage).ConfigureAwait(false);
                 await lblDirectoryAuthors.DoThreadSafeAsync(x => x.Text = strAuthors).ConfigureAwait(false);
                 await lblDirectoryName.DoThreadSafeAsync(x => x.Text = objSelected.Name).ConfigureAwait(false);
                 string strText = objSelected.DirectoryPath.Replace(Utils.GetStartupPath,

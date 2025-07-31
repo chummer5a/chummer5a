@@ -1872,6 +1872,11 @@ namespace Chummer
             Process.Start(new ProcessStartInfo("https://github.com/chummer5a/chummer5a/issues/") { UseShellExecute = true });
         }
 
+        private void mnuReportBug_Click(object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://github.com/chummer5a/chummer5a/issues/new/choose") { UseShellExecute = true });
+        }
+
         public PrintMultipleCharacters PrintMultipleCharactersForm { get; private set; }
 
         private async void mnuFilePrintMultiple_Click(object sender, EventArgs e)

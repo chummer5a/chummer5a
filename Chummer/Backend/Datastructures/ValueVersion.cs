@@ -167,7 +167,7 @@ namespace Chummer
         }
 
         /// <summary>Compares the current ValueVersion struct to a specified object and returns an indication of their relative values.</summary>
-        /// <param name="version">An object to compare, or <see langword="null" />.</param>
+        /// <param name="obj">An object to compare, or <see langword="null" />.</param>
         /// <returns>A signed integer that indicates the relative values of the two objects, as shown in the following table.
         ///  Return value
         /// 
@@ -175,30 +175,30 @@ namespace Chummer
         /// 
         ///  Less than zero
         /// 
-        ///  The current ValueVersion struct is a version before <paramref name="version" />.
+        ///  The current ValueVersion struct is a version before <paramref name="obj" />.
         /// 
         ///  Zero
         /// 
-        ///  The current ValueVersion struct is the same version as <paramref name="version" />.
+        ///  The current ValueVersion struct is the same version as <paramref name="obj" />.
         /// 
         ///  Greater than zero
         /// 
-        ///  The current ValueVersion struct is a version subsequent to <paramref name="version" />.
+        ///  The current ValueVersion struct is a version subsequent to <paramref name="obj" />.
         /// 
         /// -or-
         /// 
-        /// <paramref name="version" /> is <see langword="null" />.</returns>
+        /// <paramref name="obj" /> is <see langword="null" />.</returns>
         /// <exception cref="T:System.ArgumentException">
-        /// <paramref name="version" /> is not of type <see cref="T:System.Version" />.</exception>
-        public int CompareTo(object version)
+        /// <paramref name="obj" /> is not of type <see cref="T:System.Version" />.</exception>
+        public int CompareTo(object obj)
         {
-            if (version == null)
+            if (obj == null)
                 return 1;
-            if (version is ValueVersion version1)
+            if (obj is ValueVersion version1)
                 return CompareTo(version1);
-            if (version is Version version2)
+            if (obj is Version version2)
                 return CompareTo(version2);
-            throw new ArgumentException("Argument is not a version of value version.", nameof(version));
+            throw new ArgumentException("Argument is not a version of value version.", nameof(obj));
         }
 
         /// <summary>Compares the current ValueVersion struct to a specified ValueVersion struct and returns an indication of their relative values.</summary>
@@ -304,7 +304,7 @@ namespace Chummer
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
         {
-            return 0 | (_Major & 0xF) << 28 | (_Minor & 0xFF) << 20 | (_Build & 0xFF) << 12 | _Revision & 0xFFF;
+            return (_Major & 0xF) << 28 | (_Minor & 0xFF) << 20 | (_Build & 0xFF) << 12 | _Revision & 0xFFF;
         }
 
         /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="T:System.String" /> representation.</summary>

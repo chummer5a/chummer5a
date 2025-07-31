@@ -533,7 +533,7 @@ namespace Chummer
                                     }
                                     ++intIndex;
                                 }
-                                return strName;
+                                return strReturn;
                             }
 
                             return strName;

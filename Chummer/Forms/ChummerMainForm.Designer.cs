@@ -80,6 +80,8 @@ namespace Chummer
             this.mnuMasterIndex = new Chummer.DpiFriendlyToolStripMenuItem();
             this.mnuCharacterRoster = new Chummer.DpiFriendlyToolStripMenuItem();
             this.mnuDataExporter = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.toolStripSeparator7 = new Chummer.ColorableToolStripSeparator();
+            this.mnuReportBug = new Chummer.DpiFriendlyToolStripMenuItem();
             this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.newWindowToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem();
             this.closeWindowToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -684,7 +686,9 @@ namespace Chummer
             this.mnuHeroLabImporter,
             this.mnuMasterIndex,
             this.mnuCharacterRoster,
-            this.mnuDataExporter});
+            this.mnuDataExporter,
+            this.toolStripSeparator7,
+            this.mnuReportBug});
             this.toolsMenu.Name = "toolsMenu";
             this.toolsMenu.Size = new System.Drawing.Size(47, 20);
             this.toolsMenu.Tag = "Menu_Main_Tools";
@@ -851,6 +855,27 @@ namespace Chummer
             this.mnuDataExporter.Text = "Data &Exporter";
             this.mnuDataExporter.Click += new System.EventHandler(this.mnuDataExporter_Click);
             // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.DefaultColorScheme = true;
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(177, 6);
+            // 
+            // mnuReportBug
+            // 
+            this.mnuReportBug.Image = global::Chummer.Properties.Resources.bug_16;
+            this.mnuReportBug.ImageDpi120 = global::Chummer.Properties.Resources.bug_20;
+            this.mnuReportBug.ImageDpi144 = global::Chummer.Properties.Resources.bug_24;
+            this.mnuReportBug.ImageDpi192 = global::Chummer.Properties.Resources.bug_32;
+            this.mnuReportBug.ImageDpi288 = global::Chummer.Properties.Resources.bug_48;
+            this.mnuReportBug.ImageDpi384 = global::Chummer.Properties.Resources.bug_64;
+            this.mnuReportBug.ImageDpi96 = global::Chummer.Properties.Resources.bug_16;
+            this.mnuReportBug.Name = "mnuReportBug";
+            this.mnuReportBug.Size = new System.Drawing.Size(217, 22);
+            this.mnuReportBug.Tag = "Menu_Main_ReportBug";
+            this.mnuReportBug.Text = "Report a &Bug";
+            this.mnuReportBug.Click += new System.EventHandler(this.mnuReportBug_Click);
+            // 
             // windowsMenu
             // 
             this.windowsMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -976,17 +1001,17 @@ namespace Chummer
             // 
             // mnuHelpDumpshock
             // 
-            this.mnuHelpDumpshock.Image = global::Chummer.Properties.Resources.bug_16;
-            this.mnuHelpDumpshock.ImageDpi120 = global::Chummer.Properties.Resources.bug_20;
-            this.mnuHelpDumpshock.ImageDpi144 = global::Chummer.Properties.Resources.bug_24;
-            this.mnuHelpDumpshock.ImageDpi192 = global::Chummer.Properties.Resources.bug_32;
-            this.mnuHelpDumpshock.ImageDpi288 = global::Chummer.Properties.Resources.bug_48;
-            this.mnuHelpDumpshock.ImageDpi384 = global::Chummer.Properties.Resources.bug_64;
-            this.mnuHelpDumpshock.ImageDpi96 = global::Chummer.Properties.Resources.bug_16;
+            this.mnuHelpDumpshock.Image = global::Chummer.Properties.Resources.bug_fixing_16;
+            this.mnuHelpDumpshock.ImageDpi120 = global::Chummer.Properties.Resources.bug_fixing_20;
+            this.mnuHelpDumpshock.ImageDpi144 = global::Chummer.Properties.Resources.bug_fixing_24;
+            this.mnuHelpDumpshock.ImageDpi192 = global::Chummer.Properties.Resources.bug_fixing_32;
+            this.mnuHelpDumpshock.ImageDpi288 = global::Chummer.Properties.Resources.bug_fixing_48;
+            this.mnuHelpDumpshock.ImageDpi384 = global::Chummer.Properties.Resources.bug_fixing_64;
+            this.mnuHelpDumpshock.ImageDpi96 = global::Chummer.Properties.Resources.bug_fixing_16;
             this.mnuHelpDumpshock.Name = "mnuHelpDumpshock";
             this.mnuHelpDumpshock.Size = new System.Drawing.Size(217, 22);
             this.mnuHelpDumpshock.Tag = "Menu_Main_IssueTracker";
-            this.mnuHelpDumpshock.Text = "D&umpshock Thread";
+            this.mnuHelpDumpshock.Text = "Issue Tracker";
             this.mnuHelpDumpshock.Click += new System.EventHandler(this.mnuHelpDumpshock_Click);
             // 
             // aboutToolStripMenuItem
@@ -1256,6 +1281,7 @@ namespace Chummer
         private System.Windows.Forms.TabControl tabForms;
         private Chummer.ColorableToolStripSeparator toolStripSeparator5;
         private Chummer.ColorableToolStripSeparator toolStripSeparator6;
+        private Chummer.ColorableToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ContextMenuStrip mnuProcessFile;
         private DpiFriendlyToolStripButton tsbNewCharacter;
         private DpiFriendlyToolStripButton tsbOpen;
@@ -1314,6 +1340,7 @@ namespace Chummer
         private DpiFriendlyToolStripButton tsbOpenForPrinting;
         private DpiFriendlyToolStripButton tsbOpenForExport;
         private DpiFriendlyToolStripMenuItem mnuDataExporter;
+        private DpiFriendlyToolStripMenuItem mnuReportBug;
     }
 }
 

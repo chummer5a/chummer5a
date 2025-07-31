@@ -30,7 +30,7 @@ using NLog;
 namespace Chummer
 {
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    [DebuggerDisplay("{DisplayNameShort(GlobalSettings.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayNameShort(\"en-us\")}")]
     public sealed class MentorSpirit : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource, IHasNotes, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
