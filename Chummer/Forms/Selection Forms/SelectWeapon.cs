@@ -41,34 +41,36 @@ namespace Chummer
         private int _intLoading = 1;
         private bool _blnAddAgain;
         private bool _blnBlackMarketDiscount;
-        private HashSet<string> _setLimitToCategories = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setLimitToCategories;
         private static string _strSelectCategory = string.Empty;
         private readonly Character _objCharacter;
         private readonly XmlDocument _objXmlDocument;
         private Weapon _objSelectedWeapon;
 
-        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
-        private HashSet<string> _setMounts = Utils.StringHashSetPool.Get();
+        private List<ListItem> _lstCategory;
+        private HashSet<string> _setBlackMarketMaps;
+        private HashSet<string> _setMounts;
 
         private CancellationTokenSource _objUpdateWeaponInfoCancellationTokenSource;
         private CancellationTokenSource _objDoRefreshListCancellationTokenSource;
         private CancellationTokenSource _objWeaponSelectedIndexChangedCancellationTokenSource;
-        private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _objGenericCancellationTokenSource;
         private readonly CancellationToken _objGenericToken;
 
         #region Control Events
 
         public SelectWeapon(Character objCharacter)
         {
-            Disposed += (sender, args) =>
-            {
-                Utils.ListItemListPool.Return(ref _lstCategory);
-                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
-                Utils.StringHashSetPool.Return(ref _setLimitToCategories);
-                Utils.StringHashSetPool.Return(ref _setMounts);
-            };
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            InitializeComponent();
+            tabControl.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            this.UpdateLightDarkMode();
+            this.TranslateWinForm();
+            _lstCategory = Utils.ListItemListPool.Get();
+            _setLimitToCategories = Utils.StringHashSetPool.Get();
+            _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+            _setMounts = Utils.StringHashSetPool.Get();
+            _objGenericCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             Disposed += (sender, args) =>
             {
@@ -91,33 +93,14 @@ namespace Chummer
                     objOldCancellationTokenSource.Dispose();
                 }
                 _objGenericCancellationTokenSource.Dispose();
+                Utils.ListItemListPool.Return(ref _lstCategory);
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
+                Utils.StringHashSetPool.Return(ref _setLimitToCategories);
+                Utils.StringHashSetPool.Return(ref _setMounts);
             };
-            InitializeComponent();
-            tabControl.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
             // Load the Weapon information.
             _objXmlDocument = _objCharacter.LoadData("weapons.xml");
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer")));
-
-            if (_objCharacter.Created)
-            {
-                lblMarkupLabel.Visible = true;
-                nudMarkup.Visible = true;
-                lblMarkupPercentLabel.Visible = true;
-                chkHideOverAvailLimit.Visible = false;
-                chkHideOverAvailLimit.Checked = false;
-            }
-            else
-            {
-                lblMarkupLabel.Visible = false;
-                nudMarkup.Visible = false;
-                lblMarkupPercentLabel.Visible = false;
-                chkHideOverAvailLimit.Text = string.Format(
-                    GlobalSettings.CultureInfo, chkHideOverAvailLimit.Text,
-                    _objCharacter.Settings.MaximumAvailability);
-                chkHideOverAvailLimit.Checked = GlobalSettings.HideItemsOverAvailLimit;
-            }
         }
 
         private async void SelectWeapon_Load(object sender, EventArgs e)
@@ -131,8 +114,8 @@ namespace Chummer
                     DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
                     {
                         Alignment = DataGridViewContentAlignment.TopRight,
-                        Format = _objCharacter.Settings.NuyenFormat + await LanguageManager
-                            .GetStringAsync("String_NuyenSymbol", token: _objGenericToken).ConfigureAwait(false),
+                        Format = await _objCharacter.Settings.GetNuyenFormatAsync(_objGenericToken).ConfigureAwait(false)
+                            + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: _objGenericToken).ConfigureAwait(false),
                         NullValue = null
                     };
                     dgvc_Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
@@ -180,9 +163,33 @@ namespace Chummer
                         }
                     }, _objGenericToken).ConfigureAwait(false);
 
-                    await chkBlackMarketDiscount
-                        .DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount, _objGenericToken)
-                        .ConfigureAwait(false);
+                    bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync(_objGenericToken).ConfigureAwait(false);
+                    await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount, _objGenericToken).ConfigureAwait(false);
+
+                    if (await _objCharacter.GetCreatedAsync(_objGenericToken).ConfigureAwait(false))
+                    {
+                        await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
+                        await nudMarkup.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
+                        await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
+                        await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = false;
+                            x.Checked = false;
+                        }, _objGenericToken).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
+                        await nudMarkup.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
+                        await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
+                        int intMaxAvail = await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetMaximumAvailabilityAsync(_objGenericToken).ConfigureAwait(false);
+                        await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
+                            x.Visible = true;
+                            x.Checked = GlobalSettings.HideItemsOverAvailLimit;
+                        }, _objGenericToken).ConfigureAwait(false);
+                    }
 
                     Interlocked.Decrement(ref _intLoading);
                     await RefreshList(_objGenericToken).ConfigureAwait(false);

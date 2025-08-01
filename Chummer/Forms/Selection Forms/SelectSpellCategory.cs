@@ -28,7 +28,7 @@ namespace Chummer
     {
         private string _strSelectedCategory = string.Empty;
         private string _strForceCategory    = string.Empty;
-        private HashSet<string> _setExcludeCategories = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setExcludeCategories;
 
         private readonly XPathNavigator _objXmlDocument;
 
@@ -36,11 +36,12 @@ namespace Chummer
 
         public SelectSpellCategory(Character objCharacter)
         {
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setExcludeCategories);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objXmlDocument = XmlManager.LoadXPath("spells.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
+            _setExcludeCategories = Utils.StringHashSetPool.Get();
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setExcludeCategories);
         }
 
         private async void SelectSpellCategory_Load(object sender, EventArgs e)

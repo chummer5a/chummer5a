@@ -40,14 +40,13 @@ namespace Chummer
         private readonly XPathNavigator _xmlMetatypeDataNode;
         private readonly Character _objCharacter;
 
-        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstCategory;
 
         #region Control Events
 
         public SelectCritterPower(Character objCharacter)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -58,6 +57,9 @@ namespace Chummer
             XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.TryGetNodeById("metavariants/metavariant", _objCharacter.MetavariantGuid);
             if (xmlMetavariantNode != null)
                 _xmlMetatypeDataNode = xmlMetavariantNode;
+
+            _lstCategory = Utils.ListItemListPool.Get();
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectCritterPower_Load(object sender, EventArgs e)

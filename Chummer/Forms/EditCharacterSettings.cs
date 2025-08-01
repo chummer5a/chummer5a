@@ -39,7 +39,7 @@ namespace Chummer
         private static Logger Log => s_ObjLogger.Value;
         private readonly CharacterSettings _objCharacterSettings;
         private CharacterSettings _objReferenceCharacterSettings;
-        private List<ListItem> _lstSettings = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstSettings;
 
         // List of custom data directory infos on the character, in load order. If the character has a directory name for which we have no info, key will be a string instead of an info
         private readonly LockingTypedOrderedDictionary<string, bool> _dicEnabledCharacterCustomDataDirectorys;
@@ -55,7 +55,7 @@ namespace Chummer
         // Used to revert to old selected setting if user cancels out of selecting a different one
         private int _intOldSelectedSettingIndex = -1;
 
-        private HashSet<string> _setPermanentSourcebooks = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setPermanentSourcebooks;
 
         #region Form Events
 
@@ -82,6 +82,8 @@ namespace Chummer
             _dicEnabledCharacterCustomDataDirectorys = new LockingTypedOrderedDictionary<string, bool>();
             _objCharacterSettings = new CharacterSettings(_objReferenceCharacterSettings);
             _objCharacterSettings.MultiplePropertiesChangedAsync += SettingsChanged;
+            _lstSettings = Utils.ListItemListPool.Get();
+            _setPermanentSourcebooks = Utils.StringHashSetPool.Get();
             Disposed += (sender, args) =>
             {
                 _dicEnabledCharacterCustomDataDirectorys.Dispose();

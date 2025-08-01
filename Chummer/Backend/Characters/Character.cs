@@ -42441,12 +42441,32 @@ namespace Chummer
                               .Count > 0;
 
         /// <summary>
+        /// Whether Adapsin is enabled.
+        /// </summary>
+        public async Task<bool> GetAdapsinEnabledAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.Adapsin, token: token))
+                              .Count > 0;
+        }
+
+        /// <summary>
         /// Whether Burnout's Way is enabled.
         /// </summary>
-        public bool BurnoutEnabled =>
+        public bool BurnoutsWayEnabled =>
             ImprovementManager
                 .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.BurnoutsWay)
                 .Count > 0;
+
+        /// <summary>
+        /// Whether Burnout's Way is enabled.
+        /// </summary>
+        public async Task<bool> GetBurnoutsWayEnabledAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.BurnoutsWay, token: token))
+                              .Count > 0;
+        }
 
         #endregion Special Functions and Enabled Check Properties
 

@@ -40,7 +40,7 @@ namespace Chummer
         private WeaponMount _objMount;
         private readonly XmlDocument _xmlDoc;
         private readonly XPathNavigator _xmlDocXPath;
-        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps;
         private decimal _decOldBaseCost;
 
         private CancellationTokenSource _objUpdateInfoCancellationTokenSource;
@@ -55,12 +55,13 @@ namespace Chummer
 
         public CreateWeaponMount(Vehicle objVehicle, Character objCharacter, WeaponMount objWeaponMount = null)
         {
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             _lstMods = new ThreadSafeList<VehicleMod>(1);
+            _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             Disposed += (sender, args) =>
             {
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
                 CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateInfoCancellationTokenSource, null);
                 if (objOldCancellationTokenSource?.IsCancellationRequested == false)
                 {

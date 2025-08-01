@@ -11325,10 +11325,8 @@ namespace Chummer.Backend.Equipment
                         {
                             blnCheckUnderbarrels = false;
                             int intMaxChildAvail = 0;
-                            intAvail += await UnderbarrelWeapons.SumAsync(async objUnderbarrel =>
+                            intAvail += await UnderbarrelWeapons.SumAsync(x => x.ParentID != InternalId, async objUnderbarrel =>
                             {
-                                if (objUnderbarrel.ParentID == InternalId)
-                                    return 0;
                                 AvailabilityValue objLoopAvail = await objUnderbarrel.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                                 if (objLoopAvail.AddToParent)
                                 {
@@ -11360,10 +11358,8 @@ namespace Chummer.Backend.Equipment
 
             if (blnCheckUnderbarrels)
             {
-                intAvail += await UnderbarrelWeapons.SumAsync(async objUnderbarrel =>
+                intAvail += await UnderbarrelWeapons.SumAsync(x => x.ParentID != InternalId, async objUnderbarrel =>
                 {
-                    if (objUnderbarrel.ParentID == InternalId)
-                        return 0;
                     AvailabilityValue objLoopAvail = await objUnderbarrel.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (objLoopAvail.Suffix == 'F')
                         chrLastAvailChar = 'F';
@@ -11376,9 +11372,8 @@ namespace Chummer.Backend.Equipment
             if (blnCheckChildren)
             {
                 // Run through the Accessories and add in their availability.
-                intAvail += await WeaponAccessories.SumAsync(async objAccessory =>
+                intAvail += await WeaponAccessories.SumAsync(x => !x.IncludedInWeapon && x.Equipped, async objAccessory =>
                 {
-                    if (objAccessory.IncludedInWeapon || !objAccessory.Equipped) return 0;
                     AvailabilityValue objLoopAvail = await objAccessory.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (objLoopAvail.Suffix == 'F')
                         chrLastAvailChar = 'F';

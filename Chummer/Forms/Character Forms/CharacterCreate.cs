@@ -20579,7 +20579,7 @@ namespace Chummer
                             continue;
                     }
 
-                    if (CharacterObject.BurnoutEnabled)
+                    if (CharacterObject.BurnoutsWayEnabled)
                     {
                         if (!objWareGrade.Burnout
                             && objWareGrade.Name.ContainsAny(objGradeList.Where(x => x.Burnout).Select(x => x.Name)))
