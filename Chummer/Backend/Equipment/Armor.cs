@@ -1966,14 +1966,14 @@ namespace Chummer.Backend.Equipment
 
             if (strArmorExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdArmor))
                 {
-                    sbdWeight.Append(strArmorExpression.TrimStart('+'));
-                    await sbdWeight.CheapReplaceAsync(strArmorExpression, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdWeight, strArmorExpression,
+                    sbdArmor.Append(strArmorExpression.TrimStart('+'));
+                    await sbdArmor.CheapReplaceAsync(strArmorExpression, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdArmor, strArmorExpression,
                         token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdWeight.ToString(), token).ConfigureAwait(false);
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdArmor.ToString(), token).ConfigureAwait(false);
                     if (blnIsSuccess)
                         return ((double)objProcess).StandardRound();
                 }

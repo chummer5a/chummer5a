@@ -8617,15 +8617,18 @@ namespace Chummer.Backend.Equipment
                     int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                     if (intPos != -1)
                     {
-                        string strFirstHalf = strCapacity.Substring(0, intPos);
-                        string strSecondHalf = strCapacity.Substring(intPos + 1);
+                        string strFirstHalf = strCapacity.Substring(0, intPos).ProcessFixedValuesString(() => Rating);
+                        string strSecondHalf = strCapacity.Substring(intPos + 1).ProcessFixedValuesString(() => Rating);
                         bool blnSquareBrackets = strFirstHalf.StartsWith('[');
-
                         if (blnSquareBrackets && strFirstHalf.Length > 2)
                             strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
-
                         if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
+                            strFirstHalf = strFirstHalf.CheapReplace("MinRating",
+                                                  () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                            strFirstHalf = strFirstHalf.CheapReplace("Rating",
+                                                  () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                            strFirstHalf = ProcessAttributesInXPath(strFirstHalf);
                             try
                             {
                                 (bool blnIsSuccess, object objProcess) =
@@ -8684,12 +8687,15 @@ namespace Chummer.Backend.Equipment
 
                         if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                         {
+                            strSecondHalf = strSecondHalf.CheapReplace("MinRating",
+                                                  () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                            strSecondHalf = strSecondHalf.CheapReplace("Rating",
+                                                  () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                            strSecondHalf = ProcessAttributesInXPath(strSecondHalf);
                             try
                             {
                                 (bool blnIsSuccess, object objProcess) =
-                                    CommonFunctions.EvaluateInvariantXPath(
-                                        strSecondHalf.CheapReplace(
-                                            "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                                    CommonFunctions.EvaluateInvariantXPath(strSecondHalf);
                                 strSecondHalf =
                                     '[' + (blnIsSuccess
                                         ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
@@ -8749,9 +8755,14 @@ namespace Chummer.Backend.Equipment
                             }
                         }
 
+                        strCapacity = strCapacity.CheapReplace("MinRating",
+                                                  () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strCapacity = strCapacity.CheapReplace("Rating",
+                                              () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strCapacity = ProcessAttributesInXPath(strCapacity);
+
                         (bool blnIsSuccess, object objProcess) =
-                            CommonFunctions.EvaluateInvariantXPath(
-                                strCapacity.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                            CommonFunctions.EvaluateInvariantXPath(strCapacity);
                         strReturn = blnIsSuccess
                             ? ((double) objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
                             : strCapacity;
@@ -8787,21 +8798,22 @@ namespace Chummer.Backend.Equipment
                 int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                 if (intPos != -1)
                 {
-                    string strFirstHalf = strCapacity.Substring(0, intPos);
-                    string strSecondHalf = strCapacity.Substring(intPos + 1);
+                    string strFirstHalf = await strCapacity.Substring(0, intPos).ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+                    string strSecondHalf = await strCapacity.Substring(intPos + 1).ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
                     bool blnSquareBrackets = strFirstHalf.StartsWith('[');
-
                     if (blnSquareBrackets && strFirstHalf.Length > 2)
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
-
                     if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
+                        strFirstHalf = await strFirstHalf.CheapReplaceAsync("MinRating",
+                                                         async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        strFirstHalf = await strFirstHalf.CheapReplaceAsync("Rating",
+                                                         async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        strFirstHalf = await ProcessAttributesInXPathAsync(strFirstHalf, token: token).ConfigureAwait(false);
                         try
                         {
                             (bool blnIsSuccess, object objProcess) =
-                                await CommonFunctions.EvaluateInvariantXPathAsync(
-                                    strFirstHalf.Replace(
-                                        "Rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                                await CommonFunctions.EvaluateInvariantXPathAsync(strFirstHalf, token).ConfigureAwait(false);
                             strReturn = blnIsSuccess
                                 ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
                                 : strFirstHalf;
@@ -8852,12 +8864,15 @@ namespace Chummer.Backend.Equipment
 
                     if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                     {
+                        strSecondHalf = await strSecondHalf.CheapReplaceAsync("MinRating",
+                                                         async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        strSecondHalf = await strSecondHalf.CheapReplaceAsync("Rating",
+                                                         async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        strSecondHalf = await ProcessAttributesInXPathAsync(strSecondHalf, token: token).ConfigureAwait(false);
                         try
                         {
                             (bool blnIsSuccess, object objProcess) =
-                                await CommonFunctions.EvaluateInvariantXPathAsync(
-                                    strSecondHalf.Replace(
-                                        "Rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                                await CommonFunctions.EvaluateInvariantXPathAsync(strSecondHalf, token).ConfigureAwait(false);
                             strSecondHalf =
                                 '[' + (blnIsSuccess
                                     ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
@@ -8915,9 +8930,13 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
+                    strCapacity = await strCapacity.CheapReplaceAsync("MinRating",
+                                                         async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    strCapacity = await strCapacity.CheapReplaceAsync("Rating",
+                                                     async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    strCapacity = await ProcessAttributesInXPathAsync(strCapacity, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess) =
-                        await CommonFunctions.EvaluateInvariantXPathAsync(
-                            strCapacity.Replace("Rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                        await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
                     strReturn = blnIsSuccess
                         ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
                         : strCapacity;
@@ -9054,15 +9073,27 @@ namespace Chummer.Backend.Equipment
 
                 if (strESS.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
+                    if (blnSync)
+                    {
+                        strESS = strESS.CheapReplace("MinRating",
+                                                  () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strESS = strESS.CheapReplace("Rating",
+                                              () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strESS = ProcessAttributesInXPath(strESS);
+                    }
+                    else
+                    {
+                        strESS = await strESS.CheapReplaceAsync("MinRating",
+                                                         async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        strESS = await strESS.CheapReplaceAsync("Rating",
+                                                         async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        strESS = await ProcessAttributesInXPathAsync(strESS, token: token).ConfigureAwait(false);
+                    }
                     // If the cost is determined by the Rating or there's a math operation in play, evaluate the expression.
                     (bool blnIsSuccess, object objProcess) = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? CommonFunctions.EvaluateInvariantXPath(
-                            strESS.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token)
-                        : await CommonFunctions.EvaluateInvariantXPathAsync(
-                                strESS.Replace(
-                                    "Rating",
-                                    intRating.ToString(GlobalSettings.InvariantCultureInfo)), token)
+                        ? CommonFunctions.EvaluateInvariantXPath(strESS, token)
+                        : await CommonFunctions.EvaluateInvariantXPathAsync(strESS, token)
                             .ConfigureAwait(false);
                     decReturn = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                 }
@@ -9086,7 +9117,7 @@ namespace Chummer.Backend.Equipment
                 // Retrieve the Bioware, Geneware or Cyberware ESS Cost Multiplier.
                 if (ForceGrade != "None" || IsGeneware)
                 {
-                    switch (SourceType)
+                    switch (blnSync ? SourceType : await GetSourceTypeAsync(token).ConfigureAwait(false))
                     {
                         // Apply the character's Cyberware Essence cost multiplier if applicable.
                         case Improvement.ImprovementSource.Cyberware when !IsGeneware:
@@ -9104,7 +9135,7 @@ namespace Chummer.Backend.Equipment
                                 await UpdateMultipliersAsync(Improvement.ImprovementType.CyberwareEssCost,
                                         Improvement.ImprovementType.CyberwareTotalEssMultiplier)
                                     .ConfigureAwait(false);
-                                if (!_objCharacter.Created)
+                                if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                                     await UpdateMultipliersAsync(
                                             Improvement.ImprovementType.CyberwareEssCostNonRetroactive,
                                             Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive)
@@ -9128,7 +9159,7 @@ namespace Chummer.Backend.Equipment
                                 await UpdateMultipliersAsync(Improvement.ImprovementType.BiowareEssCost,
                                         Improvement.ImprovementType.BiowareTotalEssMultiplier)
                                     .ConfigureAwait(false);
-                                if (!_objCharacter.Created)
+                                if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                                     await UpdateMultipliersAsync(
                                             Improvement.ImprovementType.BiowareEssCostNonRetroactive,
                                             Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive)
@@ -9248,9 +9279,21 @@ namespace Chummer.Backend.Equipment
                         if (strPostModifierExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decTotalModifier))
                         {
                             if (blnSync)
+                            {
+                                strPostModifierExpression = strPostModifierExpression.CheapReplace("MinRating",
+                                    () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                                strPostModifierExpression = strPostModifierExpression.CheapReplace("Rating",
+                                    () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                 strPostModifierExpression = ProcessAttributesInXPath(strPostModifierExpression);
+                            }
                             else
+                            {
+                                strPostModifierExpression = await strPostModifierExpression.CheapReplaceAsync("MinRating",
+                                                                 async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                strPostModifierExpression = await strPostModifierExpression.CheapReplaceAsync("Rating",
+                                                                 async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 strPostModifierExpression = await ProcessAttributesInXPathAsync(strPostModifierExpression, token: token).ConfigureAwait(false);
+                            }
                             (bool blnIsSuccess, object objProcess) = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? CommonFunctions.EvaluateInvariantXPath(strPostModifierExpression, token)
@@ -9355,6 +9398,7 @@ namespace Chummer.Backend.Equipment
                     {
                         sbdValue.Append(strExpression);
                         sbdValue.CheapReplace(strExpression, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{MinRating}", () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
                         foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                         {
                             sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}',
@@ -9436,7 +9480,8 @@ namespace Chummer.Backend.Equipment
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
                         sbdValue.Append(strExpression);
-                        await sbdValue.CheapReplaceAsync("{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{MinRating}", async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                         {
                             await sbdValue.CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}',

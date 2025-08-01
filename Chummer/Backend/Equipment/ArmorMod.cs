@@ -969,74 +969,215 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        /// <param name="strExpression"></param>
-        /// <returns></returns>
-        private int ProcessRatingString(string strExpression, int intRating)
+        private int ProcessRatingString(string strExpression, int intRating) => ProcessRatingStringAsDec(strExpression, () => intRating, out bool _).StandardRound();
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private int ProcessRatingString(string strExpression, Func<int> funcRating) => ProcessRatingStringAsDec(strExpression, funcRating, out bool _).StandardRound();
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private async Task<int> ProcessRatingStringAsync(string strExpression, int intRating, CancellationToken token = default)
         {
-            strExpression = strExpression.ProcessFixedValuesString(intRating);
-
-            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-            {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
-                {
-                    sbdValue.Append(strExpression);
-                    sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                    Armor objParent = Parent;
-                    if (objParent != null)
-                    {
-                        sbdValue.CheapReplace(strExpression, "{Parent Rating}", () => objParent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    }
-                    else
-                    {
-                        sbdValue.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                    }
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
-                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
-                }
-            }
-
-            return decValue.StandardRound();
+            token.ThrowIfCancellationRequested();
+            return (await ProcessRatingStringAsDecAsync(strExpression, () => Task.FromResult(intRating), token).ConfigureAwait(false)).Item1.StandardRound();
         }
 
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        /// <param name="strExpression"></param>
-        /// <returns></returns>
-        private async Task<int> ProcessRatingStringAsync(string strExpression, int intRating, CancellationToken token = default)
+        private async Task<int> ProcessRatingStringAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
         {
-            strExpression = strExpression.ProcessFixedValuesString(intRating);
+            token.ThrowIfCancellationRequested();
+            return (await ProcessRatingStringAsDecAsync(strExpression, funcRating, token).ConfigureAwait(false)).Item1.StandardRound();
+        }
 
+        /// <summary>
+        /// Processes a string into a decimal based on logical processing.
+        /// </summary>
+        private decimal ProcessRatingStringAsDec(string strExpression, int intRating) => ProcessRatingStringAsDec(strExpression, () => intRating, out bool _);
+
+        /// <summary>
+        /// Processes a string into a decimal based on logical processing.
+        /// </summary>
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating) => ProcessRatingStringAsDec(strExpression, funcRating, out bool _);
+
+        /// <summary>
+        /// Processes a string into a decimal based on logical processing.
+        /// </summary>
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnIsSuccess)
+        {
+            blnIsSuccess = true;
+            strExpression = strExpression.ProcessFixedValuesString(funcRating);
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+            {
+                blnIsSuccess = false;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                {
+                    sbdValue.Append(strExpression);
+                    Armor objParent = Parent;
+                    if (objParent != null)
+                    {
+                        sbdValue.CheapReplace(strExpression, "{Armor Rating}", () => objParent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "Armor Rating", () => objParent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Parent Rating}", () => objParent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "Parent Rating", () => objParent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Armor Cost}", () => objParent.OwnCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "Armor Cost", () => objParent.OwnCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Parent Cost}", () => objParent.OwnCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "Parent Cost", () => objParent.OwnCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Armor Weight}", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "Armor Weight", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Parent Weight}", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "Parent Weight", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Armor Capacity}", () => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "Armor Capacity", () => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Parent Capacity}", () => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "Parent Capacity", () => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Capacity}", () => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "Capacity", () => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
+                    }
+                    else
+                    {
+                        sbdValue.Replace("{Armor Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Armor Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Armor Cost}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Armor Cost", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Parent Cost}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Parent Cost", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Armor Weight}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Armor Weight", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Parent Weight}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Parent Weight", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Armor Capacity}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Armor Capacity", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Parent Capacity}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Parent Capacity", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Capacity}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Capacity", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                    }
+                    sbdValue.CheapReplace("{Rating}", () => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.CheapReplace("Rating", () => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    object objProcess;
+                    (blnIsSuccess, objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
+                    if (blnIsSuccess)
+                        return Convert.ToDecimal((double)objProcess);
+                }
+            }
+
+            return decValue;
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private Task<Tuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, int intRating, CancellationToken token = default) => ProcessRatingStringAsDecAsync(strExpression, () => Task.FromResult(intRating), token);
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private async Task<Tuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            bool blnIsSuccess = true;
+            strExpression = await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false);
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
-                    sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                     Armor objParent = Parent;
                     if (objParent != null)
                     {
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Armor Rating}",
+                            async () => (await objParent.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Armor Rating",
+                            async () => (await objParent.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
                             async () => (await objParent.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Parent Rating",
+                            async () => (await objParent.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Armor Cost}",
+                            async () => (await objParent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Armor Cost",
+                            async () => (await objParent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}",
+                            async () => (await objParent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost",
+                            async () => (await objParent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            token: token).ConfigureAwait(false);
+                        sbdValue.CheapReplace(strExpression, "{Armor Weight}", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "Armor Weight", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Parent Weight}", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "Parent Weight", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Armor Capacity}",
+                            async () => (await objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)),
+                            token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Armor Capacity",
+                            async () => (await objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)),
+                            token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Capacity}",
+                            async () => (await objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)),
+                            token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Parent Capacity",
+                            async () => (await objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)),
+                            token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Capacity}",
+                            async () => (await objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)),
+                            token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Capacity",
+                            async () => (await objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)),
                             token: token).ConfigureAwait(false);
                     }
                     else
                     {
+                        sbdValue.Replace("{Armor Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Armor Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                         sbdValue.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Armor Cost}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Armor Cost", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Parent Cost}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Parent Cost", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Armor Weight}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Armor Weight", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Parent Weight}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Parent Weight", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Armor Capacity}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Armor Capacity", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Parent Capacity}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Parent Capacity", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("{Capacity}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Capacity", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                     }
+                    await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdValue.CheapReplaceAsync(strExpression, "Rating", async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
                         .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    (bool blnIsSuccess, object objProcess)
+                    object objProcess;
+                    (blnIsSuccess, objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
-                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                    if (blnIsSuccess)
+                        return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
                 }
             }
 
-            return decValue.StandardRound();
+            return new Tuple<decimal, bool>(decValue, blnIsSuccess);
         }
 
         public string RatingLabel
@@ -1408,18 +1549,7 @@ namespace Chummer.Backend.Equipment
                 blnModifyParentAvail = strAvail.StartsWith('+', '-') && !IncludedInArmor;
 
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
-                    {
-                        sbdAvail.Append(strAvail.TrimStart('+'));
-                        sbdAvail.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
-                        (bool blnIsSuccess, object objProcess)
-                            = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
-                        if (blnIsSuccess)
-                            intAvail = ((double)objProcess).StandardRound();
-                    }
-                }
+                    intAvail = ProcessRatingString(strAvail.TrimStart('+'), () => Rating);
                 else
                     intAvail = decValue.StandardRound();
             }
@@ -1471,18 +1601,7 @@ namespace Chummer.Backend.Equipment
                 blnModifyParentAvail = strAvail.StartsWith('+', '-') && !IncludedInArmor;
 
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
-                    {
-                        sbdAvail.Append(strAvail.TrimStart('+'));
-                        await sbdAvail.CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
-                        (bool blnIsSuccess, object objProcess)
-                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
-                        if (blnIsSuccess)
-                            intAvail = ((double)objProcess).StandardRound();
-                    }
-                }
+                    intAvail = await ProcessRatingStringAsync(strAvail.TrimStart('+'), () => GetRatingAsync(token), token).ConfigureAwait(false);
                 else
                     intAvail = decValue.StandardRound();
             }
@@ -1522,29 +1641,10 @@ namespace Chummer.Backend.Equipment
 
                 if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    if (Parent != null)
-                    {
-                        strCapacity = strCapacity
-                            .CheapReplace("{Capacity}", () => Parent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("Capacity", () => Parent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("{Parent Rating}", () => Parent.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("Parent Rating", () => Parent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    }
-                    else
-                    {
-                        strCapacity = strCapacity
-                            .Replace("{Capacity}", "0")
-                            .Replace("Capacity", "0")
-                            .Replace("{Parent Rating}", "0")
-                            .Replace("Parent Rating", "0");
-                    }
-                    strCapacity = strCapacity
-                        .CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                        .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    strCapacity = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCapacity);
-                    //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity);
-                    return blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
+                    decValue = ProcessRatingStringAsDec(strCapacity, () => Rating, out bool blnIsSuccess);
+                    return blnIsSuccess
+                        ? decValue.ToString("#,0.##", GlobalSettings.CultureInfo)
+                        : strCapacity;
                 }
 
                 return decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
@@ -1564,33 +1664,11 @@ namespace Chummer.Backend.Equipment
 
             if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                if (Parent != null)
-                {
-                    strCapacity = await strCapacity
-                        .CheapReplaceAsync("{Capacity}", () => Parent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo), token: token)
-                        .CheapReplaceAsync("Capacity", () => Parent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo), token: token)
-                        .CheapReplaceAsync("{Parent Rating}", async () => (await Parent.GetRatingAsync(token).ConfigureAwait(false))
-                            .ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                        .CheapReplaceAsync("Parent Rating", async () => (await Parent.GetRatingAsync(token).ConfigureAwait(false))
-                            .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                }
-                else
-                {
-                    strCapacity = strCapacity
-                        .Replace("{Capacity}", "0")
-                        .Replace("Capacity", "0")
-                        .Replace("{Parent Rating}", "0")
-                        .Replace("Parent Rating", "0");
-                }
-                strCapacity = await strCapacity
-                        .CheapReplaceAsync("{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false))
-                            .ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                        .CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false))
-                            .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                strCapacity = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strCapacity, token: token).ConfigureAwait(false);
-                //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
-                return blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
+                bool blnIsSuccess;
+                (decValue, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strCapacity, () => GetRatingAsync(token), token).ConfigureAwait(false);
+                return blnIsSuccess
+                    ? decValue.ToString("#,0.##", GlobalSettings.CultureInfo)
+                    : strCapacity;
             }
 
             return decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
@@ -1690,29 +1768,10 @@ namespace Chummer.Backend.Equipment
                 string strReturn;
                 if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    if (Parent != null)
-                    {
-                        strCapacity = strCapacity
-                            .CheapReplace("{Capacity}", () => Parent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("Capacity", () => Parent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("{Parent Rating}", () => Parent.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("Parent Rating", () => Parent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    }
-                    else
-                    {
-                        strCapacity = strCapacity
-                            .Replace("{Capacity}", "0")
-                            .Replace("Capacity", "0")
-                            .Replace("{Parent Rating}", "0")
-                            .Replace("Parent Rating", "0");
-                    }
-                    strCapacity = strCapacity
-                        .CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                        .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    strCapacity = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCapacity);
-                    //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity);
-                    strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
+                    decValue = ProcessRatingStringAsDec(strCapacity, () => Rating, out bool blnIsSuccess);
+                    strReturn = blnIsSuccess
+                        ? decValue.ToString("#,0.##", GlobalSettings.CultureInfo)
+                        : strCapacity;
                 }
                 else
                     strReturn = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
@@ -1740,34 +1799,10 @@ namespace Chummer.Backend.Equipment
             string strReturn;
             if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                if (Parent != null)
-                {
-                    strCapacity = await strCapacity
-                        .CheapReplaceAsync("{Capacity}", () => Parent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo), token: token)
-                        .CheapReplaceAsync("Capacity", () => Parent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo), token: token)
-                        .CheapReplaceAsync("{Parent Rating}", async () => (await Parent.GetRatingAsync(token).ConfigureAwait(false))
-                            .ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                        .CheapReplaceAsync("Parent Rating", async () => (await Parent.GetRatingAsync(token).ConfigureAwait(false))
-                            .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                }
-                else
-                {
-                    strCapacity = strCapacity
-                        .Replace("{Capacity}", "0")
-                        .Replace("Capacity", "0")
-                        .Replace("{Parent Rating}", "0")
-                        .Replace("Parent Rating", "0");
-                }
-                strCapacity = await strCapacity
-                        .CheapReplaceAsync("{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false))
-                            .ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                        .CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false))
-                            .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                strCapacity = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strCapacity, token: token).ConfigureAwait(false);
-                //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
+                bool blnIsSuccess;
+                (decValue, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strCapacity, () => GetRatingAsync(token), token).ConfigureAwait(false);
                 strReturn = blnIsSuccess
-                    ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
+                    ? decValue.ToString("#,0.##", GlobalSettings.CultureInfo)
                     : strCapacity;
             }
             else
@@ -1879,19 +1914,7 @@ namespace Chummer.Backend.Equipment
 
                 if (strCostExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
-                    {
-                        sbdCost.Append(strCostExpr.TrimStart('+'));
-                        sbdCost.CheapReplace(strCostExpr, "Rating",
-                                             () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdCost.CheapReplace(strCostExpr, "Armor Cost",
-                                             () => (Parent?.OwnCost ?? 0.0m).ToString(GlobalSettings.InvariantCultureInfo));
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpr);
-                        (bool blnIsSuccess, object objProcess)
-                            = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
-                        if (blnIsSuccess)
-                            decReturn = Convert.ToDecimal((double)objProcess);
-                    }
+                    decReturn = ProcessRatingStringAsDec(strCostExpr.TrimStart('+'), () => Rating);
                 }
 
                 if (DiscountCost)
@@ -1914,23 +1937,7 @@ namespace Chummer.Backend.Equipment
 
             if (strCostExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
-                {
-                    sbdCost.Append(strCostExpr.TrimStart('+'));
-                    await sbdCost.CheapReplaceAsync(strCostExpr, "Rating",
-                                                    async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await sbdCost.CheapReplaceAsync(strCostExpr, "Armor Cost",
-                                                    async () => (Parent != null
-                                                        ? await Parent.GetOwnCostAsync(token).ConfigureAwait(false)
-                                                        : 0.0m).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                 .ConfigureAwait(false);
-                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCostExpr, token: token).ConfigureAwait(false);
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token)
-                                               .ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal((double)objProcess);
-                }
+                decReturn = (await ProcessRatingStringAsDecAsync(strCostExpr.TrimStart('+'), () => GetRatingAsync(token), token).ConfigureAwait(false)).Item1;
             }
 
             if (DiscountCost)
@@ -1956,23 +1963,11 @@ namespace Chummer.Backend.Equipment
                 string strWeightExpression = Weight;
                 if (string.IsNullOrEmpty(strWeightExpression))
                     return 0;
-                decimal decReturn = 0;
                 strWeightExpression = strWeightExpression.ProcessFixedValuesString(() => Rating);
-
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+                if (strWeightExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
-                    sbdWeight.Append(strWeightExpression.TrimStart('+'));
-                    sbdWeight.CheapReplace(strWeightExpression, "Rating",
-                                           () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdWeight.CheapReplace(strWeightExpression, "Armor Weight",
-                                           () => (Parent?.OwnWeight ?? 0.0m).ToString(GlobalSettings.InvariantCultureInfo));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
-                    if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal((double)objProcess);
+                    decReturn = ProcessRatingStringAsDec(strWeightExpression.TrimStart('+'), () => Rating);
                 }
-
                 return decReturn;
             }
         }
