@@ -2303,8 +2303,18 @@ namespace Chummer.Backend.Equipment
                         sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
                     }
                     sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                    if (Parent is Cyberware objCyberwareParent)
+                    object objLoopParent = Parent;
+                    while (objLoopParent is Gear objLoopParentGear)
+                        objLoopParent = objLoopParentGear.Parent;
+                    if (objLoopParent is Cyberware objCyberwareParent)
                         objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                    else if (objLoopParent is WeaponAccessory objAccessoryParent && objAccessoryParent.Parent?.Cyberware == true)
+                    {
+                        string strCyberwareId = objAccessoryParent.Parent.ParentID;
+                        objCyberwareParent = _objCharacter.Cyberware.FindById(strCyberwareId)
+                            ?? _objCharacter.Vehicles.FindVehicleCyberware(x => strCyberwareId == x.InternalId);
+                        objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                    }
                     else
                         _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
@@ -2358,8 +2368,18 @@ namespace Chummer.Backend.Equipment
                         sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
                     }
                     sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                    if (Parent is Cyberware objCyberwareParent)
+                    object objLoopParent = Parent;
+                    while (objLoopParent is Gear objLoopParentGear)
+                        objLoopParent = objLoopParentGear.Parent;
+                    if (objLoopParent is Cyberware objCyberwareParent)
                         await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                    else if (objLoopParent is WeaponAccessory objAccessoryParent && objAccessoryParent.Parent?.Cyberware == true)
+                    {
+                        string strCyberwareId = objAccessoryParent.Parent.ParentID;
+                        objCyberwareParent = await _objCharacter.Cyberware.FindByIdAsync(strCyberwareId, token).ConfigureAwait(false)
+                            ?? (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => strCyberwareId == x.InternalId, token).ConfigureAwait(false)).Item1;
+                        await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                    }
                     else
                         await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
 
@@ -3464,8 +3484,18 @@ namespace Chummer.Backend.Equipment
                             sbdAvail.Replace("Parent Rating", 0.ToString(GlobalSettings.InvariantCultureInfo));
                         }
                         sbdAvail.CheapReplace(strAvail, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        if (Parent is Cyberware objCyberwareParent)
+                        object objLoopParent = Parent;
+                        while (objLoopParent is Gear objLoopParentGear)
+                            objLoopParent = objLoopParentGear.Parent;
+                        if (objLoopParent is Cyberware objCyberwareParent)
                             objCyberwareParent.ProcessAttributesInXPath(sbdAvail, strAvail);
+                        else if (objLoopParent is WeaponAccessory objAccessoryParent && objAccessoryParent.Parent?.Cyberware == true)
+                        {
+                            string strCyberwareId = objAccessoryParent.Parent.ParentID;
+                            objCyberwareParent = _objCharacter.Cyberware.FindById(strCyberwareId)
+                                ?? _objCharacter.Vehicles.FindVehicleCyberware(x => strCyberwareId == x.InternalId);
+                            objCyberwareParent.ProcessAttributesInXPath(sbdAvail, strAvail);
+                        }
                         else
                             _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
                         (bool blnIsSuccess, object objProcess)
@@ -3547,8 +3577,18 @@ namespace Chummer.Backend.Equipment
                         await sbdAvail.CheapReplaceAsync(strAvail, "Rating",
                             async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
                                 .InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        if (Parent is Cyberware objCyberwareParent)
+                        object objLoopParent = Parent;
+                        while (objLoopParent is Gear objLoopParentGear)
+                            objLoopParent = objLoopParentGear.Parent;
+                        if (objLoopParent is Cyberware objCyberwareParent)
                             await objCyberwareParent.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
+                        else if (objLoopParent is WeaponAccessory objAccessoryParent && objAccessoryParent.Parent?.Cyberware == true)
+                        {
+                            string strCyberwareId = objAccessoryParent.Parent.ParentID;
+                            objCyberwareParent = await _objCharacter.Cyberware.FindByIdAsync(strCyberwareId, token).ConfigureAwait(false)
+                                ?? (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => strCyberwareId == x.InternalId, token).ConfigureAwait(false)).Item1;
+                            await objCyberwareParent.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
+                        }
                         else
                             await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                         (bool blnIsSuccess, object objProcess)
@@ -3918,8 +3958,18 @@ namespace Chummer.Backend.Equipment
                                             ?? "0");
                         sbdCost.CheapReplace(strCostExpression, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                         sbdCost.Replace("Parent Cost", decParentCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        if (Parent is Cyberware objCyberwareParent)
+                        object objLoopParent = Parent;
+                        while (objLoopParent is Gear objLoopParentGear)
+                            objLoopParent = objLoopParentGear.Parent;
+                        if (objLoopParent is Cyberware objCyberwareParent)
                             objCyberwareParent.ProcessAttributesInXPath(sbdCost, strCostExpression);
+                        else if (objLoopParent is WeaponAccessory objAccessoryParent && objAccessoryParent.Parent?.Cyberware == true)
+                        {
+                            string strCyberwareId = objAccessoryParent.Parent.ParentID;
+                            objCyberwareParent = _objCharacter.Cyberware.FindById(strCyberwareId)
+                                ?? _objCharacter.Vehicles.FindVehicleCyberware(x => strCyberwareId == x.InternalId);
+                            objCyberwareParent.ProcessAttributesInXPath(sbdCost, strCostExpression);
+                        }
                         else
                             _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
                         // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -3983,8 +4033,18 @@ namespace Chummer.Backend.Equipment
                                                                      }, token: token).ConfigureAwait(false);
                     await sbdCost.CheapReplaceAsync(strCostExpression, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     sbdCost.Replace("Parent Cost", decParentCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    if (Parent is Cyberware objCyberwareParent)
+                    object objLoopParent = Parent;
+                    while (objLoopParent is Gear objLoopParentGear)
+                        objLoopParent = objLoopParentGear.Parent;
+                    if (objLoopParent is Cyberware objCyberwareParent)
                         await objCyberwareParent.ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
+                    else if (objLoopParent is WeaponAccessory objAccessoryParent && objAccessoryParent.Parent?.Cyberware == true)
+                    {
+                        string strCyberwareId = objAccessoryParent.Parent.ParentID;
+                        objCyberwareParent = await _objCharacter.Cyberware.FindByIdAsync(strCyberwareId, token).ConfigureAwait(false)
+                            ?? (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => strCyberwareId == x.InternalId, token).ConfigureAwait(false)).Item1;
+                        await objCyberwareParent.ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
+                    }
                     else
                         await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -4140,8 +4200,18 @@ namespace Chummer.Backend.Equipment
                                       ?? "0");
                     sbdWeight.CheapReplace(strWeightExpression, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     sbdWeight.Replace("Parent Weight", decParentWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                    if (Parent is Cyberware objCyberwareParent)
+                    object objLoopParent = Parent;
+                    while (objLoopParent is Gear objLoopParentGear)
+                        objLoopParent = objLoopParentGear.Parent;
+                    if (objLoopParent is Cyberware objCyberwareParent)
                         objCyberwareParent.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
+                    else if (objLoopParent is WeaponAccessory objAccessoryParent && objAccessoryParent.Parent?.Cyberware == true)
+                    {
+                        string strCyberwareId = objAccessoryParent.Parent.ParentID;
+                        objCyberwareParent = _objCharacter.Cyberware.FindById(strCyberwareId)
+                            ?? _objCharacter.Vehicles.FindVehicleCyberware(x => strCyberwareId == x.InternalId);
+                        objCyberwareParent.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
+                    }
                     else
                         _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
                     (bool blnIsSuccess, object objProcess)
