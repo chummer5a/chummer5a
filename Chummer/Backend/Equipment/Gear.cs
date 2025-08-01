@@ -2303,7 +2303,10 @@ namespace Chummer.Backend.Equipment
                         sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
                     }
                     sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                    if (Parent is Cyberware objCyberwareParent)
+                        objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                    else
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
                     foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                     {
@@ -2355,7 +2358,10 @@ namespace Chummer.Backend.Equipment
                         sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
                     }
                     sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                    if (Parent is Cyberware objCyberwareParent)
+                        await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                    else
+                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
 
                     foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                     {
@@ -3458,7 +3464,10 @@ namespace Chummer.Backend.Equipment
                             sbdAvail.Replace("Parent Rating", 0.ToString(GlobalSettings.InvariantCultureInfo));
                         }
                         sbdAvail.CheapReplace(strAvail, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
+                        if (Parent is Cyberware objCyberwareParent)
+                            objCyberwareParent.ProcessAttributesInXPath(sbdAvail, strAvail);
+                        else
+                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                         if (blnIsSuccess)
@@ -3538,7 +3547,10 @@ namespace Chummer.Backend.Equipment
                         await sbdAvail.CheapReplaceAsync(strAvail, "Rating",
                             async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
                                 .InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
+                        if (Parent is Cyberware objCyberwareParent)
+                            await objCyberwareParent.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
+                        else
+                            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                         (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
                         if (blnIsSuccess)
@@ -3906,7 +3918,10 @@ namespace Chummer.Backend.Equipment
                                             ?? "0");
                         sbdCost.CheapReplace(strCostExpression, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                         sbdCost.Replace("Parent Cost", decParentCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
+                        if (Parent is Cyberware objCyberwareParent)
+                            objCyberwareParent.ProcessAttributesInXPath(sbdCost, strCostExpression);
+                        else
+                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
                         // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
@@ -3968,7 +3983,10 @@ namespace Chummer.Backend.Equipment
                                                                      }, token: token).ConfigureAwait(false);
                     await sbdCost.CheapReplaceAsync(strCostExpression, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     sbdCost.Replace("Parent Cost", decParentCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
+                    if (Parent is Cyberware objCyberwareParent)
+                        await objCyberwareParent.ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
+                    else
+                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
@@ -4122,7 +4140,10 @@ namespace Chummer.Backend.Equipment
                                       ?? "0");
                     sbdWeight.CheapReplace(strWeightExpression, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     sbdWeight.Replace("Parent Weight", decParentWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
+                    if (Parent is Cyberware objCyberwareParent)
+                        objCyberwareParent.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
+                    else
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
                     if (blnIsSuccess)

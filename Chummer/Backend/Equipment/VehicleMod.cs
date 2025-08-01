@@ -2337,11 +2337,11 @@ namespace Chummer.Backend.Equipment
                     {
                         // If the limb has Customized Strength, this is its new base value.
                         case "Customized Strength":
-                            intAttribute = objChild.Rating;
+                            intAttribute = objChild.GetRating(true);
                             break;
                         // If the limb has Enhanced Strength, this adds to the limb's value.
                         case "Enhanced Strength":
-                            intBonus = objChild.Rating;
+                            intBonus = objChild.GetRating(true);
                             break;
                     }
                 }
@@ -2374,11 +2374,11 @@ namespace Chummer.Backend.Equipment
                     {
                         // If the limb has Customized Agility, this is its new base value.
                         case "Customized Agility":
-                            intAttribute = objChild.Rating;
+                            intAttribute = objChild.GetRating(true);
                             break;
                         // If the limb has Enhanced Agility, this adds to the limb's value.
                         case "Enhanced Agility":
-                            intBonus = objChild.Rating;
+                            intBonus = objChild.GetRating(true);
                             break;
                     }
                 }
@@ -2411,11 +2411,11 @@ namespace Chummer.Backend.Equipment
                 {
                     // If the limb has Customized Strength, this is its new base value.
                     case "Customized Strength":
-                        intAttribute = await objChild.GetRatingAsync(token).ConfigureAwait(false);
+                        intAttribute = await objChild.GetRatingAsync(true, token).ConfigureAwait(false);
                         break;
                     // If the limb has Enhanced Strength, this adds to the limb's value.
                     case "Enhanced Strength":
-                        intBonus = await objChild.GetRatingAsync(token).ConfigureAwait(false);
+                        intBonus = await objChild.GetRatingAsync(true, token).ConfigureAwait(false);
                         break;
                 }
             }, token: token).ConfigureAwait(false);
@@ -2448,11 +2448,11 @@ namespace Chummer.Backend.Equipment
                 {
                     // If the limb has Customized Strength, this is its new base value.
                     case "Customized Agility":
-                        intAttribute = await objChild.GetRatingAsync(token).ConfigureAwait(false);
+                        intAttribute = await objChild.GetRatingAsync(true, token).ConfigureAwait(false);
                         break;
                     // If the limb has Enhanced Strength, this adds to the limb's value.
                     case "Enhanced Agility":
-                        intBonus = await objChild.GetRatingAsync(token).ConfigureAwait(false);
+                        intBonus = await objChild.GetRatingAsync(true, token).ConfigureAwait(false);
                         break;
                 }
             }, token: token).ConfigureAwait(false);

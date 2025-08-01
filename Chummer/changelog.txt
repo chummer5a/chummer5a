@@ -102,6 +102,7 @@ Application Changes:
 - Fixed SelectCyberware form not showing Availability correctly for items with 'Or Gear' Availability suffix.
 - Added a more obvious "Report a Bug" menu item that takes the user directly to the page to create a new GitHub issue (more obvious than using the Issues Tracker).
 - Vehicle mods, vehicle weapon mounts, and vehicle weapon mount options now support a lot more referential content in their various fields (i.e., they can draw from far more vehicle stats and weapon mount stats to determine their costs, availabilities, and various bonuses). These generally use the same curly bracket notation as fields that reference character attributes. Vehicle attributes are referenced directly by their names, with the suffixes "Base", "Total", and "Max" used for the base (before modifications), total (after modifications), and maximum values, respectively. 
+- Cyberware with custom values that work off of STR and/or AGI values (not minima or maxima) now properly uses the STR and AGI of their parent cyberware or vehicle when appropriate.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.
