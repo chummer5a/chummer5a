@@ -386,7 +386,7 @@ namespace Chummer
                         &&
                         (!blnShowOnlyAffordItems || blnFreeItem
                                                  || await objXmlMod.CheckNuyenRestrictionAsync(
-                                                     decNuyen, decCostMultiplier, intMinRating, token).ConfigureAwait(false)))
+                                                     _objCharacter, decNuyen, decCostMultiplier, intMinRating, token).ConfigureAwait(false)))
                     {
                         lstMods.Add(new ListItem(objXmlMod.SelectSingleNodeAndCacheExpression("id", token: token)?.Value,
                                                  objXmlMod.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
@@ -657,7 +657,7 @@ namespace Chummer
                             decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                             while (intMaximum > 1 && !await xmlVehicleMod
                                                             .CheckNuyenRestrictionAsync(
-                                                                decNuyen, decCostMultiplier, intMaximum,
+                                                                _objCharacter, decNuyen, decCostMultiplier, intMaximum,
                                                                 token).ConfigureAwait(false))
                             {
                                 --intMaximum;

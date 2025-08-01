@@ -3868,7 +3868,8 @@ namespace Chummer
             int intAvail = intAvailModifier;
             if (strAvailExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)));
+                strAvailExpr = objCharacter.AttributeSection.ProcessAttributesInXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)));
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAvailExpr);
                 if (blnIsSuccess)
                     intAvail += ((double)objProcess).StandardRound();
             }
@@ -3945,18 +3946,19 @@ namespace Chummer
             int intAvail = intAvailModifier;
             if (strAvailExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                strAvailExpr = await (await objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr, token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     intAvail += ((double)objProcess).StandardRound();
             }
             else
                 intAvail += decValue.StandardRound();
-            return intAvail <= await objCharacter.Settings.GetMaximumAvailabilityAsync(token).ConfigureAwait(false);
+            return intAvail <= await (await objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaximumAvailabilityAsync(token).ConfigureAwait(false);
         }
 
-        public static bool CheckNuyenRestriction(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
+        public static bool CheckNuyenRestriction(XmlNode objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
         {
-            return objXmlGear?.CreateNavigator().CheckNuyenRestriction(decMaxNuyen, decCostMultiplier, intRating) == true;
+            return objXmlGear?.CreateNavigator().CheckNuyenRestriction(objCharacter, decMaxNuyen, decCostMultiplier, intRating) == true;
         }
 
         /// <summary>
@@ -3967,7 +3969,7 @@ namespace Chummer
         /// <param name="decCostMultiplier">Multiplier of the object's cost value.</param>
         /// <param name="intRating">Effective Rating of the object.</param>
         /// <returns>Returns False if not permitted with the current restrictions. Returns True if valid.</returns>
-        public static bool CheckNuyenRestriction(this XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
+        public static bool CheckNuyenRestriction(this XPathNavigator objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
         {
             if (objXmlGear == null)
                 return false;
@@ -4002,7 +4004,8 @@ namespace Chummer
                 }
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decCost))
                 {
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)));
+                    strCost = objCharacter.AttributeSection.ProcessAttributesInXPath(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)));
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCost);
                     if (blnIsSuccess)
                         decCost = Convert.ToDecimal((double)objProcess);
                 }
@@ -4010,11 +4013,11 @@ namespace Chummer
             return decMaxNuyen >= decCost * decCostMultiplier;
         }
 
-        public static async Task<bool> CheckNuyenRestrictionAsync(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
+        public static async Task<bool> CheckNuyenRestrictionAsync(XmlNode objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
         {
             return objXmlGear != null && await objXmlGear.CreateNavigator()
                                                          .CheckNuyenRestrictionAsync(
-                                                             decMaxNuyen, decCostMultiplier, intRating, token).ConfigureAwait(false);
+                                                             objCharacter, decMaxNuyen, decCostMultiplier, intRating, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -4026,7 +4029,7 @@ namespace Chummer
         /// <param name="intRating">Effective Rating of the object.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Returns False if not permitted with the current restrictions. Returns True if valid.</returns>
-        public static async Task<bool> CheckNuyenRestrictionAsync(this XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
+        public static async Task<bool> CheckNuyenRestrictionAsync(this XPathNavigator objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
         {
             if (objXmlGear == null)
                 return false;
@@ -4061,7 +4064,8 @@ namespace Chummer
                 }
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decCost))
                 {
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                    strCost = await (await objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);
                     if (blnIsSuccess)
                         decCost = Convert.ToDecimal((double)objProcess);
                 }

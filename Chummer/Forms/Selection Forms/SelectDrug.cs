@@ -279,7 +279,7 @@ namespace Chummer
                             decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync().ConfigureAwait(false);
                             while (intMaxRating > intMinRating
                                    && !await xmlDrug.CheckNuyenRestrictionAsync(
-                                       decNuyen, decCostMultiplier, intMaxRating).ConfigureAwait(false))
+                                       _objCharacter, decNuyen, decCostMultiplier, intMaxRating).ConfigureAwait(false))
                             {
                                 --intMaxRating;
                             }
@@ -900,7 +900,7 @@ namespace Chummer
                         if (_setBlackMarketMaps.Contains(xmlDrug.SelectSingleNodeAndCacheExpression("category", token)?.Value))
                             decCostMultiplier *= 0.9m;
                         if (!await xmlDrug
-                                   .CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token)
+                                   .CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, token: token)
                                    .ConfigureAwait(false))
                         {
                             ++intOverLimit;
