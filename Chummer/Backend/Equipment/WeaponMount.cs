@@ -1371,10 +1371,8 @@ namespace Chummer.Backend.Equipment
             if (blnCheckChildren)
             {
                 // Run through the Vehicle Mods and add in their availability.
-                intAvail += await Mods.SumAsync(async objVehicleMod =>
+                intAvail += await Mods.SumAsync(x => !x.IncludedInVehicle && x.Equipped, async objVehicleMod =>
                 {
-                    if (objVehicleMod.IncludedInVehicle || !objVehicleMod.Equipped)
-                        return 0;
                     AvailabilityValue objLoopAvailTuple
                         = await objVehicleMod.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (objLoopAvailTuple.Suffix == 'F')

@@ -2034,10 +2034,8 @@ namespace Chummer.Backend.Equipment
 
             if (blnIncludeChildren)
             {
-                intAvail += await Mods.SumAsync(async objChild =>
+                intAvail += await Mods.SumAsync(x => !x.IncludedInVehicle && x.Equipped, async objChild =>
                 {
-                    if (objChild.IncludedInVehicle || !objChild.Equipped)
-                        return 0;
                     AvailabilityValue objLoopAvail
                         = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (objLoopAvail.Suffix == 'F')
@@ -2045,10 +2043,8 @@ namespace Chummer.Backend.Equipment
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
                     return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
-                }, token).ConfigureAwait(false) + await WeaponMounts.SumAsync(async objChild =>
+                }, token).ConfigureAwait(false) + await WeaponMounts.SumAsync(x => !x.IncludedInVehicle && x.Equipped, async objChild =>
                 {
-                    if (objChild.IncludedInVehicle || !objChild.Equipped)
-                        return 0;
                     AvailabilityValue objLoopAvail
                         = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (objLoopAvail.Suffix == 'F')
@@ -2056,10 +2052,8 @@ namespace Chummer.Backend.Equipment
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
                     return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
-                }, token).ConfigureAwait(false) + await Weapons.SumAsync(async objChild =>
+                }, token).ConfigureAwait(false) + await Weapons.SumAsync(x => x.ParentID != InternalId && x.Equipped, async objChild =>
                 {
-                    if (objChild.ParentID == InternalId || !objChild.Equipped)
-                        return 0;
                     AvailabilityValue objLoopAvail
                         = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (objLoopAvail.Suffix == 'F')
@@ -2067,10 +2061,8 @@ namespace Chummer.Backend.Equipment
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
                     return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
-                }, token).ConfigureAwait(false) + await GearChildren.SumAsync(async objChild =>
+                }, token).ConfigureAwait(false) + await GearChildren.SumAsync(x => x.ParentID != InternalId, async objChild =>
                 {
-                    if (objChild.ParentID == InternalId)
-                        return 0;
                     AvailabilityValue objLoopAvail
                         = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (objLoopAvail.Suffix == 'F')
@@ -3152,10 +3144,8 @@ namespace Chummer.Backend.Equipment
                 // Then check for mods that modify the speed value (needs separate loop in case of % modifiers on top of stat-overriding mods)
                 int intTotalBonusSpeed = 0;
                 int intTotalBonusOffroadSpeed = 0;
-                int intModArmor = await Mods.SumAsync(async objMod =>
+                int intModArmor = await Mods.SumAsync(x => !x.IncludedInVehicle && x.Equipped && !ReferenceEquals(x, objExcludeMod), async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
-                        return 0;
                     int intTemp = 0;
                     if (objMod.Bonus != null)
                     {
@@ -3378,10 +3368,8 @@ namespace Chummer.Backend.Equipment
                 // Then check for mods that modify the accel value (needs separate loop in case of % modifiers on top of stat-overriding mods)
                 int intTotalBonusAccel = 0;
                 int intTotalBonusOffroadAccel = 0;
-                int intModArmor = await Mods.SumAsync(async objMod =>
+                int intModArmor = await Mods.SumAsync(x => !x.IncludedInVehicle && x.Equipped && !ReferenceEquals(x, objExcludeMod), async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
-                        return 0;
                     int intTemp = 0;
                     if (objMod.Bonus != null)
                     {
@@ -3676,10 +3664,8 @@ namespace Chummer.Backend.Equipment
                 // Then check for mods that modify the handling value (needs separate loop in case of % modifiers on top of stat-overriding mods)
                 int intTotalBonusHandling = 0;
                 int intTotalBonusOffroadHandling = 0;
-                int intModArmor = await Mods.SumAsync(async objMod =>
+                int intModArmor = await Mods.SumAsync(x => !x.IncludedInVehicle && x.Equipped && !ReferenceEquals(x, objExcludeMod), async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
-                        return 0;
                     int intTemp = 0;
                     if (objMod.Bonus != null)
                     {
@@ -3826,11 +3812,8 @@ namespace Chummer.Backend.Equipment
                 }, token).ConfigureAwait(false);
 
                 // Add the Modification's Armor to the Vehicle's base Armor.
-                int intModArmor = await Mods.SumAsync(async objMod =>
+                int intModArmor = await Mods.SumAsync(x => !x.IncludedInVehicle && x.Equipped && !ReferenceEquals(x, objExcludeMod), async objMod =>
                 {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped || ReferenceEquals(objMod, objExcludeMod))
-                        return 0;
-
                     string strLoop = objMod.Bonus?["armor"]?.InnerText;
                     int intTemp = 0;
                     if (!string.IsNullOrEmpty(strLoop))

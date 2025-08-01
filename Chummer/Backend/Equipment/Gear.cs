@@ -3604,10 +3604,8 @@ namespace Chummer.Backend.Equipment
             if (blnCheckChildren)
             {
                 // Run through the child items and increase the Avail by any Mod whose Avail contains "+".
-                intAvail += await Children.SumAsync(async objChild =>
+                intAvail += await Children.SumAsync(x => x.ParentID != InternalId, async objChild =>
                 {
-                    if (objChild.ParentID == InternalId)
-                        return 0;
                     AvailabilityValue objLoopAvailTuple
                         = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (objLoopAvailTuple.Suffix == 'F')
@@ -5860,7 +5858,7 @@ namespace Chummer.Backend.Equipment
                 if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false) && await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false))
                     intMaxFocusTotal = Math.Min(intMaxFocusTotal, await (await _objCharacter.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) * 5);
 
-                int intFociTotal = await (await _objCharacter.GetFociAsync(token).ConfigureAwait(false)).SumAsync(x => x.GearObject != this, x => x.GetRatingAsync(token), token).ConfigureAwait(false);
+                int intFociTotal = await (await _objCharacter.GetFociAsync(token).ConfigureAwait(false)).SumAsync(x => !ReferenceEquals(x.GearObject, this), x => x.GetRatingAsync(token), token).ConfigureAwait(false);
 
                 if (intFociTotal + intNewRating > intMaxFocusTotal && !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                 {

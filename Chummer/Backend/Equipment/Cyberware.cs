@@ -8542,10 +8542,10 @@ namespace Chummer.Backend.Equipment
                     // Run through cyberware children and increase the Avail by any installed Mod whose Avail starts with "+" or "-".
                     intAvail += await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChild =>
                     {
-                        if (objChild.ParentID == InternalId ||
-                            !await objChild.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false) &&
-                            !string.IsNullOrEmpty(await objChild.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)))
-                            return 0;
+                        return objChild.ParentID != InternalId && await objChild.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
+                            && string.IsNullOrEmpty(await objChild.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false));
+                    }, async objChild =>
+                    {
                         AvailabilityValue objLoopAvailTuple = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                         if (objLoopAvailTuple.Suffix == 'F')
                             chrLastAvailChar = 'F';
@@ -8557,10 +8557,8 @@ namespace Chummer.Backend.Equipment
 
                 int intLoopAvail = 0;
                 // Run through gear children and increase the Avail by any Mod whose Avail starts with "+" or "-".
-                intAvail += await GearChildren.SumAsync(async objChild =>
+                intAvail += await GearChildren.SumAsync(x => x.ParentID != InternalId, async objChild =>
                 {
-                    if (objChild.ParentID == InternalId)
-                        return 0;
                     AvailabilityValue objLoopAvailTuple =
                         await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (!objLoopAvailTuple.AddToParent)
@@ -10407,10 +10405,10 @@ namespace Chummer.Backend.Equipment
                                   // Run through its Children and deduct the Capacity costs.
                                   - await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChildCyberware =>
                                   {
-                                      // Children that are built into the parent
-                                      if (await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, token).ConfigureAwait(false)
-                                          || objChildCyberware.ParentID == InternalId)
-                                          return 0;
+                                      // Skip children that are built into the parent
+                                      return !await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, token).ConfigureAwait(false) && objChildCyberware.ParentID != InternalId;
+                                  }, async objChildCyberware =>
+                                  {
                                       string strCapacity = await objChildCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
                                       int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                                       if (intPos != -1)
@@ -10423,11 +10421,8 @@ namespace Chummer.Backend.Equipment
                                       return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
                                   }, token).ConfigureAwait(false)
                                   // Run through its Children and deduct the Capacity costs.
-                                  - await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChildGear =>
+                                  - await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(x => !x.IncludedInParent, async objChildGear =>
                                   {
-                                      if (objChildGear.IncludedInParent)
-                                          return 0;
-
                                       string strCapacity = await objChildGear.GetCalculatedArmorCapacityAsync(token).ConfigureAwait(false);
                                       int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                                       if (intPos != -1)
@@ -10447,9 +10442,10 @@ namespace Chummer.Backend.Equipment
                                   // Run through its Children and deduct the Capacity costs.
                                   - await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChildCyberware =>
                                   {
-                                      if (await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, token).ConfigureAwait(false)
-                                          || objChildCyberware.ParentID == InternalId)
-                                          return 0;
+                                      // Skip children that are built into the parent
+                                      return !await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, token).ConfigureAwait(false) && objChildCyberware.ParentID != InternalId;
+                                  }, async objChildCyberware =>
+                                  {
                                       string strCapacity = await objChildCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
                                       int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                                       if (intPos != -1)
@@ -10462,11 +10458,8 @@ namespace Chummer.Backend.Equipment
                                       return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
                                   }, token).ConfigureAwait(false)
                                   // Run through its Children and deduct the Capacity costs.
-                                  - await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChildGear =>
+                                  - await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(x => !x.IncludedInParent, async objChildGear =>
                                   {
-                                      if (objChildGear.IncludedInParent)
-                                          return 0;
-
                                       string strCapacity = await objChildGear.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
                                       int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                                       if (intPos != -1)

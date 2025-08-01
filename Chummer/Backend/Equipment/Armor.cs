@@ -2705,10 +2705,8 @@ namespace Chummer.Backend.Equipment
             if (blnCheckChildren)
             {
                 // Run through armor mod children and increase the Avail by any Mod whose Avail starts with "+" or "-".
-                intAvail += await ArmorMods.SumAsync(async objChild =>
+                intAvail += await ArmorMods.SumAsync(x => !x.IncludedInArmor, async objChild =>
                             {
-                                if (objChild.IncludedInArmor)
-                                    return 0;
                                 AvailabilityValue objLoopAvailTuple = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                                 if (objLoopAvailTuple.Suffix == 'F')
                                     chrLastAvailChar = 'F';
@@ -2717,10 +2715,8 @@ namespace Chummer.Backend.Equipment
                                 return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
                             }, token).ConfigureAwait(false)
                             // Run through gear children and increase the Avail by any Mod whose Avail starts with "+" or "-".
-                            + await GearChildren.SumAsync(async objChild =>
+                            + await GearChildren.SumAsync(x => x.ParentID != InternalId, async objChild =>
                             {
-                                if (objChild.ParentID == InternalId)
-                                    return 0;
                                 AvailabilityValue objLoopAvailTuple = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                                 if (objLoopAvailTuple.Suffix == 'F')
                                     chrLastAvailChar = 'F';
@@ -2882,7 +2878,7 @@ namespace Chummer.Backend.Equipment
                     decCapacity -= await ArmorMods.SumAsync(x => !x.IncludedInArmor, async x => Math.Max(await x.GetTotalCapacityAsync(token).ConfigureAwait(false), 0), token: token).ConfigureAwait(false);
                 // Run through its Gear and deduct the Armor Capacity costs.
                 if (await GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0)
-                    decCapacity -= await GearChildren.SumAsync(x => !x.IncludedInParent, async x => await x.GetPluginArmorCapacityAsync(token).ConfigureAwait(false) * x.Quantity, token: token).ConfigureAwait(false);
+                    decCapacity -= await GearChildren.SumAsync(x => x.ParentID != InternalId, async x => await x.GetPluginArmorCapacityAsync(token).ConfigureAwait(false) * x.Quantity, token: token).ConfigureAwait(false);
             }
             // Calculate the remaining Capacity for a standard piece of Armor using the Maximum Armor Modifications rules.
             else // if (_objCharacter.Settings.MaximumArmorModifications)
@@ -2891,7 +2887,7 @@ namespace Chummer.Backend.Equipment
                 decCapacity -= await ArmorMods.SumAsync(x => !x.IncludedInArmor, async x => Math.Max(await x.GetRatingAsync(token).ConfigureAwait(false), 1), token: token).ConfigureAwait(false);
 
                 // Run through its Gear and deduct the Rating (or 1 if it has no Rating).
-                decCapacity -= await GearChildren.SumAsync(x => !x.IncludedInParent, async x => Math.Max(await x.GetRatingAsync(token).ConfigureAwait(false), 1), token: token).ConfigureAwait(false);
+                decCapacity -= await GearChildren.SumAsync(x => x.ParentID != InternalId, async x => Math.Max(await x.GetRatingAsync(token).ConfigureAwait(false), 1), token: token).ConfigureAwait(false);
             }
 
             return decCapacity;

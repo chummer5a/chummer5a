@@ -2098,10 +2098,8 @@ namespace Chummer.Backend.Equipment
             if (blnCheckChildren)
             {
                 // Run through gear children and increase the Avail by any Mod whose Avail starts with "+" or "-".
-                intAvail += await GearChildren.SumAsync(async objChild =>
+                intAvail += await GearChildren.SumAsync(x => x.ParentID != InternalId, async objChild =>
                 {
-                    if (objChild.ParentID == InternalId)
-                        return 0;
                     AvailabilityValue objLoopAvailTuple
                         = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (objLoopAvailTuple.Suffix == 'F')

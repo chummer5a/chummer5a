@@ -1790,10 +1790,8 @@ namespace Chummer.Backend.Equipment
             if (blnCheckChildren)
             {
                 // Run through cyberware children and increase the Avail by any Mod whose Avail starts with "+" or "-".
-                intAvail += await Cyberware.SumAsync(async objChild =>
+                intAvail += await Cyberware.SumAsync(x => x.ParentID != InternalId, async objChild =>
                 {
-                    if (objChild.ParentID == InternalId)
-                        return 0;
                     AvailabilityValue objLoopAvailTuple
                         = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (objLoopAvailTuple.Suffix == 'F')
@@ -1801,10 +1799,8 @@ namespace Chummer.Backend.Equipment
                     else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                         chrLastAvailChar = 'R';
                     return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
-                }, token).ConfigureAwait(false) + await Weapons.SumAsync(async objChild =>
+                }, token).ConfigureAwait(false) + await Weapons.SumAsync(x => x.ParentID != InternalId, async objChild =>
                 {
-                    if (objChild.ParentID == InternalId)
-                        return 0;
                     AvailabilityValue objLoopAvailTuple
                         = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (objLoopAvailTuple.Suffix == 'F')
