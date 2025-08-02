@@ -147,7 +147,7 @@ namespace Chummer
                     if (!blnHideOverAvailLimit || await objXmlAccessory.CheckAvailRestrictionAsync(_objCharacter, token: token).ConfigureAwait(false)
                         && (blnFreeItem || !blnShowOnlyAffordItems
                                         || await objXmlAccessory.CheckNuyenRestrictionAsync(
-                                            decNuyen, decCostMultiplier, token: token).ConfigureAwait(false)))
+                                            _objCharacter, decNuyen, decCostMultiplier, token: token).ConfigureAwait(false)))
                     {
                         lstAccessories.Add(new ListItem(
                                                strId,
@@ -422,7 +422,7 @@ namespace Chummer
                     decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                     while (intMaximum > intMinimum && !await xmlAccessory
                                                              .CheckNuyenRestrictionAsync(
-                                                                 decNuyen, decCostMultiplier, intMaximum,
+                                                                 _objCharacter, decNuyen, decCostMultiplier, intMaximum,
                                                                  token).ConfigureAwait(false))
                     {
                         --intMaximum;

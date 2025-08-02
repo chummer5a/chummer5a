@@ -1298,8 +1298,9 @@ namespace Chummer
                     string output = sbdReturn.ToString();
                     if (output.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
+                        output = _objCharacter.AttributeSection.ProcessAttributesInXPath(output.TrimStart('+'));
                         (bool blnIsSuccess, object xprResult)
-                            = CommonFunctions.EvaluateInvariantXPath(output.TrimStart('+'));
+                            = CommonFunctions.EvaluateInvariantXPath(output);
                         sbdReturn.Clear();
                         if (blnIsSuccess)
                             sbdReturn.Append(((double)xprResult).ToString("#,0.##", objCultureInfo));
@@ -1350,9 +1351,10 @@ namespace Chummer
                     string output = sbdReturn.ToString();
                     if (output.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
+                        output = await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(output.TrimStart('+'), token: token).ConfigureAwait(false);
                         (bool blnIsSuccess, object xprResult) = await CommonFunctions
                                                                   .EvaluateInvariantXPathAsync(
-                                                                      output.TrimStart('+'), token)
+                                                                      output, token)
                                                                   .ConfigureAwait(false);
                         sbdReturn.Clear();
                         if (blnIsSuccess)
@@ -1523,6 +1525,7 @@ namespace Chummer
                                 sbdReturn.Insert(0, "2 * (").Append(')');
                             }
 
+                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdReturn);
                             (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(sbdReturn.ToString());
                             if (blnIsSuccess)
                                 intDrainDv = ((double)xprResult).StandardRound();
@@ -1647,6 +1650,7 @@ namespace Chummer
                             sbdReturn.Insert(0, "2 * (").Append(')');
                         }
 
+                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdReturn, token: token).ConfigureAwait(false);
                         (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdReturn.ToString(), token).ConfigureAwait(false);
                         if (blnIsSuccess)
                             intDrainDv = ((double)xprResult).StandardRound();

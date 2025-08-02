@@ -509,6 +509,7 @@ namespace Chummer
                 bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                decimal decNuyen = !blnFreeItem && blnShowOnlyAffordItems ? await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false) : decimal.MaxValue;
                 decimal decBaseCostMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
                 if (await tabControl.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) == 1 && !blnForCategories)
                 {
@@ -588,7 +589,7 @@ namespace Chummer
                                 decimal decCostMultiplier = decBaseCostMultiplier;
                                 if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
                                     decCostMultiplier *= 0.9m;
-                                if (!await SelectionShared.CheckNuyenRestrictionAsync(objXmlWeapon, _objCharacter.Nuyen,
+                                if (!await SelectionShared.CheckNuyenRestrictionAsync(objXmlWeapon, _objCharacter, decNuyen,
                                         decCostMultiplier, token: token).ConfigureAwait(false))
                                     continue;
                             }
@@ -769,7 +770,7 @@ namespace Chummer
                                 }
 
                                 if (!await SelectionShared.CheckNuyenRestrictionAsync(
-                                        objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier, token: token).ConfigureAwait(false))
+                                        objXmlWeapon, _objCharacter, decNuyen, decCostMultiplier, token: token).ConfigureAwait(false))
                                 {
                                     ++intOverLimit;
                                     continue;

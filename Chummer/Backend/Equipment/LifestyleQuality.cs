@@ -1379,6 +1379,7 @@ namespace Chummer.Backend.Equipment
                     string strCost = CostString;
                     if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                     {
+                        strCost = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCost);
                         (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCost);
                         if (blnIsSuccess)
                             return Convert.ToDecimal((double)objProcess);
@@ -1401,6 +1402,7 @@ namespace Chummer.Backend.Equipment
                 string strCost = CostString;
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
+                    strCost = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strCost, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);
                     if (blnIsSuccess)
                         return Convert.ToDecimal((double)objProcess);

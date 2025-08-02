@@ -69,12 +69,12 @@ namespace Chummer
             this.TranslateWinForm();
             // Load the Armor information.
             _objXmlDocument = objCharacter.LoadData("armor.xml");
+            _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             _objXmlArmorDocumentChummerNode = objCharacter.LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setBlackMarketMaps.AddRange(objCharacter.GenerateBlackMarketMappings(
                                              objCharacter.LoadDataXPath("armor.xml")
                                                          .SelectSingleNodeAndCacheExpression("/chummer")));
             _lstCategory = Utils.ListItemListPool.Get();
-            _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             _objGenericCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             Disposed += (sender, args) =>
@@ -300,8 +300,9 @@ namespace Chummer
                                             int intMaximum = await nudRating
                                                 .DoThreadSafeFuncAsync(x => x.MaximumAsInt, token)
                                                 .ConfigureAwait(false);
+                                            decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                                             while (intMaximum > 1 && !await SelectionShared
-                                                       .CheckNuyenRestrictionAsync(xmlArmor, _objCharacter.Nuyen,
+                                                       .CheckNuyenRestrictionAsync(xmlArmor, _objCharacter, decNuyen,
                                                            decCostMultiplier, intMaximum, token).ConfigureAwait(false))
                                             {
                                                 --intMaximum;
@@ -648,6 +649,7 @@ namespace Chummer
             bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
             bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
             bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+            decimal decNuyen = !blnFreeItem && blnShowOnlyAffordItems ? await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false) : decimal.MaxValue;
             switch (await tabControl.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false))
             {
                 case 1:
@@ -682,7 +684,7 @@ namespace Chummer
                                     .ConfigureAwait(false) && (blnFreeItem
                                                                || !blnShowOnlyAffordItems
                                                                || await SelectionShared.CheckNuyenRestrictionAsync(
-                                                                   objXmlArmor, _objCharacter.Nuyen, decCostMultiplier,
+                                                                   objXmlArmor, _objCharacter, decNuyen, decCostMultiplier,
                                                                    token: token).ConfigureAwait(false)))
                             {
                                 Armor objArmor = new Armor(_objCharacter);
@@ -768,7 +770,7 @@ namespace Chummer
                                 && (blnFreeItem
                                     || !blnShowOnlyAffordItems
                                     || await SelectionShared.CheckNuyenRestrictionAsync(
-                                        objXmlArmor, _objCharacter.Nuyen, decCostMultiplier, token: token).ConfigureAwait(false)))
+                                        objXmlArmor, _objCharacter, decNuyen, decCostMultiplier, token: token).ConfigureAwait(false)))
                             {
                                 string strDisplayName = objXmlArmor["translate"]?.InnerText
                                                         ?? objXmlArmor["name"]?.InnerText;

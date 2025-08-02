@@ -627,7 +627,7 @@ namespace Chummer
                                 if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                                     decCostMultiplier *= 0.9m;
                                 decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
-                                while (intMaxRating > intMinRating && !await xmlCyberware.CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, intMaxRating, token).ConfigureAwait(false))
+                                while (intMaxRating > intMinRating && !await xmlCyberware.CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, intMaxRating, token).ConfigureAwait(false))
                                 {
                                     --intMaxRating;
                                 }
@@ -1860,7 +1860,7 @@ namespace Chummer
                                         .SelectSingleNodeAndCacheExpression("category", token: token)?.Value))
                                 decCostMultiplier *= 0.9m;
                             if (!await xmlCyberware
-                                       .CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token)
+                                       .CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, token: token)
                                        .ConfigureAwait(false))
                             {
                                 ++intOverLimit;

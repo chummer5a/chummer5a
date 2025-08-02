@@ -904,7 +904,7 @@ namespace Chummer
                             int intMinimum = await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: token).ConfigureAwait(false);
                             int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token).ConfigureAwait(false);
                             decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
-                            while (intMaximum > intMinimum && !await objXmlGear.CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, intMaximum, token).ConfigureAwait(false))
+                            while (intMaximum > intMinimum && !await objXmlGear.CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, intMaximum, token).ConfigureAwait(false))
                             {
                                 --intMaximum;
                             }
@@ -1374,7 +1374,7 @@ namespace Chummer
                     if (!blnHideOverAvailLimit
                               || await objXmlGear.CheckAvailRestrictionAsync(_objCharacter, 1, _intAvailModifier, token).ConfigureAwait(false)
                               && (blnFreeItem || !blnShowOnlyAffordItems
-                                              || await objXmlGear.CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token).ConfigureAwait(false)))
+                                              || await objXmlGear.CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, token: token).ConfigureAwait(false)))
                     {
                         blnAnyItem = true;
                         string strDisplayName = objXmlGear.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value

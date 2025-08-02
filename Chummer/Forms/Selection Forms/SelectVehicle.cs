@@ -707,7 +707,7 @@ namespace Chummer
                                             ?.Value))
                                     decCostMultiplier *= 0.9m;
                                 if (!await objXmlVehicle
-                                        .CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token)
+                                        .CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, token: token)
                                         .ConfigureAwait(false))
                                 {
                                     ++intOverLimit;
@@ -879,7 +879,7 @@ namespace Chummer
                                                                               "category", token)
                                                                       ?.Value))
                                     decCostMultiplier *= 0.9m;
-                                if (!await objXmlVehicle.CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token).ConfigureAwait(false))
+                                if (!await objXmlVehicle.CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, token: token).ConfigureAwait(false))
                                 {
                                     ++intOverLimit;
                                     continue;

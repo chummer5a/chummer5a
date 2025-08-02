@@ -273,7 +273,7 @@ namespace Chummer
                         decCostMultiplier *= 0.9m;
                     int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token).ConfigureAwait(false);
                     decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
-                    while (intMaximum > 1 && !await objXmlMod.CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, intMaximum, token).ConfigureAwait(false))
+                    while (intMaximum > 1 && !await objXmlMod.CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, intMaximum, token).ConfigureAwait(false))
                     {
                         --intMaximum;
                     }
@@ -541,7 +541,7 @@ namespace Chummer
                             decCostMultiplier *= 0.9m;
                         if (!blnHideOverAvailLimit || await objXmlMod.CheckAvailRestrictionAsync(_objCharacter, token: token).ConfigureAwait(false) &&
                             (blnFreeItem || !blnShowOnlyAffordItems ||
-                             await objXmlMod.CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token).ConfigureAwait(false))
+                             await objXmlMod.CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, token: token).ConfigureAwait(false))
                             && await objXmlMod.RequirementsMetAsync(_objCharacter, _objArmor, token: token).ConfigureAwait(false))
                         {
                             lstMods.Add(new ListItem(

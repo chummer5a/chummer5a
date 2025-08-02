@@ -747,7 +747,7 @@ namespace Chummer
                                     sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
                                                        objImprovement.Value);
                                 }
-
+                                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdReturn);
                                 (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(sbdReturn.ToString());
                                 if (blnIsSuccess)
                                     intFadingDv = ((double)xprResult).StandardRound();
@@ -833,7 +833,7 @@ namespace Chummer
                                 sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
                                                    objImprovement.Value);
                             }
-
+                            await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdReturn, token: token).ConfigureAwait(false);
                             (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdReturn.ToString(), token).ConfigureAwait(false);
                             if (blnIsSuccess)
                                 intFadingDv = ((double)xprResult).StandardRound();
