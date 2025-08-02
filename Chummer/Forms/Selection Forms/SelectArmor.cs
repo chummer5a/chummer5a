@@ -69,12 +69,12 @@ namespace Chummer
             this.TranslateWinForm();
             // Load the Armor information.
             _objXmlDocument = objCharacter.LoadData("armor.xml");
+            _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             _objXmlArmorDocumentChummerNode = objCharacter.LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setBlackMarketMaps.AddRange(objCharacter.GenerateBlackMarketMappings(
                                              objCharacter.LoadDataXPath("armor.xml")
                                                          .SelectSingleNodeAndCacheExpression("/chummer")));
             _lstCategory = Utils.ListItemListPool.Get();
-            _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             _objGenericCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             Disposed += (sender, args) =>
