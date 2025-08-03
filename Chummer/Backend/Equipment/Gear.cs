@@ -2391,15 +2391,41 @@ namespace Chummer.Backend.Equipment
                         objLoopParent = objLoopParentGear.Parent;
                     if (objLoopParent is Cyberware objCyberwareParent)
                         objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
-                    else if (objLoopParent is WeaponAccessory objAccessoryParent && objAccessoryParent.Parent?.Cyberware == true)
+                    else if (objLoopParent is WeaponAccessory objAccessoryParent)
                     {
-                        string strCyberwareId = objAccessoryParent.Parent.ParentID;
-                        objCyberwareParent = _objCharacter.Cyberware.FindById(strCyberwareId)
-                            ?? _objCharacter.Vehicles.FindVehicleCyberware(x => strCyberwareId == x.InternalId);
-                        objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                        Weapon objWeaponParent = objAccessoryParent.Parent;
+                        if (objWeaponParent != null)
+                        {
+                            if (objWeaponParent.Cyberware)
+                            {
+                                string strCyberwareId = objAccessoryParent.Parent.ParentID;
+                                objCyberwareParent = _objCharacter.Cyberware.FindById(strCyberwareId)
+                                    ?? _objCharacter.Vehicles.FindVehicleCyberware(x => strCyberwareId == x.InternalId);
+                                objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                            }
+                            else if (objWeaponParent.ParentVehicle != null)
+                            {
+                                objWeaponParent.ParentVehicle.ProcessAttributesInXPath(sbdValue, strExpression);
+                            }
+                            else
+                            {
+                                Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                            }
+                        }
+                        else
+                        {
+                            Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                        }
                     }
+                    else if (objLoopParent is Vehicle objVehicleParent)
+                        objVehicleParent.ProcessAttributesInXPath(sbdValue, strExpression);
                     else
+                    {
+                        Vehicle.FillAttributesInXPathWithDummies(sbdValue);
                         _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                    }
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
@@ -2462,15 +2488,39 @@ namespace Chummer.Backend.Equipment
                         objLoopParent = objLoopParentGear.Parent;
                     if (objLoopParent is Cyberware objCyberwareParent)
                         await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                    else if (objLoopParent is WeaponAccessory objAccessoryParent && objAccessoryParent.Parent?.Cyberware == true)
+                    else if (objLoopParent is WeaponAccessory objAccessoryParent)
                     {
-                        string strCyberwareId = objAccessoryParent.Parent.ParentID;
-                        objCyberwareParent = await _objCharacter.Cyberware.FindByIdAsync(strCyberwareId, token).ConfigureAwait(false)
-                            ?? (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => strCyberwareId == x.InternalId, token).ConfigureAwait(false)).Item1;
-                        await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        Weapon objWeaponParent = objAccessoryParent.Parent;
+                        if (objWeaponParent != null)
+                        {
+                            if (objWeaponParent.Cyberware)
+                            {
+                                string strCyberwareId = objAccessoryParent.Parent.ParentID;
+                                objCyberwareParent = await _objCharacter.Cyberware.FindByIdAsync(strCyberwareId, token).ConfigureAwait(false)
+                                    ?? (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => strCyberwareId == x.InternalId, token).ConfigureAwait(false)).Item1;
+                                await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            }
+                            else if (objWeaponParent.ParentVehicle != null)
+                                await objWeaponParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            else
+                            {
+                                Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        }
                     }
+                    else if (objLoopParent is Vehicle objVehicleParent)
+                        await objVehicleParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                     else
+                    {
+                        Vehicle.FillAttributesInXPathWithDummies(sbdValue);
                         await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                    }
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);

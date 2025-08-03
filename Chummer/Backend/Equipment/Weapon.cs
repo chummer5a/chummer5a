@@ -14373,7 +14373,13 @@ namespace Chummer.Backend.Equipment
                     {"AGIBase", intUseAGIBase}
                 };
             }
-            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicAttributeOverrides);
+            if (ParentVehicle != null)
+                ParentVehicle.ProcessAttributesInXPath(sbdInput, strOriginal, dicValueOverrides: dicAttributeOverrides);
+            else
+            {
+                Vehicle.FillAttributesInXPathWithDummies(sbdInput);
+                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicAttributeOverrides);
+            }
         }
 
         public async Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false, CancellationToken token = default)
@@ -14545,7 +14551,13 @@ namespace Chummer.Backend.Equipment
                     {"AGIBase", intUseAGIBase}
                 };
             }
-            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicAttributeOverrides, token).ConfigureAwait(false);
+            if (ParentVehicle != null)
+                await ParentVehicle.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicValueOverrides: dicAttributeOverrides, token: token).ConfigureAwait(false);
+            else
+            {
+                Vehicle.FillAttributesInXPathWithDummies(sbdInput);
+                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicAttributeOverrides, token).ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />

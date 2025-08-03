@@ -5512,7 +5512,7 @@ namespace Chummer.Backend.Equipment
 
         public const int MaxWheels = 50;
 
-        public static string FillAttributsInXPathWithDummies(string strInput)
+        public static string FillAttributesInXPathWithDummies(string strInput)
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
@@ -5664,7 +5664,19 @@ namespace Chummer.Backend.Equipment
                 .Replace("Slots", "0");
         }
 
-        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", VehicleMod objExcludeMod = null, WeaponMount objExcludeMount = null)
+        public string ProcessAttributesInXPath(string strInput, VehicleMod objExcludeMod = null, WeaponMount objExcludeMount = null, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
+            {
+                sbdInput.Append(strInput);
+                ProcessAttributesInXPath(sbdInput, strInput, objExcludeMod, objExcludeMount, dicValueOverrides);
+                return sbdInput.ToString();
+            }
+        }
+
+        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", VehicleMod objExcludeMod = null, WeaponMount objExcludeMount = null, IReadOnlyDictionary<string, int> dicValueOverrides = null)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
@@ -5882,10 +5894,23 @@ namespace Chummer.Backend.Equipment
                 () => strOwnSlots.Value);
             sbdInput.CheapReplace(strOriginal, "Slots",
                 () => strOwnSlots.Value);
-            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal);
+            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicValueOverrides);
         }
 
-        public async Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", VehicleMod objExcludeMod = null, WeaponMount objExcludeMount = null, CancellationToken token = default)
+        public async Task<string> ProcessAttributesInXPathAsync(string strInput, VehicleMod objExcludeMod = null, WeaponMount objExcludeMount = null, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
+            {
+                sbdInput.Append(strInput);
+                await ProcessAttributesInXPathAsync(sbdInput, strInput, objExcludeMod, objExcludeMount, dicValueOverrides, token).ConfigureAwait(false);
+                return sbdInput.ToString();
+            }
+        }
+
+        public async Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", VehicleMod objExcludeMod = null, WeaponMount objExcludeMount = null, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
@@ -6104,7 +6129,7 @@ namespace Chummer.Backend.Equipment
             await sbdInput.CheapReplaceAsync(strOriginal, "Slots",
                 () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
             await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
-                .ProcessAttributesInXPathAsync(sbdInput, strOriginal, token: token).ConfigureAwait(false);
+                .ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicValueOverrides, token).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
