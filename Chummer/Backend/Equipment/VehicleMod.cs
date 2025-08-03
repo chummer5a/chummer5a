@@ -226,7 +226,11 @@ namespace Chummer.Backend.Equipment
                     _strRatingLabel = "Label_Seats";
                     break;
             }
-            _intRating = string.IsNullOrEmpty(_strMaxRating) ? 0 : Math.Min(Math.Max(intRating, 1), blnSync ? MaxRating : await GetMaxRatingAsync(token).ConfigureAwait(false));
+            _intRating = string.IsNullOrEmpty(_strMaxRating)
+                ? 0
+                : Math.Min(Math.Max(intRating, 1), blnSync
+                    ? MaxRating
+                    : await GetMaxRatingAsync(token).ConfigureAwait(false));
             objXmlMod.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objXmlMod.TryGetInt32FieldQuickly("conditionmonitor", ref _intConditionMonitor);
             objXmlMod.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
@@ -1605,7 +1609,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                intAvail += ProcessRatingString(strAvail, Rating);
+                intAvail += ProcessRatingString(strAvail, () => Rating);
             }
 
             if (blnCheckChildren)
@@ -2096,7 +2100,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The number of Slots the Mod consumes.
         /// </summary>
-        public int CalculatedSlots => ProcessRatingString(Slots, Rating);
+        public int CalculatedSlots => ProcessRatingString(Slots, () => Rating);
 
         /// <summary>
         /// The number of Slots the Mod consumes.

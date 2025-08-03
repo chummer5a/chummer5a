@@ -2167,7 +2167,6 @@ namespace Chummer.Backend.Equipment
                         return;
 
                     string strLoop = objMod.Bonus?["sensor"]?.InnerText;
-                    int intRating = await objMod.GetRatingAsync(token).ConfigureAwait(false);
                     intTotalSensor = Math.Max(intTotalSensor,
                         await ParseBonusAsync(strLoop, objMod, intTotalSensor, "Sensor", false, token)
                             .ConfigureAwait(false));
