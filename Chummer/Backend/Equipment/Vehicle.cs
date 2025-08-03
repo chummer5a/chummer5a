@@ -2183,7 +2183,6 @@ namespace Chummer.Backend.Equipment
                 int intTotalBonusSensor = await Mods.SumAsync(objMod => !objMod.IncludedInVehicle && objMod.Equipped && !ReferenceEquals(objMod, objExcludeMod),
                     async objMod =>
                 {
-                    int intRating = await objMod.GetRatingAsync(token);
                     string strLoop = objMod.Bonus?["sensor"]?.InnerText;
                     int intTemp = await ParseBonusAsync(strLoop, objMod, intTotalSensor, "Sensor", token: token)
                         .ConfigureAwait(false);

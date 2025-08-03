@@ -2234,6 +2234,12 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
+                if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent &&
+                        Parent is Vehicle objVehicle)
+                {
+                    // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating, even if not legal in terms of max and min ratings
+                    return objVehicle.CalculatedSensor;
+                }
                 string strExpression = MinRating;
                 int intReturn = string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression, _intRating);
                 if (intReturn == 0)
@@ -2250,6 +2256,11 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetMinRatingValueAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
+            {
+                // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating, even if not legal in terms of max and min ratings
+                return await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false);
+            }
             string strExpression = MinRating;
             int intReturn = string.IsNullOrEmpty(strExpression) ? 0 : await ProcessRatingStringAsync(strExpression, _intRating, token).ConfigureAwait(false);
             if (intReturn == 0)
@@ -2268,6 +2279,12 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
+                if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent &&
+                        Parent is Vehicle objVehicle)
+                {
+                    // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating, even if not legal in terms of max and min ratings
+                    return objVehicle.CalculatedSensor;
+                }
                 string strExpression = MaxRating;
                 return string.IsNullOrEmpty(strExpression) ? int.MaxValue : ProcessRatingString(strExpression, _intRating);
             }
@@ -2277,6 +2294,11 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetMaxRatingValueAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
+            {
+                // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating, even if not legal in terms of max and min ratings
+                return await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false);
+            }
             string strExpression = MaxRating;
             return string.IsNullOrEmpty(strExpression) ? 0 : await ProcessRatingStringAsync(strExpression, _intRating, token).ConfigureAwait(false);
         }

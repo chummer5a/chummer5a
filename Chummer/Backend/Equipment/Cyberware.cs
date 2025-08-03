@@ -11856,17 +11856,16 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(ParentID))
                 {
                     AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token).ConfigureAwait(false);
-                    string availString = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
 
                     // If parent ends with 'or Gear', swallow highest gear child
                     if (Avail.EndsWith("or Gear", StringComparison.OrdinalIgnoreCase))
                     {
-                        var gearChildren = await GetGearChildrenAsync(token).ConfigureAwait(false);
+                        TaggedObservableCollection<Gear> gearChildren = await GetGearChildrenAsync(token).ConfigureAwait(false);
                         Gear objHighestGear = null;
                         int highestAvail = int.MinValue;
                         foreach (var gearChild in gearChildren)
                         {
-                            var gearAvailValue = await gearChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                            AvailabilityValue gearAvailValue = await gearChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                             int gearAvailInt = await gearAvailValue.GetValueAsync(token).ConfigureAwait(false);
                             if (gearAvailInt > highestAvail)
                             {
