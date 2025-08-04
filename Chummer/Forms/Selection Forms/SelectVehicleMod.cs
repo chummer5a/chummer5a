@@ -367,10 +367,13 @@ namespace Chummer
                         {
                             intMinRating = Math.Min(intMinRating, await _objVehicle.GetTotalSeatsAsync(token).ConfigureAwait(false));
                         }
-                        else if (int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                              out int intMaxRating))
+                        else
                         {
-                            intMinRating = Math.Min(intMinRating, intMaxRating);
+                            int intMaxRating = int.MaxValue;
+                            if (!string.IsNullOrEmpty(strRating))
+                                intMaxRating = (await ProcessInvariantXPathExpression(strRating, intMinRating, 0, token).ConfigureAwait(false)).Item1.StandardRound();
+                            if (intMaxRating > 0 && intMaxRating != int.MaxValue)
+                                intMinRating = Math.Min(intMinRating, intMaxRating);
                         }
                     }
 
@@ -573,8 +576,10 @@ namespace Chummer
                                                                      .ConfigureAwait(false);
                         await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel, token: token)
                                             .ConfigureAwait(false);
-                        if (int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out int intTempRating) && intTempRating > 0)
+                        int intTempRating = int.MaxValue;
+                        if (!string.IsNullOrEmpty(strRating))
+                            intTempRating = (await ProcessInvariantXPathExpression(strRating, intMinRating, intExtraSlots, token).ConfigureAwait(false)).Item1.StandardRound();
+                        if (intTempRating > 0 && intTempRating != int.MaxValue)
                         {
                             await nudRating.DoThreadSafeAsync(x =>
                             {
@@ -774,7 +779,7 @@ namespace Chummer
                         {
                             await lblVehicleCapacityLabel.DoThreadSafeAsync(x => x.Visible = true, token: token)
                                                          .ConfigureAwait(false);
-                            int.TryParse(strSlots, NumberStyles.Any, GlobalSettings.CultureInfo, out int intSlots);
+                            int intSlots = (await ProcessInvariantXPathExpression(strSlots, intRating, intExtraSlots, token).ConfigureAwait(false)).Item1.StandardRound();
                             string strCapacity = await GetRemainingModCapacity(strCategory, intSlots, token).ConfigureAwait(false);
                             await lblVehicleCapacity.DoThreadSafeAsync(x =>
                             {
