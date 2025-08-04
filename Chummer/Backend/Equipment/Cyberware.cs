@@ -5805,7 +5805,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
             Dictionary<string, int> dicVehicleValues = null;
-            if (strOriginal.Contains('{'))
+            if (strOriginal.Contains("{STR") || strOriginal.Contains("{AGI"))
             {
                 Cyberware objCyberlimbParent = null;
                 if (strOriginal.Contains("imum}"))
@@ -5963,7 +5963,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
             Dictionary<string, int> dicVehicleValues = null;
-            if (strOriginal.Contains('{'))
+            if (strOriginal.Contains("{STR") || strOriginal.Contains("{AGI"))
             {
                 Cyberware objCyberlimbParent = null;
                 if (strOriginal.Contains("imum}"))
@@ -9268,7 +9268,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private string ProcessCostExpression(string strExpression, int intRating, Grade objGrade, Cyberware objIgnoreChild = null)
+        public string ProcessCostExpression(string strExpression, int intRating, Grade objGrade, Cyberware objIgnoreChild = null)
         {
             using (LockObject.EnterReadLock())
             {
@@ -9336,7 +9336,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private async Task<string> ProcessCostExpressionAsync(string strExpression, int intRating, Grade objGrade, Cyberware objIgnoreChild = null, CancellationToken token = default)
+        public async Task<string> ProcessCostExpressionAsync(string strExpression, int intRating, Grade objGrade, Cyberware objIgnoreChild = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
