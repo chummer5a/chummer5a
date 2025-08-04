@@ -5858,14 +5858,8 @@ namespace Chummer.Backend.Equipment
                     {
                         if (ParentVehicle != null)
                         {
-                            int intVehicleBody = ParentVehicle.TotalBody;
-                            int intVehiclePilot = ParentVehicle.Pilot;
-                            intSTR = intVehicleBody;
-                            intAGI = intVehiclePilot;
-                            intSTRValue = intVehicleBody;
-                            intAGIValue = intVehiclePilot;
-                            intSTRBase = intVehicleBody;
-                            intAGIBase = intVehiclePilot;
+                            intSTRBase = intSTRValue = intSTR = ParentVehicle.TotalBody;
+                            intAGIBase = intAGIValue = intAGI = ParentVehicle.Pilot;
                         }
                     }
                     else if (Category == "Cyberlimb" || IsLimb)
@@ -5899,23 +5893,15 @@ namespace Chummer.Backend.Equipment
                             ParentVehicle.FindVehicleCyberware(x => x.InternalId == InternalId, out VehicleMod objVehicleMod);
                             if (objVehicleMod != null)
                             {
-                                intSTR = objVehicleMod.TotalStrength;
-                                intAGI = objVehicleMod.TotalAgility;
-                                intSTRValue = objVehicleMod.TotalStrength;
-                                intAGIValue = objVehicleMod.TotalAgility;
+                                intSTRValue = intSTR = objVehicleMod.TotalStrength;
+                                intAGIValue = intAGI = objVehicleMod.TotalAgility;
                                 intSTRBase = ParentVehicle.TotalBody;
                                 intAGIBase = ParentVehicle.Pilot;
                             }
                             else
                             {
-                                int intVehicleBody = ParentVehicle.TotalBody;
-                                int intVehiclePilot = ParentVehicle.Pilot;
-                                intSTR = intVehicleBody;
-                                intAGI = intVehiclePilot;
-                                intSTRValue = intVehicleBody;
-                                intAGIValue = intVehiclePilot;
-                                intSTRBase = intVehicleBody;
-                                intAGIBase = intVehiclePilot;
+                                intSTRBase = intSTRValue = intSTR = ParentVehicle.TotalBody;
+                                intAGIBase = intAGIValue = intAGI = ParentVehicle.Pilot;
                             }
                         }
                     }
@@ -6035,14 +6021,8 @@ namespace Chummer.Backend.Equipment
                         Vehicle objParentVehicle = await GetParentVehicleAsync(token).ConfigureAwait(false);
                         if (objParentVehicle != null)
                         {
-                            int intVehicleBody = await objParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
-                            int intVehiclePilot = await objParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
-                            intSTR = intVehicleBody;
-                            intAGI = intVehiclePilot;
-                            intSTRValue = intVehicleBody;
-                            intAGIValue = intVehiclePilot;
-                            intSTRBase = intVehicleBody;
-                            intAGIBase = intVehiclePilot;
+                            intSTRBase = intSTRValue = intSTR = await objParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                            intAGIBase = intAGIValue = intAGI = await objParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
                         }
                     }
                     else if (Category == "Cyberlimb" || await GetIsLimbAsync(token).ConfigureAwait(false))
@@ -6079,23 +6059,15 @@ namespace Chummer.Backend.Equipment
                                 VehicleMod objVehicleMod = (await objParentVehicle.FindVehicleCyberwareAsync(x => x.InternalId == InternalId, token).ConfigureAwait(false)).Item2;
                                 if (objVehicleMod != null)
                                 {
-                                    intSTR = await objVehicleMod.GetTotalStrengthAsync(token).ConfigureAwait(false);
-                                    intAGI = await objVehicleMod.GetTotalAgilityAsync(token).ConfigureAwait(false);
-                                    intSTRValue = await objVehicleMod.GetTotalStrengthAsync(token).ConfigureAwait(false);
-                                    intAGIValue = await objVehicleMod.GetTotalAgilityAsync(token).ConfigureAwait(false);
+                                    intSTRValue = intSTR = await objVehicleMod.GetTotalStrengthAsync(token).ConfigureAwait(false);
+                                    intAGIValue = intAGI = await objVehicleMod.GetTotalAgilityAsync(token).ConfigureAwait(false);
                                     intSTRBase = await objParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
                                     intAGIBase = await objParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
                                 }
                                 else
                                 {
-                                    int intVehicleBody = await objParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
-                                    int intVehiclePilot = await objParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
-                                    intSTR = intVehicleBody;
-                                    intAGI = intVehiclePilot;
-                                    intSTRValue = intVehicleBody;
-                                    intAGIValue = intVehiclePilot;
-                                    intSTRBase = intVehicleBody;
-                                    intAGIBase = intVehiclePilot;
+                                    intSTRBase = intSTRValue = intSTR = await objParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                                    intAGIBase = intAGIValue = intAGI = await objParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
                                 }
                             }
                         }

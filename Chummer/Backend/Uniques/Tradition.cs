@@ -1444,15 +1444,7 @@ namespace Chummer.Backend.Uniques
                     if (Type == TraditionType.None)
                         return 0;
                     string strDrainAttributes = DrainExpression;
-                    string strDrain;
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdDrain))
-                    {
-                        sbdDrain.Append(strDrainAttributes);
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdDrain, strDrainAttributes);
-                        strDrain = sbdDrain.ToString();
-                    }
-
+                    string strDrain = _objCharacter.AttributeSection.ProcessAttributesInXPath(strDrainAttributes);
                     if (strDrain.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decDrain))
                     {
                         (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strDrain);
@@ -1485,17 +1477,7 @@ namespace Chummer.Backend.Uniques
                 if (eType == TraditionType.None)
                     return 0;
                 string strDrainAttributes = await GetDrainExpressionAsync(token).ConfigureAwait(false);
-                string strDrain;
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                           out StringBuilder sbdDrain))
-                {
-                    sbdDrain.Append(strDrainAttributes);
-                    await _objCharacter.AttributeSection
-                        .ProcessAttributesInXPathAsync(sbdDrain, strDrainAttributes, token: token)
-                        .ConfigureAwait(false);
-                    strDrain = sbdDrain.ToString();
-                }
-
+                string strDrain = await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strDrainAttributes, token: token).ConfigureAwait(false);
                 if (strDrain.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decDrain))
                 {
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions

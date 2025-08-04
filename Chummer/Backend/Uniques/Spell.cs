@@ -1650,7 +1650,7 @@ namespace Chummer
                             sbdReturn.Insert(0, "2 * (").Append(')');
                         }
 
-                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdReturn, token: token).ConfigureAwait(false);
+                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdReturn, token: token).ConfigureAwait(false);
                         (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdReturn.ToString(), token).ConfigureAwait(false);
                         if (blnIsSuccess)
                             intDrainDv = ((double)xprResult).StandardRound();
