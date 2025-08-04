@@ -953,7 +953,7 @@ namespace Chummer
                     await objForm.DoThreadSafeAsync(x => x.Close(), token: token).ConfigureAwait(false);
                 }
             }
-            catch (Exception)
+            catch
             {
                 Application.UseWaitCursor = false;
                 throw;

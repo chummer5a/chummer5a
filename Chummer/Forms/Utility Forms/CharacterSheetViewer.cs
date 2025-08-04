@@ -974,7 +974,7 @@ namespace Chummer
                     objXslTransform
                         = await XslManager.GetTransformForFileAsync(strXslPath, token).ConfigureAwait(false);
                 }
-                catch (ArgumentException)
+                catch (ArgumentException ex)
                 {
                     token.ThrowIfCancellationRequested();
                     await SetDocumentText(
@@ -983,11 +983,11 @@ namespace Chummer
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
-                    Log.Debug(strReturn);
+                    Log.Debug(ex, strReturn);
                     await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;
                 }
-                catch (PathTooLongException)
+                catch (PathTooLongException ex)
                 {
                     token.ThrowIfCancellationRequested();
                     await SetDocumentText(
@@ -996,11 +996,11 @@ namespace Chummer
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
-                    Log.Debug(strReturn);
+                    Log.Debug(ex, strReturn);
                     await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;
                 }
-                catch (UnauthorizedAccessException)
+                catch (UnauthorizedAccessException ex)
                 {
                     token.ThrowIfCancellationRequested();
                     await SetDocumentText(
@@ -1009,7 +1009,7 @@ namespace Chummer
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
-                    Log.Debug(strReturn);
+                    Log.Debug(ex, strReturn);
                     await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;
                 }
@@ -1020,8 +1020,7 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
                                              .ConfigureAwait(false), token).ConfigureAwait(false);
                     string strReturn = "Error attempting to load " + _strSelectedSheet + Environment.NewLine;
-                    Log.Debug(strReturn);
-                    Log.Error("ERROR Message = " + ex.Message);
+                    Log.Debug(ex, strReturn);
                     strReturn += ex.Message;
                     await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;

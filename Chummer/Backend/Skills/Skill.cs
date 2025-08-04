@@ -3489,11 +3489,12 @@ namespace Chummer.Backend.Skills
         public virtual bool AllowDelete => false;
 
 #pragma warning disable CS1998
-        public virtual async Task<bool> GetAllowDeleteAsync(CancellationToken token = default)
+        public virtual Task<bool> GetAllowDeleteAsync(CancellationToken token = default)
 #pragma warning restore CS1998
         {
-            token.ThrowIfCancellationRequested();
-            return false;
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : Task.FromResult(false);
         }
 
         public bool Default
@@ -3583,31 +3584,34 @@ namespace Chummer.Backend.Skills
         public virtual bool AllowNameChange => false;
 
 #pragma warning disable CS1998
-        public virtual async Task<bool> GetAllowNameChangeAsync(CancellationToken token = default)
+        public virtual Task<bool> GetAllowNameChangeAsync(CancellationToken token = default)
 #pragma warning restore CS1998
         {
-            token.ThrowIfCancellationRequested();
-            return false;
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : Task.FromResult(false);
         }
 
         public virtual bool AllowTypeChange => false;
 
 #pragma warning disable CS1998
-        public virtual async Task<bool> GetAllowTypeChangeAsync(CancellationToken token = default)
+        public virtual Task<bool> GetAllowTypeChangeAsync(CancellationToken token = default)
 #pragma warning restore CS1998
         {
-            token.ThrowIfCancellationRequested();
-            return false;
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : Task.FromResult(false);
         }
 
         public virtual bool IsLanguage => false;
 
 #pragma warning disable CS1998
-        public virtual async Task<bool> GetIsLanguageAsync(CancellationToken token = default)
+        public virtual Task<bool> GetIsLanguageAsync(CancellationToken token = default)
 #pragma warning restore CS1998
         {
-            token.ThrowIfCancellationRequested();
-            return false;
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : Task.FromResult(false);
         }
 
         public virtual bool IsNativeLanguage
@@ -3621,18 +3625,21 @@ namespace Chummer.Backend.Skills
         }
 
 #pragma warning disable CS1998
-        public virtual async Task<bool> GetIsNativeLanguageAsync(CancellationToken token = default)
+        public virtual Task<bool> GetIsNativeLanguageAsync(CancellationToken token = default)
 #pragma warning restore CS1998
         {
-            token.ThrowIfCancellationRequested();
-            return false;
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : Task.FromResult(false);
         }
 
 #pragma warning disable CS1998
-        public virtual async Task SetIsNativeLanguageAsync(bool value, CancellationToken token = default)
+        public virtual Task SetIsNativeLanguageAsync(bool value, CancellationToken token = default)
 #pragma warning restore CS1998
         {
-            token.ThrowIfCancellationRequested();
+            return token.IsCancellationRequested
+                ? Task.FromCanceled(token)
+                : Task.CompletedTask;
         }
 
         protected string _strDictionaryKey;

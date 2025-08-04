@@ -706,30 +706,30 @@ namespace Chummer
                             = await XslManager
                                     .GetTransformForFileAsync(exportSheetPath, token).ConfigureAwait(false); // Use the path for the export sheet.
                     }
-                    catch (ArgumentException)
+                    catch (ArgumentException ex)
                     {
                         token.ThrowIfCancellationRequested();
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
-                        Log.Debug(strReturn);
+                        Log.Debug(ex, strReturn);
                         await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);
                         return;
                     }
-                    catch (PathTooLongException)
+                    catch (PathTooLongException ex)
                     {
                         token.ThrowIfCancellationRequested();
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
-                        Log.Debug(strReturn);
+                        Log.Debug(ex, strReturn);
                         await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);
                         return;
                     }
-                    catch (UnauthorizedAccessException)
+                    catch (UnauthorizedAccessException ex)
                     {
                         token.ThrowIfCancellationRequested();
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
-                        Log.Debug(strReturn);
+                        Log.Debug(ex, strReturn);
                         await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);
                         return;
                     }
@@ -737,8 +737,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         string strReturn = "Error attempting to load " + _strXslt + Environment.NewLine;
-                        Log.Debug(strReturn);
-                        Log.Error("ERROR Message = " + ex.Message);
+                        Log.Debug(ex, strReturn);
                         strReturn += ex.Message;
                         await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);
                         return;

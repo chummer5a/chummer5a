@@ -17,10 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -7048,6 +7048,10 @@ namespace Chummer
         }
 
         public AbortedException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        private AbortedException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

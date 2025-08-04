@@ -1029,16 +1029,14 @@ namespace Chummer
                             //the config is invalid - reset it!
                             Properties.Settings.Default.Reset();
                             Properties.Settings.Default.Save();
-                            Log.Warn(
-                                "Configuration Settings were invalid and had to be reset. Exception: " + ex.Message);
+                            Log.Warn(ex, "Configuration Settings were invalid and had to be reset.");
                         }
                         catch (System.Configuration.ConfigurationErrorsException ex)
                         {
                             //the config is invalid - reset it!
                             Properties.Settings.Default.Reset();
                             Properties.Settings.Default.Save();
-                            Log.Warn(
-                                "Configuration Settings were invalid and had to be reset. Exception: " + ex.Message);
+                            Log.Warn(ex, "Configuration Settings were invalid and had to be reset");
                         }
 
                         if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0
