@@ -595,7 +595,7 @@ namespace Chummer.Backend.Equipment
                             foreach (string strAbbrev in setAttributesToRefresh)
                             {
                                 foreach (CharacterAttrib objCharacterAttrib in
-                                         _objCharacter.GetAllAttributes(strAbbrev, token: token))
+                                         await _objCharacter.GetAllAttributesAsync(strAbbrev, token: token).ConfigureAwait(false))
                                 {
                                     if (objCharacterAttrib == null)
                                         continue;
@@ -8757,21 +8757,10 @@ namespace Chummer.Backend.Equipment
                 }
 
                 string strESS = ESS;
-                if (strESS.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string strSuffix = string.Empty;
-                    if (!strESS.EndsWith(')'))
-                    {
-                        strSuffix = strESS.Substring(strESS.LastIndexOf(')') + 1);
-                        strESS = strESS.TrimEndOnce(strSuffix);
-                    }
-                    if (blnSync)
-                        strESS = strESS.ProcessFixedValuesString(() => Rating);
-                    else
-                        strESS = await strESS.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
-                    strESS += strSuffix;
-                }
-
+                if (blnSync)
+                    strESS = strESS.ProcessFixedValuesString(() => Rating);
+                else
+                    strESS = await strESS.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
                 if (strESS.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
                     if (blnSync)
@@ -9283,21 +9272,7 @@ namespace Chummer.Backend.Equipment
         {
             using (LockObject.EnterReadLock())
             {
-                string strCostExpression = strExpression;
-
-                if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string strSuffix = string.Empty;
-                    if (!strCostExpression.EndsWith(')'))
-                    {
-                        strSuffix = strCostExpression.Substring(strCostExpression.LastIndexOf(')') + 1);
-                        strCostExpression = strCostExpression.TrimEndOnce(strSuffix);
-                    }
-
-                    strCostExpression = strCostExpression.ProcessFixedValuesString(intRating);
-                    strCostExpression += strSuffix;
-                }
-
+                string strCostExpression = strExpression.ProcessFixedValuesString(intRating);
                 string strParentCost = "0";
                 decimal decTotalParentGearCost = 0;
                 if (_objParent != null || _objParentVehicle != null)
@@ -9368,21 +9343,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strCostExpression = strExpression;
-
-                if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string strSuffix = string.Empty;
-                    if (!strCostExpression.EndsWith(')'))
-                    {
-                        strSuffix = strCostExpression.Substring(strCostExpression.LastIndexOf(')') + 1);
-                        strCostExpression = strCostExpression.TrimEndOnce(strSuffix);
-                    }
-
-                    strCostExpression = strCostExpression.ProcessFixedValuesString(intRating);
-                    strCostExpression += strSuffix;
-                }
-
+                string strCostExpression = strExpression.ProcessFixedValuesString(intRating);
                 string strParentCost = "0";
                 decimal decTotalParentGearCost = 0;
                 if (_objParent != null || _objParentVehicle != null)
@@ -9920,20 +9881,7 @@ namespace Chummer.Backend.Equipment
                 string strWeightExpression = Weight;
                 if (string.IsNullOrEmpty(strWeightExpression))
                     return 0;
-
-                if (strWeightExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string strSuffix = string.Empty;
-                    if (!strWeightExpression.EndsWith(')'))
-                    {
-                        strSuffix = strWeightExpression.Substring(strWeightExpression.LastIndexOf(')') + 1);
-                        strWeightExpression = strWeightExpression.TrimEndOnce(strSuffix);
-                    }
-
-                    strWeightExpression = strWeightExpression.ProcessFixedValuesString(intRating);
-                    strWeightExpression += strSuffix;
-                }
-
+                strWeightExpression = strWeightExpression.ProcessFixedValuesString(intRating);
                 string strParentWeight = "0";
                 decimal decTotalParentGearWeight = 0;
                 if (_objParent != null)

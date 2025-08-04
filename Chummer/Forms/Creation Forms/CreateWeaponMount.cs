@@ -42,6 +42,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlDocXPath;
         private HashSet<string> _setBlackMarketMaps;
         private decimal _decOldBaseCost;
+        private decimal _decCurrentBaseCost;
 
         private CancellationTokenSource _objUpdateInfoCancellationTokenSource;
         private CancellationTokenSource _objRefreshComboBoxesCancellationTokenSource;
@@ -721,8 +722,8 @@ namespace Chummer
                                 .SumAsync(x => !x.IncludedInVehicle, x => x.GetCalculatedSlotsAsync(token), token)
                                 .ConfigureAwait(false);
 
-                            decimal decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false);
-                            string strCostInner = (await objMod.TotalCostInMountCreation(intTotalSlots, token).ConfigureAwait(false) * (1 + decMarkup / 100.0m))
+                            decimal decMarkupInner = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m;
+                            string strCostInner = (await objMod.TotalCostInMountCreation(intTotalSlots, token).ConfigureAwait(false) * (1 + decMarkupInner))
                                     .ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
                                     + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblCost.DoThreadSafeAsync(x => x.Text = strCostInner, token).ConfigureAwait(false);
@@ -837,6 +838,7 @@ namespace Chummer
                     intAvail += await objLoopAvail.GetValueAsync(token).ConfigureAwait(false);
                     return await x.GetCalculatedSlotsAsync(token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
+                _decCurrentBaseCost = decCost;
                 if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                 {
                     decCost += await _lstMods
@@ -845,7 +847,10 @@ namespace Chummer
                 }
 
                 if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                {
                     decCost *= 0.9m;
+                    _decCurrentBaseCost *= 0.9m;
+                }
 
                 string strAvailText = intAvail.ToString(GlobalSettings.CultureInfo);
                 switch (chrAvailSuffix)
@@ -859,9 +864,10 @@ namespace Chummer
                         break;
                 }
 
-                decCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m;
-
-                string strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                decimal decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m;
+                decCost *= 1 + decMarkup;
+                _decCurrentBaseCost *= 1 + decMarkup;
+                string strCost = decCost.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                 await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token).ConfigureAwait(false);
                 await lblSlots.DoThreadSafeAsync(x => x.Text = intSlots.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
                 await lblAvailability.DoThreadSafeAsync(x => x.Text = strAvailText, token).ConfigureAwait(false);
@@ -940,7 +946,8 @@ namespace Chummer
                                                                                    {
                                                                                        // Pass the selected vehicle on to the form.
                                                                                        VehicleMountMods = true,
-                                                                                       WeaponMountSlots = intLoopSlots
+                                                                                       WeaponMountSlots = intLoopSlots,
+                                                                                       ParentWeaponMountOwnCost = _decCurrentBaseCost
                                                                                    }, token).ConfigureAwait(false))
                         {
                             // Make sure the dialogue window was not canceled.

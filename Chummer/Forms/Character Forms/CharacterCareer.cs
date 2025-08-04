@@ -11048,18 +11048,12 @@ namespace Chummer
                     try
                     {
                         GenericToken.ThrowIfCancellationRequested();
-                        decimal decArmorCost = await objArmor.GetOwnCostAsync(GenericToken).ConfigureAwait(false);
-                        decimal.TryParse(await objArmor.CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo).ConfigureAwait(false),
-                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decArmorCapacity);
                         using (ThreadSafeForm<SelectArmorMod> frmPickArmorMod
                                = await ThreadSafeForm<SelectArmorMod>.GetAsync(
                                    () => new SelectArmorMod(CharacterObject, objArmor)
                                    {
-                                       ArmorCost = decArmorCost,
-                                       ArmorCapacity = decArmorCapacity,
                                        AllowedCategories = strAllowedCategories,
-                                       ExcludeGeneralCategory = blnExcludeGeneralCategory,
-                                       CapacityDisplayStyle = objArmor.CapacityDisplayStyle
+                                       ExcludeGeneralCategory = blnExcludeGeneralCategory
                                    }, GenericToken).ConfigureAwait(false))
                         {
                             if (await frmPickArmorMod.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
@@ -14596,6 +14590,7 @@ namespace Chummer
 
                         frmPickCyberware.MyForm.LockGrade();
                         frmPickCyberware.MyForm.ParentVehicle = objVehicle ?? objMod.Parent;
+                        frmPickCyberware.MyForm.ParentVehicleMod = objMod;
 
                         if (await frmPickCyberware.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                             == DialogResult.Cancel)
@@ -24200,6 +24195,7 @@ namespace Chummer
                                         ? await objSelectedGear.GetCalculatedCostAsync(token).ConfigureAwait(false)
                                         : 0).ToString(
                                         GlobalSettings.InvariantCultureInfo));
+                                strCost = await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strCost, token: token).ConfigureAwait(false);
                                 (bool blnIsSuccess, object objProcess)
                                     = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token)
                                         .ConfigureAwait(false);

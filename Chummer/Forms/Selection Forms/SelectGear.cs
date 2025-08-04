@@ -788,34 +788,7 @@ namespace Chummer
                     int intRating = int.MaxValue;
                     if (!string.IsNullOrEmpty(strExpression))
                     {
-                        strExpression = strExpression.ProcessFixedValuesString(intRating);
-                        if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decRating))
-                        {
-                            using (new FetchSafelyFromObjectPool<StringBuilder>(
-                                       Utils.StringBuilderPool, out StringBuilder sbdValue))
-                            {
-                                sbdValue.Append(strExpression);
-                                await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
-                                                                 async () =>
-                                                                 {
-                                                                     if (_objGearParent is IHasRating objParentCast)
-                                                                     {
-                                                                         return (await objParentCast.GetRatingAsync(token).ConfigureAwait(false))
-                                                                            .ToString(GlobalSettings.InvariantCultureInfo);
-                                                                     }
-                                                                     return "0";
-                                                                 }, token: token).ConfigureAwait(false);
-                                sbdValue.Replace(
-                                    "{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-
-                                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
-                                intRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
-                            }
-                        }
-                        else
-                            intRating = decRating.StandardRound();
+                        intRating = (await ProcessInvariantXPathExpression(strExpression, int.MaxValue, token).ConfigureAwait(false)).Item1.StandardRound();
                     }
 
                     if (intRating > 0 && intRating != int.MaxValue)
@@ -829,43 +802,7 @@ namespace Chummer
                             int intMinimumRating = 0;
                             if (!string.IsNullOrEmpty(strExpression))
                             {
-                                strExpression = strExpression.ProcessFixedValuesString(intRating);
-
-                                if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decMinRating))
-                                {
-                                    using (new FetchSafelyFromObjectPool<StringBuilder>(
-                                               Utils.StringBuilderPool, out StringBuilder sbdValue))
-                                    {
-                                        sbdValue.Append(strExpression);
-                                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
-                                                                         async () =>
-                                                                         {
-                                                                             if (_objGearParent is IHasRating objParentCast)
-                                                                             {
-                                                                                 return (await objParentCast.GetRatingAsync(token).ConfigureAwait(false))
-                                                                                    .ToString(GlobalSettings.InvariantCultureInfo);
-                                                                             }
-                                                                             return "0";
-                                                                         }, token: token).ConfigureAwait(false);
-                                        sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
-                                        {
-                                            sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}',
-                                                                  () => (Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
-                                                                          strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-                                            sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}',
-                                                                  () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(
-                                                                      strMatrixAttribute) ?? "0");
-                                        }
-                                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                            sbdValue.ToString(), token).ConfigureAwait(false);
-                                        intMinimumRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
-                                    }
-                                }
-                                else
-                                    intMinimumRating = decMinRating.StandardRound();
+                                intMinimumRating = (await ProcessInvariantXPathExpression(strExpression, intRating, token).ConfigureAwait(false)).Item1.StandardRound();
                             }
 
                             await nudRating.DoThreadSafeAsync(x =>
@@ -935,16 +872,7 @@ namespace Chummer
 
                     // Retrieve the information for the selected piece of Cyberware.
                     string strDeviceRating = objXmlGear.SelectSingleNodeAndCacheExpression("devicerating", token)?.Value ?? string.Empty;
-                    if (strDeviceRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                    {
-                        strDeviceRating = await strDeviceRating.CheapReplaceAsync("{Rating}", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                            strDeviceRating, token).ConfigureAwait(false);
-                        if (blnIsSuccess)
-                            strDeviceRating = ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo);
-                    }
-                    else
-                        strDeviceRating = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
+                    strDeviceRating = (await ProcessInvariantXPathExpression(strDeviceRating, intRating, token).ConfigureAwait(false)).Item1.ToString("#,0.##", GlobalSettings.CultureInfo);
                     await lblGearDeviceRating.DoThreadSafeFuncAsync(x => x.Text = strDeviceRating, token: token).ConfigureAwait(false);
                     await lblGearDeviceRatingLabel.DoThreadSafeFuncAsync(x => x.Visible = !string.IsNullOrEmpty(strDeviceRating), token: token).ConfigureAwait(false);
 
@@ -1070,17 +998,9 @@ namespace Chummer
                             }
                             else
                             {
-                                try
+                                (decimal decCost, bool blnIsSuccess) = await ProcessInvariantXPathExpression(strCost, intRating, token).ConfigureAwait(false);
+                                if (blnIsSuccess)
                                 {
-                                    if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
-                                    {
-                                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                            strCost.Replace(
-                                                "Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
-                                        decCost = blnIsSuccess
-                                            ? Convert.ToDecimal((double)objProcess) * decMultiplier
-                                            : 0;
-                                    }
                                     decCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
                                     if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                                         decCost *= 0.9m;
@@ -1088,7 +1008,7 @@ namespace Chummer
                                         + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                                     decItemCost = decCost;
                                 }
-                                catch (XPathException)
+                                else
                                 {
                                     if (decimal.TryParse(strCost, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp))
                                     {
@@ -1136,34 +1056,11 @@ namespace Chummer
                                     strCapacity = strFirstHalf;
                                     if (blnSquareBrackets && strCapacity.Length > 2)
                                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                                    strCapacity = strCapacity.ProcessFixedValuesString(intRating);
-                                    if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCapacity))
-                                    {
-                                        try
-                                        {
-                                            (bool blnIsSuccess2, object objProcess2) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                                strCapacity.Replace(
-                                                    "Rating",
-                                                    intRating.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
-                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = blnIsSuccess2
-                                                                                    ? ((double)objProcess2).ToString("#,0.##", GlobalSettings.CultureInfo)
-                                                                                    : strCapacity, token: token).ConfigureAwait(false);
-                                        }
-                                        catch (XPathException)
-                                        {
-                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
-                                        }
-                                        catch (OverflowException) // Result is text and not a double
-                                        {
-                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
-                                        }
-                                        catch (InvalidCastException) // Result is text and not a double
-                                        {
-                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
-                                        }
-                                    }
-                                    else
+                                    (decimal decCapacity, bool blnIsSuccess) = await ProcessInvariantXPathExpression(strCapacity, intRating, token).ConfigureAwait(false);
+                                    if (blnIsSuccess)
                                         await lblCapacity.DoThreadSafeAsync(x => x.Text = decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
+                                    else
+                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
 
                                     if (blnSquareBrackets)
                                         await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + x.Text + ']', token: token).ConfigureAwait(false);
@@ -1179,32 +1076,14 @@ namespace Chummer
                                 strCapacity = strCapacityText;
                                 if (blnSquareBrackets && strCapacity.Length > 2)
                                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                                strCapacity = strCapacity.ProcessFixedValuesString(intRating);
-                                if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCapacity))
-                                {
-                                    try
-                                    {
-                                        (bool blnIsSuccess2, object objProcess2) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                            strCapacity.Replace(
-                                                "Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
-                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = blnIsSuccess2
-                                                                                ? ((double)objProcess2).ToString("#,0.##", GlobalSettings.CultureInfo)
-                                                                                : strCapacity, token: token).ConfigureAwait(false);
-                                    }
-                                    catch (OverflowException) // Result is text and not a double
-                                    {
-                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
-                                    }
-                                    catch (InvalidCastException) // Result is text and not a double
-                                    {
-                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
-                                    }
-                                }
-                                else
+                                (decimal decCapacity, bool blnIsSuccess) = await ProcessInvariantXPathExpression(strCapacity, intRating, token).ConfigureAwait(false);
+                                if (blnIsSuccess)
                                     await lblCapacity.DoThreadSafeAsync(x => x.Text = decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
+                                else
+                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
 
                                 if (blnSquareBrackets)
-                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + lblCapacity.Text + ']', token: token).ConfigureAwait(false);
+                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + x.Text + ']', token: token).ConfigureAwait(false);
                             }
                         }
                         else
@@ -1517,6 +1396,87 @@ namespace Chummer
             {
                 //swallow this
             }
+        }
+
+        private async Task<Tuple<decimal, bool>> ProcessInvariantXPathExpression(string strExpression, int intRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            bool blnSuccess = true;
+            strExpression = strExpression.ProcessFixedValuesString(intRating);
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+            {
+                blnSuccess = false;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                {
+                    sbdValue.Append(strExpression);
+                    if (_objGearParent is IHasRating objCastParent)
+                    {
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
+                            async () => (await objCastParent.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
+                    }
+                    await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                    {
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}',
+                            () => (_objGearParent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
+                                    strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo) ?? "0"
+                                , token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + '}',
+                            () => (_objGearParent as IHasMatrixAttributes)?.GetMatrixAttributeString(
+                                strMatrixAttribute) ?? "0", token: token).ConfigureAwait(false);
+                    }
+                    await sbdValue.CheapReplaceAsync(strExpression, "Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    object objLoopParent = _objGearParent;
+                    while (objLoopParent is Gear objLoopParentGear)
+                        objLoopParent = objLoopParentGear.Parent;
+                    if (objLoopParent is Cyberware objCyberwareParent)
+                        await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                    else if (objLoopParent is WeaponAccessory objAccessoryParent)
+                    {
+                        Weapon objWeaponParent = objAccessoryParent.Parent;
+                        if (objWeaponParent != null)
+                        {
+                            if (objWeaponParent.Cyberware)
+                            {
+                                string strCyberwareId = objAccessoryParent.Parent.ParentID;
+                                objCyberwareParent = await _objCharacter.Cyberware.FindByIdAsync(strCyberwareId, token).ConfigureAwait(false)
+                                    ?? (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => strCyberwareId == x.InternalId, token).ConfigureAwait(false)).Item1;
+                                await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            }
+                            else if (objWeaponParent.ParentVehicle != null)
+                                await objWeaponParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            else
+                            {
+                                Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (objLoopParent is Vehicle objVehicleParent)
+                        await objVehicleParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                    else
+                    {
+                        Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                    }
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
+                }
+            }
+
+            return new Tuple<decimal, bool>(decValue, blnSuccess);
         }
 
         #endregion Methods
