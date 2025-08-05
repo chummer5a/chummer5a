@@ -4272,7 +4272,7 @@ namespace Chummer
             {
                 return 0;
             }
-            // If there is nothing to rmeove, don't try to remove any Improvements
+            // If there is nothing to remove, don't try to remove any Improvements
             if (lstSourceNames == null || lstSourceNames.Count == 0)
             {
                 return 0;
@@ -4337,7 +4337,11 @@ namespace Chummer
             {
                 return 0;
             }
-            // If there is nothing to rmeove, don't try to remove any Improvements
+            // If there is nothing to remove, don't try to remove any Improvements
+            if (lstImprovementSources == null || lstImprovementSources.Count == 0)
+            {
+                return 0;
+            }
             if (lstSourceNames == null || lstSourceNames.Count == 0)
             {
                 return 0;
@@ -4516,7 +4520,7 @@ namespace Chummer
             {
                 return 0;
             }
-            // If there is nothing to rmeove, don't try to remove any Improvements
+            // If there is nothing to remove, don't try to remove any Improvements
             if (lstSourceNames == null || lstSourceNames.Count == 0)
             {
                 return 0;
@@ -4589,7 +4593,11 @@ namespace Chummer
             {
                 return 0;
             }
-            // If there is nothing to rmeove, don't try to remove any Improvements
+            // If there is nothing to remove, don't try to remove any Improvements
+            if (lstImprovementSources == null || lstImprovementSources.Count == 0)
+            {
+                return 0;
+            }
             if (lstSourceNames == null || lstSourceNames.Count == 0)
             {
                 return 0;
