@@ -40,7 +40,7 @@ namespace Chummer
     /// <summary>
     /// A Skill Limit Modifier.
     /// </summary>
-    [DebuggerDisplay("{" + nameof(DisplayName) + "}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class LimitModifier : IHasInternalId, IHasName, ICanRemove, IHasCharacterObject, IHasNotes
     {
         private Guid _guiID;
@@ -141,22 +141,23 @@ namespace Chummer
                 await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
                 await objWriter
                       .WriteElementStringAsync(
-                          "fullname", await DisplayNameAsync(objCulture, strLanguageToPrint, strLanguageToPrint == GlobalSettings.Language, token).ConfigureAwait(false),
+                          "fullname", await DisplayNameAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
                           token: token).ConfigureAwait(false);
                 await objWriter
                       .WriteElementStringAsync(
                           "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
                           token: token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("fullname_english", await DisplayNameAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, GlobalSettings.DefaultLanguage == GlobalSettings.Language, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname_english", await DisplayNameAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter
                       .WriteElementStringAsync(
                           "name_english", Name,
                           token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("bonus", Bonus.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("limit", Limit, token: token).ConfigureAwait(false);
                 await objWriter
-                      .WriteElementStringAsync("condition", await DisplayConditionAsync(strLanguageToPrint, strLanguageToPrint == GlobalSettings.Language, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                      .WriteElementStringAsync("condition", await DisplayConditionAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter
-                      .WriteElementStringAsync("condition_english", await DisplayConditionAsync(GlobalSettings.DefaultLanguage, GlobalSettings.DefaultLanguage == GlobalSettings.Language, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                      .WriteElementStringAsync("condition_english", await DisplayConditionAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
             }
@@ -254,24 +255,20 @@ namespace Chummer
             get
             {
                 // If we've already cached a value for this, just return it.
-                // TODO: invalidate cache if active language changes
-                // (Ghetto fix cache culture tag and compare to current?)
                 if (!string.IsNullOrWhiteSpace(_strCachedCondition))
                 {
                     return _strCachedCondition;
                 }
 
-                // Assume that if the original string contains underscores it's a
-                // valid language key. Spare checking it against the dictionary.
-                _strCachedCondition = _strCondition.Contains('_')
-                    ? LanguageManager.GetString(_strCondition, GlobalSettings.DefaultLanguage, false)
-                    : _strCondition;
-                if (string.IsNullOrWhiteSpace(_strCachedCondition))
+                string strReturn = _strCondition;
+                // Assume that if the original string contains underscores it's a valid language key. Otherwise, spare checking it against the dictionary.
+                if (strReturn.Contains('_'))
                 {
-                    _strCachedCondition = _strCondition;
+                    string strTemp = LanguageManager.GetString(strReturn, GlobalSettings.DefaultLanguage, false);
+                    if (!string.IsNullOrWhiteSpace(strTemp))
+                        strReturn = strTemp;
                 }
-
-                return _strCachedCondition;
+                return _strCachedCondition = strReturn;
             }
             set
             {
@@ -287,31 +284,30 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             // If we've already cached a value for this, just return it.
-            // TODO: invalidate cache if active language changes
-            // (Ghetto fix cache culture tag and compare to current?)
             if (!string.IsNullOrWhiteSpace(_strCachedCondition))
             {
                 return _strCachedCondition;
             }
 
-            // Assume that if the original string contains underscores it's a valid language key. Spare checking it against the dictionary.
-            _strCachedCondition = _strCondition.Contains('_')
-                ? await LanguageManager.GetStringAsync(_strCondition, GlobalSettings.DefaultLanguage, false, token).ConfigureAwait(false)
-                : _strCondition;
-            if (string.IsNullOrWhiteSpace(_strCachedCondition))
+            string strReturn = _strCondition;
+            // Assume that if the original string contains underscores it's a valid language key. Otherwise, spare checking it against the dictionary.
+            if (strReturn.Contains('_'))
             {
-                _strCachedCondition = _strCondition;
+                string strTemp = await LanguageManager.GetStringAsync(_strCondition, GlobalSettings.DefaultLanguage, false, token).ConfigureAwait(false);
+                if (!string.IsNullOrWhiteSpace(strTemp))
+                    strReturn = strTemp;
             }
-
-            return _strCachedCondition;
+            return _strCachedCondition = strReturn;
         }
 
         public string CurrentDisplayCondition => DisplayCondition(GlobalSettings.Language);
 
-        public Task<string> GetCurrentDisplayConditionAsync(CancellationToken token = default) => DisplayConditionAsync(GlobalSettings.Language, true, token);
+        public Task<string> GetCurrentDisplayConditionAsync(CancellationToken token = default) => DisplayConditionAsync(GlobalSettings.Language, token);
 
-        public string DisplayCondition(string strLanguage, bool blnDoCache = true)
+        public string DisplayCondition(string strLanguage)
         {
+            if (strLanguage == GlobalSettings.DefaultLanguage)
+                return Condition;
             // If we've already cached a value for this, just return it.
             // (Ghetto fix cache culture tag and compare to current?)
             if (!string.IsNullOrWhiteSpace(_strCachedDisplayCondition) && strLanguage == _strCachedDisplayConditionLanguage)
@@ -323,16 +319,15 @@ namespace Chummer
             string strReturn = LanguageManager.TranslateExtra(strCondition, strLanguage, _objCharacter);
             if (string.IsNullOrWhiteSpace(strReturn))
                 strReturn = strCondition;
-            if (blnDoCache)
-            {
-                _strCachedDisplayConditionLanguage = strLanguage;
-                _strCachedDisplayCondition = strReturn;
-            }
-            return strReturn;
+            _strCachedDisplayConditionLanguage = strLanguage;
+            return _strCachedDisplayCondition = strReturn;
         }
 
-        public async Task<string> DisplayConditionAsync(string strLanguage, bool blnDoCache = true, CancellationToken token = default)
+        public async Task<string> DisplayConditionAsync(string strLanguage, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            if (strLanguage == GlobalSettings.DefaultLanguage)
+                return await GetConditionAsync(token).ConfigureAwait(false);
             // If we've already cached a value for this, just return it.
             // (Ghetto fix cache culture tag and compare to current?)
             if (!string.IsNullOrWhiteSpace(_strCachedDisplayCondition) && strLanguage == _strCachedDisplayConditionLanguage)
@@ -344,12 +339,8 @@ namespace Chummer
             string strReturn = await LanguageManager.TranslateExtraAsync(strCondition, strLanguage, _objCharacter, token: token).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(strReturn))
                 strReturn = strCondition;
-            if (blnDoCache)
-            {
-                _strCachedDisplayConditionLanguage = strLanguage;
-                _strCachedDisplayCondition = strReturn;
-            }
-            return strReturn;
+            _strCachedDisplayConditionLanguage = strLanguage;
+            return _strCachedDisplayCondition = strReturn;
         }
 
         /// <summary>
@@ -393,35 +384,31 @@ namespace Chummer
         /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
-        public string DisplayName(CultureInfo objCulture, string strLanguage, bool blnDoCacheCondition = true)
+        public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            string strBonus;
-            if (_intBonus > 0)
-                strBonus = '+' + _intBonus.ToString(objCulture);
-            else
-                strBonus = _intBonus.ToString(objCulture);
-
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            string strReturn = DisplayNameShort(strLanguage) + strSpace + '[' + strBonus + ']';
-            string strCondition = DisplayCondition(strLanguage, blnDoCacheCondition);
+            string strReturn = DisplayNameShort(strLanguage);
+            if (_intBonus >= 0)
+                strReturn += strSpace + "[+" + _intBonus.ToString(objCulture) + ']';
+            else
+                strReturn += strSpace + '[' + _intBonus.ToString(objCulture) + ']';
+            string strCondition = DisplayCondition(strLanguage);
             if (!string.IsNullOrEmpty(strCondition))
                 strReturn += strSpace + '(' + strCondition + ')';
             return strReturn;
         }
 
-        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, bool blnDoCacheCondition = true, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            string strBonus;
-            if (_intBonus > 0)
-                strBonus = '+' + _intBonus.ToString(objCulture);
-            else
-                strBonus = _intBonus.ToString(objCulture);
-
+            string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-            string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) + strSpace + '[' + strBonus + ']';
-            string strCondition = await DisplayConditionAsync(strLanguage, blnDoCacheCondition, token).ConfigureAwait(false);
+            if (_intBonus >= 0)
+                strReturn += strSpace + "[+" + _intBonus.ToString(objCulture) + ']';
+            else
+                strReturn += strSpace + '[' + _intBonus.ToString(objCulture) + ']';
+            string strCondition = await DisplayConditionAsync(strLanguage, token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strCondition))
                 strReturn += strSpace + '(' + strCondition + ')';
             return strReturn;
