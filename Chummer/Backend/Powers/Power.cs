@@ -662,12 +662,22 @@ namespace Chummer
                         .WriteElementStringAsync(
                             "fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false),
                             token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name_english", await GetNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "fullname_english", await DisplayNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false),
+                            token)
+                        .ConfigureAwait(false);
+                    string strExtra = await GetExtraAsync(token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "extra",
-                            await CharacterObject.TranslateExtraAsync(await GetExtraAsync(token).ConfigureAwait(false),
+                            await CharacterObject.TranslateExtraAsync(strExtra,
                                     strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "extra_english", strExtra, token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("pointsperlevel",
                             (await GetPointsPerLevelAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
@@ -687,6 +697,10 @@ namespace Chummer
                     await objWriter
                         .WriteElementStringAsync(
                             "action", await DisplayActionMethodAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "action_english", await DisplayActionMethodAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false),
                             token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(

@@ -280,15 +280,15 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
                     await objWriter
                             .WriteElementStringAsync(
-                                "fullname_english", await DisplayNameAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                                "fullname_english", await DisplayNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false),
                                 token)
                             .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("duration", await DisplayDurationAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("duration_english", Duration, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("duration_english", await DisplayDurationAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("fv", await DisplayFvAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("fv_english", await GetCalculatedFvAsync(token), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("fv_english", await DisplayFvAsync(GlobalSettings.DefaultLanguage, token), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("target", await DisplayTargetAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("target_english", Target, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("target_english", await DisplayTargetAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)

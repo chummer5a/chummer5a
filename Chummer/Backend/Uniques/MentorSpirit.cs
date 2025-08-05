@@ -654,21 +654,33 @@ namespace Chummer
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("disadvantage_english", Disadvantage, token)
                         .ConfigureAwait(false);
+                    string strExtra = await GetExtraAsync(token).ConfigureAwait(false);
+                    string strExtraChoice1 = await GetExtraChoice1Async(token).ConfigureAwait(false);
+                    string strExtraChoice2 = await GetExtraChoice2Async(token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "extra",
-                            await _objCharacter.TranslateExtraAsync(await GetExtraAsync(token).ConfigureAwait(false), strLanguageToPrint, token: token)
+                            await _objCharacter.TranslateExtraAsync(strExtra, strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "extrachoice1",
-                            await _objCharacter.TranslateExtraAsync(await GetExtraChoice1Async(token).ConfigureAwait(false), strLanguageToPrint, token: token)
+                            await _objCharacter.TranslateExtraAsync(strExtraChoice1, strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "extrachoice2",
-                            await _objCharacter.TranslateExtraAsync(await GetExtraChoice2Async(token).ConfigureAwait(false), strLanguageToPrint, token: token)
+                            await _objCharacter.TranslateExtraAsync(strExtraChoice2, strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "extra_english", strExtra, token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "extrachoice1_english", strExtraChoice1, token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "extrachoice2_english", strExtraChoice2, token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "source",

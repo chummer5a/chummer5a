@@ -358,6 +358,10 @@ namespace Chummer
                 await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
                 await objWriter
                       .WriteElementStringAsync(
+                          "fullname_english", await DisplayNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token)
+                      .ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync(
                           "source",
                           await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
                                              .ConfigureAwait(false), token).ConfigureAwait(false);
