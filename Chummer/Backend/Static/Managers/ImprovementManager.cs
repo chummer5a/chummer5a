@@ -4272,6 +4272,11 @@ namespace Chummer
             {
                 return 0;
             }
+            // If there is nothing to rmeove, don't try to remove any Improvements
+            if (lstSourceNames?.Count == 0)
+            {
+                return 0;
+            }
 
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                       + objImprovementSource + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
@@ -4279,7 +4284,7 @@ namespace Chummer
             using (objCharacter.LockObject.EnterReadLock(token))
             {
                 // A List of Improvements to hold all the items that will eventually be deleted.
-                if (lstSourceNames == null || lstSourceNames.Count == 0)
+                if (lstSourceNames == null)
                 {
                     objImprovementList = objCharacter.Improvements
                         .Where(objImprovement => objImprovement.ImproveSource == objImprovementSource).ToList();
@@ -4337,6 +4342,11 @@ namespace Chummer
             {
                 return 0;
             }
+            // If there is nothing to rmeove, don't try to remove any Improvements
+            if (lstSourceNames?.Count == 0)
+            {
+                return 0;
+            }
 
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
                       + lstImprovementSources + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
@@ -4344,7 +4354,7 @@ namespace Chummer
             using (objCharacter.LockObject.EnterReadLock(token))
             {
                 // A List of Improvements to hold all the items that will eventually be deleted.
-                if (lstSourceNames == null || lstSourceNames.Count == 0)
+                if (lstSourceNames == null)
                 {
                     objImprovementList = objCharacter.Improvements
                         .Where(objImprovement => lstImprovementSources.Contains(objImprovement.ImproveSource)).ToList();
@@ -4516,6 +4526,11 @@ namespace Chummer
             {
                 return 0;
             }
+            // If there is nothing to rmeove, don't try to remove any Improvements
+            if (lstSourceNames?.Count == 0)
+            {
+                return 0;
+            }
 
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                       + objImprovementSource + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
@@ -4526,7 +4541,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 // A List of Improvements to hold all the items that will eventually be deleted.
-                if (lstSourceNames == null || lstSourceNames.Count == 0)
+                if (lstSourceNames == null)
                 {
                     objImprovementList = await objCharacter.Improvements
                         .ToListAsync(objImprovement => objImprovement.ImproveSource == objImprovementSource,
@@ -4590,6 +4605,11 @@ namespace Chummer
             {
                 return 0;
             }
+            // If there is nothing to rmeove, don't try to remove any Improvements
+            if (lstSourceNames?.Count == 0)
+            {
+                return 0;
+            }
 
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
                       + lstImprovementSources + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
@@ -4600,7 +4620,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 // A List of Improvements to hold all the items that will eventually be deleted.
-                if (lstSourceNames == null || lstSourceNames.Count == 0)
+                if (lstSourceNames == null)
                 {
                     objImprovementList = await objCharacter.Improvements
                         .ToListAsync(objImprovement => lstImprovementSources.Contains(objImprovement.ImproveSource),
