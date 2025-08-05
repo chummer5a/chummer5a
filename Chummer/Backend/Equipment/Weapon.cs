@@ -3105,32 +3105,46 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         private static string AmmoCapacity(string strAmmo)
         {
-            // Assuming base text of 10(ml)x2
-            // matches [2x]10(ml) or [10x]2(ml)
-            foreach (Match m in s_RgxAmmoCapacityFirst.Value.Matches(strAmmo))
+            int intPos = strAmmo.IndexOfAny('x', '×');
+            if (intPos >= 0)
             {
-                strAmmo = strAmmo.TrimStartOnce(m.Value);
-            }
+                // Assuming base text of 123x456(ml)x789, matches [123x]456(ml)x789
+                bool blnDoTrim = true;
+                for (int i = 0; i < intPos; ++i)
+                {
+                    char chrLoop = strAmmo[i];
+                    if (!char.IsDigit(chrLoop))
+                    {
+                        blnDoTrim = false;
+                        break;
+                    }
+                }
+                if (blnDoTrim)
+                    strAmmo = strAmmo.Substring(intPos + 1);
 
-            // Matches 2(ml[)x10] (But does not capture the ')') or 10(ml)[x2]
-            foreach (Match m in s_RgxAmmoCapacitySecond.Value.Matches(strAmmo))
-            {
-                strAmmo = strAmmo.TrimEndOnce(m.Value);
+                intPos = strAmmo.LastIndexOfAny('x', '×');
+                if (intPos >= 0)
+                {
+                    // Assuming base text of 123x456(ml)x789 with the front trimmed off, matches 456(ml)[x789]
+                    blnDoTrim = true;
+                    for (int i = strAmmo.Length - 1; i > intPos; --i)
+                    {
+                        char chrLoop = strAmmo[i];
+                        if (!char.IsDigit(chrLoop))
+                        {
+                            blnDoTrim = false;
+                            break;
+                        }
+                    }
+                    if (blnDoTrim)
+                        strAmmo = strAmmo.Substring(0, intPos);
+                }
             }
-
-            int intPos = strAmmo.IndexOf('(');
+            intPos = strAmmo.IndexOf('(');
             if (intPos != -1)
                 strAmmo = strAmmo.Substring(0, intPos);
             return strAmmo;
         }
-
-        private static readonly Lazy<Regex> s_RgxAmmoCapacityFirst = new Lazy<Regex>(() => new Regex("^[0-9]*[0-9]*x",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
-
-        private static readonly Lazy<Regex> s_RgxAmmoCapacitySecond = new Lazy<Regex>(() =>
-            new Regex(@"(?<=\))(x[0-9]*[0-9]*$)*",
-                RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant |
-                RegexOptions.Compiled));
 
         /// <summary>
         /// The type of Ammunition loaded in the Weapon.
@@ -4883,6 +4897,7 @@ namespace Chummer.Backend.Equipment
                 // ReSharper disable once MethodHasAsyncOverload
                 ? LanguageManager.GetString("String_Space", strLanguage, token: token)
                 : await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            string strReturn;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 foreach (string strAmmo in lstAmmos)
@@ -4893,46 +4908,68 @@ namespace Chummer.Backend.Equipment
                     {
                         string strPrepend = string.Empty;
                         strThisAmmo = strThisAmmo.Substring(0, intPos);
-                        intPos = strThisAmmo.IndexOf('x');
+                        intPos = strThisAmmo.IndexOfAny('x', '×');
                         if (intPos != -1)
                         {
                             strPrepend = strThisAmmo.Substring(0, intPos + 1);
                             strThisAmmo = strThisAmmo.Substring(intPos + 1);
                         }
-                        else
+
+                        if (blnSync)
                         {
-                            intPos = strThisAmmo.IndexOf('×');
-                            if (intPos != -1)
+                            if (WeaponAccessories.Any(x => x.Equipped && !string.IsNullOrEmpty(x.ModifyAmmoCapacity), token))
                             {
-                                strPrepend = strThisAmmo.Substring(0, intPos + 1);
-                                strThisAmmo = strThisAmmo.Substring(intPos + 1);
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(
+                                                       Utils.StringBuilderPool, out StringBuilder sbdThisAmmo))
+                                {
+                                    sbdThisAmmo.Append('(').Append(strThisAmmo);
+                                    foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                                    {
+                                        if (objAccessory.Equipped)
+                                        {
+                                            string strModifyAmmoCapacity = objAccessory.ModifyAmmoCapacity;
+                                            if (!string.IsNullOrEmpty(strModifyAmmoCapacity))
+                                            {
+                                                sbdThisAmmo.Append(strModifyAmmoCapacity).Append(')');
+                                                int intAddParenthesesCount = strModifyAmmoCapacity.Count(x => x == ')')
+                                                                             - strModifyAmmoCapacity.Count(x => x == '(');
+                                                for (int i = 0; i < intAddParenthesesCount + 1; ++i)
+                                                    sbdThisAmmo.Insert(0, '(');
+                                                for (int i = 0; i < -intAddParenthesesCount; ++i)
+                                                    sbdThisAmmo.Append(')');
+                                            }
+                                        }
+                                    }
+                                    sbdThisAmmo.Append(')');
+                                    strThisAmmo = sbdThisAmmo.ToString();
+                                }
                             }
                         }
-
-                        if (WeaponAccessories.Count != 0)
+                        else if (await WeaponAccessories.AnyAsync(x => x.Equipped && !string.IsNullOrEmpty(x.ModifyAmmoCapacity), token).ConfigureAwait(false))
                         {
-                            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(
+                                                       Utils.StringBuilderPool, out StringBuilder sbdThisAmmo))
                             {
-                                if (objAccessory.Equipped)
+                                sbdThisAmmo.Append('(').Append(strThisAmmo);
+                                await WeaponAccessories.ForEachAsync(objAccessory =>
                                 {
-                                    string strModifyAmmoCapacity = objAccessory.ModifyAmmoCapacity;
-                                    if (!string.IsNullOrEmpty(strModifyAmmoCapacity))
+                                    if (objAccessory.Equipped)
                                     {
-                                        using (new FetchSafelyFromObjectPool<StringBuilder>(
-                                                   Utils.StringBuilderPool, out StringBuilder sbdThisAmmo))
+                                        string strModifyAmmoCapacity = objAccessory.ModifyAmmoCapacity;
+                                        if (!string.IsNullOrEmpty(strModifyAmmoCapacity))
                                         {
-                                            sbdThisAmmo.Append('(').Append(strThisAmmo).Append(strModifyAmmoCapacity)
-                                                .Append(')');
+                                            sbdThisAmmo.Append(strModifyAmmoCapacity).Append(')');
                                             int intAddParenthesesCount = strModifyAmmoCapacity.Count(x => x == ')')
                                                                          - strModifyAmmoCapacity.Count(x => x == '(');
-                                            for (int i = 0; i < intAddParenthesesCount; ++i)
+                                            for (int i = 0; i < intAddParenthesesCount + 1; ++i)
                                                 sbdThisAmmo.Insert(0, '(');
                                             for (int i = 0; i < -intAddParenthesesCount; ++i)
                                                 sbdThisAmmo.Append(')');
-                                            strThisAmmo = sbdThisAmmo.ToString();
                                         }
                                     }
-                                }
+                                }, token);
+                                sbdThisAmmo.Append(')');
+                                strThisAmmo = sbdThisAmmo.ToString();
                             }
                         }
 
@@ -4980,150 +5017,150 @@ namespace Chummer.Backend.Equipment
                     sbdReturn.Append(strThisAmmo).Append(strSpace);
                 }
 
-                string strReturn = sbdReturn.ToString().Trim();
-
-                if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                {
-                    // Translate the Ammo string.
-                    if (blnSync)
-                    {
-                        // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                        strReturn = strReturn
-                            .CheapReplace(
-                                " or ",
-                                () => strSpace + LanguageManager.GetString("String_Or", strLanguage, token: token) +
-                                      strSpace,
-                                StringComparison.OrdinalIgnoreCase)
-                            .CheapReplace(
-                                " Belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage, token: token),
-                                StringComparison.OrdinalIgnoreCase)
-                            .CheapReplace(
-                                " Energy",
-                                () => LanguageManager.GetString("String_AmmoEnergy", strLanguage, token: token),
-                                StringComparison.OrdinalIgnoreCase)
-                            .CheapReplace(" External Source",
-                                () => LanguageManager.GetString(
-                                    "String_AmmoExternalSource", strLanguage, token: token),
-                                StringComparison.OrdinalIgnoreCase)
-                            .CheapReplace(
-                                " Special",
-                                () => LanguageManager.GetString("String_AmmoSpecial", strLanguage, token: token),
-                                StringComparison.OrdinalIgnoreCase)
-                            .CheapReplace(
-                                "(b)",
-                                () => '(' + LanguageManager.GetString("String_AmmoBreakAction", strLanguage,
-                                              token: token)
-                                          + ')')
-                            .CheapReplace(
-                                "(belt)",
-                                () => '(' + LanguageManager.GetString("String_AmmoBelt", strLanguage, token: token) +
-                                      ')')
-                            .CheapReplace(
-                                "(box)",
-                                () => '(' + LanguageManager.GetString("String_AmmoBox", strLanguage, token: token) +
-                                      ')')
-                            .CheapReplace(
-                                "(c)",
-                                () => '(' + LanguageManager.GetString("String_AmmoClip", strLanguage, token: token) +
-                                      ')')
-                            .CheapReplace(
-                                "(cy)",
-                                () => '(' +
-                                      LanguageManager.GetString("String_AmmoCylinder", strLanguage, token: token) + ')')
-                            .CheapReplace(
-                                "(d)",
-                                () => '(' + LanguageManager.GetString("String_AmmoDrum", strLanguage, token: token) +
-                                      ')')
-                            .CheapReplace(
-                                "(m)",
-                                () => '(' +
-                                      LanguageManager.GetString("String_AmmoMagazine", strLanguage, token: token) + ')')
-                            .CheapReplace(
-                                "(ml)",
-                                () => '(' + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage,
-                                              token: token)
-                                          + ')');
-                        // ReSharper restore MethodHasAsyncOverloadWithCancellation
-                    }
-                    else
-                    {
-                        strReturn = await strReturn
-                            .CheapReplaceAsync(
-                                " or ",
-                                async () => strSpace + await LanguageManager
-                                                         .GetStringAsync("String_Or", strLanguage, token: token)
-                                                         .ConfigureAwait(false)
-                                                     + strSpace,
-                                StringComparison.OrdinalIgnoreCase, token: token)
-                            .CheapReplaceAsync(
-                                " Belt",
-                                () => LanguageManager.GetStringAsync("String_AmmoBelt", strLanguage, token: token),
-                                StringComparison.OrdinalIgnoreCase, token: token)
-                            .CheapReplaceAsync(
-                                " Energy",
-                                () => LanguageManager.GetStringAsync("String_AmmoEnergy", strLanguage, token: token),
-                                StringComparison.OrdinalIgnoreCase, token: token)
-                            .CheapReplaceAsync(" External Source",
-                                () => LanguageManager.GetStringAsync(
-                                    "String_AmmoExternalSource", strLanguage, token: token),
-                                StringComparison.OrdinalIgnoreCase, token: token)
-                            .CheapReplaceAsync(
-                                " Special",
-                                () => LanguageManager.GetStringAsync("String_AmmoSpecial", strLanguage, token: token),
-                                StringComparison.OrdinalIgnoreCase, token: token)
-                            .CheapReplaceAsync(
-                                "(b)",
-                                async () => '('
-                                            + await LanguageManager.GetStringAsync(
-                                                    "String_AmmoBreakAction", strLanguage, token: token)
-                                                .ConfigureAwait(false) + ')', token: token)
-                            .CheapReplaceAsync(
-                                "(belt)",
-                                async () => '('
-                                            + await LanguageManager.GetStringAsync(
-                                                "String_AmmoBelt", strLanguage, token: token).ConfigureAwait(false) +
-                                            ')', token: token)
-                            .CheapReplaceAsync(
-                                "(box)",
-                                async () => '('
-                                            + await LanguageManager.GetStringAsync(
-                                                "String_AmmoBox", strLanguage, token: token).ConfigureAwait(false) +
-                                            ')', token: token)
-                            .CheapReplaceAsync(
-                                "(c)",
-                                async () => '('
-                                            + await LanguageManager.GetStringAsync(
-                                                "String_AmmoClip", strLanguage, token: token).ConfigureAwait(false) +
-                                            ')', token: token)
-                            .CheapReplaceAsync(
-                                "(cy)",
-                                async () => '('
-                                            + await LanguageManager.GetStringAsync(
-                                                    "String_AmmoCylinder", strLanguage, token: token)
-                                                .ConfigureAwait(false) + ')', token: token)
-                            .CheapReplaceAsync(
-                                "(d)",
-                                async () => '('
-                                            + await LanguageManager.GetStringAsync(
-                                                "String_AmmoDrum", strLanguage, token: token).ConfigureAwait(false) +
-                                            ')', token: token)
-                            .CheapReplaceAsync(
-                                "(m)",
-                                async () => '('
-                                            + await LanguageManager.GetStringAsync(
-                                                    "String_AmmoMagazine", strLanguage, token: token)
-                                                .ConfigureAwait(false) + ')', token: token)
-                            .CheapReplaceAsync(
-                                "(ml)",
-                                async () => '('
-                                            + await LanguageManager.GetStringAsync(
-                                                    "String_AmmoMuzzleLoad", strLanguage, token: token)
-                                                .ConfigureAwait(false) + ')', token: token).ConfigureAwait(false);
-                    }
-                }
-
-                return strReturn;
+                strReturn = sbdReturn.ToString().Trim();
             }
+
+            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                // Translate the Ammo string.
+                if (blnSync)
+                {
+                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                    strReturn = strReturn
+                        .CheapReplace(
+                            " or ",
+                            () => strSpace + LanguageManager.GetString("String_Or", strLanguage, token: token) +
+                                    strSpace,
+                            StringComparison.OrdinalIgnoreCase)
+                        .CheapReplace(
+                            " Belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage, token: token),
+                            StringComparison.OrdinalIgnoreCase)
+                        .CheapReplace(
+                            " Energy",
+                            () => LanguageManager.GetString("String_AmmoEnergy", strLanguage, token: token),
+                            StringComparison.OrdinalIgnoreCase)
+                        .CheapReplace(" External Source",
+                            () => LanguageManager.GetString(
+                                "String_AmmoExternalSource", strLanguage, token: token),
+                            StringComparison.OrdinalIgnoreCase)
+                        .CheapReplace(
+                            " Special",
+                            () => LanguageManager.GetString("String_AmmoSpecial", strLanguage, token: token),
+                            StringComparison.OrdinalIgnoreCase)
+                        .CheapReplace(
+                            "(b)",
+                            () => '(' + LanguageManager.GetString("String_AmmoBreakAction", strLanguage,
+                                            token: token)
+                                        + ')')
+                        .CheapReplace(
+                            "(belt)",
+                            () => '(' + LanguageManager.GetString("String_AmmoBelt", strLanguage, token: token) +
+                                    ')')
+                        .CheapReplace(
+                            "(box)",
+                            () => '(' + LanguageManager.GetString("String_AmmoBox", strLanguage, token: token) +
+                                    ')')
+                        .CheapReplace(
+                            "(c)",
+                            () => '(' + LanguageManager.GetString("String_AmmoClip", strLanguage, token: token) +
+                                    ')')
+                        .CheapReplace(
+                            "(cy)",
+                            () => '(' +
+                                    LanguageManager.GetString("String_AmmoCylinder", strLanguage, token: token) + ')')
+                        .CheapReplace(
+                            "(d)",
+                            () => '(' + LanguageManager.GetString("String_AmmoDrum", strLanguage, token: token) +
+                                    ')')
+                        .CheapReplace(
+                            "(m)",
+                            () => '(' +
+                                    LanguageManager.GetString("String_AmmoMagazine", strLanguage, token: token) + ')')
+                        .CheapReplace(
+                            "(ml)",
+                            () => '(' + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage,
+                                            token: token)
+                                        + ')');
+                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                }
+                else
+                {
+                    strReturn = await strReturn
+                        .CheapReplaceAsync(
+                            " or ",
+                            async () => strSpace + await LanguageManager
+                                                        .GetStringAsync("String_Or", strLanguage, token: token)
+                                                        .ConfigureAwait(false)
+                                                    + strSpace,
+                            StringComparison.OrdinalIgnoreCase, token: token)
+                        .CheapReplaceAsync(
+                            " Belt",
+                            () => LanguageManager.GetStringAsync("String_AmmoBelt", strLanguage, token: token),
+                            StringComparison.OrdinalIgnoreCase, token: token)
+                        .CheapReplaceAsync(
+                            " Energy",
+                            () => LanguageManager.GetStringAsync("String_AmmoEnergy", strLanguage, token: token),
+                            StringComparison.OrdinalIgnoreCase, token: token)
+                        .CheapReplaceAsync(" External Source",
+                            () => LanguageManager.GetStringAsync(
+                                "String_AmmoExternalSource", strLanguage, token: token),
+                            StringComparison.OrdinalIgnoreCase, token: token)
+                        .CheapReplaceAsync(
+                            " Special",
+                            () => LanguageManager.GetStringAsync("String_AmmoSpecial", strLanguage, token: token),
+                            StringComparison.OrdinalIgnoreCase, token: token)
+                        .CheapReplaceAsync(
+                            "(b)",
+                            async () => '('
+                                        + await LanguageManager.GetStringAsync(
+                                                "String_AmmoBreakAction", strLanguage, token: token)
+                                            .ConfigureAwait(false) + ')', token: token)
+                        .CheapReplaceAsync(
+                            "(belt)",
+                            async () => '('
+                                        + await LanguageManager.GetStringAsync(
+                                            "String_AmmoBelt", strLanguage, token: token).ConfigureAwait(false) +
+                                        ')', token: token)
+                        .CheapReplaceAsync(
+                            "(box)",
+                            async () => '('
+                                        + await LanguageManager.GetStringAsync(
+                                            "String_AmmoBox", strLanguage, token: token).ConfigureAwait(false) +
+                                        ')', token: token)
+                        .CheapReplaceAsync(
+                            "(c)",
+                            async () => '('
+                                        + await LanguageManager.GetStringAsync(
+                                            "String_AmmoClip", strLanguage, token: token).ConfigureAwait(false) +
+                                        ')', token: token)
+                        .CheapReplaceAsync(
+                            "(cy)",
+                            async () => '('
+                                        + await LanguageManager.GetStringAsync(
+                                                "String_AmmoCylinder", strLanguage, token: token)
+                                            .ConfigureAwait(false) + ')', token: token)
+                        .CheapReplaceAsync(
+                            "(d)",
+                            async () => '('
+                                        + await LanguageManager.GetStringAsync(
+                                            "String_AmmoDrum", strLanguage, token: token).ConfigureAwait(false) +
+                                        ')', token: token)
+                        .CheapReplaceAsync(
+                            "(m)",
+                            async () => '('
+                                        + await LanguageManager.GetStringAsync(
+                                                "String_AmmoMagazine", strLanguage, token: token)
+                                            .ConfigureAwait(false) + ')', token: token)
+                        .CheapReplaceAsync(
+                            "(ml)",
+                            async () => '('
+                                        + await LanguageManager.GetStringAsync(
+                                                "String_AmmoMuzzleLoad", strLanguage, token: token)
+                                            .ConfigureAwait(false) + ')', token: token).ConfigureAwait(false);
+                }
+            }
+
+            return strReturn;
         }
 
         public bool AllowSingleShot => (RangeType == "Melee" && Ammo != "0") // Melee Weapons with Ammo are considered to be Single Shot.
