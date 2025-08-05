@@ -867,7 +867,7 @@ namespace Chummer
                             using (ZipArchive zipNewArchive = new ZipArchive(objZipFileStream, ZipArchiveMode.Create))
                             {
                                 token.ThrowIfCancellationRequested();
-                                foreach (string strFile in Directory.GetFiles(_strAppPath))
+                                foreach (string strFile in Directory.EnumerateFiles(_strAppPath))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFile));

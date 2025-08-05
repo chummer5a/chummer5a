@@ -124,11 +124,12 @@ namespace Chummer
                            Utils.ListItemListPool, out List<ListItem> lstExportMethods))
                 {
                     // Populate the XSLT list with all of the XSL files found in the sheets directory.
-                    foreach (string strFile in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "export")))
+                    // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
+                    foreach (string strFile in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "export"), "*.xsl"))
                     {
-                        // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-                        if (!strFile.EndsWith(".xslt", StringComparison.OrdinalIgnoreCase)
-                            && strFile.EndsWith(".xsl", StringComparison.OrdinalIgnoreCase))
+                        // We need to test this explicitly because .NET Framework has weird behavior with search patterns for asterisk and then a three-letter extension
+                        // (It allows any files whose extension begins with those three letters through, so e.g. it would allow xslt files here)
+                        if (strFile.EndsWith(".xsl", StringComparison.OrdinalIgnoreCase))
                         {
                             string strFileName = Path.GetFileNameWithoutExtension(strFile);
                             lstExportMethods.Add(new ListItem(strFileName, strFileName));
@@ -682,7 +683,7 @@ namespace Chummer
             File.WriteAllText(strSaveFile, // Change this to a proper path.
                 _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> strBoxText)
                                   ? strBoxText.Item1
-                                  : txtText.Text,
+                                  : await txtText.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false),
                               Encoding.UTF8);
         }
 
