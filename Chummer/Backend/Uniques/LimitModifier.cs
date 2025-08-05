@@ -96,13 +96,13 @@ namespace Chummer
             objWriter.WriteElementString("bonus", _intBonus.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("condition", _strCondition);
             objWriter.WriteElementString("candelete", _blnCanDelete.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
         }
 
         /// <summary>
-        /// Load the Skill Limit Modifier from the XmlNode.
+        /// Load the Limit Modifier from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)

@@ -233,7 +233,7 @@ namespace Chummer.Backend.Skills
                 objWriter.WriteElementString("base",
                     BasePoints.ToString(GlobalSettings
                         .InvariantCultureInfo)); //this could actually be saved in karma too during career
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteElementString("name", Name);
                 if (!CharacterObject.Created)

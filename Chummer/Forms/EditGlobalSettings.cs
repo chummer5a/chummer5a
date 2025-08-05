@@ -2787,7 +2787,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         strPageText = strPageText.NormalizeLineEndings();
                         token.ThrowIfCancellationRequested();
-                        strPageText = strPageText.CleanOfInvalidUnicodeChars();
+                        strPageText = strPageText.CleanOfXmlInvalidUnicodeChars();
                         token.ThrowIfCancellationRequested();
                         // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
                         foreach (string strLine in strPageText.SplitNoAlloc(Environment.NewLine,

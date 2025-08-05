@@ -545,7 +545,7 @@ namespace Chummer
                                                  _guiWeaponID.ToString("D", GlobalSettings.InvariantCultureInfo));
                 if (_nodDiscounts != null)
                     objWriter.WriteRaw("<costdiscount>" + _nodDiscounts.InnerXml + "</costdiscount>");
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 if (_eQualityType == QualityType.LifeModule)
                 {

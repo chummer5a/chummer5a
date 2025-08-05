@@ -165,7 +165,7 @@ namespace Chummer
                 }
 
                 objWriter.WriteEndElement();
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteEndElement();
             }

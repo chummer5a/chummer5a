@@ -553,7 +553,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("firemodereplace", _strFireModeReplace);
             objWriter.WriteElementString("ap", _strAP);
             objWriter.WriteElementString("apreplace", _strAPReplace);
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("singleshot", _intSingleShot.ToString(GlobalSettings.InvariantCultureInfo));

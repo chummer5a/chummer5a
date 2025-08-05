@@ -1159,7 +1159,7 @@ namespace Chummer.Backend.Equipment
             }
 
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost",
                 _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));

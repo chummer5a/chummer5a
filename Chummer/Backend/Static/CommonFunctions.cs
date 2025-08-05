@@ -2496,7 +2496,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
 
                     strPageText = strPageText.CleanStylisticLigatures().NormalizeWhiteSpace()
-                                             .NormalizeLineEndings().CleanOfInvalidUnicodeChars();
+                                             .NormalizeLineEndings().CleanOfXmlInvalidUnicodeChars();
                     token.ThrowIfCancellationRequested();
 
                     // don't trust it to be correct, trim all whitespace and remove empty strings before we even start

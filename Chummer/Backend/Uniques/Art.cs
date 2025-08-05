@@ -204,7 +204,7 @@ namespace Chummer
             else
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
         }

@@ -512,7 +512,7 @@ namespace Chummer
             objWriter.WriteElementString("addtorating", _intAddToRating.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("enabled", _intEnabled.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("order", _intOrder.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
         }

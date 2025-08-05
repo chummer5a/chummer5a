@@ -2258,7 +2258,7 @@ namespace Chummer.Backend.Equipment
 
                 #endregion Gear
 
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteElementString("discountedcost",
                     _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));

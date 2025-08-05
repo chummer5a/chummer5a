@@ -339,7 +339,7 @@ namespace Chummer
                 objWriter.WriteElementString("source", _strSource);
                 objWriter.WriteElementString("page", _strPage);
                 objWriter.WriteElementString("extra", _strExtra);
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteElementString("freebonus", _blnFreeBonus.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("barehandedadept",

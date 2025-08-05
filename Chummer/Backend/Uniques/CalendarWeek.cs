@@ -284,7 +284,7 @@ namespace Chummer
                 objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("year", _intYear.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("week", _intWeek.ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteEndElement();
             }

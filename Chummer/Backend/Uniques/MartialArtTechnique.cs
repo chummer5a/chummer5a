@@ -175,7 +175,7 @@ namespace Chummer
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);

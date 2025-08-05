@@ -228,7 +228,7 @@ namespace Chummer
             objWriter.WriteElementString("group", _blnGroup.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("ordeal", _blnOrdeal.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("schooling", _blnSchooling.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
         }

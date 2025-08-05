@@ -836,26 +836,63 @@ namespace Chummer
         {
             string strDisplayText = strText;
             // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
-            strDisplayText = s_RgxMainMugshotReplaceExpression.Value.Replace(strDisplayText, "<mainmugshotbase64>[...]</mainmugshotbase64>");
-            strDisplayText = s_RgxStringBase64ReplaceExpression.Value.Replace(strDisplayText, "<stringbase64>[...]</stringbase64>");
-            strDisplayText = s_RgxBase64ReplaceExpression.Value.Replace(strDisplayText, "base64\": \"[...]\",");
+            int intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>");
+            while (intSnipStartIndex >= 0)
+            {
+                int intSnipEndIndex = strDisplayText.IndexOf("</mainmugshotbase64>", intSnipStartIndex);
+                if (intSnipEndIndex > intSnipStartIndex)
+                {
+                    string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 19);
+                    string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
+                    strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
+                    intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>");
+                }
+                else
+                    intSnipStartIndex = -1;
+            }
+            intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>");
+            while (intSnipStartIndex >= 0)
+            {
+                int intSnipEndIndex = strDisplayText.IndexOf("</stringbase64>", intSnipStartIndex);
+                if (intSnipEndIndex > intSnipStartIndex)
+                {
+                    string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 14);
+                    string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
+                    strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
+                    intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>");
+                }
+                else
+                    intSnipStartIndex = -1;
+            }
+            intSnipStartIndex = strDisplayText.IndexOf("base64\": \"");
+            while (intSnipStartIndex >= 0)
+            {
+                // Special case here, we do not want to get caught up on escaped quotation marks inside of the text
+                int intSnipEndIndex = strDisplayText.IndexOfAny(intSnipStartIndex, "\",", "\\\"");
+                if (intSnipEndIndex > intSnipStartIndex)
+                {
+                    while (strDisplayText[intSnipEndIndex] != '\"')
+                    {
+                        intSnipEndIndex = strDisplayText.IndexOfAny(intSnipEndIndex + 2, "\",", "\\\"");
+                    }
+                    if (intSnipEndIndex > intSnipStartIndex)
+                    {
+                        string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 10);
+                        string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
+                        strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
+                        intSnipStartIndex = strDisplayText.IndexOf("base64\": \"");
+                    }
+                    else
+                        intSnipStartIndex = -1;
+                }
+                else
+                    intSnipStartIndex = -1;
+            }
             _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt),
                 new Tuple<string, string>(strText, strDisplayText),
                 (a, b) => new Tuple<string, string>(strText, strDisplayText));
             return txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token);
         }
-
-        private static readonly Lazy<Regex> s_RgxMainMugshotReplaceExpression = new Lazy<Regex>(() => new Regex(
-            "<mainmugshotbase64>[^\\s\\S]*</mainmugshotbase64>",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
-
-        private static readonly Lazy<Regex> s_RgxStringBase64ReplaceExpression = new Lazy<Regex>(() => new Regex(
-            "<stringbase64>[^\\s\\S]*</stringbase64>",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
-
-        private static readonly Lazy<Regex> s_RgxBase64ReplaceExpression = new Lazy<Regex>(() => new Regex(
-            "base64\": \"[^\\\"]*\",",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         #endregion XML
 

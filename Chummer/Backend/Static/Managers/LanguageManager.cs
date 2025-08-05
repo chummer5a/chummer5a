@@ -1398,9 +1398,6 @@ namespace Chummer
                     }
                 };
 
-        private static readonly Lazy<Regex> s_RgxExtraFileSpecifierExpression = new Lazy<Regex>(() => new Regex(@"^(\[([a-z])+\.xml\])",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
-
         public static string MAGAdeptString(string strLanguage = "", bool blnLong = false,
                                             CancellationToken token = default)
         {
@@ -1652,13 +1649,20 @@ namespace Chummer
 
                     default:
                         strReturn = strExtra;
-                        Match objFileSpecifier = s_RgxExtraFileSpecifierExpression.Value.Match(strReturn);
-                        if (objFileSpecifier.Success)
+                        if (strReturn.StartsWith('['))
                         {
-                            strReturn = strReturn.TrimStartOnce(objFileSpecifier.Value).Trim();
-                            if (string.IsNullOrEmpty(strPreferFile))
-                                strPreferFile = objFileSpecifier.Value.Trim('[', ']');
+                            int intFileSpecifierIndex = strReturn.IndexOf(".xml]", 2);
+                            if (intFileSpecifierIndex >= 0)
+                            {
+                                string strSnippet = strReturn.Substring(0, intFileSpecifierIndex + 5);
+                                if (!string.IsNullOrEmpty(strSnippet) && strSnippet.IndexOfAny(Path.GetInvalidFileNameChars()) == -1)
+                                {
+                                    strPreferFile = strSnippet.Trim('[', ']');
+                                    strReturn = strReturn.Substring(intFileSpecifierIndex + 5);
+                                }
+                            }
                         }
+                        strReturn = strReturn.Trim();
 
                         string strTemp = string.Empty;
                         string strExtraNoQuotes = strReturn.FastEscape('\"');
@@ -2234,13 +2238,20 @@ namespace Chummer
                 return "None";
             // If no original could be found, just use whatever we were passed.
             string strReturn = strExtra;
-            Match objFileSpecifier = s_RgxExtraFileSpecifierExpression.Value.Match(strReturn);
-            if (objFileSpecifier.Success)
+            if (strReturn.StartsWith('['))
             {
-                strReturn = strReturn.TrimStartOnce(objFileSpecifier.Value).Trim();
-                if (string.IsNullOrEmpty(strPreferFile))
-                    strPreferFile = objFileSpecifier.Value.Trim('[', ']');
+                int intFileSpecifierIndex = strReturn.IndexOf(".xml]", 2);
+                if (intFileSpecifierIndex >= 0)
+                {
+                    string strSnippet = strReturn.Substring(0, intFileSpecifierIndex + 5);
+                    if (!string.IsNullOrEmpty(strSnippet) && strSnippet.IndexOfAny(Path.GetInvalidFileNameChars()) == -1)
+                    {
+                        strPreferFile = strSnippet.Trim('[', ']');
+                        strReturn = strReturn.Substring(intFileSpecifierIndex + 5);
+                    }
+                }
             }
+            strReturn = strReturn.Trim();
 
             string strTemp = string.Empty;
             string strExtraNoQuotes = strReturn.FastEscape('\"');

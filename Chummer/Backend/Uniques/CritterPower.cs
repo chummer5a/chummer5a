@@ -258,7 +258,7 @@ namespace Chummer
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
             else
                 objWriter.WriteElementString("bonus", string.Empty);
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();

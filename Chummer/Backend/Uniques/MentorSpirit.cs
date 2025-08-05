@@ -526,7 +526,7 @@ namespace Chummer
                     objWriter.WriteElementString("choice2", string.Empty);
 
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
 
                 if (SourceID != Guid.Empty)
                 {
@@ -695,7 +695,7 @@ namespace Chummer
                             MentorMask.ToString(GlobalSettings.InvariantCultureInfo), token)
                         .ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)
-                        await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token)
+                        await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfXmlInvalidUnicodeChars(), token)
                             .ConfigureAwait(false);
                 }
                 finally

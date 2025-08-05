@@ -227,7 +227,7 @@ namespace Chummer
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
         }

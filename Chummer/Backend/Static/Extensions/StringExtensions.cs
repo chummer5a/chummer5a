@@ -320,9 +320,21 @@ namespace Chummer
         /// <param name="strHaystack">String to search.</param>
         /// <param name="astrNeedles">Array of strings to match.</param>
         /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, IReadOnlyCollection<string> astrNeedles, StringComparison eComparison)
+        {
+            return IndexOfAny(strHaystack, astrNeedles, 0, eComparison);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, IReadOnlyCollection<string> astrNeedles, int intStartIndex, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strHaystack))
                 return -1;
@@ -337,13 +349,13 @@ namespace Chummer
 
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
-            if (astrNeedles.All(x => x.Length > intHaystackLength))
+            if (astrNeedles.All(x => x.Length + intStartIndex > intHaystackLength))
                 return -1;
 
             int intEarliestNeedleIndex = intHaystackLength;
             foreach (string strNeedle in astrNeedles)
             {
-                int intNeedleIndex = strHaystack.IndexOf(strNeedle, 0, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
+                int intNeedleIndex = strHaystack.IndexOf(strNeedle, intStartIndex, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
                 if (intNeedleIndex >= 0 && intNeedleIndex < intEarliestNeedleIndex)
                     intEarliestNeedleIndex = intNeedleIndex;
             }
@@ -356,9 +368,21 @@ namespace Chummer
         /// <param name="strHaystack">String to search.</param>
         /// <param name="astrNeedles">Array of strings to match.</param>
         /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, IEnumerable<string> astrNeedles, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            return IndexOfAny(strHaystack, astrNeedles, 0, eComparison);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, IEnumerable<string> astrNeedles, int intStartIndex, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strHaystack))
                 return -1;
@@ -374,7 +398,7 @@ namespace Chummer
             int intEarliestNeedleIndex = intHaystackLength;
             foreach (string strNeedle in astrNeedles)
             {
-                int intNeedleIndex = strHaystack.IndexOf(strNeedle, 0, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
+                int intNeedleIndex = strHaystack.IndexOf(strNeedle, intStartIndex, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
                 if (intNeedleIndex >= 0 && intNeedleIndex < intEarliestNeedleIndex)
                     intEarliestNeedleIndex = intNeedleIndex;
             }
@@ -386,11 +410,22 @@ namespace Chummer
         /// </summary>
         /// <param name="strHaystack">String to search.</param>
         /// <param name="astrNeedles">Array of strings to match.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, params string[] astrNeedles)
         {
             return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, params string[] astrNeedles)
+        {
+            return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -519,7 +554,6 @@ namespace Chummer
         /// <param name="strInput">String to search.</param>
         /// <param name="chrSeparator">Separator to use.</param>
         /// <param name="eSplitOptions">String split options.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, char chrSeparator, StringSplitOptions eSplitOptions)
         {
@@ -534,7 +568,6 @@ namespace Chummer
         /// <param name="strInput">String to search.</param>
         /// <param name="strSeparator">Separator to use.</param>
         /// <param name="eSplitOptions">String split options.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, string strSeparator, StringSplitOptions eSplitOptions)
         {
@@ -548,13 +581,13 @@ namespace Chummer
         /// </summary>
         /// <param name="strHaystack">Input string to search.</param>
         /// <param name="chrNeedle">Character for which to look.</param>
-        /// <returns></returns>
+        /// <param name="intStartIndex">Index from which to begin searching.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Contains(this string strHaystack, char chrNeedle)
+        public static bool Contains(this string strHaystack, char chrNeedle, int intStartIndex = 0)
         {
             if (strHaystack == null)
                 throw new ArgumentNullException(nameof(strHaystack));
-            return strHaystack.IndexOf(chrNeedle) != -1;
+            return strHaystack.IndexOf(chrNeedle, intStartIndex) != -1;
         }
 
         /// <summary>
@@ -563,13 +596,41 @@ namespace Chummer
         /// <param name="strHaystack">Input string to search.</param>
         /// <param name="strNeedle">String for which to look.</param>
         /// <param name="eComparison">Comparison to use.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Contains(this string strHaystack, string strNeedle, StringComparison eComparison)
         {
             if (strHaystack == null)
                 throw new ArgumentNullException(nameof(strHaystack));
             return strHaystack.IndexOf(strNeedle, eComparison) != -1;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for a version of Contains(string) for strings from a specific starting index
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="strNeedle">String for which to look.</param>
+        /// <param name="intStartIndex">Index from which to begin searching.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this string strHaystack, string strNeedle, int intStartIndex)
+        {
+            if (strHaystack == null)
+                throw new ArgumentNullException(nameof(strHaystack));
+            return strHaystack.IndexOf(strNeedle, intStartIndex) != -1;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for a version of Contains(string) for strings based on a specified StringComparison from a specific starting index
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="strNeedle">String for which to look.</param>
+        /// <param name="intStartIndex">Index from which to begin searching.</param>
+        /// <param name="eComparison">Comparison to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this string strHaystack, string strNeedle, int intStartIndex, StringComparison eComparison)
+        {
+            if (strHaystack == null)
+                throw new ArgumentNullException(nameof(strHaystack));
+            return strHaystack.IndexOf(strNeedle, intStartIndex, eComparison) != -1;
         }
 
         /// <summary>
@@ -2301,9 +2362,19 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
-            return blnEscaped
-                ? s_RgxEscapedLineEndingsExpression.Value.Replace(strInput, Environment.NewLine)
-                : s_RgxLineEndingsExpression.Value.Replace(strInput, Environment.NewLine);
+            string[] astrLineEndingStrings = blnEscaped ? s_astrEscapedLineEndingStrings : s_astrLineEndingStrings;
+            if (!strInput.ContainsAnyParallel(astrLineEndingStrings))
+                return strInput;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                sbdReturn.Append(strInput);
+                // Two-step process so that newlines normalized in earlier iterations of the loop are not re-detected by later iterations
+                // Yes, this will replace null characters with newlines as well, too bad, we shouldn't have null characters in our strings anyway
+                foreach (string strSequence in astrLineEndingStrings)
+                    sbdReturn.Replace(strSequence, "\u0000");
+                sbdReturn.Replace("\u0000", Environment.NewLine);
+                return sbdReturn.ToString();
+            }
         }
 
         /// <summary>
@@ -2339,6 +2410,9 @@ namespace Chummer
             }
         }
 
+        // Order is important so that we replace composites before chars
+        private static readonly string[] s_astrStringsToProcessForHtmlConversion = new[] { "&", "&amp;amp;", "<", ">", "\r\n", "\n\r", "\n", "\r" };
+
         /// <summary>
         /// Escapes characters in a string that would cause confusion if the string were placed as HTML content
         /// </summary>
@@ -2348,12 +2422,19 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strToClean))
                 return string.Empty;
-            string strReturn = strToClean
-                               .Replace("&", "&amp;")
-                               .Replace("&amp;amp;", "&amp;")
-                               .Replace("<", "&lt;")
-                               .Replace(">", "&gt;");
-            return s_RgxLineEndingsExpression.Value.Replace(strReturn, "<br />");
+            if (!strToClean.ContainsAnyParallel(s_astrStringsToProcessForHtmlConversion))
+                return strToClean;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                sbdReturn.Append(strToClean);
+                sbdReturn.Replace("&", "&amp;")
+                    .Replace("&amp;amp;", "&amp;")
+                    .Replace("<", "&lt;")
+                    .Replace(">", "&gt;");
+                foreach (string strSequence in s_astrLineEndingStrings)
+                    sbdReturn.Replace(strSequence, "<br />");
+                return sbdReturn.ToString();
+            }
         }
 
         private static readonly ReadOnlyCollection<char> s_achrPathInvalidPathChars
@@ -2501,7 +2582,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             string strReturn = strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
-            return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
+            return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfXmlInvalidUnicodeChars();
         }
 
         public static Task<string> RtfToHtmlAsync(this string strInput, CancellationToken token = default)
@@ -2515,7 +2596,7 @@ namespace Chummer
                 string strReturn = strInput.IsRtf()
                     ? Rtf.ToHtml(strInput)
                     : strInput.CleanForHtml();
-                return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
+                return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfXmlInvalidUnicodeChars();
             }, token);
         }
 
@@ -2663,13 +2744,19 @@ namespace Chummer
         /// <summary>
         /// Cleans a string of characters that could cause issues when saved in an xml file and then loaded back in
         /// </summary>
-        /// <param name="strInput"></param>
-        /// <returns></returns>
-        public static string CleanOfInvalidUnicodeChars(this string strInput)
+        public static string CleanOfXmlInvalidUnicodeChars(this string strInput)
         {
             return string.IsNullOrEmpty(strInput)
                 ? string.Empty
-                : GlobalSettings.InvalidUnicodeCharsExpression.Replace(strInput, string.Empty);
+                : strInput.FastEscape(s_achrXmlInvalidUnicodeChars);
+        }
+
+        /// <summary>
+        /// Checks if a string has characters that could cause issues when saved in an xml file and then loaded back in
+        /// </summary>
+        public static bool HasAnyXmlInvalidUnicodeChars(this string strInput)
+        {
+            return !string.IsNullOrEmpty(strInput) && strInput.IndexOfAny(s_achrXmlInvalidUnicodeChars) >= 0;
         }
 
         /// <summary>
@@ -3102,13 +3189,46 @@ namespace Chummer
 
         private static readonly char[] s_achrClosedParenthesesComma = new[] { ')', ',' };
 
+        private static readonly char[] s_achrXmlInvalidUnicodeChars = new[]
+        {
+            '\u0000',
+            '\u0001',
+            '\u0002',
+            '\u0003',
+            '\u0004',
+            '\u0005',
+            '\u0006',
+            '\u0007',
+            '\u0008',
+            '\u000B',
+            '\u000C',
+            '\u000E',
+            '\u000F',
+            '\u0010',
+            '\u0011',
+            '\u0012',
+            '\u0013',
+            '\u0014',
+            '\u0015',
+            '\u0016',
+            '\u0017',
+            '\u0018',
+            '\u0019',
+            '\u001A',
+            '\u001B',
+            '\u001C',
+            '\u001D',
+            '\u001E',
+            '\u001F'
+        };
+
+        // Order is important so that we replace composites before chars
+        private static readonly string[] s_astrLineEndingStrings = new[] { "\r\n", "\n\r", "\n", "\r" };
+
+        // Order is important so that we replace composites before chars
+        private static readonly string[] s_astrEscapedLineEndingStrings = new[] { "\\\r\\\n", "\\\n\\\r", "\\\n", "\\\r" };
+
         private static readonly Lazy<Regex> s_RgxHtmlTagExpression = new Lazy<Regex>(() => new Regex(@"/<\/?[a-z][\s\S]*>/i",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
-
-        private static readonly Lazy<Regex> s_RgxLineEndingsExpression = new Lazy<Regex>(() => new Regex(@"\r\n|\n\r|\n|\r",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
-
-        private static readonly Lazy<Regex> s_RgxEscapedLineEndingsExpression = new Lazy<Regex>(() => new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         private static readonly DebuggableSemaphoreSlim s_RtbRtfManipulatorLock = new DebuggableSemaphoreSlim();
