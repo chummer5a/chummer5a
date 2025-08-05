@@ -277,7 +277,7 @@ namespace Chummer.Backend.Skills
                     await objWriter.StartElementAsync("skill", token: token).ConfigureAwait(false);
                 try
                 {
-                    int intPool = Pool;
+                    int intPool = await GetPoolAsync(token).ConfigureAwait(false);
                     int intSpecPool = intPool + await GetSpecializationBonusAsync(token: token).ConfigureAwait(false);
 
                     int intRatingModifiers = await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
@@ -887,6 +887,8 @@ namespace Chummer.Backend.Skills
             CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             LockObject = new AsyncFriendlyReaderWriterLock(); // We need a separate lock so that we can properly disconnect ourselves from the character lock while we are loading data
             _objCachedCyberwareRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objCachedTotalBaseRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objCachedLearnedRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedSuggestedSpecializationsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _lstSpecializations = new ThreadSafeObservableCollection<SkillSpecialization>(LockObject);
             _objAttribute = CharacterObject.GetAttribute(DefaultAttribute);
@@ -1601,6 +1603,34 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        // ReSharper disable once InconsistentNaming
+        private int _intCachedTotalBaseRating = int.MinValue;
+
+        [CLSCompliant(false)]
+        protected readonly AsyncFriendlyReaderWriterLock _objCachedTotalBaseRatingLock;
+
+        protected virtual void ResetCachedTotalBaseRating()
+        {
+            using (_objCachedTotalBaseRatingLock.EnterWriteLock())
+                _intCachedTotalBaseRating = int.MinValue;
+        }
+
+        protected virtual async Task ResetCachedTotalBaseRatingAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker =
+                await _objCachedTotalBaseRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _intCachedTotalBaseRating = int.MinValue;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// The rating the character has paid for, plus any improvement-based bonuses to skill rating.
         /// </summary>
@@ -1608,8 +1638,21 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (LockObject.EnterReadLock())
-                    return LearnedRating + RatingModifiers(Attribute);
+                using (_objCachedTotalBaseRatingLock.EnterReadLock())
+                {
+                    if (_intCachedTotalBaseRating != int.MinValue)
+                        return _intCachedTotalBaseRating;
+                }
+
+                using (_objCachedTotalBaseRatingLock.EnterUpgradeableReadLock())
+                {
+                    if (_intCachedTotalBaseRating != int.MinValue)
+                        return _intCachedTotalBaseRating;
+                    using (_objCachedTotalBaseRatingLock.EnterWriteLock())
+                    {
+                        return _intCachedTotalBaseRating = LearnedRating + RatingModifiers(Attribute);
+                    }
+                }
             }
         }
 
@@ -1618,11 +1661,67 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<int> GetTotalBaseRatingAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objCachedTotalBaseRatingLock.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetLearnedRatingAsync(token).ConfigureAwait(false) + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+                if (_intCachedTotalBaseRating != int.MinValue)
+                    return _intCachedTotalBaseRating;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await _objCachedTotalBaseRatingLock.EnterUpgradeableReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedTotalBaseRating != int.MinValue)
+                    return _intCachedTotalBaseRating;
+
+                IAsyncDisposable objLocker2 =
+                    await _objCachedTotalBaseRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    return _intCachedTotalBaseRating = await GetLearnedRatingAsync(token).ConfigureAwait(false) + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        // ReSharper disable once InconsistentNaming
+        private int _intCachedLearnedRating = int.MinValue;
+
+        [CLSCompliant(false)]
+        protected readonly AsyncFriendlyReaderWriterLock _objCachedLearnedRatingLock;
+
+        protected virtual void ResetCachedLearnedRating()
+        {
+            using (_objCachedLearnedRatingLock.EnterWriteLock())
+                _intCachedLearnedRating = int.MinValue;
+        }
+
+        protected virtual async Task ResetCachedLearnedRatingAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker =
+                await _objCachedLearnedRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _intCachedLearnedRating = int.MinValue;
             }
             finally
             {
@@ -1639,8 +1738,21 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (LockObject.EnterReadLock())
-                    return Karma + Base;
+                using (_objCachedLearnedRatingLock.EnterReadLock())
+                {
+                    if (_intCachedLearnedRating != int.MinValue)
+                        return _intCachedLearnedRating;
+                }
+
+                using (_objCachedLearnedRatingLock.EnterUpgradeableReadLock())
+                {
+                    if (_intCachedLearnedRating != int.MinValue)
+                        return _intCachedLearnedRating;
+                    using (_objCachedLearnedRatingLock.EnterWriteLock())
+                    {
+                        return _intCachedLearnedRating = Karma + Base;
+                    }
+                }
             }
         }
 
@@ -1651,11 +1763,39 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<int> GetLearnedRatingAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objCachedLearnedRatingLock.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetKarmaAsync(token).ConfigureAwait(false) + await GetBaseAsync(token).ConfigureAwait(false);
+                if (_intCachedLearnedRating != int.MinValue)
+                    return _intCachedLearnedRating;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await _objCachedLearnedRatingLock.EnterUpgradeableReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedLearnedRating != int.MinValue)
+                    return _intCachedLearnedRating;
+
+                IAsyncDisposable objLocker2 =
+                    await _objCachedLearnedRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    return _intCachedLearnedRating = await GetKarmaAsync(token).ConfigureAwait(false) + await GetBaseAsync(token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -6399,6 +6539,10 @@ namespace Chummer.Backend.Skills
                                 _intCachedForcedNotBuyWithKarma = -1;
                             if (setNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
                                 ResetCachedCyberwareRating();
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalBaseRating)))
+                                ResetCachedTotalBaseRating();
+                            if (setNamesOfChangedProperties.Contains(nameof(LearnedRating)))
+                                ResetCachedLearnedRating();
                             if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
                                 _blnRecalculateCachedSuggestedSpecializations = true;
                             if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
@@ -6557,6 +6701,10 @@ namespace Chummer.Backend.Skills
                                 _intCachedForcedNotBuyWithKarma = -1;
                             if (setNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
                                 await ResetCachedCyberwareRatingAsync(token).ConfigureAwait(false);
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalBaseRating)))
+                                await ResetCachedTotalBaseRatingAsync(token).ConfigureAwait(false);
+                            if (setNamesOfChangedProperties.Contains(nameof(LearnedRating)))
+                                await ResetCachedLearnedRatingAsync(token).ConfigureAwait(false);
                             if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
                                 _blnRecalculateCachedSuggestedSpecializations = true;
                             if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
@@ -8237,6 +8385,8 @@ namespace Chummer.Backend.Skills
 
                 _lstSpecializations.Dispose();
                 _objCachedCyberwareRatingLock.Dispose();
+                _objCachedTotalBaseRatingLock.Dispose();
+                _objCachedLearnedRatingLock.Dispose();
                 _objCachedSuggestedSpecializationsLock.Dispose();
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);
@@ -8305,6 +8455,8 @@ namespace Chummer.Backend.Skills
                 }
                 await _lstSpecializations.DisposeAsync().ConfigureAwait(false);
                 await _objCachedCyberwareRatingLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedTotalBaseRatingLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedLearnedRatingLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedSuggestedSpecializationsLock.DisposeAsync().ConfigureAwait(false);
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);
