@@ -385,7 +385,16 @@ namespace Chummer
                 await lblRCLabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
             }
 
-            if (int.TryParse(xmlAccessory.SelectSingleNodeAndCacheExpression("rating", token)?.Value, out int intMaxRating) && intMaxRating > 0)
+            string strExpression = xmlAccessory.SelectSingleNodeAndCacheExpression("rating", token)?.Value ?? string.Empty;
+            if (strExpression == "0")
+                strExpression = string.Empty;
+            int intMaxRating = int.MaxValue;
+            if (!string.IsNullOrEmpty(strExpression))
+            {
+                intMaxRating = (await ProcessInvariantXPathExpression(strExpression, int.MaxValue, token).ConfigureAwait(false)).StandardRound();
+            }
+
+            if (intMaxRating > 0 && intMaxRating != int.MaxValue)
             {
                 await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaxRating, token: token).ConfigureAwait(false);
                 if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token)
@@ -529,17 +538,7 @@ namespace Chummer
             if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
             {
                 string strCost = "0";
-                if (xmlAccessory.TryGetStringFieldQuickly("cost", ref strCost))
-                {
-                    strCost = (await strCost.CheapReplaceAsync("Weapon Cost",
-                                                               async () => (await _objParentWeapon.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
-                                                                   GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Weapon Total Cost",
-                                                               async () => (await _objParentWeapon.MultipliableCostAsync(null, token).ConfigureAwait(false))
-                                                                   .ToString(GlobalSettings.InvariantCultureInfo),
-                                                               token: token).ConfigureAwait(false))
-                        .Replace("Rating", intRating.ToString(GlobalSettings.CultureInfo));
-                }
+                xmlAccessory.TryGetStringFieldQuickly("cost", ref strCost);
 
                 if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                 {
@@ -592,16 +591,8 @@ namespace Chummer
                 }
                 else
                 {
-                    if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
-                    {
-                        (bool blnIsSuccess, object objProcess) = await CommonFunctions
-                                                                       .EvaluateInvariantXPathAsync(strCost, token)
-                                                                       .ConfigureAwait(false);
-                        decCost = blnIsSuccess
-                            ? Convert.ToDecimal((double)objProcess)
-                            : 0;
-                    }
-
+                    decimal decCost = await ProcessInvariantXPathExpression(strCost, intRating, token).ConfigureAwait(false);
+                    
                     // Apply any markup.
                     decCost *= 1
                                + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
@@ -720,6 +711,66 @@ namespace Chummer
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
+        }
+
+        private async Task<decimal> ProcessInvariantXPathExpression(string strExpression, int intRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            strExpression = strExpression.ProcessFixedValuesString(intRating);
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+            {
+                if (_objParentWeapon != null)
+                {
+                    Microsoft.VisualStudio.Threading.AsyncLazy<int> intParentRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => _objParentWeapon.GetRatingAsync(token), Utils.JoinableTaskFactory);
+                    strExpression = await strExpression.CheapReplaceAsync("{Parent Rating}",
+                        async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
+                    strExpression = await strExpression.CheapReplaceAsync("Parent Rating",
+                        async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
+                    strExpression = await strExpression.CheapReplaceAsync("{Weapon Rating}",
+                        async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
+                    strExpression = await strExpression.CheapReplaceAsync("Weapon Rating",
+                        async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
+                    Microsoft.VisualStudio.Threading.AsyncLazy<decimal> decParentCost = new Microsoft.VisualStudio.Threading.AsyncLazy<decimal>(() => _objParentWeapon.GetOwnCostAsync(token), Utils.JoinableTaskFactory);
+                    strExpression = await strExpression.CheapReplaceAsync("{Weapon Cost}",
+                        async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
+                    strExpression = await strExpression.CheapReplaceAsync("Weapon Cost",
+                        async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
+                    Microsoft.VisualStudio.Threading.AsyncLazy<decimal> decParentTotalCost = new Microsoft.VisualStudio.Threading.AsyncLazy<decimal>(() => _objParentWeapon.MultipliableCostAsync(null, token), Utils.JoinableTaskFactory);
+                    strExpression = await strExpression.CheapReplaceAsync("{Weapon Total Cost}",
+                        async () => (await decParentTotalCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
+                    strExpression = await strExpression.CheapReplaceAsync("Weapon Total Cost",
+                        async () => (await decParentTotalCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
+                    strExpression = await _objParentWeapon.ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                }
+                else
+                {
+                    strExpression = strExpression.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                        .Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                        .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                        .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                        .Replace("{Weapon Cost}", "0")
+                        .Replace("Weapon Cost", "0")
+                        .Replace("{Weapon Total Cost}", "0")
+                        .Replace("Weapon Total Cost", "0");
+                    strExpression = Vehicle.FillAttributesInXPathWithDummies(strExpression);
+                    strExpression = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                }
+                strExpression = strExpression.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                            .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions
+                                                                .EvaluateInvariantXPathAsync(strExpression, token)
+                                                                .ConfigureAwait(false);
+                return blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+            }
+            return decValue;
         }
 
         #endregion Methods

@@ -4350,19 +4350,19 @@ namespace Chummer
                             // <hair />
                             objWriter.WriteElementString("hair", _strHair);
                             // <description />
-                            objWriter.WriteElementString("description", _strDescription);
+                            objWriter.WriteElementString("description", _strDescription.CleanOfXmlInvalidUnicodeChars());
                             // <background />
-                            objWriter.WriteElementString("background", _strBackground);
+                            objWriter.WriteElementString("background", _strBackground.CleanOfXmlInvalidUnicodeChars());
                             // <concept />
-                            objWriter.WriteElementString("concept", _strConcept);
+                            objWriter.WriteElementString("concept", _strConcept.CleanOfXmlInvalidUnicodeChars());
                             // <notes />
-                            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                             // <alias />
                             objWriter.WriteElementString("alias", _strAlias);
                             // <playername />
                             objWriter.WriteElementString("playername", _strPlayerName);
                             // <gamenotes />
-                            objWriter.WriteElementString("gamenotes", _strGameNotes);
+                            objWriter.WriteElementString("gamenotes", _strGameNotes.CleanOfXmlInvalidUnicodeChars());
                             // <primaryarm />
                             objWriter.WriteElementString("primaryarm", _strPrimaryArm);
 
@@ -4999,17 +4999,17 @@ namespace Chummer
                             await objWriter.WriteElementStringAsync("hair", _strHair, token: token)
                                 .ConfigureAwait(false);
                             // <description />
-                            await objWriter.WriteElementStringAsync("description", _strDescription, token: token)
+                            await objWriter.WriteElementStringAsync("description", _strDescription.CleanOfXmlInvalidUnicodeChars(), token: token)
                                 .ConfigureAwait(false);
                             // <background />
-                            await objWriter.WriteElementStringAsync("background", _strBackground, token: token)
+                            await objWriter.WriteElementStringAsync("background", _strBackground.CleanOfXmlInvalidUnicodeChars(), token: token)
                                 .ConfigureAwait(false);
                             // <concept />
-                            await objWriter.WriteElementStringAsync("concept", _strConcept, token: token)
+                            await objWriter.WriteElementStringAsync("concept", _strConcept.CleanOfXmlInvalidUnicodeChars(), token: token)
                                 .ConfigureAwait(false);
                             // <notes />
                             await objWriter
-                                .WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(),
+                                .WriteElementStringAsync("notes", _strNotes.CleanOfXmlInvalidUnicodeChars(),
                                     token: token).ConfigureAwait(false);
                             // <alias />
                             await objWriter.WriteElementStringAsync("alias", _strAlias, token: token)
@@ -5018,7 +5018,7 @@ namespace Chummer
                             await objWriter.WriteElementStringAsync("playername", _strPlayerName, token: token)
                                 .ConfigureAwait(false);
                             // <gamenotes />
-                            await objWriter.WriteElementStringAsync("gamenotes", _strGameNotes, token: token)
+                            await objWriter.WriteElementStringAsync("gamenotes", _strGameNotes.CleanOfXmlInvalidUnicodeChars(), token: token)
                                 .ConfigureAwait(false);
                             // <primaryarm />
                             await objWriter.WriteElementStringAsync("primaryarm", _strPrimaryArm, token: token)
@@ -6142,7 +6142,7 @@ namespace Chummer
                                     }
                                     catch (XmlException ex)
                                     {
-                                        if (GlobalSettings.InvalidUnicodeCharsExpression.IsMatch(ex.Message))
+                                        if (ex.Message.HasAnyXmlInvalidUnicodeChars())
                                         {
                                             /*If we found a known control character that's preventing the character from
                                             being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.
@@ -6207,7 +6207,7 @@ namespace Chummer
                                     }
                                     catch (XmlException ex)
                                     {
-                                        if (GlobalSettings.InvalidUnicodeCharsExpression.IsMatch(ex.Message))
+                                        if (ex.Message.HasAnyXmlInvalidUnicodeChars())
                                         {
                                             /*If we found a known control character that's preventing the character from
                                             being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.

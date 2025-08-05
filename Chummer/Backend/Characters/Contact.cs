@@ -579,7 +579,7 @@ namespace Chummer
                     objWriter.WriteElementString("type", _eContactType.ToString());
                     objWriter.WriteElementString("file", _strFileName);
                     objWriter.WriteElementString("relative", _strRelativeName);
-                    objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                    objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                     objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                     objWriter.WriteElementString("groupname", _strGroupName);
                     objWriter.WriteElementString(
@@ -647,7 +647,7 @@ namespace Chummer
                         await objWriter.WriteElementStringAsync("relative", _strRelativeName, token: token)
                             .ConfigureAwait(false);
                         await objWriter
-                            .WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token: token)
+                            .WriteElementStringAsync("notes", _strNotes.CleanOfXmlInvalidUnicodeChars(), token: token)
                             .ConfigureAwait(false);
                         await objWriter
                             .WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes), token: token)

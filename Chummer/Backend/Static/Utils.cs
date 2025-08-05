@@ -362,10 +362,10 @@ namespace Chummer
 
         public static ConcurrentDictionary<string, XPathExpression> CachedXPathExpressions => s_dicCachedExpressions.Value;
 
-        public static void TryCacheExpression(string xpath, CancellationToken token = default)
+        public static XPathExpression TryCacheExpression(string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile);
+            return CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile);
         }
 
         private static readonly Lazy<JoinableTaskFactory> s_objJoinableTaskFactory
@@ -953,7 +953,7 @@ namespace Chummer
                     await objForm.DoThreadSafeAsync(x => x.Close(), token: token).ConfigureAwait(false);
                 }
             }
-            catch (Exception)
+            catch
             {
                 Application.UseWaitCursor = false;
                 throw;

@@ -490,7 +490,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalSettings.InvariantCultureInfo));
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D", GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1020,24 +1020,28 @@ namespace Chummer.Backend.Equipment
                     Armor objParent = Parent;
                     if (objParent != null)
                     {
-                        sbdValue.CheapReplace(strExpression, "{Armor Rating}", () => objParent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "Armor Rating", () => objParent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "{Parent Rating}", () => objParent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "Parent Rating", () => objParent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "{Armor Cost}", () => objParent.OwnCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "Armor Cost", () => objParent.OwnCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "{Parent Cost}", () => objParent.OwnCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "Parent Cost", () => objParent.OwnCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "{Armor Weight}", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "Armor Weight", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "{Parent Weight}", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "Parent Weight", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "{Armor Capacity}", () => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "Armor Capacity", () => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "{Parent Capacity}", () => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "Parent Capacity", () => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "{Capacity}", () => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "Capacity", () => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
+                        Lazy<string> strParentRating = new Lazy<string>(() => objParent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Armor Rating}", () => strParentRating.Value);
+                        sbdValue.CheapReplace(strExpression, "Armor Rating", () => strParentRating.Value);
+                        sbdValue.CheapReplace(strExpression, "{Parent Rating}", () => strParentRating.Value);
+                        sbdValue.CheapReplace(strExpression, "Parent Rating", () => strParentRating.Value);
+                        Lazy<string> strParentOwnCost = new Lazy<string>(() => objParent.OwnCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Armor Cost}", () => strParentOwnCost.Value);
+                        sbdValue.CheapReplace(strExpression, "Armor Cost", () => strParentOwnCost.Value);
+                        sbdValue.CheapReplace(strExpression, "{Parent Cost}", () => strParentOwnCost.Value);
+                        sbdValue.CheapReplace(strExpression, "Parent Cost", () => strParentOwnCost.Value);
+                        Lazy<string> strParentOwnWeight = new Lazy<string>(() => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Armor Weight}", () => strParentOwnWeight.Value);
+                        sbdValue.CheapReplace(strExpression, "Armor Weight", () => strParentOwnWeight.Value);
+                        sbdValue.CheapReplace(strExpression, "{Parent Weight}", () => strParentOwnWeight.Value);
+                        sbdValue.CheapReplace(strExpression, "Parent Weight", () => strParentOwnWeight.Value);
+                        Lazy<string> strParentCapacity = new Lazy<string>(() => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Armor Capacity}", () => strParentCapacity.Value);
+                        sbdValue.CheapReplace(strExpression, "Armor Capacity", () => strParentCapacity.Value);
+                        sbdValue.CheapReplace(strExpression, "{Parent Capacity}", () => strParentCapacity.Value);
+                        sbdValue.CheapReplace(strExpression, "Parent Capacity", () => strParentCapacity.Value);
+                        sbdValue.CheapReplace(strExpression, "{Capacity}", () => strParentCapacity.Value);
+                        sbdValue.CheapReplace(strExpression, "Capacity", () => strParentCapacity.Value);
                     }
                     else
                     {
@@ -1096,52 +1100,31 @@ namespace Chummer.Backend.Equipment
                     Armor objParent = Parent;
                     if (objParent != null)
                     {
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Armor Rating}",
-                            async () => (await objParent.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "Armor Rating",
-                            async () => (await objParent.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
-                            async () => (await objParent.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "Parent Rating",
-                            async () => (await objParent.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Armor Cost}",
-                            async () => (await objParent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "Armor Cost",
-                            async () => (await objParent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}",
-                            async () => (await objParent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost",
-                            async () => (await objParent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
-                        sbdValue.CheapReplace(strExpression, "{Armor Weight}", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "Armor Weight", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "{Parent Weight}", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "Parent Weight", () => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Armor Capacity}",
-                            async () => (await objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)),
-                            token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "Armor Capacity",
-                            async () => (await objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)),
-                            token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Capacity}",
-                            async () => (await objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)),
-                            token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "Parent Capacity",
-                            async () => (await objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)),
-                            token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Capacity}",
-                            async () => (await objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)),
-                            token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "Capacity",
-                            async () => (await objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)),
-                            token: token).ConfigureAwait(false);
+                        Microsoft.VisualStudio.Threading.AsyncLazy<string> strParentRating = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(
+                            async () => (await objParent.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Armor Rating}", () => strParentRating.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Armor Rating", () => strParentRating.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}", () => strParentRating.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Parent Rating", () => strParentRating.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        Microsoft.VisualStudio.Threading.AsyncLazy<string> strParentOwnCost = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(
+                            async () => (await objParent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Armor Cost}", () => strParentOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Armor Cost", () => strParentOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}", () => strParentOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost", () => strParentOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        Lazy<string> strParentOwnWeight = new Lazy<string>(() => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Armor Weight}", () => strParentOwnWeight.Value, token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Armor Weight", () => strParentOwnWeight.Value, token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Weight}", () => strParentOwnWeight.Value, token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Parent Weight", () => strParentOwnWeight.Value, token: token).ConfigureAwait(false);
+                        Microsoft.VisualStudio.Threading.AsyncLazy<string> strParentCapacity = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(
+                            () => objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token), Utils.JoinableTaskFactory);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Armor Capacity}", () => strParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Armor Capacity", () => strParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Capacity}", () => strParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Parent Capacity", () => strParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Capacity}", () => strParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Capacity", () => strParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
                     }
                     else
                     {

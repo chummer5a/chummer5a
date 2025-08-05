@@ -320,12 +320,15 @@ namespace Chummer
                         // were made in an older version (i.e. an older assembly)
                         string strProfileOptimizationName
                             = "chummerprofile_" + Utils.CurrentChummerVersion + ".profile";
-                        foreach (string strProfileFile in Directory.GetFiles(Utils.GetStartupPath, "*.profile"))
+                        List<string> lstToDelete = new List<string>();
+                        foreach (string strProfileFile in Directory.EnumerateFiles(Utils.GetStartupPath, "*.profile"))
                         {
                             if (!string.Equals(strProfileFile, strProfileOptimizationName,
                                                StringComparison.OrdinalIgnoreCase))
-                                FileExtensions.SafeDelete(strProfileFile);
+                                lstToDelete.Add(strProfileFile);
                         }
+                        foreach (string strProfileFile in lstToDelete)
+                            FileExtensions.SafeDelete(strProfileFile);
 
                         // Mono, non-Windows native stuff, and Win11 don't always play nice with ProfileOptimization, so it's better to just not bother with it when running under them
                         if (!IsMono && Utils.HumanReadableOSVersion.StartsWith(
@@ -669,11 +672,11 @@ namespace Chummer
             }
         }
 
-        private static bool UnblockPath(string strPath)
+        private static bool UnblockPath(string strPath, bool blnTerminateOnFirstFail = true)
         {
             bool blnAllUnblocked = true;
 
-            foreach (string strFile in Directory.EnumerateFiles(strPath))
+            foreach (string strFile in Directory.EnumerateFiles(strPath, "*", SearchOption.AllDirectories))
             {
                 if (!UnblockFile(strFile))
                 {
@@ -688,21 +691,19 @@ namespace Chummer
 
                         case 5:
                             Log.Warn(exception);
+                            if (blnTerminateOnFirstFail)
+                                return false;
                             blnAllUnblocked = false;
                             break;
 
                         default:
                             Log.Error(exception);
+                            if (blnTerminateOnFirstFail)
+                                return false;
                             blnAllUnblocked = false;
                             break;
                     }
                 }
-            }
-
-            foreach (string strDir in Directory.EnumerateDirectories(strPath))
-            {
-                if (!UnblockPath(strDir))
-                    blnAllUnblocked = false;
             }
 
             return blnAllUnblocked;

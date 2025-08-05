@@ -22,11 +22,10 @@ namespace SevenZip
 {
     internal class CRC
     {
-        public static readonly uint[] Table;
+        public static readonly uint[] Table = new uint[256];
 
         static CRC()
         {
-            Table = new uint[256];
             const uint kPoly = 0xEDB88320;
             unchecked
             {

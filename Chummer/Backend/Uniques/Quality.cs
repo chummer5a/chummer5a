@@ -545,7 +545,7 @@ namespace Chummer
                                                  _guiWeaponID.ToString("D", GlobalSettings.InvariantCultureInfo));
                 if (_nodDiscounts != null)
                     objWriter.WriteRaw("<costdiscount>" + _nodDiscounts.InnerXml + "</costdiscount>");
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 if (_eQualityType == QualityType.LifeModule)
                 {
@@ -681,18 +681,37 @@ namespace Chummer
                     string strSpace = await LanguageManager
                         .GetStringAsync("String_Space", strLanguageToPrint, token: token)
                         .ConfigureAwait(false);
+                    string strSpaceEnglish = await LanguageManager
+                        .GetStringAsync("String_Space", GlobalSettings.DefaultLanguage, token: token)
+                        .ConfigureAwait(false);
                     string strRatingString = string.Empty;
+                    string strRatingStringEnglish = string.Empty;
                     if (intRating > 1)
+                    {
                         strRatingString = strSpace + intRating.ToString(objCulture);
+                        strRatingStringEnglish = strSpaceEnglish + intRating.ToString(GlobalSettings.InvariantCultureInfo);
+                    }
                     string strSourceName = string.Empty;
+                    string strSourceNameEnglish = string.Empty;
                     if (!string.IsNullOrWhiteSpace(await GetSourceNameAsync(token).ConfigureAwait(false)))
+                    {
                         strSourceName = strSpace + '('
                                                  + await DisplaySourceNameAsync(strLanguageToPrint, token)
                                                      .ConfigureAwait(false) + ')';
+                        strSourceNameEnglish = strSpaceEnglish + '('
+                                                 + await DisplaySourceNameAsync(GlobalSettings.DefaultLanguage, token)
+                                                     .ConfigureAwait(false) + ')';
+                    }
+                    string strExtra = await GetExtraAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
                             "extra",
-                            await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
+                            await _objCharacter.TranslateExtraAsync(strExtra, strLanguageToPrint, token: token)
                                 .ConfigureAwait(false) + strRatingString + strSourceName,
+                            token: token)
+                        .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync(
+                            "extra_english",
+                            strExtra + strRatingStringEnglish + strSourceNameEnglish,
                             token: token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("bp", BP.ToString(objCulture), token: token)

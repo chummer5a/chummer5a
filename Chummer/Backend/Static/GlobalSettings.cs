@@ -1514,10 +1514,6 @@ namespace Chummer
         private static XmlDocument _xmlClipboard = new XmlDocument { XmlResolver = null };
         private static readonly AsyncFriendlyReaderWriterLock _objClipboardLocker = new AsyncFriendlyReaderWriterLock();
 
-        private static readonly Lazy<Regex> s_RgxInvalidUnicodeCharsExpression = new Lazy<Regex>(() => new Regex(
-            @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
-
         private static ClipboardContentType _eClipboardContentType;
 
         /// <summary>
@@ -1539,12 +1535,6 @@ namespace Chummer
         /// XmlReaderSettings that should only be used if invalid characters are found.
         /// </summary>
         public static XmlReaderSettings UnSafeXmlReaderAsyncSettings { get; } = new XmlReaderSettings { XmlResolver = null, IgnoreComments = true, IgnoreWhitespace = true, CheckCharacters = false, Async = true };
-
-        /// <summary>
-        /// Regex that indicates whether a given string is a match for text that cannot be saved in XML. Match == true.
-        /// </summary>
-        [CLSCompliant(false)]
-        public static Regex InvalidUnicodeCharsExpression => s_RgxInvalidUnicodeCharsExpression.Value;
 
         /// <summary>
         /// Lock the clipboard for reading.

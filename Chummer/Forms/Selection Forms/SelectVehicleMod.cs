@@ -21,7 +21,6 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -283,6 +282,11 @@ namespace Chummer
         /// </summary>
         public bool VehicleMountMods { get; set; }
 
+        /// <summary>
+        /// If the mod is being added to a vehicle weapon mount, the (prospective) cost of the weapon mount without any additional mods.
+        /// </summary>
+        public decimal ParentWeaponMountOwnCost { get; set; }
+
         #endregion Properties
 
         #region Methods
@@ -338,20 +342,11 @@ namespace Chummer
                     if (!await _objVehicle.CheckModRequirementsAsync(objXmlMod, token).ConfigureAwait(false))
                         continue;
 
-                    int intMinRating = 1;
-                    string strMinRating = objXmlMod.SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value;
-                    if (strMinRating?.Length > 0)
+                    int intMinRating = int.MaxValue;
+                    string strMinRating = objXmlMod.SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strMinRating))
                     {
-                        if (strMinRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                        {
-                            strMinRating = await ReplaceStrings(strMinRating, token: token).ConfigureAwait(false);
-                            (bool blnTempIsSuccess, object objTempProcess)
-                                = await CommonFunctions.EvaluateInvariantXPathAsync(strMinRating, token).ConfigureAwait(false);
-                            if (blnTempIsSuccess)
-                                intMinRating = ((double)objTempProcess).StandardRound();
-                        }
-                        else
-                            intMinRating = decValue.StandardRound();
+                        intMinRating = (await ProcessInvariantXPathExpression(strMinRating, int.MaxValue, token: token).ConfigureAwait(false)).Item1.StandardRound();
                     }
 
                     string strRating = objXmlMod.SelectSingleNodeAndCacheExpression("rating", token: token)?.Value;
@@ -372,10 +367,13 @@ namespace Chummer
                         {
                             intMinRating = Math.Min(intMinRating, await _objVehicle.GetTotalSeatsAsync(token).ConfigureAwait(false));
                         }
-                        else if (int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                              out int intMaxRating))
+                        else
                         {
-                            intMinRating = Math.Min(intMinRating, intMaxRating);
+                            int intMaxRating = int.MaxValue;
+                            if (!string.IsNullOrEmpty(strRating))
+                                intMaxRating = (await ProcessInvariantXPathExpression(strRating, intMinRating, 0, token).ConfigureAwait(false)).Item1.StandardRound();
+                            if (intMaxRating > 0 && intMaxRating != int.MaxValue)
+                                intMinRating = Math.Min(intMinRating, intMaxRating);
                         }
                     }
 
@@ -491,17 +489,7 @@ namespace Chummer
                         = xmlVehicleMod.SelectSingleNodeAndCacheExpression("slots", token)?.Value ?? string.Empty;
                     if (!strSlots.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
-                        if (strSlots.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decExtraSlots))
-                        {
-                            strSlots = await ReplaceStrings(strSlots, intExtraSlots, token).ConfigureAwait(false);
-                            (bool blnIsSuccess, object objProcess) = await CommonFunctions
-                                                                           .EvaluateInvariantXPathAsync(strSlots, token)
-                                                                           .ConfigureAwait(false);
-                            if (blnIsSuccess)
-                                intExtraSlots = ((double)objProcess).StandardRound();
-                        }
-                        else
-                            intExtraSlots = decExtraSlots.StandardRound();
+                        intExtraSlots = (await ProcessInvariantXPathExpression(strSlots, int.MaxValue, token: token).ConfigureAwait(false)).Item1.StandardRound();
                         string strInnerText = intExtraSlots.ToString(GlobalSettings.CultureInfo);
                         await lblSlots.DoThreadSafeAsync(x => x.Text = strInnerText, token: token).ConfigureAwait(false);
                         await lblSlotsLabel
@@ -512,22 +500,11 @@ namespace Chummer
                     // Extract the Avail and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
                     // This is done using XPathExpression.
 
-                    int intMinRating = 1;
-                    string strMinRating = xmlVehicleMod.SelectSingleNodeAndCacheExpression("minrating", token)?.Value;
-                    if (strMinRating?.Length > 0)
+                    int intMinRating = int.MaxValue;
+                    string strMinRating = xmlVehicleMod.SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strMinRating))
                     {
-                        if (strMinRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                        {
-                            strMinRating = await ReplaceStrings(strMinRating, intExtraSlots, token).ConfigureAwait(false);
-                            (bool blnTempIsSuccess, object objTempProcess) = await CommonFunctions
-                                                                                   .EvaluateInvariantXPathAsync(
-                                                                                       strMinRating, token)
-                                                                                   .ConfigureAwait(false);
-                            if (blnTempIsSuccess)
-                                intMinRating = ((double)objTempProcess).StandardRound();
-                        }
-                        else
-                            intMinRating = decValue.StandardRound();
+                        intMinRating = (await ProcessInvariantXPathExpression(strMinRating, int.MaxValue, token: token).ConfigureAwait(false)).Item1.StandardRound();
                     }
 
                     await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
@@ -599,8 +576,10 @@ namespace Chummer
                                                                      .ConfigureAwait(false);
                         await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel, token: token)
                                             .ConfigureAwait(false);
-                        if (int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out int intTempRating) && intTempRating > 0)
+                        int intTempRating = int.MaxValue;
+                        if (!string.IsNullOrEmpty(strRating))
+                            intTempRating = (await ProcessInvariantXPathExpression(strRating, intMinRating, intExtraSlots, token).ConfigureAwait(false)).Item1.StandardRound();
+                        if (intTempRating > 0 && intTempRating != int.MaxValue)
                         {
                             await nudRating.DoThreadSafeAsync(x =>
                             {
@@ -680,19 +659,7 @@ namespace Chummer
                     // Slots (part 2, if we do need a rating)
                     if (strSlots.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
-                        strSlots = strSlots.ProcessFixedValuesString(intRating);
-
-                        if (strSlots.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decExtraSlots))
-                        {
-                            strSlots = await ReplaceStrings(strSlots, intExtraSlots, token).ConfigureAwait(false);
-                            (bool blnIsSuccess, object objProcess) = await CommonFunctions
-                                                                           .EvaluateInvariantXPathAsync(strSlots, token)
-                                                                           .ConfigureAwait(false);
-                            if (blnIsSuccess)
-                                intExtraSlots = ((double)objProcess).StandardRound();
-                        }
-                        else
-                            intExtraSlots = decExtraSlots.StandardRound();
+                        intExtraSlots = (await ProcessInvariantXPathExpression(strSlots, intRating, token: token).ConfigureAwait(false)).Item1.StandardRound();
                         string strInnerText = intExtraSlots.ToString(GlobalSettings.CultureInfo);
                         await lblSlots.DoThreadSafeAsync(x => x.Text = strInnerText, token: token).ConfigureAwait(false);
                         await lblSlotsLabel
@@ -773,15 +740,7 @@ namespace Chummer
                             strCost = decMin.ToString(GlobalSettings.InvariantCultureInfo);
                         }
 
-                        if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decItemCost))
-                        {
-                            strCost = await ReplaceStrings(strCost, intExtraSlots, token).ConfigureAwait(false);
-
-                            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token)
-                                                                              .ConfigureAwait(false);
-                            if (blnIsSuccess)
-                                decItemCost = Convert.ToDecimal((double)objProcess);
-                        }
+                        decItemCost = (await ProcessInvariantXPathExpression(strCost, intRating, intExtraSlots, token).ConfigureAwait(false)).Item1;
 
                         // Apply any markup.
                         decItemCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
@@ -820,7 +779,7 @@ namespace Chummer
                         {
                             await lblVehicleCapacityLabel.DoThreadSafeAsync(x => x.Visible = true, token: token)
                                                          .ConfigureAwait(false);
-                            int.TryParse(strSlots, NumberStyles.Any, GlobalSettings.CultureInfo, out int intSlots);
+                            int intSlots = (await ProcessInvariantXPathExpression(strSlots, intRating, intExtraSlots, token).ConfigureAwait(false)).Item1.StandardRound();
                             string strCapacity = await GetRemainingModCapacity(strCategory, intSlots, token).ConfigureAwait(false);
                             await lblVehicleCapacity.DoThreadSafeAsync(x =>
                             {
@@ -983,37 +942,41 @@ namespace Chummer
             }
         }
 
-        private async Task<string> ReplaceStrings(string strInput, int intExtraSlots = 0, CancellationToken token = default)
-        {
-            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
-            {
-                sbdInput.Append(strInput);
-                await sbdInput.CheapReplaceAsync(strInput, "Rating", () => nudRating.DoThreadSafeFuncAsync(x => x.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token), token: token).ConfigureAwait(false);
-                sbdInput.Replace("Vehicle Cost", _objVehicle.Cost);
-                sbdInput.Replace("Weapon Cost", 0.ToString(GlobalSettings.InvariantCultureInfo));
-                sbdInput.Replace("Total Cost", 0.ToString(GlobalSettings.InvariantCultureInfo));
-                sbdInput.Replace("Body", _objVehicle.Body.ToString(GlobalSettings.InvariantCultureInfo));
-                sbdInput.Replace("Handling", _objVehicle.Handling.ToString(GlobalSettings.InvariantCultureInfo));
-                sbdInput.Replace("Offroad Handling",
-                                 _objVehicle.OffroadHandling.ToString(GlobalSettings.InvariantCultureInfo));
-                sbdInput.Replace("Speed", _objVehicle.Speed.ToString(GlobalSettings.InvariantCultureInfo));
-                sbdInput.Replace("Offroad Speed",
-                                 _objVehicle.OffroadSpeed.ToString(GlobalSettings.InvariantCultureInfo));
-                sbdInput.Replace("Acceleration", _objVehicle.Accel.ToString(GlobalSettings.InvariantCultureInfo));
-                sbdInput.Replace("Offroad Acceleration",
-                                 _objVehicle.OffroadAccel.ToString(GlobalSettings.InvariantCultureInfo));
-                sbdInput.Replace("Sensor", _objVehicle.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo));
-                sbdInput.Replace("Armor", _objVehicle.Armor.ToString(GlobalSettings.InvariantCultureInfo));
-                sbdInput.Replace(
-                    "Slots", (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo));
-
-                return sbdInput.ToString();
-            }
-        }
-
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
+        }
+
+        private async Task<Tuple<decimal, bool>> ProcessInvariantXPathExpression(string strExpression, int intRating, int intExtraSlots = 0, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            bool blnSuccess = true;
+            strExpression = strExpression.ProcessFixedValuesString(intRating);
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+            {
+                blnSuccess = false;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                {
+                    sbdValue.Append(strExpression);
+                    await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", () => nudRating.DoThreadSafeFuncAsync(x => x.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token), token: token).ConfigureAwait(false);
+                    await sbdValue.CheapReplaceAsync(strExpression, "Rating", () => nudRating.DoThreadSafeFuncAsync(x => x.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token), token: token).ConfigureAwait(false);
+                    sbdValue.Replace("{Slots}", (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.Replace("Slots", (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.Replace("{Parent Slots}", (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.Replace("Parent Slots", (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.Replace("{Parent Cost}", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.Replace("Parent Cost", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
+                    await _objVehicle.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
+                }
+            }
+
+            return new Tuple<decimal, bool>(decValue, blnSuccess);
         }
 
         #endregion Methods

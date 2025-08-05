@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using NLog;
 
@@ -110,6 +111,30 @@ namespace Chummer
 
             _lstGrades = _objCharacter.GetGradesList(objWareSource);
             _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceIDString;
+
+            _strCachedParentCost = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () =>
+            {
+                if (CyberwareParent != null)
+                {
+                    return await CyberwareParent.ProcessCostExpressionAsync(CyberwareParent.Cost,
+                        await CyberwareParent.GetRatingAsync().ConfigureAwait(false),
+                        await CyberwareParent.GetGradeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                }
+                else if (ParentVehicleMod != null)
+                {
+                    return (await ParentVehicleMod.GetOwnCostAsync().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
+                }
+                return "0";
+            }, Utils.JoinableTaskFactory);
+            _strCachedParentGearCost = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () =>
+            {
+                if (CyberwareParent != null)
+                {
+                    return (await (await CyberwareParent.GetGearChildrenAsync().ConfigureAwait(false))
+                        .SumAsync(x => x.GetCalculatedCostAsync()).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
+                }
+                return "0";
+            }, Utils.JoinableTaskFactory);
 
             _objGenericCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericCancellationTokenSource.Token;
@@ -545,72 +570,12 @@ namespace Chummer
                         {
                             string strMinRating = xmlCyberware.SelectSingleNodeAndCacheExpression("minrating", token)?.Value ?? string.Empty;
                             string strMaxRating = xmlRatingNode.Value;
-                            Dictionary<string, int> dicVehicleValues = null;
-                            if (ParentVehicle != null && (strMinRating.Contains("imum}") || strMaxRating.Contains("imum}")))
-                            {
-                                int intVehicleBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
-                                int intVehiclePilot = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
-                                dicVehicleValues = new Dictionary<string, int>(4)
-                                {
-                                    { "STRMaximum", Math.Max(1, intVehicleBody * 2) },
-                                    { "AGIMaximum", Math.Max(1, intVehiclePilot * 2) },
-                                    { "STRMinimum", Math.Max(1, intVehicleBody) },
-                                    { "AGIMinimum", Math.Max(1, intVehiclePilot) }
-                                };
-                            }
-                            else
-                            {
-                                string strLoop = string.Empty;
-                                xmlCyberware.TryGetStringFieldQuickly("limbslot", ref strLoop);
-                                if (!string.IsNullOrEmpty(strLoop))
-                                {
-                                    int intMinAgility = 3;
-                                    int intMinStrength = 3;
-                                    xmlCyberware.TryGetInt32FieldQuickly("minagility", ref intMinAgility);
-                                    xmlCyberware.TryGetInt32FieldQuickly("minstrength", ref intMinStrength);
-                                    dicVehicleValues = new Dictionary<string, int>(2)
-                                    {
-                                        { "STRMinimum", intMinStrength },
-                                        { "AGIMinimum", intMinAgility }
-                                    };
-                                }
-                                else
-                                {
-                                    Cyberware objLoop = CyberwareParent;
-                                    while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false) && objLoop.Category != "Cyberlimb")
-                                        objLoop = await objLoop.GetParentAsync(token).ConfigureAwait(false);
-                                    if (objLoop != null)
-                                    {
-                                        dicVehicleValues = new Dictionary<string, int>(2)
-                                        {
-                                            { "STRMinimum", await objLoop.GetMinStrengthAsync(token).ConfigureAwait(false) },
-                                            { "AGIMinimum", await objLoop.GetMinAgilityAsync(token).ConfigureAwait(false) }
-                                        };
-                                    }
-                                }
-                            }
-
-                            int intMinRating = 1;
                             // Not a simple integer, so we need to start mucking around with strings
-                            if (strMinRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                            {
-                                strMinRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMinRating, dicVehicleValues, token).ConfigureAwait(false);
-                                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strMinRating, token).ConfigureAwait(false);
-                                intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
-                            }
-                            else
-                                intMinRating = decValue.StandardRound();
+                            (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strMinRating, 1, int.MaxValue, token).ConfigureAwait(false);
+                            int intMinRating = blnIsSuccess ? decValue.StandardRound() : 1;
                             await nudRating.DoThreadSafeAsync(x => x.Minimum = intMinRating, token: token).ConfigureAwait(false);
-                            int intMaxRating = 0;
-                            // Not a simple integer, so we need to start mucking around with strings
-                            if (strMaxRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
-                            {
-                                strMaxRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMaxRating, dicVehicleValues, token).ConfigureAwait(false);
-                                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strMaxRating, token).ConfigureAwait(false);
-                                intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
-                            }
-                            else
-                                intMaxRating = decValue.StandardRound();
+                            (decValue, blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strMaxRating, intMinRating, intMinRating, token).ConfigureAwait(false);
+                            int intMaxRating = blnIsSuccess ? decValue.StandardRound() : 1;
                             if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                             {
                                 while (intMaxRating > intMinRating
@@ -1016,6 +981,11 @@ namespace Chummer
         /// </summary>
         public Vehicle ParentVehicle { get; set; }
 
+        /// <summary>
+        /// Parent vehicle that the cyberlimb will be attached to.
+        /// </summary>
+        public VehicleMod ParentVehicleMod { get; set; }
+
         public decimal Markup { get; set; }
 
         private bool _blnPrototypeTranshumanAllowed;
@@ -1093,6 +1063,7 @@ namespace Chummer
                         // This is done using XPathExpression.
 
                         int intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
+                        int intMinRating = await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: token).ConfigureAwait(false);
                         string strAvailExpression = objXmlCyberware
                             .SelectSingleNodeAndCacheExpression("avail", token)?.Value ?? string.Empty;
                         blnOrGear = strAvailExpression.EndsWith(" or Gear", StringComparison.Ordinal);
@@ -1126,18 +1097,7 @@ namespace Chummer
                             strCost = objXmlCyberware.SelectSingleNodeAndCacheExpression("cost", token)?.Value;
                             if (!string.IsNullOrEmpty(strCost))
                             {
-                                if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
-                                {
-                                    string strSuffix = string.Empty;
-                                    if (!strCost.EndsWith(')'))
-                                    {
-                                        strSuffix = strCost.Substring(strCost.LastIndexOf(')') + 1);
-                                        strCost = strCost.TrimEndOnce(strSuffix);
-                                    }
-
-                                    strCost = strCost.ProcessFixedValuesString(intRating) + strSuffix;
-                                }
-
+                                strCost = strCost.ProcessFixedValuesString(intRating);
                                 // Check for a Variable Cost.
                                 if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                                 {
@@ -1179,37 +1139,14 @@ namespace Chummer
                                 }
                                 else if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decItemCost))
                                 {
-                                    strCost = (await strCost
-                                                     .CheapReplaceAsync("Parent Cost", async () => CyberwareParent != null
-                                                                            ? (await CyberwareParent.GetTotalCostAsync(token).ConfigureAwait(false))
-                                                                            .ToString(GlobalSettings.InvariantCultureInfo)
-                                                                            : "0",
-                                                                        token: token)
-                                                     .CheapReplaceAsync("Parent Gear Cost",
-                                                                        async () => CyberwareParent != null
-                                                                            ? (await CyberwareParent.GearChildren
-                                                                                .SumParallelAsync(
-                                                                                    x => x.GetTotalCostAsync(token), token: token)
-                                                                                .ConfigureAwait(false))
-                                                                            .ToString(GlobalSettings.InvariantCultureInfo)
-                                                                            : "0", token: token)
-                                                     .CheapReplaceAsync("MinRating",
-                                                                        () => nudRating.DoThreadSafeFuncAsync(
-                                                                            x => x.Minimum.ToString(
-                                                                                GlobalSettings.InvariantCultureInfo),
-                                                                            token: token), token: token)
-                                                     .ConfigureAwait(false))
-                                        .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                                    (bool blnIsSuccess, object objProcess)
-                                        = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);
+                                    bool blnIsSuccess;
+                                    (decItemCost, blnIsSuccess)
+                                        = await ProcessInvariantXPathExpression(objXmlCyberware, strCost, intMinRating, intRating, token).ConfigureAwait(false);
                                     if (blnIsSuccess)
                                     {
-                                        decItemCost = Convert.ToDecimal((double)objProcess)
-                                                      * _decCostMultiplier * decGenetechCostModifier;
-                                        decItemCost *= 1 + nudMarkup.Value / 100.0m;
+                                        decItemCost *= _decCostMultiplier * decGenetechCostModifier * (1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m);
 
-                                        if (chkBlackMarketDiscount.Checked)
+                                        if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                                         {
                                             decItemCost *= 0.9m;
                                         }
@@ -1224,10 +1161,9 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    decItemCost *= _decCostMultiplier * decGenetechCostModifier;
-                                    decItemCost *= 1 + nudMarkup.Value / 100.0m;
+                                    decItemCost *= _decCostMultiplier * decGenetechCostModifier * (1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m);
 
-                                    if (chkBlackMarketDiscount.Checked)
+                                    if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                                     {
                                         decItemCost *= 0.9m;
                                     }
@@ -1305,54 +1241,20 @@ namespace Chummer
                                     {
                                         strPostModifierExpression = strPostModifierExpression.Replace("{Modifier}",
                                                         decCharacterESSModifier.ToString(GlobalSettings.InvariantCultureInfo));
-                                        if (strPostModifierExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decCharacterESSModifier))
-                                        {
-                                            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strPostModifierExpression, token: token).ConfigureAwait(false);
-                                            (bool blnIsSuccess2, object objProcess2) =
-                                                await CommonFunctions.EvaluateInvariantXPathAsync(strPostModifierExpression, token)
-                                                    .ConfigureAwait(false);
-                                            if (blnIsSuccess2)
-                                                decCharacterESSModifier = Convert.ToDecimal((double)objProcess2);
-                                        }
+                                        (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(objXmlCyberware, strPostModifierExpression, intMinRating, intRating, token).ConfigureAwait(false);
+                                        if (blnIsSuccess)
+                                            decCharacterESSModifier = decValue;
                                     }
                                 }
 
                                 string strEss = objXmlCyberware.SelectSingleNodeAndCacheExpression("ess", token)?.Value ?? string.Empty;
-                                if (strEss.StartsWith("FixedValues(", StringComparison.Ordinal))
+                                strEss = strEss.ProcessFixedValuesString(intRating);
+                                decESS = (await ProcessInvariantXPathExpression(objXmlCyberware, strEss, intMinRating, intRating, token).ConfigureAwait(false)).Item1;
+                                decESS *= decCharacterESSModifier;
+                                if (!await _objCharacter.Settings.GetDontRoundEssenceInternallyAsync(token).ConfigureAwait(false))
                                 {
-                                    string strSuffix = string.Empty;
-                                    if (!strEss.EndsWith(')'))
-                                    {
-                                        strSuffix = strEss.Substring(strEss.LastIndexOf(')') + 1);
-                                        strEss = strEss.TrimEndOnce(strSuffix);
-                                    }
-
-                                    strEss = strEss.ProcessFixedValuesString(intRating) + strSuffix;
-                                }
-
-                                if (strEss.DoesNeedXPathProcessingToBeConvertedToNumber(out decESS))
-                                {
-                                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                        strEss.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
-                                    if (blnIsSuccess)
-                                    {
-                                        decESS = decCharacterESSModifier
-                                                 * Convert.ToDecimal((double)objProcess);
-                                        if (!await _objCharacter.Settings.GetDontRoundEssenceInternallyAsync(token).ConfigureAwait(false))
-                                        {
-                                            decESS = decimal.Round(decESS, await _objCharacter.Settings.GetEssenceDecimalsAsync(token).ConfigureAwait(false),
-                                                                   MidpointRounding.AwayFromZero);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    decESS *= decCharacterESSModifier;
-                                    if (!await _objCharacter.Settings.GetDontRoundEssenceInternallyAsync(token).ConfigureAwait(false))
-                                    {
-                                        decESS = decimal.Round(decESS, await _objCharacter.Settings.GetEssenceDecimalsAsync(token).ConfigureAwait(false),
-                                                               MidpointRounding.AwayFromZero);
-                                    }
+                                    decESS = decimal.Round(decESS, await _objCharacter.Settings.GetEssenceDecimalsAsync(token).ConfigureAwait(false),
+                                                            MidpointRounding.AwayFromZero);
                                 }
                             }
 
@@ -1402,65 +1304,46 @@ namespace Chummer
                                     blnSquareBrackets = strFirstHalf.StartsWith('[');
                                     if (blnSquareBrackets && strFirstHalf.Length > 1)
                                         strFirstHalf = strFirstHalf.Substring(1, strCapacity.Length - 2);
+                                    string strText;
                                     if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                                     {
-                                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                            strFirstHalf.Replace(
-                                                "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
-                                        await lblCapacity.DoThreadSafeAsync(x =>
-                                        {
-                                            x.Text = blnIsSuccess
-                                                ? ((double)objProcess).ToString("#,0.##", GlobalSettings.InvariantCultureInfo)
-                                                : strFirstHalf;
-                                            if (blnSquareBrackets)
-                                                x.Text = '[' + x.Text + ']';
-                                        }, token: token).ConfigureAwait(false);
+                                        bool blnIsSuccess;
+                                        (decValue, blnIsSuccess) = await ProcessInvariantXPathExpression(objXmlCyberware, strFirstHalf, intMinRating, intRating, token).ConfigureAwait(false);
+                                        strText = blnIsSuccess ? decValue.ToString("#,0.##", GlobalSettings.CultureInfo) : strFirstHalf;
                                     }
                                     else
                                     {
-                                        await lblCapacity.DoThreadSafeAsync(x =>
-                                        {
-                                            x.Text = decValue.ToString("#,0.##", GlobalSettings.InvariantCultureInfo);
-                                            if (blnSquareBrackets)
-                                                x.Text = '[' + x.Text + ']';
-                                        }, token: token).ConfigureAwait(false);
+                                        strText = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
                                     }
+                                    if (blnSquareBrackets)
+                                        strText = '[' + strText + ']';
+                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
 
                                     strSecondHalf = strSecondHalf.Trim('[', ']');
                                     if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                                     {
-                                        (bool blnIsSuccess2, object objProcess2) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                            strSecondHalf.Replace(
-                                                "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
-                                        strSecondHalf = (blnAddToParentCapacity ? "+[" : "[")
-                                                        + (blnIsSuccess2 ? ((double)objProcess2).ToString("#,0.##", GlobalSettings.InvariantCultureInfo) : strSecondHalf) + ']';
+                                        bool blnIsSuccess;
+                                        (decValue, blnIsSuccess) = await ProcessInvariantXPathExpression(objXmlCyberware, strSecondHalf, intMinRating, intRating, token).ConfigureAwait(false);
+                                        strSecondHalf = (blnAddToParentCapacity ? "+[" : "[") + (blnIsSuccess ? decValue.ToString("#,0.##", GlobalSettings.CultureInfo) : strSecondHalf) + ']';
                                     }
                                     else
                                         strSecondHalf = (blnAddToParentCapacity ? "+[" : "[")
                                                         + decValue.ToString("#,0.##", GlobalSettings.InvariantCultureInfo) + ']';
                                     await lblCapacity.DoThreadSafeAsync(x => x.Text += '/' + strSecondHalf, token: token).ConfigureAwait(false);
                                 }
-                                else if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                                {
-                                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                        strCapacity.Replace(
-                                            "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
-                                    await lblCapacity.DoThreadSafeAsync(x =>
-                                    {
-                                        x.Text = blnIsSuccess
-                                            ? ((double)objProcess).ToString("#,0.##", GlobalSettings.InvariantCultureInfo)
-                                            : strCapacity;
-                                        if (blnSquareBrackets)
-                                        {
-                                            x.Text = blnAddToParentCapacity
-                                                ? "+[" + x.Text + ']'
-                                                : '[' + x.Text + ']';
-                                        }
-                                    }, token: token).ConfigureAwait(false);
-                                }
                                 else
                                 {
-                                    string strText = decValue.ToString("#,0.##", GlobalSettings.InvariantCultureInfo);
+                                    string strText;
+                                    if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                                    {
+                                        bool blnIsSuccess;
+                                        (decValue, blnIsSuccess) = await ProcessInvariantXPathExpression(objXmlCyberware, strCapacity, intMinRating, intRating, token).ConfigureAwait(false);
+                                        strText = blnIsSuccess ? decValue.ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
+                                    }
+                                    else
+                                    {
+                                        strText = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
+                                    }
                                     if (blnSquareBrackets)
                                     {
                                         strText = blnAddToParentCapacity
@@ -1729,84 +1612,31 @@ namespace Chummer
                                 continue;
                         }
 
-                        string strMaxRating = xmlCyberware
-                            .SelectSingleNodeAndCacheExpression("rating", token: token)?.Value ?? string.Empty;
                         string strMinRating = xmlCyberware
                             .SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value ?? string.Empty;
                         int intMinRating = 1;
+                        int intMaxRating = 1;
                         // If our rating tag is a complex property, check to make sure our maximum rating is not less than our minimum rating
-                        if ((!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating))
-                            || (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating)))
+                        if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
                         {
-                            Dictionary<string, int> dicVehicleValues = null;
-                            if (ParentVehicle != null && (strMinRating.Contains("imum}") || strMaxRating.Contains("imum}")))
-                            {
-                                int intVehicleBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
-                                int intVehiclePilot = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
-                                dicVehicleValues = new Dictionary<string, int>(4)
-                                {
-                                    { "STRMaximum", Math.Max(1, intVehicleBody * 2) },
-                                    { "AGIMaximum", Math.Max(1, intVehiclePilot * 2) },
-                                    { "STRMinimum", Math.Max(1, intVehicleBody) },
-                                    { "AGIMinimum", Math.Max(1, intVehiclePilot) }
-                                };
-                            }
-                            else
-                            {
-                                string strLoop = string.Empty;
-                                xmlCyberware.TryGetStringFieldQuickly("limbslot", ref strLoop);
-                                if (!string.IsNullOrEmpty(strLoop))
-                                {
-                                    int intMinAgility = 3;
-                                    int intMinStrength = 3;
-                                    xmlCyberware.TryGetInt32FieldQuickly("minagility", ref intMinAgility);
-                                    xmlCyberware.TryGetInt32FieldQuickly("minstrength", ref intMinStrength);
-                                    dicVehicleValues = new Dictionary<string, int>(2)
-                                    {
-                                        { "STRMinimum", intMinStrength },
-                                        { "AGIMinimum", intMinAgility }
-                                    };
-                                }
-                                else
-                                {
-                                    Cyberware objLoop = CyberwareParent;
-                                    while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false) && objLoop.Category != "Cyberlimb")
-                                        objLoop = await objLoop.GetParentAsync(token).ConfigureAwait(false);
-                                    if (objLoop != null)
-                                    {
-                                        dicVehicleValues = new Dictionary<string, int>(2)
-                                        {
-                                            { "STRMinimum", await objLoop.GetMinStrengthAsync(token).ConfigureAwait(false) },
-                                            { "AGIMinimum", await objLoop.GetMinAgilityAsync(token).ConfigureAwait(false) }
-                                        };
-                                    }
-                                }
-                            }
-
-                            strMinRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMinRating, dicVehicleValues, token).ConfigureAwait(false);
-                            if (strMinRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                            {
-                                (bool blnIsSuccess, object objProcess)
-                                    = await CommonFunctions.EvaluateInvariantXPathAsync(strMinRating, token)
-                                                           .ConfigureAwait(false);
-                                intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
-                            }
-                            else
+                            (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strMinRating, 1, int.MaxValue, token).ConfigureAwait(false);
+                            if (blnIsSuccess)
                                 intMinRating = decValue.StandardRound();
-
-                            strMaxRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMaxRating, dicVehicleValues, token).ConfigureAwait(false);
-                            if (strMaxRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
-                            {
-                                (bool blnIsSuccess, object objProcess)
-                                    = await CommonFunctions.EvaluateInvariantXPathAsync(strMaxRating, token)
-                                                           .ConfigureAwait(false);
-                                intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
-                            }
                             else
-                                intMaxRating = decValue.StandardRound();
-                            if (intMaxRating < intMinRating)
-                                continue;
+                                intMinRating = 1;
                         }
+                        string strMaxRating = xmlCyberware
+                            .SelectSingleNodeAndCacheExpression("rating", token: token)?.Value ?? string.Empty;
+                        if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating))
+                        {
+                            (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strMaxRating, intMinRating, intMinRating, token).ConfigureAwait(false);
+                            if (blnIsSuccess)
+                                intMaxRating = decValue.StandardRound();
+                            else
+                                intMaxRating = 1;
+                        }
+                        if (intMaxRating < intMinRating)
+                            continue;
 
                         // Ex-Cons cannot have forbidden or restricted 'ware
                         if (await _objCharacter.GetExConAsync(token).ConfigureAwait(false) && ParentVehicle == null
@@ -1972,9 +1802,8 @@ namespace Chummer
                     decimal decCapacity = 0;
                     if (strCapacity != "*" && strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decCapacity))
                     {
-                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
-                        if (blnIsSuccess)
-                            decCapacity = Convert.ToDecimal((double)objProcess);
+                        int intMinRating = await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: token).ConfigureAwait(false);
+                        decCapacity = (await ProcessInvariantXPathExpression(objCyberwareNode, strCapacity, intMinRating, intRating, token).ConfigureAwait(false)).Item1;
                     }
 
                     Cyberware objGrandparent = _objParentObject is Cyberware objCyberwareParent
@@ -2229,6 +2058,233 @@ namespace Chummer
             {
                 //swallow this
             }
+        }
+
+        private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentCost;
+        private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentGearCost;
+
+        private async Task<Tuple<decimal, bool>> ProcessInvariantXPathExpression(XPathNavigator xmlCyberware, string strExpression, int intMinRating, int intRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            bool blnSuccess = true;
+            strExpression = strExpression.ProcessFixedValuesString(intRating);
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+            {
+                blnSuccess = false;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                {
+                    sbdValue.Append(strExpression.TrimStart('+'));
+                    await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}",
+                        () => _strCachedParentCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                    await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost",
+                        () => _strCachedParentCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                    await sbdValue.CheapReplaceAsync(strExpression, "{Parent Gear Cost}",
+                        () => _strCachedParentGearCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                    await sbdValue.CheapReplaceAsync(strExpression, "Parent Gear Cost",
+                        () => _strCachedParentGearCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                    // Deliberately don't replace "Gear Cost" and "Children Cost" so that they get properly displayed in the UI
+
+                    await sbdValue.CheapReplaceAsync(strExpression, "{MinRating}",
+                        () => intMinRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdValue.CheapReplaceAsync(strExpression, "MinRating",
+                        () => intMinRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdValue.CheapReplaceAsync(strExpression, "{Rating}",
+                        () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdValue.CheapReplaceAsync(strExpression, "Rating",
+                        () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    
+                    Dictionary<string, int> dicVehicleValues = null;
+                    if (strExpression.Contains("{STR") || strExpression.Contains("{AGI"))
+                    {
+                        Cyberware objCyberlimbParent = null;
+                        if (strExpression.Contains("imum}"))
+                        {
+                            string strCategory = xmlCyberware.SelectSingleNodeAndCacheExpression("category", token)?.Value;
+                            string strLimbSlot = xmlCyberware.SelectSingleNodeAndCacheExpression("limbslot", token)?.Value;
+                            string strMountsTo = xmlCyberware.SelectSingleNodeAndCacheExpression("mountsto", token)?.Value;
+                            if (strCategory == "Cyberlimb" || !string.IsNullOrEmpty(strLimbSlot) || !string.IsNullOrEmpty(strMountsTo))
+                            {
+                                int intMinAgility = 3;
+                                int intMinStrength = 3;
+                                xmlCyberware.TryGetInt32FieldQuickly("minagility", ref intMinAgility);
+                                xmlCyberware.TryGetInt32FieldQuickly("minstrength", ref intMinStrength);
+                                dicVehicleValues = new Dictionary<string, int>(2)
+                                {
+                                    { "STRMinimum", intMinStrength },
+                                    { "AGIMinimum", intMinAgility }
+                                };
+                            }
+                            else
+                            {
+                                objCyberlimbParent = CyberwareParent;
+                                while (objCyberlimbParent != null && objCyberlimbParent.Category != "Cyberlimb" && !await objCyberlimbParent.GetIsLimbAsync(token).ConfigureAwait(false))
+                                    objCyberlimbParent = objCyberlimbParent.Parent;
+                                if (objCyberlimbParent != null)
+                                {
+                                    dicVehicleValues = new Dictionary<string, int>(2)
+                                    {
+                                        { "STRMinimum", await objCyberlimbParent.GetMinStrengthAsync(token).ConfigureAwait(false) },
+                                        { "AGIMinimum", await objCyberlimbParent.GetMinAgilityAsync(token).ConfigureAwait(false) }
+                                    };
+                                }
+                                else if (ParentVehicle != null)
+                                {
+                                    int intTotalBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                                    dicVehicleValues = new Dictionary<string, int>(4)
+                                {
+                                    { "STRMaximum", Math.Max(1, intTotalBody * 2) },
+                                    { "AGIMaximum", Math.Max(1, await ParentVehicle.GetMaxPilotAsync(token).ConfigureAwait(false)) },
+                                    { "STRMinimum", Math.Max(1, intTotalBody) },
+                                    { "AGIMinimum", Math.Max(1, await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false)) }
+                                };
+                                }
+                            }
+                        }
+                        if (strExpression.Contains("{STR}") || strExpression.Contains("{AGI}")
+                            || strExpression.Contains("{STRUnaug}") || strExpression.Contains("{AGIUnaug}")
+                            || strExpression.Contains("{STRBase}") || strExpression.Contains("{AGIBase}"))
+                        {
+                            int intSTR = -1;
+                            int intSTRValue = -1;
+                            int intSTRBase = -1;
+                            int intAGI = -1;
+                            int intAGIValue = -1;
+                            int intAGIBase = -1;
+                            string strCategory = xmlCyberware.SelectSingleNodeAndCacheExpression("category", token)?.Value;
+                            string strLimbSlot = xmlCyberware.SelectSingleNodeAndCacheExpression("limbslot", token)?.Value;
+                            string strMountsTo = xmlCyberware.SelectSingleNodeAndCacheExpression("mountsto", token)?.Value;
+                            if (strCategory == "Cyberlimb" || !string.IsNullOrEmpty(strLimbSlot) || !string.IsNullOrEmpty(strMountsTo))
+                            {
+                                int intMinAgility = 3;
+                                int intMinStrength = 3;
+                                xmlCyberware.TryGetInt32FieldQuickly("minagility", ref intMinAgility);
+                                xmlCyberware.TryGetInt32FieldQuickly("minstrength", ref intMinStrength);
+                                int intAgilityValue;
+                                int intStrengthValue;
+                                int intAgilityTotalValue;
+                                int intStrengthTotalValue;
+                                if (ParentVehicle == null)
+                                {
+                                    CharacterAttrib objAgi = await _objCharacter.GetAttributeAsync("AGI", token: token)
+                                                                                      .ConfigureAwait(false);
+                                    CharacterAttrib objStr = await _objCharacter.GetAttributeAsync("STR", token: token)
+                                                                                      .ConfigureAwait(false);
+                                    intAgilityValue = Math.Min(
+                                        intMinAgility,
+                                        objAgi != null
+                                            ? await objAgi.GetTotalMaximumAsync(token).ConfigureAwait(false)
+                                            : 0);
+                                    intStrengthValue = Math.Min(
+                                        intMinStrength,
+                                        objStr != null
+                                            ? await objStr.GetTotalMaximumAsync(token).ConfigureAwait(false)
+                                            : 0);
+
+                                    intStrengthTotalValue = intAgilityTotalValue = Math.Min(await _objCharacter.GetRedlinerBonusAsync(token).ConfigureAwait(false),
+                                        await (await _objCharacter.GetSettingsAsync(token)).GetCyberlimbAttributeBonusCapAsync(token).ConfigureAwait(false));
+
+                                    intAgilityTotalValue = Math.Min(
+                                        intAgilityValue + intAgilityTotalValue,
+                                        objAgi != null
+                                            ? await objAgi.GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false)
+                                            : 0);
+                                    intStrengthTotalValue = Math.Min(
+                                        intStrengthValue + intStrengthTotalValue,
+                                        objStr != null
+                                            ? await objStr.GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false)
+                                            : 0);
+                                }
+                                else
+                                {
+                                    intAgilityTotalValue = intAgilityValue = Math.Min(intMinAgility, Math.Max(await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) * 2, 1));
+                                    intStrengthTotalValue = intStrengthValue = Math.Min(intMinStrength, Math.Max(await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) * 2, 1));
+                                }
+                                intSTR = intStrengthTotalValue;
+                                intSTRValue = intStrengthValue;
+                                intSTRBase = intMinStrength;
+                                intAGI = intAgilityTotalValue;
+                                intAGIValue = intAgilityValue;
+                                intAGIBase = intMinAgility;
+                            }
+                            else
+                            {
+                                if (objCyberlimbParent == null)
+                                {
+                                    objCyberlimbParent = CyberwareParent;
+                                    while (objCyberlimbParent != null && objCyberlimbParent.Category != "Cyberlimb" && !await objCyberlimbParent.GetIsLimbAsync(token).ConfigureAwait(false))
+                                        objCyberlimbParent = objCyberlimbParent.Parent;
+                                }
+                                if (objCyberlimbParent != null)
+                                {
+                                    intSTR = await objCyberlimbParent.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false);
+                                    intSTRValue = await objCyberlimbParent.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false);
+                                    intSTRBase = await objCyberlimbParent.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false);
+                                    intAGI = await objCyberlimbParent.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false);
+                                    intAGIValue = await objCyberlimbParent.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false);
+                                    intAGIBase = await objCyberlimbParent.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false);
+                                }
+                                else if (ParentVehicle != null)
+                                {
+                                    if (ParentVehicleMod != null)
+                                    {
+                                        intSTRValue = intSTR = await ParentVehicleMod.GetTotalStrengthAsync(token).ConfigureAwait(false);
+                                        intAGIValue = intAGI = await ParentVehicleMod.GetTotalAgilityAsync(token).ConfigureAwait(false);
+                                        intSTRBase = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                                        intAGIBase = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
+                                    }
+                                    else
+                                    {
+                                        int intVehicleBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                                        int intVehiclePilot = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
+                                        intSTRBase = intSTRValue = intSTR = intVehicleBody;
+                                        intAGIBase = intAGIValue = intAGI = intVehiclePilot;
+                                    }
+                                }
+                            }
+
+                            if (intSTR >= 0 || intAGI >= 0)
+                            {
+                                if (dicVehicleValues == null)
+                                {
+                                    dicVehicleValues = new Dictionary<string, int>(6)
+                                    {
+                                        {"STR", intSTR},
+                                        {"STRUnaug", intSTRValue},
+                                        {"STRBase", intSTRBase},
+                                        {"AGI", intAGI},
+                                        {"AGIUnaug", intAGIValue},
+                                        {"AGIBase", intAGIBase}
+                                    };
+                                }
+                                else
+                                {
+                                    dicVehicleValues["STR"] = intSTR;
+                                    dicVehicleValues["STRUnaug"] = intSTRValue;
+                                    dicVehicleValues["STRBase"] = intSTRBase;
+                                    dicVehicleValues["AGI"] = intAGI;
+                                    dicVehicleValues["AGIUnaug"] = intAGIValue;
+                                    dicVehicleValues["AGIBase"] = intAGIBase;
+                                }
+                            }
+                        }
+                    }
+
+                    if (ParentVehicle != null)
+                        await ParentVehicle.ProcessAttributesInXPathAsync(sbdValue, strExpression, dicValueOverrides: dicVehicleValues, token: token).ConfigureAwait(false);
+                    else
+                    {
+                        Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, dicVehicleValues, token: token).ConfigureAwait(false);
+                    }
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
+                }
+            }
+
+            return new Tuple<decimal, bool>(decValue, blnSuccess);
         }
 
         #endregion Methods

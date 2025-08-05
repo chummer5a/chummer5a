@@ -424,7 +424,7 @@ namespace Chummer
                                             _intAutosaveTimeoutsCount =
                                                 0; // We have successfully autosaved once, stop timing out
                                     }
-                                    catch (OperationCanceledException)
+                                    catch (OperationCanceledException ex)
                                     {
                                         if (objTimeoutSource.IsCancellationRequested)
                                         {
@@ -434,12 +434,12 @@ namespace Chummer
                                             {
                                                 if (intAutosaveTimeoutsCount >= MaximumAutosaveTimeouts)
                                                 {
-                                                    Log.Error("Autosave timed out too many times for character " +
+                                                    Log.Error(ex, "Autosave timed out too many times for character " +
                                                               strCharacterName + " (" + strAutosaveFileName + ')');
                                                 }
                                                 else
                                                 {
-                                                    Log.Info("Autosave timed out for character " + strCharacterName +
+                                                    Log.Info(ex, "Autosave timed out for character " + strCharacterName +
                                                              " (" + strAutosaveFileName + ')');
                                                 }
                                             }

@@ -856,7 +856,7 @@ namespace Chummer
 
             // Delete the selected custom PACKS Kit.
             // Find a custom PACKS Kit with the name. This is done without the XmlManager since we need to check each file individually.
-            foreach (string strFile in Directory.EnumerateFiles(Utils.GetDataFolderPath, "*_packs.xml"))
+            foreach (string strFile in Directory.EnumerateFiles(Utils.GetPacksFolderPath, "*_packs.xml"))
             {
                 if (!Path.GetFileName(strFile).StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
                     continue;

@@ -1159,7 +1159,7 @@ namespace Chummer.Backend.Equipment
             }
 
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost",
                 _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
@@ -14227,6 +14227,18 @@ namespace Chummer.Backend.Equipment
                                                 .ConfigureAwait(false);
         }
 
+        public string ProcessAttributesInXPath(string strInput, bool blnForRange = false)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
+            {
+                sbdInput.Append(strInput);
+                ProcessAttributesInXPath(sbdInput, strInput, blnForRange);
+                return sbdInput.ToString();
+            }
+        }
+
         public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
@@ -14373,7 +14385,26 @@ namespace Chummer.Backend.Equipment
                     {"AGIBase", intUseAGIBase}
                 };
             }
-            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicAttributeOverrides);
+            if (ParentVehicle != null)
+                ParentVehicle.ProcessAttributesInXPath(sbdInput, strOriginal, dicValueOverrides: dicAttributeOverrides);
+            else
+            {
+                Vehicle.FillAttributesInXPathWithDummies(sbdInput);
+                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicAttributeOverrides);
+            }
+        }
+
+        public async Task<string> ProcessAttributesInXPathAsync(string strInput, bool blnForRange = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
+            {
+                sbdInput.Append(strInput);
+                await ProcessAttributesInXPathAsync(sbdInput, strInput, blnForRange, token).ConfigureAwait(false);
+                return sbdInput.ToString();
+            }
         }
 
         public async Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false, CancellationToken token = default)
@@ -14545,7 +14576,13 @@ namespace Chummer.Backend.Equipment
                     {"AGIBase", intUseAGIBase}
                 };
             }
-            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicAttributeOverrides, token).ConfigureAwait(false);
+            if (ParentVehicle != null)
+                await ParentVehicle.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicValueOverrides: dicAttributeOverrides, token: token).ConfigureAwait(false);
+            else
+            {
+                Vehicle.FillAttributesInXPathWithDummies(sbdInput);
+                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicAttributeOverrides, token).ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />

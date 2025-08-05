@@ -195,7 +195,7 @@ namespace Chummer.Backend.Equipment
             objXmlWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalSettings.InvariantCultureInfo));
             objXmlWriter.WriteElementString("source", _strSource);
             objXmlWriter.WriteElementString("page", _strPage);
-            objXmlWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objXmlWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objXmlWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objXmlWriter.WriteEndElement();
         }
