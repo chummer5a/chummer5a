@@ -4272,8 +4272,8 @@ namespace Chummer
             {
                 return 0;
             }
-            // If there is nothing to rmeove, don't try to remove any Improvements
-            if (lstSourceNames?.Count == 0)
+            // If there is nothing to remove, don't try to remove any Improvements
+            if (lstSourceNames == null || lstSourceNames.Count == 0)
             {
                 return 0;
             }
@@ -4284,12 +4284,7 @@ namespace Chummer
             using (objCharacter.LockObject.EnterReadLock(token))
             {
                 // A List of Improvements to hold all the items that will eventually be deleted.
-                if (lstSourceNames == null)
-                {
-                    objImprovementList = objCharacter.Improvements
-                        .Where(objImprovement => objImprovement.ImproveSource == objImprovementSource).ToList();
-                }
-                else if (lstSourceNames.Any(x => x.IsGuid()))
+                if (lstSourceNames.Any(x => x.IsGuid()))
                 {
                     // Compatibility fix for when blnConcatSelectedValue was around
                     HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
@@ -4342,8 +4337,12 @@ namespace Chummer
             {
                 return 0;
             }
-            // If there is nothing to rmeove, don't try to remove any Improvements
-            if (lstSourceNames?.Count == 0)
+            // If there is nothing to remove, don't try to remove any Improvements
+            if (lstImprovementSources == null || lstImprovementSources.Count == 0)
+            {
+                return 0;
+            }
+            if (lstSourceNames == null || lstSourceNames.Count == 0)
             {
                 return 0;
             }
@@ -4354,12 +4353,7 @@ namespace Chummer
             using (objCharacter.LockObject.EnterReadLock(token))
             {
                 // A List of Improvements to hold all the items that will eventually be deleted.
-                if (lstSourceNames == null)
-                {
-                    objImprovementList = objCharacter.Improvements
-                        .Where(objImprovement => lstImprovementSources.Contains(objImprovement.ImproveSource)).ToList();
-                }
-                else if (lstSourceNames.Any(x => x.IsGuid()))
+                if (lstSourceNames.Any(x => x.IsGuid()))
                 {
                     // Compatibility fix for when blnConcatSelectedValue was around
                     HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
@@ -4526,8 +4520,8 @@ namespace Chummer
             {
                 return 0;
             }
-            // If there is nothing to rmeove, don't try to remove any Improvements
-            if (lstSourceNames?.Count == 0)
+            // If there is nothing to remove, don't try to remove any Improvements
+            if (lstSourceNames == null || lstSourceNames.Count == 0)
             {
                 return 0;
             }
@@ -4541,13 +4535,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 // A List of Improvements to hold all the items that will eventually be deleted.
-                if (lstSourceNames == null)
-                {
-                    objImprovementList = await objCharacter.Improvements
-                        .ToListAsync(objImprovement => objImprovement.ImproveSource == objImprovementSource,
-                            token: token).ConfigureAwait(false);
-                }
-                else if (lstSourceNames.Any(x => x.IsGuid()))
+                if (lstSourceNames.Any(x => x.IsGuid()))
                 {
                     // Compatibility fix for when blnConcatSelectedValue was around
                     HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
@@ -4605,8 +4593,12 @@ namespace Chummer
             {
                 return 0;
             }
-            // If there is nothing to rmeove, don't try to remove any Improvements
-            if (lstSourceNames?.Count == 0)
+            // If there is nothing to remove, don't try to remove any Improvements
+            if (lstImprovementSources == null || lstImprovementSources.Count == 0)
+            {
+                return 0;
+            }
+            if (lstSourceNames == null || lstSourceNames.Count == 0)
             {
                 return 0;
             }
@@ -4620,13 +4612,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 // A List of Improvements to hold all the items that will eventually be deleted.
-                if (lstSourceNames == null)
-                {
-                    objImprovementList = await objCharacter.Improvements
-                        .ToListAsync(objImprovement => lstImprovementSources.Contains(objImprovement.ImproveSource),
-                            token: token).ConfigureAwait(false);
-                }
-                else if (lstSourceNames.Any(x => x.IsGuid()))
+                if (lstSourceNames.Any(x => x.IsGuid()))
                 {
                     // Compatibility fix for when blnConcatSelectedValue was around
                     HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);

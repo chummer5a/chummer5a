@@ -429,6 +429,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for string::LastIndexOfAny that uses params in its argument for the char array.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="anyOf">Array of characters to match with LastIndexOfAny</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LastIndexOfAny(this string strHaystack, params char[] anyOf)
+        {
+            if (string.IsNullOrEmpty(strHaystack))
+                return -1;
+            return strHaystack.LastIndexOfAny(anyOf);
+        }
+
+        /// <summary>
         /// Find if of a haystack string contains any of a set of strings.
         /// </summary>
         /// <param name="strHaystack">String to search.</param>
@@ -2738,7 +2751,81 @@ namespace Chummer
         /// <returns>True if the string contains HTML tags, False otherwise.</returns>
         public static bool ContainsHtmlTags(this string strInput)
         {
-            return !string.IsNullOrEmpty(strInput) && s_RgxHtmlTagExpression.Value.IsMatch(strInput);
+            if (string.IsNullOrEmpty(strInput))
+                return false;
+            int intInputLength = strInput.Length;
+            int intIndex = strInput.IndexOf('<');
+            if (intIndex < 0 || intIndex + 1 >= intInputLength)
+                return false;
+            // First check for special tags that are easy to identify: comments and doctypes
+            int intCommentOpener = strInput.IndexOf("<!--", intIndex);
+            if (intCommentOpener > 0 && intCommentOpener + 7 < intInputLength && strInput.IndexOf("-->", intCommentOpener + 4) > intCommentOpener)
+                return true;
+            int intDoctypeOpener = strInput.IndexOf("<!DOCTYPE", intIndex);
+            if (intDoctypeOpener > 0 && intDoctypeOpener + 10 < intInputLength && strInput.IndexOf('>', intDoctypeOpener + 9) > intDoctypeOpener)
+                return true;
+            int intClosingIndex = strInput.IndexOf('>', intIndex + 1);
+            while (intClosingIndex - intIndex > 1)
+            {
+                bool blnHasSlash = false;
+                bool blnValidTag = true;
+                for (int i = intIndex + 1; i < intClosingIndex; ++i)
+                {
+                    char chrLoop = strInput[i];
+                    if (char.IsLetterOrDigit(chrLoop))
+                        continue; // Letters are generally allowed, digits have some restrictions but it's too expensive to check for those so let's not.
+                    switch (chrLoop)
+                    {
+                        case ' ':
+                            if (i > intIndex + 1)
+                                continue;
+                            blnValidTag = false;
+                            break;
+                        case '/':
+                            // Slash only allowed as part of a closing tag
+                            if (!blnHasSlash && (i == intIndex + 1 || i == intClosingIndex - 1))
+                            {
+                                blnHasSlash = true;
+                                continue;
+                            }
+                            blnValidTag = false;
+                            break;
+                        case '=':
+                            // Equals signs only valid as part of an attribute assignment
+                            if (i > intIndex + 1 && i < intClosingIndex - 1 && strInput[i+1] == '\"' && char.IsLetterOrDigit(strInput[i-1]))
+                                continue;
+                            blnValidTag = false;
+                            break;
+                        case '\"':
+                            // If we have a quote, skip immediately to the next instance of a quote
+                            if (i < intClosingIndex - 1)
+                            {
+                                int intNextQuote = strInput.IndexOf('\"', i + 1, intClosingIndex - i - 1);
+                                if (intNextQuote > i)
+                                {
+                                    i = intNextQuote;
+                                    continue;
+                                }
+                            }
+                            blnValidTag = false;
+                            break;
+                        default:
+                            blnValidTag = false;
+                            break;
+                    }
+                    if (!blnValidTag)
+                        break;
+                }
+                if (blnValidTag)
+                    return true;
+                if (intClosingIndex + 1 >= intInputLength)
+                    return false;
+                intIndex = strInput.IndexOf('<', intClosingIndex + 1);
+                if (intIndex < 0 || intIndex + 1 >= intInputLength)
+                    return false;
+                intClosingIndex = strInput.IndexOf('>', intIndex + 1);
+            }
+            return false;
         }
 
         /// <summary>
@@ -3227,9 +3314,6 @@ namespace Chummer
 
         // Order is important so that we replace composites before chars
         private static readonly string[] s_astrEscapedLineEndingStrings = new[] { "\\\r\\\n", "\\\n\\\r", "\\\n", "\\\r" };
-
-        private static readonly Lazy<Regex> s_RgxHtmlTagExpression = new Lazy<Regex>(() => new Regex(@"/<\/?[a-z][\s\S]*>/i",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         private static readonly DebuggableSemaphoreSlim s_RtbRtfManipulatorLock = new DebuggableSemaphoreSlim();
         private static readonly Lazy<RichTextBox> s_RtbRtfManipulator = new Lazy<RichTextBox>(() => Utils.RunOnMainThread(() => new RichTextBox(), token: CancellationToken.None));
