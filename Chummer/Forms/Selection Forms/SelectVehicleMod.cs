@@ -360,7 +360,7 @@ namespace Chummer
                         //Used for the Armor modifications.
                         else if (strRating.Equals("body", StringComparison.OrdinalIgnoreCase))
                         {
-                            intMinRating = Math.Min(intMinRating, _objVehicle.Body);
+                            intMinRating = Math.Min(intMinRating, await _objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false));
                         }
                         //Used for Metahuman Adjustments.
                         else if (strRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
@@ -374,6 +374,8 @@ namespace Chummer
                                 intMaxRating = (await ProcessInvariantXPathExpression(strRating, intMinRating, 0, token).ConfigureAwait(false)).Item1.StandardRound();
                             if (intMaxRating > 0 && intMaxRating != int.MaxValue)
                                 intMinRating = Math.Min(intMinRating, intMaxRating);
+                            else
+                                intMinRating = 0;
                         }
                     }
 
@@ -500,7 +502,7 @@ namespace Chummer
                     // Extract the Avail and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
                     // This is done using XPathExpression.
 
-                    int intMinRating = int.MaxValue;
+                    int intMinRating = 0;
                     string strMinRating = xmlVehicleMod.SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strMinRating))
                     {
@@ -515,13 +517,27 @@ namespace Chummer
                                                                      .ConfigureAwait(false);
                         await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel, token: token)
                                             .ConfigureAwait(false);
-                        await nudRating.DoThreadSafeAsync(x =>
+                        if (intMinRating > 0)
                         {
-                            x.Minimum = 0;
-                            x.Maximum = 0;
-                            x.Visible = false;
-                        }, token: token).ConfigureAwait(false);
-                        await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            await nudRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Minimum = intMinRating;
+                                x.Maximum = intMinRating;
+                                x.Visible = true;
+                                x.Enabled = false;
+                            }, token: token).ConfigureAwait(false);
+                            await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await nudRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Minimum = 0;
+                                x.Maximum = 0;
+                                x.Visible = false;
+                            }, token: token).ConfigureAwait(false);
+                            await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                        }
                     }
                     // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
                     else if (strRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
@@ -671,7 +687,7 @@ namespace Chummer
                     string strAvail
                         = await new AvailabilityValue(
                                 intRating,
-                                xmlVehicleMod.SelectSingleNodeAndCacheExpression("avail", token)?.Value)
+                                xmlVehicleMod.SelectSingleNodeAndCacheExpression("avail", token)?.Value ?? string.Empty)
                             .ToStringAsync(token).ConfigureAwait(false);
                     await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
                     await lblAvailLabel
