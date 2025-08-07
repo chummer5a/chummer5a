@@ -2067,186 +2067,188 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             bool blnSuccess = true;
-            strExpression = strExpression.ProcessFixedValuesString(intRating);
+            strExpression = strExpression.ProcessFixedValuesString(intRating).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnSuccess = false;
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
-                    sbdValue.Append(strExpression.TrimStart('+'));
-                    await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}",
-                        () => _strCachedParentCost.GetValueAsync(token), token: token).ConfigureAwait(false);
-                    await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost",
-                        () => _strCachedParentCost.GetValueAsync(token), token: token).ConfigureAwait(false);
-                    await sbdValue.CheapReplaceAsync(strExpression, "{Parent Gear Cost}",
-                        () => _strCachedParentGearCost.GetValueAsync(token), token: token).ConfigureAwait(false);
-                    await sbdValue.CheapReplaceAsync(strExpression, "Parent Gear Cost",
-                        () => _strCachedParentGearCost.GetValueAsync(token), token: token).ConfigureAwait(false);
-                    // Deliberately don't replace "Gear Cost" and "Children Cost" so that they get properly displayed in the UI
-
-                    await sbdValue.CheapReplaceAsync(strExpression, "{MinRating}",
-                        () => intMinRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await sbdValue.CheapReplaceAsync(strExpression, "MinRating",
-                        () => intMinRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await sbdValue.CheapReplaceAsync(strExpression, "{Rating}",
-                        () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await sbdValue.CheapReplaceAsync(strExpression, "Rating",
-                        () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    
-                    Dictionary<string, int> dicVehicleValues = null;
-                    if (strExpression.Contains("{STR") || strExpression.Contains("{AGI"))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
-                        Cyberware objCyberlimbParent = null;
-                        if (strExpression.Contains("imum}"))
+                        sbdValue.Append(strExpression);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}",
+                            () => _strCachedParentCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost",
+                            () => _strCachedParentCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Gear Cost}",
+                            () => _strCachedParentGearCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Parent Gear Cost",
+                            () => _strCachedParentGearCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        // Deliberately don't replace "Gear Cost" and "Children Cost" so that they get properly displayed in the UI
+
+                        await sbdValue.CheapReplaceAsync(strExpression, "{MinRating}",
+                            () => intMinRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "MinRating",
+                            () => intMinRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Rating}",
+                            () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Rating",
+                            () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+
+                        Dictionary<string, int> dicVehicleValues = null;
+                        if (strExpression.Contains("{STR") || strExpression.Contains("{AGI"))
                         {
-                            string strCategory = xmlCyberware.SelectSingleNodeAndCacheExpression("category", token)?.Value;
-                            string strLimbSlot = xmlCyberware.SelectSingleNodeAndCacheExpression("limbslot", token)?.Value;
-                            string strMountsTo = xmlCyberware.SelectSingleNodeAndCacheExpression("mountsto", token)?.Value;
-                            if (strCategory == "Cyberlimb" || !string.IsNullOrEmpty(strLimbSlot) || !string.IsNullOrEmpty(strMountsTo))
+                            Cyberware objCyberlimbParent = null;
+                            if (strExpression.Contains("imum}"))
                             {
-                                int intMinAgility = 3;
-                                int intMinStrength = 3;
-                                xmlCyberware.TryGetInt32FieldQuickly("minagility", ref intMinAgility);
-                                xmlCyberware.TryGetInt32FieldQuickly("minstrength", ref intMinStrength);
-                                dicVehicleValues = new Dictionary<string, int>(2)
+                                string strCategory = xmlCyberware.SelectSingleNodeAndCacheExpression("category", token)?.Value;
+                                string strLimbSlot = xmlCyberware.SelectSingleNodeAndCacheExpression("limbslot", token)?.Value;
+                                string strMountsTo = xmlCyberware.SelectSingleNodeAndCacheExpression("mountsto", token)?.Value;
+                                if (strCategory == "Cyberlimb" || !string.IsNullOrEmpty(strLimbSlot) || !string.IsNullOrEmpty(strMountsTo))
+                                {
+                                    int intMinAgility = 3;
+                                    int intMinStrength = 3;
+                                    xmlCyberware.TryGetInt32FieldQuickly("minagility", ref intMinAgility);
+                                    xmlCyberware.TryGetInt32FieldQuickly("minstrength", ref intMinStrength);
+                                    dicVehicleValues = new Dictionary<string, int>(2)
                                 {
                                     { "STRMinimum", intMinStrength },
                                     { "AGIMinimum", intMinAgility }
                                 };
-                            }
-                            else
-                            {
-                                objCyberlimbParent = CyberwareParent;
-                                while (objCyberlimbParent != null && objCyberlimbParent.Category != "Cyberlimb" && !await objCyberlimbParent.GetIsLimbAsync(token).ConfigureAwait(false))
-                                    objCyberlimbParent = objCyberlimbParent.Parent;
-                                if (objCyberlimbParent != null)
+                                }
+                                else
                                 {
-                                    dicVehicleValues = new Dictionary<string, int>(2)
+                                    objCyberlimbParent = CyberwareParent;
+                                    while (objCyberlimbParent != null && objCyberlimbParent.Category != "Cyberlimb" && !await objCyberlimbParent.GetIsLimbAsync(token).ConfigureAwait(false))
+                                        objCyberlimbParent = objCyberlimbParent.Parent;
+                                    if (objCyberlimbParent != null)
+                                    {
+                                        dicVehicleValues = new Dictionary<string, int>(2)
                                     {
                                         { "STRMinimum", await objCyberlimbParent.GetMinStrengthAsync(token).ConfigureAwait(false) },
                                         { "AGIMinimum", await objCyberlimbParent.GetMinAgilityAsync(token).ConfigureAwait(false) }
                                     };
-                                }
-                                else if (ParentVehicle != null)
-                                {
-                                    int intTotalBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
-                                    dicVehicleValues = new Dictionary<string, int>(4)
+                                    }
+                                    else if (ParentVehicle != null)
+                                    {
+                                        int intTotalBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                                        dicVehicleValues = new Dictionary<string, int>(4)
                                 {
                                     { "STRMaximum", Math.Max(1, intTotalBody * 2) },
                                     { "AGIMaximum", Math.Max(1, await ParentVehicle.GetMaxPilotAsync(token).ConfigureAwait(false)) },
                                     { "STRMinimum", Math.Max(1, intTotalBody) },
                                     { "AGIMinimum", Math.Max(1, await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false)) }
                                 };
+                                    }
                                 }
                             }
-                        }
-                        if (strExpression.Contains("{STR}") || strExpression.Contains("{AGI}")
-                            || strExpression.Contains("{STRUnaug}") || strExpression.Contains("{AGIUnaug}")
-                            || strExpression.Contains("{STRBase}") || strExpression.Contains("{AGIBase}"))
-                        {
-                            int intSTR = -1;
-                            int intSTRValue = -1;
-                            int intSTRBase = -1;
-                            int intAGI = -1;
-                            int intAGIValue = -1;
-                            int intAGIBase = -1;
-                            string strCategory = xmlCyberware.SelectSingleNodeAndCacheExpression("category", token)?.Value;
-                            string strLimbSlot = xmlCyberware.SelectSingleNodeAndCacheExpression("limbslot", token)?.Value;
-                            string strMountsTo = xmlCyberware.SelectSingleNodeAndCacheExpression("mountsto", token)?.Value;
-                            if (strCategory == "Cyberlimb" || !string.IsNullOrEmpty(strLimbSlot) || !string.IsNullOrEmpty(strMountsTo))
+                            if (strExpression.Contains("{STR}") || strExpression.Contains("{AGI}")
+                                || strExpression.Contains("{STRUnaug}") || strExpression.Contains("{AGIUnaug}")
+                                || strExpression.Contains("{STRBase}") || strExpression.Contains("{AGIBase}"))
                             {
-                                int intMinAgility = 3;
-                                int intMinStrength = 3;
-                                xmlCyberware.TryGetInt32FieldQuickly("minagility", ref intMinAgility);
-                                xmlCyberware.TryGetInt32FieldQuickly("minstrength", ref intMinStrength);
-                                int intAgilityValue;
-                                int intStrengthValue;
-                                int intAgilityTotalValue;
-                                int intStrengthTotalValue;
-                                if (ParentVehicle == null)
+                                int intSTR = -1;
+                                int intSTRValue = -1;
+                                int intSTRBase = -1;
+                                int intAGI = -1;
+                                int intAGIValue = -1;
+                                int intAGIBase = -1;
+                                string strCategory = xmlCyberware.SelectSingleNodeAndCacheExpression("category", token)?.Value;
+                                string strLimbSlot = xmlCyberware.SelectSingleNodeAndCacheExpression("limbslot", token)?.Value;
+                                string strMountsTo = xmlCyberware.SelectSingleNodeAndCacheExpression("mountsto", token)?.Value;
+                                if (strCategory == "Cyberlimb" || !string.IsNullOrEmpty(strLimbSlot) || !string.IsNullOrEmpty(strMountsTo))
                                 {
-                                    CharacterAttrib objAgi = await _objCharacter.GetAttributeAsync("AGI", token: token)
-                                                                                      .ConfigureAwait(false);
-                                    CharacterAttrib objStr = await _objCharacter.GetAttributeAsync("STR", token: token)
-                                                                                      .ConfigureAwait(false);
-                                    intAgilityValue = Math.Min(
-                                        intMinAgility,
-                                        objAgi != null
-                                            ? await objAgi.GetTotalMaximumAsync(token).ConfigureAwait(false)
-                                            : 0);
-                                    intStrengthValue = Math.Min(
-                                        intMinStrength,
-                                        objStr != null
-                                            ? await objStr.GetTotalMaximumAsync(token).ConfigureAwait(false)
-                                            : 0);
-
-                                    intStrengthTotalValue = intAgilityTotalValue = Math.Min(await _objCharacter.GetRedlinerBonusAsync(token).ConfigureAwait(false),
-                                        await (await _objCharacter.GetSettingsAsync(token)).GetCyberlimbAttributeBonusCapAsync(token).ConfigureAwait(false));
-
-                                    intAgilityTotalValue = Math.Min(
-                                        intAgilityValue + intAgilityTotalValue,
-                                        objAgi != null
-                                            ? await objAgi.GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false)
-                                            : 0);
-                                    intStrengthTotalValue = Math.Min(
-                                        intStrengthValue + intStrengthTotalValue,
-                                        objStr != null
-                                            ? await objStr.GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false)
-                                            : 0);
-                                }
-                                else
-                                {
-                                    intAgilityTotalValue = intAgilityValue = Math.Min(intMinAgility, Math.Max(await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) * 2, 1));
-                                    intStrengthTotalValue = intStrengthValue = Math.Min(intMinStrength, Math.Max(await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) * 2, 1));
-                                }
-                                intSTR = intStrengthTotalValue;
-                                intSTRValue = intStrengthValue;
-                                intSTRBase = intMinStrength;
-                                intAGI = intAgilityTotalValue;
-                                intAGIValue = intAgilityValue;
-                                intAGIBase = intMinAgility;
-                            }
-                            else
-                            {
-                                if (objCyberlimbParent == null)
-                                {
-                                    objCyberlimbParent = CyberwareParent;
-                                    while (objCyberlimbParent != null && objCyberlimbParent.Category != "Cyberlimb" && !await objCyberlimbParent.GetIsLimbAsync(token).ConfigureAwait(false))
-                                        objCyberlimbParent = objCyberlimbParent.Parent;
-                                }
-                                if (objCyberlimbParent != null)
-                                {
-                                    intSTR = await objCyberlimbParent.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false);
-                                    intSTRValue = await objCyberlimbParent.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false);
-                                    intSTRBase = await objCyberlimbParent.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false);
-                                    intAGI = await objCyberlimbParent.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false);
-                                    intAGIValue = await objCyberlimbParent.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false);
-                                    intAGIBase = await objCyberlimbParent.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false);
-                                }
-                                else if (ParentVehicle != null)
-                                {
-                                    if (ParentVehicleMod != null)
+                                    int intMinAgility = 3;
+                                    int intMinStrength = 3;
+                                    xmlCyberware.TryGetInt32FieldQuickly("minagility", ref intMinAgility);
+                                    xmlCyberware.TryGetInt32FieldQuickly("minstrength", ref intMinStrength);
+                                    int intAgilityValue;
+                                    int intStrengthValue;
+                                    int intAgilityTotalValue;
+                                    int intStrengthTotalValue;
+                                    if (ParentVehicle == null)
                                     {
-                                        intSTRValue = intSTR = await ParentVehicleMod.GetTotalStrengthAsync(token).ConfigureAwait(false);
-                                        intAGIValue = intAGI = await ParentVehicleMod.GetTotalAgilityAsync(token).ConfigureAwait(false);
-                                        intSTRBase = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
-                                        intAGIBase = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
+                                        CharacterAttrib objAgi = await _objCharacter.GetAttributeAsync("AGI", token: token)
+                                                                                          .ConfigureAwait(false);
+                                        CharacterAttrib objStr = await _objCharacter.GetAttributeAsync("STR", token: token)
+                                                                                          .ConfigureAwait(false);
+                                        intAgilityValue = Math.Min(
+                                            intMinAgility,
+                                            objAgi != null
+                                                ? await objAgi.GetTotalMaximumAsync(token).ConfigureAwait(false)
+                                                : 0);
+                                        intStrengthValue = Math.Min(
+                                            intMinStrength,
+                                            objStr != null
+                                                ? await objStr.GetTotalMaximumAsync(token).ConfigureAwait(false)
+                                                : 0);
+
+                                        intStrengthTotalValue = intAgilityTotalValue = Math.Min(await _objCharacter.GetRedlinerBonusAsync(token).ConfigureAwait(false),
+                                            await (await _objCharacter.GetSettingsAsync(token)).GetCyberlimbAttributeBonusCapAsync(token).ConfigureAwait(false));
+
+                                        intAgilityTotalValue = Math.Min(
+                                            intAgilityValue + intAgilityTotalValue,
+                                            objAgi != null
+                                                ? await objAgi.GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false)
+                                                : 0);
+                                        intStrengthTotalValue = Math.Min(
+                                            intStrengthValue + intStrengthTotalValue,
+                                            objStr != null
+                                                ? await objStr.GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false)
+                                                : 0);
                                     }
                                     else
                                     {
-                                        int intVehicleBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
-                                        int intVehiclePilot = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
-                                        intSTRBase = intSTRValue = intSTR = intVehicleBody;
-                                        intAGIBase = intAGIValue = intAGI = intVehiclePilot;
+                                        intAgilityTotalValue = intAgilityValue = Math.Min(intMinAgility, Math.Max(await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) * 2, 1));
+                                        intStrengthTotalValue = intStrengthValue = Math.Min(intMinStrength, Math.Max(await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) * 2, 1));
+                                    }
+                                    intSTR = intStrengthTotalValue;
+                                    intSTRValue = intStrengthValue;
+                                    intSTRBase = intMinStrength;
+                                    intAGI = intAgilityTotalValue;
+                                    intAGIValue = intAgilityValue;
+                                    intAGIBase = intMinAgility;
+                                }
+                                else
+                                {
+                                    if (objCyberlimbParent == null)
+                                    {
+                                        objCyberlimbParent = CyberwareParent;
+                                        while (objCyberlimbParent != null && objCyberlimbParent.Category != "Cyberlimb" && !await objCyberlimbParent.GetIsLimbAsync(token).ConfigureAwait(false))
+                                            objCyberlimbParent = objCyberlimbParent.Parent;
+                                    }
+                                    if (objCyberlimbParent != null)
+                                    {
+                                        intSTR = await objCyberlimbParent.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false);
+                                        intSTRValue = await objCyberlimbParent.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false);
+                                        intSTRBase = await objCyberlimbParent.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false);
+                                        intAGI = await objCyberlimbParent.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false);
+                                        intAGIValue = await objCyberlimbParent.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false);
+                                        intAGIBase = await objCyberlimbParent.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false);
+                                    }
+                                    else if (ParentVehicle != null)
+                                    {
+                                        if (ParentVehicleMod != null)
+                                        {
+                                            intSTRValue = intSTR = await ParentVehicleMod.GetTotalStrengthAsync(token).ConfigureAwait(false);
+                                            intAGIValue = intAGI = await ParentVehicleMod.GetTotalAgilityAsync(token).ConfigureAwait(false);
+                                            intSTRBase = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                                            intAGIBase = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
+                                        }
+                                        else
+                                        {
+                                            int intVehicleBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                                            int intVehiclePilot = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
+                                            intSTRBase = intSTRValue = intSTR = intVehicleBody;
+                                            intAGIBase = intAGIValue = intAGI = intVehiclePilot;
+                                        }
                                     }
                                 }
-                            }
 
-                            if (intSTR >= 0 || intAGI >= 0)
-                            {
-                                if (dicVehicleValues == null)
+                                if (intSTR >= 0 || intAGI >= 0)
                                 {
-                                    dicVehicleValues = new Dictionary<string, int>(6)
+                                    if (dicVehicleValues == null)
+                                    {
+                                        dicVehicleValues = new Dictionary<string, int>(6)
                                     {
                                         {"STR", intSTR},
                                         {"STRUnaug", intSTRValue},
@@ -2255,33 +2257,34 @@ namespace Chummer
                                         {"AGIUnaug", intAGIValue},
                                         {"AGIBase", intAGIBase}
                                     };
-                                }
-                                else
-                                {
-                                    dicVehicleValues["STR"] = intSTR;
-                                    dicVehicleValues["STRUnaug"] = intSTRValue;
-                                    dicVehicleValues["STRBase"] = intSTRBase;
-                                    dicVehicleValues["AGI"] = intAGI;
-                                    dicVehicleValues["AGIUnaug"] = intAGIValue;
-                                    dicVehicleValues["AGIBase"] = intAGIBase;
+                                    }
+                                    else
+                                    {
+                                        dicVehicleValues["STR"] = intSTR;
+                                        dicVehicleValues["STRUnaug"] = intSTRValue;
+                                        dicVehicleValues["STRBase"] = intSTRBase;
+                                        dicVehicleValues["AGI"] = intAGI;
+                                        dicVehicleValues["AGIUnaug"] = intAGIValue;
+                                        dicVehicleValues["AGIBase"] = intAGIBase;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (ParentVehicle != null)
-                        await ParentVehicle.ProcessAttributesInXPathAsync(sbdValue, strExpression, dicValueOverrides: dicVehicleValues, token: token).ConfigureAwait(false);
-                    else
-                    {
-                        Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, dicVehicleValues, token: token).ConfigureAwait(false);
+                        if (ParentVehicle != null)
+                            await ParentVehicle.ProcessAttributesInXPathAsync(sbdValue, strExpression, dicValueOverrides: dicVehicleValues, token: token).ConfigureAwait(false);
+                        else
+                        {
+                            Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                            await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, dicVehicleValues, token: token).ConfigureAwait(false);
+                        }
+                        strExpression = sbdValue.ToString();
                     }
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
                 }
+                (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
             }
 
             return new Tuple<decimal, bool>(decValue, blnSuccess);

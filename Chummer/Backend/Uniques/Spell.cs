@@ -1116,7 +1116,7 @@ namespace Chummer
                     {
                         sbdTip.Append(strSpace).Append('+').Append(strSpace)
                               .Append(await _objCharacter.GetObjectNameAsync(objLoopImprovement, token: token).ConfigureAwait(false)).Append(strSpace)
-                              .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0", GlobalSettings.CultureInfo)).Append(')');
+                              .Append('(').Append(objLoopImprovement.Value.ToString("#,0.##;-#,0.##;#,0.##", GlobalSettings.CultureInfo)).Append(')');
                     }
 
                     // Minimum drain of 2
@@ -1288,43 +1288,21 @@ namespace Chummer
             {
                 if (Damage != "S" && Damage != "P")
                     return LanguageManager.GetString("String_None", strLanguage);
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdReturn))
-                {
-                    sbdReturn.Append('0');
-                    foreach (Improvement improvement in RelevantImprovements(
+                decimal decBonus = RelevantImprovements(
                                  i => i.ImproveType == Improvement.ImprovementType.SpellDescriptorDamage
-                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage))
-                        sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, " + {0:0;-0;0}", improvement.Value);
-                    string output = sbdReturn.ToString();
-                    if (output.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                    {
-                        output = _objCharacter.AttributeSection.ProcessAttributesInXPath(output.TrimStart('+'));
-                        (bool blnIsSuccess, object xprResult)
-                            = CommonFunctions.EvaluateInvariantXPath(output);
-                        sbdReturn.Clear();
-                        if (blnIsSuccess)
-                            sbdReturn.Append(((double)xprResult).ToString("#,0.##", objCultureInfo));
-                    }
-                    else
-                    {
-                        sbdReturn.Clear();
-                        sbdReturn.Append(decValue.ToString("#,0.##", objCultureInfo));
-                    }
+                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage).Sum(x => x.Value);
+                string strReturn = decBonus.StandardRound().ToString(objCultureInfo);
+                switch (Damage)
+                {
+                    case "P":
+                        strReturn += LanguageManager.GetString("String_DamagePhysical", strLanguage);
+                        break;
 
-                    switch (Damage)
-                    {
-                        case "P":
-                            sbdReturn.Append(LanguageManager.GetString("String_DamagePhysical", strLanguage));
-                            break;
-
-                        case "S":
-                            sbdReturn.Append(LanguageManager.GetString("String_DamageStun", strLanguage));
-                            break;
-                    }
-
-                    return sbdReturn.ToString();
+                    case "S":
+                        strReturn += LanguageManager.GetString("String_DamageStun", strLanguage);
+                        break;
                 }
+                return strReturn;
             }
         }
 
@@ -1341,48 +1319,26 @@ namespace Chummer
                 if (Damage != "S" && Damage != "P")
                     return await LanguageManager.GetStringAsync("String_None", strLanguage, token: token)
                                                 .ConfigureAwait(false);
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdReturn))
-                {
-                    sbdReturn.Append('0');
-                    foreach (Improvement improvement in RelevantImprovements(
+                decimal decBonus = (await RelevantImprovementsAsync(
                                  i => i.ImproveType == Improvement.ImprovementType.SpellDescriptorDamage
-                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage))
-                        sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, " + {0:0;-0;0}", improvement.Value);
-                    string output = sbdReturn.ToString();
-                    if (output.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                    {
-                        output = await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(output.TrimStart('+'), token: token).ConfigureAwait(false);
-                        (bool blnIsSuccess, object xprResult) = await CommonFunctions
-                                                                  .EvaluateInvariantXPathAsync(
-                                                                      output, token)
-                                                                  .ConfigureAwait(false);
-                        sbdReturn.Clear();
-                        if (blnIsSuccess)
-                            sbdReturn.Append(((double)xprResult).ToString("#,0.##", objCultureInfo));
-                    }
-                    else
-                    {
-                        sbdReturn.Clear();
-                        sbdReturn.Append(decValue.ToString("#,0.##", objCultureInfo));
-                    }
-                    switch (Damage)
-                    {
-                        case "P":
-                            sbdReturn.Append(await LanguageManager
-                                                   .GetStringAsync("String_DamagePhysical", strLanguage, token: token)
-                                                   .ConfigureAwait(false));
-                            break;
+                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage, token: token)).Sum(x => x.Value);
+                string strReturn = decBonus.StandardRound().ToString(objCultureInfo);
+                switch (Damage)
+                {
+                    case "P":
+                        strReturn += await LanguageManager
+                                                .GetStringAsync("String_DamagePhysical", strLanguage, token: token)
+                                                .ConfigureAwait(false);
+                        break;
 
-                        case "S":
-                            sbdReturn.Append(await LanguageManager
-                                                   .GetStringAsync("String_DamageStun", strLanguage, token: token)
-                                                   .ConfigureAwait(false));
-                            break;
-                    }
-
-                    return sbdReturn.ToString();
+                    case "S":
+                        strReturn += await LanguageManager
+                                                .GetStringAsync("String_DamageStun", strLanguage, token: token)
+                                                .ConfigureAwait(false);
+                        break;
                 }
+
+                return strReturn;
             }
             finally
             {
@@ -1465,7 +1421,8 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                 {
                     string strReturn = DvBase;
-                    if (!Limited && !(Extended && _blnCustomExtended) && !BarehandedAdept && !RelevantImprovements(o =>
+                    if (!Limited && !(Extended && _blnCustomExtended) && !BarehandedAdept && !strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue)
+                        && !RelevantImprovements(o =>
                             o.ImproveType == Improvement.ImprovementType.DrainValue
                             || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                             || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true).Any())
@@ -1479,36 +1436,23 @@ namespace Chummer
                     }
                     else
                     {
-                        int intPos = strReturn.IndexOf('-');
-                        if (intPos != -1)
-                        {
-                            strDv = strReturn.Substring(intPos);
-                        }
-                        else
-                        {
-                            intPos = strReturn.IndexOf('+');
-                            if (intPos != -1)
-                            {
-                                strDv = strReturn.Substring(intPos);
-                            }
-                        }
+                        strDv = strDv.TrimStart('+');
                     }
 
                     string strToAppend = string.Empty;
                     int intDrainDv = 0;
-                    if (strDv.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    if (strDv.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                     {
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdReturn))
                         {
-                            sbdReturn.Append(strDv);
+                            sbdReturn.Append('(').Append(strDv).Append(')');
                             foreach (Improvement objImprovement in RelevantImprovements(i =>
                                          i.ImproveType == Improvement.ImprovementType.DrainValue
                                          || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                                          || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
                             {
-                                sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
-                                                       objImprovement.Value);
+                                sbdReturn.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
                             }
 
                             if (Limited)
@@ -1526,7 +1470,7 @@ namespace Chummer
                                 sbdReturn.Insert(0, "2 * (").Append(')');
                             }
 
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdReturn);
+                            _objCharacter.ProcessAttributesInXPath(sbdReturn);
                             (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(sbdReturn.ToString());
                             if (blnIsSuccess)
                                 intDrainDv = ((double)xprResult).StandardRound();
@@ -1590,7 +1534,8 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 string strReturn = DvBase;
-                if (!Limited && !(Extended && _blnCustomExtended) && !BarehandedAdept && (await RelevantImprovementsAsync(o =>
+                if (!Limited && !(Extended && _blnCustomExtended) && !BarehandedAdept && !strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue)
+                    && (await RelevantImprovementsAsync(o =>
                         o.ImproveType == Improvement.ImprovementType.DrainValue
                         || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                         || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true, token).ConfigureAwait(false)).Count == 0)
@@ -1604,36 +1549,23 @@ namespace Chummer
                 }
                 else
                 {
-                    int intPos = strReturn.IndexOf('-');
-                    if (intPos != -1)
-                    {
-                        strDv = strReturn.Substring(intPos);
-                    }
-                    else
-                    {
-                        intPos = strReturn.IndexOf('+');
-                        if (intPos != -1)
-                        {
-                            strDv = strReturn.Substring(intPos);
-                        }
-                    }
+                    strDv = strDv.TrimStart('+');
                 }
 
                 string strToAppend = string.Empty;
                 int intDrainDv = 0;
-                if (strDv.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                if (strDv.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdReturn))
                     {
-                        sbdReturn.Append(strDv);
+                        sbdReturn.Append('(').Append(strDv).Append(')');
                         foreach (Improvement objImprovement in await RelevantImprovementsAsync(i =>
                                      i.ImproveType == Improvement.ImprovementType.DrainValue
                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                                      || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, token: token).ConfigureAwait(false))
                         {
-                            sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
-                                                   objImprovement.Value);
+                            sbdReturn.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
                         }
 
                         if (Limited)
@@ -1651,7 +1583,7 @@ namespace Chummer
                             sbdReturn.Insert(0, "2 * (").Append(')');
                         }
 
-                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdReturn, token: token).ConfigureAwait(false);
+                        await _objCharacter.ProcessAttributesInXPathAsync(sbdReturn, token: token).ConfigureAwait(false);
                         (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdReturn.ToString(), token).ConfigureAwait(false);
                         if (blnIsSuccess)
                             intDrainDv = ((double)xprResult).StandardRound();

@@ -360,7 +360,7 @@ namespace Chummer
                         //Used for the Armor modifications.
                         else if (strRating.Equals("body", StringComparison.OrdinalIgnoreCase))
                         {
-                            intMinRating = Math.Min(intMinRating, _objVehicle.Body);
+                            intMinRating = Math.Min(intMinRating, await _objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false));
                         }
                         //Used for Metahuman Adjustments.
                         else if (strRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
@@ -374,6 +374,8 @@ namespace Chummer
                                 intMaxRating = (await ProcessInvariantXPathExpression(strRating, intMinRating, 0, token).ConfigureAwait(false)).Item1.StandardRound();
                             if (intMaxRating > 0 && intMaxRating != int.MaxValue)
                                 intMinRating = Math.Min(intMinRating, intMaxRating);
+                            else
+                                intMinRating = 0;
                         }
                     }
 
@@ -500,7 +502,7 @@ namespace Chummer
                     // Extract the Avail and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
                     // This is done using XPathExpression.
 
-                    int intMinRating = int.MaxValue;
+                    int intMinRating = 0;
                     string strMinRating = xmlVehicleMod.SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strMinRating))
                     {
@@ -515,13 +517,27 @@ namespace Chummer
                                                                      .ConfigureAwait(false);
                         await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel, token: token)
                                             .ConfigureAwait(false);
-                        await nudRating.DoThreadSafeAsync(x =>
+                        if (intMinRating > 0)
                         {
-                            x.Minimum = 0;
-                            x.Maximum = 0;
-                            x.Visible = false;
-                        }, token: token).ConfigureAwait(false);
-                        await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            await nudRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Minimum = intMinRating;
+                                x.Maximum = intMinRating;
+                                x.Visible = true;
+                                x.Enabled = false;
+                            }, token: token).ConfigureAwait(false);
+                            await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await nudRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Minimum = 0;
+                                x.Maximum = 0;
+                                x.Visible = false;
+                            }, token: token).ConfigureAwait(false);
+                            await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                        }
                     }
                     // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
                     else if (strRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
@@ -671,7 +687,7 @@ namespace Chummer
                     string strAvail
                         = await new AvailabilityValue(
                                 intRating,
-                                xmlVehicleMod.SelectSingleNodeAndCacheExpression("avail", token)?.Value)
+                                xmlVehicleMod.SelectSingleNodeAndCacheExpression("avail", token)?.Value ?? string.Empty)
                             .ToStringAsync(token).ConfigureAwait(false);
                     await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
                     await lblAvailLabel
@@ -955,25 +971,28 @@ namespace Chummer
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnSuccess = false;
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
-                    sbdValue.Append(strExpression);
-                    await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", () => nudRating.DoThreadSafeFuncAsync(x => x.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token), token: token).ConfigureAwait(false);
-                    await sbdValue.CheapReplaceAsync(strExpression, "Rating", () => nudRating.DoThreadSafeFuncAsync(x => x.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token), token: token).ConfigureAwait(false);
-                    sbdValue.Replace("{Slots}", (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdValue.Replace("Slots", (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdValue.Replace("{Parent Slots}", (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdValue.Replace("Parent Slots", (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdValue.Replace("{Parent Cost}", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdValue.Replace("Parent Cost", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    await _objVehicle.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        string strSlotsString = (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo);
+                        sbdValue.Replace("{Slots}", strSlotsString);
+                        sbdValue.Replace("Slots", strSlotsString);
+                        sbdValue.Replace("{Parent Slots}", strSlotsString);
+                        sbdValue.Replace("Parent Slots", strSlotsString);
+                        sbdValue.Replace("{Parent Cost}", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.Replace("Parent Cost", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        await _objVehicle.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        strExpression = sbdValue.ToString();
+                    }
                 }
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
             }
 
             return new Tuple<decimal, bool>(decValue, blnSuccess);

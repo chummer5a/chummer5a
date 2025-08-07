@@ -5366,8 +5366,7 @@ namespace Chummer
                 string strCount = bonusNode.Attributes?["count"]?.InnerText;
                 if (strCount.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    strCount = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCount);
-
+                    strCount = _objCharacter.ProcessAttributesInXPath(strCount);
                     (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCount);
                     powerCount = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                 }

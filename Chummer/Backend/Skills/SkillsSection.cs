@@ -3049,20 +3049,13 @@ namespace Chummer.Backend.Skills
                         string strExpression = _objCharacter.Settings.KnowledgePointsExpression;
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                       out StringBuilder sbdValue))
-                            {
-                                sbdValue.Append(strExpression);
-                                _objCharacter.AttributeSection
-                                    .ProcessAttributesInXPath(sbdValue, strExpression);
-
-                                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                (bool blnIsSuccess, object objProcess)
-                                    = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString());
-                                _intCachedKnowledgePoints
-                                    = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
-                            }
+                            strExpression = _objCharacter.ProcessAttributesInXPath(strExpression);
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            (bool blnIsSuccess, object objProcess)
+                                = CommonFunctions.EvaluateInvariantXPath(
+                                    strExpression);
+                            _intCachedKnowledgePoints
+                                = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                         }
                         else
                             _intCachedKnowledgePoints = decValue.StandardRound();
@@ -3112,20 +3105,14 @@ namespace Chummer.Backend.Skills
                     string strExpression = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                   out StringBuilder sbdValue))
-                        {
-                            sbdValue.Append(strExpression);
-                            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(
-                                sbdValue, strExpression, token: token).ConfigureAwait(false);
-
-                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                            (bool blnIsSuccess, object objProcess)
-                                = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                    sbdValue.ToString(), token).ConfigureAwait(false);
-                            _intCachedKnowledgePoints
-                                = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
-                        }
+                        strExpression = await _objCharacter
+                                .ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                strExpression, token).ConfigureAwait(false);
+                        _intCachedKnowledgePoints
+                            = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                     }
                     else
                         _intCachedKnowledgePoints = decValue.StandardRound();

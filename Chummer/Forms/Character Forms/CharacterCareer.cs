@@ -22221,16 +22221,16 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
-                            int intConceal = await objSelectedAccessory.GetTotalConcealabilityAsync(token).ConfigureAwait(false);
+                            decimal decConceal = await objSelectedAccessory.GetTotalConcealabilityAsync(token).ConfigureAwait(false);
                             await lblWeaponConcealLabel
-                                  .DoThreadSafeAsync(x => x.Visible = intConceal != 0,
+                                  .DoThreadSafeAsync(x => x.Visible = decConceal != 0,
                                                      token).ConfigureAwait(false);
                             await lblWeaponConceal.DoThreadSafeAsync(x =>
                             {
-                                x.Visible = intConceal != 0;
+                                x.Visible = decConceal != 0;
                                 x.Text
-                                    = intConceal.ToString(
-                                        "+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    = decConceal.ToString(
+                                        "+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                             }, token).ConfigureAwait(false);
                             string strText2 = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
                                 ? "Checkbox_Equipped"
@@ -22310,7 +22310,7 @@ namespace Chummer
                             else
                             {
                                 string strAccuracyText = (await objSelectedAccessory.GetTotalAccuracyAsync(token).ConfigureAwait(false))
-                                        .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                        .ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                                 await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
                                 await lblWeaponAccuracy.DoThreadSafeAsync(x =>
@@ -24142,7 +24142,12 @@ namespace Chummer
                             objSelectedGear?.Equipped != false, token: token).ConfigureAwait(false);
 
                         if (objGear.InternalId.IsEmptyGuid())
+                        {
+                            await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
+                            foreach (Weapon objWeapon in lstWeapons)
+                                await objWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                             return frmPickGear.MyForm.AddAgain;
+                        }
 
                         await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, token).ConfigureAwait(false);
 
@@ -24163,7 +24168,12 @@ namespace Chummer
                                            ?? CharacterObject.Gear.FirstOrDefault(x => x.Location == objLocation
                                                && objGear.IsIdenticalToOtherGear(x));
                             if (objStackWith != null && objStackWith.InternalId.IsEmptyGuid())
+                            {
+                                await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
+                                foreach (Weapon objWeapon in lstWeapons)
+                                    await objWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                                 return frmPickGear.MyForm.AddAgain;
+                            }
                         }
 
                         // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
@@ -24180,41 +24190,41 @@ namespace Chummer
                                     .ConfigureAwait(false),
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                            await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
+                            foreach (Weapon objWeapon in lstWeapons)
+                                await objWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                             return frmPickGear.MyForm.AddAgain;
+                        }
+
+                        // Add the gear now to help with cost calculations
+                        decimal decOldCost = 0;
+                        if (objStackWith != null)
+                        {
+                            if (!frmPickGear.MyForm.FreeCost)
+                                decOldCost = await objStackWith.GetTotalCostAsync(token).ConfigureAwait(false);
+                            // A match was found, so increase the quantity instead.
+                            await objStackWith.SetQuantityAsync(objStackWith.Quantity + objGear.Quantity, token).ConfigureAwait(false);
+                        }
+                        else if (!blnNullParent)
+                        {
+                            if (!frmPickGear.MyForm.FreeCost)
+                                decOldCost = await objSelectedGear.GetTotalCostAsync(token).ConfigureAwait(false);
+                            await objSelectedGear.Children.AddAsync(objGear, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await CharacterObject.Gear.AddAsync(objGear, token).ConfigureAwait(false);
                         }
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         // Check the item's Cost and make sure the character can afford it.
                         if (!frmPickGear.MyForm.FreeCost)
                         {
-                            decimal decCost;
-                            if (objGear.Cost.Contains("Gear Cost"))
-                            {
-                                string strCost = objGear.Cost.Replace("Gear Cost",
-                                    (objSelectedGear != null
-                                        ? await objSelectedGear.GetCalculatedCostAsync(token).ConfigureAwait(false)
-                                        : 0).ToString(
-                                        GlobalSettings.InvariantCultureInfo));
-                                strCost = await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strCost, token: token).ConfigureAwait(false);
-                                (bool blnIsSuccess, object objProcess)
-                                    = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token)
-                                        .ConfigureAwait(false);
-                                decCost = blnIsSuccess
-                                    ? Convert.ToDecimal((double)objProcess)
-                                    : await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                decCost = await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
-                            }
-
-                            if (objStackWith != null)
-                            {
-                                // If a match was found, we need to use the cost of a single item in the stack which can include plugins.
-                                decCost += await objStackWith.Children.SumAsync(x => x.GetTotalCostAsync(token), token)
-                                               .ConfigureAwait(false)
-                                           * frmPickGear.MyForm.SelectedQty;
-                            }
+                            decimal decCost = objStackWith != null
+                                ? await objStackWith.GetTotalCostAsync(token).ConfigureAwait(false) - decOldCost
+                                : blnNullParent
+                                    ? await objGear.GetTotalCostAsync(token).ConfigureAwait(false)
+                                    : await objSelectedGear.GetTotalCostAsync(token).ConfigureAwait(false) - decOldCost;
 
                             // Apply a markup if applicable.
                             if (frmPickGear.MyForm.Markup != 0)
@@ -24234,12 +24244,6 @@ namespace Chummer
                                     break;
                             }
 
-                            if (!blnNullParent && objStackWith == null)
-                            {
-                                // Multiply cost by parent gear's quantity
-                                decCost *= objSelectedGear.Quantity;
-                            }
-
                             if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
                             {
                                 await Program.ShowScrollableMessageBoxAsync(
@@ -24251,11 +24255,14 @@ namespace Chummer
                                             .ConfigureAwait(false),
                                         MessageBoxButtons.OK, MessageBoxIcon.Information, token: token)
                                     .ConfigureAwait(false);
+                                if (objStackWith != null)
+                                {
+                                    await objStackWith.SetQuantityAsync(objStackWith.Quantity - objGear.Quantity, token).ConfigureAwait(false);
+                                    foreach (Weapon objWeapon in lstWeapons)
+                                        await objWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                                }
                                 // Remove any Improvements created by the Gear.
-                                await ImprovementManager.RemoveImprovementsAsync(
-                                        CharacterObject, Improvement.ImprovementSource.Gear,
-                                        objGear.InternalId, token)
-                                    .ConfigureAwait(false);
+                                await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                                 return frmPickGear.MyForm.AddAgain;
                             }
 
@@ -24274,37 +24281,25 @@ namespace Chummer
                                 .ConfigureAwait(false);
                             await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
 
-                            objUndo.CreateNuyen(NuyenExpenseType.AddGear, objGear.InternalId, objGear.Quantity);
+                            objUndo.CreateNuyen(NuyenExpenseType.AddGear, objStackWith != null ? objStackWith.InternalId : objGear.InternalId, objGear.Quantity);
                             objExpense.Undo = objUndo;
                         }
 
                         if (objStackWith != null)
                         {
-                            // A match was found, so increase the quantity instead.
-                            await objStackWith.SetQuantityAsync(objStackWith.Quantity + objGear.Quantity, token).ConfigureAwait(false);
-
-                            if (!string.IsNullOrEmpty(objUndo.ObjectId))
-                                objUndo.ObjectId = objStackWith.InternalId;
+                            await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
+                            foreach (Weapon objWeapon in lstWeapons)
+                                await objWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                         }
-                        // Add the Gear.
+                        // Add the rest of the Gear.
                         else
                         {
                             // Create any Weapons that came with this Gear.
                             foreach (Weapon objWeapon in lstWeapons)
-                            {
                                 await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-                            }
 
                             if (objLocation != null)
                                 await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
-                            if (!blnNullParent)
-                            {
-                                await objSelectedGear.Children.AddAsync(objGear, token).ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                await CharacterObject.Gear.AddAsync(objGear, token).ConfigureAwait(false);
-                            }
                         }
 
                         return frmPickGear.MyForm.AddAgain;
@@ -26034,7 +26029,7 @@ namespace Chummer
                             }
                             else
                             {
-                                string strReachText = (await objAccessory.GetTotalReachAsync(token).ConfigureAwait(false)).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                string strReachText = (await objAccessory.GetTotalReachAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                                 await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                 .ConfigureAwait(false);
                                 await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
@@ -26074,7 +26069,7 @@ namespace Chummer
                             else
                             {
                                 string strAccuracyText = (await objAccessory.GetTotalAccuracyAsync(token).ConfigureAwait(false))
-                                        .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                        .ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                                 await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                 .ConfigureAwait(false);
                                 await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>

@@ -64,7 +64,7 @@ namespace Chummer
         private static readonly char[] s_LstCharsMarkingNeedOfProcessing = "abcdfghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVWXYZ()[]{}!=<>&;+*/\\÷×∙".ToCharArray();
 
         /// <summary>
-        /// Check if a string needs to be processed by an invariant XPath processor to be conveerted into a number.
+        /// Check if a string needs to be processed by an invariant XPath processor to be converted into a number.
         /// If it doesn't, also returns the numerical value of the expression (as a decimal type).
         /// </summary>
         /// <param name="strExpression">String to check.</param>
@@ -74,10 +74,64 @@ namespace Chummer
             decExpressionAsNumber = 0;
             if (string.IsNullOrWhiteSpace(strExpression))
                 return false;
-            return strExpression.IndexOfAny(s_LstCharsMarkingNeedOfProcessing) != -1
-                || strExpression.Contains("- ") || strExpression.IndexOf('-') != strExpression.LastIndexOf('-')
-                || !decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decExpressionAsNumber);
+            if (strExpression.IndexOfAny(s_LstCharsMarkingNeedOfProcessing) != -1)
+                return true;
+            string strTrimmedExpression = strExpression.Trim();
+            // If there is a minus sign anywhere except at the very front of the string with a digit following it, return true
+            int intLastMinusIndex = strTrimmedExpression.LastIndexOf('-');
+            if (intLastMinusIndex >= 1)
+                return true;
+            if (intLastMinusIndex == 0 && (strTrimmedExpression.Length <= 1 || !char.IsDigit(strTrimmedExpression[1])))
+                return true;
+            return !decimal.TryParse(strTrimmedExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decExpressionAsNumber);
         }
+
+        /// <summary>
+        /// Checks if a string that is meant to hold an expression that is to be processed by an invariant XPath processor has any values that need substitution.
+        /// Useful as a sort of initial check to see if we can jump straight to the evaluator or not.
+        /// </summary>
+        /// <param name="strExpression">String to check.</param>
+        /// <param name="blnIncludeLetters">If true, check for uppercase latin letters and opening curly brackets. Otherwise, only check for opening curly brackets.</param>
+        public static bool HasValuesNeedingReplacementForXPathProcessing(this string strExpression, bool blnIncludeLetters = true)
+        {
+            if (string.IsNullOrEmpty(strExpression))
+                return false;
+            if (blnIncludeLetters)
+                // We do not want to fire on lowercase letters because XPath functions are all-lowercase, while every single value we use for replacements has at least one uppercase letter
+                return strExpression.IndexOfAny(s_achrUppercaseLatinCharsAndOpenCurlyBracket) >= 0;
+            return strExpression.IndexOf('{') >= 0;
+        }
+
+        /// <summary>
+        /// Checks if a string that is meant to hold an expression that is to be processed by an invariant XPath processor has any values that need substitution.
+        /// Useful as a sort of initial check to see if we can jump straight to the evaluator or not.
+        /// </summary>
+        /// <param name="strExpression">String to check.</param>
+        /// <param name="blnIncludeLetters">If true, check for uppercase latin letters and opening curly brackets. Otherwise, only check for opening curly brackets.</param>
+        public static bool HasValuesNeedingReplacementForXPathProcessing([NotNull] this StringBuilder sbdExpression, bool blnIncludeLetters = true)
+        {
+            if (sbdExpression.Length == 0)
+                return false;
+            if (blnIncludeLetters)
+            {
+                // We do not want to fire on lowercase letters because XPath functions are all-lowercase, while every single value we use for replacements has at least one uppercase letter
+                if (sbdExpression.Length <= Utils.MaxParallelBatchSize)
+                    return sbdExpression.Enumerate().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x));
+                return sbdExpression.Enumerate().AsParallel().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x));
+            }
+            if (sbdExpression.Length <= Utils.MaxParallelBatchSize)
+                return sbdExpression.Enumerate().Any(x => x == '{');
+            return sbdExpression.Enumerate().AsParallel().Any(x => x == '{');
+        }
+
+        private static readonly char[] s_achrUppercaseLatinCharsAndOpenCurlyBracket = new[]
+        {
+            '{', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+            'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+            'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+        };
+
+        private static readonly HashSet<char> s_setUppercaseLatinCharsAndOpenCurlyBracket = new HashSet<char>(s_achrUppercaseLatinCharsAndOpenCurlyBracket);
 
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
@@ -157,7 +211,19 @@ namespace Chummer
                     objReturn = x;
                     blnIsSuccess = false;
                 }
+                catch (FormatException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
                 catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
+                catch (OverflowException)
                 {
                     Utils.BreakIfDebug();
                     objReturn = x;
@@ -248,7 +314,19 @@ namespace Chummer
                     objReturn = x;
                     blnIsSuccess = false;
                 }
+                catch (FormatException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
                 catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
+                catch (OverflowException)
                 {
                     Utils.BreakIfDebug();
                     objReturn = x;
@@ -305,7 +383,19 @@ namespace Chummer
                     objReturn = x;
                     blnIsSuccess = false;
                 }
+                catch (FormatException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
                 catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
+                catch (OverflowException)
                 {
                     Utils.BreakIfDebug();
                     objReturn = x;
@@ -362,7 +452,19 @@ namespace Chummer
                     objReturn = x;
                     blnIsSuccess = false;
                 }
+                catch (FormatException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
                 catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
+                catch (OverflowException)
                 {
                     Utils.BreakIfDebug();
                     objReturn = x;

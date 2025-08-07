@@ -16071,16 +16071,16 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                             }
 
-                            int intConceal = await objSelectedAccessory.GetTotalConcealabilityAsync(token).ConfigureAwait(false);
+                            decimal decConceal = await objSelectedAccessory.GetTotalConcealabilityAsync(token).ConfigureAwait(false);
                             await lblWeaponConcealLabel
-                                  .DoThreadSafeAsync(x => x.Visible = intConceal != 0,
+                                  .DoThreadSafeAsync(x => x.Visible = decConceal != 0,
                                                      token).ConfigureAwait(false);
                             await lblWeaponConceal.DoThreadSafeAsync(x =>
                             {
-                                x.Visible = intConceal != 0;
+                                x.Visible = decConceal != 0;
                                 x.Text
-                                    = intConceal.ToString(
-                                        "+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    = decConceal.ToString(
+                                        "+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                             }, token).ConfigureAwait(false);
                             string strText2 = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
                                 ? "Checkbox_Equipped"
@@ -16188,7 +16188,7 @@ namespace Chummer
                             else
                             {
                                 string strAccuracyText = (await objSelectedAccessory.GetTotalAccuracyAsync(token).ConfigureAwait(false))
-                                    .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    .ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                                 await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
                                 await lblWeaponAccuracy.DoThreadSafeAsync(x =>
@@ -19673,7 +19673,7 @@ namespace Chummer
                             }
                             else
                             {
-                                string strReachText = (await objAccessory.GetTotalReachAsync(token).ConfigureAwait(false)).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                string strReachText = (await objAccessory.GetTotalReachAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                                 await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
                                 await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
@@ -19854,7 +19854,7 @@ namespace Chummer
                             else
                             {
                                 string strAccuracyText = (await objAccessory.GetTotalAccuracyAsync(token).ConfigureAwait(false))
-                                        .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                        .ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                                 await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                 .ConfigureAwait(false);
                                 await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
@@ -23237,7 +23237,7 @@ namespace Chummer
                                         .CheapReplaceAsync("{Karma}", () => LanguageManager.GetStringAsync("String_Karma", token: token), token: token)
                                         .CheapReplaceAsync("{PriorityNuyen}", () => LanguageManager.GetStringAsync("Checkbox_CreatePACKSKit_StartingNuyen", token: token), token: token)
                                         .ConfigureAwait(false);
-            strNuyenTooltip = await CharacterObject.AttributeSection.ProcessAttributesInXPathForTooltipAsync(
+            strNuyenTooltip = await CharacterObject.ProcessAttributesInXPathForTooltipAsync(
                                                                   strNuyenTooltip, token: token).ConfigureAwait(false);
             strNuyenTooltip = string.Format(GlobalSettings.CultureInfo,
                                                          await LanguageManager

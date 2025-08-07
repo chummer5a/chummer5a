@@ -17836,13 +17836,13 @@
         <oneof>
           <accessory>Drum Magazine, 24-round</accessory>
           <accessory>Drum Magazine, 32-round</accessory>
+          <weapondetails>
+            <OR>
+              <ammo operation="contains">(cy)</ammo>
+              <ammo operation="contains">(d)</ammo>
+            </OR>
+          </weapondetails>
         </oneof>
-        <weapondetails>
-          <OR>
-            <ammo operation="contains">(cy)</ammo>
-            <ammo operation="contains">(d)</ammo>
-          </OR>
-        </weapondetails>
       </required>
     </accessory>
     <accessory>
