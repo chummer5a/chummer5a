@@ -1116,7 +1116,7 @@ namespace Chummer
                     {
                         sbdTip.Append(strSpace).Append('+').Append(strSpace)
                               .Append(await _objCharacter.GetObjectNameAsync(objLoopImprovement, token: token).ConfigureAwait(false)).Append(strSpace)
-                              .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0", GlobalSettings.CultureInfo)).Append(')');
+                              .Append('(').Append(objLoopImprovement.Value.ToString("#,0.##;-#,0.##;#,0.##", GlobalSettings.CultureInfo)).Append(')');
                     }
 
                     // Minimum drain of 2

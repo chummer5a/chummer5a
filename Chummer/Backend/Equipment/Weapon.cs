@@ -2177,7 +2177,7 @@ namespace Chummer.Backend.Equipment
                         token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("maxammo", Ammo, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("conceal",
-                        (await CalculatedConcealabilityAsync(token).ConfigureAwait(false)).ToString("+0;-0;0", objCulture), token)
+                        (await CalculatedConcealabilityAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;#,0.##", objCulture), token)
                     .ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rawconceal", Concealability, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("availablemounts", await DisplayAccessoryMountsAsync(strLanguageToPrint, token).ConfigureAwait(false), token)

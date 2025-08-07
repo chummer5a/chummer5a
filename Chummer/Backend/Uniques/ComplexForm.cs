@@ -682,7 +682,7 @@ namespace Chummer
                                     _objCharacter, Improvement.ImprovementType.FadingValue, Name, true, token))
                     {
                         sbdTip.Append(strSpace).Append('+').Append(strSpace).Append(await _objCharacter.GetObjectNameAsync(objLoopImprovement, token: token).ConfigureAwait(false)).Append(strSpace)
-                                .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0", GlobalSettings.CultureInfo)).Append(')');
+                                .Append('(').Append(objLoopImprovement.Value.ToString("#,0.##;-#,0.##;#,0.##", GlobalSettings.CultureInfo)).Append(')');
                     }
                     // Minimum Fading of 2
                     sbdTip.AppendLine().AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_MinimumAttribute", token: token), 2);
