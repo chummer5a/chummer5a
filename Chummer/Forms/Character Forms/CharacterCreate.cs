@@ -36,7 +36,6 @@ using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
-using iText.StyledXmlParser.Jsoup.Parser;
 using NLog;
 
 namespace Chummer

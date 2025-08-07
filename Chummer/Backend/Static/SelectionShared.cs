@@ -29,7 +29,6 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
-using iText.Kernel.Pdf.Canvas.Parser.ClipperLib;
 
 namespace Chummer
 {
