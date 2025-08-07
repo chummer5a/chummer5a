@@ -38327,6 +38327,20 @@ namespace Chummer
             }
         }
 
+        public async Task<bool> GetHasMentorSpiritAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await (await GetMentorSpiritsAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) > 0;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string FirstMentorSpiritDisplayName
         {
             get
@@ -38344,8 +38358,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await MentorSpirits.GetCountAsync(token).ConfigureAwait(false) > 0
-                    ? await (await MentorSpirits.GetValueAtAsync(0, token).ConfigureAwait(false))
+                ThreadSafeObservableCollection<MentorSpirit> lstMentors = await GetMentorSpiritsAsync(token).ConfigureAwait(false);
+                return await lstMentors.GetCountAsync(token).ConfigureAwait(false) > 0
+                    ? await (await lstMentors.GetValueAtAsync(0, token).ConfigureAwait(false))
                         .GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)
                     : string.Empty;
             }
@@ -41731,6 +41746,16 @@ namespace Chummer
             ImprovementManager
                 .GetCachedImprovementListForValueOf(
                     this, Improvement.ImprovementType.QuickeningMetamagic).Count > 0;
+
+        /// <summary>
+        /// Whether this character can quicken spells.
+        /// </summary>
+        public async Task<bool> GetQuickeningEnabledAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                    this, Improvement.ImprovementType.QuickeningMetamagic, token: token).ConfigureAwait(false)).Count > 0;
+        }
 
         /// <summary>
         /// Whether user is getting free bioware from Prototype Transhuman.

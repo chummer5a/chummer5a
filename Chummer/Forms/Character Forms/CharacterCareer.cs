@@ -513,8 +513,9 @@ namespace Chummer
                                             (x, y) => x.SetPlayerNameAsync(y, GenericToken),
                                             1000, GenericToken, GenericToken).ConfigureAwait(false);
 
+                                        bool blnGroupMember = await CharacterObject.GetGroupMemberAsync(GenericToken).ConfigureAwait(false);
                                         await chkJoinGroup.DoThreadSafeAsync(
-                                                x => x.Checked = CharacterObject.GroupMember, GenericToken)
+                                                x => x.Checked = blnGroupMember, GenericToken)
                                             .ConfigureAwait(false);
                                         await chkInitiationGroup.RegisterOneWayAsyncDataBindingAsync(
                                                 (x, y) => x.Enabled = y, CharacterObject,
@@ -1655,7 +1656,8 @@ namespace Chummer
                                             await CharacterObject.GetCMOverflowAsync(GenericToken)
                                                 .ConfigureAwait(false),
                                             chkPhysicalCM_CheckedChanged, true,
-                                            CharacterObject.PhysicalCMFilled, GenericToken).ConfigureAwait(false);
+                                            await CharacterObject.GetPhysicalCMFilledAsync(GenericToken).ConfigureAwait(false),
+                                            GenericToken).ConfigureAwait(false);
                                         await ProcessCharacterConditionMonitorBoxDisplays(
                                                 panStunCM,
                                                 await CharacterObject.GetStunCMAsync(GenericToken)
@@ -1664,7 +1666,8 @@ namespace Chummer
                                                     .ConfigureAwait(false),
                                                 await CharacterObject.GetStunCMThresholdOffsetAsync(GenericToken)
                                                     .ConfigureAwait(false), 0,
-                                                chkStunCM_CheckedChanged, true, CharacterObject.StunCMFilled,
+                                                chkStunCM_CheckedChanged, true,
+                                                await CharacterObject.GetStunCMFilledAsync(GenericToken).ConfigureAwait(false),
                                                 GenericToken)
                                             .ConfigureAwait(false);
 
@@ -2909,11 +2912,12 @@ namespace Chummer
                         await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp7, token)
                             .ConfigureAwait(false);
 
+                        CharacterAttrib objMag = await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false);
                         if (!await CharacterObject.AttributeSection.Attributes
-                                .ContainsAsync(CharacterObject.MAG, token)
+                                .ContainsAsync(objMag, token)
                                 .ConfigureAwait(false))
                         {
-                            await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.MAG, token)
+                            await CharacterObject.AttributeSection.Attributes.AddAsync(objMag, token)
                                 .ConfigureAwait(false);
                         }
 
@@ -2947,10 +2951,10 @@ namespace Chummer
                                 .ConfigureAwait(false);
 
                         await CharacterObject.AttributeSection.Attributes
-                                .RemoveAsync(CharacterObject.MAG, token)
+                                .RemoveAsync(await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
                         await CharacterObject.AttributeSection.Attributes
-                                .RemoveAsync(CharacterObject.MAGAdept, token)
+                                .RemoveAsync(await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
 
                         await gpbGearBondedFoci
@@ -3059,11 +3063,12 @@ namespace Chummer
                         await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp7, token)
                             .ConfigureAwait(false);
 
+                        CharacterAttrib objRes = await CharacterObject.GetAttributeAsync("RES", token: token).ConfigureAwait(false);
                         if (!await CharacterObject
                                 .AttributeSection.Attributes.ContainsAsync(
-                                    CharacterObject.RES, token).ConfigureAwait(false))
+                                    objRes, token).ConfigureAwait(false))
                         {
-                            await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.RES, token)
+                            await CharacterObject.AttributeSection.Attributes.AddAsync(objRes, token)
                                 .ConfigureAwait(false);
                         }
                     }
@@ -3074,7 +3079,7 @@ namespace Chummer
                                 .DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), token)
                                 .ConfigureAwait(false);
                         await CharacterObject.AttributeSection.Attributes
-                                .RemoveAsync(CharacterObject.RES, token)
+                                .RemoveAsync(await CharacterObject.GetAttributeAsync("RES", token: token).ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
                     }
                 }
@@ -3083,18 +3088,19 @@ namespace Chummer
                 {
                     if (await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false))
                     {
+                        CharacterAttrib objDep = await CharacterObject.GetAttributeAsync("DEP", token: token).ConfigureAwait(false);
                         if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(
-                                CharacterObject.DEP, token).ConfigureAwait(false))
+                                objDep, token).ConfigureAwait(false))
                         {
                             await CharacterObject.AttributeSection.Attributes
-                                .AddAsync(CharacterObject.DEP, token)
+                                .AddAsync(objDep, token)
                                 .ConfigureAwait(false);
                         }
                     }
                     else
                     {
                         await CharacterObject.AttributeSection.Attributes
-                            .RemoveAsync(CharacterObject.DEP, token)
+                            .RemoveAsync(await CharacterObject.GetAttributeAsync("DEP", token: token).ConfigureAwait(false), token)
                             .ConfigureAwait(false);
                     }
                 }
@@ -3340,7 +3346,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                     }
 
-                    foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
+                    foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
                                      x => x.GetChildrenAsync(token), async x =>
                                      {
                                          if (x.SourceType != Improvement.ImprovementSource.Bioware)
@@ -3413,7 +3419,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                     }
 
-                    foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
+                    foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
                                      x => x.GetChildrenAsync(token), async x =>
                                      {
                                          if (x.SourceType != Improvement.ImprovementSource.Cyberware)
@@ -3482,7 +3488,7 @@ namespace Chummer
                                   .ConfigureAwait(false);
                     }
 
-                    foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
+                    foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
                                      x => x.GetChildrenAsync(token), async x =>
                                      {
                                          Guid guidSourceId = await x.GetSourceIDAsync(token).ConfigureAwait(false);
@@ -3570,8 +3576,9 @@ namespace Chummer
 
                 if (e.PropertyNames.Contains(nameof(Character.QuickeningEnabled)))
                 {
+                    bool blnVisible = await CharacterObject.GetQuickeningEnabledAsync(token).ConfigureAwait(false);
                     await cmdQuickenSpell
-                        .DoThreadSafeAsync(x => x.Visible = CharacterObject.QuickeningEnabled, token)
+                        .DoThreadSafeAsync(x => x.Visible = blnVisible, token)
                         .ConfigureAwait(false);
                 }
 
@@ -3589,7 +3596,7 @@ namespace Chummer
 
                 if (e.PropertyNames.Contains(nameof(Character.HasMentorSpirit)))
                 {
-                    bool blnHasMentor = CharacterObject.HasMentorSpirit;
+                    bool blnHasMentor = await CharacterObject.GetHasMentorSpiritAsync(token).ConfigureAwait(false);
                     await gpbMagicianMentorSpirit.DoThreadSafeAsync(
                         x => x.Visible = blnHasMentor, token).ConfigureAwait(false);
                     await gpbTechnomancerParagon.DoThreadSafeAsync(
@@ -6561,7 +6568,8 @@ namespace Chummer
                 do
                 {
                     // The number of Complex Forms cannot exceed twice the character's RES.
-                    if (await CharacterObject.ComplexForms.GetCountAsync(GenericToken).ConfigureAwait(false) >= await CharacterObject.RES.GetValueAsync(GenericToken).ConfigureAwait(false) * 2
+                    if (await CharacterObject.ComplexForms.GetCountAsync(GenericToken).ConfigureAwait(false)
+                        >= await (await CharacterObject.GetAttributeAsync("RES", token: GenericToken).ConfigureAwait(false)).GetTotalValueAsync(GenericToken).ConfigureAwait(false) * 2
                         + await ImprovementManager.ValueOfAsync(CharacterObject,
                                                                 Improvement.ImprovementType.ComplexFormLimit, token: GenericToken)
                                                   .ConfigureAwait(false)

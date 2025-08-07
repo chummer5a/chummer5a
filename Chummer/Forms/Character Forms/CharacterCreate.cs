@@ -1029,9 +1029,9 @@ namespace Chummer
                                         }
 
                                         await nudMysticAdeptMAGMagician.RegisterOneWayAsyncDataBindingAsync(
-                                                (x, y) => x.Maximum = y, CharacterObject.MAG,
-                                                nameof(CharacterAttrib.Value),
-                                                x => x.GetValueAsync(GenericToken), GenericToken)
+                                                (x, y) => x.Maximum = y, await CharacterObject.GetAttributeAsync("MAG", token: GenericToken).ConfigureAwait(false),
+                                                nameof(CharacterAttrib.TotalValue),
+                                                x => x.GetTotalValueAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
                                         await nudMysticAdeptMAGMagician.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                                             (x, y) => x.ValueAsInt = y,
@@ -2244,12 +2244,13 @@ namespace Chummer
                         await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp7, token)
                             .ConfigureAwait(false);
 
+                        CharacterAttrib objMag = await CharacterObject.GetAttributeAsync("MAG", token: GenericToken).ConfigureAwait(false);
                         if (!await CharacterObject.AttributeSection.Attributes
-                                .ContainsAsync(CharacterObject.MAG, token)
+                                .ContainsAsync(objMag, token)
                                 .ConfigureAwait(false))
                         {
                             await CharacterObject.AttributeSection.Attributes
-                                .AddAsync(CharacterObject.MAG, token).ConfigureAwait(false);
+                                .AddAsync(objMag, token).ConfigureAwait(false);
                         }
 
                         if (await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token)
@@ -2283,10 +2284,10 @@ namespace Chummer
                                 .ConfigureAwait(false);
 
                         await CharacterObject.AttributeSection.Attributes
-                                .RemoveAsync(CharacterObject.MAG, token)
+                                .RemoveAsync(await CharacterObject.GetAttributeAsync("MAG", token: GenericToken).ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
                         await CharacterObject.AttributeSection.Attributes
-                                .RemoveAsync(CharacterObject.MAGAdept, token)
+                                .RemoveAsync(await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken).ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
 
                         await gpbGearBondedFoci
@@ -2396,11 +2397,12 @@ namespace Chummer
                         await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp7, token)
                             .ConfigureAwait(false);
 
+                        CharacterAttrib objRes = await CharacterObject.GetAttributeAsync("RES", token: GenericToken).ConfigureAwait(false);
                         if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(
-                                CharacterObject.RES, token).ConfigureAwait(false))
+                                objRes, token).ConfigureAwait(false))
                         {
                             await CharacterObject.AttributeSection.Attributes.AddAsync(
-                                CharacterObject.RES, token).ConfigureAwait(false);
+                                objRes, token).ConfigureAwait(false);
                         }
                     }
                     else
@@ -2410,7 +2412,7 @@ namespace Chummer
                                 .DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), token)
                                 .ConfigureAwait(false);
                         await CharacterObject.AttributeSection.Attributes
-                                .RemoveAsync(CharacterObject.RES, token)
+                                .RemoveAsync(await CharacterObject.GetAttributeAsync("RES", token: GenericToken).ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
                     }
                 }
@@ -2419,19 +2421,20 @@ namespace Chummer
                 {
                     if (await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false))
                     {
+                        CharacterAttrib objDep = await CharacterObject.GetAttributeAsync("DEP", token: GenericToken).ConfigureAwait(false);
                         if (!await CharacterObject
                                 .AttributeSection.Attributes
-                                .ContainsAsync(CharacterObject.DEP, token)
+                                .ContainsAsync(objDep, token)
                                 .ConfigureAwait(false))
                         {
                             await CharacterObject.AttributeSection.Attributes
-                                .AddAsync(CharacterObject.DEP, token).ConfigureAwait(false);
+                                .AddAsync(objDep, token).ConfigureAwait(false);
                         }
                     }
                     else
                     {
                         await CharacterObject.AttributeSection.Attributes
-                            .RemoveAsync(CharacterObject.DEP, token).ConfigureAwait(false);
+                            .RemoveAsync(await CharacterObject.GetAttributeAsync("DEP", token: GenericToken).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                 }
 
@@ -2795,7 +2798,7 @@ namespace Chummer
 
                 if (e.PropertyNames.Contains(nameof(Character.HasMentorSpirit)))
                 {
-                    bool blnHasMentorSpirit = CharacterObject.HasMentorSpirit;
+                    bool blnHasMentorSpirit = await CharacterObject.GetHasMentorSpiritAsync(token).ConfigureAwait(false);
                     await gpbMagicianMentorSpirit.DoThreadSafeAsync(
                         x => x.Visible = blnHasMentorSpirit, token).ConfigureAwait(false);
                     await gpbTechnomancerParagon.DoThreadSafeAsync(x => x.Visible = blnHasMentorSpirit,
@@ -5259,7 +5262,7 @@ namespace Chummer
                     {
                         // The number of Complex Forms cannot exceed twice the character's RES.
                         if (await CharacterObject.ComplexForms.GetCountAsync(GenericToken).ConfigureAwait(false)
-                            >= await CharacterObject.RES.GetValueAsync(GenericToken).ConfigureAwait(false) * 2
+                            >= await (await CharacterObject.GetAttributeAsync("RES", token: GenericToken).ConfigureAwait(false)).GetTotalValueAsync(GenericToken).ConfigureAwait(false) * 2
                             + await ImprovementManager.ValueOfAsync(CharacterObject,
                                                                     Improvement.ImprovementType.ComplexFormLimit,
                                                                     token: GenericToken)
@@ -23968,7 +23971,7 @@ namespace Chummer
 
                     XmlNode objXmlMetamagic;
                     Improvement.ImprovementSource objSource;
-                    if (CharacterObject.RESEnabled)
+                    if (await CharacterObject.GetRESEnabledAsync(GenericToken).ConfigureAwait(false))
                     {
                         objXmlMetamagic
                             = (await CharacterObject.LoadDataAsync("echoes.xml", token: GenericToken)
