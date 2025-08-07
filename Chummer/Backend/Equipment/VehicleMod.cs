@@ -815,7 +815,7 @@ namespace Chummer.Backend.Equipment
             blnIsSuccess = true;
             if (string.IsNullOrEmpty(strExpression))
                 return 0;
-            strExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStartOnce('+');
+            strExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnIsSuccess = false;
@@ -885,7 +885,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strExpression))
                 return new Tuple<decimal, bool>(0, true);
             bool blnIsSuccess = true;
-            strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStartOnce('+');
+            strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 if (strExpression.HasValuesNeedingReplacementForXPathProcessing())

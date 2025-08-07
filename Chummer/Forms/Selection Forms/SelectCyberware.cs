@@ -2066,6 +2066,8 @@ namespace Chummer
         private async Task<Tuple<decimal, bool>> ProcessInvariantXPathExpression(XPathNavigator xmlCyberware, string strExpression, int intMinRating, int intRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strExpression))
+                return new Tuple<decimal, bool>(0, true);
             bool blnSuccess = true;
             strExpression = strExpression.ProcessFixedValuesString(intRating).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))

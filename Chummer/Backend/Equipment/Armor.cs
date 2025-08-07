@@ -2203,24 +2203,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strWeightExpression = Weight;
-                if (string.IsNullOrEmpty(strWeightExpression))
-                    return 0;
-                decimal decReturn = 0;
-                strWeightExpression = strWeightExpression.ProcessFixedValuesString(() => Rating);
-
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
-                {
-                    sbdWeight.Append(strWeightExpression.TrimStart('+'));
-                    sbdWeight.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    _objCharacter.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
-                    if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal((double)objProcess);
-                }
-
-                return decReturn;
+                return ProcessRatingStringAsDec(Weight, () => Rating);
             }
         }
 
