@@ -3972,7 +3972,7 @@ namespace Chummer
             int intAvail = intAvailModifier;
             if (strAvailExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                strAvailExpr =await objCharacter.ProcessAttributesInXPathAsync(strAvailExpr, token: token).ConfigureAwait(false);
+                strAvailExpr = await objCharacter.ProcessAttributesInXPathAsync(strAvailExpr, token: token).ConfigureAwait(false);
                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr, token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     intAvail += ((double)objProcess).StandardRound();

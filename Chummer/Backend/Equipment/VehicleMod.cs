@@ -815,53 +815,57 @@ namespace Chummer.Backend.Equipment
             blnIsSuccess = true;
             if (string.IsNullOrEmpty(strExpression))
                 return 0;
-            strExpression = strExpression.ProcessFixedValuesString(funcRating);
+            strExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStartOnce('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnIsSuccess = false;
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
-                    sbdValue.Append(strExpression.TrimStartOnce('+'));
-                    if (strExpression.Contains("Rating"))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
-                        string strRating = funcRating().ToString(GlobalSettings.InvariantCultureInfo);
-                        sbdValue.Replace("{Rating}", strRating);
-                        sbdValue.Replace("Rating", strRating);
-                    }
-                    if (strExpression.Contains("Parent Cost") || strExpression.Contains("Parent Slots"))
-                    {
-                        WeaponMount objMount = WeaponMountParent;
-                        if (objMount != null)
+                        sbdValue.Append(strExpression);
+                        if (strExpression.Contains("Rating"))
                         {
-                            if (strExpression.Contains("Parent Cost"))
+                            string strRating = funcRating().ToString(GlobalSettings.InvariantCultureInfo);
+                            sbdValue.Replace("{Rating}", strRating);
+                            sbdValue.Replace("Rating", strRating);
+                        }
+                        if (strExpression.Contains("Parent Cost") || strExpression.Contains("Parent Slots"))
+                        {
+                            WeaponMount objMount = WeaponMountParent;
+                            if (objMount != null)
                             {
-                                string strMountCost = objMount.OwnCost.ToString(GlobalSettings.InvariantCultureInfo);
-                                sbdValue.Replace("{Parent Cost}", strMountCost).Replace("Parent Cost", strMountCost);
-                            }
-                            if (strExpression.Contains("Parent Slots"))
-                            {
-                                string strMountCost = objMount.CalculatedSlots.ToString(GlobalSettings.InvariantCultureInfo);
-                                sbdValue.Replace("{Parent Slots}", strMountCost).Replace("Parent Slots", strMountCost);
+                                if (strExpression.Contains("Parent Cost"))
+                                {
+                                    string strMountCost = objMount.OwnCost.ToString(GlobalSettings.InvariantCultureInfo);
+                                    sbdValue.Replace("{Parent Cost}", strMountCost).Replace("Parent Cost", strMountCost);
+                                }
+                                if (strExpression.Contains("Parent Slots"))
+                                {
+                                    string strMountCost = objMount.CalculatedSlots.ToString(GlobalSettings.InvariantCultureInfo);
+                                    sbdValue.Replace("{Parent Slots}", strMountCost).Replace("Parent Slots", strMountCost);
+                                }
                             }
                         }
+                        Vehicle objVehicle = Parent;
+                        if (objVehicle != null)
+                        {
+                            objVehicle.ProcessAttributesInXPath(sbdValue, strExpression, this);
+                        }
+                        else
+                        {
+                            Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                            _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                        }
+                        strExpression = sbdValue.ToString();
                     }
-                    Vehicle objVehicle = Parent;
-                    if (objVehicle != null)
-                    {
-                        objVehicle.ProcessAttributesInXPath(sbdValue, strExpression, this);
-                    }
-                    else
-                    {
-                        Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                        _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
-                    }
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    object objProcess;
-                    (blnIsSuccess, objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
-                    if (blnIsSuccess)
-                        return Convert.ToDecimal((double)objProcess);
                 }
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                object objProcess;
+                (blnIsSuccess, objProcess)
+                    = CommonFunctions.EvaluateInvariantXPath(strExpression);
+                if (blnIsSuccess)
+                    return Convert.ToDecimal((double)objProcess);
             }
 
             return decValue;
@@ -881,53 +885,56 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strExpression))
                 return new Tuple<decimal, bool>(0, true);
             bool blnIsSuccess = true;
-            strExpression = await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false);
+            strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStartOnce('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
-                    sbdValue.Append(strExpression.TrimStartOnce('+'));
-                    if (strExpression.Contains("Rating"))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
-                        string strRating = (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
-                        sbdValue.Replace("{Rating}", strRating);
-                        sbdValue.Replace("Rating", strRating);
-                    }
-                    if (strExpression.Contains("Parent Cost") || strExpression.Contains("Parent Slots"))
-                    {
-                        WeaponMount objMount = WeaponMountParent;
-                        if (objMount != null)
+                        sbdValue.Append(strExpression);
+                        if (strExpression.Contains("Rating"))
                         {
-                            if (strExpression.Contains("Parent Cost"))
+                            string strRating = (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
+                            sbdValue.Replace("{Rating}", strRating);
+                            sbdValue.Replace("Rating", strRating);
+                        }
+                        if (strExpression.Contains("Parent Cost") || strExpression.Contains("Parent Slots"))
+                        {
+                            WeaponMount objMount = WeaponMountParent;
+                            if (objMount != null)
                             {
-                                string strMountCost = (await objMount.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
-                                sbdValue.Replace("{Parent Cost}", strMountCost).Replace("Parent Cost", strMountCost);
-                            }
-                            if (strExpression.Contains("Parent Slots"))
-                            {
-                                string strMountSlots = (await objMount.GetCalculatedSlotsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
-                                sbdValue.Replace("{Parent Slots}", strMountSlots).Replace("Parent Slots", strMountSlots);
+                                if (strExpression.Contains("Parent Cost"))
+                                {
+                                    string strMountCost = (await objMount.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
+                                    sbdValue.Replace("{Parent Cost}", strMountCost).Replace("Parent Cost", strMountCost);
+                                }
+                                if (strExpression.Contains("Parent Slots"))
+                                {
+                                    string strMountSlots = (await objMount.GetCalculatedSlotsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
+                                    sbdValue.Replace("{Parent Slots}", strMountSlots).Replace("Parent Slots", strMountSlots);
+                                }
                             }
                         }
+                        Vehicle objVehicle = Parent;
+                        if (objVehicle != null)
+                        {
+                            await objVehicle.ProcessAttributesInXPathAsync(sbdValue, strExpression, this, token: token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                            await _objCharacter
+                                .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        }
+                        strExpression = sbdValue.ToString();
                     }
-                    Vehicle objVehicle = Parent;
-                    if (objVehicle != null)
-                    {
-                        await objVehicle.ProcessAttributesInXPathAsync(sbdValue, strExpression, this, token: token).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                        await _objCharacter
-                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                    }
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    object objProcess;
-                    (blnIsSuccess, objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
                 }
+                object objProcess;
+                (blnIsSuccess, objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
             }
 
             return new Tuple<decimal, bool>(decValue, blnIsSuccess);

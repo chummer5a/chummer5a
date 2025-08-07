@@ -1922,18 +1922,14 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-
+                strAvail = strAvail.TrimStart('+');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
-                    {
-                        sbdAvail.Append(strAvail.TrimStart('+'));
-                        ProcessAttributesInXPath(sbdAvail, strAvail);
-                        (bool blnIsSuccess, object objProcess)
-                            = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
-                        if (blnIsSuccess)
-                            intAvail += ((double)objProcess).StandardRound();
-                    }
+                    strAvail = ProcessAttributesInXPath(strAvail);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(strAvail);
+                    if (blnIsSuccess)
+                        intAvail += ((double)objProcess).StandardRound();
                 }
                 else
                     intAvail += decValue.StandardRound();
@@ -2014,19 +2010,15 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-
+                strAvail = strAvail.TrimStart('+');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
-                    {
-                        sbdAvail.Append(strAvail.TrimStart('+'));
-                        await ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token)
+                    strAvail = await ProcessAttributesInXPathAsync(strAvail, token: token)
                             .ConfigureAwait(false);
-                        (bool blnIsSuccess, object objProcess)
-                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
-                        if (blnIsSuccess)
-                            intAvail += ((double)objProcess).StandardRound();
-                    }
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(strAvail, token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        intAvail += ((double)objProcess).StandardRound();
                 }
                 else
                     intAvail += decValue.StandardRound();
@@ -2805,15 +2797,11 @@ namespace Chummer.Backend.Equipment
                 string strCost = Cost;
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
                 {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
-                    {
-                        sbdCost.Append(strCost);
-                        ProcessAttributesInXPath(sbdCost, strCost);
-                        (bool blnIsSuccess, object objProcess)
-                            = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
-                        if (blnIsSuccess)
-                            decCost = Convert.ToDecimal((double)objProcess);
-                    }
+                    strCost = ProcessAttributesInXPath(strCost);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(strCost);
+                    if (blnIsSuccess)
+                        decCost = Convert.ToDecimal((double)objProcess);
                 }
 
                 if (DiscountCost)
@@ -2834,15 +2822,11 @@ namespace Chummer.Backend.Equipment
             string strCost = Cost;
             if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
             {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
-                {
-                    sbdCost.Append(strCost);
-                    await ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        decCost = Convert.ToDecimal((double)objProcess);
-                }
+                strCost = await ProcessAttributesInXPathAsync(strCost, token: token).ConfigureAwait(false);
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decCost = Convert.ToDecimal((double)objProcess);
             }
 
             if (DiscountCost)
@@ -5191,37 +5175,41 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
-                    sbdValue.Append(strExpression);
-                    if (ChildrenWithMatrixAttributes.Any())
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
-                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                        sbdValue.Append(strExpression);
+                        if (ChildrenWithMatrixAttributes.Any())
                         {
-                            if (strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                            foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                             {
-                                int intTotalChildrenValue = 0;
-                                foreach (IHasMatrixAttributes objChild in ChildrenWithMatrixAttributes)
+                                if (strExpression.Contains("{Children " + strMatrixAttribute + '}'))
                                 {
-                                    if (objChild is Gear objGear && objGear.Equipped ||
-                                        objChild is Weapon objWeapon && objWeapon.Equipped)
+                                    int intTotalChildrenValue = 0;
+                                    foreach (IHasMatrixAttributes objChild in ChildrenWithMatrixAttributes)
                                     {
-                                        intTotalChildrenValue += objChild.GetBaseMatrixAttribute(strMatrixAttribute);
+                                        if (objChild is Gear objGear && objGear.Equipped ||
+                                            objChild is Weapon objWeapon && objWeapon.Equipped)
+                                        {
+                                            intTotalChildrenValue += objChild.GetBaseMatrixAttribute(strMatrixAttribute);
+                                        }
                                     }
-                                }
 
-                                sbdValue.Replace("{Children " + strMatrixAttribute + '}',
-                                                 intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                                    sbdValue.Replace("{Children " + strMatrixAttribute + '}',
+                                                     intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                                }
                             }
                         }
-                    }
 
-                    ProcessAttributesInXPath(sbdValue, strExpression);
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
-                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                        ProcessAttributesInXPath(sbdValue, strExpression);
+                        strExpression = sbdValue.ToString();
+                    }
                 }
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                (bool blnIsSuccess, object objProcess)
+                    = CommonFunctions.EvaluateInvariantXPath(strExpression);
+                return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
 
             return decValue.StandardRound();
@@ -5253,38 +5241,42 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
-                    sbdValue.Append(strExpression);
-                    if (ChildrenWithMatrixAttributes.Any())
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
-                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                        sbdValue.Append(strExpression);
+                        if (ChildrenWithMatrixAttributes.Any())
                         {
-                            if (strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                            foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                             {
-                                int intTotalChildrenValue = await ChildrenWithMatrixAttributes.SumAsync(async objChild =>
+                                if (strExpression.Contains("{Children " + strMatrixAttribute + '}'))
                                 {
-                                    if (objChild is Gear objGear && objGear.Equipped ||
-                                        objChild is Weapon objWeapon && objWeapon.Equipped)
+                                    int intTotalChildrenValue = await ChildrenWithMatrixAttributes.SumAsync(async objChild =>
                                     {
-                                        return await objChild.GetBaseMatrixAttributeAsync(strMatrixAttribute, token).ConfigureAwait(false);
-                                    }
+                                        if (objChild is Gear objGear && objGear.Equipped ||
+                                            objChild is Weapon objWeapon && objWeapon.Equipped)
+                                        {
+                                            return await objChild.GetBaseMatrixAttributeAsync(strMatrixAttribute, token).ConfigureAwait(false);
+                                        }
 
-                                    return 0;
-                                }, token).ConfigureAwait(false);
+                                        return 0;
+                                    }, token).ConfigureAwait(false);
 
-                                sbdValue.Replace("{Children " + strMatrixAttribute + '}',
-                                                 intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                                    sbdValue.Replace("{Children " + strMatrixAttribute + '}',
+                                                     intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                                }
                             }
                         }
-                    }
 
-                    await ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
-                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                        await ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        strExpression = sbdValue.ToString();
+                    }
                 }
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
+                return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
 
             return decValue.StandardRound();

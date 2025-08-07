@@ -898,11 +898,10 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdDv))
                 {
-                    sbdDv.Append(strDv);
+                    sbdDv.Append('(').Append(strDv).Append(')');
                     foreach (Improvement objImprovement in lstDrainRelevantImprovements)
                     {
-                        sbdDv.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
-                                                       objImprovement.Value);
+                        sbdDv.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
                     }
 
                     if (await chkLimited.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
@@ -919,7 +918,7 @@ namespace Chummer
                         sbdDv.Insert(0, "2 * (").Append(')');
                     }
 
-                    await _objCharacter.ProcessAttributesInXPathAsync(sbdDv, strDv, token: token).ConfigureAwait(false);
+                    await _objCharacter.ProcessAttributesInXPathAsync(sbdDv, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdDv.ToString(), token).ConfigureAwait(false);
                     if (blnIsSuccess)
                         intDrainDv = ((double)xprResult).StandardRound();

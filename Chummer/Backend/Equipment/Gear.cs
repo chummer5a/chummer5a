@@ -2351,61 +2351,69 @@ namespace Chummer.Backend.Equipment
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnSuccess = false;
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
-                    sbdValue.Append(strExpression);
-                    if (Parent is IHasRating objParentCast)
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
-                        sbdValue.CheapReplace(strExpression, "{Parent Rating}",
-                                              () => objParentCast.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "Parent Rating",
-                                              () => objParentCast.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    }
-                    else
-                    {
-                        sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.Replace("Parent Rating", 0.ToString(GlobalSettings.InvariantCultureInfo));
-                    }
-                    Lazy<string> strRating = new Lazy<string>(() => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdValue.CheapReplace("{Rating}", () => strRating.Value);
-                    foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
-                    {
-                        sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}',
-                                              () => (Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
-                                                      strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-                        sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}',
-                                              () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(
-                                                  strMatrixAttribute) ?? "0");
-                        if (Children.Count == 0 || !strExpression.Contains("{Children " + strMatrixAttribute + '}'))
-                            continue;
-                        int intTotalChildrenValue = Children.Sum(g => g.Equipped, loopGear =>
-                                                                     loopGear.GetBaseMatrixAttribute(
-                                                                         strMatrixAttribute));
-
-                        sbdValue.Replace("{Children " + strMatrixAttribute + '}',
-                                         intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
-                    }
-                    sbdValue.CheapReplace("Rating", () => strRating.Value);
-                    object objLoopParent = Parent;
-                    while (objLoopParent is Gear objLoopParentGear)
-                        objLoopParent = objLoopParentGear.Parent;
-                    if (objLoopParent is Cyberware objCyberwareParent)
-                        objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
-                    else if (objLoopParent is WeaponAccessory objAccessoryParent)
-                    {
-                        Weapon objWeaponParent = objAccessoryParent.Parent;
-                        if (objWeaponParent != null)
+                        sbdValue.Append(strExpression);
+                        if (Parent is IHasRating objParentCast)
                         {
-                            if (objWeaponParent.Cyberware)
+                            sbdValue.CheapReplace(strExpression, "{Parent Rating}",
+                                                  () => objParentCast.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.CheapReplace(strExpression, "Parent Rating",
+                                                  () => objParentCast.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        }
+                        else
+                        {
+                            sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.Replace("Parent Rating", 0.ToString(GlobalSettings.InvariantCultureInfo));
+                        }
+                        Lazy<string> strRating = new Lazy<string>(() => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace("{Rating}", () => strRating.Value);
+                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                        {
+                            sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}',
+                                                  () => (Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
+                                                          strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                            sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}',
+                                                  () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(
+                                                      strMatrixAttribute) ?? "0");
+                            if (Children.Count == 0 || !strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                                continue;
+                            int intTotalChildrenValue = Children.Sum(g => g.Equipped, loopGear =>
+                                                                         loopGear.GetBaseMatrixAttribute(
+                                                                             strMatrixAttribute));
+
+                            sbdValue.Replace("{Children " + strMatrixAttribute + '}',
+                                             intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        }
+                        sbdValue.CheapReplace("Rating", () => strRating.Value);
+                        object objLoopParent = Parent;
+                        while (objLoopParent is Gear objLoopParentGear)
+                            objLoopParent = objLoopParentGear.Parent;
+                        if (objLoopParent is Cyberware objCyberwareParent)
+                            objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                        else if (objLoopParent is WeaponAccessory objAccessoryParent)
+                        {
+                            Weapon objWeaponParent = objAccessoryParent.Parent;
+                            if (objWeaponParent != null)
                             {
-                                string strCyberwareId = objAccessoryParent.Parent.ParentID;
-                                objCyberwareParent = _objCharacter.Cyberware.FindById(strCyberwareId)
-                                    ?? _objCharacter.Vehicles.FindVehicleCyberware(x => strCyberwareId == x.InternalId);
-                                objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
-                            }
-                            else if (objWeaponParent.ParentVehicle != null)
-                            {
-                                objWeaponParent.ParentVehicle.ProcessAttributesInXPath(sbdValue, strExpression);
+                                if (objWeaponParent.Cyberware)
+                                {
+                                    string strCyberwareId = objAccessoryParent.Parent.ParentID;
+                                    objCyberwareParent = _objCharacter.Cyberware.FindById(strCyberwareId)
+                                        ?? _objCharacter.Vehicles.FindVehicleCyberware(x => strCyberwareId == x.InternalId);
+                                    objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                                }
+                                else if (objWeaponParent.ParentVehicle != null)
+                                {
+                                    objWeaponParent.ParentVehicle.ProcessAttributesInXPath(sbdValue, strExpression);
+                                }
+                                else
+                                {
+                                    Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                                    _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                                }
                             }
                             else
                             {
@@ -2413,27 +2421,22 @@ namespace Chummer.Backend.Equipment
                                 _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
                             }
                         }
+                        else if (objLoopParent is Vehicle objVehicleParent)
+                            objVehicleParent.ProcessAttributesInXPath(sbdValue, strExpression);
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdValue);
                             _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
                         }
+                        strExpression = sbdValue.ToString();
                     }
-                    else if (objLoopParent is Vehicle objVehicleParent)
-                        objVehicleParent.ProcessAttributesInXPath(sbdValue, strExpression);
-                    else
-                    {
-                        Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                        _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
-                    }
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
-                    if (blnIsSuccess)
-                    {
-                        blnSuccess = true;
-                        return Convert.ToDecimal((double)objProcess);
-                    }
+                }
+                (bool blnIsSuccess, object objProcess)
+                            = CommonFunctions.EvaluateInvariantXPath(strExpression);
+                if (blnIsSuccess)
+                {
+                    blnSuccess = true;
+                    return Convert.ToDecimal((double)objProcess);
                 }
             }
 
@@ -2451,82 +2454,85 @@ namespace Chummer.Backend.Equipment
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnSuccess = false;
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
-                    sbdValue.Append(strExpression);
-                    if (Parent is IHasRating objCastParent)
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
-                            async () => (await objCastParent.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
-                    }
-                    await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
-                    {
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}',
-                            () => (Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
-                                    strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo) ?? "0"
-                                , token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + '}',
-                            () => (Parent as IHasMatrixAttributes)?.GetMatrixAttributeString(
-                                strMatrixAttribute) ?? "0", token: token).ConfigureAwait(false);
-                        if (Children.Count == 0 || !strExpression.Contains("{Children " + strMatrixAttribute + '}'))
-                            continue;
-                        int intTotalChildrenValue = await Children.SumAsync(g => g.Equipped, loopGear =>
-                            loopGear.GetBaseMatrixAttributeAsync(
-                                strMatrixAttribute, token), token: token).ConfigureAwait(false);
-
-                        sbdValue.Replace("{Children " + strMatrixAttribute + '}',
-                                         intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
-                    }
-                    await sbdValue.CheapReplaceAsync(strExpression, "Rating", async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    object objLoopParent = Parent;
-                    while (objLoopParent is Gear objLoopParentGear)
-                        objLoopParent = objLoopParentGear.Parent;
-                    if (objLoopParent is Cyberware objCyberwareParent)
-                        await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                    else if (objLoopParent is WeaponAccessory objAccessoryParent)
-                    {
-                        Weapon objWeaponParent = objAccessoryParent.Parent;
-                        if (objWeaponParent != null)
+                        sbdValue.Append(strExpression);
+                        if (Parent is IHasRating objCastParent)
                         {
-                            if (objWeaponParent.Cyberware)
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
+                                async () => (await objCastParent.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
+                        }
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                        {
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}',
+                                () => (Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
+                                        strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo) ?? "0"
+                                    , token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + '}',
+                                () => (Parent as IHasMatrixAttributes)?.GetMatrixAttributeString(
+                                    strMatrixAttribute) ?? "0", token: token).ConfigureAwait(false);
+                            if (Children.Count == 0 || !strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                                continue;
+                            int intTotalChildrenValue = await Children.SumAsync(g => g.Equipped, loopGear =>
+                                loopGear.GetBaseMatrixAttributeAsync(
+                                    strMatrixAttribute, token), token: token).ConfigureAwait(false);
+
+                            sbdValue.Replace("{Children " + strMatrixAttribute + '}',
+                                             intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        }
+                        await sbdValue.CheapReplaceAsync(strExpression, "Rating", async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        object objLoopParent = Parent;
+                        while (objLoopParent is Gear objLoopParentGear)
+                            objLoopParent = objLoopParentGear.Parent;
+                        if (objLoopParent is Cyberware objCyberwareParent)
+                            await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        else if (objLoopParent is WeaponAccessory objAccessoryParent)
+                        {
+                            Weapon objWeaponParent = objAccessoryParent.Parent;
+                            if (objWeaponParent != null)
                             {
-                                string strCyberwareId = objAccessoryParent.Parent.ParentID;
-                                objCyberwareParent = await _objCharacter.Cyberware.FindByIdAsync(strCyberwareId, token).ConfigureAwait(false)
-                                    ?? (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => strCyberwareId == x.InternalId, token).ConfigureAwait(false)).Item1;
-                                await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                if (objWeaponParent.Cyberware)
+                                {
+                                    string strCyberwareId = objAccessoryParent.Parent.ParentID;
+                                    objCyberwareParent = await _objCharacter.Cyberware.FindByIdAsync(strCyberwareId, token).ConfigureAwait(false)
+                                        ?? (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => strCyberwareId == x.InternalId, token).ConfigureAwait(false)).Item1;
+                                    await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                }
+                                else if (objWeaponParent.ParentVehicle != null)
+                                    await objWeaponParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                else
+                                {
+                                    Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                                    await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                }
                             }
-                            else if (objWeaponParent.ParentVehicle != null)
-                                await objWeaponParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                             else
                             {
                                 Vehicle.FillAttributesInXPathWithDummies(sbdValue);
                                 await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                             }
                         }
+                        else if (objLoopParent is Vehicle objVehicleParent)
+                            await objVehicleParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdValue);
                             await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         }
+                        strExpression = sbdValue.ToString();
                     }
-                    else if (objLoopParent is Vehicle objVehicleParent)
-                        await objVehicleParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                    else
-                    {
-                        Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                        await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                    }
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
                 }
+                (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
             }
 
             return new Tuple<decimal, bool>(decValue, blnSuccess);

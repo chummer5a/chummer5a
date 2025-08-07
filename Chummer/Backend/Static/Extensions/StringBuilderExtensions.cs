@@ -48,7 +48,7 @@ namespace Chummer
         {
             if (sbdInput.Length == 0)
                 yield break;
-            for (int i = 0;  i < sbdInput.Length; ++i)
+            for (int i = 0; i < sbdInput.Length; ++i)
                 yield return sbdInput[i];
         }
 

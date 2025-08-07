@@ -16188,7 +16188,7 @@ namespace Chummer
                             else
                             {
                                 string strAccuracyText = (await objSelectedAccessory.GetTotalAccuracyAsync(token).ConfigureAwait(false))
-                                    .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    .ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                                 await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
                                 await lblWeaponAccuracy.DoThreadSafeAsync(x =>
@@ -19673,7 +19673,7 @@ namespace Chummer
                             }
                             else
                             {
-                                string strReachText = (await objAccessory.GetTotalReachAsync(token).ConfigureAwait(false)).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                string strReachText = (await objAccessory.GetTotalReachAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                                 await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
                                 await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
@@ -19854,7 +19854,7 @@ namespace Chummer
                             else
                             {
                                 string strAccuracyText = (await objAccessory.GetTotalAccuracyAsync(token).ConfigureAwait(false))
-                                        .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                        .ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                                 await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                 .ConfigureAwait(false);
                                 await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>

@@ -708,7 +708,7 @@ namespace Chummer
                     List<Improvement> lstImprovements
                         = ImprovementManager.GetCachedImprovementListForValueOf(
                             _objCharacter, Improvement.ImprovementType.FadingValue, Name, true);
-                    if (lstImprovements.Count > 0)
+                    if (lstImprovements.Count > 0 || !strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         bool blnForce = strReturn.StartsWith('L');
                         string strFv = blnForce ? strReturn.TrimStartOnce("L", true) : strReturn;
@@ -736,38 +736,32 @@ namespace Chummer
 
                         string strToAppend = string.Empty;
                         int intFadingDv = 0;
-                        if (strFv.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                        if (strFv.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                         {
                             if (lstImprovements.Count > 0 || strFv.HasValuesNeedingReplacementForXPathProcessing())
                             {
                                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdReturn))
                                 {
-                                    sbdReturn.Append(strFv);
+                                    sbdReturn.Append('(').Append(strFv).Append(')');
                                     foreach (Improvement objImprovement in lstImprovements)
                                     {
-                                        sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
-                                                           objImprovement.Value);
+                                        sbdReturn.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
                                     }
                                     _objCharacter.ProcessAttributesInXPath(sbdReturn);
-                                    (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(sbdReturn.ToString());
-                                    if (blnIsSuccess)
-                                        intFadingDv = ((double)xprResult).StandardRound();
-                                    else
-                                        strToAppend = sbdReturn.ToString();
+                                    strFv = sbdReturn.ToString();
                                 }
                             }
+                            (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(strFv);
+                            if (blnIsSuccess)
+                                intFadingDv = ((double)xprResult).StandardRound();
                             else
-                            {
-                                (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(strFv);
-                                if (blnIsSuccess)
-                                    intFadingDv = ((double)xprResult).StandardRound();
-                                else
-                                    strToAppend = strFv;
-                            }
+                                strToAppend = strFv;
                         }
                         else
                         {
+                            foreach (Improvement objImprovement in lstImprovements)
+                                decValue += objImprovement.Value;
                             intFadingDv = decValue.StandardRound();
                         }
 
@@ -805,7 +799,7 @@ namespace Chummer
                 List<Improvement> lstImprovements
                     = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                         _objCharacter, Improvement.ImprovementType.FadingValue, Name, true, token).ConfigureAwait(false);
-                if (lstImprovements.Count > 0)
+                if (lstImprovements.Count > 0 || !strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     bool blnForce = strReturn.StartsWith('L');
                     string strFv = blnForce ? strReturn.TrimStartOnce("L", true) : strReturn;
@@ -833,38 +827,32 @@ namespace Chummer
 
                     string strToAppend = string.Empty;
                     int intFadingDv = 0;
-                    if (strFv.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    if (strFv.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                     {
                         if (lstImprovements.Count > 0 || strFv.HasValuesNeedingReplacementForXPathProcessing())
                         {
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdReturn))
                             {
-                                sbdReturn.Append(strFv);
+                                sbdReturn.Append('(').Append(strFv).Append(')');
                                 foreach (Improvement objImprovement in lstImprovements)
                                 {
-                                    sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
-                                                       objImprovement.Value);
+                                    sbdReturn.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
                                 }
                                 await _objCharacter.ProcessAttributesInXPathAsync(sbdReturn, token: token).ConfigureAwait(false);
-                                (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdReturn.ToString(), token).ConfigureAwait(false);
-                                if (blnIsSuccess)
-                                    intFadingDv = ((double)xprResult).StandardRound();
-                                else
-                                    strToAppend = sbdReturn.ToString();
+                                strFv = sbdReturn.ToString();
                             }
                         }
+                        (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(strFv, token).ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            intFadingDv = ((double)xprResult).StandardRound();
                         else
-                        {
-                            (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(strFv, token).ConfigureAwait(false);
-                            if (blnIsSuccess)
-                                intFadingDv = ((double)xprResult).StandardRound();
-                            else
-                                strToAppend = strFv;
-                        }
+                            strToAppend = strFv;
                     }
                     else
                     {
+                        foreach (Improvement objImprovement in lstImprovements)
+                            decValue += objImprovement.Value;
                         intFadingDv = decValue.StandardRound();
                     }
 

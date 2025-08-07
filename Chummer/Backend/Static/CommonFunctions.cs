@@ -74,9 +74,16 @@ namespace Chummer
             decExpressionAsNumber = 0;
             if (string.IsNullOrWhiteSpace(strExpression))
                 return false;
-            return strExpression.IndexOfAny(s_LstCharsMarkingNeedOfProcessing) != -1
-                || strExpression.Contains("- ") || strExpression.IndexOf('-') != strExpression.LastIndexOf('-')
-                || !decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decExpressionAsNumber);
+            if (strExpression.IndexOfAny(s_LstCharsMarkingNeedOfProcessing) != -1)
+                return true;
+            string strTrimmedExpression = strExpression.Trim();
+            // If there is a minus sign anywhere except at the very front of the string with a digit following it, return true
+            int intLastMinusIndex = strTrimmedExpression.LastIndexOf('-');
+            if (intLastMinusIndex >= 1)
+                return true;
+            if (intLastMinusIndex == 0 && strTrimmedExpression.Length <= 1 || !char.IsDigit(strTrimmedExpression[1]))
+                return true;
+            return !decimal.TryParse(strTrimmedExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decExpressionAsNumber);
         }
 
         /// <summary>
@@ -204,7 +211,19 @@ namespace Chummer
                     objReturn = x;
                     blnIsSuccess = false;
                 }
+                catch (FormatException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
                 catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
+                catch (OverflowException)
                 {
                     Utils.BreakIfDebug();
                     objReturn = x;
@@ -295,7 +314,19 @@ namespace Chummer
                     objReturn = x;
                     blnIsSuccess = false;
                 }
+                catch (FormatException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
                 catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
+                catch (OverflowException)
                 {
                     Utils.BreakIfDebug();
                     objReturn = x;
@@ -352,7 +383,19 @@ namespace Chummer
                     objReturn = x;
                     blnIsSuccess = false;
                 }
+                catch (FormatException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
                 catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
+                catch (OverflowException)
                 {
                     Utils.BreakIfDebug();
                     objReturn = x;
@@ -409,7 +452,19 @@ namespace Chummer
                     objReturn = x;
                     blnIsSuccess = false;
                 }
+                catch (FormatException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
                 catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
+                }
+                catch (OverflowException)
                 {
                     Utils.BreakIfDebug();
                     objReturn = x;
