@@ -84,18 +84,15 @@ namespace Chummer
         /// Useful as a sort of initial check to see if we can jump straight to the evaluator or not.
         /// </summary>
         /// <param name="strExpression">String to check.</param>
-        public static bool HasValuesNeedingReplacementForXPathProcessing(this string strExpression, bool blnCheckForLetters = true)
+        /// <param name="blnIncludeLetters">If true, check for uppercase latin letters and opening curly brackets. Otherwise, only check for opening curly brackets.</param>
+        public static bool HasValuesNeedingReplacementForXPathProcessing(this string strExpression, bool blnIncludeLetters = true)
         {
             if (string.IsNullOrEmpty(strExpression))
                 return false;
-            if (strExpression.Contains('{'))
-                return true;
-            if (!blnCheckForLetters)
-                return false;
-            // We do not want to fire on lowercase letters because XPath functions are all-lowercase, while every single value we use for replacements has at least one uppercase letter
-            if (strExpression.Length <= Utils.MaxParallelBatchSize)
-                return strExpression.Any(x => char.IsUpper(x));
-            return strExpression.AsParallel().Any(x => char.IsUpper(x));
+            if (blnIncludeLetters)
+                // We do not want to fire on lowercase letters because XPath functions are all-lowercase, while every single value we use for replacements has at least one uppercase letter
+                return strExpression.IndexOfAny(s_achrUppercaseLatinCharsAndOpenCurlyBracket) >= 0;
+            return strExpression.IndexOf('{') >= 0;
         }
 
         /// <summary>
@@ -103,21 +100,31 @@ namespace Chummer
         /// Useful as a sort of initial check to see if we can jump straight to the evaluator or not.
         /// </summary>
         /// <param name="strExpression">String to check.</param>
-        public static bool HasValuesNeedingReplacementForXPathProcessing([NotNull] this StringBuilder sbdExpression, bool blnCheckForLetters = true)
+        /// <param name="blnIncludeLetters">If true, check for uppercase latin letters and opening curly brackets. Otherwise, only check for opening curly brackets.</param>
+        public static bool HasValuesNeedingReplacementForXPathProcessing([NotNull] this StringBuilder sbdExpression, bool blnIncludeLetters = true)
         {
             if (sbdExpression.Length == 0)
                 return false;
-            if (blnCheckForLetters)
+            if (blnIncludeLetters)
             {
                 // We do not want to fire on lowercase letters because XPath functions are all-lowercase, while every single value we use for replacements has at least one uppercase letter
                 if (sbdExpression.Length <= Utils.MaxParallelBatchSize)
-                    return sbdExpression.Enumerate().Any(x => x == '{' || char.IsUpper(x));
-                return sbdExpression.Enumerate().AsParallel().Any(x => x == '{' || char.IsUpper(x));
+                    return sbdExpression.Enumerate().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x));
+                return sbdExpression.Enumerate().AsParallel().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x));
             }
             if (sbdExpression.Length <= Utils.MaxParallelBatchSize)
                 return sbdExpression.Enumerate().Any(x => x == '{');
             return sbdExpression.Enumerate().AsParallel().Any(x => x == '{');
         }
+
+        private static readonly char[] s_achrUppercaseLatinCharsAndOpenCurlyBracket = new[]
+        {
+            '{', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+            'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+            'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+        };
+
+        private static readonly HashSet<char> s_setUppercaseLatinCharsAndOpenCurlyBracket = new HashSet<char>(s_achrUppercaseLatinCharsAndOpenCurlyBracket);
 
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
