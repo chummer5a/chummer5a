@@ -1348,12 +1348,12 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            strValue = strValue.ProcessFixedValuesString(intRating);
+            strValue = strValue.ProcessFixedValuesString(intRating)
+                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = strValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
+                string strReturn = objCharacter.ProcessAttributesInXPath(strValue);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1383,12 +1383,12 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            strValue = strValue.ProcessFixedValuesString(intRating);
+            strValue = strValue.ProcessFixedValuesString(intRating)
+                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = strValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                strReturn = await (await objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strReturn, token: token).ConfigureAwait(false);
+                string strReturn = await objCharacter.ProcessAttributesInXPathAsync(strValue, token: token).ConfigureAwait(false);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1417,12 +1417,12 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            strValue = strValue.ProcessFixedValuesString(intRating);
+            strValue = strValue.ProcessFixedValuesString(intRating)
+                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = strValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
+                string strReturn = objCharacter.ProcessAttributesInXPath(strValue);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1452,12 +1452,12 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            strValue = strValue.ProcessFixedValuesString(intRating);
+            strValue = strValue.ProcessFixedValuesString(intRating)
+                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = strValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                strReturn = await (await objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strReturn, token: token).ConfigureAwait(false);
+                string strReturn = await objCharacter.ProcessAttributesInXPathAsync(strValue, token: token).ConfigureAwait(false);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);

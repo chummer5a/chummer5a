@@ -23237,7 +23237,7 @@ namespace Chummer
                                         .CheapReplaceAsync("{Karma}", () => LanguageManager.GetStringAsync("String_Karma", token: token), token: token)
                                         .CheapReplaceAsync("{PriorityNuyen}", () => LanguageManager.GetStringAsync("Checkbox_CreatePACKSKit_StartingNuyen", token: token), token: token)
                                         .ConfigureAwait(false);
-            strNuyenTooltip = await CharacterObject.AttributeSection.ProcessAttributesInXPathForTooltipAsync(
+            strNuyenTooltip = await CharacterObject.ProcessAttributesInXPathForTooltipAsync(
                                                                   strNuyenTooltip, token: token).ConfigureAwait(false);
             strNuyenTooltip = string.Format(GlobalSettings.CultureInfo,
                                                          await LanguageManager

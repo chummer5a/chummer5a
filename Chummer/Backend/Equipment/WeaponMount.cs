@@ -1268,7 +1268,7 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdAvail);
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
+                            _objCharacter.ProcessAttributesInXPath(sbdAvail, strAvail);
                         }
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
@@ -1343,7 +1343,7 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdAvail);
-                            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
+                            await _objCharacter.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                         }
                         (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
@@ -1521,7 +1521,7 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdCost);
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCost);
+                            _objCharacter.ProcessAttributesInXPath(sbdCost, strCost);
                         }
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
@@ -1565,7 +1565,7 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         Vehicle.FillAttributesInXPathWithDummies(sbdCost);
-                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
+                        await _objCharacter.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
                     }
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
@@ -2441,7 +2441,7 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdCost);
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCost);
+                            _objCharacter.ProcessAttributesInXPath(sbdCost, strCost);
                         }
 
                         (bool blnIsSuccess, object objProcess)
@@ -2489,7 +2489,7 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         Vehicle.FillAttributesInXPathWithDummies(sbdCost);
-                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
+                        await _objCharacter.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
                     }
 
                     (bool blnIsSuccess, object objProcess)
@@ -2658,7 +2658,7 @@ namespace Chummer.Backend.Equipment
                             else
                             {
                                 Vehicle.FillAttributesInXPathWithDummies(sbdAvail);
-                                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
+                                _objCharacter.ProcessAttributesInXPath(sbdAvail, strAvail);
                             }
 
                             (bool blnIsSuccess, object objProcess)
@@ -2723,7 +2723,7 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdAvail);
-                            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
+                            await _objCharacter.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                         }
 
                         (bool blnIsSuccess, object objProcess)

@@ -919,7 +919,7 @@ namespace Chummer
                         sbdDv.Insert(0, "2 * (").Append(')');
                     }
 
-                    await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdDv, strDv, token: token).ConfigureAwait(false);
+                    await _objCharacter.ProcessAttributesInXPathAsync(sbdDv, strDv, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdDv.ToString(), token).ConfigureAwait(false);
                     if (blnIsSuccess)
                         intDrainDv = ((double)xprResult).StandardRound();

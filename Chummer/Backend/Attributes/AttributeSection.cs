@@ -2583,6 +2583,8 @@ namespace Chummer.Backend.Attributes
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            if (!strInput.Contains('{'))
                 return strInput;
             using (LockObject.EnterReadLock(token))
             {
@@ -2629,6 +2631,8 @@ namespace Chummer.Backend.Attributes
             token.ThrowIfCancellationRequested();
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing(false))
+                return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
             using (LockObject.EnterReadLock(token))
@@ -2669,7 +2673,10 @@ namespace Chummer.Backend.Attributes
 
         public async Task<string> ProcessAttributesInXPathAsync(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            if (!strInput.Contains('{'))
                 return strInput;
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
@@ -2722,7 +2729,10 @@ namespace Chummer.Backend.Attributes
 
         public async Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing(false))
                 return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
@@ -2771,7 +2781,10 @@ namespace Chummer.Backend.Attributes
 
         public string ProcessAttributesInXPathForTooltip(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            if (!strInput.Contains('{'))
                 return strInput;
             if (objCultureInfo == null)
                 objCultureInfo = GlobalSettings.CultureInfo;
@@ -2877,7 +2890,10 @@ namespace Chummer.Backend.Attributes
 
         public void ProcessAttributesInXPathForTooltip(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing(false))
                 return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
@@ -2975,7 +2991,10 @@ namespace Chummer.Backend.Attributes
 
         public async Task<string> ProcessAttributesInXPathForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            if (!strInput.Contains('{'))
                 return strInput;
             if (objCultureInfo == null)
                 objCultureInfo = GlobalSettings.CultureInfo;
@@ -3115,7 +3134,10 @@ namespace Chummer.Backend.Attributes
             CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true,
             IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing(false))
                 return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();

@@ -64,7 +64,7 @@ namespace Chummer
         private static readonly char[] s_LstCharsMarkingNeedOfProcessing = "abcdfghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVWXYZ()[]{}!=<>&;+*/\\÷×∙".ToCharArray();
 
         /// <summary>
-        /// Check if a string needs to be processed by an invariant XPath processor to be conveerted into a number.
+        /// Check if a string needs to be processed by an invariant XPath processor to be converted into a number.
         /// If it doesn't, also returns the numerical value of the expression (as a decimal type).
         /// </summary>
         /// <param name="strExpression">String to check.</param>
@@ -77,6 +77,46 @@ namespace Chummer
             return strExpression.IndexOfAny(s_LstCharsMarkingNeedOfProcessing) != -1
                 || strExpression.Contains("- ") || strExpression.IndexOf('-') != strExpression.LastIndexOf('-')
                 || !decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decExpressionAsNumber);
+        }
+
+        /// <summary>
+        /// Checks if a string that is meant to hold an expression that is to be processed by an invariant XPath processor has any values that need substitution.
+        /// Useful as a sort of initial check to see if we can jump straight to the evaluator or not.
+        /// </summary>
+        /// <param name="strExpression">String to check.</param>
+        public static bool HasValuesNeedingReplacementForXPathProcessing(this string strExpression, bool blnCheckForLetters = true)
+        {
+            if (string.IsNullOrEmpty(strExpression))
+                return false;
+            if (strExpression.Contains('{'))
+                return true;
+            if (!blnCheckForLetters)
+                return false;
+            // We do not want to fire on lowercase letters because XPath functions are all-lowercase, while every single value we use for replacements has at least one uppercase letter
+            if (strExpression.Length <= Utils.MaxParallelBatchSize)
+                return strExpression.Any(x => char.IsUpper(x));
+            return strExpression.AsParallel().Any(x => char.IsUpper(x));
+        }
+
+        /// <summary>
+        /// Checks if a string that is meant to hold an expression that is to be processed by an invariant XPath processor has any values that need substitution.
+        /// Useful as a sort of initial check to see if we can jump straight to the evaluator or not.
+        /// </summary>
+        /// <param name="strExpression">String to check.</param>
+        public static bool HasValuesNeedingReplacementForXPathProcessing([NotNull] this StringBuilder sbdExpression, bool blnCheckForLetters = true)
+        {
+            if (sbdExpression.Length == 0)
+                return false;
+            if (blnCheckForLetters)
+            {
+                // We do not want to fire on lowercase letters because XPath functions are all-lowercase, while every single value we use for replacements has at least one uppercase letter
+                if (sbdExpression.Length <= Utils.MaxParallelBatchSize)
+                    return sbdExpression.Enumerate().Any(x => x == '{' || char.IsUpper(x));
+                return sbdExpression.Enumerate().AsParallel().Any(x => x == '{' || char.IsUpper(x));
+            }
+            if (sbdExpression.Length <= Utils.MaxParallelBatchSize)
+                return sbdExpression.Enumerate().Any(x => x == '{');
+            return sbdExpression.Enumerate().AsParallel().Any(x => x == '{');
         }
 
         /// <summary>

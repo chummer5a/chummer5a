@@ -209,7 +209,7 @@ namespace Chummer
                                                objImprovement.Value);
                         }
 
-                        await (await _objCharacter.GetAttributeSectionAsync().ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdReturn).ConfigureAwait(false);
+                        await _objCharacter.ProcessAttributesInXPathAsync(sbdReturn).ConfigureAwait(false);
                         (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdReturn.ToString()).ConfigureAwait(false);
                         if (blnIsSuccess)
                             intFadingDv = ((double)xprResult).StandardRound();

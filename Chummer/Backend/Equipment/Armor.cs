@@ -1468,7 +1468,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdValue.Append(strExpression);
                     sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                    _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
@@ -1493,7 +1493,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdValue.Append(strExpression);
                     sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                    await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                    await _objCharacter
                         .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
@@ -1544,7 +1544,7 @@ namespace Chummer.Backend.Equipment
                 strCapacity = strCapacity
                     .CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
                     .CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                strCapacity = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCapacity);
+                strCapacity = _objCharacter.ProcessAttributesInXPath(strCapacity);
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity);
                 string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", objCultureInfo) : strCapacity;
                 if (blnSquareBrackets)
@@ -1577,7 +1577,7 @@ namespace Chummer.Backend.Equipment
                 strCapacity = await strCapacity
                     .CheapReplaceAsync("{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                     .CheapReplaceAsync("Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                strCapacity = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strCapacity, token: token).ConfigureAwait(false);
+                strCapacity = await _objCharacter.ProcessAttributesInXPathAsync(strCapacity, token: token).ConfigureAwait(false);
                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token: token).ConfigureAwait(false);
                 string strReturn = blnIsSuccess
                     ? ((double)objProcess).ToString("#,0.##", objCultureInfo)
@@ -1943,7 +1943,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdArmor.Append(strArmorExpression.TrimStart('+'));
                     sbdArmor.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdArmor, strArmorExpression);
+                    _objCharacter.ProcessAttributesInXPath(sbdArmor, strArmorExpression);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdArmor.ToString());
                     if (blnIsSuccess)
@@ -1970,7 +1970,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdArmor.Append(strArmorExpression.TrimStart('+'));
                     await sbdArmor.CheapReplaceAsync(strArmorExpression, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdArmor, strArmorExpression,
+                    await _objCharacter.ProcessAttributesInXPathAsync(sbdArmor, strArmorExpression,
                         token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdArmor.ToString(), token).ConfigureAwait(false);
@@ -2174,7 +2174,7 @@ namespace Chummer.Backend.Equipment
                     {
                         sbdCost.Append(strCostExpression.TrimStart('+'));
                         sbdCost.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
+                        _objCharacter.ProcessAttributesInXPath(sbdCost, strCostExpression);
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                         if (blnIsSuccess)
@@ -2203,7 +2203,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdCost.Append(strCostExpression.TrimStart('+'));
                     await sbdCost.CheapReplaceAsync(strCostExpression, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
+                    await _objCharacter.ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
                     if (blnIsSuccess)
@@ -2240,7 +2240,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdWeight.Append(strWeightExpression.TrimStart('+'));
                     sbdWeight.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
+                    _objCharacter.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
                     if (blnIsSuccess)
@@ -2613,7 +2613,7 @@ namespace Chummer.Backend.Equipment
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
                         sbdAvail.CheapReplace("Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
+                        _objCharacter.ProcessAttributesInXPath(sbdAvail, strAvail);
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                         if (blnIsSuccess)
@@ -2691,7 +2691,7 @@ namespace Chummer.Backend.Equipment
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
                         await sbdAvail.CheapReplaceAsync(strAvail, "Rating", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
+                        await _objCharacter.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                         (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
                         if (blnIsSuccess)
@@ -3116,7 +3116,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                    _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
@@ -3186,7 +3186,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    await _objCharacter.AttributeSection
+                    await _objCharacter
                         .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)

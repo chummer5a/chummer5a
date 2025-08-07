@@ -6051,7 +6051,7 @@ namespace Chummer.Backend.Equipment
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                     {
                         sbdCost.Append(strCostExpression.TrimStart('+'));
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
+                        _objCharacter.ProcessAttributesInXPath(sbdCost, strCostExpression);
                         sbdCost.CheapReplace(strCostExpression, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
@@ -6098,7 +6098,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                 {
                     sbdCost.Append(strCostExpression.TrimStart('+'));
-                    await _objCharacter.AttributeSection
+                    await _objCharacter
                         .ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
 
                     await sbdCost
@@ -6158,7 +6158,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
                 {
                     sbdWeight.Append(strWeightExpression.TrimStart('+'));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
+                    _objCharacter.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
                     sbdWeight.CheapReplace(strWeightExpression, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     (bool blnIsSuccess, object objProcess) =
                         CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
@@ -11280,7 +11280,7 @@ namespace Chummer.Backend.Equipment
                                              intMaxChildAvail.ToString(GlobalSettings.InvariantCultureInfo));
                         }
 
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
+                        _objCharacter.ProcessAttributesInXPath(sbdAvail, strAvail);
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                         if (blnIsSuccess)
@@ -11382,7 +11382,7 @@ namespace Chummer.Backend.Equipment
                                              intMaxChildAvail.ToString(GlobalSettings.InvariantCultureInfo));
                         }
 
-                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
+                        await _objCharacter.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                         (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
                         if (blnIsSuccess)
@@ -13661,7 +13661,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                    _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
@@ -13735,7 +13735,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    await _objCharacter.AttributeSection
+                    await _objCharacter
                         .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
@@ -14268,6 +14268,8 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
+            if (!strInput.HasValuesNeedingReplacementForXPathProcessing())
+                return strInput;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {
                 sbdInput.Append(strInput);
@@ -14279,6 +14281,8 @@ namespace Chummer.Backend.Equipment
         public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing())
                 return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
@@ -14427,7 +14431,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 Vehicle.FillAttributesInXPathWithDummies(sbdInput);
-                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicAttributeOverrides);
+                _objCharacter.ProcessAttributesInXPath(sbdInput, strOriginal, dicAttributeOverrides);
             }
         }
 
@@ -14436,6 +14440,8 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
+            if (!strInput.HasValuesNeedingReplacementForXPathProcessing())
+                return strInput;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {
                 sbdInput.Append(strInput);
@@ -14447,6 +14453,8 @@ namespace Chummer.Backend.Equipment
         public async Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false, CancellationToken token = default)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing())
                 return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
@@ -14618,7 +14626,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 Vehicle.FillAttributesInXPathWithDummies(sbdInput);
-                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicAttributeOverrides, token).ConfigureAwait(false);
+                await _objCharacter.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicAttributeOverrides, token).ConfigureAwait(false);
             }
         }
 

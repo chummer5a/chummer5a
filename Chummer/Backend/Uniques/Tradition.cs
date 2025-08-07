@@ -1458,7 +1458,7 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplayDrainExpressionMethod(CultureInfo objCultureInfo, string strLanguage)
         {
-            return _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(DrainExpression, objCultureInfo, strLanguage, false);
+            return _objCharacter.ProcessAttributesInXPathForTooltip(DrainExpression, objCultureInfo, strLanguage, false);
         }
 
         /// <summary>
@@ -1466,7 +1466,7 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public async Task<string> DisplayDrainExpressionMethodAsync(CultureInfo objCultureInfo, string strLanguage, CancellationToken token = default)
         {
-            return await _objCharacter.AttributeSection
+            return await _objCharacter
                 .ProcessAttributesInXPathForTooltipAsync(await GetDrainExpressionAsync(token).ConfigureAwait(false),
                     objCultureInfo, strLanguage, false, token: token).ConfigureAwait(false);
         }
@@ -1483,12 +1483,15 @@ namespace Chummer.Backend.Uniques
                     if (Type == TraditionType.None)
                         return 0;
                     string strDrainAttributes = DrainExpression;
-                    string strDrain = _objCharacter.AttributeSection.ProcessAttributesInXPath(strDrainAttributes);
-                    if (strDrain.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decDrain))
+                    if (strDrainAttributes.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decDrain))
                     {
-                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strDrain);
-                        if (blnIsSuccess)
-                            decDrain = Convert.ToDecimal((double)objProcess);
+                        string strDrain = _objCharacter.ProcessAttributesInXPath(strDrainAttributes);
+                        if (strDrain.DoesNeedXPathProcessingToBeConvertedToNumber(out decDrain))
+                        {
+                            (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strDrain);
+                            if (blnIsSuccess)
+                                decDrain = Convert.ToDecimal((double)objProcess);
+                        }
                     }
 
                     // Add any Improvements for Drain Resistance.
@@ -1516,13 +1519,16 @@ namespace Chummer.Backend.Uniques
                 if (eType == TraditionType.None)
                     return 0;
                 string strDrainAttributes = await GetDrainExpressionAsync(token).ConfigureAwait(false);
-                string strDrain = await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strDrainAttributes, token: token).ConfigureAwait(false);
-                if (strDrain.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decDrain))
+                if (strDrainAttributes.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decDrain))
                 {
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions
-                        .EvaluateInvariantXPathAsync(strDrain, token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        decDrain = Convert.ToDecimal((double)objProcess);
+                    string strDrain = await _objCharacter.ProcessAttributesInXPathAsync(strDrainAttributes, token: token).ConfigureAwait(false);
+                    if (strDrain.DoesNeedXPathProcessingToBeConvertedToNumber(out decDrain))
+                    {
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions
+                            .EvaluateInvariantXPathAsync(strDrain, token).ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            decDrain = Convert.ToDecimal((double)objProcess);
+                    }
                 }
 
                 // Add any Improvements for Drain Resistance.
@@ -1553,7 +1559,7 @@ namespace Chummer.Backend.Uniques
                     {
                         sbdToolTip.Append(DrainExpression);
                         // Update the Fading CharacterAttribute Value.
-                        _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(sbdToolTip, DrainExpression);
+                        _objCharacter.ProcessAttributesInXPathForTooltip(sbdToolTip, DrainExpression);
 
                         List<Improvement> lstUsedImprovements
                             = ImprovementManager.GetCachedImprovementListForValueOf(
@@ -1593,7 +1599,7 @@ namespace Chummer.Backend.Uniques
                 {
                     sbdToolTip.Append(DrainExpression);
                     // Update the Fading CharacterAttribute Value.
-                    await _objCharacter.AttributeSection
+                    await _objCharacter
                         .ProcessAttributesInXPathForTooltipAsync(sbdToolTip, DrainExpression, token: token)
                         .ConfigureAwait(false);
 

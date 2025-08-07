@@ -2410,13 +2410,13 @@ namespace Chummer.Backend.Equipment
                             else
                             {
                                 Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                                _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
                             }
                         }
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                            _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
                         }
                     }
                     else if (objLoopParent is Vehicle objVehicleParent)
@@ -2424,7 +2424,7 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                        _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
                     }
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
@@ -2505,13 +2505,13 @@ namespace Chummer.Backend.Equipment
                             else
                             {
                                 Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                             }
                         }
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         }
                     }
                     else if (objLoopParent is Vehicle objVehicleParent)
@@ -2519,7 +2519,7 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                     }
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)

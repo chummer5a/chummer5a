@@ -5516,6 +5516,8 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
+            if (!strInput.HasValuesNeedingReplacementForXPathProcessing())
+                return strInput;
             string strValue = int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo);
             return strInput
                 .Replace("{BodyBase}", strValue)
@@ -5588,12 +5590,14 @@ namespace Chummer.Backend.Equipment
                 .Replace("Slots", "0");
         }
 
-        public static StringBuilder FillAttributesInXPathWithDummies(StringBuilder sdbInput)
+        public static StringBuilder FillAttributesInXPathWithDummies(StringBuilder sbdInput)
         {
-            if (sdbInput.Length == 0)
-                return sdbInput;
+            if (sbdInput.Length == 0)
+                return sbdInput;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing())
+                return sbdInput;
             string strValue = int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo);
-            return sdbInput
+            return sbdInput
                 .Replace("{BodyBase}", strValue)
                 .Replace("{HandlingBase}", strValue)
                 .Replace("{OffroadHandlingBase}", strValue)
@@ -5668,6 +5672,8 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
+            if (!strInput.HasValuesNeedingReplacementForXPathProcessing())
+                return strInput;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {
                 sbdInput.Append(strInput);
@@ -5679,6 +5685,8 @@ namespace Chummer.Backend.Equipment
         public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", VehicleMod objExcludeMod = null, WeaponMount objExcludeMount = null, IReadOnlyDictionary<string, int> dicValueOverrides = null)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing())
                 return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
@@ -5894,7 +5902,7 @@ namespace Chummer.Backend.Equipment
                 () => strOwnSlots.Value);
             sbdInput.CheapReplace(strOriginal, "Slots",
                 () => strOwnSlots.Value);
-            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicValueOverrides);
+            _objCharacter.ProcessAttributesInXPath(sbdInput, strOriginal, dicValueOverrides);
         }
 
         public async Task<string> ProcessAttributesInXPathAsync(string strInput, VehicleMod objExcludeMod = null, WeaponMount objExcludeMount = null, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
@@ -5902,6 +5910,8 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
+            if (!strInput.HasValuesNeedingReplacementForXPathProcessing())
+                return strInput;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {
                 sbdInput.Append(strInput);
@@ -5913,6 +5923,8 @@ namespace Chummer.Backend.Equipment
         public async Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", VehicleMod objExcludeMod = null, WeaponMount objExcludeMount = null, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing())
                 return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
@@ -6128,7 +6140,7 @@ namespace Chummer.Backend.Equipment
                 () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Slots",
                 () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
-            await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+            await _objCharacter
                 .ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicValueOverrides, token).ConfigureAwait(false);
         }
 

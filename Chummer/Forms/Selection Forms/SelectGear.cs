@@ -1406,74 +1406,78 @@ namespace Chummer
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnSuccess = false;
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                // Cannot also process without curly brackets because Device Rating and Parent Rating both exist
+                strExpression = strExpression.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
-                    sbdValue.Append(strExpression);
-                    if (_objGearParent is IHasRating objCastParent)
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
-                            async () => (await objCastParent.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
-                    }
-                    await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
-                    {
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}',
-                            () => (_objGearParent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
-                                    strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo) ?? "0"
-                                , token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + '}',
-                            () => (_objGearParent as IHasMatrixAttributes)?.GetMatrixAttributeString(
-                                strMatrixAttribute) ?? "0", token: token).ConfigureAwait(false);
-                    }
-                    await sbdValue.CheapReplaceAsync(strExpression, "Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    object objLoopParent = _objGearParent;
-                    while (objLoopParent is Gear objLoopParentGear)
-                        objLoopParent = objLoopParentGear.Parent;
-                    if (objLoopParent is Cyberware objCyberwareParent)
-                        await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                    else if (objLoopParent is WeaponAccessory objAccessoryParent)
-                    {
-                        Weapon objWeaponParent = objAccessoryParent.Parent;
-                        if (objWeaponParent != null)
+                        sbdValue.Append(strExpression);
+                        if (_objGearParent is IHasRating objCastParent)
                         {
-                            if (objWeaponParent.Cyberware)
-                            {
-                                string strCyberwareId = objAccessoryParent.Parent.ParentID;
-                                objCyberwareParent = await _objCharacter.Cyberware.FindByIdAsync(strCyberwareId, token).ConfigureAwait(false)
-                                    ?? (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => strCyberwareId == x.InternalId, token).ConfigureAwait(false)).Item1;
-                                await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                            }
-                            else if (objWeaponParent.ParentVehicle != null)
-                                await objWeaponParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                            else
-                            {
-                                Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                            }
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
+                                async () => (await objCastParent.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         }
                         else
                         {
-                            Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
                         }
+                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                        {
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}',
+                                () => (_objGearParent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
+                                        strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo) ?? "0"
+                                    , token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + '}',
+                                () => (_objGearParent as IHasMatrixAttributes)?.GetMatrixAttributeString(
+                                    strMatrixAttribute) ?? "0", token: token).ConfigureAwait(false);
+                        }
+                        await sbdValue.CheapReplaceAsync(strExpression, "Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        object objLoopParent = _objGearParent;
+                        while (objLoopParent is Gear objLoopParentGear)
+                            objLoopParent = objLoopParentGear.Parent;
+                        if (objLoopParent is Cyberware objCyberwareParent)
+                            await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        else if (objLoopParent is WeaponAccessory objAccessoryParent)
+                        {
+                            Weapon objWeaponParent = objAccessoryParent.Parent;
+                            if (objWeaponParent != null)
+                            {
+                                if (objWeaponParent.Cyberware)
+                                {
+                                    string strCyberwareId = objAccessoryParent.Parent.ParentID;
+                                    objCyberwareParent = await _objCharacter.Cyberware.FindByIdAsync(strCyberwareId, token).ConfigureAwait(false)
+                                        ?? (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => strCyberwareId == x.InternalId, token).ConfigureAwait(false)).Item1;
+                                    await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                }
+                                else if (objWeaponParent.ParentVehicle != null)
+                                    await objWeaponParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                else
+                                {
+                                    Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                                    await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                }
+                            }
+                            else
+                            {
+                                Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                                await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            }
+                        }
+                        else if (objLoopParent is Vehicle objVehicleParent)
+                            await objVehicleParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        else
+                        {
+                            Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                            await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        }
+                        strExpression = sbdValue.ToString();
                     }
-                    else if (objLoopParent is Vehicle objVehicleParent)
-                        await objVehicleParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                    else
-                    {
-                        Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                    }
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
                 }
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
             }
 
             return new Tuple<decimal, bool>(decValue, blnSuccess);

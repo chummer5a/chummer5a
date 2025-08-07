@@ -41,6 +41,18 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for enumerating through a StringBuilder's characters.
+        /// </summary>
+        /// <param name="sbdInput">StringBuilder whose contents should enumerated.</param>
+        public static IEnumerable<char> Enumerate([NotNull] this StringBuilder sbdInput)
+        {
+            if (sbdInput.Length == 0)
+                yield break;
+            for (int i = 0;  i < sbdInput.Length; ++i)
+                yield return sbdInput[i];
+        }
+
+        /// <summary>
         /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>

@@ -1067,25 +1067,25 @@ namespace Chummer
                             break;
 
                         case nameof(CharacterSettings.MinInitiativeDice):
-                        {
-                            IAsyncDisposable objLocker2 = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                            try
                             {
-                                token.ThrowIfCancellationRequested();
-                                XPathNavigator objNode =
-                                    await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
-                                if (objNode?.SelectSingleNodeAndCacheExpression("initiativedice", token: token) == null)
+                                IAsyncDisposable objLocker2 = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                                try
                                 {
-                                    _intInitiativeDice = await Settings.GetMinInitiativeDiceAsync(token).ConfigureAwait(false);
-                                    setPropertiesToRefresh.Add(nameof(InitiativeDice));
+                                    token.ThrowIfCancellationRequested();
+                                    XPathNavigator objNode =
+                                        await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                                    if (objNode?.SelectSingleNodeAndCacheExpression("initiativedice", token: token) == null)
+                                    {
+                                        _intInitiativeDice = await Settings.GetMinInitiativeDiceAsync(token).ConfigureAwait(false);
+                                        setPropertiesToRefresh.Add(nameof(InitiativeDice));
+                                    }
                                 }
+                                finally
+                                {
+                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                }
+                                break;
                             }
-                            finally
-                            {
-                                await objLocker2.DisposeAsync().ConfigureAwait(false);
-                            }
-                            break;
-                        }
 
                         case nameof(CharacterSettings.MaxInitiativeDice):
                             setPropertiesToRefresh.Add(nameof(InitiativeDice));
@@ -1334,130 +1334,130 @@ namespace Chummer
                     switch (e.ListChangedType)
                     {
                         case ListChangedType.Reset:
-                        {
-                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                            setTemp.Add(nameof(PowerPointsUsed));
-                            setTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                            setTemp.Add(nameof(AllowAdeptWayPowerDiscount));
-                            dicChangedProperties.Add(this, setTemp);
-                            break;
-                        }
-                        case ListChangedType.ItemAdded:
-                        {
-                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                            setTemp.Add(nameof(PowerPointsUsed));
-                            dicChangedProperties.Add(this, setTemp);
-                            IAsyncDisposable objLocker =
-                                await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                            try
                             {
-                                token.ThrowIfCancellationRequested();
-                                Power objNewPower =
-                                    await Powers.GetValueAtAsync(e.NewIndex, token).ConfigureAwait(false);
-                                if (!IsLoading)
-                                {
-                                    // Needed in order to properly process named sources where
-                                    // the tooltip was built before the object was added to the character
-                                    await Improvements.ForEachAsync(objImprovement =>
-                                    {
-                                        if (objImprovement.SourceName != objNewPower.InternalId
-                                            || !objImprovement.Enabled)
-                                            return;
-                                        foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                                     string strPropertyToUpdate) in
-                                                 objImprovement.GetRelevantPropertyChangers())
-                                        {
-                                            if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                    out HashSet<string> setChangedProperties))
-                                            {
-                                                setChangedProperties = Utils.StringHashSetPool.Get();
-                                                dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                            }
-
-                                            setChangedProperties.Add(strPropertyToUpdate);
-                                        }
-                                    }, token).ConfigureAwait(false);
-                                }
-
-                                if (await objNewPower.GetAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false))
-                                {
-                                    setTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                                    setTemp.Add(nameof(AllowAdeptWayPowerDiscount));
-                                }
-                            }
-                            finally
-                            {
-                                await objLocker.DisposeAsync().ConfigureAwait(false);
-                            }
-
-                            break;
-                        }
-                        case ListChangedType.ItemDeleted:
-                        {
-                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                            setTemp.Add(nameof(PowerPointsUsed));
-                            dicChangedProperties.Add(this, setTemp);
-                            break;
-                        }
-                        case ListChangedType.ItemChanged:
-                        {
-                            if (e.PropertyDescriptor == null)
-                            {
+                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                setTemp.Add(nameof(PowerPointsUsed));
+                                setTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                                setTemp.Add(nameof(AllowAdeptWayPowerDiscount));
+                                dicChangedProperties.Add(this, setTemp);
                                 break;
                             }
-
-                            switch (e.PropertyDescriptor.Name)
+                        case ListChangedType.ItemAdded:
                             {
-                                case nameof(Power.AdeptWayDiscountEnabled):
+                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                setTemp.Add(nameof(PowerPointsUsed));
+                                dicChangedProperties.Add(this, setTemp);
+                                IAsyncDisposable objLocker =
+                                    await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                                try
                                 {
-                                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                                    setTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                                    setTemp.Add(nameof(AllowAdeptWayPowerDiscount));
-                                    dicChangedProperties.Add(this, setTemp);
+                                    token.ThrowIfCancellationRequested();
+                                    Power objNewPower =
+                                        await Powers.GetValueAtAsync(e.NewIndex, token).ConfigureAwait(false);
+                                    if (!IsLoading)
+                                    {
+                                        // Needed in order to properly process named sources where
+                                        // the tooltip was built before the object was added to the character
+                                        await Improvements.ForEachAsync(objImprovement =>
+                                        {
+                                            if (objImprovement.SourceName != objNewPower.InternalId
+                                                || !objImprovement.Enabled)
+                                                return;
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
+                                                         string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
+                                            {
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            }
+                                        }, token).ConfigureAwait(false);
+                                    }
+
+                                    if (await objNewPower.GetAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false))
+                                    {
+                                        setTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                                        setTemp.Add(nameof(AllowAdeptWayPowerDiscount));
+                                    }
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+
+                                break;
+                            }
+                        case ListChangedType.ItemDeleted:
+                            {
+                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                setTemp.Add(nameof(PowerPointsUsed));
+                                dicChangedProperties.Add(this, setTemp);
+                                break;
+                            }
+                        case ListChangedType.ItemChanged:
+                            {
+                                if (e.PropertyDescriptor == null)
+                                {
                                     break;
                                 }
-                                case nameof(Power.DiscountedAdeptWay):
+
+                                switch (e.PropertyDescriptor.Name)
                                 {
-                                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                                    setTemp.Add(nameof(PowerPointsUsed));
-                                    setTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                                    setTemp.Add(nameof(AllowAdeptWayPowerDiscount));
-                                    dicChangedProperties.Add(this, setTemp);
-                                    IAsyncDisposable objLocker =
-                                        await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                                    try
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        foreach (Power objPower in Powers)
+                                    case nameof(Power.AdeptWayDiscountEnabled):
                                         {
-                                            if (!dicChangedProperties.TryGetValue(objPower,
-                                                    out HashSet<string> setChangedProperties))
+                                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                            setTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                                            setTemp.Add(nameof(AllowAdeptWayPowerDiscount));
+                                            dicChangedProperties.Add(this, setTemp);
+                                            break;
+                                        }
+                                    case nameof(Power.DiscountedAdeptWay):
+                                        {
+                                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                            setTemp.Add(nameof(PowerPointsUsed));
+                                            setTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                                            setTemp.Add(nameof(AllowAdeptWayPowerDiscount));
+                                            dicChangedProperties.Add(this, setTemp);
+                                            IAsyncDisposable objLocker =
+                                                await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                                            try
                                             {
-                                                setChangedProperties = Utils.StringHashSetPool.Get();
-                                                dicChangedProperties.Add(objPower, setChangedProperties);
+                                                token.ThrowIfCancellationRequested();
+                                                foreach (Power objPower in Powers)
+                                                {
+                                                    if (!dicChangedProperties.TryGetValue(objPower,
+                                                            out HashSet<string> setChangedProperties))
+                                                    {
+                                                        setChangedProperties = Utils.StringHashSetPool.Get();
+                                                        dicChangedProperties.Add(objPower, setChangedProperties);
+                                                    }
+
+                                                    setChangedProperties.Add(nameof(Power.AdeptWayDiscountEnabled));
+                                                }
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
                                             }
 
-                                            setChangedProperties.Add(nameof(Power.AdeptWayDiscountEnabled));
+                                            break;
                                         }
-                                    }
-                                    finally
-                                    {
-                                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                                    }
+                                    case nameof(Power.PowerPoints):
+                                        {
+                                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                            setTemp.Add(nameof(PowerPointsUsed));
+                                            dicChangedProperties.Add(this, setTemp);
+                                            break;
+                                        }
+                                }
 
-                                    break;
-                                }
-                                case nameof(Power.PowerPoints):
-                                {
-                                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                                    setTemp.Add(nameof(PowerPointsUsed));
-                                    dicChangedProperties.Add(this, setTemp);
-                                    break;
-                                }
+                                break;
                             }
-
-                            break;
-                        }
                     }
 
                     foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in
@@ -2446,83 +2446,58 @@ namespace Chummer
                         switch (e.Action)
                         {
                             case NotifyCollectionChangedAction.Add:
-                            {
-                                foreach (Cyberware objNewItem in e.NewItems)
                                 {
-                                    token.ThrowIfCancellationRequested();
-                                    if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token)
-                                            .ConfigureAwait(false))
-                                        blnDoEncumbranceRefresh = true;
-
-                                    dicChangedProperties[this].Add(await objNewItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
-                                    if (!IsLoading)
+                                    foreach (Cyberware objNewItem in e.NewItems)
                                     {
-                                        // Needed in order to properly process named sources where
-                                        // the tooltip was built before the object was added to the character
-                                        await Improvements.ForEachAsync(objImprovement =>
+                                        token.ThrowIfCancellationRequested();
+                                        if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token)
+                                                .ConfigureAwait(false))
+                                            blnDoEncumbranceRefresh = true;
+
+                                        dicChangedProperties[this].Add(await objNewItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
+                                        if (!IsLoading)
                                         {
-                                            token.ThrowIfCancellationRequested();
-                                            if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") ==
-                                                objNewItem.InternalId && objImprovement.Enabled)
+                                            // Needed in order to properly process named sources where
+                                            // the tooltip was built before the object was added to the character
+                                            await Improvements.ForEachAsync(objImprovement =>
                                             {
-                                                foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                                             string strPropertyToUpdate) in
-                                                         objImprovement.GetRelevantPropertyChangers())
+                                                token.ThrowIfCancellationRequested();
+                                                if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") ==
+                                                    objNewItem.InternalId && objImprovement.Enabled)
                                                 {
-                                                    token.ThrowIfCancellationRequested();
-                                                    if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                            out HashSet<string> setChangedProperties))
+                                                    foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
+                                                                 string strPropertyToUpdate) in
+                                                             objImprovement.GetRelevantPropertyChangers())
                                                     {
-                                                        setChangedProperties = Utils.StringHashSetPool.Get();
-                                                        dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                        token.ThrowIfCancellationRequested();
+                                                        if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                                out HashSet<string> setChangedProperties))
+                                                        {
+                                                            setChangedProperties = Utils.StringHashSetPool.Get();
+                                                            dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                        }
+
+                                                        setChangedProperties.Add(strPropertyToUpdate);
                                                     }
-
-                                                    setChangedProperties.Add(strPropertyToUpdate);
                                                 }
-                                            }
-                                        }, token).ConfigureAwait(false);
+                                            }, token).ConfigureAwait(false);
+                                        }
+
+                                        if (!blnDoCyberlimbAttributesRefresh
+                                            && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
+                                                .ConfigureAwait(false) && await objNewItem.GetParentAsync(token).ConfigureAwait(false) == null
+                                            && await objNewItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
+                                            && await objNewItem.GetIsLimbAsync(token).ConfigureAwait(false)
+                                            && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                await objNewItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
+                                        {
+                                            blnDoCyberlimbAttributesRefresh = true;
+                                        }
                                     }
 
-                                    if (!blnDoCyberlimbAttributesRefresh
-                                        && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
-                                            .ConfigureAwait(false) && await objNewItem.GetParentAsync(token).ConfigureAwait(false) == null
-                                        && await objNewItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
-                                        && await objNewItem.GetIsLimbAsync(token).ConfigureAwait(false)
-                                        && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
-                                            await objNewItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
-                                    {
-                                        blnDoCyberlimbAttributesRefresh = true;
-                                    }
+                                    break;
                                 }
-
-                                break;
-                            }
                             case NotifyCollectionChangedAction.Remove:
-                            {
-                                foreach (Cyberware objOldItem in e.OldItems)
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    if (await objOldItem.GetIsModularCurrentlyEquippedAsync(token)
-                                            .ConfigureAwait(false))
-                                        blnDoEncumbranceRefresh = true;
-                                    dicChangedProperties[this].Add(await objOldItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
-                                    if (!blnDoCyberlimbAttributesRefresh
-                                        && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
-                                            .ConfigureAwait(false) && await objOldItem.GetParentAsync(token).ConfigureAwait(false) == null
-                                        && await objOldItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
-                                        && await objOldItem.GetIsLimbAsync(token).ConfigureAwait(false)
-                                        && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
-                                            await objOldItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
-                                    {
-                                        blnDoCyberlimbAttributesRefresh = true;
-                                    }
-                                }
-
-                                break;
-                            }
-                            case NotifyCollectionChangedAction.Replace:
-                            {
-                                if (!await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false))
                                 {
                                     foreach (Cyberware objOldItem in e.OldItems)
                                     {
@@ -2530,8 +2505,7 @@ namespace Chummer
                                         if (await objOldItem.GetIsModularCurrentlyEquippedAsync(token)
                                                 .ConfigureAwait(false))
                                             blnDoEncumbranceRefresh = true;
-                                        dicChangedProperties[this]
-                                            .Add(await objOldItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
+                                        dicChangedProperties[this].Add(await objOldItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
                                         if (!blnDoCyberlimbAttributesRefresh
                                             && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
                                                 .ConfigureAwait(false) && await objOldItem.GetParentAsync(token).ConfigureAwait(false) == null
@@ -2544,48 +2518,74 @@ namespace Chummer
                                         }
                                     }
 
-                                    foreach (Cyberware objNewItem in e.NewItems)
+                                    break;
+                                }
+                            case NotifyCollectionChangedAction.Replace:
+                                {
+                                    if (!await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false))
                                     {
-                                        token.ThrowIfCancellationRequested();
-                                        if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token)
-                                                .ConfigureAwait(false))
-                                            blnDoEncumbranceRefresh = true;
-                                        dicChangedProperties[this]
-                                            .Add(await objNewItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
-                                        if (!blnDoCyberlimbAttributesRefresh
-                                            && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
-                                                .ConfigureAwait(false) && await objNewItem.GetParentAsync(token).ConfigureAwait(false) == null
-                                            && await objNewItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
-                                            && await objNewItem.GetIsLimbAsync(token).ConfigureAwait(false)
-                                            && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
-                                                await objNewItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
+                                        foreach (Cyberware objOldItem in e.OldItems)
                                         {
-                                            blnDoCyberlimbAttributesRefresh = true;
+                                            token.ThrowIfCancellationRequested();
+                                            if (await objOldItem.GetIsModularCurrentlyEquippedAsync(token)
+                                                    .ConfigureAwait(false))
+                                                blnDoEncumbranceRefresh = true;
+                                            dicChangedProperties[this]
+                                                .Add(await objOldItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
+                                            if (!blnDoCyberlimbAttributesRefresh
+                                                && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
+                                                    .ConfigureAwait(false) && await objOldItem.GetParentAsync(token).ConfigureAwait(false) == null
+                                                && await objOldItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
+                                                && await objOldItem.GetIsLimbAsync(token).ConfigureAwait(false)
+                                                && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                    await objOldItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
+                                            {
+                                                blnDoCyberlimbAttributesRefresh = true;
+                                            }
+                                        }
+
+                                        foreach (Cyberware objNewItem in e.NewItems)
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token)
+                                                    .ConfigureAwait(false))
+                                                blnDoEncumbranceRefresh = true;
+                                            dicChangedProperties[this]
+                                                .Add(await objNewItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
+                                            if (!blnDoCyberlimbAttributesRefresh
+                                                && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
+                                                    .ConfigureAwait(false) && await objNewItem.GetParentAsync(token).ConfigureAwait(false) == null
+                                                && await objNewItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
+                                                && await objNewItem.GetIsLimbAsync(token).ConfigureAwait(false)
+                                                && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                    await objNewItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
+                                            {
+                                                blnDoCyberlimbAttributesRefresh = true;
+                                            }
                                         }
                                     }
-                                }
 
-                                break;
-                            }
+                                    break;
+                                }
                             case NotifyCollectionChangedAction.Reset:
-                            {
-                                blnDoEncumbranceRefresh = true;
-                                blnDoCyberlimbAttributesRefresh =
-                                    !await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false);
-
-                                if (!dicChangedProperties.TryGetValue(this,
-                                        out HashSet<string> setChangedProperties))
                                 {
-                                    setChangedProperties = Utils.StringHashSetPool.Get();
-                                    dicChangedProperties.Add(this, setChangedProperties);
-                                }
+                                    blnDoEncumbranceRefresh = true;
+                                    blnDoCyberlimbAttributesRefresh =
+                                        !await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false);
 
-                                setChangedProperties.Add(nameof(PrototypeTranshumanEssenceUsed));
-                                setChangedProperties.Add(nameof(BiowareEssence));
-                                setChangedProperties.Add(nameof(CyberwareEssence));
-                                setChangedProperties.Add(nameof(EssenceHole));
-                                break;
-                            }
+                                    if (!dicChangedProperties.TryGetValue(this,
+                                            out HashSet<string> setChangedProperties))
+                                    {
+                                        setChangedProperties = Utils.StringHashSetPool.Get();
+                                        dicChangedProperties.Add(this, setChangedProperties);
+                                    }
+
+                                    setChangedProperties.Add(nameof(PrototypeTranshumanEssenceUsed));
+                                    setChangedProperties.Add(nameof(BiowareEssence));
+                                    setChangedProperties.Add(nameof(CyberwareEssence));
+                                    setChangedProperties.Add(nameof(EssenceHole));
+                                    break;
+                                }
                         }
 
                         if (blnDoEncumbranceRefresh)
@@ -6103,7 +6103,7 @@ namespace Chummer
                             UploadObjectAsMetric.UploadObject(TelemetryClient, blnSync ? Settings : await GetSettingsAsync(token).ConfigureAwait(false));
                         }
 
-                        XmlDocument objXmlDocument = new XmlDocument {XmlResolver = null};
+                        XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
                         XmlNode objXmlCharacter = null;
                         XPathNavigator xmlCharacterNavigator = null;
                         Quality objLivingPersonaQuality = null;
@@ -8746,7 +8746,7 @@ namespace Chummer
                                             {
                                                 // ReSharper disable once MethodHasAsyncOverload
                                                 ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                                    new[] { objCyberware.InternalId, objCyberware.InternalId + "Pair"}, token: token);
+                                                    new[] { objCyberware.InternalId, objCyberware.InternalId + "Pair" }, token: token);
                                             }
                                             else
                                             {
@@ -12975,47 +12975,24 @@ namespace Chummer
                 {
                     case Improvement.ImprovementSource.Bioware:
                     case Improvement.ImprovementSource.Cyberware:
-                    {
-                        Cyberware objCyberware = Cyberware.DeepFirstOrDefault(x => x.Children,
-                                                                              x => x.InternalId == strImprovedSourceName
-                                                                                  && x.SourceType == eSource, token);
-                        if (objCyberware != null)
                         {
-                            string strWareReturn = objCyberware.DisplayNameShort(strLanguage);
-                            if (objCyberware.Parent != null)
-                                strWareReturn += strSpace + '(' + objCyberware.Parent.DisplayNameShort(strLanguage)
-                                                 + ')';
-                            if (blnWireless)
-                                strWareReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
-                            return strWareReturn;
-                        }
-
-                        foreach (Vehicle objVehicle in Vehicles)
-                        {
-                            foreach (VehicleMod objVehicleMod in objVehicle.Mods)
+                            Cyberware objCyberware = Cyberware.DeepFirstOrDefault(x => x.Children,
+                                                                                  x => x.InternalId == strImprovedSourceName
+                                                                                      && x.SourceType == eSource, token);
+                            if (objCyberware != null)
                             {
-                                objCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children,
-                                    x => x.InternalId == strImprovedSourceName, token);
-                                if (objCyberware != null)
-                                {
-                                    string strWareReturn
-                                        = objCyberware.DisplayNameShort(strLanguage) + strSpace + '('
-                                          + objVehicle.DisplayNameShort(strLanguage) + ','
-                                          + strSpace + objVehicleMod.DisplayNameShort(strLanguage);
-                                    if (objCyberware.Parent != null)
-                                        strWareReturn += ',' + strSpace
-                                                             + objCyberware.Parent.DisplayNameShort(strLanguage);
-                                    strWareReturn += ')';
-                                    if (blnWireless)
-                                        strWareReturn
-                                            += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
-                                    return strWareReturn;
-                                }
+                                string strWareReturn = objCyberware.DisplayNameShort(strLanguage);
+                                if (objCyberware.Parent != null)
+                                    strWareReturn += strSpace + '(' + objCyberware.Parent.DisplayNameShort(strLanguage)
+                                                     + ')';
+                                if (blnWireless)
+                                    strWareReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
+                                return strWareReturn;
                             }
 
-                            foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                            foreach (Vehicle objVehicle in Vehicles)
                             {
-                                foreach (VehicleMod objVehicleMod in objMount.Mods)
+                                foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                                 {
                                     objCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children,
                                         x => x.InternalId == strImprovedSourceName, token);
@@ -13023,156 +13000,145 @@ namespace Chummer
                                     {
                                         string strWareReturn
                                             = objCyberware.DisplayNameShort(strLanguage) + strSpace + '('
-                                              + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpace
-                                              + objMount.DisplayNameShort(strLanguage) + ','
+                                              + objVehicle.DisplayNameShort(strLanguage) + ','
                                               + strSpace + objVehicleMod.DisplayNameShort(strLanguage);
                                         if (objCyberware.Parent != null)
                                             strWareReturn += ',' + strSpace
                                                                  + objCyberware.Parent.DisplayNameShort(strLanguage);
                                         strWareReturn += ')';
                                         if (blnWireless)
-                                            strWareReturn += strSpace
-                                                             + LanguageManager.GetString(
-                                                                 "String_Wireless", strLanguage, token: token);
+                                            strWareReturn
+                                                += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                                         return strWareReturn;
                                     }
                                 }
-                            }
-                        }
 
-                        break;
-                    }
+                                foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                                {
+                                    foreach (VehicleMod objVehicleMod in objMount.Mods)
+                                    {
+                                        objCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children,
+                                            x => x.InternalId == strImprovedSourceName, token);
+                                        if (objCyberware != null)
+                                        {
+                                            string strWareReturn
+                                                = objCyberware.DisplayNameShort(strLanguage) + strSpace + '('
+                                                  + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpace
+                                                  + objMount.DisplayNameShort(strLanguage) + ','
+                                                  + strSpace + objVehicleMod.DisplayNameShort(strLanguage);
+                                            if (objCyberware.Parent != null)
+                                                strWareReturn += ',' + strSpace
+                                                                     + objCyberware.Parent.DisplayNameShort(strLanguage);
+                                            strWareReturn += ')';
+                                            if (blnWireless)
+                                                strWareReturn += strSpace
+                                                                 + LanguageManager.GetString(
+                                                                     "String_Wireless", strLanguage, token: token);
+                                            return strWareReturn;
+                                        }
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
                     case Improvement.ImprovementSource.Gear:
-                    {
-                        Gear objReturnGear =
-                            Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strImprovedSourceName, token);
-                        if (objReturnGear != null)
                         {
-                            string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                            if (objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpace + '(' + parent.DisplayNameShort(strLanguage) + ')';
-                            if (blnWireless)
-                                strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
-                            return strGearReturn;
-                        }
-
-                        objReturnGear
-                            = Weapons.FindWeaponGear(strImprovedSourceName, out WeaponAccessory objGearAccessory, token);
-
-                        if (objReturnGear != null)
-                        {
-                            string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                            if (objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpace + '(' + objGearAccessory.Parent.DisplayNameShort(strLanguage)
-                                                 + ','
-                                                 + strSpace
-                                                 + objGearAccessory.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                 + parent.DisplayNameShort(strLanguage) + ')';
-                            else
-                                strGearReturn += strSpace + '(' + objGearAccessory.Parent.DisplayNameShort(strLanguage)
-                                                 + ','
-                                                 + strSpace + objGearAccessory.DisplayNameShort(strLanguage) + ')';
-                            if (blnWireless)
-                                strGearReturn
-                                    += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
-                            return strGearReturn;
-                        }
-
-                        objReturnGear
-                            = Armor.FindArmorGear(strImprovedSourceName, out Armor objArmor, out ArmorMod objArmorMod);
-                        if (objReturnGear != null)
-                        {
-                            string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                            if (objReturnGear.Parent is Gear objParent)
-                            {
-                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ','
-                                                 + strSpace
-                                                 + objArmorMod.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                 + objParent.DisplayNameShort(strLanguage) + ')';
-                            }
-                            else if (objArmorMod != null)
-                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ','
-                                                 + strSpace
-                                                 + objArmorMod.DisplayNameShort(strLanguage) + ')';
-                            else
-                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ')';
-
-                            if (blnWireless)
-                                strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
-                            return strGearReturn;
-                        }
-
-                        objReturnGear
-                            = Cyberware.FindCyberwareGear(strImprovedSourceName, out Cyberware objGearCyberware);
-
-                        if (objReturnGear != null)
-                        {
-                            string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                            if (objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpace + '(' + objGearCyberware.DisplayNameShort(strLanguage) + ','
-                                                 + strSpace
-                                                 + strSpace + parent.DisplayNameShort(strLanguage) + ')';
-                            else
-                                strGearReturn += strSpace + '(' + objGearCyberware.DisplayNameShort(strLanguage) + ')';
-                            if (blnWireless)
-                                strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
-                            return strGearReturn;
-                        }
-
-                        foreach (Vehicle objVehicle in Vehicles)
-                        {
-                            objReturnGear = objVehicle.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                x => x.InternalId == strImprovedSourceName, token);
+                            Gear objReturnGear =
+                                Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strImprovedSourceName, token);
                             if (objReturnGear != null)
                             {
                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                 if (objReturnGear.Parent is Gear parent)
-                                    strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                    strGearReturn += strSpace + '(' + parent.DisplayNameShort(strLanguage) + ')';
+                                if (blnWireless)
+                                    strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
+                                return strGearReturn;
+                            }
+
+                            objReturnGear
+                                = Weapons.FindWeaponGear(strImprovedSourceName, out WeaponAccessory objGearAccessory, token);
+
+                            if (objReturnGear != null)
+                            {
+                                string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
+                                if (objReturnGear.Parent is Gear parent)
+                                    strGearReturn += strSpace + '(' + objGearAccessory.Parent.DisplayNameShort(strLanguage)
+                                                     + ','
                                                      + strSpace
-                                                     + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                                     + objGearAccessory.DisplayNameShort(strLanguage) + ',' + strSpace
+                                                     + parent.DisplayNameShort(strLanguage) + ')';
                                 else
-                                    strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ')';
+                                    strGearReturn += strSpace + '(' + objGearAccessory.Parent.DisplayNameShort(strLanguage)
+                                                     + ','
+                                                     + strSpace + objGearAccessory.DisplayNameShort(strLanguage) + ')';
                                 if (blnWireless)
                                     strGearReturn
                                         += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                                 return strGearReturn;
                             }
 
-                            foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children,
-                                         x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, token), token))
+                            objReturnGear
+                                = Armor.FindArmorGear(strImprovedSourceName, out Armor objArmor, out ArmorMod objArmorMod);
+                            if (objReturnGear != null)
                             {
-                                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
+                                if (objReturnGear.Parent is Gear objParent)
                                 {
-                                    objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                        x => x.InternalId == strImprovedSourceName, token);
-                                    if (objReturnGear != null)
-                                    {
-                                        string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                                        if (objReturnGear.Parent is Gear parent)
-                                            strGearReturn
-                                                += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                   + strSpace
-                                                   + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                   + objAccessory.DisplayNameShort(strLanguage) + ','
-                                                   + strSpace + parent.DisplayNameShort(strLanguage) + ')';
-                                        else
-                                            strGearReturn
-                                                += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                   + strSpace
-                                                   + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                   + objAccessory.DisplayNameShort(strLanguage) + ')';
-                                        if (blnWireless)
-                                            strGearReturn += strSpace
-                                                             + LanguageManager.GetString(
-                                                                 "String_Wireless", strLanguage, token: token);
-                                        return strGearReturn;
-                                    }
+                                    strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ','
+                                                     + strSpace
+                                                     + objArmorMod.DisplayNameShort(strLanguage) + ',' + strSpace
+                                                     + objParent.DisplayNameShort(strLanguage) + ')';
                                 }
+                                else if (objArmorMod != null)
+                                    strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ','
+                                                     + strSpace
+                                                     + objArmorMod.DisplayNameShort(strLanguage) + ')';
+                                else
+                                    strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ')';
+
+                                if (blnWireless)
+                                    strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
+                                return strGearReturn;
                             }
 
-                            foreach (VehicleMod objVehicleMod in objVehicle.Mods)
+                            objReturnGear
+                                = Cyberware.FindCyberwareGear(strImprovedSourceName, out Cyberware objGearCyberware);
+
+                            if (objReturnGear != null)
                             {
-                                foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children,
+                                string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
+                                if (objReturnGear.Parent is Gear parent)
+                                    strGearReturn += strSpace + '(' + objGearCyberware.DisplayNameShort(strLanguage) + ','
+                                                     + strSpace
+                                                     + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                else
+                                    strGearReturn += strSpace + '(' + objGearCyberware.DisplayNameShort(strLanguage) + ')';
+                                if (blnWireless)
+                                    strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
+                                return strGearReturn;
+                            }
+
+                            foreach (Vehicle objVehicle in Vehicles)
+                            {
+                                objReturnGear = objVehicle.GearChildren.DeepFirstOrDefault(x => x.Children,
+                                    x => x.InternalId == strImprovedSourceName, token);
+                                if (objReturnGear != null)
+                                {
+                                    string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
+                                    if (objReturnGear.Parent is Gear parent)
+                                        strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                         + strSpace
+                                                         + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                    else
+                                        strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ')';
+                                    if (blnWireless)
+                                        strGearReturn
+                                            += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
+                                    return strGearReturn;
+                                }
+
+                                foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children,
                                              x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, token), token))
                                 {
                                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
@@ -13185,16 +13151,16 @@ namespace Chummer
                                             if (objReturnGear.Parent is Gear parent)
                                                 strGearReturn
                                                     += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                       + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                       + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage) + ','
-                                                       + strSpace + objAccessory.DisplayNameShort(strLanguage)
-                                                       + ',' + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                                       + strSpace
+                                                       + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace
+                                                       + objAccessory.DisplayNameShort(strLanguage) + ','
+                                                       + strSpace + parent.DisplayNameShort(strLanguage) + ')';
                                             else
                                                 strGearReturn
                                                     += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                       + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                       + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage) + ','
-                                                       + strSpace + objAccessory.DisplayNameShort(strLanguage) + ')';
+                                                       + strSpace
+                                                       + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace
+                                                       + objAccessory.DisplayNameShort(strLanguage) + ')';
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + LanguageManager.GetString(
@@ -13204,70 +13170,31 @@ namespace Chummer
                                     }
                                 }
 
-                                foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children,
-                                             x => x.GearChildren.Count > 0, token))
-                                {
-                                    objReturnGear = objCyberware.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                        x => x.InternalId == strImprovedSourceName, token);
-                                    if (objReturnGear != null)
-                                    {
-                                        string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                                        if (objReturnGear.Parent is Gear parent)
-                                            strGearReturn
-                                                += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                   + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                   + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage) + ','
-                                                   + strSpace + parent.DisplayNameShort(strLanguage) + ')';
-                                        else
-                                            strGearReturn
-                                                += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                   + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                   + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage) + ')';
-                                        if (blnWireless)
-                                            strGearReturn += strSpace
-                                                             + LanguageManager.GetString(
-                                                                 "String_Wireless", strLanguage, token: token);
-                                        return strGearReturn;
-                                    }
-                                }
-                            }
-
-                            foreach (WeaponMount objMount in objVehicle.WeaponMounts)
-                            {
-                                foreach (VehicleMod objVehicleMod in objMount.Mods)
+                                foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                                 {
                                     foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children,
                                                  x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, token), token))
                                     {
                                         foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                         {
-                                            objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(
-                                                x => x.Children,
+                                            objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(x => x.Children,
                                                 x => x.InternalId == strImprovedSourceName, token);
                                             if (objReturnGear != null)
                                             {
                                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                                 if (objReturnGear.Parent is Gear parent)
                                                     strGearReturn
-                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage)
-                                                           + ','
-                                                           + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
                                                            + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                           + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage)
-                                                           + ','
+                                                           + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage) + ','
                                                            + strSpace + objAccessory.DisplayNameShort(strLanguage)
-                                                           + ',' + strSpace + parent.DisplayNameShort(strLanguage)
-                                                           + ')';
+                                                           + ',' + strSpace + parent.DisplayNameShort(strLanguage) + ')';
                                                 else
                                                     strGearReturn
-                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage)
-                                                           + ','
-                                                           + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
                                                            + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                           + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage)
-                                                           + ','
-                                                           + strSpace + objAccessory.DisplayNameShort(strLanguage)
-                                                           + ')';
+                                                           + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage) + ','
+                                                           + strSpace + objAccessory.DisplayNameShort(strLanguage) + ')';
                                                 if (blnWireless)
                                                     strGearReturn += strSpace
                                                                      + LanguageManager.GetString(
@@ -13277,8 +13204,7 @@ namespace Chummer
                                         }
                                     }
 
-                                    foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(
-                                                 x => x.Children,
+                                    foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children,
                                                  x => x.GearChildren.Count > 0, token))
                                     {
                                         objReturnGear = objCyberware.GearChildren.DeepFirstOrDefault(x => x.Children,
@@ -13289,20 +13215,14 @@ namespace Chummer
                                             if (objReturnGear.Parent is Gear parent)
                                                 strGearReturn
                                                     += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                       + strSpace + objMount.DisplayNameShort(strLanguage) + ','
-                                                       + strSpace
-                                                       + objVehicleMod.DisplayNameShort(strLanguage)
-                                                       + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage)
-                                                       + ','
+                                                       + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
+                                                       + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage) + ','
                                                        + strSpace + parent.DisplayNameShort(strLanguage) + ')';
                                             else
                                                 strGearReturn
                                                     += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                       + strSpace + objMount.DisplayNameShort(strLanguage) + ','
-                                                       + strSpace
-                                                       + objVehicleMod.DisplayNameShort(strLanguage)
-                                                       + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage)
-                                                       + ')';
+                                                       + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
+                                                       + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage) + ')';
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + LanguageManager.GetString(
@@ -13311,11 +13231,91 @@ namespace Chummer
                                         }
                                     }
                                 }
-                            }
-                        }
 
-                        break;
-                    }
+                                foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                                {
+                                    foreach (VehicleMod objVehicleMod in objMount.Mods)
+                                    {
+                                        foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children,
+                                                     x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, token), token))
+                                        {
+                                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                            {
+                                                objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(
+                                                    x => x.Children,
+                                                    x => x.InternalId == strImprovedSourceName, token);
+                                                if (objReturnGear != null)
+                                                {
+                                                    string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
+                                                    if (objReturnGear.Parent is Gear parent)
+                                                        strGearReturn
+                                                            += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage)
+                                                               + ','
+                                                               + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                               + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
+                                                               + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage)
+                                                               + ','
+                                                               + strSpace + objAccessory.DisplayNameShort(strLanguage)
+                                                               + ',' + strSpace + parent.DisplayNameShort(strLanguage)
+                                                               + ')';
+                                                    else
+                                                        strGearReturn
+                                                            += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage)
+                                                               + ','
+                                                               + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                               + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
+                                                               + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage)
+                                                               + ','
+                                                               + strSpace + objAccessory.DisplayNameShort(strLanguage)
+                                                               + ')';
+                                                    if (blnWireless)
+                                                        strGearReturn += strSpace
+                                                                         + LanguageManager.GetString(
+                                                                             "String_Wireless", strLanguage, token: token);
+                                                    return strGearReturn;
+                                                }
+                                            }
+                                        }
+
+                                        foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(
+                                                     x => x.Children,
+                                                     x => x.GearChildren.Count > 0, token))
+                                        {
+                                            objReturnGear = objCyberware.GearChildren.DeepFirstOrDefault(x => x.Children,
+                                                x => x.InternalId == strImprovedSourceName, token);
+                                            if (objReturnGear != null)
+                                            {
+                                                string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
+                                                if (objReturnGear.Parent is Gear parent)
+                                                    strGearReturn
+                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                           + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                           + strSpace
+                                                           + objVehicleMod.DisplayNameShort(strLanguage)
+                                                           + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage)
+                                                           + ','
+                                                           + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                                else
+                                                    strGearReturn
+                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                           + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                           + strSpace
+                                                           + objVehicleMod.DisplayNameShort(strLanguage)
+                                                           + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage)
+                                                           + ')';
+                                                if (blnWireless)
+                                                    strGearReturn += strSpace
+                                                                     + LanguageManager.GetString(
+                                                                         "String_Wireless", strLanguage, token: token);
+                                                return strGearReturn;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
                     case Improvement.ImprovementSource.Spell:
                         foreach (Spell objSpell in Spells)
                         {
@@ -13396,41 +13396,41 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementSource.Armor:
-                    {
-                        foreach (Armor objArmor in Armor)
                         {
-                            if (objArmor.InternalId == strImprovedSourceName)
+                            foreach (Armor objArmor in Armor)
                             {
-                                string strReturnArmor = objArmor.DisplayNameShort(strLanguage, token);
-                                if (blnWireless)
-                                    strReturnArmor
-                                        += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
-                                return strReturnArmor;
-                            }
-                        }
-
-                        break;
-                    }
-                    case Improvement.ImprovementSource.ArmorMod:
-                    {
-                        foreach (Armor objArmor in Armor)
-                        {
-                            foreach (ArmorMod objMod in objArmor.ArmorMods)
-                            {
-                                if (objMod.InternalId == strImprovedSourceName)
+                                if (objArmor.InternalId == strImprovedSourceName)
                                 {
-                                    string strReturnArmorMod = objMod.DisplayNameShort(strLanguage) + strSpace + '('
-                                                               + objArmor.DisplayNameShort(strLanguage, token) + ')';
+                                    string strReturnArmor = objArmor.DisplayNameShort(strLanguage, token);
                                     if (blnWireless)
-                                        strReturnArmorMod
+                                        strReturnArmor
                                             += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
-                                    return strReturnArmorMod;
+                                    return strReturnArmor;
                                 }
                             }
-                        }
 
-                        break;
-                    }
+                            break;
+                        }
+                    case Improvement.ImprovementSource.ArmorMod:
+                        {
+                            foreach (Armor objArmor in Armor)
+                            {
+                                foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                {
+                                    if (objMod.InternalId == strImprovedSourceName)
+                                    {
+                                        string strReturnArmorMod = objMod.DisplayNameShort(strLanguage) + strSpace + '('
+                                                                   + objArmor.DisplayNameShort(strLanguage, token) + ')';
+                                        if (blnWireless)
+                                            strReturnArmorMod
+                                                += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
+                                        return strReturnArmorMod;
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
                     case Improvement.ImprovementSource.ComplexForm:
                         foreach (ComplexForm objComplexForm in ComplexForms)
                         {
@@ -13454,37 +13454,37 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementSource.Quality:
-                    {
-                        if (strImprovedSourceName.StartsWith("SEEKER", StringComparison.Ordinal))
                         {
-                            string strReturn = string.Empty;
-                            if (GlobalSettings.Language != GlobalSettings.DefaultLanguage)
+                            if (strImprovedSourceName.StartsWith("SEEKER", StringComparison.Ordinal))
                             {
-                                strReturn = LoadDataXPath("qualities.xml", token: token)
-                                            .SelectSingleNodeAndCacheExpression(
-                                                strImprovedSourceName == "SEEKER_WIL"
-                                                    ? "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate"
-                                                    : "/chummer/qualities/quality[name = \"Redliner\"]/translate", token)
-                                            ?.Value;
+                                string strReturn = string.Empty;
+                                if (GlobalSettings.Language != GlobalSettings.DefaultLanguage)
+                                {
+                                    strReturn = LoadDataXPath("qualities.xml", token: token)
+                                                .SelectSingleNodeAndCacheExpression(
+                                                    strImprovedSourceName == "SEEKER_WIL"
+                                                        ? "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate"
+                                                        : "/chummer/qualities/quality[name = \"Redliner\"]/translate", token)
+                                                ?.Value;
+                                }
+
+                                if (string.IsNullOrEmpty(strReturn))
+                                    strReturn = strImprovedSourceName == "SEEKER_WIL"
+                                        ? "Cyber-Singularity Seeker"
+                                        : "Redliner";
+                                return strReturn;
                             }
 
-                            if (string.IsNullOrEmpty(strReturn))
-                                strReturn = strImprovedSourceName == "SEEKER_WIL"
-                                    ? "Cyber-Singularity Seeker"
-                                    : "Redliner";
-                            return strReturn;
-                        }
-
-                        foreach (Quality objQuality in Qualities)
-                        {
-                            if (objQuality.InternalId == strImprovedSourceName)
+                            foreach (Quality objQuality in Qualities)
                             {
-                                return objQuality.DisplayNameShort(strLanguage);
+                                if (objQuality.InternalId == strImprovedSourceName)
+                                {
+                                    return objQuality.DisplayNameShort(strLanguage);
+                                }
                             }
-                        }
 
-                        break;
-                    }
+                            break;
+                        }
 
                     case Improvement.ImprovementSource.MartialArtTechnique:
                         foreach (MartialArtTechnique objTechnique in MartialArts.SelectMany(x => x.Techniques))
@@ -13536,23 +13536,23 @@ namespace Chummer
                                ?.Value ?? "Resonant Stream: Cyberadept";
 
                     default:
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
-                            return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage, token: token);
-                        // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
-                        if (!string.IsNullOrEmpty(objImprovement.CustomName))
-                            return objImprovement.CustomName;
-                        string strReturn = strImprovedSourceName;
-                        if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
                         {
-                            string strTemp = LanguageManager.GetString("String_" + objImprovement.ImproveSource,
-                                                                       strLanguage, false, token: token);
-                            if (!string.IsNullOrEmpty(strTemp))
-                                strReturn = strTemp;
-                        }
+                            if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
+                                return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage, token: token);
+                            // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
+                            if (!string.IsNullOrEmpty(objImprovement.CustomName))
+                                return objImprovement.CustomName;
+                            string strReturn = strImprovedSourceName;
+                            if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
+                            {
+                                string strTemp = LanguageManager.GetString("String_" + objImprovement.ImproveSource,
+                                                                           strLanguage, false, token: token);
+                                if (!string.IsNullOrEmpty(strTemp))
+                                    strReturn = strTemp;
+                            }
 
-                        return strReturn;
-                    }
+                            return strReturn;
+                        }
                 }
             }
 
@@ -13590,69 +13590,31 @@ namespace Chummer
                 {
                     case Improvement.ImprovementSource.Bioware:
                     case Improvement.ImprovementSource.Cyberware:
-                    {
-                        string strWareReturn = string.Empty;
-                        Cyberware objCyberware = await (await GetCyberwareAsync(token).ConfigureAwait(false)).DeepFirstOrDefaultAsync(x => x.GetChildrenAsync(token),
-                            x => x.InternalId == strImprovedSourceName
-                                 && x.SourceType == eSource, token).ConfigureAwait(false);
-                        if (objCyberware != null)
                         {
-                            strWareReturn = await objCyberware.DisplayNameShortAsync(strLanguage, token)
-                                .ConfigureAwait(false);
-                            Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
-                            if (objParent != null)
-                                strWareReturn += strSpace + '(' + await objParent
-                                                     .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false)
-                                                 + ')';
-                            if (blnWireless)
-                                strWareReturn += strSpace + await LanguageManager
-                                    .GetStringAsync(
-                                        "String_Wireless", strLanguage, token: token)
+                            string strWareReturn = string.Empty;
+                            Cyberware objCyberware = await (await GetCyberwareAsync(token).ConfigureAwait(false)).DeepFirstOrDefaultAsync(x => x.GetChildrenAsync(token),
+                                x => x.InternalId == strImprovedSourceName
+                                     && x.SourceType == eSource, token).ConfigureAwait(false);
+                            if (objCyberware != null)
+                            {
+                                strWareReturn = await objCyberware.DisplayNameShortAsync(strLanguage, token)
                                     .ConfigureAwait(false);
-                            return strWareReturn;
-                        }
+                                Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
+                                if (objParent != null)
+                                    strWareReturn += strSpace + '(' + await objParent
+                                                         .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false)
+                                                     + ')';
+                                if (blnWireless)
+                                    strWareReturn += strSpace + await LanguageManager
+                                        .GetStringAsync(
+                                            "String_Wireless", strLanguage, token: token)
+                                        .ConfigureAwait(false);
+                                return strWareReturn;
+                            }
 
-                        await Vehicles.ForEachWithBreakAsync(async objVehicle =>
-                        {
-                            await objVehicle.Mods.ForEachWithBreakAsync(async objVehicleMod =>
+                            await Vehicles.ForEachWithBreakAsync(async objVehicle =>
                             {
-                                objCyberware = await objVehicleMod.Cyberware.DeepFirstOrDefaultAsync(
-                                    x => x.GetChildrenAsync(token),
-                                    x => x.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
-                                if (objCyberware != null)
-                                {
-                                    strWareReturn
-                                        = await objCyberware.DisplayNameShortAsync(strLanguage, token)
-                                              .ConfigureAwait(false) + strSpace + '('
-                                          + await objVehicle.DisplayNameShortAsync(strLanguage, token)
-                                              .ConfigureAwait(false) + ','
-                                          + strSpace + await objVehicleMod
-                                              .DisplayNameShortAsync(strLanguage, token: token)
-                                              .ConfigureAwait(false);
-                                    Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
-                                    if (objParent != null)
-                                        strWareReturn += ',' + strSpace
-                                                             + await objParent
-                                                                 .DisplayNameShortAsync(strLanguage, token)
-                                                                 .ConfigureAwait(false);
-                                    strWareReturn += ')';
-                                    if (blnWireless)
-                                        strWareReturn
-                                            += strSpace + await LanguageManager
-                                                .GetStringAsync(
-                                                    "String_Wireless", strLanguage, token: token)
-                                                .ConfigureAwait(false);
-                                    return false;
-                                }
-
-                                return true;
-                            }, token).ConfigureAwait(false);
-                            if (!string.IsNullOrEmpty(strWareReturn))
-                                return false;
-
-                            await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMount =>
-                            {
-                                await objMount.Mods.ForEachWithBreakAsync(async objVehicleMod =>
+                                await objVehicle.Mods.ForEachWithBreakAsync(async objVehicleMod =>
                                 {
                                     objCyberware = await objVehicleMod.Cyberware.DeepFirstOrDefaultAsync(
                                         x => x.GetChildrenAsync(token),
@@ -13663,11 +13625,9 @@ namespace Chummer
                                             = await objCyberware.DisplayNameShortAsync(strLanguage, token)
                                                   .ConfigureAwait(false) + strSpace + '('
                                               + await objVehicle.DisplayNameShortAsync(strLanguage, token)
-                                                  .ConfigureAwait(false) + ',' + strSpace
-                                              + await objMount.DisplayNameShortAsync(strLanguage, token)
                                                   .ConfigureAwait(false) + ','
                                               + strSpace + await objVehicleMod
-                                                  .DisplayNameShortAsync(strLanguage, token)
+                                                  .DisplayNameShortAsync(strLanguage, token: token)
                                                   .ConfigureAwait(false);
                                         Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
                                         if (objParent != null)
@@ -13677,231 +13637,215 @@ namespace Chummer
                                                                      .ConfigureAwait(false);
                                         strWareReturn += ')';
                                         if (blnWireless)
-                                            strWareReturn += strSpace
-                                                             + await LanguageManager.GetStringAsync(
-                                                                     "String_Wireless", strLanguage, token: token)
-                                                                 .ConfigureAwait(false);
+                                            strWareReturn
+                                                += strSpace + await LanguageManager
+                                                    .GetStringAsync(
+                                                        "String_Wireless", strLanguage, token: token)
+                                                    .ConfigureAwait(false);
                                         return false;
                                     }
 
                                     return true;
                                 }, token).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strWareReturn))
+                                    return false;
+
+                                await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMount =>
+                                {
+                                    await objMount.Mods.ForEachWithBreakAsync(async objVehicleMod =>
+                                    {
+                                        objCyberware = await objVehicleMod.Cyberware.DeepFirstOrDefaultAsync(
+                                            x => x.GetChildrenAsync(token),
+                                            x => x.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
+                                        if (objCyberware != null)
+                                        {
+                                            strWareReturn
+                                                = await objCyberware.DisplayNameShortAsync(strLanguage, token)
+                                                      .ConfigureAwait(false) + strSpace + '('
+                                                  + await objVehicle.DisplayNameShortAsync(strLanguage, token)
+                                                      .ConfigureAwait(false) + ',' + strSpace
+                                                  + await objMount.DisplayNameShortAsync(strLanguage, token)
+                                                      .ConfigureAwait(false) + ','
+                                                  + strSpace + await objVehicleMod
+                                                      .DisplayNameShortAsync(strLanguage, token)
+                                                      .ConfigureAwait(false);
+                                            Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
+                                            if (objParent != null)
+                                                strWareReturn += ',' + strSpace
+                                                                     + await objParent
+                                                                         .DisplayNameShortAsync(strLanguage, token)
+                                                                         .ConfigureAwait(false);
+                                            strWareReturn += ')';
+                                            if (blnWireless)
+                                                strWareReturn += strSpace
+                                                                 + await LanguageManager.GetStringAsync(
+                                                                         "String_Wireless", strLanguage, token: token)
+                                                                     .ConfigureAwait(false);
+                                            return false;
+                                        }
+
+                                        return true;
+                                    }, token).ConfigureAwait(false);
+                                    return string.IsNullOrEmpty(strWareReturn);
+                                }, token).ConfigureAwait(false);
                                 return string.IsNullOrEmpty(strWareReturn);
                             }, token).ConfigureAwait(false);
-                            return string.IsNullOrEmpty(strWareReturn);
-                        }, token).ConfigureAwait(false);
 
-                        break;
-                    }
+                            break;
+                        }
                     case Improvement.ImprovementSource.Gear:
-                    {
-                        string strGearReturn = string.Empty;
-                        Gear objReturnGear =
-                            await Gear.DeepFirstOrDefaultAsync(x => x.Children,
-                                x => x.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
-                        if (objReturnGear != null)
                         {
-                            strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token)
-                                .ConfigureAwait(false);
-                            if (objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpace + '(' +
-                                                 await parent.DisplayNameShortAsync(strLanguage, token: token)
-                                                     .ConfigureAwait(false) + ')';
-                            if (blnWireless)
-                                strGearReturn += strSpace + await LanguageManager
-                                    .GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false);
-                            return strGearReturn;
-                        }
-
-                        WeaponAccessory objGearAccessory;
-                        (objReturnGear, objGearAccessory)
-                            = await Weapons.FindWeaponGearAsync(strImprovedSourceName, token).ConfigureAwait(false);
-
-                        if (objReturnGear != null)
-                        {
-                            strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token)
-                                .ConfigureAwait(false);
-                            if (objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpace + '(' + await objGearAccessory.Parent
-                                                     .DisplayNameShortAsync(strLanguage, token: token)
-                                                     .ConfigureAwait(false)
-                                                 + ','
-                                                 + strSpace
-                                                 + await objGearAccessory
-                                                     .DisplayNameShortAsync(strLanguage, token: token)
-                                                     .ConfigureAwait(false) + ',' + strSpace
-                                                 + await parent.DisplayNameShortAsync(strLanguage, token)
-                                                     .ConfigureAwait(false) + ')';
-                            else
-                                strGearReturn += strSpace + '(' + await objGearAccessory.Parent
-                                                     .DisplayNameShortAsync(strLanguage, token: token)
-                                                     .ConfigureAwait(false)
-                                                 + ','
-                                                 + strSpace + await objGearAccessory
-                                                     .DisplayNameShortAsync(strLanguage, token: token)
-                                                     .ConfigureAwait(false) + ')';
-                            if (blnWireless)
-                                strGearReturn
-                                    += strSpace + await LanguageManager
-                                        .GetStringAsync("String_Wireless", strLanguage, token: token)
-                                        .ConfigureAwait(false);
-                            return strGearReturn;
-                        }
-
-                        Armor objArmor;
-                        ArmorMod objArmorMod;
-                        (objReturnGear, objArmor, objArmorMod)
-                            = await Armor.FindArmorGearAsync(strImprovedSourceName, token).ConfigureAwait(false);
-                        if (objReturnGear != null)
-                        {
-                            strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token)
-                                .ConfigureAwait(false);
-                            if (objReturnGear.Parent is Gear objParent)
-                            {
-                                strGearReturn += strSpace + '(' +
-                                                 await objArmor.DisplayNameShortAsync(strLanguage, token)
-                                                     .ConfigureAwait(false) + ','
-                                                 + strSpace
-                                                 + await objArmorMod.DisplayNameShortAsync(strLanguage, token)
-                                                     .ConfigureAwait(false) + ',' + strSpace
-                                                 + await objParent.DisplayNameShortAsync(strLanguage, token)
-                                                     .ConfigureAwait(false) + ')';
-                            }
-                            else if (objArmorMod != null)
-                                strGearReturn += strSpace + '(' +
-                                                 await objArmor.DisplayNameShortAsync(strLanguage, token)
-                                                     .ConfigureAwait(false) + ','
-                                                 + strSpace
-                                                 + await objArmorMod.DisplayNameShortAsync(strLanguage, token)
-                                                     .ConfigureAwait(false) + ')';
-                            else
-                                strGearReturn += strSpace + '(' +
-                                                 await objArmor.DisplayNameShortAsync(strLanguage, token)
-                                                     .ConfigureAwait(false) + ')';
-
-                            if (blnWireless)
-                                strGearReturn += strSpace + await LanguageManager
-                                    .GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false);
-                            return strGearReturn;
-                        }
-
-                        Cyberware objGearCyberware;
-                        (objReturnGear, objGearCyberware)
-                            = await Cyberware.FindCyberwareGearAsync(strImprovedSourceName, token).ConfigureAwait(false);
-
-                        if (objReturnGear != null)
-                        {
-                            strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token)
-                                .ConfigureAwait(false);
-                            if (objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpace + '(' + await objGearCyberware
-                                                     .DisplayNameShortAsync(strLanguage, token: token)
-                                                     .ConfigureAwait(false) + ','
-                                                 + strSpace
-                                                 + strSpace +
-                                                 await parent.DisplayNameShortAsync(strLanguage, token: token)
-                                                     .ConfigureAwait(false) + ')';
-                            else
-                                strGearReturn += strSpace + '(' + await objGearCyberware
-                                    .DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false) + ')';
-                            if (blnWireless)
-                                strGearReturn += strSpace + await LanguageManager
-                                    .GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false);
-                            return strGearReturn;
-                        }
-
-                        await Vehicles.ForEachWithBreakAsync(async objVehicle =>
-                        {
-                            objReturnGear = await objVehicle.GearChildren.DeepFirstOrDefaultAsync(x => x.Children,
-                                x => x.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
+                            string strGearReturn = string.Empty;
+                            Gear objReturnGear =
+                                await Gear.DeepFirstOrDefaultAsync(x => x.Children,
+                                    x => x.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
                             if (objReturnGear != null)
                             {
                                 strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token)
                                     .ConfigureAwait(false);
                                 if (objReturnGear.Parent is Gear parent)
-                                    strGearReturn
-                                        += strSpace + '(' + await objVehicle
-                                               .DisplayNameShortAsync(strLanguage, token: token)
-                                               .ConfigureAwait(false) + ','
-                                           + strSpace
-                                           + strSpace + await parent
-                                               .DisplayNameShortAsync(strLanguage, token: token)
-                                               .ConfigureAwait(false) + ')';
-                                else
-                                    strGearReturn += strSpace + '(' + await objVehicle
+                                    strGearReturn += strSpace + '(' +
+                                                     await parent.DisplayNameShortAsync(strLanguage, token: token)
+                                                         .ConfigureAwait(false) + ')';
+                                if (blnWireless)
+                                    strGearReturn += strSpace + await LanguageManager
+                                        .GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false);
+                                return strGearReturn;
+                            }
+
+                            WeaponAccessory objGearAccessory;
+                            (objReturnGear, objGearAccessory)
+                                = await Weapons.FindWeaponGearAsync(strImprovedSourceName, token).ConfigureAwait(false);
+
+                            if (objReturnGear != null)
+                            {
+                                strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token)
+                                    .ConfigureAwait(false);
+                                if (objReturnGear.Parent is Gear parent)
+                                    strGearReturn += strSpace + '(' + await objGearAccessory.Parent
                                                          .DisplayNameShortAsync(strLanguage, token: token)
                                                          .ConfigureAwait(false)
-                                                     + ')';
+                                                     + ','
+                                                     + strSpace
+                                                     + await objGearAccessory
+                                                         .DisplayNameShortAsync(strLanguage, token: token)
+                                                         .ConfigureAwait(false) + ',' + strSpace
+                                                     + await parent.DisplayNameShortAsync(strLanguage, token)
+                                                         .ConfigureAwait(false) + ')';
+                                else
+                                    strGearReturn += strSpace + '(' + await objGearAccessory.Parent
+                                                         .DisplayNameShortAsync(strLanguage, token: token)
+                                                         .ConfigureAwait(false)
+                                                     + ','
+                                                     + strSpace + await objGearAccessory
+                                                         .DisplayNameShortAsync(strLanguage, token: token)
+                                                         .ConfigureAwait(false) + ')';
                                 if (blnWireless)
                                     strGearReturn
                                         += strSpace + await LanguageManager
-                                            .GetStringAsync(
-                                                "String_Wireless", strLanguage, token: token)
+                                            .GetStringAsync("String_Wireless", strLanguage, token: token)
                                             .ConfigureAwait(false);
-                                return false;
+                                return strGearReturn;
                             }
 
-                            foreach (Weapon objWeapon in await objVehicle.Weapons.DeepWhereAsync(x => x.Children,
-                                         x => x.WeaponAccessories.AnyAsync(
-                                             async y =>
-                                                 await y.GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0,
-                                             token),
-                                         token).ConfigureAwait(false))
+                            Armor objArmor;
+                            ArmorMod objArmorMod;
+                            (objReturnGear, objArmor, objArmorMod)
+                                = await Armor.FindArmorGearAsync(strImprovedSourceName, token).ConfigureAwait(false);
+                            if (objReturnGear != null)
                             {
-                                await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objAccessory =>
+                                strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token)
+                                    .ConfigureAwait(false);
+                                if (objReturnGear.Parent is Gear objParent)
                                 {
-                                    objReturnGear = await objAccessory.GearChildren.DeepFirstOrDefaultAsync(
-                                        x => x.Children,
-                                        x => x.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
-                                    if (objReturnGear != null)
-                                    {
-                                        strGearReturn = await objReturnGear
-                                            .DisplayNameShortAsync(strLanguage, token)
-                                            .ConfigureAwait(false);
-                                        if (objReturnGear.Parent is Gear parent)
-                                            strGearReturn
-                                                += strSpace + '(' + await objVehicle
-                                                       .DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false) + ','
-                                                   + strSpace
-                                                   + await objWeapon.DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false) + ',' + strSpace
-                                                   + await objAccessory.DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false) + ','
-                                                   + strSpace + await parent
-                                                       .DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false) + ')';
-                                        else
-                                            strGearReturn
-                                                += strSpace + '(' + await objVehicle
-                                                       .DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false) + ','
-                                                   + strSpace
-                                                   + await objWeapon.DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false) + ',' + strSpace
-                                                   + await objAccessory.DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false) + ')';
-                                        if (blnWireless)
-                                            strGearReturn += strSpace
-                                                             + await LanguageManager.GetStringAsync(
-                                                                     "String_Wireless", strLanguage, token: token)
-                                                                 .ConfigureAwait(false);
-                                        return false;
-                                    }
+                                    strGearReturn += strSpace + '(' +
+                                                     await objArmor.DisplayNameShortAsync(strLanguage, token)
+                                                         .ConfigureAwait(false) + ','
+                                                     + strSpace
+                                                     + await objArmorMod.DisplayNameShortAsync(strLanguage, token)
+                                                         .ConfigureAwait(false) + ',' + strSpace
+                                                     + await objParent.DisplayNameShortAsync(strLanguage, token)
+                                                         .ConfigureAwait(false) + ')';
+                                }
+                                else if (objArmorMod != null)
+                                    strGearReturn += strSpace + '(' +
+                                                     await objArmor.DisplayNameShortAsync(strLanguage, token)
+                                                         .ConfigureAwait(false) + ','
+                                                     + strSpace
+                                                     + await objArmorMod.DisplayNameShortAsync(strLanguage, token)
+                                                         .ConfigureAwait(false) + ')';
+                                else
+                                    strGearReturn += strSpace + '(' +
+                                                     await objArmor.DisplayNameShortAsync(strLanguage, token)
+                                                         .ConfigureAwait(false) + ')';
 
-                                    return true;
-                                }, token).ConfigureAwait(false);
-                                if (!string.IsNullOrEmpty(strGearReturn))
-                                    return false;
+                                if (blnWireless)
+                                    strGearReturn += strSpace + await LanguageManager
+                                        .GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false);
+                                return strGearReturn;
                             }
 
-                            await objVehicle.Mods.ForEachWithBreakAsync(async objVehicleMod =>
+                            Cyberware objGearCyberware;
+                            (objReturnGear, objGearCyberware)
+                                = await Cyberware.FindCyberwareGearAsync(strImprovedSourceName, token).ConfigureAwait(false);
+
+                            if (objReturnGear != null)
                             {
-                                foreach (Weapon objWeapon in await objVehicleMod.Weapons.DeepWhereAsync(
-                                             x => x.Children,
+                                strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token)
+                                    .ConfigureAwait(false);
+                                if (objReturnGear.Parent is Gear parent)
+                                    strGearReturn += strSpace + '(' + await objGearCyberware
+                                                         .DisplayNameShortAsync(strLanguage, token: token)
+                                                         .ConfigureAwait(false) + ','
+                                                     + strSpace
+                                                     + strSpace +
+                                                     await parent.DisplayNameShortAsync(strLanguage, token: token)
+                                                         .ConfigureAwait(false) + ')';
+                                else
+                                    strGearReturn += strSpace + '(' + await objGearCyberware
+                                        .DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false) + ')';
+                                if (blnWireless)
+                                    strGearReturn += strSpace + await LanguageManager
+                                        .GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false);
+                                return strGearReturn;
+                            }
+
+                            await Vehicles.ForEachWithBreakAsync(async objVehicle =>
+                            {
+                                objReturnGear = await objVehicle.GearChildren.DeepFirstOrDefaultAsync(x => x.Children,
+                                    x => x.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
+                                if (objReturnGear != null)
+                                {
+                                    strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token)
+                                        .ConfigureAwait(false);
+                                    if (objReturnGear.Parent is Gear parent)
+                                        strGearReturn
+                                            += strSpace + '(' + await objVehicle
+                                                   .DisplayNameShortAsync(strLanguage, token: token)
+                                                   .ConfigureAwait(false) + ','
+                                               + strSpace
+                                               + strSpace + await parent
+                                                   .DisplayNameShortAsync(strLanguage, token: token)
+                                                   .ConfigureAwait(false) + ')';
+                                    else
+                                        strGearReturn += strSpace + '(' + await objVehicle
+                                                             .DisplayNameShortAsync(strLanguage, token: token)
+                                                             .ConfigureAwait(false)
+                                                         + ')';
+                                    if (blnWireless)
+                                        strGearReturn
+                                            += strSpace + await LanguageManager
+                                                .GetStringAsync(
+                                                    "String_Wireless", strLanguage, token: token)
+                                                .ConfigureAwait(false);
+                                    return false;
+                                }
+
+                                foreach (Weapon objWeapon in await objVehicle.Weapons.DeepWhereAsync(x => x.Children,
                                              x => x.WeaponAccessories.AnyAsync(
-                                                 async y => await y.GearChildren.GetCountAsync(token)
-                                                     .ConfigureAwait(false) > 0, token),
+                                                 async y =>
+                                                     await y.GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0,
+                                                 token),
                                              token).ConfigureAwait(false))
                                 {
                                     await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objAccessory =>
@@ -13919,37 +13863,28 @@ namespace Chummer
                                                     += strSpace + '(' + await objVehicle
                                                            .DisplayNameShortAsync(strLanguage, token)
                                                            .ConfigureAwait(false) + ','
-                                                       + strSpace + await objVehicleMod
-                                                           .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false)
-                                                       + ',' + strSpace
+                                                       + strSpace
                                                        + await objWeapon.DisplayNameShortAsync(strLanguage, token)
+                                                           .ConfigureAwait(false) + ',' + strSpace
+                                                       + await objAccessory.DisplayNameShortAsync(strLanguage, token)
                                                            .ConfigureAwait(false) + ','
-                                                       + strSpace + await objAccessory
+                                                       + strSpace + await parent
                                                            .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false)
-                                                       + ',' + strSpace
-                                                       + await parent.DisplayNameShortAsync(strLanguage, token)
                                                            .ConfigureAwait(false) + ')';
                                             else
                                                 strGearReturn
                                                     += strSpace + '(' + await objVehicle
                                                            .DisplayNameShortAsync(strLanguage, token)
                                                            .ConfigureAwait(false) + ','
-                                                       + strSpace + await objVehicleMod
-                                                           .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false)
-                                                       + ',' + strSpace
+                                                       + strSpace
                                                        + await objWeapon.DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ','
-                                                       + strSpace + await objAccessory
-                                                           .DisplayNameShortAsync(strLanguage, token)
+                                                           .ConfigureAwait(false) + ',' + strSpace
+                                                       + await objAccessory.DisplayNameShortAsync(strLanguage, token)
                                                            .ConfigureAwait(false) + ')';
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + await LanguageManager.GetStringAsync(
-                                                                         "String_Wireless", strLanguage,
-                                                                         token: token)
+                                                                         "String_Wireless", strLanguage, token: token)
                                                                      .ConfigureAwait(false);
                                             return false;
                                         }
@@ -13960,141 +13895,78 @@ namespace Chummer
                                         return false;
                                 }
 
-                                foreach (Cyberware objCyberware in await objVehicleMod.Cyberware.DeepWhereAsync(
-                                             x => x.GetChildrenAsync(token),
-                                             async x =>
-                                                 await (await x.GetGearChildrenAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) > 0,
-                                             token).ConfigureAwait(false))
-                                {
-                                    objReturnGear = await objCyberware.GearChildren.DeepFirstOrDefaultAsync(
-                                        x => x.Children,
-                                        x => x.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
-                                    if (objReturnGear != null)
-                                    {
-                                        strGearReturn = await objReturnGear
-                                            .DisplayNameShortAsync(strLanguage, token)
-                                            .ConfigureAwait(false);
-                                        if (objReturnGear.Parent is Gear parent)
-                                            strGearReturn
-                                                += strSpace + '(' + await objVehicle
-                                                       .DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false) + ','
-                                                   + strSpace + await objVehicleMod
-                                                       .DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false)
-                                                   + ',' + strSpace + await objCyberware
-                                                       .DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false) + ','
-                                                   + strSpace + await parent
-                                                       .DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false) + ')';
-                                        else
-                                            strGearReturn
-                                                += strSpace + '(' + await objVehicle
-                                                       .DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false) + ','
-                                                   + strSpace + await objVehicleMod
-                                                       .DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false)
-                                                   + ',' + strSpace + await objCyberware
-                                                       .DisplayNameShortAsync(strLanguage, token)
-                                                       .ConfigureAwait(false) + ')';
-                                        if (blnWireless)
-                                            strGearReturn += strSpace
-                                                             + await LanguageManager.GetStringAsync(
-                                                                     "String_Wireless", strLanguage, token: token)
-                                                                 .ConfigureAwait(false);
-                                        return false;
-                                    }
-                                }
-
-                                return true;
-                            }, token).ConfigureAwait(false);
-                            if (!string.IsNullOrEmpty(strGearReturn))
-                                return false;
-
-                            await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMount =>
-                            {
-                                await objMount.Mods.ForEachWithBreakAsync(async objVehicleMod =>
+                                await objVehicle.Mods.ForEachWithBreakAsync(async objVehicleMod =>
                                 {
                                     foreach (Weapon objWeapon in await objVehicleMod.Weapons.DeepWhereAsync(
-                                                     x => x.Children,
-                                                     x => x.WeaponAccessories.AnyAsync(
-                                                         y => y.GearChildren.Count > 0, token), token)
-                                                 .ConfigureAwait(false))
+                                                 x => x.Children,
+                                                 x => x.WeaponAccessories.AnyAsync(
+                                                     async y => await y.GearChildren.GetCountAsync(token)
+                                                         .ConfigureAwait(false) > 0, token),
+                                                 token).ConfigureAwait(false))
                                     {
-                                        await objWeapon.WeaponAccessories.ForEachWithBreakAsync(
-                                            async objAccessory =>
+                                        await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objAccessory =>
+                                        {
+                                            objReturnGear = await objAccessory.GearChildren.DeepFirstOrDefaultAsync(
+                                                x => x.Children,
+                                                x => x.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
+                                            if (objReturnGear != null)
                                             {
-                                                objReturnGear = await objAccessory.GearChildren
-                                                    .DeepFirstOrDefaultAsync(
-                                                        x => x.Children,
-                                                        x => x.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
-                                                if (objReturnGear != null)
-                                                {
-                                                    strGearReturn = await objReturnGear
-                                                        .DisplayNameShortAsync(strLanguage, token)
-                                                        .ConfigureAwait(false);
-                                                    if (objReturnGear.Parent is Gear parent)
-                                                        strGearReturn
-                                                            += strSpace + '(' + await objVehicle
-                                                                   .DisplayNameShortAsync(strLanguage, token)
-                                                                   .ConfigureAwait(false)
-                                                               + ','
-                                                               + strSpace + await objMount
-                                                                   .DisplayNameShortAsync(strLanguage, token)
-                                                                   .ConfigureAwait(false) + ','
-                                                               + strSpace + await objVehicleMod
-                                                                   .DisplayNameShortAsync(strLanguage, token)
-                                                                   .ConfigureAwait(false)
-                                                               + ',' + strSpace + await objWeapon
-                                                                   .DisplayNameShortAsync(strLanguage, token)
-                                                                   .ConfigureAwait(false)
-                                                               + ','
-                                                               + strSpace + await objAccessory
-                                                                   .DisplayNameShortAsync(strLanguage, token)
-                                                                   .ConfigureAwait(false)
-                                                               + ',' + strSpace + await parent
-                                                                   .DisplayNameShortAsync(strLanguage, token)
-                                                                   .ConfigureAwait(false)
-                                                               + ')';
-                                                    else
-                                                        strGearReturn
-                                                            += strSpace + '(' + await objVehicle
-                                                                   .DisplayNameShortAsync(strLanguage, token)
-                                                                   .ConfigureAwait(false)
-                                                               + ','
-                                                               + strSpace + await objMount
-                                                                   .DisplayNameShortAsync(strLanguage, token)
-                                                                   .ConfigureAwait(false) + ','
-                                                               + strSpace + await objVehicleMod
-                                                                   .DisplayNameShortAsync(strLanguage, token)
-                                                                   .ConfigureAwait(false)
-                                                               + ',' + strSpace + await objWeapon
-                                                                   .DisplayNameShortAsync(strLanguage, token)
-                                                                   .ConfigureAwait(false)
-                                                               + ','
-                                                               + strSpace + await objAccessory
-                                                                   .DisplayNameShortAsync(strLanguage, token)
-                                                                   .ConfigureAwait(false)
-                                                               + ')';
-                                                    if (blnWireless)
-                                                        strGearReturn += strSpace
-                                                                         + await LanguageManager.GetStringAsync(
+                                                strGearReturn = await objReturnGear
+                                                    .DisplayNameShortAsync(strLanguage, token)
+                                                    .ConfigureAwait(false);
+                                                if (objReturnGear.Parent is Gear parent)
+                                                    strGearReturn
+                                                        += strSpace + '(' + await objVehicle
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false) + ','
+                                                           + strSpace + await objVehicleMod
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false)
+                                                           + ',' + strSpace
+                                                           + await objWeapon.DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false) + ','
+                                                           + strSpace + await objAccessory
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false)
+                                                           + ',' + strSpace
+                                                           + await parent.DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false) + ')';
+                                                else
+                                                    strGearReturn
+                                                        += strSpace + '(' + await objVehicle
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false) + ','
+                                                           + strSpace + await objVehicleMod
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false)
+                                                           + ',' + strSpace
+                                                           + await objWeapon.DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false) + ','
+                                                           + strSpace + await objAccessory
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false) + ')';
+                                                if (blnWireless)
+                                                    strGearReturn += strSpace
+                                                                     + await LanguageManager.GetStringAsync(
                                                                              "String_Wireless", strLanguage,
-                                                                             token: token).ConfigureAwait(false);
-                                                    return false;
-                                                }
+                                                                             token: token)
+                                                                         .ConfigureAwait(false);
+                                                return false;
+                                            }
 
-                                                return true;
-                                            }, token).ConfigureAwait(false);
+                                            return true;
+                                        }, token).ConfigureAwait(false);
+                                        if (!string.IsNullOrEmpty(strGearReturn))
+                                            return false;
                                     }
 
                                     foreach (Cyberware objCyberware in await objVehicleMod.Cyberware.DeepWhereAsync(
                                                  x => x.GetChildrenAsync(token),
-                                                 async x => await (await x.GetGearChildrenAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) > 0, token).ConfigureAwait(false))
+                                                 async x =>
+                                                     await (await x.GetGearChildrenAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) > 0,
+                                                 token).ConfigureAwait(false))
                                     {
-                                        objReturnGear = await (await objCyberware.GetGearChildrenAsync(token).ConfigureAwait(false)).DeepFirstOrDefaultAsync(
+                                        objReturnGear = await objCyberware.GearChildren.DeepFirstOrDefaultAsync(
                                             x => x.Children,
                                             x => x.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
                                         if (objReturnGear != null)
@@ -14107,17 +13979,12 @@ namespace Chummer
                                                     += strSpace + '(' + await objVehicle
                                                            .DisplayNameShortAsync(strLanguage, token)
                                                            .ConfigureAwait(false) + ','
-                                                       + strSpace + await objMount
-                                                           .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ','
-                                                       + strSpace
-                                                       + await objVehicleMod
+                                                       + strSpace + await objVehicleMod
                                                            .DisplayNameShortAsync(strLanguage, token)
                                                            .ConfigureAwait(false)
                                                        + ',' + strSpace + await objCyberware
                                                            .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false)
-                                                       + ','
+                                                           .ConfigureAwait(false) + ','
                                                        + strSpace + await parent
                                                            .DisplayNameShortAsync(strLanguage, token)
                                                            .ConfigureAwait(false) + ')';
@@ -14126,22 +13993,16 @@ namespace Chummer
                                                     += strSpace + '(' + await objVehicle
                                                            .DisplayNameShortAsync(strLanguage, token)
                                                            .ConfigureAwait(false) + ','
-                                                       + strSpace + await objMount
-                                                           .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ','
-                                                       + strSpace
-                                                       + await objVehicleMod
+                                                       + strSpace + await objVehicleMod
                                                            .DisplayNameShortAsync(strLanguage, token)
                                                            .ConfigureAwait(false)
                                                        + ',' + strSpace + await objCyberware
                                                            .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false)
-                                                       + ')';
+                                                           .ConfigureAwait(false) + ')';
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + await LanguageManager.GetStringAsync(
-                                                                         "String_Wireless", strLanguage,
-                                                                         token: token)
+                                                                         "String_Wireless", strLanguage, token: token)
                                                                      .ConfigureAwait(false);
                                             return false;
                                         }
@@ -14149,13 +14010,152 @@ namespace Chummer
 
                                     return true;
                                 }, token).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strGearReturn))
+                                    return false;
+
+                                await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMount =>
+                                {
+                                    await objMount.Mods.ForEachWithBreakAsync(async objVehicleMod =>
+                                    {
+                                        foreach (Weapon objWeapon in await objVehicleMod.Weapons.DeepWhereAsync(
+                                                         x => x.Children,
+                                                         x => x.WeaponAccessories.AnyAsync(
+                                                             y => y.GearChildren.Count > 0, token), token)
+                                                     .ConfigureAwait(false))
+                                        {
+                                            await objWeapon.WeaponAccessories.ForEachWithBreakAsync(
+                                                async objAccessory =>
+                                                {
+                                                    objReturnGear = await objAccessory.GearChildren
+                                                        .DeepFirstOrDefaultAsync(
+                                                            x => x.Children,
+                                                            x => x.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
+                                                    if (objReturnGear != null)
+                                                    {
+                                                        strGearReturn = await objReturnGear
+                                                            .DisplayNameShortAsync(strLanguage, token)
+                                                            .ConfigureAwait(false);
+                                                        if (objReturnGear.Parent is Gear parent)
+                                                            strGearReturn
+                                                                += strSpace + '(' + await objVehicle
+                                                                       .DisplayNameShortAsync(strLanguage, token)
+                                                                       .ConfigureAwait(false)
+                                                                   + ','
+                                                                   + strSpace + await objMount
+                                                                       .DisplayNameShortAsync(strLanguage, token)
+                                                                       .ConfigureAwait(false) + ','
+                                                                   + strSpace + await objVehicleMod
+                                                                       .DisplayNameShortAsync(strLanguage, token)
+                                                                       .ConfigureAwait(false)
+                                                                   + ',' + strSpace + await objWeapon
+                                                                       .DisplayNameShortAsync(strLanguage, token)
+                                                                       .ConfigureAwait(false)
+                                                                   + ','
+                                                                   + strSpace + await objAccessory
+                                                                       .DisplayNameShortAsync(strLanguage, token)
+                                                                       .ConfigureAwait(false)
+                                                                   + ',' + strSpace + await parent
+                                                                       .DisplayNameShortAsync(strLanguage, token)
+                                                                       .ConfigureAwait(false)
+                                                                   + ')';
+                                                        else
+                                                            strGearReturn
+                                                                += strSpace + '(' + await objVehicle
+                                                                       .DisplayNameShortAsync(strLanguage, token)
+                                                                       .ConfigureAwait(false)
+                                                                   + ','
+                                                                   + strSpace + await objMount
+                                                                       .DisplayNameShortAsync(strLanguage, token)
+                                                                       .ConfigureAwait(false) + ','
+                                                                   + strSpace + await objVehicleMod
+                                                                       .DisplayNameShortAsync(strLanguage, token)
+                                                                       .ConfigureAwait(false)
+                                                                   + ',' + strSpace + await objWeapon
+                                                                       .DisplayNameShortAsync(strLanguage, token)
+                                                                       .ConfigureAwait(false)
+                                                                   + ','
+                                                                   + strSpace + await objAccessory
+                                                                       .DisplayNameShortAsync(strLanguage, token)
+                                                                       .ConfigureAwait(false)
+                                                                   + ')';
+                                                        if (blnWireless)
+                                                            strGearReturn += strSpace
+                                                                             + await LanguageManager.GetStringAsync(
+                                                                                 "String_Wireless", strLanguage,
+                                                                                 token: token).ConfigureAwait(false);
+                                                        return false;
+                                                    }
+
+                                                    return true;
+                                                }, token).ConfigureAwait(false);
+                                        }
+
+                                        foreach (Cyberware objCyberware in await objVehicleMod.Cyberware.DeepWhereAsync(
+                                                     x => x.GetChildrenAsync(token),
+                                                     async x => await (await x.GetGearChildrenAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) > 0, token).ConfigureAwait(false))
+                                        {
+                                            objReturnGear = await (await objCyberware.GetGearChildrenAsync(token).ConfigureAwait(false)).DeepFirstOrDefaultAsync(
+                                                x => x.Children,
+                                                x => x.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
+                                            if (objReturnGear != null)
+                                            {
+                                                strGearReturn = await objReturnGear
+                                                    .DisplayNameShortAsync(strLanguage, token)
+                                                    .ConfigureAwait(false);
+                                                if (objReturnGear.Parent is Gear parent)
+                                                    strGearReturn
+                                                        += strSpace + '(' + await objVehicle
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false) + ','
+                                                           + strSpace + await objMount
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false) + ','
+                                                           + strSpace
+                                                           + await objVehicleMod
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false)
+                                                           + ',' + strSpace + await objCyberware
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false)
+                                                           + ','
+                                                           + strSpace + await parent
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false) + ')';
+                                                else
+                                                    strGearReturn
+                                                        += strSpace + '(' + await objVehicle
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false) + ','
+                                                           + strSpace + await objMount
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false) + ','
+                                                           + strSpace
+                                                           + await objVehicleMod
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false)
+                                                           + ',' + strSpace + await objCyberware
+                                                               .DisplayNameShortAsync(strLanguage, token)
+                                                               .ConfigureAwait(false)
+                                                           + ')';
+                                                if (blnWireless)
+                                                    strGearReturn += strSpace
+                                                                     + await LanguageManager.GetStringAsync(
+                                                                             "String_Wireless", strLanguage,
+                                                                             token: token)
+                                                                         .ConfigureAwait(false);
+                                                return false;
+                                            }
+                                        }
+
+                                        return true;
+                                    }, token).ConfigureAwait(false);
+                                    return string.IsNullOrEmpty(strGearReturn);
+                                }, token).ConfigureAwait(false);
                                 return string.IsNullOrEmpty(strGearReturn);
                             }, token).ConfigureAwait(false);
-                            return string.IsNullOrEmpty(strGearReturn);
-                        }, token).ConfigureAwait(false);
 
-                        break;
-                    }
+                            break;
+                        }
                     case Improvement.ImprovementSource.Spell:
                         Spell objSpell = await Spells
                             .FirstOrDefaultAsync(x => x.InternalId == strImprovedSourceName, token)
@@ -14215,50 +14215,50 @@ namespace Chummer
                             return await objEnhancement.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                         break;
                     case Improvement.ImprovementSource.Armor:
-                    {
-                        Armor objArmor = await Armor
-                            .FirstOrDefaultAsync(x => x.InternalId == strImprovedSourceName, token)
-                            .ConfigureAwait(false);
-                        if (objArmor != null)
                         {
-                            string strReturnArmor = await objArmor.DisplayNameShortAsync(strLanguage, token)
+                            Armor objArmor = await Armor
+                                .FirstOrDefaultAsync(x => x.InternalId == strImprovedSourceName, token)
                                 .ConfigureAwait(false);
-                            if (blnWireless)
-                                strReturnArmor
-                                    += strSpace + await LanguageManager
-                                        .GetStringAsync("String_Wireless", strLanguage, token: token)
-                                        .ConfigureAwait(false);
-                            return strReturnArmor;
-                        }
+                            if (objArmor != null)
+                            {
+                                string strReturnArmor = await objArmor.DisplayNameShortAsync(strLanguage, token)
+                                    .ConfigureAwait(false);
+                                if (blnWireless)
+                                    strReturnArmor
+                                        += strSpace + await LanguageManager
+                                            .GetStringAsync("String_Wireless", strLanguage, token: token)
+                                            .ConfigureAwait(false);
+                                return strReturnArmor;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case Improvement.ImprovementSource.ArmorMod:
-                    {
-                        ArmorMod objMod = null;
-                        await Armor.ForEachWithBreakAsync(async x =>
                         {
-                            objMod = await x.ArmorMods.FirstOrDefaultAsync(
-                                y => y.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
-                            return objMod == null;
-                        }, token).ConfigureAwait(false);
-                        if (objMod != null)
-                        {
-                            string strReturnArmorMod =
-                                await objMod.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) +
-                                strSpace + '('
-                                + await objMod.Parent.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) +
-                                ')';
-                            if (blnWireless)
-                                strReturnArmorMod
-                                    += strSpace + await LanguageManager
-                                        .GetStringAsync("String_Wireless", strLanguage, token: token)
-                                        .ConfigureAwait(false);
-                            return strReturnArmorMod;
-                        }
+                            ArmorMod objMod = null;
+                            await Armor.ForEachWithBreakAsync(async x =>
+                            {
+                                objMod = await x.ArmorMods.FirstOrDefaultAsync(
+                                    y => y.InternalId == strImprovedSourceName, token).ConfigureAwait(false);
+                                return objMod == null;
+                            }, token).ConfigureAwait(false);
+                            if (objMod != null)
+                            {
+                                string strReturnArmorMod =
+                                    await objMod.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) +
+                                    strSpace + '('
+                                    + await objMod.Parent.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) +
+                                    ')';
+                                if (blnWireless)
+                                    strReturnArmorMod
+                                        += strSpace + await LanguageManager
+                                            .GetStringAsync("String_Wireless", strLanguage, token: token)
+                                            .ConfigureAwait(false);
+                                return strReturnArmorMod;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case Improvement.ImprovementSource.ComplexForm:
                         ComplexForm objComplexForm = await ComplexForms
                             .FirstOrDefaultAsync(x => x.InternalId == strImprovedSourceName, token)
@@ -14274,36 +14274,36 @@ namespace Chummer
                             return await objAIProgram.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                         break;
                     case Improvement.ImprovementSource.Quality:
-                    {
-                        if (strImprovedSourceName.StartsWith("SEEKER", StringComparison.Ordinal))
                         {
-                            string strReturn = string.Empty;
-                            if (GlobalSettings.Language != GlobalSettings.DefaultLanguage)
+                            if (strImprovedSourceName.StartsWith("SEEKER", StringComparison.Ordinal))
                             {
-                                strReturn = (await LoadDataXPathAsync("qualities.xml", token: token)
-                                        .ConfigureAwait(false))
-                                    .SelectSingleNodeAndCacheExpression(
-                                        strImprovedSourceName == "SEEKER_WIL"
-                                            ? "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate"
-                                            : "/chummer/qualities/quality[name = \"Redliner\"]/translate",
-                                        token)?.Value;
+                                string strReturn = string.Empty;
+                                if (GlobalSettings.Language != GlobalSettings.DefaultLanguage)
+                                {
+                                    strReturn = (await LoadDataXPathAsync("qualities.xml", token: token)
+                                            .ConfigureAwait(false))
+                                        .SelectSingleNodeAndCacheExpression(
+                                            strImprovedSourceName == "SEEKER_WIL"
+                                                ? "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate"
+                                                : "/chummer/qualities/quality[name = \"Redliner\"]/translate",
+                                            token)?.Value;
+                                }
+
+                                if (string.IsNullOrEmpty(strReturn))
+                                    strReturn = strImprovedSourceName == "SEEKER_WIL"
+                                        ? "Cyber-Singularity Seeker"
+                                        : "Redliner";
+                                return strReturn;
                             }
 
-                            if (string.IsNullOrEmpty(strReturn))
-                                strReturn = strImprovedSourceName == "SEEKER_WIL"
-                                    ? "Cyber-Singularity Seeker"
-                                    : "Redliner";
-                            return strReturn;
+                            Quality objQuality = await Qualities
+                                .FirstOrDefaultAsync(x => x.InternalId == strImprovedSourceName, token)
+                                .ConfigureAwait(false);
+                            if (objQuality != null)
+                                return await objQuality.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+
+                            break;
                         }
-
-                        Quality objQuality = await Qualities
-                            .FirstOrDefaultAsync(x => x.InternalId == strImprovedSourceName, token)
-                            .ConfigureAwait(false);
-                        if (objQuality != null)
-                            return await objQuality.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
-
-                        break;
-                    }
 
                     case Improvement.ImprovementSource.MartialArtTechnique:
                         MartialArtTechnique objTechnique = null;
@@ -14362,26 +14362,26 @@ namespace Chummer
                             ?.Value ?? "Resonant Stream: Cyberadept";
 
                     default:
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
-                            return await LanguageManager
-                                .GetStringAsync("String_ArmorEncumbrance", strLanguage, token: token)
-                                .ConfigureAwait(false);
-                        // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
-                        if (!string.IsNullOrEmpty(objImprovement.CustomName))
-                            return objImprovement.CustomName;
-                        string strReturn = strImprovedSourceName;
-                        if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
                         {
-                            string strTemp = await LanguageManager.GetStringAsync(
-                                "String_" + objImprovement.ImproveSource,
-                                strLanguage, false, token: token).ConfigureAwait(false);
-                            if (!string.IsNullOrEmpty(strTemp))
-                                strReturn = strTemp;
-                        }
+                            if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
+                                return await LanguageManager
+                                    .GetStringAsync("String_ArmorEncumbrance", strLanguage, token: token)
+                                    .ConfigureAwait(false);
+                            // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
+                            if (!string.IsNullOrEmpty(objImprovement.CustomName))
+                                return objImprovement.CustomName;
+                            string strReturn = strImprovedSourceName;
+                            if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
+                            {
+                                string strTemp = await LanguageManager.GetStringAsync(
+                                    "String_" + objImprovement.ImproveSource,
+                                    strLanguage, false, token: token).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strTemp))
+                                    strReturn = strTemp;
+                            }
 
-                        return strReturn;
-                    }
+                            return strReturn;
+                        }
                 }
             }
             finally
@@ -20831,17 +20831,11 @@ namespace Chummer
                         string strExpression = Settings.ContactPointsExpression;
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdValue))
-                            {
-                                sbdValue.Append(strExpression);
-                                AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
-                                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                (bool blnIsSuccess, object objProcess)
-                                    = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString());
-                                return _intCachedContactPoints = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
-                            }
+                            strExpression = ProcessAttributesInXPath(strExpression);
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            (bool blnIsSuccess, object objProcess)
+                                    = CommonFunctions.EvaluateInvariantXPath(strExpression);
+                            return _intCachedContactPoints = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                         }
                         else
                             _intCachedContactPoints = decValue.StandardRound();
@@ -20863,16 +20857,11 @@ namespace Chummer
                     string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetContactPointsExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdValue))
-                        {
-                            sbdValue.Append(strExpression);
-                            await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                            (bool blnIsSuccess, object objProcess)
-                                = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
-                            return _intCachedContactPoints = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
-                        }
+                        strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        (bool blnIsSuccess, object objProcess)
+                                = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
+                        return _intCachedContactPoints = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                     }
                     else
                         _intCachedContactPoints = decValue.StandardRound();
@@ -21012,17 +21001,11 @@ namespace Chummer
                     string strExpression = Settings.CarryLimitExpression;
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdValue))
-                        {
-                            sbdValue.Append(strExpression);
-                            AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
-                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                            (bool blnIsSuccess, object objProcess)
-                                = CommonFunctions.EvaluateInvariantXPath(
-                                    sbdValue.ToString());
-                            return _decCachedBaseCarryLimit = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
-                        }
+                        strExpression = ProcessAttributesInXPath(strExpression);
+                        (bool blnIsSuccess, object objProcess)
+                                    = CommonFunctions.EvaluateInvariantXPath(
+                                        strExpression);
+                        return _decCachedBaseCarryLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                     }
                     return _decCachedBaseCarryLimit = decReturn;
                 }
@@ -21046,18 +21029,12 @@ namespace Chummer
                     .GetCarryLimitExpressionAsync(token).ConfigureAwait(false);
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                               out StringBuilder sbdValue))
-                    {
-                        sbdValue.Append(strExpression);
-                        await (await GetAttributeSectionAsync(token).ConfigureAwait(false))
-                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        (bool blnIsSuccess, object objProcess)
-                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token)
-                                .ConfigureAwait(false);
-                        return _decCachedBaseCarryLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
-                    }
+                    strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token)
+                            .ConfigureAwait(false);
+                    return _decCachedBaseCarryLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                 }
                 return _decCachedBaseCarryLimit = decReturn;
             }
@@ -21112,17 +21089,11 @@ namespace Chummer
                     string strExpression = Settings.LiftLimitExpression;
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdValue))
-                        {
-                            sbdValue.Append(strExpression);
-                            AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
-                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                            (bool blnIsSuccess, object objProcess)
+                        strExpression = ProcessAttributesInXPath(strExpression);
+                        (bool blnIsSuccess, object objProcess)
                                 = CommonFunctions.EvaluateInvariantXPath(
-                                    sbdValue.ToString());
-                            return _decCachedBaseLiftLimit = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
-                        }
+                                    strExpression);
+                        return _decCachedBaseLiftLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                     }
                     return _decCachedBaseLiftLimit = decReturn;
                 }
@@ -21146,18 +21117,11 @@ namespace Chummer
                     .GetLiftLimitExpressionAsync(token).ConfigureAwait(false);
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                               out StringBuilder sbdValue))
-                    {
-                        sbdValue.Append(strExpression);
-                        await (await GetAttributeSectionAsync(token).ConfigureAwait(false))
-                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        (bool blnIsSuccess, object objProcess)
-                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token)
+                    strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token)
                                 .ConfigureAwait(false);
-                        return _decCachedBaseLiftLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
-                    }
+                    return _decCachedBaseLiftLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                 }
                 return _decCachedBaseLiftLimit = decReturn;
             }
@@ -21182,17 +21146,11 @@ namespace Chummer
                     string strExpression = Settings.EncumbranceIntervalExpression;
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdValue))
-                        {
-                            sbdValue.Append(strExpression);
-                            AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
-                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                            (bool blnIsSuccess, object objProcess)
+                        strExpression = ProcessAttributesInXPath(strExpression);
+                        (bool blnIsSuccess, object objProcess)
                                 = CommonFunctions.EvaluateInvariantXPath(
-                                    sbdValue.ToString());
-                            decReturn = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
-                        }
+                                    strExpression);
+                        decReturn = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                     }
 
                     // Need this to make sure our division doesn't go haywire
@@ -21221,17 +21179,11 @@ namespace Chummer
                     .GetEncumbranceIntervalExpressionAsync(token).ConfigureAwait(false);
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                               out StringBuilder sbdValue))
-                    {
-                        sbdValue.Append(strExpression);
-                        await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        (bool blnIsSuccess, object objProcess)
+                    strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                sbdValue.ToString(), token).ConfigureAwait(false);
-                        decReturn = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
-                    }
+                                strExpression, token).ConfigureAwait(false);
+                    decReturn = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                 }
 
                 // Need this to make sure our division doesn't go haywire
@@ -23644,18 +23596,11 @@ namespace Chummer
                         string strExpression = Settings.BoundSpiritExpression;
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdValue))
-                            {
-                                sbdValue.Append(strExpression);
-                                AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
-
-                                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                (bool blnIsSuccess, object objProcess)
+                            strExpression = ProcessAttributesInXPath(strExpression);
+                            (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString());
-                                _intBoundSpiritLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
-                            }
+                                        strExpression);
+                            _intBoundSpiritLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                         }
                         else
                             _intBoundSpiritLimit = decValue.StandardRound();
@@ -23678,18 +23623,11 @@ namespace Chummer
                     string strExpression = await Settings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdValue))
-                        {
-                            sbdValue.Append(strExpression);
-                            await AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-
-                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                            (bool blnIsSuccess, object objProcess)
+                        strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                        (bool blnIsSuccess, object objProcess)
                                 = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                    sbdValue.ToString(), token).ConfigureAwait(false);
-                            _intBoundSpiritLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
-                        }
+                                    strExpression, token).ConfigureAwait(false);
+                        _intBoundSpiritLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                     }
                     else
                         _intBoundSpiritLimit = decValue.StandardRound();
@@ -23761,18 +23699,10 @@ namespace Chummer
                         string strExpression = Settings.RegisteredSpriteExpression;
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdValue))
-                            {
-                                sbdValue.Append(strExpression);
-                                AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
-
-                                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                (bool blnIsSuccess, object objProcess)
-                                    = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString());
-                                _intRegisteredSpriteLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
-                            }
+                            strExpression = ProcessAttributesInXPath(strExpression);
+                            (bool blnIsSuccess, object objProcess)
+                                    = CommonFunctions.EvaluateInvariantXPath(strExpression);
+                            _intRegisteredSpriteLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                         }
                         else
                             _intRegisteredSpriteLimit = decValue.StandardRound();
@@ -23795,18 +23725,11 @@ namespace Chummer
                     string strExpression = await Settings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdValue))
-                        {
-                            sbdValue.Append(strExpression);
-                            await AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-
-                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                            (bool blnIsSuccess, object objProcess)
+                        strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                        (bool blnIsSuccess, object objProcess)
                                 = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                    sbdValue.ToString(), token).ConfigureAwait(false);
-                            _intRegisteredSpriteLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
-                        }
+                                    strExpression, token).ConfigureAwait(false);
+                        _intRegisteredSpriteLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                     }
                     else
                         _intRegisteredSpriteLimit = decValue.StandardRound();
@@ -27807,9 +27730,9 @@ namespace Chummer
             }
         }
 
-#endregion AR
+        #endregion AR
 
-#region Cold Sim
+        #region Cold Sim
 
         /// <summary>
         /// Matrix Initiative via VR with Cold Sim.
@@ -28062,9 +27985,9 @@ namespace Chummer
             }
         }
 
-#endregion Cold Sim
+        #endregion Cold Sim
 
-#region Hot Sim
+        #region Hot Sim
 
         /// <summary>
         /// Matrix Initiative via VR with Hot Sim.
@@ -28605,7 +28528,7 @@ namespace Chummer
                         {
                             FormatImprovementModifiers(
                                 sbdToolTip,
-                                new []{ Improvement.ImprovementType.JudgeIntentions, Improvement.ImprovementType.JudgeIntentionsOffense },
+                                new[] { Improvement.ImprovementType.JudgeIntentions, Improvement.ImprovementType.JudgeIntentionsOffense },
                                 strSpace,
                                 intModifiers);
                         }
@@ -37349,17 +37272,11 @@ namespace Chummer
                                                         decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decFromKarma))
                 {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
-                    {
-                        sbdValue.Append(strExpression);
-                        AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
-
-                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        (bool blnIsSuccess, object objProcess) =
-                            CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
-                        if (blnIsSuccess)
-                            decFromKarma = Convert.ToDecimal((double)objProcess);
-                    }
+                    strExpression = ProcessAttributesInXPath(strExpression);
+                    (bool blnIsSuccess, object objProcess) =
+                            CommonFunctions.EvaluateInvariantXPath(strExpression);
+                    if (blnIsSuccess)
+                        decFromKarma = Convert.ToDecimal((double)objProcess);
                 }
 
                 return decFromKarma;
@@ -37379,17 +37296,11 @@ namespace Chummer
                                                 decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decFromKarma))
                 {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
-                    {
-                        sbdValue.Append(strExpression);
-                        await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-
-                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        (bool blnIsSuccess, object objProcess)
-                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
-                        if (blnIsSuccess)
-                            decFromKarma = Convert.ToDecimal((double)objProcess);
-                    }
+                    strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        decFromKarma = Convert.ToDecimal((double)objProcess);
                 }
 
                 return decFromKarma;
@@ -44316,8 +44227,8 @@ namespace Chummer
                                         decimal decNonCyberwareEssence = BiowareEssence + EssenceHole;
                                         int intMaxCyberadeptDaemonBonus = Math.Ceiling(decNonCyberwareEssence) ==
                                                                           Math.Floor(decNonCyberwareEssence)
-                                            ? (int) Math.Ceiling(CyberwareEssence)
-                                            : (int) Math.Floor(CyberwareEssence);
+                                            ? (int)Math.Ceiling(CyberwareEssence)
+                                            : (int)Math.Floor(CyberwareEssence);
                                         int intCyberadeptDaemonBonus = 0;
                                         for (int i = 1; i <= SubmersionGrade; ++i)
                                         {
@@ -53591,6 +53502,110 @@ namespace Chummer
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public string ProcessAttributesInXPath(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            if (!strInput.Contains('{'))
+                return strInput;
+            return AttributeSection.ProcessAttributesInXPath(strInput, dicValueOverrides, token);
+        }
+
+        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing(false))
+                return;
+            if (string.IsNullOrEmpty(strOriginal))
+                strOriginal = sbdInput.ToString();
+            AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicValueOverrides, token);
+        }
+
+        public Task<string> ProcessAttributesInXPathAsync(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            if (string.IsNullOrEmpty(strInput))
+                return Task.FromResult(string.Empty);
+            if (!strInput.Contains('{'))
+                return Task.FromResult(strInput);
+            return Inner();
+            async Task<string> Inner()
+            {
+                return await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strInput, dicValueOverrides, token).ConfigureAwait(false);
+            }
+        }
+
+        public Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return Task.CompletedTask;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing(false))
+                return Task.CompletedTask;
+            return Inner();
+            async Task Inner()
+            {
+                await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicValueOverrides, token).ConfigureAwait(false);
+            }
+        }
+
+        public string ProcessAttributesInXPathForTooltip(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            if (!strInput.Contains('{'))
+                return strInput;
+            return AttributeSection.ProcessAttributesInXPathForTooltip(strInput, objCultureInfo, strLanguage, blnShowValues, dicValueOverrides, token);
+        }
+
+        public void ProcessAttributesInXPathForTooltip(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing(false))
+                return;
+            AttributeSection.ProcessAttributesInXPathForTooltip(sbdInput, strOriginal, objCultureInfo, strLanguage, blnShowValues, dicValueOverrides, token);
+        }
+
+        public Task<string> ProcessAttributesInXPathForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            if (string.IsNullOrEmpty(strInput))
+                return Task.FromResult(string.Empty);
+            if (!strInput.Contains('{'))
+                return Task.FromResult(strInput);
+            return Inner();
+            async Task<string> Inner()
+            {
+                return await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathForTooltipAsync(strInput, objCultureInfo, strLanguage, blnShowValues, dicValueOverrides, token).ConfigureAwait(false);
+            }
+        }
+
+        public Task ProcessAttributesInXPathForTooltipAsync(StringBuilder sbdInput, string strOriginal = "",
+            CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true,
+            IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return Task.CompletedTask;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing(false))
+                return Task.CompletedTask;
+            return Inner();
+            async Task Inner()
+            {
+                await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathForTooltipAsync(sbdInput, strOriginal, objCultureInfo, strLanguage, blnShowValues, dicValueOverrides, token).ConfigureAwait(false);
             }
         }
 

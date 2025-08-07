@@ -5790,6 +5790,8 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
+            if (!strInput.HasValuesNeedingReplacementForXPathProcessing())
+                return strInput;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {
                 sbdInput.Append(strInput);
@@ -5801,6 +5803,8 @@ namespace Chummer.Backend.Equipment
         public StringBuilder ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", bool blnForAttributeEvaluation = false)
         {
             if (sbdInput.Length == 0)
+                return sbdInput;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing())
                 return sbdInput;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
@@ -5938,7 +5942,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 Vehicle.FillAttributesInXPathWithDummies(sbdInput);
-                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicVehicleValues);
+                _objCharacter.ProcessAttributesInXPath(sbdInput, strOriginal, dicVehicleValues);
             }
             return sbdInput;
         }
@@ -5948,6 +5952,8 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
+            if (!strInput.HasValuesNeedingReplacementForXPathProcessing())
+                return strInput;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {
                 sbdInput.Append(strInput);
@@ -5958,7 +5964,10 @@ namespace Chummer.Backend.Equipment
 
         public async Task<StringBuilder> ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", bool blnForAttributeEvaluation = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (sbdInput.Length == 0)
+                return sbdInput;
+            if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing())
                 return sbdInput;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
@@ -6105,7 +6114,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 Vehicle.FillAttributesInXPathWithDummies(sbdInput);
-                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicVehicleValues, token).ConfigureAwait(false);
+                await _objCharacter.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicVehicleValues, token).ConfigureAwait(false);
             }
             return sbdInput;
         }

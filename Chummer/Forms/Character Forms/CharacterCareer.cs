@@ -24195,7 +24195,7 @@ namespace Chummer
                                         ? await objSelectedGear.GetCalculatedCostAsync(token).ConfigureAwait(false)
                                         : 0).ToString(
                                         GlobalSettings.InvariantCultureInfo));
-                                strCost = await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strCost, token: token).ConfigureAwait(false);
+                                strCost = await CharacterObject.ProcessAttributesInXPathAsync(strCost, token: token).ConfigureAwait(false);
                                 (bool blnIsSuccess, object objProcess)
                                     = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token)
                                         .ConfigureAwait(false);

@@ -976,7 +976,7 @@ namespace Chummer.Backend.Equipment
                                 .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                                 .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                             Vehicle.FillAttributesInXPathWithDummies(sbdAccuracy);
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAccuracy, strAccuracy);
+                            _objCharacter.ProcessAttributesInXPath(sbdAccuracy, strAccuracy);
                             funcPhysicalLimitString = () => _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);
                         }
                         Lazy<int> intRating = new Lazy<int>(() => Rating);
@@ -1055,7 +1055,7 @@ namespace Chummer.Backend.Equipment
                             .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                             .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                         Vehicle.FillAttributesInXPathWithDummies(sbdAccuracy);
-                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                        await _objCharacter
                             .ProcessAttributesInXPathAsync(sbdAccuracy, strAccuracy, token: token).ConfigureAwait(false);
                         funcPhysicalLimitString = async () =>
                                 (await _objCharacter.GetLimitPhysicalAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
@@ -1129,7 +1129,7 @@ namespace Chummer.Backend.Equipment
                                 .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                                 .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                             Vehicle.FillAttributesInXPathWithDummies(sbdReach);
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdReach, strReach);
+                            _objCharacter.ProcessAttributesInXPath(sbdReach, strReach);
                         }
                         Lazy<int> intRating = new Lazy<int>(() => Rating);
                         sbdReach.CheapReplace(strReach, "{Rating}", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1191,7 +1191,7 @@ namespace Chummer.Backend.Equipment
                             .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                             .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                         Vehicle.FillAttributesInXPathWithDummies(sbdReach);
-                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                        await _objCharacter
                             .ProcessAttributesInXPathAsync(sbdReach, strReach, token: token).ConfigureAwait(false);
                     }
                     Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
@@ -1400,7 +1400,7 @@ namespace Chummer.Backend.Equipment
                                 .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                                 .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                             Vehicle.FillAttributesInXPathWithDummies(sbdConceal);
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdConceal, strConceal);
+                            _objCharacter.ProcessAttributesInXPath(sbdConceal, strConceal);
                         }
                         Lazy<int> intRating = new Lazy<int>(() => Rating);
                         sbdConceal.CheapReplace(strConceal, "{Rating}", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1461,7 +1461,7 @@ namespace Chummer.Backend.Equipment
                             .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                             .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                         Vehicle.FillAttributesInXPathWithDummies(sbdConceal);
-                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                        await _objCharacter
                             .ProcessAttributesInXPathAsync(sbdConceal, strConceal, token: token).ConfigureAwait(false);
                     }
                     Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
@@ -1651,7 +1651,7 @@ namespace Chummer.Backend.Equipment
                             .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                             .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                         Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                        _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
                     }
                     sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                     sbdValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1704,7 +1704,7 @@ namespace Chummer.Backend.Equipment
                             .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                             .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                         Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                        await _objCharacter
                             .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                     }
                     await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
@@ -1999,7 +1999,7 @@ namespace Chummer.Backend.Equipment
                                 .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                                 .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                             Vehicle.FillAttributesInXPathWithDummies(sbdAvail);
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
+                            _objCharacter.ProcessAttributesInXPath(sbdAvail, strAvail);
                         }
                         Lazy<int> intRating = new Lazy<int>(() => Rating);
                         sbdAvail.CheapReplace(strAvail, "{Rating}", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
@@ -2089,7 +2089,7 @@ namespace Chummer.Backend.Equipment
                                 .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                                 .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                             Vehicle.FillAttributesInXPathWithDummies(sbdAvail);
-                            await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                            await _objCharacter
                                 .ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                         }
                         Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
@@ -2267,7 +2267,7 @@ namespace Chummer.Backend.Equipment
                                 .Replace("{Weapon Total Cost}", "0")
                                 .Replace("Weapon Total Cost", "0");
                             Vehicle.FillAttributesInXPathWithDummies(sbdCost);
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpr);
+                            _objCharacter.ProcessAttributesInXPath(sbdCost, strCostExpr);
                         }
                         Lazy<int> intRating = new Lazy<int>(() => Rating);
                         sbdCost.CheapReplace(strCostExpr, "{Rating}", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
@@ -2365,7 +2365,7 @@ namespace Chummer.Backend.Equipment
                             .Replace("{Weapon Total Cost}", "0")
                             .Replace("Weapon Total Cost", "0");
                         Vehicle.FillAttributesInXPathWithDummies(sbdCost);
-                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                        await _objCharacter
                             .ProcessAttributesInXPathAsync(sbdCost, strCostExpr, token: token).ConfigureAwait(false);
                     }
                     Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
@@ -2458,7 +2458,7 @@ namespace Chummer.Backend.Equipment
                             .Replace("{Weapon Total Weight}", "0")
                             .Replace("Weapon Total Weight", "0");
                         Vehicle.FillAttributesInXPathWithDummies(sbdWeight);
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
+                        _objCharacter.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
                     }
                     Lazy<int> intRating = new Lazy<int>(() => Rating);
                     sbdWeight.CheapReplace(strWeightExpression, "{Rating}", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
@@ -2506,7 +2506,7 @@ namespace Chummer.Backend.Equipment
                                 .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                                 .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                             Vehicle.FillAttributesInXPathWithDummies(sbdDicePool);
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdDicePool, strDicePoolExpression);
+                            _objCharacter.ProcessAttributesInXPath(sbdDicePool, strDicePoolExpression);
                         }
                         Lazy<int> intRating = new Lazy<int>(() => Rating);
                         sbdDicePool.CheapReplace(strDicePoolExpression, "{Rating}", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
@@ -2562,7 +2562,7 @@ namespace Chummer.Backend.Equipment
                             .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                             .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                         Vehicle.FillAttributesInXPathWithDummies(sbdDicePool);
-                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                        await _objCharacter
                             .ProcessAttributesInXPathAsync(sbdDicePool, strDicePoolExpression, token: token).ConfigureAwait(false);
                     }
                     Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
@@ -2620,7 +2620,7 @@ namespace Chummer.Backend.Equipment
                                 .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                                 .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                             Vehicle.FillAttributesInXPathWithDummies(sbdAmmoBonus);
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAmmoBonus, strAmmoBonus);
+                            _objCharacter.ProcessAttributesInXPath(sbdAmmoBonus, strAmmoBonus);
                         }
                         Lazy<int> intRating = new Lazy<int>(() => Rating);
                         sbdAmmoBonus.CheapReplace(strAmmoBonus, "{Rating}", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
@@ -2669,7 +2669,7 @@ namespace Chummer.Backend.Equipment
                             .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
                             .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                         Vehicle.FillAttributesInXPathWithDummies(sbdAmmoBonus);
-                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                        await _objCharacter
                             .ProcessAttributesInXPathAsync(sbdAmmoBonus, strAmmoBonus, token: token).ConfigureAwait(false);
                     }
                     Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);

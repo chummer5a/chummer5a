@@ -853,7 +853,7 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                        _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
                     }
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     object objProcess;
@@ -918,7 +918,7 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                        await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                        await _objCharacter
                             .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                     }
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.

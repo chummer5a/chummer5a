@@ -212,13 +212,10 @@ namespace Chummer
                     {
                         if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
                         {
-                            strCost = await (await _objCharacter.GetAttributeSectionAsync().ConfigureAwait(false)).ProcessAttributesInXPathAsync(strCost).ConfigureAwait(false);
+                            strCost = await _objCharacter.ProcessAttributesInXPathAsync(strCost).ConfigureAwait(false);
                             (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost).ConfigureAwait(false);
                             if (blnIsSuccess)
-                            {
                                 decCost = Convert.ToDecimal((double)objProcess);
-
-                            }
                         }
                         strCost = decCost.ToString(
                                               await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetNuyenFormatAsync().ConfigureAwait(false),
