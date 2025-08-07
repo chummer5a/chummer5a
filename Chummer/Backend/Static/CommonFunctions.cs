@@ -81,7 +81,7 @@ namespace Chummer
             int intLastMinusIndex = strTrimmedExpression.LastIndexOf('-');
             if (intLastMinusIndex >= 1)
                 return true;
-            if (intLastMinusIndex == 0 && strTrimmedExpression.Length <= 1 || !char.IsDigit(strTrimmedExpression[1]))
+            if (intLastMinusIndex == 0 && (strTrimmedExpression.Length <= 1 || !char.IsDigit(strTrimmedExpression[1])))
                 return true;
             return !decimal.TryParse(strTrimmedExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decExpressionAsNumber);
         }

@@ -719,19 +719,7 @@ namespace Chummer
                         }
                         else
                         {
-                            int intPos = strReturn.IndexOf('-');
-                            if (intPos != -1)
-                            {
-                                strFv = strReturn.Substring(intPos);
-                            }
-                            else
-                            {
-                                intPos = strReturn.IndexOf('+');
-                                if (intPos != -1)
-                                {
-                                    strFv = strReturn.Substring(intPos);
-                                }
-                            }
+                            strFv = strFv.TrimStart('+');
                         }
 
                         string strToAppend = string.Empty;
@@ -810,19 +798,7 @@ namespace Chummer
                     }
                     else
                     {
-                        int intPos = strReturn.IndexOf('-');
-                        if (intPos != -1)
-                        {
-                            strFv = strReturn.Substring(intPos);
-                        }
-                        else
-                        {
-                            intPos = strReturn.IndexOf('+');
-                            if (intPos != -1)
-                            {
-                                strFv = strReturn.Substring(intPos);
-                            }
-                        }
+                        strFv = strFv.TrimStart('+');
                     }
 
                     string strToAppend = string.Empty;
