@@ -4012,6 +4012,10 @@ namespace Chummer.Backend.Equipment
                         decReturn = Convert.ToDecimal((double)objProcess);
                 }
             }
+            else
+            {
+                decReturn += WeaponAccessories.Sum(x => x.Equipped, x => x.TotalConcealability);
+            }
             // Factor in the character's Concealability modifiers.
             decReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Concealability);
             return decReturn;
@@ -4051,6 +4055,10 @@ namespace Chummer.Backend.Equipment
                     if (blnIsSuccess)
                         decReturn = Convert.ToDecimal((double)objProcess);
                 }
+            }
+            else
+            {
+                decReturn += await WeaponAccessories.SumAsync(x => x.Equipped, x => x.GetTotalConcealabilityAsync(token), token).ConfigureAwait(false);
             }
             // Factor in the character's Concealability modifiers.
             decReturn += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Concealability, token: token).ConfigureAwait(false);

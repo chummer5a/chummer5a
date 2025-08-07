@@ -22221,16 +22221,16 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
-                            int intConceal = await objSelectedAccessory.GetTotalConcealabilityAsync(token).ConfigureAwait(false);
+                            decimal decConceal = await objSelectedAccessory.GetTotalConcealabilityAsync(token).ConfigureAwait(false);
                             await lblWeaponConcealLabel
-                                  .DoThreadSafeAsync(x => x.Visible = intConceal != 0,
+                                  .DoThreadSafeAsync(x => x.Visible = decConceal != 0,
                                                      token).ConfigureAwait(false);
                             await lblWeaponConceal.DoThreadSafeAsync(x =>
                             {
-                                x.Visible = intConceal != 0;
+                                x.Visible = decConceal != 0;
                                 x.Text
-                                    = intConceal.ToString(
-                                        "+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    = decConceal.ToString(
+                                        "+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                             }, token).ConfigureAwait(false);
                             string strText2 = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
                                 ? "Checkbox_Equipped"

@@ -753,7 +753,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("extramount", ExtraMount, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("addmount", AddMount, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc", RC, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("conceal", (await GetTotalConcealabilityAsync(token).ConfigureAwait(false)).ToString("+#,0;-#,0;0", objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("conceal", (await GetTotalConcealabilityAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;0.##", objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel, token).ConfigureAwait(false);
                 string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
@@ -1367,51 +1367,53 @@ namespace Chummer.Backend.Equipment
             set => _strConceal = value;
         }
 
-        public int TotalConcealability
+        public decimal TotalConcealability
         {
             get
             {
-                string strConceal = Concealability;
+                string strConceal = Concealability.TrimStartOnce('+');
                 if (strConceal.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    string strToEvaluate;
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
+                    if (strConceal.HasValuesNeedingReplacementForXPathProcessing())
                     {
-                        // If the cost is determined by the Rating, evaluate the expression.
-                        sbdConceal.Append(strConceal.TrimStartOnce('+'));
-                        Weapon objParent = Parent;
-                        if (objParent != null)
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
                         {
-                            Lazy<int> intParentRating = new Lazy<int>(() => objParent.Rating);
-                            sbdConceal.CheapReplace(strConceal, "{Parent Rating}",
-                                () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdConceal.CheapReplace(strConceal, "Parent Rating",
-                                () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdConceal.CheapReplace(strConceal, "{Weapon Rating}",
-                                () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdConceal.CheapReplace(strConceal, "Weapon Rating",
-                                () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
-                            objParent.ProcessAttributesInXPath(sbdConceal, strConceal);
+                            // If the cost is determined by the Rating, evaluate the expression.
+                            sbdConceal.Append(strConceal);
+                            Weapon objParent = Parent;
+                            if (objParent != null)
+                            {
+                                Lazy<int> intParentRating = new Lazy<int>(() => objParent.Rating);
+                                sbdConceal.CheapReplace(strConceal, "{Parent Rating}",
+                                    () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdConceal.CheapReplace(strConceal, "Parent Rating",
+                                    () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdConceal.CheapReplace(strConceal, "{Weapon Rating}",
+                                    () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdConceal.CheapReplace(strConceal, "Weapon Rating",
+                                    () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                                objParent.ProcessAttributesInXPath(sbdConceal, strConceal);
+                            }
+                            else
+                            {
+                                sbdConceal.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                    .Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                    .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                    .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                                Vehicle.FillAttributesInXPathWithDummies(sbdConceal);
+                                _objCharacter.ProcessAttributesInXPath(sbdConceal, strConceal);
+                            }
+                            Lazy<int> intRating = new Lazy<int>(() => Rating);
+                            sbdConceal.CheapReplace(strConceal, "{Rating}", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdConceal.CheapReplace(strConceal, "Rating", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            strConceal = sbdConceal.ToString();
                         }
-                        else
-                        {
-                            sbdConceal.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
-                                .Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
-                                .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
-                                .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            Vehicle.FillAttributesInXPathWithDummies(sbdConceal);
-                            _objCharacter.ProcessAttributesInXPath(sbdConceal, strConceal);
-                        }
-                        Lazy<int> intRating = new Lazy<int>(() => Rating);
-                        sbdConceal.CheapReplace(strConceal, "{Rating}", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdConceal.CheapReplace(strConceal, "Rating", () => intRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
-                        strToEvaluate = sbdConceal.ToString();
                     }
                     try
                     {
-                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strToEvaluate);
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strConceal);
                         if (blnIsSuccess)
-                            return ((double)objProcess).StandardRound();
+                            decValue = Convert.ToDecimal((double)objProcess);
                     }
                     catch (OverflowException)
                     {
@@ -1422,62 +1424,64 @@ namespace Chummer.Backend.Equipment
                         // swallow this
                     }
                 }
-                return decValue.StandardRound();
+                return decValue;
             }
         }
 
-        public async Task<int> GetTotalConcealabilityAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalConcealabilityAsync(CancellationToken token = default)
         {
-            string strConceal = Concealability;
+            string strConceal = Concealability.TrimStartOnce('+');
             if (strConceal.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strToEvaluate;
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
+                if (strConceal.HasValuesNeedingReplacementForXPathProcessing())
                 {
-                    // If the cost is determined by the Rating, evaluate the expression.
-                    sbdConceal.Append(strConceal.TrimStartOnce('+'));
-                    Weapon objParent = Parent;
-                    if (objParent != null)
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdConceal))
                     {
-                        Microsoft.VisualStudio.Threading.AsyncLazy<int> intParentRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => objParent.GetRatingAsync(token), Utils.JoinableTaskFactory);
-                        await sbdConceal.CheapReplaceAsync(strConceal, "{Parent Rating}",
-                            async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
-                        await sbdConceal.CheapReplaceAsync(strConceal, "Parent Rating",
-                            async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
-                        await sbdConceal.CheapReplaceAsync(strConceal, "{Weapon Rating}",
-                            async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
-                        await sbdConceal.CheapReplaceAsync(strConceal, "Weapon Rating",
-                            async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
-                        await objParent.ProcessAttributesInXPathAsync(sbdConceal, strConceal, token: token).ConfigureAwait(false);
+                        // If the cost is determined by the Rating, evaluate the expression.
+                        sbdConceal.Append(strConceal);
+                        Weapon objParent = Parent;
+                        if (objParent != null)
+                        {
+                            Microsoft.VisualStudio.Threading.AsyncLazy<int> intParentRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => objParent.GetRatingAsync(token), Utils.JoinableTaskFactory);
+                            await sbdConceal.CheapReplaceAsync(strConceal, "{Parent Rating}",
+                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdConceal.CheapReplaceAsync(strConceal, "Parent Rating",
+                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdConceal.CheapReplaceAsync(strConceal, "{Weapon Rating}",
+                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdConceal.CheapReplaceAsync(strConceal, "Weapon Rating",
+                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await objParent.ProcessAttributesInXPathAsync(sbdConceal, strConceal, token: token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            sbdConceal.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                .Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                            Vehicle.FillAttributesInXPathWithDummies(sbdConceal);
+                            await _objCharacter
+                                .ProcessAttributesInXPathAsync(sbdConceal, strConceal, token: token).ConfigureAwait(false);
+                        }
+                        Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
+                        await sbdConceal.CheapReplaceAsync(strConceal, "{Rating}",
+                                                        async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                                        token: token).ConfigureAwait(false);
+                        await sbdConceal.CheapReplaceAsync(strConceal, "Rating",
+                                                        async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                                        token: token).ConfigureAwait(false);
+                        strConceal = sbdConceal.ToString();
                     }
-                    else
-                    {
-                        sbdConceal.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
-                            .Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
-                            .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
-                            .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                        Vehicle.FillAttributesInXPathWithDummies(sbdConceal);
-                        await _objCharacter
-                            .ProcessAttributesInXPathAsync(sbdConceal, strConceal, token: token).ConfigureAwait(false);
-                    }
-                    Microsoft.VisualStudio.Threading.AsyncLazy<int> intRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => GetRatingAsync(token), Utils.JoinableTaskFactory);
-                    await sbdConceal.CheapReplaceAsync(strConceal, "{Rating}",
-                                                    async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                                                    token: token).ConfigureAwait(false);
-                    await sbdConceal.CheapReplaceAsync(strConceal, "Rating",
-                                                    async () => (await intRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                                                    token: token).ConfigureAwait(false);
-                    strToEvaluate = sbdConceal.ToString();
                 }
                 try
                 {
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strToEvaluate, token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strConceal, token).ConfigureAwait(false);
                     if (blnIsSuccess)
-                        return ((double) objProcess).StandardRound();
+                        decValue = Convert.ToDecimal((double)objProcess);
                 }
                 catch (OverflowException)
                 {
@@ -1488,7 +1492,7 @@ namespace Chummer.Backend.Equipment
                     // swallow this
                 }
             }
-            return decValue.StandardRound();
+            return decValue;
         }
 
         /// <summary>
