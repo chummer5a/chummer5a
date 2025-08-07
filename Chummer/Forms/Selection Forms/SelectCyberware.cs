@@ -117,8 +117,8 @@ namespace Chummer
                 if (CyberwareParent != null)
                 {
                     return await CyberwareParent.ProcessCostExpressionAsync(CyberwareParent.Cost,
-                        await CyberwareParent.GetRatingAsync().ConfigureAwait(false),
-                        await CyberwareParent.GetGradeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                        () => CyberwareParent.GetRatingAsync(),
+                        () => CyberwareParent.GetGradeAsync()).ConfigureAwait(false);
                 }
                 else if (ParentVehicleMod != null)
                 {
