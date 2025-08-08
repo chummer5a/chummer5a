@@ -29,7 +29,7 @@ namespace Chummer.UI.Shared.Components
         private readonly AsyncFriendlyReaderWriterLock _objDicePoolLockObject = new AsyncFriendlyReaderWriterLock();
         private decimal _decDicePool;
         private bool _blnCanBeRolled = true;
-        private bool _blnCanEverBeRolled = Utils.IsDesignerMode;
+        private bool _blnCanEverBeRolled = Utils.IsDesignerMode || Utils.IsRunningInVisualStudio;
 
         public DicePoolControl()
         {

@@ -310,6 +310,7 @@ Changed/New Strings:
 - Message_ScanFoldersRecursively
 - String_Fallback_Pattern
 - Menu_Main_ReportBug
+- String_ModifyEllipses
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage

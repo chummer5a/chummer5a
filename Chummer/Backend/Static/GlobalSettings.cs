@@ -436,7 +436,7 @@ namespace Chummer
 
         static GlobalSettings()
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
 
             bool blnFirstEverLaunch = false;

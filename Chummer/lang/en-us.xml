@@ -8628,6 +8628,10 @@
       <key>MessageTitle_SelectBP_SwitchBuildMethods</key>
       <text>Switch Build Method?</text>
     </string>
+    <string>
+      <key>String_ModifyEllipses</key>
+      <text>Modify...</text>
+    </string>
     <!-- End Region-->
     <!-- Region Advanced Contact Options Window -->
     <string>
