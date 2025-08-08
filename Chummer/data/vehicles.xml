@@ -9225,7 +9225,9 @@
         </weaponmount>
       </weaponmounts>
       <weapons>
-        <weapon>Siemens FWD Screamer Sonic Cannon</weapon>
+        <weapon>
+          <name>Siemens FWD Screamer Sonic Cannon</name>
+        </weapon>
       </weapons>
       <modslots>0</modslots>
       <seats>0</seats>
