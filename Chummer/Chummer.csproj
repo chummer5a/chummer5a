@@ -25681,9 +25681,6 @@
     <PackageReference Include="HtmlRenderer.Core" Version="1.5.0.6" />
     <PackageReference Include="HtmlRenderer.WinForms" Version="1.5.0.6" />
     <PackageReference Include="itext" Version="9.2.0" />
-    <PackageReference Include="itext.commons" Version="9.2.0" />
-    <PackageReference Include="itext7" Version="9.2.0" />
-    <PackageReference Include="itext7.commons" Version="9.2.0" />
     <PackageReference Include="LiveCharts" Version="0.9.7" />
     <PackageReference Include="LiveCharts.WinForms" Version="0.9.7.1" />
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
@@ -25701,7 +25698,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.8" />
