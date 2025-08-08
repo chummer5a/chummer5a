@@ -5528,7 +5528,7 @@ namespace Chummer
                                             .ConfigureAwait(false);
                                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                     }
-                                    catch (Exception e)
+                                    catch (Exception e) when (!(e is OperationCanceledException))
                                     {
                                         Log.Warn(
                                             e, "Exception while writing saveFileElement for plugin " + objPlugin + ": ");
@@ -5625,53 +5625,28 @@ namespace Chummer
                         }
                     }
                 }
-                catch (IOException e)
+                catch (Exception e) when ((e is IOException) || (e is XmlException) || (e is UnauthorizedAccessException))
                 {
                     Log.Error(e);
                     if (Utils.IsUnitTest)
-                        throw;
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        // ReSharper disable once MethodHasAsyncOverload
-                        Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Save_Error_Warning",
-                            token: token));
+                    {
+                        if (!(e is UnauthorizedAccessException))
+                            throw;
+                    }
                     else
-                        await Program.ShowScrollableMessageBoxAsync(await LanguageManager
-                            .GetStringAsync(
-                                "Message_Save_Error_Warning", token: token)
-                            .ConfigureAwait(false), token: token).ConfigureAwait(false);
-                    blnErrorFree = false;
-                }
-                catch (XmlException ex)
-                {
-                    Log.Warn(ex);
-                    if (Utils.IsUnitTest)
-                        throw;
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        // ReSharper disable once MethodHasAsyncOverload
-                        Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Save_Error_Warning",
-                            token: token));
-                    else
-                        await Program.ShowScrollableMessageBoxAsync(await LanguageManager
-                            .GetStringAsync(
-                                "Message_Save_Error_Warning", token: token)
-                            .ConfigureAwait(false), token: token).ConfigureAwait(false);
-                    blnErrorFree = false;
-                }
-                catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
-                {
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        // ReSharper disable once MethodHasAsyncOverload
-                        Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Save_Error_Warning",
-                            token: token));
-                    else
-                        await Program.ShowScrollableMessageBoxAsync(await LanguageManager
-                            .GetStringAsync(
-                                "Message_Save_Error_Warning", token: token)
-                            .ConfigureAwait(false), token: token).ConfigureAwait(false);
-                    blnErrorFree = false;
+                    {
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            // ReSharper disable once MethodHasAsyncOverload
+                            Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Save_Error_Warning",
+                                token: token));
+                        else
+                            await Program.ShowScrollableMessageBoxAsync(await LanguageManager
+                                .GetStringAsync(
+                                    "Message_Save_Error_Warning", token: token)
+                                .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        blnErrorFree = false;
+                    }
                 }
             }
 
@@ -49214,12 +49189,7 @@ namespace Chummer
                                                 }
                                             }
                                             // If we run into any problems loading the character xml files, fail out early.
-                                            catch (IOException e)
-                                            {
-                                                Log.Info(e);
-                                                Utils.BreakIfDebug();
-                                            }
-                                            catch (XmlException e)
+                                            catch (Exception e) when ((e is IOException) || (e is XmlException))
                                             {
                                                 Log.Info(e);
                                                 Utils.BreakIfDebug();
@@ -49322,11 +49292,7 @@ namespace Chummer
                                                 }
                                             }
                                             // If we run into any problems loading the character xml files, fail out early.
-                                            catch (IOException)
-                                            {
-                                                continue;
-                                            }
-                                            catch (XmlException)
+                                            catch (Exception e) when ((e is IOException) || (e is XmlException))
                                             {
                                                 continue;
                                             }
@@ -49337,75 +49303,7 @@ namespace Chummer
                                 }
                             }
                         }
-                        catch (IOException ex)
-                        {
-                            if (op_load != null)
-                            {
-                                op_load.SetSuccess(false);
-                                op_load.AddBaggage(ex.GetType().Name, ex.Message);
-                                Log.Error(ex);
-                            }
-
-                            if (blnSync)
-                            {
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                Program.ShowScrollableMessageBox(
-                                    string.Format(GlobalSettings.CultureInfo,
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        LanguageManager.GetString("Message_FailedLoad", token: token),
-                                        ex.Message),
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    LanguageManager.GetString("MessageTitle_FailedLoad", token: token),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                            else
-                            {
-                                await Program.ShowScrollableMessageBoxAsync(
-                                    string.Format(GlobalSettings.CultureInfo,
-                                        await LanguageManager.GetStringAsync("Message_FailedLoad", token: token)
-                                            .ConfigureAwait(false),
-                                        ex.Message),
-                                    await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token)
-                                        .ConfigureAwait(false),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
-                            }
-                            return false;
-                        }
-                        catch (NotSupportedException ex)
-                        {
-                            if (op_load != null)
-                            {
-                                op_load.SetSuccess(false);
-                                op_load.AddBaggage(ex.GetType().Name, ex.Message);
-                                Log.Error(ex);
-                            }
-
-                            if (blnSync)
-                            {
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                Program.ShowScrollableMessageBox(
-                                    string.Format(GlobalSettings.CultureInfo,
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        LanguageManager.GetString("Message_FailedLoad", token: token),
-                                        ex.Message),
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    LanguageManager.GetString("MessageTitle_FailedLoad", token: token),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                            else
-                            {
-                                await Program.ShowScrollableMessageBoxAsync(
-                                    string.Format(GlobalSettings.CultureInfo,
-                                        await LanguageManager.GetStringAsync("Message_FailedLoad", token: token)
-                                            .ConfigureAwait(false),
-                                        ex.Message),
-                                    await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token)
-                                        .ConfigureAwait(false),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
-                            }
-                            return false;
-                        }
-                        catch (UnauthorizedAccessException ex)
+                        catch (Exception ex) when ((ex is IOException) || (ex is NotSupportedException) || (ex is UnauthorizedAccessException))
                         {
                             if (op_load != null)
                             {

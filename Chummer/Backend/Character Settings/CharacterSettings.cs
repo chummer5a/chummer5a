@@ -3127,17 +3127,7 @@ namespace Chummer
                     {
                         objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath, token: token);
                     }
-                    catch (IOException)
-                    {
-                        if (blnShowDialogs)
-                            Program.ShowScrollableMessageBox(
-                                LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", token: token),
-                                LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", token: token),
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                        return false;
-                    }
-                    catch (XmlException)
+                    catch (Exception e) when ((e is IOException) || (e is XmlException))
                     {
                         if (blnShowDialogs)
                             Program.ShowScrollableMessageBox(
@@ -3887,17 +3877,7 @@ namespace Chummer
                         objXmlDocument
                             = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
                     }
-                    catch (IOException)
-                    {
-                        if (blnShowDialogs)
-                            await Program.ShowScrollableMessageBoxAsync(
-                                await LanguageManager.GetStringAsync("Message_CharacterOptions_CannotLoadCharacter", token: token).ConfigureAwait(false),
-                                await LanguageManager.GetStringAsync("MessageText_CharacterOptions_CannotLoadCharacter", token: token).ConfigureAwait(false),
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error, token: token).ConfigureAwait(false);
-                        return false;
-                    }
-                    catch (XmlException)
+                    catch (Exception e) when ((e is IOException) || (e is XmlException))
                     {
                         if (blnShowDialogs)
                             await Program.ShowScrollableMessageBoxAsync(
