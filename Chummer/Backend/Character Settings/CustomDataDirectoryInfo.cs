@@ -130,7 +130,7 @@ namespace Chummer
                     ConstructorGetIncompatibilities(xmlNode, token);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is OperationCanceledException))
             {
                 // Save the exception to show it later
                 XmlException = ex;
