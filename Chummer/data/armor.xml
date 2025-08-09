@@ -51,12 +51,12 @@
     <category blackmarket="Armor">Customized Ballistic Mask</category>
     <category blackmarket="Armor">Full Body Armor Mods</category>
     <category blackmarket="Armor,Electronics,Magic,Software">General</category>
-    <category blackmarket="Armor">Custom Liners, Rating 1</category>
-    <category blackmarket="Armor">Custom Liners, Rating 2</category>
-    <category blackmarket="Armor">Custom Liners, Rating 3</category>
-    <category blackmarket="Armor">Custom Liners, Rating 4</category>
-    <category blackmarket="Armor">Custom Liners, Rating 5</category>
-    <category blackmarket="Armor">Custom Liners, Rating 6</category>
+    <category blackmarket="Armor">Custom Liners (Rating 1)</category>
+    <category blackmarket="Armor">Custom Liners (Rating 2)</category>
+    <category blackmarket="Armor">Custom Liners (Rating 3)</category>
+    <category blackmarket="Armor">Custom Liners (Rating 4)</category>
+    <category blackmarket="Armor">Custom Liners (Rating 5)</category>
+    <category blackmarket="Armor">Custom Liners (Rating 6)</category>
     <category blackmarket="Armor">Nightshade IR</category>
     <category blackmarket="Armor">Rapid Transit Detailing</category>
     <category blackmarket="Armor">Urban Explorer Jumpsuit Accessories</category>
@@ -955,7 +955,7 @@
       <avail>10</avail>
       <cost>1300</cost>
       <selectmodsfromcategory>
-        <category>Custom Liners, Rating 4</category>
+        <category>Custom Liners (Rating 4)</category>
       </selectmodsfromcategory>
       <gears>
         <usegear>Holster</usegear>
@@ -978,7 +978,7 @@
       <avail>7</avail>
       <cost>900</cost>
       <selectmodsfromcategory>
-        <category>Custom Liners, Rating 3</category>
+        <category>Custom Liners (Rating 3)</category>
       </selectmodsfromcategory>
       <wirelessbonus>
         <specificskill>
@@ -998,7 +998,7 @@
       <avail>6</avail>
       <cost>600</cost>
       <selectmodsfromcategory>
-        <category>Custom Liners, Rating 2</category>
+        <category>Custom Liners (Rating 2)</category>
       </selectmodsfromcategory>
       <mods>
         <name>Gear Access</name>
@@ -1021,7 +1021,7 @@
       <avail>12</avail>
       <cost>3000</cost>
       <selectmodsfromcategory>
-        <category>Custom Liners, Rating 6</category>
+        <category>Custom Liners (Rating 6)</category>
       </selectmodsfromcategory>
       <mods>
         <name>Gear Access</name>
@@ -1074,7 +1074,7 @@
       <avail>12</avail>
       <cost>5000</cost>
       <selectmodsfromcategory>
-        <category>Custom Liners, Rating 6</category>
+        <category>Custom Liners (Rating 6)</category>
       </selectmodsfromcategory>
       <mods>
         <name>Custom Fit</name>
@@ -1663,7 +1663,7 @@
       <avail>10</avail>
       <cost>1500</cost>
       <selectmodsfromcategory>
-        <category>Custom Liners, Rating 4</category>
+        <category>Custom Liners (Rating 4)</category>
       </selectmodsfromcategory>
       <bonus>
         <limitmodifier>
@@ -3049,7 +3049,7 @@
         <name>Custom Fit (Stack)</name>
       </mods>
       <selectmodsfromcategory>
-        <category>Custom Liners, Rating 3</category>
+        <category>Custom Liners (Rating 3)</category>
       </selectmodsfromcategory>
       <source>SAG</source>
       <page>92</page>
@@ -3632,7 +3632,7 @@
     <mod>
       <id>84c3dbd2-6d47-4045-a5d6-7dc926b3ff42</id>
       <name>Liner - Fire Resistance (6)</name>
-      <category>Custom Liners, Rating 6</category>
+      <category>Custom Liners (Rating 6)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3647,7 +3647,7 @@
     <mod>
       <id>0cbf733c-1fd0-48ae-be2c-b3afe0036fd0</id>
       <name>Liner - Chemical Protection (6)</name>
-      <category>Custom Liners, Rating 6</category>
+      <category>Custom Liners (Rating 6)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3663,7 +3663,7 @@
     <mod>
       <id>af3208a9-05b5-47bb-92a1-f3d2ea82f6f0</id>
       <name>Liner - Insulation (6)</name>
-      <category>Custom Liners, Rating 6</category>
+      <category>Custom Liners (Rating 6)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3678,7 +3678,7 @@
     <mod>
       <id>a2d20826-cc8f-4cb7-84b9-70aee5daae71</id>
       <name>Liner - Fire Resistance (5)</name>
-      <category>Custom Liners, Rating 5</category>
+      <category>Custom Liners (Rating 5)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3693,7 +3693,7 @@
     <mod>
       <id>995423dc-2fb4-405c-943f-261e6f52df15</id>
       <name>Liner - Chemical Protection (5)</name>
-      <category>Custom Liners, Rating 5</category>
+      <category>Custom Liners (Rating 5)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3709,7 +3709,7 @@
     <mod>
       <id>53669b97-36a8-4c54-b894-76c507933be9</id>
       <name>Liner - Insulation (5)</name>
-      <category>Custom Liners, Rating 5</category>
+      <category>Custom Liners (Rating 5)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3724,7 +3724,7 @@
     <mod>
       <id>b3965c7d-3e19-4aad-9dc0-1ec5b62daea5</id>
       <name>Liner - Fire Resistance (4)</name>
-      <category>Custom Liners, Rating 4</category>
+      <category>Custom Liners (Rating 4)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3739,7 +3739,7 @@
     <mod>
       <id>ca385470-fdfb-4ac2-bb4d-f88de768541b</id>
       <name>Liner - Chemical Protection (4)</name>
-      <category>Custom Liners, Rating 4</category>
+      <category>Custom Liners (Rating 4)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3755,7 +3755,7 @@
     <mod>
       <id>a0043353-1825-42cb-94b2-ddf35b3089b5</id>
       <name>Liner - Insulation (4)</name>
-      <category>Custom Liners, Rating 4</category>
+      <category>Custom Liners (Rating 4)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3770,7 +3770,7 @@
     <mod>
       <id>f22cd9de-78ce-4ec1-9485-932c47638f52</id>
       <name>Liner - Fire Resistance (3)</name>
-      <category>Custom Liners, Rating 3</category>
+      <category>Custom Liners (Rating 3)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3782,7 +3782,7 @@
     <mod>
       <id>ba6e7ab8-9e19-41ea-b124-bad6c8d1a515</id>
       <name>Liner - Chemical Protection (3)</name>
-      <category>Custom Liners, Rating 3</category>
+      <category>Custom Liners (Rating 3)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3798,7 +3798,7 @@
     <mod>
       <id>cee9f035-3668-4736-b0f2-7607d7156995</id>
       <name>Liner - Insulation (3)</name>
-      <category>Custom Liners, Rating 3</category>
+      <category>Custom Liners (Rating 3)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3813,7 +3813,7 @@
     <mod>
       <id>8a119129-4c6f-40ab-9832-a61295ee715f</id>
       <name>Liner - Fire Resistance (2)</name>
-      <category>Custom Liners, Rating 2</category>
+      <category>Custom Liners (Rating 2)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3828,7 +3828,7 @@
     <mod>
       <id>fed9e56c-c1b8-4c68-a16a-4bceb011bc62</id>
       <name>Liner - Chemical Protection (2)</name>
-      <category>Custom Liners, Rating 2</category>
+      <category>Custom Liners (Rating 2)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3844,7 +3844,7 @@
     <mod>
       <id>1bff09e4-ea20-4705-ac7b-5bea4a03d925</id>
       <name>Liner - Insulation (2)</name>
-      <category>Custom Liners, Rating 2</category>
+      <category>Custom Liners (Rating 2)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3859,7 +3859,7 @@
     <mod>
       <id>825652da-5c82-4362-b84e-9fee4c5c6fe1</id>
       <name>Liner - Fire Resistance (1)</name>
-      <category>Custom Liners, Rating 1</category>
+      <category>Custom Liners (Rating 1)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3874,7 +3874,7 @@
     <mod>
       <id>38942921-ff61-4cdc-937e-3afc951dfcc8</id>
       <name>Liner - Chemical Protection (1)</name>
-      <category>Custom Liners, Rating 1</category>
+      <category>Custom Liners (Rating 1)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
@@ -3890,7 +3890,7 @@
     <mod>
       <id>2cd3a1ed-e44e-4e62-a1d8-9d7271e97575</id>
       <name>Liner - Insulation (1)</name>
-      <category>Custom Liners, Rating 1</category>
+      <category>Custom Liners (Rating 1)</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
