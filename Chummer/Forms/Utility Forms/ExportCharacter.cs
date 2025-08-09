@@ -22,6 +22,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -737,6 +738,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         string strReturn = "Error attempting to load " + _strXslt + Environment.NewLine;
+                        ex = ex.Demystify();
                         Log.Debug(ex, strReturn);
                         strReturn += ex.Message;
                         await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);

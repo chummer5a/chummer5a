@@ -23,6 +23,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -176,6 +177,7 @@ namespace Chummer
                         }
                         catch (Exception e)
                         {
+                            e = e.Demystify();
                             Log.Warn(e, $"Exception while loading {strPath}: " + e.Message);
                             Interlocked.Exchange(ref _objPdfDocument, null)?.Close();
                             Interlocked.Exchange(ref _objPdfReader, null)?.Close();
@@ -661,7 +663,8 @@ namespace Chummer
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.Message, e);
+                e = e.Demystify();
+                Trace.TraceError(e.Message, e);
 #if DEBUG
                 throw;
                 /*

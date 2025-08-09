@@ -22,6 +22,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -1439,19 +1440,16 @@ namespace Chummer
                         dicWatch.Add(strFile, strNewParent);
                     }
                 }
-                catch (OperationCanceledException)
-                {
-                    // Throw cancellations because we expect to handle them in whatever awaits this task
-                    throw;
-                }
                 catch (UnauthorizedAccessException e)
                 {
+                    e = e.Demystify();
                     // We do not have sufficient privileges for this directory
                     strErrorText = e.Message;
                     dicWatch.Clear();
                 }
-                catch (Exception e)
+                catch (Exception e) when (!(e is OperationCanceledException)) // Throw cancellations because we expect to handle them in whatever awaits this task
                 {
+                    e = e.Demystify();
                     // We had some other issue while trying to load the character roster, so log it
                     Log.Warn(e);
                     strErrorText = e.Message;

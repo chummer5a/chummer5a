@@ -2785,6 +2785,7 @@ namespace Chummer
                 }
                 catch (IOException ex)
                 {
+                    ex = ex.Demystify();
                     Log.Warn(ex, ex.Message);
                 }
 

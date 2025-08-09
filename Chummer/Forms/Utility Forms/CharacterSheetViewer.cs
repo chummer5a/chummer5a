@@ -1020,6 +1020,7 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
                                              .ConfigureAwait(false), token).ConfigureAwait(false);
                     string strReturn = "Error attempting to load " + _strSelectedSheet + Environment.NewLine;
+                    ex = ex.Demystify();
                     Log.Debug(ex, strReturn);
                     strReturn += ex.Message;
                     await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);

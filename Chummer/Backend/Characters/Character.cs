@@ -6117,7 +6117,8 @@ namespace Chummer
                                     }
                                     catch (XmlException ex)
                                     {
-                                        if (ex.Message.HasAnyXmlInvalidUnicodeChars())
+                                        ex = ex.Demystify();
+                                        if (ex.Message?.HasAnyXmlInvalidUnicodeChars() == true)
                                         {
                                             /*If we found a known control character that's preventing the character from
                                             being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.
@@ -6182,7 +6183,8 @@ namespace Chummer
                                     }
                                     catch (XmlException ex)
                                     {
-                                        if (ex.Message.HasAnyXmlInvalidUnicodeChars())
+                                        ex = ex.Demystify();
+                                        if (ex.Message?.HasAnyXmlInvalidUnicodeChars() == true)
                                         {
                                             /*If we found a known control character that's preventing the character from
                                             being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.
@@ -49305,6 +49307,7 @@ namespace Chummer
                         }
                         catch (Exception ex) when ((ex is IOException) || (ex is NotSupportedException) || (ex is UnauthorizedAccessException))
                         {
+                            ex = ex.Demystify();
                             if (op_load != null)
                             {
                                 op_load.SetSuccess(false);
