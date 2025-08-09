@@ -7049,9 +7049,5 @@ namespace Chummer
         public AbortedException(string message, Exception innerException) : base(message, innerException)
         {
         }
-
-        private AbortedException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
     }
 }
