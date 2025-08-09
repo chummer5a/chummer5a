@@ -130,9 +130,9 @@ namespace Chummer
             await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            AcceptForm();
+            await AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -141,9 +141,9 @@ namespace Chummer
             Close();
         }
 
-        private void lstArt_DoubleClick(object sender, EventArgs e)
+        private async void lstArt_DoubleClick(object sender, EventArgs e)
         {
-            AcceptForm();
+            await AcceptForm();
         }
 
         private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
@@ -215,24 +215,24 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async Task AcceptForm(CancellationToken token = default)
         {
-            string strSelectedItem = lstArt.SelectedValue?.ToString();
+            token.ThrowIfCancellationRequested();
+            string strSelectedItem = await lstArt.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedItem))
             {
                 // Make sure the selected Metamagic or Echo meets its requirements.
                 XPathNavigator objXmlMetamagic = _objXmlDocument.TryGetNodeByNameOrId(_strBaseXPath, strSelectedItem);
 
-                if (objXmlMetamagic != null)
+                if (objXmlMetamagic == null || !await objXmlMetamagic.RequirementsMetAsync(_objCharacter, strLocalName: _strLocalName, token: token).ConfigureAwait(false))
+                    return;
+
+                _strSelectedItem = strSelectedItem;
+                await this.DoThreadSafeAsync(x =>
                 {
-                    if (!objXmlMetamagic.RequirementsMet(_objCharacter, strLocalName: _strLocalName))
-                        return;
-
-                    _strSelectedItem = strSelectedItem;
-
-                    DialogResult = DialogResult.OK;
-                    Close();
-                }
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                }, token).ConfigureAwait(false);
             }
         }
 

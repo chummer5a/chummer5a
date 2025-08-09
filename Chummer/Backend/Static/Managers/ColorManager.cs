@@ -45,15 +45,15 @@ namespace Chummer
     {
         // The setting for whether stuff uses dark mode or light mode is accessible purely through a specific registry key
         // So we save that key for accessing both at startup and should the setting be changed while Chummer is running
-        private static readonly RegistryKey s_ObjPersonalizeKey;
+        private static readonly RegistryKey s_ObjPersonalizeKey = null;
 
         // While events that trigger on changes to a registry value are possible, they're a PITA in C#.
         // Checking for dark mode on a timer interval is less elegant, but also easier to set up, track, and debug.
-        private static readonly Timer s_TmrDarkModeCheckerTimer;
+        private static readonly Timer s_TmrDarkModeCheckerTimer = null;
 
         static ColorManager()
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
 
             try
@@ -74,15 +74,15 @@ namespace Chummer
             switch (GlobalSettings.ColorModeSetting)
             {
                 case ColorMode.Automatic:
-                    AutoApplyLightDarkMode();
+                    _blnIsLightMode = !DoesRegistrySayDarkMode();
                     break;
 
                 case ColorMode.Light:
-                    IsLightMode = true;
+                    _blnIsLightMode = true;
                     break;
 
                 case ColorMode.Dark:
-                    IsLightMode = false;
+                    _blnIsLightMode = false;
                     break;
             }
         }
@@ -97,7 +97,8 @@ namespace Chummer
             if (GlobalSettings.ColorModeSetting == ColorMode.Automatic)
             {
                 IsLightMode = !DoesRegistrySayDarkMode();
-                s_TmrDarkModeCheckerTimer.Enabled = true;
+                if (s_TmrDarkModeCheckerTimer != null)
+                    s_TmrDarkModeCheckerTimer.Enabled = true;
             }
         }
 
@@ -106,7 +107,8 @@ namespace Chummer
             if (GlobalSettings.ColorModeSetting == ColorMode.Automatic)
             {
                 await SetIsLightModeAsync(!DoesRegistrySayDarkMode(), token).ConfigureAwait(false);
-                s_TmrDarkModeCheckerTimer.Enabled = true;
+                if (s_TmrDarkModeCheckerTimer != null)
+                    s_TmrDarkModeCheckerTimer.Enabled = true;
             }
         }
 
@@ -120,7 +122,8 @@ namespace Chummer
 
         public static void DisableAutoTimer()
         {
-            s_TmrDarkModeCheckerTimer.Enabled = false;
+            if (s_TmrDarkModeCheckerTimer != null)
+                s_TmrDarkModeCheckerTimer.Enabled = false;
         }
 
         private static bool _blnIsLightMode = true;
@@ -133,10 +136,11 @@ namespace Chummer
                 if (_blnIsLightMode == value)
                     return;
                 _blnIsLightMode = value;
-                if (Program.MainForm == null)
+                ChummerMainForm frmMain = Program.MainForm;
+                if (frmMain == null)
                     return;
-                using (CursorWait.New(Program.MainForm))
-                    Program.MainForm.UpdateLightDarkMode(CancellationToken.None);
+                using (CursorWait.New(frmMain))
+                    frmMain.UpdateLightDarkMode(CancellationToken.None);
             }
         }
 
@@ -145,13 +149,14 @@ namespace Chummer
             if (_blnIsLightMode == blnNewValue)
                 return Task.CompletedTask;
             _blnIsLightMode = blnNewValue;
-            return Program.MainForm == null ? Task.CompletedTask : Inner();
+            ChummerMainForm frmMain = Program.MainForm;
+            return frmMain == null ? Task.CompletedTask : Inner();
             async Task Inner()
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(frmMain, token: token).ConfigureAwait(false);
                 try
                 {
-                    await Program.MainForm.UpdateLightDarkModeAsync(token).ConfigureAwait(false);
+                    await frmMain.UpdateLightDarkModeAsync(token).ConfigureAwait(false);
                 }
                 finally
                 {

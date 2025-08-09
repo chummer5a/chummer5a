@@ -44,7 +44,6 @@ using Microsoft.VisualStudio.Threading;
 using Microsoft.Win32;
 using NLog;
 using Microsoft.IO;
-using Chummer.Forms;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -102,7 +101,7 @@ namespace Chummer
                 }
             }
 
-            using (new DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
+            using (new Forms.DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
             {
                 JoinableTaskContext objNewContext = new JoinableTaskContext();
                 JoinableTaskContext objReturn = Interlocked.CompareExchange(ref s_objJoinableTaskContext, objNewContext, default);

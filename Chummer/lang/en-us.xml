@@ -39,6 +39,14 @@
       <text>Chummer5 is currently not being run with permissions to modify registry values. Please make sure Chummer5 is being run by a user with appropriate access</text>
     </string>
     <string>
+      <key>MessageTitle_Load_Error_Generic</key>
+      <text>Error encountered while loading {0}</text>
+    </string>
+    <string>
+      <key>Message_Load_Error_CustomFile</key>
+      <text>Chummer5 has encountered an error while loading the following custom data file and will not attempt to load it again until the program is restarted:\n{0}\n\nThe details of the error are as follows:\n{1}</text>
+    </string>
+    <string>
       <key>Message_Load_Error_Warning</key>
       <text>Chummer5 encountered an error while loading the character.</text>
     </string>
@@ -8627,6 +8635,10 @@
     <string>
       <key>MessageTitle_SelectBP_SwitchBuildMethods</key>
       <text>Switch Build Method?</text>
+    </string>
+    <string>
+      <key>String_ModifyEllipses</key>
+      <text>Modify...</text>
     </string>
     <!-- End Region-->
     <!-- Region Advanced Contact Options Window -->

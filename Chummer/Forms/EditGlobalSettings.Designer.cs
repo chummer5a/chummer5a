@@ -33,7 +33,7 @@ namespace Chummer
             this.tabOptions = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
             this.tlpGlobal = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdScanForPDFs = new Chummer.ButtonWithToolTip();
+            this.cmdScanForPDFs = new System.Windows.Forms.Button();
             this.grpSelectedSourcebook = new System.Windows.Forms.GroupBox();
             this.tlpSelectedSourcebook = new System.Windows.Forms.TableLayoutPanel();
             this.txtPDFLocation = new System.Windows.Forms.TextBox();
@@ -286,13 +286,6 @@ namespace Chummer
             this.cmdScanForPDFs.AutoSize = true;
             this.cmdScanForPDFs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdScanForPDFs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdScanForPDFs.Image = null;
-            this.cmdScanForPDFs.ImageDpi120 = null;
-            this.cmdScanForPDFs.ImageDpi144 = null;
-            this.cmdScanForPDFs.ImageDpi192 = null;
-            this.cmdScanForPDFs.ImageDpi288 = null;
-            this.cmdScanForPDFs.ImageDpi384 = null;
-            this.cmdScanForPDFs.ImageDpi96 = null;
             this.cmdScanForPDFs.Location = new System.Drawing.Point(3, 558);
             this.cmdScanForPDFs.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdScanForPDFs.Name = "cmdScanForPDFs";
@@ -300,7 +293,6 @@ namespace Chummer
             this.cmdScanForPDFs.TabIndex = 68;
             this.cmdScanForPDFs.Tag = "Button_Options_PDFFolderScan";
             this.cmdScanForPDFs.Text = "Scan Folder for PDF Files";
-            this.cmdScanForPDFs.ToolTipText = "";
             this.cmdScanForPDFs.UseVisualStyleBackColor = true;
             this.cmdScanForPDFs.Click += new System.EventHandler(this.bScanForPDFs_Click);
             // 
@@ -2649,7 +2641,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblDirectoryPathLabel;
         private System.Windows.Forms.Label lblDefaultMasterIndexSetting;
         private Chummer.ElasticComboBox cboDefaultMasterIndexSetting;
-        private ButtonWithToolTip cmdScanForPDFs;
+        private System.Windows.Forms.Button cmdScanForPDFs;
         private System.Windows.Forms.Label chkSaveCompressionLevel;
         private ElasticComboBox cboChum5lzCompressionLevel;
         private ColorableCheckBox chkInsertPdfNotesIfAvailable;

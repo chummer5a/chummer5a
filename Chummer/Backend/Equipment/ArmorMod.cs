@@ -1010,6 +1010,8 @@ namespace Chummer.Backend.Equipment
         private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnIsSuccess)
         {
             blnIsSuccess = true;
+            if (string.IsNullOrEmpty(strExpression))
+                return 0;
             strExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
@@ -1093,9 +1095,10 @@ namespace Chummer.Backend.Equipment
         private async Task<Tuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strExpression))
+                return new Tuple<decimal, bool>(0, true);
             bool blnIsSuccess = true;
-            strExpression = await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false);
-            strExpression = strExpression.TrimStart('+');
+            strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
@@ -1538,10 +1541,7 @@ namespace Chummer.Backend.Equipment
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-') && !IncludedInArmor;
 
-                if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                    intAvail = ProcessRatingString(strAvail.TrimStart('+'), () => Rating);
-                else
-                    intAvail = decValue.StandardRound();
+                intAvail = ProcessRatingString(strAvail, () => Rating);
             }
 
             if (blnCheckChildren)
@@ -1590,10 +1590,7 @@ namespace Chummer.Backend.Equipment
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-') && !IncludedInArmor;
 
-                if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                    intAvail = await ProcessRatingStringAsync(strAvail.TrimStart('+'), () => GetRatingAsync(token), token).ConfigureAwait(false);
-                else
-                    intAvail = decValue.StandardRound();
+                intAvail = await ProcessRatingStringAsync(strAvail, () => GetRatingAsync(token), token).ConfigureAwait(false);
             }
 
             if (blnCheckChildren)
@@ -1897,15 +1894,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strCostExpr = Cost;
-                if (string.IsNullOrEmpty(strCostExpr))
-                    return 0;
-                strCostExpr = strCostExpr.ProcessFixedValuesString(() => Rating);
-
-                if (strCostExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
-                {
-                    decReturn = ProcessRatingStringAsDec(strCostExpr.TrimStart('+'), () => Rating);
-                }
+                decimal decReturn = ProcessRatingStringAsDec(Cost, () => Rating);
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
@@ -1920,15 +1909,7 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetOwnCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strCostExpr = Cost;
-            if (string.IsNullOrEmpty(strCostExpr))
-                return 0;
-            strCostExpr = await strCostExpr.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
-
-            if (strCostExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
-            {
-                decReturn = (await ProcessRatingStringAsDecAsync(strCostExpr.TrimStart('+'), () => GetRatingAsync(token), token).ConfigureAwait(false)).Item1;
-            }
+            decimal decReturn = (await ProcessRatingStringAsDecAsync(Cost, () => GetRatingAsync(token), token).ConfigureAwait(false)).Item1;
 
             if (DiscountCost)
                 decReturn *= 0.9m;
@@ -1950,15 +1931,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (IncludedInArmor)
                     return 0;
-                string strWeightExpression = Weight;
-                if (string.IsNullOrEmpty(strWeightExpression))
-                    return 0;
-                strWeightExpression = strWeightExpression.ProcessFixedValuesString(() => Rating);
-                if (strWeightExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
-                {
-                    decReturn = ProcessRatingStringAsDec(strWeightExpression.TrimStart('+'), () => Rating);
-                }
-                return decReturn;
+                return ProcessRatingStringAsDec(Weight, () => Rating);
             }
         }
 

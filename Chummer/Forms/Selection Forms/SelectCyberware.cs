@@ -117,8 +117,8 @@ namespace Chummer
                 if (CyberwareParent != null)
                 {
                     return await CyberwareParent.ProcessCostExpressionAsync(CyberwareParent.Cost,
-                        await CyberwareParent.GetRatingAsync().ConfigureAwait(false),
-                        await CyberwareParent.GetGradeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                        () => CyberwareParent.GetRatingAsync(),
+                        () => CyberwareParent.GetGradeAsync()).ConfigureAwait(false);
                 }
                 else if (ParentVehicleMod != null)
                 {
@@ -1260,9 +1260,10 @@ namespace Chummer
 
                             await lblEssence.DoThreadSafeAsync(x =>
                             {
-                                x.Text = decESS.ToString(strEssenceFormat, GlobalSettings.CultureInfo);
                                 if (blnAddToParentESS)
-                                    x.Text = '+' + x.Text;
+                                    x.Text = '+' + decESS.ToString(strEssenceFormat, GlobalSettings.CultureInfo);
+                                else
+                                    x.Text = decESS.ToString(strEssenceFormat, GlobalSettings.CultureInfo);
                             }, token: token).ConfigureAwait(false);
                         }
                         else
@@ -2066,6 +2067,8 @@ namespace Chummer
         private async Task<Tuple<decimal, bool>> ProcessInvariantXPathExpression(XPathNavigator xmlCyberware, string strExpression, int intMinRating, int intRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strExpression))
+                return new Tuple<decimal, bool>(0, true);
             bool blnSuccess = true;
             strExpression = strExpression.ProcessFixedValuesString(intRating).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))

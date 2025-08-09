@@ -38,7 +38,7 @@ namespace Chummer
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdExport = new System.Windows.Forms.Button();
             this.cmdExportClose = new System.Windows.Forms.Button();
-            this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip();
+            this.cmdEditCharacterSetting = new System.Windows.Forms.Button();
             this.lblCharacterSetting = new System.Windows.Forms.Label();
             this.pgbExportProgress = new System.Windows.Forms.ProgressBar();
             this.cboCharacterSetting = new Chummer.ElasticComboBox();
@@ -201,20 +201,13 @@ namespace Chummer
             this.cmdEditCharacterSetting.AutoSize = true;
             this.cmdEditCharacterSetting.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdEditCharacterSetting.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdEditCharacterSetting.Image = null;
-            this.cmdEditCharacterSetting.ImageDpi120 = null;
-            this.cmdEditCharacterSetting.ImageDpi144 = null;
-            this.cmdEditCharacterSetting.ImageDpi192 = null;
-            this.cmdEditCharacterSetting.ImageDpi288 = null;
-            this.cmdEditCharacterSetting.ImageDpi384 = null;
-            this.cmdEditCharacterSetting.ImageDpi96 = null;
             this.cmdEditCharacterSetting.Location = new System.Drawing.Point(523, 3);
             this.cmdEditCharacterSetting.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdEditCharacterSetting.Name = "cmdEditCharacterSetting";
             this.cmdEditCharacterSetting.Size = new System.Drawing.Size(80, 23);
             this.cmdEditCharacterSetting.TabIndex = 17;
+            this.cmdEditCharacterSetting.Tag = "String_ModifyEllipses";
             this.cmdEditCharacterSetting.Text = "Modify...";
-            this.cmdEditCharacterSetting.ToolTipText = "";
             this.cmdEditCharacterSetting.UseVisualStyleBackColor = true;
             this.cmdEditCharacterSetting.Click += new System.EventHandler(this.cmdEditCharacterOption_Click);
             // 
@@ -344,7 +337,7 @@ namespace Chummer
 
         #endregion
         private System.Windows.Forms.TableLayoutPanel tlpMain;
-        private ButtonWithToolTip cmdEditCharacterSetting;
+        private System.Windows.Forms.Button cmdEditCharacterSetting;
         private System.Windows.Forms.Label lblCharacterSetting;
         private ElasticComboBox cboBuildMethod;
         private NumericUpDownEx nudMaxAvail;

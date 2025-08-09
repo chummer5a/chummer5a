@@ -175,6 +175,7 @@ namespace Chummer.Tests
             }
             catch (Exception ex)
             {
+                ex = ex.Demystify();
                 Assert.Fail(ex.Message);
             }
         }
@@ -275,6 +276,7 @@ namespace Chummer.Tests
                 }
                 catch (XmlSchemaException e)
                 {
+                    e = e.Demystify();
                     Assert.Fail("Unexpected validation failure: " + e.Message);
                 }
             }
@@ -391,6 +393,7 @@ namespace Chummer.Tests
             }
             catch (Exception ex)
             {
+                ex = ex.Demystify();
                 Assert.Fail(ex.Message);
             }
             finally
@@ -401,6 +404,7 @@ namespace Chummer.Tests
                 }
                 catch (Exception e)
                 {
+                    e = e.Demystify();
                     string strErrorMessage = "Encountered (non-fatal) exception while disposing of main form." + Environment.NewLine
                         + e.Message;
                     Debug.WriteLine(strErrorMessage);
@@ -499,6 +503,7 @@ namespace Chummer.Tests
                                 }
                                 catch (ApplicationException e)
                                 {
+                                    e = e.Demystify();
                                     string strErrorMessage
                                         = "Encountered (non-fatal) exception while disposing of character form."
                                           + Environment.NewLine
@@ -509,6 +514,7 @@ namespace Chummer.Tests
                                 }
                                 catch (InvalidOperationException e)
                                 {
+                                    e = e.Demystify();
                                     string strErrorMessage
                                         = "Encountered (non-fatal) exception while disposing of character form."
                                           + Environment.NewLine
@@ -521,6 +527,7 @@ namespace Chummer.Tests
                         }
                         catch (Exception e)
                         {
+                            e = e.Demystify();
                             string strErrorMessage
                                 = "Exception while loading form for " + strFileName + ":";
                             strErrorMessage += Environment.NewLine + e;

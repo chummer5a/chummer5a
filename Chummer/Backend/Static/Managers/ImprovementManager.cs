@@ -17,14 +17,12 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -1821,10 +1819,11 @@ namespace Chummer
                                                    })
                                                    : await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
                                                    {
-                                                       Description = strDescription,
                                                        AllowAutoSelect = blnAllowAutoSelect
                                                    }, token).ConfigureAwait(false))
                                         {
+                                            if (!blnSync)
+                                                await frmPickSkill.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
                                             if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
                                                 frmPickSkill.MyForm.SetGeneralItemsMode(lstDropdownItems);
                                             else
@@ -1839,7 +1838,9 @@ namespace Chummer
                                                 throw new AbortedException();
                                             }
 
-                                            strSelectedSkill = frmPickSkill.MyForm.SelectedItem;
+                                            strSelectedSkill = blnSync
+                                                ? frmPickSkill.MyForm.SelectedItem
+                                                : await frmPickSkill.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -2052,14 +2053,12 @@ namespace Chummer
                                {
                                    Description = strDescription
                                })
-                               : await ThreadSafeForm<SelectSkill>.GetAsync(() =>
-                                   new SelectSkill(objCharacter, strFriendlyName)
-                                   {
-                                       Description = strDescription
-                                   }, token).ConfigureAwait(false))
+                               : await ThreadSafeForm<SelectSkill>.GetAsync(() => new SelectSkill(objCharacter, strFriendlyName), token).ConfigureAwait(false))
                     {
+                        if (!blnSync)
+                            await frmPickSkill.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
                         string strMinimumRating = xmlBonusNode
-                            .SelectSingleNodeAndCacheExpressionAsNavigator("@minimumrating", token)?.Value;
+                                .SelectSingleNodeAndCacheExpressionAsNavigator("@minimumrating", token)?.Value;
                         if (!string.IsNullOrWhiteSpace(strMinimumRating))
                             frmPickSkill.MyForm.MinimumRating = blnSync
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -2444,13 +2443,12 @@ namespace Chummer
                                                                strSelectText,
                                                                strFriendlyName)
                                                        })
-                                                       : await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                                                       {
-                                                           Description = string.Format(GlobalSettings.CultureInfo,
-                                                               strSelectText,
-                                                               strFriendlyName)
-                                                       }, token).ConfigureAwait(false))
+                                                       : await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                                             {
+                                                if (!blnSync)
+                                                    await frmSelect.MyForm.DoThreadSafeAsync(x => x.Description = string.Format(GlobalSettings.CultureInfo,
+                                                               strSelectText,
+                                                               strFriendlyName), token).ConfigureAwait(false);
                                                 if (Convert.ToBoolean(
                                                         nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
                                                             "selecttext/@allowedit", token)?.Value,
@@ -2479,7 +2477,7 @@ namespace Chummer
                                                     return false;
                                                 }
 
-                                                SetSelectedValue(frmSelect.MyForm.SelectedItem, objCharacter);
+                                                SetSelectedValue(blnSync ? frmSelect.MyForm.SelectedItem : await frmSelect.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false), objCharacter);
                                             }
                                         }
                                     }

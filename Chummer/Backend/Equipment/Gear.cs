@@ -1002,11 +1002,9 @@ namespace Chummer.Backend.Equipment
                                         "String_Improvement_SelectText", token: token).ConfigureAwait(false),
                                     strFriendlyName);
                                 using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(
-                                           () => new SelectItem
-                                           {
-                                               Description = strDescription
-                                           }, token).ConfigureAwait(false))
+                                           () => new SelectItem(), token).ConfigureAwait(false))
                                 {
+                                    await frmPickItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
                                     frmPickItem.MyForm.SetGeneralItemsMode(lstGears);
 
                                     // Make sure the dialogue window was not canceled.
@@ -1022,7 +1020,7 @@ namespace Chummer.Backend.Equipment
                                     }
 
                                     XmlNode objXmlChosenGear =
-                                        objXmlChooseGearNode.TryGetNodeByNameOrId("usegear", frmPickItem.MyForm.SelectedItem);
+                                        objXmlChooseGearNode.TryGetNodeByNameOrId("usegear", await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false));
 
                                     if (objXmlChosenGear == null)
                                     {
@@ -2347,7 +2345,9 @@ namespace Chummer.Backend.Equipment
         private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnSuccess)
         {
             blnSuccess = true;
-            strExpression = strExpression.ProcessFixedValuesString(funcRating);
+            if (string.IsNullOrEmpty(strExpression))
+                return 0;
+            strExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnSuccess = false;
@@ -2356,18 +2356,77 @@ namespace Chummer.Backend.Equipment
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
                         sbdValue.Append(strExpression);
-                        if (Parent is IHasRating objParentCast)
+                        if (Parent is IHasRating objCastParent)
                         {
                             sbdValue.CheapReplace(strExpression, "{Parent Rating}",
-                                                  () => objParentCast.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                                  () => objCastParent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                             sbdValue.CheapReplace(strExpression, "Parent Rating",
-                                                  () => objParentCast.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                                  () => objCastParent.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                            if (objCastParent is Gear objParentGear)
+                            {
+                                sbdValue.CheapReplace(strExpression, "{Parent Cost}",
+                                                      () => objParentGear.OwnCostPreMultipliers.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdValue.CheapReplace(strExpression, "Parent Cost",
+                                                      () => objParentGear.OwnCostPreMultipliers.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdValue.CheapReplace(strExpression, "{Gear Cost}",
+                                                      () => objParentGear.CalculatedCost.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdValue.CheapReplace(strExpression, "Gear Cost",
+                                                      () => objParentGear.CalculatedCost.ToString(GlobalSettings.InvariantCultureInfo));
+                                Lazy<decimal> decParentWeight = new Lazy<decimal>(() => objParentGear.OwnWeight);
+                                sbdValue.CheapReplace(strExpression, "{Parent Weight}",
+                                                      () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdValue.CheapReplace(strExpression, "Parent Weight",
+                                                      () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdValue.CheapReplace(strExpression, "{Gear Weight}",
+                                                      () => (decParentWeight.Value * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdValue.CheapReplace(strExpression, "Gear Weight",
+                                                      () => (decParentWeight.Value * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo));
+                            }
+                            else
+                            {
+                                sbdValue.Replace("{Parent Cost}", "0");
+                                sbdValue.Replace("Parent Cost", "0");
+                                sbdValue.Replace("{Gear Cost}", "0");
+                                sbdValue.Replace("Gear Cost", "0");
+                                sbdValue.Replace("{Parent Weight}", "0");
+                                sbdValue.Replace("Parent Weight", "0");
+                                sbdValue.Replace("{Gear Weight}", "0");
+                                sbdValue.Replace("Gear Weight", "0");
+                            }
                         }
                         else
                         {
-                            sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Parent Rating", 0.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.Replace("{Parent Rating}", "0");
+                            sbdValue.Replace("Parent Rating", "0");
+                            sbdValue.Replace("{Parent Cost}", "0");
+                            sbdValue.Replace("Parent Cost", "0");
+                            sbdValue.Replace("{Gear Cost}", "0");
+                            sbdValue.Replace("Gear Cost", "0");
+                            sbdValue.Replace("{Parent Weight}", "0");
+                            sbdValue.Replace("Parent Weight", "0");
+                            sbdValue.Replace("{Gear Weight}", "0");
+                            sbdValue.Replace("Gear Weight", "0");
                         }
+                        if (strExpression.Contains("Children Cost"))
+                        {
+                            decimal decTotalChildrenCost = Children.Count > 0
+                                ? Children.Sum(x => x.CalculatedCost)
+                                : 0;
+                            sbdValue.Replace("{Children Cost}", decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        }
+                        if (strExpression.Contains("Children Weight"))
+                        {
+                            decimal decTotalChildrenWeight = Children.Count > 0
+                                ? Children.Sum(x => x.OwnWeight * x.Quantity)
+                                : 0;
+                            sbdValue.Replace("{Children Weight}", decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.Replace("Children Weight", decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                        }
+                        sbdValue.CheapReplace(strExpression, "{MinRating}",
+                                              () => MinRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "MinRating",
+                                              () => MinRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
                         Lazy<string> strRating = new Lazy<string>(() => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
                         sbdValue.CheapReplace("{Rating}", () => strRating.Value);
                         foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
@@ -2449,8 +2508,10 @@ namespace Chummer.Backend.Equipment
         private async Task<Tuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strExpression))
+                return new Tuple<decimal, bool>(0, true);
             bool blnSuccess = true;
-            strExpression = await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false);
+            strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnSuccess = false;
@@ -2463,11 +2524,73 @@ namespace Chummer.Backend.Equipment
                         {
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
                                 async () => (await objCastParent.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Rating",
+                                async () => (await objCastParent.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            if (objCastParent is Gear objParentGear)
+                            {
+                                await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}",
+                                    async () => (await objParentGear.GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost",
+                                    async () => (await objParentGear.GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                await sbdValue.CheapReplaceAsync(strExpression, "{Gear Cost}",
+                                    async () => (await objParentGear.GetCalculatedCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                await sbdValue.CheapReplaceAsync(strExpression, "Gear Cost",
+                                    async () => (await objParentGear.GetCalculatedCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                Lazy<decimal> decParentWeight = new Lazy<decimal>(() => objParentGear.OwnWeight);
+                                sbdValue.CheapReplace(strExpression, "{Parent Weight}",
+                                                      () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdValue.CheapReplace(strExpression, "Parent Weight",
+                                                      () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdValue.CheapReplace(strExpression, "{Gear Weight}",
+                                                      () => (decParentWeight.Value * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdValue.CheapReplace(strExpression, "Gear Weight",
+                                                      () => (decParentWeight.Value * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo));
+                            }
+                            else
+                            {
+                                sbdValue.Replace("{Parent Cost}", "0");
+                                sbdValue.Replace("Parent Cost", "0");
+                                sbdValue.Replace("{Gear Cost}", "0");
+                                sbdValue.Replace("Gear Cost", "0");
+                                sbdValue.Replace("{Parent Weight}", "0");
+                                sbdValue.Replace("Parent Weight", "0");
+                                sbdValue.Replace("{Gear Weight}", "0");
+                                sbdValue.Replace("Gear Weight", "0");
+                            }
                         }
                         else
                         {
-                            sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.Replace("{Parent Rating}", "0");
+                            sbdValue.Replace("Parent Rating", "0");
+                            sbdValue.Replace("{Parent Cost}", "0");
+                            sbdValue.Replace("Parent Cost", "0");
+                            sbdValue.Replace("{Gear Cost}", "0");
+                            sbdValue.Replace("Gear Cost", "0");
+                            sbdValue.Replace("{Parent Weight}", "0");
+                            sbdValue.Replace("Parent Weight", "0");
+                            sbdValue.Replace("{Gear Weight}", "0");
+                            sbdValue.Replace("Gear Weight", "0");
                         }
+                        if (strExpression.Contains("Children Cost"))
+                        {
+                            decimal decTotalChildrenCost = await Children.GetCountAsync(token).ConfigureAwait(false) > 0
+                                ? await Children.SumAsync(x => x.GetCalculatedCostAsync(token), token).ConfigureAwait(false)
+                                : 0;
+                            sbdValue.Replace("{Children Cost}", decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
+                        }
+                        if (strExpression.Contains("Children Weight"))
+                        {
+                            decimal decTotalChildrenWeight = await Children.GetCountAsync(token).ConfigureAwait(false) > 0
+                                ? await Children.SumAsync(x => x.OwnWeight * x.Quantity, token).ConfigureAwait(false)
+                                : 0;
+                            sbdValue.Replace("{Children Weight}", decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.Replace("Children Weight", decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                        }
+                        await sbdValue.CheapReplaceAsync(strExpression, "{MinRating}",
+                                              async () => (await GetMinRatingValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "MinRating",
+                                              async () => (await GetMinRatingValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                         {
@@ -3593,28 +3716,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-') && !IncludedInParent;
-                if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
-                    {
-                        sbdAvail.Append(strAvail.TrimStart('+'));
-                        sbdAvail.CheapReplace(strAvail, "MinRating",
-                                              () => MinRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
-                        if (Parent is IHasRating objParentCast)
-                        {
-                            sbdAvail.CheapReplace(strAvail, "Parent Rating",
-                                              () => objParentCast.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        }
-                        else
-                        {
-                            sbdAvail.Replace("Parent Rating", 0.ToString(GlobalSettings.InvariantCultureInfo));
-                        }
-                        sbdAvail.CheapReplace(strAvail, "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        intAvail += ProcessRatingString(sbdAvail.ToString(), () => Rating);
-                    }
-                }
-                else
-                    intAvail += decValue.StandardRound();
+                intAvail += ProcessRatingString(strAvail, () => Rating);
             }
 
             if (blnCheckChildren)
@@ -3663,34 +3765,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-') && !IncludedInParent;
-                if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
-                    {
-                        sbdAvail.Append(strAvail.TrimStart('+'));
-                        await sbdAvail.CheapReplaceAsync(strAvail, "MinRating",
-                            async () =>
-                                (await GetMinRatingValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
-                                    .InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
-                        if (Parent is IHasRating objParentCast)
-                        {
-                            await sbdAvail.CheapReplaceAsync(strAvail, "Parent Rating",
-                                                             async () => (await objParentCast.GetRatingAsync(token).ConfigureAwait(false)).ToString(
-                                                                 GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            sbdAvail.Replace("Parent Rating", 0.ToString(GlobalSettings.InvariantCultureInfo));
-                        }
-                        await sbdAvail.CheapReplaceAsync(strAvail, "Rating",
-                            async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
-                                .InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        intAvail += await ProcessRatingStringAsync(sbdAvail.ToString(), () => GetRatingAsync(token), token).ConfigureAwait(false);
-                    }
-                }
-                else
-                    intAvail += decValue.StandardRound();
+                intAvail += await ProcessRatingStringAsync(strAvail, () => GetRatingAsync(token), token).ConfigureAwait(false);
             }
 
             if (blnCheckChildren)
@@ -3992,39 +4067,8 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strCostExpression = Cost;
-                if (string.IsNullOrEmpty(strCostExpression))
-                    return 0;
-                strCostExpression = strCostExpression.ProcessFixedValuesString(() => Rating);
-                decimal decGearCost = 0;
-                decimal decParentCost = 0;
-                if (Parent != null)
-                {
-                    if (strCostExpression.Contains("Gear Cost"))
-                        decGearCost = ((Gear)Parent).CalculatedCost;
-                    if (strCostExpression.Contains("Parent Cost"))
-                        decParentCost = ((Gear)Parent).OwnCostPreMultipliers;
-                }
-
-                decimal decTotalChildrenCost = 0;
-                if (Children.Count > 0 && strCostExpression.Contains("Children Cost"))
-                {
-                    decTotalChildrenCost += Children.Sum(x => x.CalculatedCost);
-                }
-
-                if (strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
-                {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
-                    {
-                        sbdCost.Append(strCostExpression.TrimStart('+'));
-                        sbdCost.Replace("Gear Cost", decGearCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdCost.Replace("Children Cost",
-                                        decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdCost.Replace("Parent Cost", decParentCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        decReturn = ProcessRatingStringAsDec(sbdCost.ToString(), () => Rating);
-                    }
-                }
-
+                decimal decReturn = ProcessRatingStringAsDec(Cost, () => Rating);
+                
                 if (DiscountCost)
                     decReturn *= 0.9m;
 
@@ -4038,39 +4082,8 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetOwnCostPreMultipliersAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strCostExpression = Cost;
-            if (string.IsNullOrEmpty(strCostExpression))
-                return 0;
-            strCostExpression = await strCostExpression.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
-            decimal decGearCost = 0;
-            decimal decParentCost = 0;
-            if (Parent != null)
-            {
-                if (strCostExpression.Contains("Gear Cost"))
-                    decGearCost = await ((Gear) Parent).GetCalculatedCostAsync(token).ConfigureAwait(false);
-                if (strCostExpression.Contains("Parent Cost"))
-                    decParentCost = await ((Gear) Parent).GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false);
-            }
-
-            decimal decTotalChildrenCost = 0;
-            if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 && strCostExpression.Contains("Children Cost"))
-            {
-                decTotalChildrenCost += await Children.SumAsync(x => x.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
-            }
-
-            if (strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
-            {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
-                {
-                    sbdCost.Append(strCostExpression.TrimStart('+'));
-                    sbdCost.Replace("Gear Cost", decGearCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdCost.Replace("Children Cost",
-                                    decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdCost.Replace("Parent Cost", decParentCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    decReturn = (await ProcessRatingStringAsDecAsync(sbdCost.ToString(), () => GetRatingAsync(token), token).ConfigureAwait(false)).Item1;
-                }
-            }
-
+            decimal decReturn = (await ProcessRatingStringAsDecAsync(Cost, () => GetRatingAsync(token), token).ConfigureAwait(false)).Item1;
+            
             if (DiscountCost)
                 decReturn *= 0.9m;
 
@@ -4186,36 +4199,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (IncludedInParent)
                     return 0;
-                string strWeightExpression = Weight;
-                if (string.IsNullOrEmpty(strWeightExpression))
-                    return 0;
-                strWeightExpression = strWeightExpression.ProcessFixedValuesString(() => Rating);
-                decimal decGearWeight = 0;
-                decimal decParentWeight = 0;
-                if (Parent != null && strWeightExpression.ContainsAny("Parent Weight", "Gear Weight"))
-                {
-                    decParentWeight = ((Gear)Parent).OwnWeight;
-                    decGearWeight = decParentWeight * ((Gear)Parent).Quantity;
-                }
-
-                decimal decTotalChildrenWeight = 0;
-                if (Children.Count > 0 && strWeightExpression.Contains("Children Weight"))
-                {
-                    decTotalChildrenWeight += Children.Sum(x => x.OwnWeight * x.Quantity);
-                }
-
-                decimal decReturn = 0;
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
-                {
-                    sbdWeight.Append(strWeightExpression.TrimStart('+'));
-                    sbdWeight.Replace("Gear Weight", decGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdWeight.Replace("Children Weight",
-                                      decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdWeight.Replace("Parent Weight", decParentWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                    decReturn = ProcessRatingStringAsDec(sbdWeight.ToString(), () => Rating);
-                }
-
-                return decReturn;
+                return ProcessRatingStringAsDec(Weight, () => Rating);
             }
         }
 

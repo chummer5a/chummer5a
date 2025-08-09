@@ -205,25 +205,7 @@ namespace Chummer
 
                     blnIsSuccess = objReturn != null;
                 }
-                catch (ArgumentException)
-                {
-                    Utils.BreakIfDebug();
-                    objReturn = x;
-                    blnIsSuccess = false;
-                }
-                catch (FormatException)
-                {
-                    Utils.BreakIfDebug();
-                    objReturn = x;
-                    blnIsSuccess = false;
-                }
-                catch (XPathException)
-                {
-                    Utils.BreakIfDebug();
-                    objReturn = x;
-                    blnIsSuccess = false;
-                }
-                catch (OverflowException)
+                catch (Exception ex) when ((ex is ArgumentException) || (ex is FormatException) || (ex is XPathException) || (ex is OverflowException))
                 {
                     Utils.BreakIfDebug();
                     objReturn = x;
@@ -308,25 +290,7 @@ namespace Chummer
 
                     blnIsSuccess = objReturn != null;
                 }
-                catch (ArgumentException)
-                {
-                    Utils.BreakIfDebug();
-                    objReturn = x;
-                    blnIsSuccess = false;
-                }
-                catch (FormatException)
-                {
-                    Utils.BreakIfDebug();
-                    objReturn = x;
-                    blnIsSuccess = false;
-                }
-                catch (XPathException)
-                {
-                    Utils.BreakIfDebug();
-                    objReturn = x;
-                    blnIsSuccess = false;
-                }
-                catch (OverflowException)
+                catch (Exception ex) when ((ex is ArgumentException) || (ex is FormatException) || (ex is XPathException) || (ex is OverflowException))
                 {
                     Utils.BreakIfDebug();
                     objReturn = x;
@@ -377,25 +341,7 @@ namespace Chummer
 
                     blnIsSuccess = objReturn != null;
                 }
-                catch (ArgumentException)
-                {
-                    Utils.BreakIfDebug();
-                    objReturn = x;
-                    blnIsSuccess = false;
-                }
-                catch (FormatException)
-                {
-                    Utils.BreakIfDebug();
-                    objReturn = x;
-                    blnIsSuccess = false;
-                }
-                catch (XPathException)
-                {
-                    Utils.BreakIfDebug();
-                    objReturn = x;
-                    blnIsSuccess = false;
-                }
-                catch (OverflowException)
+                catch (Exception ex) when ((ex is ArgumentException) || (ex is FormatException) || (ex is XPathException) || (ex is OverflowException))
                 {
                     Utils.BreakIfDebug();
                     objReturn = x;
@@ -446,31 +392,13 @@ namespace Chummer
                     }
                     blnIsSuccess = objReturn != null;
                 }
-                catch (ArgumentException)
+                catch (Exception ex) when ((ex is ArgumentException) || (ex is FormatException) || (ex is XPathException) || (ex is OverflowException))
                 {
                     Utils.BreakIfDebug();
                     objReturn = x;
                     blnIsSuccess = false;
                 }
-                catch (FormatException)
-                {
-                    Utils.BreakIfDebug();
-                    objReturn = x;
-                    blnIsSuccess = false;
-                }
-                catch (XPathException)
-                {
-                    Utils.BreakIfDebug();
-                    objReturn = x;
-                    blnIsSuccess = false;
-                }
-                catch (OverflowException)
-                {
-                    Utils.BreakIfDebug();
-                    objReturn = x;
-                    blnIsSuccess = false;
-                }
-
+                
                 return new Tuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
             });
         }

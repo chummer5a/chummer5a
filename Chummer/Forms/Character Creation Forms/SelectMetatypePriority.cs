@@ -313,9 +313,10 @@ namespace Chummer
                             await RefreshSelectedMetatype(_objGenericToken).ConfigureAwait(false);
 
                             //Magical/Resonance Type
+                            string strTalentPriority = await _objCharacter.GetTalentPriorityAsync(_objGenericToken).ConfigureAwait(false);
                             await cboTalents.DoThreadSafeAsync(x =>
                             {
-                                x.SelectedValue = _objCharacter.TalentPriority;
+                                x.SelectedValue = strTalentPriority;
                                 if (x.SelectedIndex == -1 && x.Items.Count > 1)
                                     x.SelectedIndex = 0;
                             }, _objGenericToken).ConfigureAwait(false);
@@ -3284,10 +3285,11 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    lblForceLabel.Text = await LanguageManager.GetStringAsync(
+                                    string strForceLabel = await LanguageManager.GetStringAsync(
                                         objXmlMetatype.SelectSingleNodeAndCacheExpression("forceislevels", token) != null
                                             ? "String_Level"
                                             : "String_Force", token: token).ConfigureAwait(false);
+                                    await lblForceLabel.DoThreadSafeAsync(x => x.Text = strForceLabel, token).ConfigureAwait(false);
                                     await nudForce.DoThreadSafeAsync(x => x.Maximum = 100, token).ConfigureAwait(false);
                                 }
 

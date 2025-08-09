@@ -122,9 +122,9 @@ namespace Chummer
             }
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -133,9 +133,9 @@ namespace Chummer
             Close();
         }
 
-        private void lstMetamagic_DoubleClick(object sender, EventArgs e)
+        private async void lstMetamagic_DoubleClick(object sender, EventArgs e)
         {
-            AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
         private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
@@ -231,21 +231,24 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async Task AcceptForm(CancellationToken token = default)
         {
-            string strSelectedId = lstMetamagic.SelectedValue?.ToString();
+            token.ThrowIfCancellationRequested();
+            string strSelectedId = await lstMetamagic.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Make sure the selected Metamagic or Echo meets its requirements.
                 XPathNavigator objXmlMetamagic = _objXmlDocument.TryGetNodeByNameOrId(_strRootXPath, strSelectedId);
 
-                if (objXmlMetamagic?.RequirementsMet(_objCharacter, strLocalName: _strType) != true)
+                if (objXmlMetamagic == null || !await objXmlMetamagic.RequirementsMetAsync(_objCharacter, strLocalName: _strType, token: token).ConfigureAwait(false))
                     return;
 
                 _strSelectedMetamagic = strSelectedId;
-
-                DialogResult = DialogResult.OK;
-                Close();
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                }, token).ConfigureAwait(false);
             }
         }
 

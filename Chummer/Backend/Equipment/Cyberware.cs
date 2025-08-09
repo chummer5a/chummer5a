@@ -8125,7 +8125,7 @@ namespace Chummer.Backend.Equipment
                         {
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                             {
-                                sbdAvail.Append(strAvail.TrimStart('+'));
+                                sbdAvail.Append(strAvail);
                                 sbdAvail.CheapReplace(strAvail, "{MinRating}",
                                                       () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
                                 sbdAvail.CheapReplace(strAvail, "MinRating",
@@ -9348,16 +9348,15 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public string ProcessCostExpression(string strExpression, int intRating, Grade objGrade, Cyberware objIgnoreChild = null)
+        public string ProcessCostExpression(string strExpression, Func<int> funcRating, Func<Grade> funcGrade, Cyberware objIgnoreChild = null)
         {
+            if (string.IsNullOrEmpty(strExpression))
+                return "0";
+            string strCostExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
+            if (!strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
+                return decReturn.ToString(GlobalSettings.InvariantCultureInfo);
             using (LockObject.EnterReadLock())
             {
-                string strCostExpression = strExpression.ProcessFixedValuesString(intRating);
-                if (string.IsNullOrEmpty(strCostExpression))
-                    return "0";
-                strCostExpression = strCostExpression.TrimStart('+');
-                if (!strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
-                    return decReturn.ToString(GlobalSettings.InvariantCultureInfo);
                 if (strCostExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
                     string strParentCost = "0";
@@ -9367,7 +9366,7 @@ namespace Chummer.Backend.Equipment
                         if (strCostExpression.Contains("Parent Cost"))
                         {
                             if (_objParent != null)
-                                strParentCost = _objParent.ProcessCostExpression(_objParent.Cost, _objParent.Rating, _objParent.Grade, this);
+                                strParentCost = _objParent.ProcessCostExpression(_objParent.Cost, () => _objParent.Rating, () => _objParent.Grade, this);
                             else
                             {
                                 _objParentVehicle.FindVehicleCyberware(x => x.InternalId == InternalId, out VehicleMod objMod);
@@ -9389,13 +9388,14 @@ namespace Chummer.Backend.Equipment
                     decimal decTotalChildrenCost = 0;
                     if (Children.Count > 0 && strCostExpression.Contains("Children Cost"))
                     {
+                        Grade objGrade = funcGrade();
                         decTotalChildrenCost
-                            = Children.Sum(x => !ReferenceEquals(x, objIgnoreChild), x => x.CalculatedTotalCost(x.Rating, objGrade));
+                            = Children.Sum(x => !ReferenceEquals(x, objIgnoreChild), x => x.CalculatedTotalCost(() => x.Rating, objGrade));
                     }
 
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                     {
-                        sbdCost.Append(strCostExpression.TrimStart('+'));
+                        sbdCost.Append(strCostExpression);
                         sbdCost.Replace("{Parent Cost}", strParentCost);
                         sbdCost.Replace("Parent Cost", strParentCost);
                         sbdCost.Replace("{Parent Gear Cost}",
@@ -9413,8 +9413,12 @@ namespace Chummer.Backend.Equipment
                         sbdCost.CheapReplace(strCostExpression, "MinRating",
                                              () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
                         ProcessAttributesInXPath(sbdCost, strCostExpression);
-                        sbdCost.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        if (strCostExpression.Contains("Rating"))
+                        {
+                            string strRating = funcRating().ToString(GlobalSettings.InvariantCultureInfo);
+                            sbdCost.Replace("{Rating}", strRating);
+                            sbdCost.Replace("Rating", strRating);
+                        }
                         strCostExpression = sbdCost.ToString();
                     }
                 }
@@ -9426,19 +9430,18 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async Task<string> ProcessCostExpressionAsync(string strExpression, int intRating, Grade objGrade, Cyberware objIgnoreChild = null, CancellationToken token = default)
+        public async Task<string> ProcessCostExpressionAsync(string strExpression, Func<Task<int>> funcRating, Func<Task<Grade>> funcGrade, Cyberware objIgnoreChild = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strExpression))
+                return "0";
+            string strCostExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
+            if (!strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
+                return decReturn.ToString(GlobalSettings.InvariantCultureInfo);
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strCostExpression = strExpression.ProcessFixedValuesString(intRating);
-                if (string.IsNullOrEmpty(strCostExpression))
-                    return "0";
-                strCostExpression = strCostExpression.TrimStart('+');
-                if (!strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
-                    return decReturn.ToString(GlobalSettings.InvariantCultureInfo);
                 if (strCostExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
                     string strParentCost = "0";
@@ -9449,9 +9452,10 @@ namespace Chummer.Backend.Equipment
                         {
                             if (_objParent != null)
                             {
+
                                 strParentCost = await _objParent.ProcessCostExpressionAsync(_objParent.Cost,
-                                    await _objParent.GetRatingAsync(token).ConfigureAwait(false),
-                                    await _objParent.GetGradeAsync(token).ConfigureAwait(false), this, token).ConfigureAwait(false);
+                                    () => _objParent.GetRatingAsync(token),
+                                    () => _objParent.GetGradeAsync(token), this, token).ConfigureAwait(false);
                             }
                             else
                             {
@@ -9475,9 +9479,10 @@ namespace Chummer.Backend.Equipment
                     decimal decTotalChildrenCost = 0;
                     if (strCostExpression.Contains("Children Cost"))
                     {
+                        Grade objGrade = await funcGrade().ConfigureAwait(false);
                         decTotalChildrenCost = await (await GetChildrenAsync(token).ConfigureAwait(false))
                             .SumAsync(x => !ReferenceEquals(x, objIgnoreChild),
-                                async x => await x.CalculatedTotalCostAsync(await x.GetRatingAsync(token).ConfigureAwait(false), objGrade, token).ConfigureAwait(false),
+                                async x => await x.CalculatedTotalCostAsync(() => x.GetRatingAsync(token), objGrade, token).ConfigureAwait(false),
                                 token).ConfigureAwait(false);
                     }
 
@@ -9505,8 +9510,12 @@ namespace Chummer.Backend.Equipment
                                                             GlobalSettings.InvariantCultureInfo),
                                                         token: token).ConfigureAwait(false);
                         await ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
-                        sbdCost.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        if (strCostExpression.Contains("Rating"))
+                        {
+                            string strRating = (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
+                            sbdCost.Replace("{Rating}", strRating);
+                            sbdCost.Replace("Rating", strRating);
+                        }
                         strCostExpression = sbdCost.ToString();
                     }
                 }
@@ -9525,9 +9534,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the just the Cyberware itself before we factor in any multipliers.
         /// </summary>
-        public decimal CalculatedOwnCostPreMultipliers(int intRating, Grade objGrade)
+        public decimal CalculatedOwnCostPreMultipliers(Func<int> funcRating, Func<Grade> funcGrade)
         {
-            string strReturn = ProcessCostExpression(Cost, intRating, objGrade);
+            string strReturn = ProcessCostExpression(Cost, funcRating, funcGrade);
             decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
             return decReturn;
         }
@@ -9535,11 +9544,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Cyberware and its plugins.
         /// </summary>
-        public decimal CalculatedTotalCost(int intRating, Grade objGrade)
+        public decimal CalculatedTotalCost(Func<int> funcRating, Grade objGrade)
         {
             using (LockObject.EnterReadLock())
             {
-                decimal decReturn = CalculatedTotalCostWithoutModifiers(intRating, objGrade);
+                decimal decReturn = CalculatedTotalCostWithoutModifiers(funcRating, objGrade);
 
                 if (_blnSuite)
                     decReturn *= 0.9m;
@@ -9551,11 +9560,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Identical to TotalCost, but without the Improvement and Suite multipliers which would otherwise be doubled.
         /// </summary>
-        private decimal CalculatedTotalCostWithoutModifiers(int intRating, Grade objGrade)
+        private decimal CalculatedTotalCostWithoutModifiers(Func<int> funcRating, Grade objGrade)
         {
             using (LockObject.EnterReadLock())
             {
-                decimal decCost = CalculatedOwnCostPreMultipliers(intRating, objGrade);
+                decimal decCost = CalculatedOwnCostPreMultipliers(funcRating, () => objGrade);
                 decimal decReturn = decCost;
 
                 // Factor in the Cost multiplier of the selected CyberwareGrade.
@@ -9589,7 +9598,7 @@ namespace Chummer.Backend.Equipment
                     {
                         decimal decPluginCost = decCost;
                         string strChildCost = objChild.ProcessCostExpression(objChild.Cost.TrimStartOnce('*'),
-                            objChild.Rating, objChild.Grade);
+                            () => objChild.Rating, () => objChild.Grade);
                         if (strChildCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decChildCost))
                         {
                             string strToEvaluate = '(' + decPluginCost.ToString(GlobalSettings.InvariantCultureInfo) + ") * ((" + strChildCost + ") - 1)";
@@ -9605,7 +9614,7 @@ namespace Chummer.Backend.Equipment
                         decReturn += decPluginCost;
                     }
                     else
-                        decReturn += objChild.CalculatedTotalCostWithoutModifiers(objChild.Rating, objGrade)
+                        decReturn += objChild.CalculatedTotalCostWithoutModifiers(() => objChild.Rating, objGrade)
                                      * ChildCostMultiplier;
                 }
 
@@ -9619,10 +9628,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the just the Cyberware itself before we factor in any multipliers.
         /// </summary>
-        public async Task<decimal> CalculatedOwnCostPreMultipliersAsync(int intRating, Grade objGrade, CancellationToken token = default)
+        public async Task<decimal> CalculatedOwnCostPreMultipliersAsync(Func<Task<int>> funcRating, Func<Task<Grade>> funcGrade, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strReturn = await ProcessCostExpressionAsync(Cost, intRating, objGrade, token: token).ConfigureAwait(false);
+            string strReturn = await ProcessCostExpressionAsync(Cost, funcRating, funcGrade, token: token).ConfigureAwait(false);
             decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
             return decReturn;
         }
@@ -9630,13 +9639,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Cyberware and its plugins.
         /// </summary>
-        public async Task<decimal> CalculatedTotalCostAsync(int intRating, Grade objGrade, CancellationToken token = default)
+        public async Task<decimal> CalculatedTotalCostAsync(Func<Task<int>> funcRating, Grade objGrade, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                decimal decReturn = await CalculatedTotalCostWithoutModifiersAsync(intRating, objGrade, token).ConfigureAwait(false);
+                decimal decReturn = await CalculatedTotalCostWithoutModifiersAsync(funcRating, objGrade, token).ConfigureAwait(false);
 
                 if (_blnSuite)
                     decReturn *= 0.9m;
@@ -9652,13 +9661,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Identical to TotalCost, but without the Improvement and Suite multipliers which would otherwise be doubled.
         /// </summary>
-        private async Task<decimal> CalculatedTotalCostWithoutModifiersAsync(int intRating, Grade objGrade, CancellationToken token = default)
+        private async Task<decimal> CalculatedTotalCostWithoutModifiersAsync(Func<Task<int>> funcRating, Grade objGrade, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                decimal decCost = await CalculatedOwnCostPreMultipliersAsync(intRating, objGrade, token).ConfigureAwait(false);
+                decimal decCost = await CalculatedOwnCostPreMultipliersAsync(funcRating, () => Task.FromResult(objGrade), token).ConfigureAwait(false);
                 decimal decReturn = decCost;
 
                 // Factor in the Cost multiplier of the selected CyberwareGrade.
@@ -9693,8 +9702,8 @@ namespace Chummer.Backend.Equipment
                     {
                         decimal decPluginCost = decCost;
                         string strChildCost = await objChild.ProcessCostExpressionAsync(objChild.Cost.TrimStartOnce('*'),
-                            await objChild.GetRatingAsync(token).ConfigureAwait(false),
-                            await objChild.GetGradeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                            () => objChild.GetRatingAsync(token),
+                            () => objChild.GetGradeAsync(token), token: token).ConfigureAwait(false);
                         if (strChildCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decChildCost))
                         {
                             string strToEvaluate = '(' + decPluginCost.ToString(GlobalSettings.InvariantCultureInfo) + ") * ((" + strChildCost + ") - 1)";
@@ -9712,7 +9721,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     return await objChild.CalculatedTotalCostWithoutModifiersAsync(
-                               await objChild.GetRatingAsync(token).ConfigureAwait(false), objGrade, token).ConfigureAwait(false)
+                               () => objChild.GetRatingAsync(token), objGrade, token).ConfigureAwait(false)
                            * ChildCostMultiplier;
                 }, token).ConfigureAwait(false);
 
@@ -9734,14 +9743,14 @@ namespace Chummer.Backend.Equipment
         public decimal CalculatedStolenTotalCost(bool blnStolen)
         {
             using (LockObject.EnterReadLock())
-                return CalculatedStolenTotalCost(Rating, Grade, blnStolen);
+                return CalculatedStolenTotalCost(() => Rating, Grade, blnStolen);
         }
 
-        public decimal CalculatedStolenTotalCost(int intRating, Grade objGrade, bool blnStolen)
+        public decimal CalculatedStolenTotalCost(Func<int> funcRating, Grade objGrade, bool blnStolen)
         {
             using (LockObject.EnterReadLock())
             {
-                Lazy<decimal> decCost = new Lazy<decimal>(() => CalculatedOwnCostPreMultipliers(intRating, objGrade));
+                Lazy<decimal> decCost = new Lazy<decimal>(() => CalculatedOwnCostPreMultipliers(funcRating, () => objGrade));
                 decimal decReturn = Stolen == blnStolen ? decCost.Value : 0;
 
                 // Factor in the Cost multiplier of the selected CyberwareGrade.
@@ -9762,7 +9771,7 @@ namespace Chummer.Backend.Equipment
                         {
                             decimal decPluginCost = decCost.Value;
                             string strChildCost = objChild.ProcessCostExpression(objChild.Cost.TrimStartOnce('*'),
-                                objChild.Rating, objChild.Grade);
+                                () => objChild.Rating, () => objChild.Grade);
                             if (strChildCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decChildCost))
                             {
                                 string strToEvaluate = '(' + decPluginCost.ToString(GlobalSettings.InvariantCultureInfo) + ") * ((" + strChildCost + ") - 1)";
@@ -9780,7 +9789,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     else
-                        decReturn += objChild.CalculatedStolenTotalCost(objChild.Rating, objGrade, blnStolen)
+                        decReturn += objChild.CalculatedStolenTotalCost(() => objChild.Rating, objGrade, blnStolen)
                                      * ChildCostMultiplier;
                 }
 
@@ -9804,7 +9813,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await CalculatedStolenTotalCostAsync(await GetRatingAsync(token).ConfigureAwait(false), await GetGradeAsync(token).ConfigureAwait(false), blnStolen, token).ConfigureAwait(false);
+                return await CalculatedStolenTotalCostAsync(() => GetRatingAsync(token), await GetGradeAsync(token).ConfigureAwait(false), blnStolen, token).ConfigureAwait(false);
             }
             finally
             {
@@ -9812,14 +9821,14 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async Task<decimal> CalculatedStolenTotalCostAsync(int intRating, Grade objGrade, bool blnStolen, CancellationToken token = default)
+        public async Task<decimal> CalculatedStolenTotalCostAsync(Func<Task<int>> funcRating, Grade objGrade, bool blnStolen, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 AsyncLazy<decimal> decCost = new AsyncLazy<decimal>(
-                    () => CalculatedOwnCostPreMultipliersAsync(intRating, objGrade, token),
+                    () => CalculatedOwnCostPreMultipliersAsync(funcRating, () => Task.FromResult(objGrade), token),
                     Utils.JoinableTaskFactory);
                 decimal decReturn = Stolen == blnStolen ? await decCost.GetValueAsync(token).ConfigureAwait(false) : 0;
 
@@ -9839,8 +9848,8 @@ namespace Chummer.Backend.Equipment
                             return 0;
                         decimal decPluginCost = await decCost.GetValueAsync(token).ConfigureAwait(false);
                         string strChildCost = await objChild.ProcessCostExpressionAsync(objChild.Cost.TrimStartOnce('*'),
-                            await objChild.GetRatingAsync(token).ConfigureAwait(false),
-                            await objChild.GetGradeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                            () => objChild.GetRatingAsync(token),
+                            () => objChild.GetGradeAsync(token), token: token).ConfigureAwait(false);
                         if (strChildCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decChildCost))
                         {
                             string strToEvaluate = '(' + decPluginCost.ToString(GlobalSettings.InvariantCultureInfo) + ") * ((" + strChildCost + ") - 1)";
@@ -9857,7 +9866,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     return await objChild.CalculatedStolenTotalCostAsync(
-                               await objChild.GetRatingAsync(token).ConfigureAwait(false), objGrade, blnStolen, token).ConfigureAwait(false)
+                               () => objChild.GetRatingAsync(token), objGrade, blnStolen, token).ConfigureAwait(false)
                            * ChildCostMultiplier;
                 }, token).ConfigureAwait(false);
 
@@ -9878,11 +9887,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Cost of just the Cyberware itself.
         /// </summary>
-        public decimal CalculatedOwnCost(int intRating, Grade objGrade)
+        public decimal CalculatedOwnCost(Func<int> funcRating, Grade objGrade)
         {
             using (LockObject.EnterReadLock())
             {
-                decimal decReturn = CalculatedOwnCostPreMultipliers(intRating, objGrade);
+                decimal decReturn = CalculatedOwnCostPreMultipliers(funcRating, () => objGrade);
 
                 // Factor in the Cost multiplier of the selected CyberwareGrade.
                 decReturn *= objGrade.Cost;
@@ -9900,13 +9909,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Cost of just the Cyberware itself.
         /// </summary>
-        public async Task<decimal> CalculatedOwnCostAsync(int intRating, Grade objGrade, CancellationToken token = default)
+        public async Task<decimal> CalculatedOwnCostAsync(Func<Task<int>> funcRating, Grade objGrade, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                decimal decReturn = await CalculatedOwnCostPreMultipliersAsync(intRating, objGrade, token).ConfigureAwait(false);
+                decimal decReturn = await CalculatedOwnCostPreMultipliersAsync(funcRating, () => Task.FromResult(objGrade), token).ConfigureAwait(false);
 
                 // Factor in the Cost multiplier of the selected CyberwareGrade.
                 decReturn *= objGrade.Cost;
@@ -9930,7 +9939,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CalculatedTotalCost(Rating, Grade);
+                    return CalculatedTotalCost(() => Rating, Grade);
             }
         }
 
@@ -9940,7 +9949,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await CalculatedTotalCostAsync(await GetRatingAsync(token).ConfigureAwait(false), await GetGradeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                return await CalculatedTotalCostAsync(() => GetRatingAsync(token), await GetGradeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
             finally
             {
@@ -9953,7 +9962,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CalculatedOwnCost(Rating, Grade);
+                    return CalculatedOwnCost(() => Rating, Grade);
             }
         }
 
@@ -9963,7 +9972,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await CalculatedOwnCostAsync(await GetRatingAsync(token).ConfigureAwait(false), await GetGradeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                return await CalculatedOwnCostAsync(() => GetRatingAsync(token), await GetGradeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
             finally
             {
@@ -9974,7 +9983,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total weight of the just the Cyberware itself before we factor in any multipliers.
         /// </summary>
-        public decimal CalculatedOwnWeight(int intRating, Grade objGrade)
+        public decimal CalculatedOwnWeight(Func<int> funcRating)
         {
             using (LockObject.EnterReadLock())
             {
@@ -9983,7 +9992,7 @@ namespace Chummer.Backend.Equipment
                 string strWeightExpression = Weight;
                 if (string.IsNullOrEmpty(strWeightExpression))
                     return 0;
-                strWeightExpression = strWeightExpression.ProcessFixedValuesString(intRating);
+                strWeightExpression = strWeightExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
                 string strParentWeight = "0";
                 decimal decTotalParentGearWeight = 0;
                 if (_objParent != null)
@@ -10005,13 +10014,13 @@ namespace Chummer.Backend.Equipment
                 if (Children.Count > 0 && strWeightExpression.Contains("Children Weight"))
                 {
                     decTotalChildrenWeight
-                        = Children.Sum(loopWare => loopWare.CalculatedTotalWeight(loopWare.Rating, objGrade));
+                        = Children.Sum(x => x.CalculatedTotalWeight(() => x.Rating));
                 }
 
                 decimal decReturn = 0;
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
                 {
-                    sbdWeight.Append(strWeightExpression.TrimStart('+'));
+                    sbdWeight.Append(strWeightExpression);
                     sbdWeight.Replace("Parent Weight", strParentWeight);
                     sbdWeight.Replace("Parent Gear Weight",
                                       decTotalParentGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
@@ -10020,7 +10029,7 @@ namespace Chummer.Backend.Equipment
                                       decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
                     sbdWeight.CheapReplace(strWeightExpression, "MinRating",
                                            () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdWeight.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.CheapReplace("Rating", () => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
                     ProcessAttributesInXPath(sbdWeight, strWeightExpression);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
@@ -10035,11 +10044,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total weight of the Cyberware and its plugins.
         /// </summary>
-        public decimal CalculatedTotalWeight(int intRating, Grade objGrade)
+        public decimal CalculatedTotalWeight(Func<int> funcRating)
         {
             using (LockObject.EnterReadLock())
             {
-                decimal decWeight = CalculatedOwnWeight(intRating, objGrade);
+                decimal decWeight = CalculatedOwnWeight(funcRating);
                 decimal decReturn = decWeight;
 
                 // Add in the weight of all child components.
@@ -10056,7 +10065,7 @@ namespace Chummer.Backend.Equipment
                         decReturn += decPluginWeight;
                     }
                     else
-                        decReturn += objChild.CalculatedTotalWeight(objChild.Rating, objGrade);
+                        decReturn += objChild.CalculatedTotalWeight(() => objChild.Rating);
                 }
 
                 // Add in the weight of all Gear plugins.
@@ -10071,7 +10080,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CalculatedTotalWeight(Rating, Grade);
+                    return CalculatedTotalWeight(() => Rating);
             }
         }
 
@@ -10080,7 +10089,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CalculatedOwnWeight(Rating, Grade);
+                    return CalculatedOwnWeight(() => Rating);
             }
         }
 
@@ -12750,7 +12759,7 @@ namespace Chummer.Backend.Equipment
 
                 decimal decNewCost = blnFree
                     ? 0
-                    : await CalculatedTotalCostAsync(intRating, objGrade, token).ConfigureAwait(false) - decSaleCost;
+                    : await CalculatedTotalCostAsync(() => Task.FromResult(intRating), objGrade, token).ConfigureAwait(false) - decSaleCost;
                 if (decNewCost > await _objCharacter.GetNuyenAsync(token).ConfigureAwait(false))
                 {
                     await Program.ShowScrollableMessageBoxAsync(

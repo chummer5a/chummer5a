@@ -629,6 +629,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnModifyParentAvail = false;
             string strAvail = Availability;
             char chrLastAvailChar = ' ';
@@ -2295,6 +2296,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<decimal> GetCostPerLevelAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             string strCostExpression = Cost;
             if (string.IsNullOrEmpty(strCostExpression))
                 return 0;
@@ -2392,6 +2394,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<AvailabilityValue> GetTotalAvailTupleAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnModifyParentAvail = false;
             string strAvail = Availability;
             char chrLastAvailChar = ' ';

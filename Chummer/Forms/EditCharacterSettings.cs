@@ -563,7 +563,7 @@ namespace Chummer
                     Interlocked.Decrement(ref _intLoading);
                 }
 
-                _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
+                _intOldSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false);
             }
             finally
             {
@@ -1110,14 +1110,14 @@ namespace Chummer
             }
         }
 
-        private void cboPriorityTable_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboPriorityTable_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
-            string strNewPriorityTable = cboPriorityTable.SelectedValue?.ToString();
+            string strNewPriorityTable = await cboPriorityTable.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(strNewPriorityTable))
                 return;
-            _objCharacterSettings.PriorityTable = strNewPriorityTable;
+            await _objCharacterSettings.SetPriorityTableAsync(strNewPriorityTable).ConfigureAwait(false);
         }
 
         private async void treCustomDataDirectories_AfterSelect(object sender, TreeViewEventArgs e)
@@ -1496,8 +1496,8 @@ namespace Chummer
                                                                ?.Value ?? strName));
                     }
 
-                    string strOldSelected = _objCharacterSettings.PriorityTable;
-
+                    string strOldSelected = await _objCharacterSettings.GetPriorityTableAsync(token).ConfigureAwait(false);
+                    string strDefaultSelected = await _objReferenceCharacterSettings.GetPriorityTableAsync(token).ConfigureAwait(false);
                     Interlocked.Increment(ref _intLoading);
                     try
                     {
@@ -1508,7 +1508,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strOldSelected))
                                 x.SelectedValue = strOldSelected;
                             if (x.SelectedIndex == -1 && lstPriorityTables.Count > 0)
-                                x.SelectedValue = _objReferenceCharacterSettings.PriorityTable;
+                                x.SelectedValue = strDefaultSelected;
                             if (x.SelectedIndex == -1 && lstPriorityTables.Count > 0)
                                 x.SelectedIndex = 0;
                         }, token).ConfigureAwait(false);

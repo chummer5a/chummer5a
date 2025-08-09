@@ -1997,6 +1997,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<AvailabilityValue> TotalAvailTupleAsync(bool blnIncludeChildren = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnModifyParentAvail = false;
             string strAvail = Avail;
             char chrLastAvailChar = ' ';

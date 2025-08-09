@@ -595,7 +595,7 @@ namespace Chummer
                             .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
                             .Append(')');
 
-                        string strCategory = cboCategory.SelectedValue?.ToString();
+                        string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                                && (GlobalSettings.SearchInCategoryOnly
                                                                    || await txtSearch

@@ -6928,12 +6928,13 @@ namespace Chummer
                 frmPickItem.MyForm.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
 
                 // Make sure the dialogue window was not canceled.
-                if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel || string.IsNullOrEmpty(frmPickItem.MyForm.SelectedName))
+                string strSelected = frmPickItem.MyForm.SelectedName;
+                if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel || string.IsNullOrEmpty(strSelected))
                 {
                     throw new AbortedException();
                 }
 
-                SelectedValue = frmPickItem.MyForm.SelectedName;
+                SelectedValue = strSelected;
             }
             // Create the Improvement.
             SkillSpecialization objExpertise = new SkillSpecialization(_objCharacter, SelectedValue, true, true);
@@ -7047,10 +7048,6 @@ namespace Chummer
         }
 
         public AbortedException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        private AbortedException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

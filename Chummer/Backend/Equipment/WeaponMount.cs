@@ -25,8 +25,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1317,6 +1315,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnModifyParentAvail = false;
             string strAvail = Avail;
             char chrLastAvailChar = ' ';
@@ -1507,7 +1506,7 @@ namespace Chummer.Backend.Equipment
                 if (FreeCost)
                     return 0;
                 // If the cost is determined by the Rating, evaluate the expression.
-                string strCost = Cost.TrimStartOnce('+');
+                string strCost = Cost.TrimStart('+');
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
                     Vehicle objVehicle = Parent;
@@ -1544,10 +1543,11 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<decimal> GetOwnCostAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (FreeCost)
                 return 0;
             // If the cost is determined by the Rating, evaluate the expression.
-            string strCost = Cost.TrimStartOnce('+');
+            string strCost = Cost.TrimStart('+');
             if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
                 Vehicle objVehicle = Parent;
@@ -2402,7 +2402,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strCost = _strCost.TrimStartOnce('+');
+                string strCost = _strCost.TrimStart('+');
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     if (strCost.HasValuesNeedingReplacementForXPathProcessing())
@@ -2454,7 +2454,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<decimal> GetCostAsync(CancellationToken token = default)
         {
-            string strCost = _strCost.TrimStartOnce('+');
+            token.ThrowIfCancellationRequested();
+            string strCost = _strCost.TrimStart('+');
             if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 if (strCost.HasValuesNeedingReplacementForXPathProcessing())
@@ -2683,6 +2684,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<AvailabilityValue> GetTotalAvailTupleAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnModifyParentAvail = false;
             string strAvail = Avail;
             char chrLastAvailChar = ' ';

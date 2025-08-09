@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -99,6 +100,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
+                ex = ex.Demystify();
                 // Save the exception to show it later
                 XmlException = ex;
                 HasManifest = false;
@@ -130,8 +132,9 @@ namespace Chummer
                     ConstructorGetIncompatibilities(xmlNode, token);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is OperationCanceledException))
             {
+                ex = ex.Demystify();
                 // Save the exception to show it later
                 XmlException = ex;
                 HasManifest = false;

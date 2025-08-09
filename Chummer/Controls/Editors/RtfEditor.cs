@@ -30,7 +30,7 @@ namespace Chummer.UI.Editors
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            if (!Utils.IsDesignerMode)
+            if (!Utils.IsDesignerMode && !Utils.IsRunningInVisualStudio)
                 tsControls.Visible = false;
         }
 

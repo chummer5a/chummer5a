@@ -1310,7 +1310,7 @@ namespace Chummer
             {
                 string strSheetLanguage = x.SelectedValue?.ToString();
                 if (strSheetLanguage != _strSelectedLanguage
-                    && x.Items.Cast<ListItem>().Any(y => y.Value.ToString() == _strSelectedLanguage))
+                    && x.Items.OfType<ListItem>().Any(y => y.Value.ToString() == _strSelectedLanguage))
                 {
                     x.SelectedValue = _strSelectedLanguage;
                 }
@@ -2281,7 +2281,7 @@ namespace Chummer
             return cboXSLT.DoThreadSafeAsync(x =>
             {
                 x.SelectedValue = GlobalSettings.DefaultCharacterSheet;
-                if (cboXSLT.SelectedValue == null && cboXSLT.Items.Count > 0)
+                if (x.SelectedValue == null && x.Items.Count > 0)
                 {
                     int intNameIndex;
                     string strLanguage = _strSelectedLanguage;

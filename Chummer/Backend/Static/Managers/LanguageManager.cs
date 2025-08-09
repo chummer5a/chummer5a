@@ -25,7 +25,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -49,7 +48,7 @@ namespace Chummer
 
         static LanguageManager()
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
             string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalSettings.DefaultLanguage + ".xml");
             if (File.Exists(strFilePath))
@@ -146,7 +145,7 @@ namespace Chummer
         private static async Task TranslateWinFormCoreAsync(bool blnSync, Control objObject, string strIntoLanguage,
                                                             bool blnDoResumeLayout, CancellationToken token = default)
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
             if (blnDoResumeLayout)
             {
@@ -935,7 +934,7 @@ namespace Chummer
         private static async Task<string> GetStringCoreAsync(bool blnSync, string strKey, string strLanguage,
                                                              bool blnReturnError, CancellationToken token = default)
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return strKey;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
@@ -976,7 +975,7 @@ namespace Chummer
                                                                     bool blnUseTranslateExtra = false,
                                                                     CancellationToken token = default)
         {
-            if (Utils.IsDesignerMode || string.IsNullOrEmpty(strInput))
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio || string.IsNullOrEmpty(strInput))
                 return strInput;
             // Exit out early if we don't have a pair of curly brackets, which is what would signify localized strings
             int intStartPosition = strInput.IndexOf('{');

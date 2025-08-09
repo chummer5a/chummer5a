@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -348,6 +349,7 @@ namespace Chummer
             Utils.GetPacksFolderPath
         };
         private static readonly Dictionary<string, HashSet<string>> s_DicPathsWithCustomFiles = new Dictionary<string, HashSet<string>>();
+        private static readonly ConcurrentDictionary<string, Exception> s_DicCustomFilePathsWithExceptions = new ConcurrentDictionary<string, Exception>();
 
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -1564,6 +1566,8 @@ namespace Chummer
             foreach (string strFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName, eSearchOption))
             {
                 token.ThrowIfCancellationRequested();
+                if (s_DicCustomFilePathsWithExceptions.ContainsKey(strFile))
+                    continue;
                 string strLoopFileName = Path.GetFileName(strFile);
                 if (!strLoopFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
                     && !strLoopFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
@@ -1580,90 +1584,82 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     xmlFile.LoadStandardPatient(strFile, token: token);
-                }
-#if DEBUG
-                catch (IOException e)
-                {
-                    Log.Warn(e);
-                    Utils.BreakIfDebug();
-                    continue;
-                }
-                catch (XmlException e)
-                {
-                    Log.Warn(e);
-                    Utils.BreakIfDebug();
-                    continue;
-                }
-#else
-                catch (IOException)
-                {
-                    continue;
-                }
-                catch (XmlException)
-                {
-                    continue;
-                }
-#endif
-                token.ThrowIfCancellationRequested();
-
-                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
-                {
-                    if (xmlNodeList?.Count > 0)
+                    token.ThrowIfCancellationRequested();
+                    using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
                     {
-                        foreach (XmlNode objNode in xmlNodeList)
+                        token.ThrowIfCancellationRequested();
+                        if (xmlNodeList?.Count > 0)
                         {
-                            foreach (XmlNode objType in objNode.ChildNodes)
+                            token.ThrowIfCancellationRequested();
+                            foreach (XmlNode objNode in xmlNodeList)
                             {
                                 token.ThrowIfCancellationRequested();
-                                string strFilter;
-                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                              out StringBuilder sbdFilter))
+                                foreach (XmlNode objType in objNode.ChildNodes)
                                 {
-                                    XmlElement xmlIdNode = objType["id"];
-                                    if (xmlIdNode != null)
-                                        sbdFilter.Append("id = ")
-                                                 .Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
-                                    else
+                                    token.ThrowIfCancellationRequested();
+                                    string strFilter;
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                                  out StringBuilder sbdFilter))
                                     {
-                                        xmlIdNode = objType["name"];
+                                        token.ThrowIfCancellationRequested();
+                                        XmlElement xmlIdNode = objType["id"];
                                         if (xmlIdNode != null)
-                                            sbdFilter.Append("name = ")
+                                            sbdFilter.Append("id = ")
                                                      .Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
-                                    }
-
-                                    // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
-                                    using (XmlNodeList objAmendingNodeExtraIds
-                                           = objType.SelectNodes("child::*[@isidnode = " + bool.TrueString.CleanXPath() + ']'))
-                                    {
-                                        if (objAmendingNodeExtraIds?.Count > 0)
+                                        else
                                         {
-                                            foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
+                                            xmlIdNode = objType["name"];
+                                            if (xmlIdNode != null)
+                                                sbdFilter.Append("name = ")
+                                                         .Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
+                                        }
+
+                                        // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
+                                        using (XmlNodeList objAmendingNodeExtraIds
+                                               = objType.SelectNodes("child::*[@isidnode = " + bool.TrueString.CleanXPath() + ']'))
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            if (objAmendingNodeExtraIds?.Count > 0)
                                             {
                                                 token.ThrowIfCancellationRequested();
-                                                if (sbdFilter.Length > 0)
-                                                    sbdFilter.Append(" and ");
-                                                sbdFilter.Append(objExtraId.Name).Append(" = ")
-                                                         .Append(
-                                                             objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
+                                                foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
+                                                {
+                                                    token.ThrowIfCancellationRequested();
+                                                    if (sbdFilter.Length > 0)
+                                                        sbdFilter.Append(" and ");
+                                                    sbdFilter.Append(objExtraId.Name).Append(" = ")
+                                                             .Append(
+                                                                 objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
+                                                }
                                             }
                                         }
-                                    }
 
-                                    strFilter = sbdFilter.ToString();
-                                }
-                                if (!string.IsNullOrEmpty(strFilter))
-                                {
-                                    XmlNode objItem = xmlDataDoc.SelectSingleNode(
-                                        "/chummer/" + objNode.Name + '/' + objType.Name + '[' + strFilter + ']');
-                                    if (objItem != null)
+                                        strFilter = sbdFilter.ToString();
+                                    }
+                                    token.ThrowIfCancellationRequested();
+                                    if (!string.IsNullOrEmpty(strFilter))
                                     {
-                                        objItem.InnerXml = objType.InnerXml;
-                                        blnReturn = true;
+                                        XmlNode objItem = xmlDataDoc.SelectSingleNode(
+                                            "/chummer/" + objNode.Name + '/' + objType.Name + '[' + strFilter + ']');
+                                        if (objItem != null)
+                                        {
+                                            objItem.InnerXml = objType.InnerXml;
+                                            blnReturn = true;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                }
+                catch (Exception e) when (!(e is OperationCanceledException))
+                {
+                    e = e.Demystify();
+#if DEBUG
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+#endif
+                    s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
                 }
             }
 
@@ -1677,146 +1673,140 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     xmlFile.LoadStandardPatient(strFile, token: token);
-                }
-#if DEBUG
-                catch (IOException e)
-                {
-                    Log.Warn(e);
-                    Utils.BreakIfDebug();
-                    continue;
-                }
-                catch (XmlException e)
-                {
-                    Log.Warn(e);
-                    Utils.BreakIfDebug();
-                    continue;
-                }
-#else
-                catch (IOException)
-                {
-                    continue;
-                }
-                catch (XmlException)
-                {
-                    continue;
-                }
-#endif
-                token.ThrowIfCancellationRequested();
-
-                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
-                {
-                    if (xmlNodeList?.Count > 0 && objDocElement != null)
+                    token.ThrowIfCancellationRequested();
+                    using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
                     {
-                        foreach (XmlNode objNode in xmlNodeList)
+                        token.ThrowIfCancellationRequested();
+                        if (xmlNodeList?.Count > 0 && objDocElement != null)
                         {
                             token.ThrowIfCancellationRequested();
-                            // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
-                            List<XmlNode> lstDelete = new List<XmlNode>(objNode.ChildNodes.Count);
-                            foreach (XmlNode objChild in objNode.ChildNodes)
+                            foreach (XmlNode objNode in xmlNodeList)
                             {
                                 token.ThrowIfCancellationRequested();
-                                XmlNode objParentNode = objChild.ParentNode;
-                                if (objParentNode == null)
-                                    continue;
-                                string strFilter = string.Empty;
-                                XmlElement xmlIdNode = objChild["id"];
-                                if (xmlIdNode != null)
-                                    strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
-                                else
-                                {
-                                    XmlElement xmlNameNode = objChild["name"];
-                                    if (xmlNameNode != null)
-                                    {
-                                        strFilter += (string.IsNullOrEmpty(strFilter)
-                                                         ? "name = "
-                                                         : " and name = ") +
-                                                     xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath();
-                                    }
-                                }
-
-                                // Only do this if the child has the name or id field since this is what we must match on.
-                                if (!string.IsNullOrEmpty(strFilter))
-                                {
-                                    string strParentNodeFilter = string.Empty;
-                                    if (objParentNode.Attributes?.Count > 0)
-                                    {
-                                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                   out StringBuilder sbdParentNodeFilter))
-                                        {
-                                            foreach (XmlAttribute objLoopAttribute in objParentNode.Attributes)
-                                            {
-                                                token.ThrowIfCancellationRequested();
-                                                sbdParentNodeFilter
-                                                    .Append('@').Append(objLoopAttribute.Name).Append(" = ")
-                                                    .Append(objLoopAttribute.Value.Replace("&amp;", "&")
-                                                                            .CleanXPath()).Append(" and ");
-                                            }
-
-                                            if (sbdParentNodeFilter.Length > 0)
-                                                sbdParentNodeFilter.Length -= 5;
-
-                                            strParentNodeFilter = sbdParentNodeFilter.ToString();
-                                        }
-                                    }
-                                    XmlNode objItem = xmlDataDoc.SelectSingleNode(string.IsNullOrEmpty(strParentNodeFilter)
-                                        ? "/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']'
-                                        : "/chummer/" + objParentNode.Name + '[' + strParentNodeFilter + "]/" + objChild.Name + '[' + strFilter + ']');
-                                    if (objItem != null)
-                                        lstDelete.Add(objChild);
-                                }
-                            }
-
-                            // Remove the offending items from the node we're about to merge in.
-                            foreach (XmlNode objRemoveNode in lstDelete)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                objNode.RemoveChild(objRemoveNode);
-                            }
-
-                            XmlElement xmlExistingNode = objDocElement[objNode.Name];
-                            if (xmlExistingNode != null
-                                && xmlExistingNode.Attributes?.Count == objNode.Attributes?.Count)
-                            {
-                                bool blnAllMatching = true;
-                                foreach (XmlAttribute x in xmlExistingNode.Attributes)
+                                // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
+                                List<XmlNode> lstDelete = new List<XmlNode>(objNode.ChildNodes.Count);
+                                foreach (XmlNode objChild in objNode.ChildNodes)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    if (objNode.Attributes.GetNamedItem(x.Name)?.Value != x.Value)
+                                    XmlNode objParentNode = objChild.ParentNode;
+                                    if (objParentNode == null)
+                                        continue;
+                                    string strFilter = string.Empty;
+                                    XmlElement xmlIdNode = objChild["id"];
+                                    if (xmlIdNode != null)
+                                        strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
+                                    else
                                     {
-                                        blnAllMatching = false;
-                                        break;
+                                        XmlElement xmlNameNode = objChild["name"];
+                                        if (xmlNameNode != null)
+                                        {
+                                            strFilter += (string.IsNullOrEmpty(strFilter)
+                                                             ? "name = "
+                                                             : " and name = ") +
+                                                         xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath();
+                                        }
+                                    }
+
+                                    // Only do this if the child has the name or id field since this is what we must match on.
+                                    if (!string.IsNullOrEmpty(strFilter))
+                                    {
+                                        string strParentNodeFilter = string.Empty;
+                                        if (objParentNode.Attributes?.Count > 0)
+                                        {
+                                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                       out StringBuilder sbdParentNodeFilter))
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                foreach (XmlAttribute objLoopAttribute in objParentNode.Attributes)
+                                                {
+                                                    token.ThrowIfCancellationRequested();
+                                                    sbdParentNodeFilter
+                                                        .Append('@').Append(objLoopAttribute.Name).Append(" = ")
+                                                        .Append(objLoopAttribute.Value.Replace("&amp;", "&")
+                                                                                .CleanXPath()).Append(" and ");
+                                                }
+
+                                                if (sbdParentNodeFilter.Length > 0)
+                                                    sbdParentNodeFilter.Length -= 5;
+
+                                                strParentNodeFilter = sbdParentNodeFilter.ToString();
+                                            }
+                                        }
+                                        token.ThrowIfCancellationRequested();
+                                        XmlNode objItem = xmlDataDoc.SelectSingleNode(string.IsNullOrEmpty(strParentNodeFilter)
+                                            ? "/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']'
+                                            : "/chummer/" + objParentNode.Name + '[' + strParentNodeFilter + "]/" + objChild.Name + '[' + strFilter + ']');
+                                        if (objItem != null)
+                                            lstDelete.Add(objChild);
                                     }
                                 }
 
-                                if (blnAllMatching)
+                                token.ThrowIfCancellationRequested();
+                                // Remove the offending items from the node we're about to merge in.
+                                foreach (XmlNode objRemoveNode in lstDelete)
                                 {
-                                    /* We need to do this to avoid creating multiple copies of the root node, ie
-                                       <chummer>
-                                           <metatypes>
-                                               <metatype>Standard</metatype>
-                                           </metatypes>
-                                           <metatypes>
-                                               <metatype>Custom</metatype>
-                                           </metatypes>
-                                       </chummer>
-                                       Otherwise xpathnavigators that to a selectsinglenode will only grab the first instance of the name. TODO: fix better?
-                                   */
-                                    foreach (XmlNode childNode in objNode.ChildNodes)
+                                    token.ThrowIfCancellationRequested();
+                                    objNode.RemoveChild(objRemoveNode);
+                                }
+
+                                token.ThrowIfCancellationRequested();
+                                XmlElement xmlExistingNode = objDocElement[objNode.Name];
+                                if (xmlExistingNode != null
+                                    && xmlExistingNode.Attributes?.Count == objNode.Attributes?.Count)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    bool blnAllMatching = true;
+                                    foreach (XmlAttribute x in xmlExistingNode.Attributes)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        xmlExistingNode.AppendChild(xmlDataDoc.ImportNode(childNode, true));
+                                        if (objNode.Attributes.GetNamedItem(x.Name)?.Value != x.Value)
+                                        {
+                                            blnAllMatching = false;
+                                            break;
+                                        }
+                                    }
+
+                                    if (blnAllMatching)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        /* We need to do this to avoid creating multiple copies of the root node, ie
+                                           <chummer>
+                                               <metatypes>
+                                                   <metatype>Standard</metatype>
+                                               </metatypes>
+                                               <metatypes>
+                                                   <metatype>Custom</metatype>
+                                               </metatypes>
+                                           </chummer>
+                                           Otherwise xpathnavigators that to a selectsinglenode will only grab the first instance of the name. TODO: fix better?
+                                       */
+                                        foreach (XmlNode childNode in objNode.ChildNodes)
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            xmlExistingNode.AppendChild(xmlDataDoc.ImportNode(childNode, true));
+                                        }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                // Append the entire child node to the new document.
-                                objDocElement.AppendChild(xmlDataDoc.ImportNode(objNode, true));
-                            }
+                                else
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    // Append the entire child node to the new document.
+                                    objDocElement.AppendChild(xmlDataDoc.ImportNode(objNode, true));
+                                }
 
-                            blnReturn = true;
+                                blnReturn = true;
+                            }
                         }
                     }
+                }
+                catch (Exception e) when (!(e is OperationCanceledException))
+                {
+                    e = e.Demystify();
+#if DEBUG
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+#endif
+                    s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
                 }
             }
 
@@ -1830,41 +1820,46 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     xmlFile.LoadStandardPatient(strFile, token: token);
-                }
-#if DEBUG
-                catch (IOException e)
-                {
-                    Log.Warn(e);
-                    Utils.BreakIfDebug();
-                    continue;
-                }
-                catch (XmlException e)
-                {
-                    Log.Warn(e);
-                    Utils.BreakIfDebug();
-                    continue;
-                }
-#else
-                catch (IOException)
-                {
-                    continue;
-                }
-                catch (XmlException)
-                {
-                    continue;
-                }
-#endif
-                token.ThrowIfCancellationRequested();
-
-                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
-                {
-                    if (xmlNodeList?.Count > 0)
+                    token.ThrowIfCancellationRequested();
+                    using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
                     {
-                        foreach (XmlNode objNode in xmlNodeList)
+                        token.ThrowIfCancellationRequested();
+                        if (xmlNodeList?.Count > 0)
                         {
                             token.ThrowIfCancellationRequested();
-                            blnReturn = AmendNodeChildren(xmlDataDoc, objNode, "/chummer", token: token) || blnReturn;
+                            foreach (XmlNode objNode in xmlNodeList)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                blnReturn = AmendNodeChildren(xmlDataDoc, objNode, "/chummer", token: token) || blnReturn;
+                            }
                         }
+                    }
+                }
+                catch (Exception e) when (!(e is OperationCanceledException))
+                {
+                    e = e.Demystify();
+#if DEBUG
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+#endif
+                    s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                }
+            }
+
+            // Report any new errors now.
+            if (lstPossibleCustomFiles.Any(x => s_DicCustomFilePathsWithExceptions.ContainsKey(x)))
+            {
+                string strTitle = LanguageManager.GetString("MessageTitle_Load_Error_Generic", token: token);
+                string strMessage = LanguageManager.GetString("Message_Load_Error_CustomFile", token: token);
+                foreach (string strFile in lstPossibleCustomFiles)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (s_DicCustomFilePathsWithExceptions.TryGetValue(strFile, out Exception ex))
+                    {
+                        string strFileNoPath = Path.GetFileName(strFile);
+                        Program.ShowMessageBox(
+                            string.Format(GlobalSettings.CultureInfo, strMessage, strFile, ex.Message),
+                            string.Format(GlobalSettings.CultureInfo, strTitle, strFileNoPath), icon: System.Windows.Forms.MessageBoxIcon.Error);
                     }
                 }
             }
@@ -1881,6 +1876,8 @@ namespace Chummer
             foreach (string strFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName, eSearchOption))
             {
                 token.ThrowIfCancellationRequested();
+                if (s_DicCustomFilePathsWithExceptions.ContainsKey(strFile))
+                    continue;
                 string strLoopFileName = Path.GetFileName(strFile);
                 if (!strLoopFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
                     && !strLoopFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
@@ -1897,90 +1894,83 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     await xmlFile.LoadStandardPatientAsync(strFile, token: token).ConfigureAwait(false);
-                }
-#if DEBUG
-                catch (IOException e)
-                {
-                    Log.Warn(e);
-                    Utils.BreakIfDebug();
-                    continue;
-                }
-                catch (XmlException e)
-                {
-                    Log.Warn(e);
-                    Utils.BreakIfDebug();
-                    continue;
-                }
-#else
-                catch (IOException)
-                {
-                    continue;
-                }
-                catch (XmlException)
-                {
-                    continue;
-                }
-#endif
-                token.ThrowIfCancellationRequested();
-
-                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
-                {
-                    if (xmlNodeList?.Count > 0)
+                    token.ThrowIfCancellationRequested();
+                    using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
                     {
-                        foreach (XmlNode objNode in xmlNodeList)
+                        token.ThrowIfCancellationRequested();
+                        if (xmlNodeList?.Count > 0)
                         {
-                            foreach (XmlNode objType in objNode.ChildNodes)
+                            token.ThrowIfCancellationRequested();
+                            foreach (XmlNode objNode in xmlNodeList)
                             {
                                 token.ThrowIfCancellationRequested();
-                                string strFilter;
-                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                              out StringBuilder sbdFilter))
+                                foreach (XmlNode objType in objNode.ChildNodes)
                                 {
-                                    XmlElement xmlIdNode = objType["id"];
-                                    if (xmlIdNode != null)
-                                        sbdFilter.Append("id = ")
-                                                 .Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
-                                    else
+                                    token.ThrowIfCancellationRequested();
+                                    string strFilter;
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                                  out StringBuilder sbdFilter))
                                     {
-                                        xmlIdNode = objType["name"];
+                                        token.ThrowIfCancellationRequested();
+                                        XmlElement xmlIdNode = objType["id"];
                                         if (xmlIdNode != null)
-                                            sbdFilter.Append("name = ")
+                                            sbdFilter.Append("id = ")
                                                      .Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
-                                    }
-
-                                    // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
-                                    using (XmlNodeList objAmendingNodeExtraIds
-                                           = objType.SelectNodes("child::*[@isidnode = " + bool.TrueString.CleanXPath() + ']'))
-                                    {
-                                        if (objAmendingNodeExtraIds?.Count > 0)
+                                        else
                                         {
-                                            foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
+                                            xmlIdNode = objType["name"];
+                                            if (xmlIdNode != null)
+                                                sbdFilter.Append("name = ")
+                                                         .Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
+                                        }
+
+                                        token.ThrowIfCancellationRequested();
+                                        // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
+                                        using (XmlNodeList objAmendingNodeExtraIds
+                                               = objType.SelectNodes("child::*[@isidnode = " + bool.TrueString.CleanXPath() + ']'))
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            if (objAmendingNodeExtraIds?.Count > 0)
                                             {
                                                 token.ThrowIfCancellationRequested();
-                                                if (sbdFilter.Length > 0)
-                                                    sbdFilter.Append(" and ");
-                                                sbdFilter.Append(objExtraId.Name).Append(" = ")
-                                                         .Append(
-                                                             objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
+                                                foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
+                                                {
+                                                    token.ThrowIfCancellationRequested();
+                                                    if (sbdFilter.Length > 0)
+                                                        sbdFilter.Append(" and ");
+                                                    sbdFilter.Append(objExtraId.Name).Append(" = ")
+                                                             .Append(
+                                                                 objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
+                                                }
                                             }
                                         }
-                                    }
 
-                                    strFilter = sbdFilter.ToString();
-                                }
-                                if (!string.IsNullOrEmpty(strFilter))
-                                {
-                                    XmlNode objItem = xmlDataDoc.SelectSingleNode(
-                                        "/chummer/" + objNode.Name + '/' + objType.Name + '[' + strFilter + ']');
-                                    if (objItem != null)
+                                        strFilter = sbdFilter.ToString();
+                                    }
+                                    if (!string.IsNullOrEmpty(strFilter))
                                     {
-                                        objItem.InnerXml = objType.InnerXml;
-                                        blnReturn = true;
+                                        token.ThrowIfCancellationRequested();
+                                        XmlNode objItem = xmlDataDoc.SelectSingleNode(
+                                            "/chummer/" + objNode.Name + '/' + objType.Name + '[' + strFilter + ']');
+                                        if (objItem != null)
+                                        {
+                                            objItem.InnerXml = objType.InnerXml;
+                                            blnReturn = true;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                }
+                catch (Exception e) when (!(e is OperationCanceledException))
+                {
+                    e = e.Demystify();
+#if DEBUG
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+#endif
+                    s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
                 }
             }
 
@@ -1994,146 +1984,140 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     await xmlFile.LoadStandardPatientAsync(strFile, token: token).ConfigureAwait(false);
-                }
-#if DEBUG
-                catch (IOException e)
-                {
-                    Log.Warn(e);
-                    Utils.BreakIfDebug();
-                    continue;
-                }
-                catch (XmlException e)
-                {
-                    Log.Warn(e);
-                    Utils.BreakIfDebug();
-                    continue;
-                }
-#else
-                catch (IOException)
-                {
-                    continue;
-                }
-                catch (XmlException)
-                {
-                    continue;
-                }
-#endif
-                token.ThrowIfCancellationRequested();
-
-                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
-                {
-                    if (xmlNodeList?.Count > 0 && objDocElement != null)
+                    token.ThrowIfCancellationRequested();
+                    using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
                     {
-                        foreach (XmlNode objNode in xmlNodeList)
+                        token.ThrowIfCancellationRequested();
+                        if (xmlNodeList?.Count > 0 && objDocElement != null)
                         {
                             token.ThrowIfCancellationRequested();
-                            // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
-                            List<XmlNode> lstDelete = new List<XmlNode>(objNode.ChildNodes.Count);
-                            foreach (XmlNode objChild in objNode.ChildNodes)
+                            foreach (XmlNode objNode in xmlNodeList)
                             {
                                 token.ThrowIfCancellationRequested();
-                                XmlNode objParentNode = objChild.ParentNode;
-                                if (objParentNode == null)
-                                    continue;
-                                string strFilter = string.Empty;
-                                XmlElement xmlIdNode = objChild["id"];
-                                if (xmlIdNode != null)
-                                    strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
-                                else
-                                {
-                                    XmlElement xmlNameNode = objChild["name"];
-                                    if (xmlNameNode != null)
-                                    {
-                                        strFilter += (string.IsNullOrEmpty(strFilter)
-                                                         ? "name = "
-                                                         : " and name = ") +
-                                                     xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath();
-                                    }
-                                }
-
-                                // Only do this if the child has the name or id field since this is what we must match on.
-                                if (!string.IsNullOrEmpty(strFilter))
-                                {
-                                    string strParentNodeFilter = string.Empty;
-                                    if (objParentNode.Attributes?.Count > 0)
-                                    {
-                                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                   out StringBuilder sbdParentNodeFilter))
-                                        {
-                                            foreach (XmlAttribute objLoopAttribute in objParentNode.Attributes)
-                                            {
-                                                token.ThrowIfCancellationRequested();
-                                                sbdParentNodeFilter
-                                                    .Append('@').Append(objLoopAttribute.Name).Append(" = ")
-                                                    .Append(objLoopAttribute.Value.Replace("&amp;", "&")
-                                                                            .CleanXPath()).Append(" and ");
-                                            }
-
-                                            if (sbdParentNodeFilter.Length > 0)
-                                                sbdParentNodeFilter.Length -= 5;
-
-                                            strParentNodeFilter = sbdParentNodeFilter.ToString();
-                                        }
-                                    }
-                                    XmlNode objItem = xmlDataDoc.SelectSingleNode(string.IsNullOrEmpty(strParentNodeFilter)
-                                        ? "/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']'
-                                        : "/chummer/" + objParentNode.Name + '[' + strParentNodeFilter + "]/" + objChild.Name + '[' + strFilter + ']');
-                                    if (objItem != null)
-                                        lstDelete.Add(objChild);
-                                }
-                            }
-
-                            // Remove the offending items from the node we're about to merge in.
-                            foreach (XmlNode objRemoveNode in lstDelete)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                objNode.RemoveChild(objRemoveNode);
-                            }
-
-                            XmlElement xmlExistingNode = objDocElement[objNode.Name];
-                            if (xmlExistingNode != null
-                                && xmlExistingNode.Attributes?.Count == objNode.Attributes?.Count)
-                            {
-                                bool blnAllMatching = true;
-                                foreach (XmlAttribute x in xmlExistingNode.Attributes)
+                                // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
+                                List<XmlNode> lstDelete = new List<XmlNode>(objNode.ChildNodes.Count);
+                                foreach (XmlNode objChild in objNode.ChildNodes)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    if (objNode.Attributes.GetNamedItem(x.Name)?.Value != x.Value)
+                                    XmlNode objParentNode = objChild.ParentNode;
+                                    if (objParentNode == null)
+                                        continue;
+                                    string strFilter = string.Empty;
+                                    XmlElement xmlIdNode = objChild["id"];
+                                    if (xmlIdNode != null)
+                                        strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
+                                    else
                                     {
-                                        blnAllMatching = false;
-                                        break;
+                                        XmlElement xmlNameNode = objChild["name"];
+                                        if (xmlNameNode != null)
+                                        {
+                                            strFilter += (string.IsNullOrEmpty(strFilter)
+                                                             ? "name = "
+                                                             : " and name = ") +
+                                                         xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath();
+                                        }
+                                    }
+
+                                    // Only do this if the child has the name or id field since this is what we must match on.
+                                    if (!string.IsNullOrEmpty(strFilter))
+                                    {
+                                        string strParentNodeFilter = string.Empty;
+                                        if (objParentNode.Attributes?.Count > 0)
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                       out StringBuilder sbdParentNodeFilter))
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                foreach (XmlAttribute objLoopAttribute in objParentNode.Attributes)
+                                                {
+                                                    token.ThrowIfCancellationRequested();
+                                                    sbdParentNodeFilter
+                                                        .Append('@').Append(objLoopAttribute.Name).Append(" = ")
+                                                        .Append(objLoopAttribute.Value.Replace("&amp;", "&")
+                                                                                .CleanXPath()).Append(" and ");
+                                                }
+
+                                                if (sbdParentNodeFilter.Length > 0)
+                                                    sbdParentNodeFilter.Length -= 5;
+
+                                                strParentNodeFilter = sbdParentNodeFilter.ToString();
+                                            }
+                                        }
+                                        token.ThrowIfCancellationRequested();
+                                        XmlNode objItem = xmlDataDoc.SelectSingleNode(string.IsNullOrEmpty(strParentNodeFilter)
+                                            ? "/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']'
+                                            : "/chummer/" + objParentNode.Name + '[' + strParentNodeFilter + "]/" + objChild.Name + '[' + strFilter + ']');
+                                        if (objItem != null)
+                                            lstDelete.Add(objChild);
                                     }
                                 }
 
-                                if (blnAllMatching)
+                                token.ThrowIfCancellationRequested();
+                                // Remove the offending items from the node we're about to merge in.
+                                foreach (XmlNode objRemoveNode in lstDelete)
                                 {
-                                    /* We need to do this to avoid creating multiple copies of the root node, ie
-                                       <chummer>
-                                           <metatypes>
-                                               <metatype>Standard</metatype>
-                                           </metatypes>
-                                           <metatypes>
-                                               <metatype>Custom</metatype>
-                                           </metatypes>
-                                       </chummer>
-                                       Otherwise xpathnavigators that to a selectsinglenode will only grab the first instance of the name. TODO: fix better?
-                                   */
-                                    foreach (XmlNode childNode in objNode.ChildNodes)
+                                    token.ThrowIfCancellationRequested();
+                                    objNode.RemoveChild(objRemoveNode);
+                                }
+
+                                XmlElement xmlExistingNode = objDocElement[objNode.Name];
+                                if (xmlExistingNode != null
+                                    && xmlExistingNode.Attributes?.Count == objNode.Attributes?.Count)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    bool blnAllMatching = true;
+                                    foreach (XmlAttribute x in xmlExistingNode.Attributes)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        xmlExistingNode.AppendChild(xmlDataDoc.ImportNode(childNode, true));
+                                        if (objNode.Attributes.GetNamedItem(x.Name)?.Value != x.Value)
+                                        {
+                                            blnAllMatching = false;
+                                            break;
+                                        }
+                                    }
+
+                                    if (blnAllMatching)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        /* We need to do this to avoid creating multiple copies of the root node, ie
+                                           <chummer>
+                                               <metatypes>
+                                                   <metatype>Standard</metatype>
+                                               </metatypes>
+                                               <metatypes>
+                                                   <metatype>Custom</metatype>
+                                               </metatypes>
+                                           </chummer>
+                                           Otherwise xpathnavigators that to a selectsinglenode will only grab the first instance of the name. TODO: fix better?
+                                       */
+                                        foreach (XmlNode childNode in objNode.ChildNodes)
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            xmlExistingNode.AppendChild(xmlDataDoc.ImportNode(childNode, true));
+                                        }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                // Append the entire child node to the new document.
-                                objDocElement.AppendChild(xmlDataDoc.ImportNode(objNode, true));
-                            }
+                                else
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    // Append the entire child node to the new document.
+                                    objDocElement.AppendChild(xmlDataDoc.ImportNode(objNode, true));
+                                }
 
-                            blnReturn = true;
+                                blnReturn = true;
+                            }
                         }
                     }
+                }
+                catch (Exception e) when (!(e is OperationCanceledException))
+                {
+                    e = e.Demystify();
+#if DEBUG
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+#endif
+                    s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
                 }
             }
 
@@ -2147,41 +2131,46 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     await xmlFile.LoadStandardPatientAsync(strFile, token: token).ConfigureAwait(false);
-                }
-#if DEBUG
-                catch (IOException e)
-                {
-                    Log.Warn(e);
-                    Utils.BreakIfDebug();
-                    continue;
-                }
-                catch (XmlException e)
-                {
-                    Log.Warn(e);
-                    Utils.BreakIfDebug();
-                    continue;
-                }
-#else
-                catch (IOException)
-                {
-                    continue;
-                }
-                catch (XmlException)
-                {
-                    continue;
-                }
-#endif
-                token.ThrowIfCancellationRequested();
-
-                using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
-                {
-                    if (xmlNodeList?.Count > 0)
+                    token.ThrowIfCancellationRequested();
+                    using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
                     {
-                        foreach (XmlNode objNode in xmlNodeList)
+                        token.ThrowIfCancellationRequested();
+                        if (xmlNodeList?.Count > 0)
                         {
                             token.ThrowIfCancellationRequested();
-                            blnReturn = AmendNodeChildren(xmlDataDoc, objNode, "/chummer", token: token) || blnReturn;
+                            foreach (XmlNode objNode in xmlNodeList)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                blnReturn = AmendNodeChildren(xmlDataDoc, objNode, "/chummer", token: token) || blnReturn;
+                            }
                         }
+                    }
+                }
+                catch (Exception e) when (!(e is OperationCanceledException))
+                {
+                    e = e.Demystify();
+#if DEBUG
+                    Log.Warn(e);
+                    Utils.BreakIfDebug();
+#endif
+                    s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                }
+            }
+
+            // Report any new errors now.
+            if (lstPossibleCustomFiles.Any(x => s_DicCustomFilePathsWithExceptions.ContainsKey(x)))
+            {
+                string strTitle = await LanguageManager.GetStringAsync("MessageTitle_Load_Error_Generic", token: token).ConfigureAwait(false);
+                string strMessage = await LanguageManager.GetStringAsync("Message_Load_Error_CustomFile", token: token).ConfigureAwait(false);
+                foreach (string strFile in lstPossibleCustomFiles)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (s_DicCustomFilePathsWithExceptions.TryGetValue(strFile, out Exception ex))
+                    {
+                        string strFileNoPath = Path.GetFileName(strFile);
+                        await Program.ShowMessageBoxAsync(
+                            string.Format(GlobalSettings.CultureInfo, strMessage, strFile, ex.Message),
+                            string.Format(GlobalSettings.CultureInfo, strTitle, strFileNoPath), icon: System.Windows.Forms.MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                     }
                 }
             }

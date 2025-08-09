@@ -3127,17 +3127,7 @@ namespace Chummer
                     {
                         objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath, token: token);
                     }
-                    catch (IOException)
-                    {
-                        if (blnShowDialogs)
-                            Program.ShowScrollableMessageBox(
-                                LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", token: token),
-                                LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", token: token),
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                        return false;
-                    }
-                    catch (XmlException)
+                    catch (Exception e) when ((e is IOException) || (e is XmlException))
                     {
                         if (blnShowDialogs)
                             Program.ShowScrollableMessageBox(
@@ -3887,17 +3877,7 @@ namespace Chummer
                         objXmlDocument
                             = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
                     }
-                    catch (IOException)
-                    {
-                        if (blnShowDialogs)
-                            await Program.ShowScrollableMessageBoxAsync(
-                                await LanguageManager.GetStringAsync("Message_CharacterOptions_CannotLoadCharacter", token: token).ConfigureAwait(false),
-                                await LanguageManager.GetStringAsync("MessageText_CharacterOptions_CannotLoadCharacter", token: token).ConfigureAwait(false),
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error, token: token).ConfigureAwait(false);
-                        return false;
-                    }
-                    catch (XmlException)
+                    catch (Exception e) when ((e is IOException) || (e is XmlException))
                     {
                         if (blnShowDialogs)
                             await Program.ShowScrollableMessageBoxAsync(
@@ -4826,6 +4806,42 @@ namespace Chummer
                     if (Interlocked.Exchange(ref _strPriorityTable, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// The priority table used in Priority or Sum-to-Ten mode.
+        /// </summary>
+        public async Task<string> GetPriorityTableAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPriorityTable;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// The priority table used in Priority or Sum-to-Ten mode.
+        /// </summary>
+        public async Task SetPriorityTableAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPriorityTable, value) != value)
+                    await OnPropertyChangedAsync(nameof(PriorityTable), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
