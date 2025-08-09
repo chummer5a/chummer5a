@@ -885,12 +885,19 @@ namespace Chummer
                   .PopulateWithListItemsAsync(
                       await _objContact.CharacterObject.ContactArchetypesAsync(token: token).ConfigureAwait(false),
                       token: token).ConfigureAwait(false);
-            await cboContactRole.DoThreadSafeAsync(x =>
+            if (await cboContactRole.DoThreadSafeFuncAsync(x =>
+                {
+                    x.SelectedValue = _objContact.Role;
+                    return x.SelectedIndex;
+                }, token: token).ConfigureAwait(false) < 0)
             {
-                x.SelectedValue = _objContact.Role;
-                if (x.SelectedIndex < 0)
-                    x.Text = _objContact.DisplayRole;
-            }, token: token).ConfigureAwait(false);
+                string strDisplayRole = await _objContact.GetDisplayRoleAsync(token: token).ConfigureAwait(false);
+                await cboContactRole.DoThreadSafeAsync(x =>
+                {
+                    if (x.SelectedIndex < 0)
+                        x.Text = strDisplayRole;
+                }, token).ConfigureAwait(false);
+            }
         }
 
         private async Task DoDataBindings(CancellationToken token = default)

@@ -112,7 +112,7 @@ namespace Chummer
                         XPathNavigator xmlImprovementNode
                             = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId(
                                 "improvement",
-                                cboImprovemetType.SelectedValue.ToString(),blnIdIsGuid:false);
+                                await cboImprovemetType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()).ConfigureAwait(false), blnIdIsGuid: false);
                         XPathNavigator objFetchNode = xmlImprovementNode?.SelectSingleNodeAndCacheExpression("fields/field");
                         string strText
                             = await TranslateField(objFetchNode?.Value, EditImprovementObject.ImprovedName).ConfigureAwait(false);
@@ -230,16 +230,14 @@ namespace Chummer
                         }
 
                         string strDescription = await LanguageManager.GetStringAsync("Title_SelectAction").ConfigureAwait(false);
-                        using (ThreadSafeForm<SelectItem> frmSelectAction = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                               {
-                                   Description = strDescription
-                               }).ConfigureAwait(false))
+                        using (ThreadSafeForm<SelectItem> frmSelectAction = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()).ConfigureAwait(false))
                         {
+                            await frmSelectAction.MyForm.DoThreadSafeAsync(x => x.Description = strDescription).ConfigureAwait(false);
                             frmSelectAction.MyForm.SetDropdownItemsMode(lstActions);
 
                             if (await frmSelectAction.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
                             {
-                                string strSelect = frmSelectAction.MyForm.SelectedName;
+                                string strSelect = await frmSelectAction.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName).ConfigureAwait(false);
                                 await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect).ConfigureAwait(false);
                                 string strTranslateSelection = await TranslateField(_strSelect, strSelect).ConfigureAwait(false);
                                 await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection).ConfigureAwait(false);
@@ -444,9 +442,9 @@ namespace Chummer
                 {
                     string strDescription = await LanguageManager.GetStringAsync("Title_SelectSkill").ConfigureAwait(false);
                     using (ThreadSafeForm<SelectSkill> frmPickSkill =
-                           await ThreadSafeForm<SelectSkill>.GetAsync(() => new SelectSkill(_objCharacter)
-                                                                          { Description = strDescription }).ConfigureAwait(false))
+                           await ThreadSafeForm<SelectSkill>.GetAsync(() => new SelectSkill(_objCharacter)).ConfigureAwait(false))
                     {
+                        await frmPickSkill.MyForm.DoThreadSafeAsync(x => x.Description = strDescription).ConfigureAwait(false);
                         if (await frmPickSkill.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
                         {
                             string strSelect = frmPickSkill.MyForm.SelectedSkill;
@@ -512,12 +510,13 @@ namespace Chummer
                         lstDropdownItems.Sort(CompareListItems.CompareNames);
 
                         string strDescription = await LanguageManager.GetStringAsync("Title_SelectSkill").ConfigureAwait(false);
-                        using (ThreadSafeForm<SelectItem> frmPickSkill = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem { Description = strDescription }).ConfigureAwait(false))
+                        using (ThreadSafeForm<SelectItem> frmPickSkill = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()).ConfigureAwait(false))
                         {
+                            await frmPickSkill.MyForm.DoThreadSafeAsync(x => x.Description = strDescription).ConfigureAwait(false);
                             frmPickSkill.MyForm.SetDropdownItemsMode(lstDropdownItems);
                             if (await frmPickSkill.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
                             {
-                                string strSelect = frmPickSkill.MyForm.SelectedItem;
+                                string strSelect = await frmPickSkill.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem).ConfigureAwait(false);
                                 await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect).ConfigureAwait(false);
                                 string strTranslateSelection = await TranslateField(_strSelect, strSelect).ConfigureAwait(false);
                                 await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection).ConfigureAwait(false);
@@ -578,13 +577,14 @@ namespace Chummer
                         }
 
                         string strDescription = await LanguageManager.GetStringAsync("Title_SelectComplexForm").ConfigureAwait(false);
-                        using (ThreadSafeForm<SelectItem> selectComplexForm = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem { Description = strDescription }).ConfigureAwait(false))
+                        using (ThreadSafeForm<SelectItem> selectComplexForm = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()).ConfigureAwait(false))
                         {
+                            await selectComplexForm.MyForm.DoThreadSafeAsync(x => x.Description = strDescription).ConfigureAwait(false);
                             selectComplexForm.MyForm.SetDropdownItemsMode(lstComplexForms);
 
                             if (await selectComplexForm.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
                             {
-                                string strSelect = selectComplexForm.MyForm.SelectedName;
+                                string strSelect = await selectComplexForm.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName).ConfigureAwait(false);
                                 await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect).ConfigureAwait(false);
                                 string strTranslateSelection = await TranslateField(_strSelect, strSelect).ConfigureAwait(false);
                                 await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection).ConfigureAwait(false);
@@ -612,13 +612,14 @@ namespace Chummer
                         }
 
                         string strDescription = await LanguageManager.GetStringAsync("Title_SelectSpell").ConfigureAwait(false);
-                        using (ThreadSafeForm<SelectItem> selectSpell = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem { Description = strDescription }).ConfigureAwait(false))
+                        using (ThreadSafeForm<SelectItem> selectSpell = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()).ConfigureAwait(false))
                         {
+                            await selectSpell.MyForm.DoThreadSafeAsync(x => x.Description = strDescription).ConfigureAwait(false);
                             selectSpell.MyForm.SetDropdownItemsMode(lstSpells);
 
                             if (await selectSpell.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
                             {
-                                string strSelect = selectSpell.MyForm.SelectedName;
+                                string strSelect = await selectSpell.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName).ConfigureAwait(false);
                                 await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect).ConfigureAwait(false);
                                 string strTranslateSelection = await TranslateField(_strSelect, strSelect).ConfigureAwait(false);
                                 await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection).ConfigureAwait(false);

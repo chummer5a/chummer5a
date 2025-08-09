@@ -1179,16 +1179,14 @@ namespace Chummer.UI.Skills
                                                   .GetStringAsync("Label_Options_NewKnowledgeSkill", token: MyToken)
                                                   .ConfigureAwait(false);
                     using (ThreadSafeForm<SelectItem> form = await ThreadSafeForm<SelectItem>.GetAsync(
-                               () => new SelectItem
-                               {
-                                   Description = strDescription
-                               }, MyToken).ConfigureAwait(false))
+                               () => new SelectItem(), MyToken).ConfigureAwait(false))
                     {
+                        await form.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, MyToken).ConfigureAwait(false);
                         form.MyForm.SetDropdownItemsMode(await _objCharacter.SkillsSection.GetMyDefaultKnowledgeSkillsAsync(MyToken).ConfigureAwait(false));
                         if (await form.ShowDialogSafeAsync(_objCharacter, MyToken).ConfigureAwait(false)
                             != DialogResult.OK)
                             return;
-                        strSelectedSkill = form.MyForm.SelectedItem;
+                        strSelectedSkill = await form.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, MyToken).ConfigureAwait(false);
                     }
 
                     KnowledgeSkill skill = new KnowledgeSkill(_objCharacter, false);

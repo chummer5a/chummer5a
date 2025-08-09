@@ -148,9 +148,10 @@ namespace Chummer
 
                             await cboCategory.PopulateWithListItemsAsync(lstCategories, _objGenericToken).ConfigureAwait(false);
                             // Attempt to select the default Metahuman Category. If it could not be found, select the first item in the list instead.
+                            string strMetatypeCategory = await _objCharacter.GetMetatypeCategoryAsync(_objGenericToken).ConfigureAwait(false);
                             await cboCategory.DoThreadSafeAsync(x =>
                             {
-                                x.SelectedValue = _objCharacter.MetatypeCategory;
+                                x.SelectedValue = strMetatypeCategory;
                                 if (x.SelectedIndex == -1 && lstCategories.Count > 0)
                                     x.SelectedIndex = 0;
                             }, _objGenericToken).ConfigureAwait(false);

@@ -4810,6 +4810,42 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The priority table used in Priority or Sum-to-Ten mode.
+        /// </summary>
+        public async Task<string> GetPriorityTableAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPriorityTable;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// The priority table used in Priority or Sum-to-Ten mode.
+        /// </summary>
+        public async Task SetPriorityTableAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPriorityTable, value) != value)
+                    await OnPropertyChangedAsync(nameof(PriorityTable), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// The total value of priorities used in Sum-to-Ten mode.
         /// </summary>
         public int SumtoTen

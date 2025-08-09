@@ -183,9 +183,10 @@ namespace Chummer
         {
             get
             {
-                if (cboSpec.SelectedValue != null && cboSpec.SelectedValue.ToString() != "Custom")
+                string strSelected = cboSpec.SelectedValue?.ToString();
+                if (!string.IsNullOrEmpty(strSelected) && strSelected != "Custom")
                 {
-                    return cboSpec.SelectedValue.ToString();
+                    return strSelected;
                 }
 
                 return cboSpec.Text;

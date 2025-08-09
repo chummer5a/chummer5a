@@ -1260,9 +1260,10 @@ namespace Chummer
 
                             await lblEssence.DoThreadSafeAsync(x =>
                             {
-                                x.Text = decESS.ToString(strEssenceFormat, GlobalSettings.CultureInfo);
                                 if (blnAddToParentESS)
-                                    x.Text = '+' + x.Text;
+                                    x.Text = '+' + decESS.ToString(strEssenceFormat, GlobalSettings.CultureInfo);
+                                else
+                                    x.Text = decESS.ToString(strEssenceFormat, GlobalSettings.CultureInfo);
                             }, token: token).ConfigureAwait(false);
                         }
                         else

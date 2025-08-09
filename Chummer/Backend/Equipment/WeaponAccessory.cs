@@ -748,7 +748,9 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("mount", Mount, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("extramount", ExtraMount, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("addmount", AddMount, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("rc", RC, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("damage", (await GetTotalDamageAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;0.##", objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rc", (await GetTotalRCAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;0.##", objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ap", (await GetTotalAPAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;0.##", objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("conceal", (await GetTotalConcealabilityAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;0.##", objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel, token).ConfigureAwait(false);
@@ -889,6 +891,19 @@ namespace Chummer.Backend.Equipment
             set => _strDamage = value;
         }
 
+        public decimal TotalDamage
+        {
+            get
+            {
+                return ProcessRatingStringAsDec(Damage, () => Rating);
+            }
+        }
+
+        public Task<decimal> GetTotalDamageAsync(CancellationToken token = default)
+        {
+            return ProcessRatingStringAsDecAsync(Damage, () => GetRatingAsync(token), token);
+        }
+
         /// <summary>
         /// The Accessory replaces the weapon's damage value.
         /// </summary>
@@ -914,6 +929,19 @@ namespace Chummer.Backend.Equipment
         {
             get => _strAP;
             set => _strAP = value;
+        }
+
+        public decimal TotalAP
+        {
+            get
+            {
+                return ProcessRatingStringAsDec(AP, () => Rating);
+            }
+        }
+
+        public Task<decimal> GetTotalAPAsync(CancellationToken token = default)
+        {
+            return ProcessRatingStringAsDecAsync(AP, () => GetRatingAsync(token), token);
         }
 
         /// <summary>
@@ -1087,6 +1115,19 @@ namespace Chummer.Backend.Equipment
         {
             get => _strRC;
             set => _strRC = value;
+        }
+
+        public decimal TotalRC
+        {
+            get
+            {
+                return ProcessRatingStringAsDec(RC, () => Rating);
+            }
+        }
+
+        public Task<decimal> GetTotalRCAsync(CancellationToken token = default)
+        {
+            return ProcessRatingStringAsDecAsync(RC, () => GetRatingAsync(token), token);
         }
 
         /// <summary>

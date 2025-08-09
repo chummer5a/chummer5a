@@ -7930,7 +7930,7 @@ namespace Chummer
                                                                         }
 
                                                                         selectedContactUniqueId
-                                                                            = frmPickItem.MyForm.SelectedItem;
+                                                                            = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
                                                                     }
                                                                 }
                                                             }

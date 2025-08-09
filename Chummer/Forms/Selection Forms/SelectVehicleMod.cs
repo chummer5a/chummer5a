@@ -767,11 +767,12 @@ namespace Chummer
                             decItemCost *= 0.9m;
                         }
 
+                        string strText2 = decItemCost.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
+                                                                     GlobalSettings.CultureInfo)
+                                                + strNuyen;
                         await lblCost
                               .DoThreadSafeAsync(
-                                  x => x.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                     GlobalSettings.CultureInfo)
-                                                + strNuyen, token: token)
+                                  x => x.Text = strText2, token: token)
                               .ConfigureAwait(false);
                     }
 

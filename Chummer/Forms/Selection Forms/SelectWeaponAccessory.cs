@@ -232,14 +232,14 @@ namespace Chummer
 
         private async void cboMount_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateMountFields(true);
+            await this.DoThreadSafeAsync(x => x.UpdateMountFields(true)).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
                 await UpdateGearInfo(false).ConfigureAwait(false);
         }
 
         private async void cboExtraMount_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateMountFields(false);
+            await this.DoThreadSafeAsync(x => x.UpdateMountFields(false)).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
                 await UpdateGearInfo(false).ConfigureAwait(false);
         }
