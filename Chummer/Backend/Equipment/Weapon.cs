@@ -819,6 +819,8 @@ namespace Chummer.Backend.Equipment
                             continue;
                         XmlNode objXmlAccessory =
                             objXmlDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", strName);
+                        if (objXmlAccessory == null)
+                            continue;
                         WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
                         int intAccessoryRating = 0;
                         if (objXmlWeaponAccessory["rating"] != null)
