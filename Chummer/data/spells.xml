@@ -1376,7 +1376,7 @@
     </spell>
     <spell>
       <id>5c9218f6-bdb4-46a5-89ce-00b4adfe0429</id>
-      <name>Disrupt [Object]</name>
+      <name>Disrupt [Focus]</name>
       <page>102</page>
       <source>SG</source>
       <category>Combat</category>
@@ -2940,6 +2940,7 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <useskill>Animal Handling</useskill>
       <bonus>
         <selecttext />
       </bonus>
@@ -3728,6 +3729,7 @@
       <source>SS</source>
       <category>Manipulation</category>
       <damage>0</damage>
+      <descriptor />
       <duration>P</duration>
       <dv>F-1</dv>
       <range>T (A)</range>
@@ -5224,6 +5226,67 @@
       <dv>F</dv>
       <range>LOS</range>
       <type>M</type>
+    </spell>
+    <!-- End Region -->
+    <!-- Region Parageology -->
+    <spell>
+      <id>f1f92398-dced-429f-8463-53894d8b2604</id>
+      <name>Geopathic Connection</name>
+      <page>36</page>
+      <source>PGG</source>
+      <category>Rituals</category>
+      <damage>0</damage>
+      <descriptor>Mana</descriptor>
+      <duration>I</duration>
+      <dv>0</dv>
+      <range>Special</range>
+      <type>M</type>
+      <required>
+        <allof>
+          <metamagicart>Geomancy</metamagicart>
+          <metamagic>Home Advantage</metamagic>
+        </allof>
+      </required>
+    </spell>
+    <spell>
+      <id>fb05d206-f175-4dfa-a1bb-54ae3b298d33</id>
+      <name>Yang Zhai</name>
+      <page>36</page>
+      <source>PGG</source>
+      <category>Rituals</category>
+      <damage>0</damage>
+      <descriptor>Mana</descriptor>
+      <duration>Special</duration>
+      <dv>0</dv>
+      <range>Special</range>
+      <type>M</type>
+      <required>
+        <allof>
+          <metamagicart>Geomancy</metamagicart>
+          <metamagic>Patronage</metamagic>
+        </allof>
+      </required>
+    </spell>
+    <!-- End Region -->
+    <!-- Region Shadows in Focus: Casablanca-Rabat -->
+    <spell>
+      <id>18450234-0de2-4c22-9a75-5608f7a49f6b</id>
+      <name>Krigama Carpet</name>
+      <page>26</page>
+      <source>SFCR</source>
+      <category>Rituals</category>
+      <damage>0</damage>
+      <descriptor>Anchored, Material Link</descriptor>
+      <duration>Special</duration>
+      <dv>0</dv>
+      <range>Special</range>
+      <type>M</type>
+      <required>
+        <allof>
+          <metamagicart>Geomancy</metamagicart>
+          <metamagic>Patronage</metamagic>
+        </allof>
+      </required>
     </spell>
     <!-- End Region -->
   </spells>

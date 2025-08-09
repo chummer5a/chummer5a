@@ -23,6 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -54,9 +55,9 @@ namespace Chummer
         private async void CreateNaturalWeapon_Load(object sender, EventArgs e)
         {
             // Load the list of Combat Active Skills and populate the Skills list.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVBase))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVType))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVBase))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVType))
             {
                 foreach (XPathNavigator objXmlSkill in _objXmlSkillsDocument.SelectAndCacheExpression(
                              "skills/skill[category = \"Combat Active\"]"))
@@ -69,8 +70,10 @@ namespace Chummer
                                           ?? strName));
                 }
 
-                lstDVBase.Add(new ListItem("({STR}/2)", '(' + _objCharacter.STR.DisplayAbbrev + "/2)"));
-                lstDVBase.Add(new ListItem("({STR})", '(' + _objCharacter.STR.DisplayAbbrev + ')'));
+                CharacterAttrib objAttribute = await _objCharacter.GetAttributeAsync("STR").ConfigureAwait(false);
+                string strAbbrev = await objAttribute.GetCurrentDisplayAbbrevAsync().ConfigureAwait(false);
+                lstDVBase.Add(new ListItem("({STR}/2)", '(' + strAbbrev + "/2)"));
+                lstDVBase.Add(new ListItem("({STR})", '(' + strAbbrev + ')'));
                 for (int i = 1; i <= 20; ++i)
                 {
                     lstDVBase.Add(new ListItem(i.ToString(GlobalSettings.InvariantCultureInfo),
@@ -158,13 +161,13 @@ namespace Chummer
                     Name = txtName.Text,
                     Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false),
                     RangeType = "Melee",
-                    Reach = await nudReach.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false),
+                    Reach = (await nudReach.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                     Accuracy = "Physical",
                     Damage = strDamage,
                     AP = strAP,
                     Mode = "0",
                     RC = "0",
-                    Concealability = 0,
+                    Concealability = "0",
                     Avail = "0",
                     Cost = "0",
                     Ammo = "0",

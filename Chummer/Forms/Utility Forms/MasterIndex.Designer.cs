@@ -42,7 +42,7 @@ namespace Chummer
             this.cboFile = new Chummer.ElasticComboBox();
             this.lstItems = new System.Windows.Forms.ListBox();
             this.tlpGameplayOption = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip();
+            this.cmdEditCharacterSetting = new System.Windows.Forms.Button();
             this.lblCharacterSetting = new System.Windows.Forms.Label();
             this.cboCharacterSetting = new Chummer.ElasticComboBox();
             this.tlpMain.SuspendLayout();
@@ -254,20 +254,13 @@ namespace Chummer
             this.cmdEditCharacterSetting.AutoSize = true;
             this.cmdEditCharacterSetting.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdEditCharacterSetting.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdEditCharacterSetting.Image = null;
-            this.cmdEditCharacterSetting.ImageDpi120 = null;
-            this.cmdEditCharacterSetting.ImageDpi144 = null;
-            this.cmdEditCharacterSetting.ImageDpi192 = null;
-            this.cmdEditCharacterSetting.ImageDpi288 = null;
-            this.cmdEditCharacterSetting.ImageDpi384 = null;
-            this.cmdEditCharacterSetting.ImageDpi96 = null;
             this.cmdEditCharacterSetting.Location = new System.Drawing.Point(683, 3);
             this.cmdEditCharacterSetting.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdEditCharacterSetting.Name = "cmdEditCharacterSetting";
             this.cmdEditCharacterSetting.Size = new System.Drawing.Size(80, 23);
             this.cmdEditCharacterSetting.TabIndex = 20;
+            this.cmdEditCharacterSetting.Tag = "String_ModifyEllipses";
             this.cmdEditCharacterSetting.Text = "Modify...";
-            this.cmdEditCharacterSetting.ToolTipText = "";
             this.cmdEditCharacterSetting.UseVisualStyleBackColor = true;
             this.cmdEditCharacterSetting.Click += new System.EventHandler(this.cmdEditCharacterSetting_Click);
             // 
@@ -339,7 +332,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtNotes;
         private System.Windows.Forms.TableLayoutPanel tlpGameplayOption;
         private System.Windows.Forms.Label lblCharacterSetting;
-        private ButtonWithToolTip cmdEditCharacterSetting;
+        private System.Windows.Forms.Button cmdEditCharacterSetting;
         private ElasticComboBox cboCharacterSetting;
     }
 }

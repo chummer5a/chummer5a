@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -168,7 +169,83 @@ namespace Chummer
                                                          "String_SpellRadiationPower")).ConfigureAwait(false);
                 }
 
+                bool blnForce = strFv.StartsWith('L');
+                strFv = blnForce ? strFv.TrimStartOnce("L", true) : strFv;
+                //Navigator can't do math on a single value, so inject a mathable value.
+                if (string.IsNullOrEmpty(strFv))
+                {
+                    strFv = "0";
+                }
+                else
+                {
+                    int intPos = strFv.IndexOf('-');
+                    if (intPos != -1)
+                    {
+                        strFv = strFv.Substring(intPos);
+                    }
+                    else
+                    {
+                        intPos = strFv.IndexOf('+');
+                        if (intPos != -1)
+                        {
+                            strFv = strFv.Substring(intPos);
+                        }
+                    }
+                }
+
+                string strToAppend = string.Empty;
+                int intFadingDv = 0;
+                string strSelectedComplexFormName = xmlComplexForm.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+                if (strFv.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                {
+                    if (strFv.HasValuesNeedingReplacementForXPathProcessing())
+                    {
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdFv))
+                        {
+                            sbdFv.Append('(').Append(strFv).Append(')');
+                            foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                _objCharacter, Improvement.ImprovementType.FadingValue, strSelectedComplexFormName, true).ConfigureAwait(false))
+                            {
+                                sbdFv.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                            }
+
+                            await _objCharacter.ProcessAttributesInXPathAsync(sbdFv).ConfigureAwait(false);
+                            strFv = sbdFv.ToString();
+                        }
+                    }
+                    (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(strFv).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        intFadingDv = ((double)xprResult).StandardRound();
+                    else
+                        strToAppend = strFv;
+                }
+                else
+                {
+                    foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                            _objCharacter, Improvement.ImprovementType.FadingValue, strSelectedComplexFormName, true).ConfigureAwait(false))
+                        decValue += objImprovement.Value;
+                    intFadingDv = decValue.StandardRound();
+                }
+
+                // Fading always minimum 2
+                if (!blnForce && string.IsNullOrEmpty(strToAppend))
+                    intFadingDv = Math.Max(intFadingDv, 2);
+
+                if (blnForce)
+                {
+                    if (!string.IsNullOrEmpty(strToAppend))
+                        strFv += "L" + strToAppend;
+                    else
+                        strFv = string.Format(GlobalSettings.InvariantCultureInfo, "L{0:+0;-0;}", intFadingDv);
+                }
+                else if (!string.IsNullOrEmpty(strToAppend))
+                    strFv += strToAppend;
+                else
+                    strFv = intFadingDv.ToString(GlobalSettings.InvariantCultureInfo);
+
                 await lblFV.DoThreadSafeAsync(x => x.Text = strFv).ConfigureAwait(false);
+                await lblFVLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strFv)).ConfigureAwait(false);
 
                 string strSource = xmlComplexForm.SelectSingleNodeAndCacheExpression("source")?.Value ??
                                    await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
@@ -178,13 +255,10 @@ namespace Chummer
                 SourceString objSource = await SourceString.GetSourceStringAsync(
                     strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
-                string strSourceText = objSource.ToString();
-                await lblSource.DoThreadSafeAsync(x => x.Text = strSourceText).ConfigureAwait(false);
-                await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip).ConfigureAwait(false);
+                await objSource.SetControlAsync(lblSource).ConfigureAwait(false);
                 await lblTargetLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTarget)).ConfigureAwait(false);
                 await lblDurationLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDuration)).ConfigureAwait(false);
-                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSourceText)).ConfigureAwait(false);
-                await lblFVLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strFv)).ConfigureAwait(false);
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblSource.Text)).ConfigureAwait(false);
                 await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
             }
             finally
@@ -279,7 +353,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             // Populate the Complex Form list.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstComplexFormItems))
             {
                 foreach (XPathNavigator xmlComplexForm in _xmlBaseComplexFormsNode.Select(

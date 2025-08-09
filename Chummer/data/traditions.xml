@@ -1005,6 +1005,7 @@
       <drain>{WIL} + {CHA}</drain>
       <source>SAG</source>
       <page>115</page>
+      <spiritform>Possession</spiritform>
       <spirits>
         <spiritcombat>Spirit of Earth</spiritcombat>
         <spiritdetection>Guidance Spirit</spiritdetection>
@@ -1044,13 +1045,13 @@
       </spirits>
     </tradition>
     <!-- End Region -->
-    <!-- Region Schattenhandbuch 3 -->
+    <!-- Region Datapuls Oesterreich -->
     <tradition>
       <id>c0405095-5304-4fbd-b955-203a11f88b73</id>
-      <name>Dr.-Singer-School</name>
+      <name>Dr. Singer School</name>
       <drain>{WIL} + {CHA}</drain>
-      <source>SHB3</source>
-      <page>169</page>
+      <source>DATG</source>
+      <page>40</page>
       <spirits>
         <spiritcombat>Spirit of Beasts</spiritcombat>
         <spiritdetection>Task Spirit</spiritdetection>
@@ -1063,14 +1064,182 @@
       <id>53a919e6-739d-4418-aaff-79e9df17e3b6</id>
       <name>Storm Children</name>
       <drain>{WIL} + {INT}</drain>
-      <source>SHB3</source>
-      <page>169</page>
+      <source>DATG</source>
+      <page>41</page>
       <spirits>
         <spiritcombat>Spirit of Fire</spiritcombat>
         <spiritdetection>Spirit of Beasts</spiritdetection>
         <spirithealth>Spirit of Earth</spirithealth>
         <spiritillusion>Plant Spirit</spiritillusion>
         <spiritmanipulation>Spirit of Air</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <!-- End Region -->
+    <!-- Region SOTA 2080 -->
+    <tradition>
+      <id>bfea19e7-4a68-4394-905b-0f2f8503f424</id>
+      <name>Faustian [Alt]</name>
+      <drain>{WIL} + {LOG}</drain>
+      <source>SOTG</source>
+      <page>25</page>
+      <required>
+        <skill>
+          <name>Ritual Spellcasting</name>
+          <val>1</val>
+        </skill>
+      </required>
+      <bonus>
+        <addqualities>
+          <addquality forced="True">Spectral Warden</addquality>
+        </addqualities>
+      </bonus>
+      <spirits>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Earth</spiritdetection>
+        <spirithealth>Guidance Spirit</spirithealth>
+        <spiritillusion>Spirit of Water</spiritillusion>
+        <spiritmanipulation>Spirit of Man</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>9147493a-4cab-418b-9a5c-0f16958610c6</id>
+      <name>Brocken Witches [Alt], Cauldron</name>
+      <drain>{WIL} + {INT}</drain>
+      <source>SOTG</source>
+      <page>25</page>
+      <bonus>
+        <specificskill>
+          <name>Artificing</name>
+          <bonus>1</bonus>
+          <condition>Creating Foci</condition>
+        </specificskill>
+        <skilldisable>Spellcasting</skilldisable>
+      </bonus>
+      <spirits>
+        <spiritcombat>Spirit of Beasts</spiritcombat>
+        <spiritdetection>Spirit of Air</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
+        <spiritillusion>Spirit of Water</spiritillusion>
+        <spiritmanipulation>Spirit of Fire</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>204e51fb-917a-4863-a5fe-a7eb36dfcc91</id>
+      <name>Brocken Witches [Alt], Helsmägde</name>
+      <drain>{WIL} + {INT}</drain>
+      <source>SOTG</source>
+      <page>25</page>
+      <bonus>
+        <spellcategory>
+          <name>Combat</name>
+          <val>2</val>
+        </spellcategory>
+        <skilldisable>Ritual Spellcasting</skilldisable>
+      </bonus>
+      <spirits>
+        <spiritcombat>Spirit of Beasts</spiritcombat>
+        <spiritdetection>Spirit of Air</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
+        <spiritillusion>Spirit of Water</spiritillusion>
+        <spiritmanipulation>Spirit of Fire</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>2245e751-68b0-4c10-911b-3131fdba85cc</id>
+      <name>Frisian Magic [Alt], Frijskwart</name>
+      <drain>{WIL} + {LOG}</drain>
+      <source>SOTG</source>
+      <page>26</page>
+      <bonus>
+        <skilldisable>Summoning</skilldisable>
+        <skilldisable>Binding</skilldisable>
+      </bonus>
+      <spirits>
+        <spiritcombat>Spirit of Water</spiritcombat>
+        <spiritdetection>Spirit of Earth</spiritdetection>
+        <spirithealth>Guidance Spirit</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Plant Spirit</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>6a11a8ff-e779-4da8-944c-c68dc38abc6b</id>
+      <name>Frisian Magic [Alt], Sea Monk</name>
+      <drain>{WIL} + {LOG}</drain>
+      <source>SOTG</source>
+      <page>26</page>
+      <required>
+        <spellcategory>
+          <name>Health</name>
+          <count>2</count>
+        </spellcategory>
+      </required>
+      <bonus>
+        <specificskill>
+          <name>Navigation</name>
+          <bonus>2</bonus>
+        </specificskill>
+        <skilldisable>Summoning</skilldisable>
+        <skilldisable>Binding</skilldisable>
+      </bonus>
+      <spirits>
+        <spiritcombat>Spirit of Water</spiritcombat>
+        <spiritdetection>Spirit of Earth</spiritdetection>
+        <spirithealth>Guidance Spirit</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Plant Spirit</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>27461184-741a-48ea-a2ae-51d00589d42c</id>
+      <name>Freudian Tradition</name>
+      <drain>{WIL} + {LOG}</drain>
+      <source>SOTG</source>
+      <page>27</page>
+      <bonus>
+        <addqualities>
+          <addquality forced="True">Arcane Arrester</addquality>
+        </addqualities>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
+      </bonus>
+      <spirits>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Earth</spiritdetection>
+        <spirithealth>Spirit of Man</spirithealth>
+        <spiritillusion>Spirit of Water</spiritillusion>
+        <spiritmanipulation>Spirit of Air</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>8a7c8a87-6092-4e74-9aff-be771aa2a67f</id>
+      <name>Guardian Order</name>
+      <drain>{WIL} + {CHA}</drain>
+      <source>SOTG</source>
+      <page>28</page>
+      <required>
+        <oneof>
+          <!-- Magical qualities that do not grant adept powers -->
+          <quality>Aware</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Apprentice</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <power>Astral Perception</power>
+        </oneof>
+      </required>
+      <bonus>
+        <addqualities>
+          <addquality select="Guardian Order" forced="True">Code of Honor</addquality>
+        </addqualities>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
+        <addmetamagic forced="True">Masking</addmetamagic>
+      </bonus>
+      <spirits>
+        <spiritcombat>Guardian Spirit</spiritcombat>
+        <spiritdetection>Guidance Spirit</spiritdetection>
+        <spirithealth>Spirit of Earth</spirithealth>
+        <spiritillusion>Spirit of Water</spiritillusion>
+        <spiritmanipulation>Task Spirit</spiritmanipulation>
       </spirits>
     </tradition>
     <!-- End Region -->
@@ -2617,7 +2786,7 @@
       <agi>F</agi>
       <rea>F</rea>
       <str>F+2</str>
-      <cha>F–1</cha>
+      <cha>F-1</cha>
       <int>F</int>
       <log>F</log>
       <wil>F</wil>
@@ -2660,10 +2829,10 @@
       <id>1b9737c5-f3dc-4ede-acdb-81ad35afcb7e</id>
       <name>Corpse Spirit</name>
       <bod>F+2</bod>
-      <agi>F–1</agi>
+      <agi>F-1</agi>
       <rea>F+2</rea>
-      <str>F–2</str>
-      <cha>F–1</cha>
+      <str>F-2</str>
+      <cha>F-1</cha>
       <int>F+1</int>
       <log>F</log>
       <wil>F</wil>
@@ -2708,12 +2877,12 @@
       <id>eeca5858-c087-4489-9ad9-469f0664726f</id>
       <name>Rot Spirit</name>
       <bod>F+3</bod>
-      <agi>F–2</agi>
+      <agi>F-2</agi>
       <rea>F</rea>
       <str>F+1</str>
-      <cha>F–1</cha>
+      <cha>F-1</cha>
       <int>F</int>
-      <log>F–1</log>
+      <log>F-1</log>
       <wil>F</wil>
       <ini>0</ini>
       <edg>F/2</edg>
@@ -2759,8 +2928,8 @@
       <bod>F+2</bod>
       <agi>F+1</agi>
       <rea>F+3</rea>
-      <str>F–2</str>
-      <cha>F–1</cha>
+      <str>F-2</str>
+      <cha>F-1</cha>
       <int>F+1</int>
       <log>F</log>
       <wil>F</wil>
@@ -2803,12 +2972,12 @@
       <id>8e7d505f-4c97-4dad-ae15-955080c2fbaf</id>
       <name>Detritus Spirit</name>
       <bod>F+5</bod>
-      <agi>F–3</agi>
+      <agi>F-3</agi>
       <rea>F-1</rea>
       <str>F+4</str>
-      <cha>F–1</cha>
+      <cha>F-1</cha>
       <int>F</int>
-      <log>F–1</log>
+      <log>F-1</log>
       <wil>F</wil>
       <ini>0</ini>
       <edg>F/2</edg>
@@ -3412,7 +3581,7 @@
       <id>5b122a59-408e-4634-855a-763b25fbad16</id>
       <name>Master Shedim</name>
       <category>Shedim</category>
-      <bon>F</bon>
+      <bod>F</bod>
       <agi>F</agi>
       <rea>F+2</rea>
       <str>F+1</str>

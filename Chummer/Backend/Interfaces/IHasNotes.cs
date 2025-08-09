@@ -27,10 +27,13 @@ namespace Chummer
     public interface IHasNotes
     {
         string Notes { get; set; }
-
+        Task<string> GetNotesAsync(CancellationToken token = default);
+        Task SetNotesAsync(string value, CancellationToken token = default);
         Color NotesColor { get; set; }
-
+        Task<Color> GetNotesColorAsync(CancellationToken token = default);
+        Task SetNotesColorAsync(Color value, CancellationToken token = default);
         Color PreferredColor { get; }
+        Task<Color> GetPreferredColorAsync(CancellationToken token = default);
     }
 
     public static class Notes
@@ -46,28 +49,31 @@ namespace Chummer
             Form frmToUse = objTreeView != null
                 ? await objTreeView.DoThreadSafeFuncAsync(x => x.FindForm(), token: token).ConfigureAwait(false) ?? Program.MainForm
                 : Program.MainForm;
-
-            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor, token), token).ConfigureAwait(false))
+            string strNotes = await objNotes.GetNotesAsync(token).ConfigureAwait(false);
+            Color objColor = await objNotes.GetNotesColorAsync(token).ConfigureAwait(false);
+            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(strNotes, objColor, token), token).ConfigureAwait(false))
             {
                 if (await frmItemNotes.ShowDialogSafeAsync(frmToUse, token).ConfigureAwait(false) != DialogResult.OK)
                     return false;
 
-                objNotes.Notes = frmItemNotes.MyForm.Notes;
-                objNotes.NotesColor = frmItemNotes.MyForm.NotesColor;
+                await objNotes.SetNotesAsync(frmItemNotes.MyForm.Notes, token).ConfigureAwait(false);
+                await objNotes.SetNotesColorAsync(frmItemNotes.MyForm.NotesColor, token).ConfigureAwait(false);
             }
 
+            strNotes = (await objNotes.GetNotesAsync(token).ConfigureAwait(false)).WordWrap();
+            objColor = await objNotes.GetPreferredColorAsync(token).ConfigureAwait(false);
             if (objTreeView != null)
             {
                 await objTreeView.DoThreadSafeAsync(() =>
                 {
-                    treNode.ForeColor = objNotes.PreferredColor;
-                    treNode.ToolTipText = objNotes.Notes.WordWrap();
+                    treNode.ForeColor = objColor;
+                    treNode.ToolTipText = strNotes;
                 }, token: token).ConfigureAwait(false);
             }
             else
             {
-                treNode.ForeColor = objNotes.PreferredColor;
-                treNode.ToolTipText = objNotes.Notes.WordWrap();
+                treNode.ForeColor = objColor;
+                treNode.ToolTipText = strNotes;
             }
 
             return true;

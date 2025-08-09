@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -53,13 +54,12 @@ namespace Chummer
         private readonly XPathNavigator _xmlPowersBasePowersNode;
         private readonly XPathNavigator _xmlMartialArtsBaseChummerNode;
 
-        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstCategory;
 
         #region Control Events
 
         public SelectPACKSKit(Character objCharacter)
         {
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -78,6 +78,8 @@ namespace Chummer
             _xmlCyberwareBaseChummerNode = objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _xmlPowersBasePowersNode = objCharacter.LoadDataXPath("powers.xml").SelectSingleNodeAndCacheExpression("/chummer/powers");
             _xmlMartialArtsBaseChummerNode = objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _lstCategory = Utils.ListItemListPool.Get();
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectPACKSKit_Load(object sender, EventArgs e)
@@ -121,7 +123,7 @@ namespace Chummer
                 strFilter += " and category = " + strCategory.CleanXPath();
             else
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
                 {
                     foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
                     {
@@ -138,7 +140,7 @@ namespace Chummer
 
             // Retrieve the list of Kits for the selected Category.
             XPathNodeIterator xmlPacksKits = _xmlBaseChummerNode.Select("packs/pack[" + strFilter + ']');
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstKit))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstKit))
             {
                 foreach (XPathNavigator objXmlPack in xmlPacksKits)
                 {
@@ -168,13 +170,19 @@ namespace Chummer
             }
 
             await treContents.DoThreadSafeAsync(x => x.Nodes.Clear()).ConfigureAwait(false);
-            string[] strIdentifiers = strSelectedKit.Split('<', StringSplitOptions.RemoveEmptyEntries);
-            await cmdDelete.DoThreadSafeAsync(x => x.Visible = strIdentifiers[1] == "Custom").ConfigureAwait(false);
-            XPathNavigator objXmlPack = _xmlBaseChummerNode.TryGetNodeByNameOrId("packs/pack", strIdentifiers[0], "category = " + strIdentifiers[1].CleanXPath());
-            if (objXmlPack == null)
+            XPathNavigator objXmlPack;
+            string[] strIdentifiers = strSelectedKit.SplitFixedSizePooledArray('<', 2, StringSplitOptions.RemoveEmptyEntries);
+            try
             {
-                return;
+                await cmdDelete.DoThreadSafeAsync(x => x.Visible = strIdentifiers[1] == "Custom").ConfigureAwait(false);
+                objXmlPack = _xmlBaseChummerNode.TryGetNodeByNameOrId("packs/pack", strIdentifiers[0], "category = " + strIdentifiers[1].CleanXPath());
             }
+            finally
+            {
+                ArrayPool<string>.Shared.Return(strIdentifiers);
+            }
+            if (objXmlPack == null)
+                return;
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
             foreach (XPathNavigator objXmlItem in objXmlPack.SelectChildren(XPathNodeType.Element))
@@ -848,14 +856,14 @@ namespace Chummer
 
             // Delete the selected custom PACKS Kit.
             // Find a custom PACKS Kit with the name. This is done without the XmlManager since we need to check each file individually.
-            foreach (string strFile in Directory.EnumerateFiles(Utils.GetDataFolderPath, "*_packs.xml"))
+            foreach (string strFile in Directory.EnumerateFiles(Utils.GetPacksFolderPath, "*_packs.xml"))
             {
                 if (!Path.GetFileName(strFile).StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
                     continue;
                 XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
                 try
                 {
-                    await objXmlDocument.LoadStandardAsync(strFile).ConfigureAwait(false);
+                    await objXmlDocument.LoadStandardPatientAsync(strFile).ConfigureAwait(false);
                 }
                 catch (IOException)
                 {
@@ -946,9 +954,16 @@ namespace Chummer
             string strSelectedKit = lstKits.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
-            string[] objSelectedKit = strSelectedKit.Split('<', StringSplitOptions.RemoveEmptyEntries);
-            _strSelectedKit = objSelectedKit[0];
-            _strSelectCategory = objSelectedKit[1];
+            string[] objSelectedKit = strSelectedKit.SplitFixedSizePooledArray('<', 2, StringSplitOptions.RemoveEmptyEntries);
+            try
+            {
+                _strSelectedKit = objSelectedKit[0];
+                _strSelectCategory = objSelectedKit[1];
+            }
+            finally
+            {
+                ArrayPool<string>.Shared.Return(objSelectedKit);
+            }
             DialogResult = DialogResult.OK;
             Close();
         }
@@ -981,7 +996,7 @@ namespace Chummer
                     objChild.Text += strSpace + await LanguageManager.GetStringAsync("String_Rating").ConfigureAwait(false) + strSpace + strExtra;
                 strExtra = objXmlGear.SelectSingleNodeAndCacheExpression("qty")?.Value;
                 if (!string.IsNullOrEmpty(strExtra))
-                    objChild.Text += strSpace + 'x' + strExtra;
+                    objChild.Text += strSpace + '×' + strExtra;
 
                 if (objParent.TreeView != null)
                     await objParent.TreeView.DoThreadSafeAsync(() => objParent.Nodes.Add(objChild)).ConfigureAwait(false);

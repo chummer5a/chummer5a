@@ -45,15 +45,15 @@ namespace Chummer
     {
         // The setting for whether stuff uses dark mode or light mode is accessible purely through a specific registry key
         // So we save that key for accessing both at startup and should the setting be changed while Chummer is running
-        private static readonly RegistryKey s_ObjPersonalizeKey;
+        private static readonly RegistryKey s_ObjPersonalizeKey = null;
 
         // While events that trigger on changes to a registry value are possible, they're a PITA in C#.
         // Checking for dark mode on a timer interval is less elegant, but also easier to set up, track, and debug.
-        private static readonly Timer s_TmrDarkModeCheckerTimer;
+        private static readonly Timer s_TmrDarkModeCheckerTimer = null;
 
         static ColorManager()
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
 
             try
@@ -74,15 +74,15 @@ namespace Chummer
             switch (GlobalSettings.ColorModeSetting)
             {
                 case ColorMode.Automatic:
-                    AutoApplyLightDarkMode();
+                    _blnIsLightMode = !DoesRegistrySayDarkMode();
                     break;
 
                 case ColorMode.Light:
-                    IsLightMode = true;
+                    _blnIsLightMode = true;
                     break;
 
                 case ColorMode.Dark:
-                    IsLightMode = false;
+                    _blnIsLightMode = false;
                     break;
             }
         }
@@ -97,7 +97,8 @@ namespace Chummer
             if (GlobalSettings.ColorModeSetting == ColorMode.Automatic)
             {
                 IsLightMode = !DoesRegistrySayDarkMode();
-                s_TmrDarkModeCheckerTimer.Enabled = true;
+                if (s_TmrDarkModeCheckerTimer != null)
+                    s_TmrDarkModeCheckerTimer.Enabled = true;
             }
         }
 
@@ -106,7 +107,8 @@ namespace Chummer
             if (GlobalSettings.ColorModeSetting == ColorMode.Automatic)
             {
                 await SetIsLightModeAsync(!DoesRegistrySayDarkMode(), token).ConfigureAwait(false);
-                s_TmrDarkModeCheckerTimer.Enabled = true;
+                if (s_TmrDarkModeCheckerTimer != null)
+                    s_TmrDarkModeCheckerTimer.Enabled = true;
             }
         }
 
@@ -120,7 +122,8 @@ namespace Chummer
 
         public static void DisableAutoTimer()
         {
-            s_TmrDarkModeCheckerTimer.Enabled = false;
+            if (s_TmrDarkModeCheckerTimer != null)
+                s_TmrDarkModeCheckerTimer.Enabled = false;
         }
 
         private static bool _blnIsLightMode = true;
@@ -133,10 +136,11 @@ namespace Chummer
                 if (_blnIsLightMode == value)
                     return;
                 _blnIsLightMode = value;
-                if (Program.MainForm == null)
+                ChummerMainForm frmMain = Program.MainForm;
+                if (frmMain == null)
                     return;
-                using (CursorWait.New(Program.MainForm))
-                    Program.MainForm.UpdateLightDarkMode(CancellationToken.None);
+                using (CursorWait.New(frmMain))
+                    frmMain.UpdateLightDarkMode(CancellationToken.None);
             }
         }
 
@@ -145,13 +149,14 @@ namespace Chummer
             if (_blnIsLightMode == blnNewValue)
                 return Task.CompletedTask;
             _blnIsLightMode = blnNewValue;
-            return Program.MainForm == null ? Task.CompletedTask : Inner();
+            ChummerMainForm frmMain = Program.MainForm;
+            return frmMain == null ? Task.CompletedTask : Inner();
             async Task Inner()
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(frmMain, token: token).ConfigureAwait(false);
                 try
                 {
-                    await Program.MainForm.UpdateLightDarkModeAsync(token).ConfigureAwait(false);
+                    await frmMain.UpdateLightDarkModeAsync(token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -163,7 +168,6 @@ namespace Chummer
         private static readonly ConcurrentDictionary<Color, Color> s_DicDarkModeColors = new ConcurrentDictionary<Color, Color>();
         private static readonly ConcurrentDictionary<Color, Color> s_DicInverseDarkModeColors = new ConcurrentDictionary<Color, Color>();
         private static readonly ConcurrentDictionary<Color, Color> s_DicDimmedColors = new ConcurrentDictionary<Color, Color>();
-        private static readonly ConcurrentDictionary<Color, Color> s_DicBrightenedColors = new ConcurrentDictionary<Color, Color>();
 
         /// <summary>
         /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)
@@ -206,15 +210,15 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Returns a version of a color that has its lightness dimmed down in Light mode or brightened in Dark Mode
+        /// Returns a version of a (Mode-Independent) color that has its lightness dimmed down in Light mode or brightened in Dark Mode
         /// </summary>
-        /// <param name="objColor">Color whose lightness should be dimmed.</param>
-        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed.</returns>
+        /// <param name="objColor">Color (in Mode-Independent form) whose lightness should be dimmed.</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed or brightened as appropriate.</returns>
         public static Color GenerateCurrentModeDimmedColor(Color objColor)
         {
             return IsLightMode
                 ? s_DicDimmedColors.GetOrAdd(objColor, GetDimmedVersion)
-                : s_DicBrightenedColors.GetOrAdd(objColor, GetBrightenedVersion);
+                : GetDarkModeVersion(s_DicDimmedColors.GetOrAdd(objColor, GetDimmedVersion));
         }
 
         /// <summary>
@@ -298,12 +302,12 @@ namespace Chummer
         private static Color SplitterColorDark { get; } = GenerateDarkModeColor(SplitterColorLight);
 
         public static Color HasNotesColor => IsLightMode ? HasNotesColorLight : HasNotesColorDark;
-        private static Color HasNotesColorLight { get; } = Color.Chocolate;
-        private static Color HasNotesColorDark { get; } = GenerateDarkModeColor(HasNotesColorLight);
+        public static Color HasNotesColorLight => GlobalSettings.DefaultHasNotesColor;
+        public static Color HasNotesColorDark => GenerateDarkModeColor(HasNotesColorLight);
 
         public static Color GrayHasNotesColor => IsLightMode ? GrayHasNotesColorLight : GrayHasNotesColorDark;
-        private static Color GrayHasNotesColorLight { get; } = Color.Tan;
-        private static Color GrayHasNotesColorDark { get; } = GenerateDarkModeColor(GrayHasNotesColorLight);
+        private static Color GrayHasNotesColorLight => s_DicDimmedColors.GetOrAdd(HasNotesColorLight, GetDimmedVersion);
+        private static Color GrayHasNotesColorDark => GenerateDarkModeColor(GrayHasNotesColorLight);
 
         public static Color ErrorColor { get; } = Color.Red;
 
@@ -371,14 +375,14 @@ namespace Chummer
             float fltLightness = objColor.GetBrightness(); // It's called Brightness, but it's actually Lightness
             float fltNewLightness = 1.0f - fltLightness;
             float fltNewValue = fltNewLightness + objColor.GetSaturation() * Math.Min(fltNewLightness, 1 - fltNewLightness);
-            float fltSaturationHsv = fltNewValue == 0 ? 0 : 2 * (1 - fltNewLightness / fltNewValue);
+            float fltSaturationHsv = Math.Abs(fltNewValue) < float.Epsilon ? 0 : 2 * (1 - fltNewLightness / fltNewValue);
             // Lighten dark colors a little by increasing value so that we don't warp colors that are highly saturated to begin with.
             fltNewValue += 0.14f * (1.0f - Convert.ToSingle(Math.Sqrt(fltNewValue)));
             fltNewValue = Math.Min(fltNewValue, 1.0f);
             Color objColorIntermediate = FromHsv(fltHue, fltSaturationHsv, fltNewValue);
             fltNewLightness = objColorIntermediate.GetBrightness();
             fltNewValue = fltNewLightness + objColorIntermediate.GetSaturation() * Math.Min(fltNewLightness, 1 - fltNewLightness);
-            fltSaturationHsv = fltNewValue == 0 ? 0 : 2 * (1 - fltNewLightness / fltNewValue);
+            fltSaturationHsv = Math.Abs(fltNewValue) < float.Epsilon ? 0 : 2 * (1 - fltNewLightness / fltNewValue);
             // Desaturate high saturation colors a little
             float fltNewSaturationHsv = fltSaturationHsv - 0.1f * fltSaturationHsv * fltSaturationHsv;
             return FromHsva(fltHue, fltNewSaturationHsv, fltNewValue, objColor.A);
@@ -396,9 +400,9 @@ namespace Chummer
             float fltHue = objColor.GetHue() / 360.0f;
             float fltLightness = objColor.GetBrightness(); // It's called Brightness, but it's actually Lightness
             float fltValue = fltLightness + objColor.GetSaturation() * Math.Min(fltLightness, 1 - fltLightness);
-            float fltSaturationHsv = fltValue == 0 ? 0 : 2 * (1 - fltLightness / fltValue);
+            float fltSaturationHsv = Math.Abs(fltValue) < float.Epsilon ? 0 : 2 * (1 - fltLightness / fltValue);
             float fltNewSaturationHsv = 0;
-            if (fltSaturationHsv != 0)
+            if (Math.Abs(fltSaturationHsv) >= float.Epsilon)
             {
                 // x - 0.1x^2 = n is the regular transform where x is the Light Mode saturation and n is the Dark Mode saturation
                 // To get it back, we need to solve for x knowing only n:
@@ -426,21 +430,11 @@ namespace Chummer
             // Now convert to Lightness so we can flip it
             float fltNewLightness = fltNewValue * (1 - fltNewSaturationHsv / 2.0f);
             float fltDivisor = Math.Min(fltNewLightness, 1 - fltNewLightness);
-            float fltNewSaturationHsl = fltDivisor == 0
+            float fltNewSaturationHsl = Math.Abs(fltDivisor) < float.Epsilon
                 ? 1
                 : (fltNewValue - fltNewLightness) / fltDivisor;
             fltNewLightness = 1 - fltNewLightness;
             return FromHsla(fltHue, fltNewSaturationHsl, fltNewLightness, objColor.A);
-        }
-
-        private static Color GetBrightenedVersion(Color objColor)
-        {
-            // Built-in functions are in HSV/HSB, so we need to convert to HSL to invert lightness.
-            float fltHue = objColor.GetHue() / 360.0f;
-            float fltBrightness = objColor.GetBrightness();
-            float fltSaturation = objColor.GetSaturation();
-            fltSaturation = Math.Min(fltSaturation * 1.15f, 1);
-            return FromHsva(fltHue, fltBrightness, fltSaturation, objColor.A);
         }
 
         private static Color GetDimmedVersion(Color objColor)
@@ -449,7 +443,7 @@ namespace Chummer
             float fltHue = objColor.GetHue() / 360.0f;
             float fltBrightness = objColor.GetBrightness();
             float fltSaturation = objColor.GetSaturation();
-            fltSaturation = Math.Max(0, fltSaturation * 0.85f);
+            fltSaturation = Math.Max(0, fltSaturation * 0.625f);
             return FromHsva(fltHue, fltBrightness, fltSaturation, objColor.A);
         }
 

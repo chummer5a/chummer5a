@@ -27,7 +27,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -120,15 +119,16 @@ namespace Chummer
                       .PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet,
                                                       _objCharacter.Yield(), _objExportCulture, token: _objGenericToken)
                       .ConfigureAwait(false);
-                using (new FetchSafelyFromPool<List<ListItem>>(
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                            Utils.ListItemListPool, out List<ListItem> lstExportMethods))
                 {
                     // Populate the XSLT list with all of the XSL files found in the sheets directory.
-                    foreach (string strFile in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "export")))
+                    // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
+                    foreach (string strFile in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "export"), "*.xsl"))
                     {
-                        // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-                        if (!strFile.EndsWith(".xslt", StringComparison.OrdinalIgnoreCase)
-                            && strFile.EndsWith(".xsl", StringComparison.OrdinalIgnoreCase))
+                        // We need to test this explicitly because .NET Framework has weird behavior with search patterns for asterisk and then a three-letter extension
+                        // (It allows any files whose extension begins with those three letters through, so e.g. it would allow xslt files here)
+                        if (strFile.EndsWith(".xsl", StringComparison.OrdinalIgnoreCase))
                         {
                             string strFileName = Path.GetFileNameWithoutExtension(strFile);
                             lstExportMethods.Add(new ListItem(strFileName, strFileName));
@@ -682,7 +682,7 @@ namespace Chummer
             File.WriteAllText(strSaveFile, // Change this to a proper path.
                 _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> strBoxText)
                                   ? strBoxText.Item1
-                                  : txtText.Text,
+                                  : await txtText.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false),
                               Encoding.UTF8);
         }
 
@@ -706,30 +706,30 @@ namespace Chummer
                             = await XslManager
                                     .GetTransformForFileAsync(exportSheetPath, token).ConfigureAwait(false); // Use the path for the export sheet.
                     }
-                    catch (ArgumentException)
+                    catch (ArgumentException ex)
                     {
                         token.ThrowIfCancellationRequested();
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
-                        Log.Debug(strReturn);
+                        Log.Debug(ex, strReturn);
                         await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);
                         return;
                     }
-                    catch (PathTooLongException)
+                    catch (PathTooLongException ex)
                     {
                         token.ThrowIfCancellationRequested();
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
-                        Log.Debug(strReturn);
+                        Log.Debug(ex, strReturn);
                         await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);
                         return;
                     }
-                    catch (UnauthorizedAccessException)
+                    catch (UnauthorizedAccessException ex)
                     {
                         token.ThrowIfCancellationRequested();
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
-                        Log.Debug(strReturn);
+                        Log.Debug(ex, strReturn);
                         await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);
                         return;
                     }
@@ -737,8 +737,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         string strReturn = "Error attempting to load " + _strXslt + Environment.NewLine;
-                        Log.Debug(strReturn);
-                        Log.Error("ERROR Message = " + ex.Message);
+                        Log.Debug(ex, strReturn);
                         strReturn += ex.Message;
                         await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);
                         return;
@@ -769,7 +768,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             // Read in the resulting code and pass it to the browser.
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                             {
                                 token.ThrowIfCancellationRequested();
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
@@ -836,26 +835,63 @@ namespace Chummer
         {
             string strDisplayText = strText;
             // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
-            strDisplayText = s_RgxMainMugshotReplaceExpression.Value.Replace(strDisplayText, "<mainmugshotbase64>[...]</mainmugshotbase64>");
-            strDisplayText = s_RgxStringBase64ReplaceExpression.Value.Replace(strDisplayText, "<stringbase64>[...]</stringbase64>");
-            strDisplayText = s_RgxBase64ReplaceExpression.Value.Replace(strDisplayText, "base64\": \"[...]\",");
+            int intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>");
+            while (intSnipStartIndex >= 0)
+            {
+                int intSnipEndIndex = strDisplayText.IndexOf("</mainmugshotbase64>", intSnipStartIndex);
+                if (intSnipEndIndex > intSnipStartIndex)
+                {
+                    string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 19);
+                    string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
+                    strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
+                    intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>");
+                }
+                else
+                    intSnipStartIndex = -1;
+            }
+            intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>");
+            while (intSnipStartIndex >= 0)
+            {
+                int intSnipEndIndex = strDisplayText.IndexOf("</stringbase64>", intSnipStartIndex);
+                if (intSnipEndIndex > intSnipStartIndex)
+                {
+                    string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 14);
+                    string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
+                    strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
+                    intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>");
+                }
+                else
+                    intSnipStartIndex = -1;
+            }
+            intSnipStartIndex = strDisplayText.IndexOf("base64\": \"");
+            while (intSnipStartIndex >= 0)
+            {
+                // Special case here, we do not want to get caught up on escaped quotation marks inside of the text
+                int intSnipEndIndex = strDisplayText.IndexOfAny(intSnipStartIndex, "\",", "\\\"");
+                if (intSnipEndIndex > intSnipStartIndex)
+                {
+                    while (strDisplayText[intSnipEndIndex] != '\"')
+                    {
+                        intSnipEndIndex = strDisplayText.IndexOfAny(intSnipEndIndex + 2, "\",", "\\\"");
+                    }
+                    if (intSnipEndIndex > intSnipStartIndex)
+                    {
+                        string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 10);
+                        string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
+                        strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
+                        intSnipStartIndex = strDisplayText.IndexOf("base64\": \"");
+                    }
+                    else
+                        intSnipStartIndex = -1;
+                }
+                else
+                    intSnipStartIndex = -1;
+            }
             _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt),
                 new Tuple<string, string>(strText, strDisplayText),
                 (a, b) => new Tuple<string, string>(strText, strDisplayText));
             return txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token);
         }
-
-        private static readonly Lazy<Regex> s_RgxMainMugshotReplaceExpression = new Lazy<Regex>(() => new Regex(
-            "<mainmugshotbase64>[^\\s\\S]*</mainmugshotbase64>",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
-
-        private static readonly Lazy<Regex> s_RgxStringBase64ReplaceExpression = new Lazy<Regex>(() => new Regex(
-            "<stringbase64>[^\\s\\S]*</stringbase64>",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
-
-        private static readonly Lazy<Regex> s_RgxBase64ReplaceExpression = new Lazy<Regex>(() => new Regex(
-            "base64\": \"[^\\\"]*\",",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         #endregion XML
 

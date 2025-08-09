@@ -87,6 +87,7 @@ namespace Chummer.Backend.Skills
                 _objCachedKarmaUnbrokenLock.Dispose();
                 _objCachedIsDisabledLock.Dispose();
                 _objCachedHasAnyBreakingSkillsLock.Dispose();
+                _objCachedRatingLock.Dispose();
                 _objCachedToolTipLock.Dispose();
             }
             LockObject.Dispose();
@@ -134,6 +135,7 @@ namespace Chummer.Backend.Skills
                 await _objCachedKarmaUnbrokenLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedIsDisabledLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedHasAnyBreakingSkillsLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedRatingLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedToolTipLock.DisposeAsync().ConfigureAwait(false);
             }
             finally
@@ -385,7 +387,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (!await GetKarmaUnbrokenAsync(token).ConfigureAwait(false) && KarmaPoints > 0)
+                if (!await GetKarmaUnbrokenAsync(token).ConfigureAwait(false) && await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0)
                 {
                     await SetKarmaPointsAsync(0, token).ConfigureAwait(false);
                 }
@@ -1350,23 +1352,65 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        private int _intCachedRating = int.MinValue;
+        private readonly AsyncFriendlyReaderWriterLock _objCachedRatingLock;
+
         public int Rating
         {
             get
             {
-                using (LockObject.EnterReadLock())
-                    return Karma + Base;
+                using (_objCachedRatingLock.EnterReadLock())
+                {
+                    if (_intCachedRating != int.MinValue)
+                        return _intCachedRating;
+                }
+
+                using (_objCachedRatingLock.EnterUpgradeableReadLock())
+                {
+                    if (_intCachedRating != int.MinValue)
+                        return _intCachedRating;
+
+                    using (_objCachedRatingLock.EnterWriteLock())
+                    {
+                        return _intCachedRating = Karma + Base;
+                    }
+                }
             }
         }
 
         public async Task<int> GetRatingAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await _objCachedIsDisabledLock.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetKarmaAsync(token).ConfigureAwait(false) + await GetBaseAsync(token).ConfigureAwait(false);
+                if (_intCachedRating != int.MinValue)
+                    return _intCachedRating;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker =
+                await _objCachedIsDisabledLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedRating != int.MinValue)
+                    return _intCachedRating;
+                IAsyncDisposable objLocker2 =
+                    await _objCachedIsDisabledLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    return _intCachedRating = await GetKarmaAsync(token).ConfigureAwait(false) + await GetBaseAsync(token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -2057,6 +2101,7 @@ namespace Chummer.Backend.Skills
             _objCachedHasAnyBreakingSkillsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedIsDisabledLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedKarmaUnbrokenLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objCachedRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedToolTipLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _strGroupName = strGroupName;
             objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
@@ -2192,7 +2237,7 @@ namespace Chummer.Backend.Skills
                     if (!string.IsNullOrEmpty(_strCachedToolTip))
                         return _strCachedToolTip;
                     using (_objCachedToolTipLock.EnterWriteLock())
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdTooltip))
                     {
                         string strSpace = LanguageManager.GetString("String_Space");
@@ -2249,7 +2294,7 @@ namespace Chummer.Backend.Skills
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdTooltip))
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
@@ -2504,6 +2549,8 @@ namespace Chummer.Backend.Skills
                             _intCachedKarmaUnbroken = int.MinValue;
                         if (setNamesOfChangedProperties.Contains(nameof(BaseUnbroken)))
                             _intCachedBaseUnbroken = int.MinValue;
+                        if (setNamesOfChangedProperties.Contains(nameof(Rating)))
+                            _intCachedRating = int.MinValue;
                         if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
                             _strCachedToolTip = string.Empty;
                         if (setNamesOfChangedProperties.Contains(nameof(HasAnyBreakingSkills)))
@@ -2635,6 +2682,8 @@ namespace Chummer.Backend.Skills
                             _intCachedKarmaUnbroken = int.MinValue;
                         if (setNamesOfChangedProperties.Contains(nameof(BaseUnbroken)))
                             _intCachedBaseUnbroken = int.MinValue;
+                        if (setNamesOfChangedProperties.Contains(nameof(Rating)))
+                            _intCachedRating = int.MinValue;
                         if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
                             _strCachedToolTip = string.Empty;
                         if (setNamesOfChangedProperties.Contains(nameof(HasAnyBreakingSkills)))
@@ -2966,7 +3015,7 @@ namespace Chummer.Backend.Skills
 
                     decimal decMultiplier = 1.0m;
                     decimal decExtra = 0;
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string>
                                    lstRelevantCategories))
                     {
@@ -3040,7 +3089,7 @@ namespace Chummer.Backend.Skills
 
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                            out HashSet<string>
                                lstRelevantCategories))
                 {
@@ -3134,7 +3183,7 @@ namespace Chummer.Backend.Skills
 
                     decimal decMultiplier = 1.0m;
                     decimal decExtra = 0;
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string>
                                    lstRelevantCategories))
                     {
@@ -3233,7 +3282,7 @@ namespace Chummer.Backend.Skills
 
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                            out HashSet<string>
                                lstRelevantCategories))
                 {
@@ -3341,7 +3390,7 @@ namespace Chummer.Backend.Skills
 
                     decimal decMultiplier = 1.0m;
                     decimal decExtra = 0;
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string>
                                    lstRelevantCategories))
                     {
@@ -3418,12 +3467,12 @@ namespace Chummer.Backend.Skills
                 int intOptionsCost;
                 if (intRating == 0)
                 {
-                    intOptionsCost = (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).KarmaNewSkillGroup;
+                    intOptionsCost = await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaNewSkillGroupAsync(token).ConfigureAwait(false);
                     intReturn = intOptionsCost;
                 }
                 else if (await GetRatingMaximumAsync(token).ConfigureAwait(false) > intRating)
                 {
-                    intOptionsCost = (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).KarmaImproveSkillGroup;
+                    intOptionsCost = await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaImproveSkillGroupAsync(token).ConfigureAwait(false);
                     intReturn = (intRating + 1) * intOptionsCost;
                 }
                 else
@@ -3433,7 +3482,7 @@ namespace Chummer.Backend.Skills
 
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string>
                                                                     lstRelevantCategories))
                 {

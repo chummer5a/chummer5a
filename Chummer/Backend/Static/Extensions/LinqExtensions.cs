@@ -160,7 +160,7 @@ namespace Chummer
                 return objParentList == null && objTargetList == null;
             if (objParentList.Count != objTargetList.Count)
                 return false;
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setExclude))
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setExclude))
             {
                 foreach (string objLoopChild in objParentList)
                 {

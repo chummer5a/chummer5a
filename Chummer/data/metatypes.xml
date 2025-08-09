@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -18,7 +18,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema metatypes.xsd">
   <categories>
     <category>Metahuman</category>
     <category>Metavariant</category>
@@ -870,7 +871,6 @@
               <quality>Poor Self Control (Vindictive)</quality>
             </negative>
           </qualities>
-          <karma>5</karma>
           <bonus />
           <source>RF</source>
           <page>104</page>
@@ -928,7 +928,6 @@
               <quality>Ogre Stomach</quality>
             </positive>
           </qualities>
-          <karma>8</karma>
           <bonus />
           <source>RF</source>
           <page>104</page>
@@ -988,7 +987,6 @@
               <quality>Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
-          <karma>4</karma>
           <bonus />
           <source>RF</source>
           <page>104</page>
@@ -1173,7 +1171,6 @@
               <quality>Cyclopean Eye</quality>
             </negative>
           </qualities>
-          <karma>2</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -1234,7 +1231,6 @@
               <quality>Arcane Arrester</quality>
             </positive>
           </qualities>
-          <karma>12</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -1295,7 +1291,6 @@
               <quality>Dermal Alteration (Bark Skin)</quality>
             </positive>
           </qualities>
-          <karma>2</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -1356,7 +1351,6 @@
               <quality>Goring Horns</quality>
             </positive>
           </qualities>
-          <karma>2</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -1668,7 +1662,6 @@
         <power select="Claws: DV ({STR} + 1)P, AP -, +1 Reach">Natural Weapon</power>
       </powers>
       <addweapon>Claws (Sasquatch)</addweapon>
-      <metavariants />
       <source>RF</source>
       <page>99</page>
     </metatype>
@@ -2607,9 +2600,6 @@
             <enableattribute>
               <name>MAG</name>
             </enableattribute>
-            <enableattribute>
-              <name>MAG</name>
-            </enableattribute>
             <enabletab>
               <name>critter</name>
             </enabletab>
@@ -2680,9 +2670,6 @@
             </negative>
           </qualities>
           <bonus>
-            <enableattribute>
-              <name>MAG</name>
-            </enableattribute>
             <enableattribute>
               <name>MAG</name>
             </enableattribute>
@@ -4079,7 +4066,6 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
           </qualities>
-          <karma>2</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -4566,7 +4552,6 @@
               <name>critter</name>
             </enabletab>
           </bonus>
-          <qualities />
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -5496,7 +5481,6 @@
               <name>critter</name>
             </enabletab>
           </bonus>
-          <karma>4</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -7168,7 +7152,6 @@
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
-          <karma>8</karma>
           <bonus>
             <enableattribute>
               <name>MAG</name>
@@ -7543,7 +7526,6 @@
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
-          <karma>12</karma>
           <bonus>
             <enableattribute>
               <name>MAG</name>
@@ -15383,7 +15365,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>165</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -17558,7 +17539,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>165</karma>
           <source>RF</source>
           <page>104</page>
           <initiativedice>2</initiativedice>
@@ -19559,9 +19539,6 @@
             </naturalweapon>
             <lifestylecost>20</lifestylecost>
           </bonus>
-          <qualities>
-            <positive />
-          </qualities>
           <source>RF</source>
           <page>90</page>
         </metavariant>
@@ -19753,7 +19730,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>175</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -23017,7 +22993,6 @@
           <karma>143</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
-          <karma>103</karma>
           <bodaug>10</bodaug>
           <agimin>2</agimin>
           <agimax>7</agimax>
@@ -23814,7 +23789,6 @@
               <page>147</page>
             </naturalweapon>
           </bonus>
-          <bonus />
           <source>RF</source>
           <page>104</page>
         </metavariant>

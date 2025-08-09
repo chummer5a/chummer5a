@@ -74,16 +74,16 @@ namespace Chummer
             else
             {
                 // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
-                int intWidth = Math.Max(Math.Min(PreferredSize.Width, PreferredSize.Height), Math.Min(Width, Height));
+                int intPaddingLR = Padding.Left + Padding.Right;
+                int intPaddingTB = Padding.Top + Padding.Bottom;
+                int intWidth = Math.Max(Math.Min(PreferredSize.Width - intPaddingLR, PreferredSize.Height - intPaddingTB), Math.Min(Width - intPaddingLR, Height - intPaddingTB));
                 int intHeight = intWidth;
-                intWidth -= Padding.Left + Padding.Right;
-                intHeight -= Padding.Top + Padding.Bottom;
                 int intBestImageMetric = int.MaxValue;
                 foreach (Image objLoopImage in lstImages)
                 {
                     int intLoopMetric = (intHeight - objLoopImage.Height).Pow(2) +
                                         (intWidth - objLoopImage.Width).Pow(2);
-                    // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not scaled up
+                    // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not up
                     if (objLoopImage.Height >= intHeight)
                         --intLoopMetric;
                     if (objLoopImage.Width >= intWidth)
@@ -284,15 +284,23 @@ namespace Chummer
             }
 
             // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
-            int intWidth = Math.Max(Math.Min(PreferredSize.Width, PreferredSize.Height), Math.Min(Width, Height));
+            int intPaddingLR = Padding.Left + Padding.Right;
+            int intPaddingTB = Padding.Top + Padding.Bottom;
+            int intWidth = Math.Max(Math.Min(PreferredSize.Width - intPaddingLR, PreferredSize.Height - intPaddingTB), Math.Min(Width - intPaddingLR, Height - intPaddingTB));
             int intHeight = intWidth;
-            intWidth -= Padding.Left + Padding.Right;
-            intHeight -= Padding.Top + Padding.Bottom;
             int intCurrentMetric = (intHeight - Image.Height).Pow(2) +
                                    (intWidth - Image.Width).Pow(2);
             int intNewMetric = (intHeight - objNewImage.Height).Pow(2) +
                                (intWidth - objNewImage.Width).Pow(2);
-
+            // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not up
+            if (Image.Height >= intHeight)
+                --intCurrentMetric;
+            if (Image.Width >= intWidth)
+                --intCurrentMetric;
+            if (objNewImage.Height >= intHeight)
+                --intNewMetric;
+            if (objNewImage.Width >= intWidth)
+                --intNewMetric;
             if (intNewMetric < intCurrentMetric)
                 Image = objNewImage;
         }

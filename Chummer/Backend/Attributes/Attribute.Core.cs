@@ -929,12 +929,13 @@ namespace Chummer.Backend.Attributes
                     return intReturn;
                 return _intCachedValue = await Task.Run(async () => Math.Min(
                                                             Math.Max(
-                                                                Base + await GetFreeBaseAsync(token).ConfigureAwait(false)
-                                                                     + await GetRawMinimumAsync(token).ConfigureAwait(false)
-                                                                     + await GetAttributeValueModifiersAsync(token)
+                                                                await GetBaseAsync(token).ConfigureAwait(false)
+                                                                    + await GetFreeBaseAsync(token).ConfigureAwait(false)
+                                                                    + await GetRawMinimumAsync(token).ConfigureAwait(false)
+                                                                    + await GetAttributeValueModifiersAsync(token)
                                                                          .ConfigureAwait(false),
                                                                 await GetTotalMinimumAsync(token).ConfigureAwait(false))
-                                                            + Karma,
+                                                            + await GetKarmaAsync(token).ConfigureAwait(false),
                                                             await GetTotalMaximumAsync(token).ConfigureAwait(false)), token)
                                                    .ConfigureAwait(false);
             }
@@ -1278,7 +1279,7 @@ namespace Chummer.Backend.Attributes
                              .GetCachedImprovementListForAugmentedValueOf(
                                  _objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token))
                 {
-                    if (objImprovement.Augmented * objImprovement.Rating != 0)
+                    if (objImprovement.Rating != 0 && objImprovement.Augmented != 0)
                         return true;
                     if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
@@ -1293,7 +1294,7 @@ namespace Chummer.Backend.Attributes
                              .GetCachedImprovementListForAugmentedValueOf(
                                  _objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base", token: token))
                 {
-                    if (objImprovement.Augmented * objImprovement.Rating != 0)
+                    if (objImprovement.Rating != 0 && objImprovement.Augmented != 0)
                         return true;
                     if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
@@ -1329,7 +1330,7 @@ namespace Chummer.Backend.Attributes
                                  _objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token)
                              .ConfigureAwait(false))
                 {
-                    if (objImprovement.Augmented * objImprovement.Rating != 0)
+                    if (objImprovement.Rating != 0 && objImprovement.Augmented != 0)
                         return true;
                     if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
@@ -1345,7 +1346,7 @@ namespace Chummer.Backend.Attributes
                                  _objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base", token: token)
                              .ConfigureAwait(false))
                 {
-                    if (objImprovement.Augmented * objImprovement.Rating != 0)
+                    if (objImprovement.Rating != 0 && objImprovement.Augmented != 0)
                         return true;
                     if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
@@ -1597,12 +1598,11 @@ namespace Chummer.Backend.Attributes
                 int intPureCyberValue = 0;
                 int intLimbCount = 0;
                 // If this is AGI or STR, factor in any Cyberlimbs.
-                if (blnIncludeCyberlimbs &&
-                    !(blnSync
-                            ? _objCharacter.Settings
-                            : await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
-                        .DontUseCyberlimbCalculation &&
-                    Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
+                if (blnIncludeCyberlimbs
+                    && !(blnSync
+                            ? _objCharacter.Settings.DontUseCyberlimbCalculation
+                            : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false))
+                    && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
                     int intLimbTotal;
                     if (blnSync)
@@ -2404,7 +2404,7 @@ namespace Chummer.Backend.Attributes
 
                     string strSpace = LanguageManager.GetString("String_Space");
 
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string> setUniqueNames))
                     {
                         decimal decBaseValue = 0;
@@ -2416,12 +2416,14 @@ namespace Chummer.Backend.Attributes
                         List<Tuple<string, decimal, string>> lstUniquePair =
                             new List<Tuple<string, decimal, string>>(lstUsedImprovements.Count);
 
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdModifier))
                         {
                             foreach (Improvement objImprovement in lstUsedImprovements.Where(
                                          objImprovement => !objImprovement.Custom))
                             {
+                                if (objImprovement.Rating == 0 || objImprovement.Augmented == 0)
+                                    continue;
                                 string strUniqueName = objImprovement.UniqueName;
                                 if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute"
                                                                          && objImprovement.ImproveType
@@ -2438,7 +2440,7 @@ namespace Chummer.Backend.Attributes
                                                           _objCharacter.GetObjectName(
                                                               objImprovement, GlobalSettings.Language)));
                                 }
-                                else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
+                                else
                                 {
                                     decimal decValue = objImprovement.Augmented * objImprovement.Rating;
                                     sbdModifier.Append(strSpace).Append('+').Append(strSpace)
@@ -2457,7 +2459,7 @@ namespace Chummer.Backend.Attributes
                                 // Run through the list of UniqueNames and pick out the highest value for each one.
                                 decimal decHighest = decimal.MinValue;
 
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdNewModifier))
                                 {
                                     foreach ((string strGroupName, decimal decValue, string strSourceName) in
@@ -2498,7 +2500,7 @@ namespace Chummer.Backend.Attributes
                             else if (setUniqueNames.Contains("precedence1"))
                             {
                                 // Retrieve all the items that are precedence1 and nothing else.
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdNewModifier))
                                 {
                                     foreach ((string _, decimal decValue, string strSourceName) in lstUniquePair
@@ -2543,6 +2545,8 @@ namespace Chummer.Backend.Attributes
                             foreach (Improvement objImprovement in lstUsedImprovements.Where(
                                          objImprovement => objImprovement.Custom))
                             {
+                                if (objImprovement.Rating == 0 || objImprovement.Augmented == 0)
+                                    continue;
                                 string strUniqueName = objImprovement.UniqueName;
                                 if (!string.IsNullOrEmpty(strUniqueName))
                                 {
@@ -2590,7 +2594,7 @@ namespace Chummer.Backend.Attributes
                                 _objCharacter.Cyberware.ForEach(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace));
                             }
 
-                            return _strCachedToolTip = DisplayAbbrev + strSpace + '('
+                            return _strCachedToolTip = CurrentDisplayAbbrev + strSpace + '('
                                                        + Value.ToString(GlobalSettings.CultureInfo) + ')' +
                                                        sbdModifier;
                         }
@@ -2638,7 +2642,7 @@ namespace Chummer.Backend.Attributes
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setUniqueNames))
                 {
                     decimal decBaseValue = 0;
@@ -2650,13 +2654,15 @@ namespace Chummer.Backend.Attributes
                     List<Tuple<string, decimal, string>> lstUniquePair =
                         new List<Tuple<string, decimal, string>>(lstUsedImprovements.Count);
 
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdModifier))
                     {
                         foreach (Improvement objImprovement in lstUsedImprovements.Where(
                                      objImprovement => !objImprovement.Custom))
                         {
                             token.ThrowIfCancellationRequested();
+                            if (objImprovement.Rating == 0 || objImprovement.Augmented == 0)
+                                continue;
                             string strUniqueName = objImprovement.UniqueName;
                             if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute"
                                                                      && objImprovement.ImproveType
@@ -2673,7 +2679,7 @@ namespace Chummer.Backend.Attributes
                                                       await _objCharacter.GetObjectNameAsync(
                                                           objImprovement, GlobalSettings.Language, token).ConfigureAwait(false)));
                             }
-                            else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
+                            else
                             {
                                 decimal decValue = objImprovement.Augmented * objImprovement.Rating;
                                 sbdModifier.Append(strSpace).Append('+').Append(strSpace)
@@ -2692,7 +2698,7 @@ namespace Chummer.Backend.Attributes
                             // Run through the list of UniqueNames and pick out the highest value for each one.
                             decimal decHighest = decimal.MinValue;
 
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdNewModifier))
                             {
                                 foreach ((string strGroupName, decimal decValue, string strSourceName) in
@@ -2735,7 +2741,7 @@ namespace Chummer.Backend.Attributes
                         else if (setUniqueNames.Contains("precedence1"))
                         {
                             // Retrieve all the items that are precedence1 and nothing else.
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdNewModifier))
                             {
                                 foreach ((string _, decimal decValue, string strSourceName) in lstUniquePair
@@ -2783,6 +2789,8 @@ namespace Chummer.Backend.Attributes
                                      objImprovement => objImprovement.Custom))
                         {
                             token.ThrowIfCancellationRequested();
+                            if (objImprovement.Rating == 0 || objImprovement.Augmented == 0)
+                                continue;
                             string strUniqueName = objImprovement.UniqueName;
                             if (!string.IsNullOrEmpty(strUniqueName))
                             {
@@ -2826,13 +2834,13 @@ namespace Chummer.Backend.Attributes
                         }
 
                         //// If this is AGI or STR, factor in any Cyberlimbs.
-                        if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                        if (!await _objCharacter.Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
                             Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                         {
                             await _objCharacter.Cyberware.ForEachAsync(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace), token: token).ConfigureAwait(false);
                         }
 
-                        return _strCachedToolTip = await GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false) + strSpace + '('
+                        return _strCachedToolTip = await GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + '('
                                                    + (await GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')' +
                                                    sbdModifier;
                     }
@@ -3149,7 +3157,7 @@ namespace Chummer.Backend.Attributes
                 }
 
                 int intUpgradeCost;
-                int intOptionsCost = _objCharacter.Settings.KarmaAttribute;
+                int intOptionsCost = await _objCharacter.Settings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
                 if (intValue == 0)
                 {
                     intUpgradeCost = intOptionsCost;
@@ -3159,7 +3167,7 @@ namespace Chummer.Backend.Attributes
                     intUpgradeCost = (intValue + 1) * intOptionsCost;
                 }
 
-                if (_objCharacter.Settings.AlternateMetatypeAttributeKarma
+                if (await _objCharacter.Settings.GetAlternateMetatypeAttributeKarmaAsync(token).ConfigureAwait(false)
                     && !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
                     intUpgradeCost -= (await GetMetatypeMinimumAsync(token).ConfigureAwait(false) - 1) *
                                       intOptionsCost;
@@ -3931,7 +3939,12 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Translated abbreviation of the attribute.
         /// </summary>
-        public string DisplayAbbrev => GetDisplayAbbrev(GlobalSettings.Language);
+        public string CurrentDisplayAbbrev => GetDisplayAbbrev(GlobalSettings.Language);
+
+        /// <summary>
+        /// Translated abbreviation of the attribute.
+        /// </summary>
+        public Task<string> GetCurrentDisplayAbbrevAsync(CancellationToken token = default) => GetDisplayAbbrevAsync(GlobalSettings.Language, token);
 
         public string GetDisplayAbbrev(string strLanguage)
         {
@@ -3942,6 +3955,8 @@ namespace Chummer.Backend.Attributes
 
         public Task<string> GetDisplayAbbrevAsync(string strLanguage, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             return Abbrev == "MAGAdept"
                 ? LanguageManager.MAGAdeptStringAsync(strLanguage, token: token)
                 : LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Short", strLanguage, token: token);
@@ -3949,6 +3964,7 @@ namespace Chummer.Backend.Attributes
 
         public async Task Upgrade(int intAmount = 1, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (intAmount <= 0)
                 return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);

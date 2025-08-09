@@ -51,7 +51,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Lifestyle.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(\"en-us\")}")]
     public sealed class Lifestyle : IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasCustomName, IHasSourceId, IHasSource, ICanSort, INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCost, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -299,12 +299,12 @@ namespace Chummer.Backend.Equipment
                 if (!objXmlLifestyle.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                     objXmlLifestyle.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
                 {
-                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlLifestyle, _strName,
+                    await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(objXmlLifestyle, _strName,
                         await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), _strSource, _strPage,
                         await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
-                        token).ConfigureAwait(false);
+                        token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
 
                 string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
@@ -501,7 +501,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 objWriter.WriteEndElement();
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteEndElement();
@@ -574,7 +574,7 @@ namespace Chummer.Backend.Equipment
                     objNode.TryGetStringFieldQuickly("lifestylename", ref _strBaseLifestyle);
                     if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
                     {
-                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstQualities))
                         {
                             foreach (XPathNavigator xmlLifestyle in xmlLifestyles.SelectAndCacheExpression(
@@ -907,7 +907,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (GlobalSettings.PrintNotes)
-                        await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -2389,6 +2389,37 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // No need to write lock because interlocked guarantees safety
+                if (Interlocked.Exchange(ref _strNotes, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(Notes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Forecolor to use for Notes in treeviews.
         /// </summary>
@@ -2417,6 +2448,58 @@ namespace Chummer.Backend.Equipment
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        public async Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _colNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _colNotes)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_colNotes == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _colNotes = value;
+                    await OnPropertyChangedAsync(nameof(NotesColor), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4094,22 +4177,31 @@ namespace Chummer.Backend.Equipment
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 //if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
                 //return null;
                 TreeNode objNode = new TreeNode
                 {
                     Name = InternalId,
-                    Text = CurrentDisplayName,
+                    Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                     Tag = this,
-                    ContextMenuStrip = StyleType == LifestyleType.Standard ? cmsBasicLifestyle : cmsAdvancedLifestyle,
-                    ForeColor = PreferredColor,
-                    ToolTipText = Notes.WordWrap()
+                    ContextMenuStrip = await GetStyleTypeAsync(token).ConfigureAwait(false) == LifestyleType.Standard
+                        ? cmsBasicLifestyle
+                        : cmsAdvancedLifestyle,
+                    ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                    ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
                 };
                 return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4117,6 +4209,14 @@ namespace Chummer.Backend.Equipment
             !string.IsNullOrEmpty(Notes)
                 ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return !string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false))
+                ? ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                : ColorManager.WindowText;
+        }
 
         #endregion UI Methods
 
@@ -4542,10 +4642,14 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_objCharacter.Lifestyles.Contains(this) && !_objCharacter.Lifestyles.Remove(this))
                         return false;
-                    List<string> lstIds = new List<string>(LifestyleQualities.Count);
-                    LifestyleQualities.ForEach(x => lstIds.Add(x.InternalId));
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality,
-                        lstIds);
+                    int intQualitiesCount = LifestyleQualities.Count;
+                    if (intQualitiesCount > 0)
+                    {
+                        List<string> lstIds = new List<string>(intQualitiesCount);
+                        LifestyleQualities.ForEach(x => lstIds.Add(x.InternalId));
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality,
+                            lstIds);
+                    }
                 }
             }
 
@@ -4570,10 +4674,13 @@ namespace Chummer.Backend.Equipment
                     if (await _objCharacter.Lifestyles.ContainsAsync(this, token).ConfigureAwait(false)
                         && !await _objCharacter.Lifestyles.RemoveAsync(this, token).ConfigureAwait(false))
                         return false;
-
-                    List<string> lstIds = new List<string>(await LifestyleQualities.GetCountAsync(token).ConfigureAwait(false));
-                    await LifestyleQualities.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
-                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality, lstIds, token).ConfigureAwait(false);
+                    int intQualitiesCount = await LifestyleQualities.GetCountAsync(token).ConfigureAwait(false);
+                    if (intQualitiesCount > 0)
+                    {
+                        List<string> lstIds = new List<string>(intQualitiesCount);
+                        await LifestyleQualities.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
+                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality, lstIds, token).ConfigureAwait(false);
+                    }
                 }
                 finally
                 {

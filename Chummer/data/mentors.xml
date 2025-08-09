@@ -1217,8 +1217,8 @@
     <mentor>
       <id>9f020eb4-975f-4449-9ba1-c1242159d774</id>
       <name>Oak (SHB)</name>
-      <advantage>All: +2 dice to memory test.</advantage>
-      <disadvantage>A follower of Oak has to succeed in a CHA+WIL (3) test to retreat from a dangerous area instead of waiting till the danger passes.</disadvantage>
+      <advantage>All: +2 dice to Memory tests.</advantage>
+      <disadvantage>When confronted with danger, followers of Oak prefers to wait it out. In order to retreat from a dangerous situation, a follower of Oak has to succeed in a Charisma + Willpower (3) test instead of waiting until the danger has passed.</disadvantage>
       <bonus>
         <memory>2</memory>
       </bonus>
@@ -1249,7 +1249,7 @@
       <id>f8f32157-2dbf-42b3-9ea6-2e60640875c7</id>
       <name>Artist</name>
       <advantage>All: +2 dice to Artisan or Forgery.</advantage>
-      <disadvantage>If for more than two weeks the Artist fails to find an audience for a presentation of her ability, she has to make a WIL+ CHA (3) test. Should she fail, she fall into depression (-2 dice for every skill linked to LOG, INT or CHA) for 1d6 days. After that (or if she succeeded in the the WIL+CHA test) a new 14 day period begins in which she has to show off her skills.</disadvantage>
+      <disadvantage>If a follower of Artist is unable to present their abilities or work to an audience for more than two weeks, they must make a Willpower + Charisma (3) test. Should they fail, they fall into a depression for 1D6 days. They become lethargic and unmotivated and struggle to concentrate. They suffer -2 dice to all LOG-, INT-, and CHA-linked skills. After the period has passed, or if they succeeded their test, the two-week cycle begins anew.</disadvantage>
       <bonus>
         <selectskill limittoskill="Artisan,Forgery">
           <val>2</val>
@@ -1281,9 +1281,9 @@
     </mentor>
     <mentor>
       <id>66f968d6-96da-404e-b1ef-a4d7377ac3cf</id>
-      <name>Blacksmith</name>
+      <name>Smith</name>
       <advantage>All: +2 dice to Artisan or Alchemy tests.</advantage>
-      <disadvantage>You have to pass a CHA + WIL (3) check to refrain from instantaneously avenging an insult.</disadvantage>
+      <disadvantage>A follower of Smith must pass a Charisma + Willpower (3) test to avoid responding to an insult in kind.</disadvantage>
       <bonus>
         <selectskill limittoskill="Artisan,Alchemy">
           <val>2</val>
@@ -2394,7 +2394,7 @@
       <id>3244e940-4666-4510-b1a1-c34df97797fe</id>
       <name>Eurasian Jay</name>
       <advantage>All: +1 dice pool modifier for tests using the Perception and Palming skills.</advantage>
-      <disadvantage>Eurasian Jay loves to split his possessions. If a follower of Eurasian Jay receives a splittable reward, she must make a Charisma + Willpower (3) test to not spread the reward over different accounts or rooms.</disadvantage>
+      <disadvantage>Eurasian Jay loves to divide his possessions. If a follower of Eurasian Jay receives a splittable reward, she must make a Charisma + Willpower (3) test to not spread the reward over different accounts or rooms.</disadvantage>
       <bonus>
         <specificskill>
           <name>Palming</name>
@@ -2449,12 +2449,23 @@
     <mentor>
       <id>bcf60ea4-577a-4487-9996-6c40a86294c5</id>
       <name>Squirrel</name>
-      <advantage>All: +2 dice pool modifier for tests using the Gymnastics skill.</advantage>
-      <disadvantage>When followers of Squirrel are in confined spaces, they must make a Willpower + Charisma (3) Tests or take a -1 dice pool modifier on all tests while feeling cramped.</disadvantage>
+      <advantage>All: +2 dice pool modifier for Balance, Climbing, and Jumping tests using the Gymnastics skill.</advantage>
+      <disadvantage>When followers of Squirrel find themselves in a confined space, they must succeed a Willpower + Charisma (3) Test or else suffer a -1 dice pool modifier on all tests while feeling cramped.</disadvantage>
       <bonus>
         <specificskill>
           <name>Gymnastics</name>
           <bonus>2</bonus>
+          <condition>Balance</condition>
+        </specificskill>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>2</bonus>
+          <condition>Climbing</condition>
+        </specificskill>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>2</bonus>
+          <condition>Jumping</condition>
         </specificskill>
       </bonus>
       <choices>
@@ -2484,7 +2495,7 @@
       <id>50b20b8c-8cf4-4b92-95ea-b0c8bbf560b0</id>
       <name>Fox</name>
       <advantage>All: +2 dice pool modifier for tests using the Perception skill.</advantage>
-      <disadvantage>If Fox fights, it'll fight to kill. A follower of this mentor spirit must make a Willpower + Intuition (3) Test to spare an overpowered foe.</disadvantage>
+      <disadvantage>Whenever Fox fights, it is a fight to the death. A follower of this mentor spirit must succeed a Willpower + Intuition (3) Test to spare an overpowered foe.</disadvantage>
       <bonus>
         <specificskill>
           <name>Perception</name>
@@ -2518,7 +2529,7 @@
       <id>b83bab65-bbda-4367-aa50-3069def5b2e4</id>
       <name>Tide</name>
       <advantage>All: +2 dice pool modifier for tests using the Ritual Spellcasting skill.</advantage>
-      <disadvantage>Followers of Tide live in transition, but in the consistency of a cycle. They also design their lives this way. If their normal life cycle is lastingly impaired by Sleep deprivation or illness, they suffer a -1 dice pool modifier on all tests until the cycle is restored.</disadvantage>
+      <disadvantage>Followers of Tide live in constant transition, but within the consistency of a cycle. They also design their lives this way. If the cycle of their normal life is disrupted by sleep deprivation or illness, they suffer a -1 dice pool modifier on all tests until the cycle is restored.</disadvantage>
       <bonus>
         <specificskill>
           <name>Ritual Spellcasting</name>
@@ -2557,8 +2568,8 @@
     <mentor>
       <id>62188234-323a-4c8e-96c4-b8b8a750e272</id>
       <name>Heinzelmännchen</name>
-      <advantage>All: +2 dice pool modifier for tests using the Artisan skill and the Engineering skill group.</advantage>
-      <disadvantage>Heinzelmännchen works in secret. If a follower of Heinzelmännchen wants to perform magic in public or under close observation, they'll have to make a Willpower + Charisma (3) Test or else their magic cease to function for the moment.</disadvantage>
+      <advantage>All: +1 dice pool modifier for tests using the Artisan skill and the Engineering skill group.</advantage>
+      <disadvantage>Heinzelmännchen prefers to work in secret. If a follower of Heinzelmännchen wants to perform magic in public or under close observation, they'll have to make a Willpower + Charisma (3) Test or else their magic ceases to function for the moment.</disadvantage>
       <bonus>
         <specificskill>
           <name>Artisan</name>
@@ -2604,7 +2615,7 @@
       <id>128ba60a-7825-4d29-8b94-8dd291fdc468</id>
       <name>Groundhog</name>
       <advantage>All: +1 dice pool modifier for tests using the Perception and Etiquette skills.</advantage>
-      <disadvantage>If a follower of Groundhog get into a fight (intentionally or unintentionally), they'll have to make a Willpower + Charisma (3) Test to not flee immediately.</disadvantage>
+      <disadvantage>If a follower of Groundhog get into a fight (intentionally or unintentionally), they must make a Willpower + Charisma (3) Test to not flee immediately.</disadvantage>
       <bonus>
         <specificskill>
           <name>Perception</name>
@@ -2771,7 +2782,7 @@
       <id>88b517e3-a3c8-4028-9a69-d947f3384aab</id>
       <name>Wild Hunt</name>
       <advantage>All: +2 dice pool modifier for tests using the Pilot Ground Craft or Intimidation skill.</advantage>
-      <disadvantage>A follower of the Wild Hunt always leaves behind a swath of devastation. If objects or uninvolved persons could be harmed in the fight, he wouldn't take any consideration. If a follower of the Wild Hunt is consciously considerate in the fight, he must succeed in a Charisma + Willpower (3) test, otherwise he is so inhibited that he suffers a -2 dicepool modifier on all actions.</disadvantage>
+      <disadvantage>A follower of the Wild Hunt always leaves behind a swath of devastation. If objects or uninvolved persons could be harmed in the fight, he could not care less. If a follower of the Wild Hunt is consciously considerate in the fight, he must succeed in a Charisma + Willpower (3) test, otherwise he is so inhibited that he suffers a -2 dicepool modifier on all actions.</disadvantage>
       <choices>
         <choice>
           <name>+2 dice on Pilot Ground Craft Tests</name>
@@ -2860,7 +2871,7 @@
       <id>5593f724-7b72-4927-a8c8-2c73844cc1b1</id>
       <name>Architect</name>
       <advantage>All: +2 dice to Leadership</advantage>
-      <disadvantage>Followers of this spirit like to stay in charge. Should the circumstances of a run force them to go on the defensive, make a WIL + INT (3) test. Failure imposes a -2 penalty to all tests until the follower regains control of the situation.</disadvantage>
+      <disadvantage>Followers of this spirit like to stay in charge. Should the circumstances of a run force them to go on the defensive, make a Willpower + Intuition (3) test. Failure imposes a -2 penalty to all tests until the follower regains control of the situation.</disadvantage>
       <bonus>
         <specificskill>
           <name>Leadership</name>
@@ -2869,10 +2880,10 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice for Combat spells</name>
+          <name>Magician: +2 dice for Manipulation spells</name>
           <bonus>
             <spellcategory>
-              <name>Combat</name>
+              <name>Manipulation</name>
               <val>2</val>
             </spellcategory>
           </bonus>
@@ -2894,7 +2905,7 @@
       <id>db42c229-3403-4947-8626-3f70f87c8a3c</id>
       <name>German Shepherd</name>
       <advantage>All: +1 to dice to Leadership and Perception</advantage>
-      <disadvantage>Sometimes, German shepherd followers show impatience. Should their patience be tested (GM discretion), they must succeed at a WIL + CHA (3) test not to react harshly.</disadvantage>
+      <disadvantage>Sometimes, German shepherd followers show impatience. Should their patience be tested (GM's discretion), they must succeed at a Willpower + Charisma (3) test not to react harshly.</disadvantage>
       <bonus>
         <specificskill>
           <name>Leadership</name>
@@ -2913,8 +2924,6 @@
               <name>Combat</name>
               <val>1</val>
             </spellcategory>
-          </bonus>
-          <bonus>
             <spellcategory>
               <name>Detection</name>
               <val>1</val>
@@ -2938,7 +2947,7 @@
       <id>bdb4fa0b-3c9d-4164-b2d6-76b7c04c43d8</id>
       <name>Doberman</name>
       <advantage>All: +1 die to Perception and one combat skill (choose one)</advantage>
-      <disadvantage>Doberman is very self-confident. In order to accept a subordinate role to someone or follow a stranger's plans, they have to succeed on a WIL + CHA (3) test.</disadvantage>
+      <disadvantage>Doberman is very self-confident. In order to accept a subordinate themselves to someone or follow a stranger's plans, they have to succeed on a Willpower + Charisma (3) test.</disadvantage>
       <bonus>
         <specificskill>
           <name>Perception</name>
@@ -2975,7 +2984,7 @@
       <id>240ab0aa-6be1-452b-88c2-f10f6f6eabfb</id>
       <name>Weimaraner</name>
       <advantage>All: +1 die to Running and Tracking</advantage>
-      <disadvantage>Should a follower find themselves unable to use their skills for longer than 12 hours, they must succeed  a WIL + CHA (3) test, otherwise they suffer a -1 penalty to all actions until they can use their abilities again.</disadvantage>
+      <disadvantage>Should a follower find themselves unable to use their skills for longer than 12 hours, they must succeed a Willpower + Charisma (3) test, otherwise they suffer a -1 penalty to all actions until they can use their abilities again.</disadvantage>
       <bonus>
         <specificskill>
           <name>Running</name>
@@ -3013,7 +3022,7 @@
       <id>5c465bf3-665f-41f2-865e-41abb879ee1f</id>
       <name>Badger</name>
       <advantage>All: 2 levels of Perceptive quality are gained for free</advantage>
-      <disadvantage>Badger relentlessly guards his territory. Should enemies invade an area guarded by a follower, for instance a building, or steal an object under their protection, must succeed at a WIL + CHA (3) test to not immediately go after the culprits.</disadvantage>
+      <disadvantage>Badger guards his territory relentlessly. Should enemies invade an area guarded by a follower, for instance, a building, or steal an object under their protection, they must succeed at a Willpower + Charisma (3) test to not immediately go after the culprits.</disadvantage>
       <bonus>
         <addqualities>
           <addquality>Perceptive</addquality>
@@ -3024,15 +3033,13 @@
         <choice>
           <name>Magician: +1 die for Counterspelling and Combat Spells</name>
           <bonus>
-            <spellcategory>
+            <specificskill>
               <name>Counterspelling</name>
-              <bonus>1</bonus>
-            </spellcategory>
-          </bonus>
-          <bonus>
+              <val>1</val>
+            </specificskill>
             <spellcategory>
               <name>Combat</name>
-              <val>2</val>
+              <val>1</val>
             </spellcategory>
           </bonus>
         </choice>
@@ -3053,7 +3060,7 @@
       <id>b01976a5-2343-4308-846e-da5fb12328a8</id>
       <name>Mystic Guardian</name>
       <advantage>All: +2 dice to one melee combat skill (choose one)</advantage>
-      <disadvantage>What does a mystic guardian do when there is nothing to guard? As long as the follower does not have a specific task, an employer or a ward (or does not carry out their self-imposed duties), they suffer a -2 penalty on every test.</disadvantage>
+      <disadvantage>What does a mystic guardian do when there is nothing to guard? Whenever the follower lacks a specific objective, an employer, or a ward (or does not carry out their self-imposed duties), they suffer a -2 penalty on every test.</disadvantage>
       <bonus>
         <selectskill limittoskill="Blades,Clubs,Exotic Melee Weapon,Unarmed Combat">
           <val>2</val>
@@ -3061,7 +3068,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice for summoning guardian spirits.</name>
+          <name>Magician: +2 dice for summoning Guardian Spirits.</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -3071,7 +3078,7 @@
           </bonus>
         </choice>
         <choice>
-          <name>Magician: +2 dice for summoning beast spirits.</name>
+          <name>Magician: +2 dice for summoning Spirits of Beasts.</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -3103,6 +3110,11 @@
           <name>Con</name>
           <bonus>2</bonus>
         </specificskill>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>-1</bonus>
+          <condition>Unknown Areas</condition>
+        </specificskill>
       </bonus>
       <choices>
         <choice>
@@ -3116,7 +3128,7 @@
           </bonus>
         </choice>
         <choice>
-          <name>Adept: Gain Linguist for free</name>
+          <name>Adept: Gain the Linguist quality for free</name>
           <bonus>
             <addqualities>
               <addquality>Linguist</addquality>
@@ -3131,7 +3143,7 @@
       <id>bea9796a-c5d3-4388-97ec-14969db470fe</id>
       <name>Treasure Hunter</name>
       <advantage>All: +1 die to Navigation and Locksmith</advantage>
-      <disadvantage>A follower of this spirit devotes their full attention to the desired object, as a result, slacking or tackling tasks not directly related to obtaining it in a halfhearted fashion. After the meet with the J, they must succeed at a WIL + WIL (3) test or incur a -1 penalty to all tests which don't directly involve the object of their desire.</disadvantage>
+      <disadvantage>A follower of this spirit fixates so much on the object of their desire that they end up slacking when tackling tasks not directly related to obtaining. After meeting and being briefed by the J on their next run, they must succeed at a Willpower + Willpower (3) test or incur a -1 penalty to all tests which don't directly involve the object of their desire.</disadvantage>
       <bonus>
         <specificskill>
           <name>Navigation</name>
@@ -3166,9 +3178,9 @@
     </mentor>
     <mentor>
       <id>f2cc5e2b-6538-4271-9f7f-5434076f9a6b</id>
-      <name>Brother at Arms</name>
+      <name>Brother in Arms</name>
       <advantage>All: +1 die to Etiquette and Instruction</advantage>
-      <disadvantage>Every run, followers choose three persons - PCs or key NPCs - of direct relevance to the plot to whom they pledge their loyalty for the duration of the mission. Taking advantage of, lying to or abandoning any of them requires succeeding at a WIL + INT (3) test. Even if they can bring themselves to do so, they suffer a -2 penalty to all tests until they atone.</disadvantage>
+      <disadvantage>Every run, a follower of this spirit must choose three persons - PCs or key NPCs - of direct relevance to the plot to whom they pledge their loyalty for the duration of the mission. Taking advantage of, lying to, or abandoning any of them requires succeeding at a Willpower + Intuition (3) test. Even if they can bring themselves to do so, they suffer a -2 penalty to all tests until they atone.</disadvantage>
       <bonus>
         <specificskill>
           <name>Etiquette</name>
@@ -3181,7 +3193,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice for summoning guardian spirits.</name>
+          <name>Magician: +2 dice for summoning Guardian Spirits.</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -3191,7 +3203,7 @@
           </bonus>
         </choice>
         <choice>
-          <name>Magician: +2 dice for summoning task spirits.</name>
+          <name>Magician: +2 dice for summoning Task Spirits.</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -3201,7 +3213,7 @@
           </bonus>
         </choice>
         <choice>
-          <name>Magician: +2 dice for summoning spirits of man.</name>
+          <name>Magician: +2 dice for summoning Spirits of Man.</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -3209,8 +3221,6 @@
               <condition>Spirits of Man</condition>
             </specificskill>
           </bonus>
-        </choice>
-        <choice>
         </choice>
         <choice>
           <name>Adept: 1 free level of Mystic Armor</name>

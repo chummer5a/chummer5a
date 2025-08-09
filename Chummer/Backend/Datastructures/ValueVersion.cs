@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Globalization;
 using System.Text;
 
@@ -31,9 +32,6 @@ namespace Chummer
         private readonly int _Minor;
         private readonly int _Build;
         private readonly int _Revision;
-        private static readonly char[] SeparatorsArray = {
-            '.'
-        };
 
         /// <summary>Initializes a new ValueVersion struct with the specified major, minor, build, and revision numbers.</summary>
         /// <param name="major">The major version number.</param>
@@ -121,6 +119,10 @@ namespace Chummer
             _Revision = version1.Revision;
         }
 
+        /// <summary>Initializes a new ValueVersion struct using the specified Version as a reference.</summary>
+        /// <param name="version">A Version object from which to copy major, minor, build, and revision values.</param>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="version" /> is <see langword="null" />.</exception>
         public ValueVersion(Version version)
         {
             _Major = version.Major;
@@ -165,7 +167,7 @@ namespace Chummer
         }
 
         /// <summary>Compares the current ValueVersion struct to a specified object and returns an indication of their relative values.</summary>
-        /// <param name="version">An object to compare, or <see langword="null" />.</param>
+        /// <param name="obj">An object to compare, or <see langword="null" />.</param>
         /// <returns>A signed integer that indicates the relative values of the two objects, as shown in the following table.
         ///  Return value
         /// 
@@ -173,28 +175,30 @@ namespace Chummer
         /// 
         ///  Less than zero
         /// 
-        ///  The current ValueVersion struct is a version before <paramref name="version" />.
+        ///  The current ValueVersion struct is a version before <paramref name="obj" />.
         /// 
         ///  Zero
         /// 
-        ///  The current ValueVersion struct is the same version as <paramref name="version" />.
+        ///  The current ValueVersion struct is the same version as <paramref name="obj" />.
         /// 
         ///  Greater than zero
         /// 
-        ///  The current ValueVersion struct is a version subsequent to <paramref name="version" />.
+        ///  The current ValueVersion struct is a version subsequent to <paramref name="obj" />.
         /// 
         /// -or-
         /// 
-        /// <paramref name="version" /> is <see langword="null" />.</returns>
+        /// <paramref name="obj" /> is <see langword="null" />.</returns>
         /// <exception cref="T:System.ArgumentException">
-        /// <paramref name="version" /> is not of type <see cref="T:System.Version" />.</exception>
-        public int CompareTo(object version)
+        /// <paramref name="obj" /> is not of type <see cref="T:System.Version" />.</exception>
+        public int CompareTo(object obj)
         {
-            if (version == null)
+            if (obj == null)
                 return 1;
-            if (version is not Version version1)
-                throw new ArgumentException();
-            return CompareTo(version1);
+            if (obj is ValueVersion version1)
+                return CompareTo(version1);
+            if (obj is Version version2)
+                return CompareTo(version2);
+            throw new ArgumentException("Argument is not a version of value version.", nameof(obj));
         }
 
         /// <summary>Compares the current ValueVersion struct to a specified ValueVersion struct and returns an indication of their relative values.</summary>
@@ -300,13 +304,13 @@ namespace Chummer
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
         {
-            return 0 | (_Major & 15) << 28 | (_Minor & byte.MaxValue) << 20 | (_Build & byte.MaxValue) << 12 | _Revision & 4095;
+            return (_Major & 0xF) << 28 | (_Minor & 0xFF) << 20 | (_Build & 0xFF) << 12 | _Revision & 0xFFF;
         }
 
         /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="T:System.String" /> representation.</summary>
         /// <returns>The <see cref="T:System.String" /> representation of the values of the major, minor, build, and revision components of the current ValueVersion struct, as depicted in the following format. Each component is separated by a period character ('.'). Square brackets ('[' and ']') indicate a component that will not appear in the return value if the component is not defined:
         /// major.minor[.build[.revision]]
-        /// For example, if you create a ValueVersion struct using the constructor Version(1,1), the returned string is "1.1". If you create a ValueVersion struct using the constructor Version(1,3,4,2), the returned string is "1.3.4.2".</returns>
+        /// For example, if you create a ValueVersion struct using the constructor ValueVersion(1,1), the returned string is "1.1". If you create a ValueVersion struct using the constructor ValueVersion(1,3,4,2), the returned string is "1.3.4.2".</returns>
         public override string ToString()
         {
             if (_Build == -1)
@@ -343,7 +347,7 @@ namespace Chummer
         /// 
         /// 
         /// 
-        /// For example, if you create ValueVersion struct using the constructor Version(1,3,5), ToString(2) returns "1.3" and ToString(4) throws an exception.</returns>
+        /// For example, if you create ValueVersion struct using the constructor ValueVersion(1,3,5), ToString(2) returns "1.3" and ToString(4) throws an exception.</returns>
         /// <exception cref="T:System.ArgumentException">
         ///         <paramref name="fieldCount" /> is less than 0, or more than 4.
         /// -or-
@@ -357,7 +361,7 @@ namespace Chummer
                 case 1:
                     return _Major.ToString();
                 case 2:
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdReturn))
                     {
                         AppendPositiveNumber(_Major, sbdReturn);
@@ -370,7 +374,7 @@ namespace Chummer
                         throw new ArgumentOutOfRangeException(nameof(fieldCount));
                     if (fieldCount == 3)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdReturn))
                         {
                             AppendPositiveNumber(_Major, sbdReturn);
@@ -385,7 +389,7 @@ namespace Chummer
                         throw new ArgumentOutOfRangeException(nameof(fieldCount));
                     if (fieldCount == 4)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdReturn))
                         {
                             AppendPositiveNumber(_Major, sbdReturn);
@@ -406,8 +410,7 @@ namespace Chummer
                 int length = sb.Length;
                 do
                 {
-                    int num1 = num % 10;
-                    num /= 10;
+                    num = num.DivRem(10, out int num1);
                     sb.Insert(length, (char)(48 + num1));
                 }
                 while (num > 0);
@@ -454,37 +457,48 @@ namespace Chummer
                 result.SetFailure(ParseFailureKind.ArgumentNullException);
                 return false;
             }
-            string[] strArray = version.Split(SeparatorsArray);
-            int length = strArray.Length;
-            if (length < 2 || length > 4)
+            if (int.TryParse(version, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsedComponent0) && parsedComponent0 >= 0)
             {
-                result.SetFailure(ParseFailureKind.ArgumentException);
-                return false;
+                result.m_parsedValueVersion = new ValueVersion(parsedComponent0);
+                return true;
             }
-
-            if (!TryParseComponent(strArray[0], nameof(version), ref result, out int parsedComponent1)
-                || !TryParseComponent(strArray[1], nameof(version), ref result, out int parsedComponent2))
+            string[] strArray = version.SplitToPooledArray(out int length, '.');
+            try
             {
-                return false;
-            }
-
-            int num = length - 2;
-            if (num > 0)
-            {
-                if (!TryParseComponent(strArray[2], "build", ref result, out int parsedComponent3))
-                    return false;
-                if (num > 1)
+                if (length < 2 || length > 4)
                 {
-                    if (!TryParseComponent(strArray[3], "revision", ref result, out int parsedComponent4))
+                    result.SetFailure(ParseFailureKind.ArgumentException);
+                    return false;
+                }
+
+                if (!TryParseComponent(strArray[0], nameof(version), ref result, out int parsedComponent1)
+                    || !TryParseComponent(strArray[1], nameof(version), ref result, out int parsedComponent2))
+                {
+                    return false;
+                }
+
+                int num = length - 2;
+                if (num > 0)
+                {
+                    if (!TryParseComponent(strArray[2], "build", ref result, out int parsedComponent3))
                         return false;
-                    result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2, parsedComponent3, parsedComponent4);
+                    if (num > 1)
+                    {
+                        if (!TryParseComponent(strArray[3], "revision", ref result, out int parsedComponent4))
+                            return false;
+                        result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2, parsedComponent3, parsedComponent4);
+                    }
+                    else
+                        result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2, parsedComponent3);
                 }
                 else
-                    result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2, parsedComponent3);
+                    result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2);
+                return true;
             }
-            else
-                result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2);
-            return true;
+            finally
+            {
+                ArrayPool<string>.Shared.Return(strArray);
+            }
         }
 
         private static bool TryParseComponent(

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -306,10 +306,10 @@
       <allowgear>
         <gearcategory>Commlinks</gearcategory>
       </allowgear>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>16b45886-2916-48eb-aea5-ecb74da835bd</id>
@@ -385,10 +385,10 @@
       <allowgear>
         <gearcategory>Cyberdecks</gearcategory>
       </allowgear>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>47c48542-48c3-417e-91f0-b5a456183f05</id>
@@ -2559,6 +2559,7 @@
       <limit>False</limit>
       <category>Bodyware</category>
       <ess>0.05</ess>
+      <capacity>0</capacity>
       <allowgear>
         <gearcategory>Drugs</gearcategory>
         <gearcategory>Toxins</gearcategory>
@@ -5270,10 +5271,10 @@
         </specificskill>
       </bonus>
       <rating>6</rating>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>2b7745f6-96ca-4f15-ad32-db216e7d5aac</id>
@@ -5286,10 +5287,10 @@
       <source>CF</source>
       <page>151</page>
       <rating>6</rating>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>7b2accbc-7f6b-4362-ba7f-52a76fccf043</id>
@@ -5301,10 +5302,10 @@
       <cost>6000</cost>
       <source>CF</source>
       <page>151</page>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>c94f0f0f-f201-49b1-9b4b-d921f4228140</id>
@@ -5322,10 +5323,10 @@
       </allowgear>
       <bonus />
       <rating>6</rating>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>52d76c1a-2918-4531-b6ad-5ea732a1e6ea</id>
@@ -5344,10 +5345,10 @@
         </selectcyberware>
       </bonus>
       <rating>6</rating>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>5089640b-99fd-45c5-922c-2f26aa925847</id>
@@ -5360,10 +5361,10 @@
       <source>CF</source>
       <page>151</page>
       <rating>6</rating>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>c6067916-5df2-4663-aeec-85c8fecb5ad2</id>
@@ -5379,10 +5380,10 @@
         <armor group="0">Rating</armor>
       </bonus>
       <rating>6</rating>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <!-- End Region -->
     <!-- Region Hard Nanoware -->
@@ -5746,10 +5747,10 @@
           <cyberware>Wired Reflexes</cyberware>
         </oneof>
       </forbidden>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>1a112bdd-df4c-4f9f-94cd-f940fa597dda</id>
@@ -5788,10 +5789,10 @@
           <cyberware>Reaction Enhancers</cyberware>
         </oneof>
       </forbidden>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>42c65dfa-8135-4757-ac6e-d2ecbcf10c60</id>
@@ -5828,10 +5829,10 @@
           <name>Low-Light Vision</name>
         </cyberware>
       </subsystems>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>188068fe-fe38-4d67-afef-0fc3967e5ae1</id>
@@ -5879,10 +5880,10 @@
           <cyberware>Taste Booster</cyberware>
         </oneof>
       </forbidden>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>7e341285-c2db-4399-a592-68ab427d2b2e</id>
@@ -5916,10 +5917,10 @@
           <cyberware>Skillwires</cyberware>
         </oneof>
       </forbidden>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>eee58e0b-acaf-4c7b-a59d-3667dcbcc95d</id>
@@ -5959,10 +5960,10 @@
           <name>Attention Coprocessor</name>
         </cyberware>
       </subsystems>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>bd5ef116-0e9b-47c0-8285-231a2e3de4b5</id>
@@ -5995,10 +5996,10 @@
           <name>Sound Link</name>
         </cyberware>
       </subsystems>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <!-- End Region -->
     <!-- End Region -->
@@ -6493,7 +6494,6 @@
     </cyberware>
     <cyberware>
       <id>b5406b3c-44a5-4727-bafc-58ed4cda84b5</id>
-      <inheritattributes />
       <name>Evo Better Than Human</name>
       <category>Cybersuite</category>
       <inheritattributes />
@@ -7267,12 +7267,12 @@
           <cyberware>Dermal Plating</cyberware>
         </oneof>
       </forbidden>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Used</grade>
         <grade>Used (Adapsin)</grade>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <!-- End Region -->
     <!-- Region Howling Shadows -->
@@ -7287,10 +7287,10 @@
       <source>HS</source>
       <page>181</page>
       <rating>4</rating>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>8538aff0-ab67-4d7b-9310-deae1672e003</id>
@@ -7302,10 +7302,10 @@
       <cost>25000</cost>
       <source>HS</source>
       <page>181</page>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>5c5fd1d5-1c45-4fe9-ad03-df83457b33e6</id>
@@ -7317,10 +7317,10 @@
       <cost>30000</cost>
       <source>HS</source>
       <page>181</page>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>26cd4d9b-60dd-4f3e-b086-7a966c3ed358</id>
@@ -7332,10 +7332,10 @@
       <cost>500</cost>
       <source>HS</source>
       <page>181</page>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>e7c8dbfa-1b75-44df-9ad0-a5ba65e46cc3</id>
@@ -7359,10 +7359,10 @@
       </bonus>
       <minrating>1</minrating>
       <rating>3</rating>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>ff56647d-300f-4b6c-9744-40eb70210cee</id>
@@ -7374,10 +7374,10 @@
       <cost>20000</cost>
       <source>HS</source>
       <page>182</page>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <cyberware>
       <id>2e510666-bc55-42d8-abcb-d79a907ac646</id>
@@ -7389,10 +7389,10 @@
       <cost>25000</cost>
       <source>HS</source>
       <page>182</page>
-      <bannedwaregrades>
+      <bannedgrades>
         <grade>Greyware</grade>
         <grade>Greyware (Adapsin)</grade>
-      </bannedwaregrades>
+      </bannedgrades>
     </cyberware>
     <!-- End Region -->
     <!-- Region Shadowrun 2050 SR5 -->
@@ -8661,6 +8661,7 @@
       <limit>False</limit>
       <capacity>0</capacity>
       <avail>0</avail>
+      <cost>0</cost>
       <removalcost>16000</removalcost>
       <forcegrade>None</forcegrade>
       <source>TSG</source>
@@ -8676,6 +8677,7 @@
       <limit>False</limit>
       <category>Headware</category>
       <ess>0.15</ess>
+      <capacity>0</capacity>
       <avail>4</avail>
       <cost>Rating*3500</cost>
       <rating>3</rating>

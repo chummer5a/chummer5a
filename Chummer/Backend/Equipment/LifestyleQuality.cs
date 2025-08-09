@@ -35,7 +35,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    [DebuggerDisplay("{CurrentDisplayName}")]
+    [DebuggerDisplay("{DisplayName(\"en-us\")}")]
     public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, ICanRemove, INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -297,10 +297,10 @@ namespace Chummer.Backend.Equipment
                 objXmlLifestyleQuality.TryGetStringFieldQuickly("source", ref _strSource);
                 objXmlLifestyleQuality.TryGetStringFieldQuickly("page", ref _strPage);
 
-                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
                 {
-                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlLifestyleQuality, Name, await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
-                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+                    await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(objXmlLifestyleQuality, Name, await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
 
                 _setAllowedFreeLifestyles.Clear();
@@ -447,7 +447,7 @@ namespace Chummer.Backend.Equipment
                     objWriter.WriteRaw("<bonus>" + Bonus.InnerXml + "</bonus>");
                 else
                     objWriter.WriteElementString("bonus", string.Empty);
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteEndElement();
             }
@@ -543,7 +543,7 @@ namespace Chummer.Backend.Equipment
                                                              + ']');
                 if (objLifestyleQualityNode == null)
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstQualities))
                     {
                         foreach (XPathNavigator xmlNode in objXmlDocument.SelectAndCacheExpression(
@@ -686,7 +686,7 @@ namespace Chummer.Backend.Equipment
                             "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
                         .ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)
-                        await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -1251,6 +1251,37 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // No need to write lock because interlocked guarantees safety
+                if (Interlocked.Exchange(ref _strNotes, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(Notes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Forecolor to use for Notes in treeviews.
         /// </summary>
@@ -1274,9 +1305,63 @@ namespace Chummer.Backend.Equipment
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _colNotes = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
+            }
+        }
+
+        public async Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _colNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _colNotes)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_colNotes == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _colNotes = value;
+                    await OnPropertyChangedAsync(nameof(NotesColor), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1291,12 +1376,13 @@ namespace Chummer.Backend.Equipment
                 {
                     if (Free)
                         return 0;
-                    if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                          out decimal decReturn))
+                    string strCost = CostString;
+                    if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                     {
-                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(CostString);
+                        strCost = _objCharacter.ProcessAttributesInXPath(strCost);
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCost);
                         if (blnIsSuccess)
-                            return Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                            return Convert.ToDecimal((double)objProcess);
                     }
 
                     return decReturn;
@@ -1313,12 +1399,13 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 if (await GetCostFreeAsync(token).ConfigureAwait(false))
                     return 0;
-                if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                        out decimal decReturn))
+                string strCost = CostString;
+                if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(CostString, token).ConfigureAwait(false);
+                    strCost = await _objCharacter.ProcessAttributesInXPathAsync(strCost, token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);
                     if (blnIsSuccess)
-                        return Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                        return Convert.ToDecimal((double)objProcess);
                 }
 
                 return decReturn;
@@ -1340,6 +1427,8 @@ namespace Chummer.Backend.Equipment
                 if (CostFree)
                     return LanguageManager.GetString("Checkbox_Free", strLanguage);
                 string strReturn = string.Empty;
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
                 int intMultiplier = Multiplier;
                 if (intMultiplier != 0)
                 {
@@ -1372,6 +1461,8 @@ namespace Chummer.Backend.Equipment
                 if (await GetCostFreeAsync(token).ConfigureAwait(false))
                     return await LanguageManager.GetStringAsync("Checkbox_Free", strLanguage, token: token).ConfigureAwait(false);
                 string strReturn = string.Empty;
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
                 int intMultiplier = await GetMultiplierAsync(token).ConfigureAwait(false);
                 if (intMultiplier != 0)
                 {
@@ -2130,23 +2221,31 @@ namespace Chummer.Backend.Equipment
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode()
+        public async Task<TreeNode> CreateTreeNode(CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if (OriginSource == QualitySource.BuiltIn && !string.IsNullOrEmpty(Source) &&
-                    !_objCharacter.Settings.BookEnabled(Source))
+                token.ThrowIfCancellationRequested();
+                if (await GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.BuiltIn
+                    && !string.IsNullOrEmpty(Source)
+                    && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
                     return null;
 
                 TreeNode objNode = new TreeNode
                 {
                     Name = InternalId,
-                    Text = CurrentFormattedDisplayName,
+                    Text = await GetCurrentFormattedDisplayNameAsync(token).ConfigureAwait(false),
                     Tag = this,
-                    ForeColor = PreferredColor,
-                    ToolTipText = Notes.WordWrap()
+                    ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                    ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
                 };
                 return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2167,6 +2266,28 @@ namespace Chummer.Backend.Equipment
                         ? ColorManager.GrayText
                         : ColorManager.WindowText;
                 }
+            }
+        }
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+                {
+                    return OriginSource == QualitySource.BuiltIn
+                        ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                        : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+                }
+                return OriginSource == QualitySource.BuiltIn
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2373,7 +2494,7 @@ namespace Chummer.Backend.Equipment
 
                     if (ParentLifestyle != null)
                     {
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string>
                                                                             setParentLifestyleNamesOfChangedProperties))
                         {
@@ -2531,7 +2652,7 @@ namespace Chummer.Backend.Equipment
 
                     if (ParentLifestyle != null)
                     {
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string>
                                        setParentLifestyleNamesOfChangedProperties))
                         {

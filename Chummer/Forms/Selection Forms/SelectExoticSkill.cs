@@ -58,7 +58,7 @@ namespace Chummer
 
         private async void SelectExoticSkill_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
             {
                 // Build the list of Exotic Active Skills from the Skills file.
                 using (XmlNodeList objXmlSkillList = (await _objCharacter.LoadDataAsync("skills.xml").ConfigureAwait(false))
@@ -123,6 +123,19 @@ namespace Chummer
         public string SelectedExoticSkillSpecialisation => cboSkillSpecialisations.SelectedValue?.ToString()
                                                            ?? _objCharacter.ReverseTranslateExtra(cboSkillSpecialisations.Text);
 
+        /// <summary>
+        /// Skill specialization that was selected in the dialogue.
+        /// </summary>
+        public async Task<string> GetSelectedExoticSkillSpecialisationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strText = await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strText))
+                return strText;
+            return await _objCharacter.ReverseTranslateExtraAsync(
+                    await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+        }
+
         #endregion Properties
 
         private async Task BuildList(CancellationToken token = default)
@@ -136,7 +149,7 @@ namespace Chummer
                                                                    + " or useskill = "
                                                                    + strSelectedCategory.CleanXPath() + ") and ("
                                                                    + await _objCharacter.Settings.BookXPathAsync(false, token).ConfigureAwait(false) + ")]");
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
             {
                 if (xmlWeaponList.Count > 0)
                 {
@@ -169,7 +182,7 @@ namespace Chummer
                     }
                 }
 
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setExistingExoticSkills))
                 {
                     foreach (Skill objSkill in await (await _objCharacter.GetSkillsSectionAsync(token)

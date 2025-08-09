@@ -52,7 +52,7 @@ namespace Chummer.Backend
         public string GenerateInfo()
         {
             int intLength = -1;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 sbdReturn.AppendLine();
                 foreach (KeyValuePair<string, int> exception in _dicMap.Value.OrderBy(i => -i.Value))

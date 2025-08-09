@@ -17,14 +17,12 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -251,9 +249,10 @@ namespace Chummer
             else
             {
                 List<ImprovementDictionaryKey> lstTempOuter = new List<ImprovementDictionaryKey>(Math.Max(s_DictionaryCachedValues.Count, s_DictionaryCachedAugmentedValues.Count));
-                foreach (ImprovementDictionaryKey objCachedValueKey in s_DictionaryCachedValues.Keys)
+                foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> kvpLoop in s_DictionaryCachedValues)
                 {
                     token.ThrowIfCancellationRequested();
+                    ImprovementDictionaryKey objCachedValueKey = kvpLoop.Key; // Set up this way to make sure main dictionary stays locked during enumeration
                     if (objCachedValueKey.CharacterObject == objCharacter && objCachedValueKey.ImprovementType == eImprovementType)
                         lstTempOuter.Add(objCachedValueKey);
                 }
@@ -274,9 +273,10 @@ namespace Chummer
                 }
 
                 lstTempOuter.Clear();
-                foreach (ImprovementDictionaryKey objCachedValueKey in s_DictionaryCachedAugmentedValues.Keys)
+                foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> kvpLoop in s_DictionaryCachedAugmentedValues)
                 {
                     token.ThrowIfCancellationRequested();
+                    ImprovementDictionaryKey objCachedValueKey = kvpLoop.Key; // Set up this way to make sure main dictionary stays locked during enumeration
                     if (objCachedValueKey.CharacterObject == objCharacter && objCachedValueKey.ImprovementType == eImprovementType)
                         lstTempOuter.Add(objCachedValueKey);
                 }
@@ -302,9 +302,10 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<ImprovementDictionaryKey> lstToRemove = new List<ImprovementDictionaryKey>(Math.Max(s_DictionaryCachedValues.Count, s_DictionaryCachedAugmentedValues.Count));
-            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys)
+            foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> kvpLoop in s_DictionaryCachedValues)
             {
                 token.ThrowIfCancellationRequested();
+                ImprovementDictionaryKey objKey = kvpLoop.Key; // Set up this way to make sure main dictionary stays locked during enumeration
                 if (objKey.CharacterObject == objCharacter)
                     lstToRemove.Add(objKey);
             }
@@ -316,9 +317,10 @@ namespace Chummer
             }
 
             lstToRemove.Clear();
-            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys)
+            foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> kvpLoop in s_DictionaryCachedAugmentedValues)
             {
                 token.ThrowIfCancellationRequested();
+                ImprovementDictionaryKey objKey = kvpLoop.Key; // Set up this way to make sure main dictionary stays locked during enumeration
                 if (objKey.CharacterObject == objCharacter)
                     lstToRemove.Add(objKey);
             }
@@ -1344,19 +1346,12 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
+            strValue = strValue.ProcessFixedValuesString(intRating)
+                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+            if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                             .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
-            }
-
-            if (strValue.ContainsAny("Rating".Yield().Concat(AttributeSection.AttributeStrings)))
-            {
-                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
-                strReturn = strReturn.Replace("/", " div ");
+                string strReturn = objCharacter.ProcessAttributesInXPath(strValue);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1369,8 +1364,7 @@ namespace Chummer
             }
 
             //Log.Exit("ValueToInt");
-            int.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
-            return intReturn;
+            return decValue.StandardRound();
         }
 
         /// <summary>
@@ -1387,19 +1381,12 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
+            strValue = strValue.ProcessFixedValuesString(intRating)
+                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+            if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                             .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
-            }
-
-            if (strValue.ContainsAny("Rating".Yield().Concat(AttributeSection.AttributeStrings)))
-            {
-                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                strReturn = await (await objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strReturn, token: token).ConfigureAwait(false);
-                strReturn = strReturn.Replace("/", " div ");
+                string strReturn = await objCharacter.ProcessAttributesInXPathAsync(strValue, token: token).ConfigureAwait(false);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1412,8 +1399,7 @@ namespace Chummer
             }
 
             //Log.Exit("ValueToInt");
-            int.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
-            return intReturn;
+            return decValue.StandardRound();
         }
 
         /// <summary>
@@ -1429,19 +1415,12 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
+            strValue = strValue.ProcessFixedValuesString(intRating)
+                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+            if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                             .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
-            }
-
-            if (strValue.ContainsAny("Rating".Yield().Concat(AttributeSection.AttributeStrings)))
-            {
-                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
-                strReturn = strReturn.Replace("/", " div ");
+                string strReturn = objCharacter.ProcessAttributesInXPath(strValue);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1454,8 +1433,7 @@ namespace Chummer
             }
 
             //Log.Exit("ValueToInt");
-            decimal.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
-            return decReturn;
+            return decValue;
         }
 
         /// <summary>
@@ -1472,19 +1450,12 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
+            strValue = strValue.ProcessFixedValuesString(intRating)
+                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+            if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                             .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
-            }
-
-            if (strValue.ContainsAny("Rating".Yield().Concat(AttributeSection.AttributeStrings)))
-            {
-                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                strReturn = await (await objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strReturn, token: token).ConfigureAwait(false);
-                strReturn = strReturn.Replace("/", " div ");
+                string strReturn = await objCharacter.ProcessAttributesInXPathAsync(strValue, token: token).ConfigureAwait(false);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1497,8 +1468,7 @@ namespace Chummer
             }
 
             //Log.Exit("ValueToInt");
-            decimal.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
-            return decReturn;
+            return decValue;
         }
 
         public static Tuple<string, bool> DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,
@@ -1546,7 +1516,7 @@ namespace Chummer
                         ? ValueToInt(objCharacter, strMaximumRating, intRating)
                         : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token).ConfigureAwait(false);
 
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string>
                                                                     setAllowedCategories))
                 {
@@ -1571,7 +1541,7 @@ namespace Chummer
                         }
                     }
 
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string>
                                                                         setForbiddenCategories))
                     {
@@ -1583,7 +1553,7 @@ namespace Chummer
                                                   .Select(x => x.Trim()));
                         }
 
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string>
                                                                             setAllowedNames))
                         {
@@ -1607,7 +1577,7 @@ namespace Chummer
                                 }
                             }
 
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string>
                                                                                 setAllowedLinkedAttributes))
                             {
@@ -1620,10 +1590,10 @@ namespace Chummer
                                                            .Select(x => x.Trim()));
                                 }
 
-                                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                                out List<ListItem> lstDropdownItems))
                                 {
-                                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                out HashSet<string>
                                                    setProcessedSkillNames))
                                     {
@@ -1718,7 +1688,7 @@ namespace Chummer
 
                                             if (intMinimumRating <= 0)
                                             {
-                                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                            out StringBuilder sbdFilter))
                                                 {
                                                     if (setAllowedCategories?.Count > 0)
@@ -2225,7 +2195,7 @@ namespace Chummer
                                                                     bool blnAddImprovementsToCharacter, CancellationToken token = default)
         {
             Log.Debug("CreateImprovements enter");
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
             {
                 sbdTrace.Append("objImprovementSource = ").AppendLine(objImprovementSource.ToString());
                 sbdTrace.Append("strSourceName = ").AppendLine(strSourceName);
@@ -2361,12 +2331,12 @@ namespace Chummer
                                                 ? objCharacter.LoadDataXPath(strXmlFile, token: token)
                                                 : await objCharacter.LoadDataXPathAsync(strXmlFile, token: token)
                                                     .ConfigureAwait(false);
-                                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                                    Utils.ListItemListPool, out List<ListItem> lstItems))
                                         {
                                             //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
                                             //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
-                                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                        out HashSet<string> setUsedValues))
                                             {
                                                 foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
@@ -2847,7 +2817,10 @@ namespace Chummer
                 foreach (Improvement objImprovement in objImprovementList)
                 {
                     // Enable the Improvement.
-                    objImprovement.Enabled = true;
+                    if (blnSync)
+                        objImprovement.Enabled = true;
+                    else
+                        await objImprovement.SetEnabledAsync(true, token).ConfigureAwait(false);
                 }
 
                 bool blnCharacterHasSkillsoftAccess
@@ -3059,11 +3032,15 @@ namespace Chummer
                                     await objCharacter.SetPrototypeTranshumanAsync(1, token).ConfigureAwait(false);
                             }
                             else if (blnSync)
-                                objCharacter.PrototypeTranshuman
-                                    += Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
+                            {
+                                decimal decValue = ImprovementManager.ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
+                                objCharacter.PrototypeTranshuman += decValue;
+                            }
                             else
-                                await objCharacter.ModifyPrototypeTranshumanAsync(
-                                    Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                            {
+                                decimal decValue = await ImprovementManager.ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
+                                await objCharacter.ModifyPrototypeTranshumanAsync(decValue, token).ConfigureAwait(false);
+                            }
                             break;
 
                         case Improvement.ImprovementType.AddContact:
@@ -3530,7 +3507,10 @@ namespace Chummer
                 foreach (Improvement objImprovement in objImprovementList)
                 {
                     // Disable the Improvement.
-                    objImprovement.Enabled = false;
+                    if (blnSync)
+                        objImprovement.Enabled = false;
+                    else
+                        await objImprovement.SetEnabledAsync(false, token).ConfigureAwait(false);
                 }
 
                 // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
@@ -3735,11 +3715,15 @@ namespace Chummer
                                 }
                             }
                             else if (blnSync)
-                                objCharacter.PrototypeTranshuman
-                                    -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
+                            {
+                                decimal decValue = ImprovementManager.ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
+                                objCharacter.PrototypeTranshuman -= decValue;
+                            }
                             else
-                                await objCharacter.ModifyPrototypeTranshumanAsync(
-                                    -Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                            {
+                                decimal decValue = await ImprovementManager.ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
+                                await objCharacter.ModifyPrototypeTranshumanAsync(-decValue, token).ConfigureAwait(false);
+                            }
 
                             break;
 
@@ -4286,6 +4270,11 @@ namespace Chummer
             {
                 return 0;
             }
+            // If there is nothing to remove, don't try to remove any Improvements
+            if (lstSourceNames == null || lstSourceNames.Count == 0)
+            {
+                return 0;
+            }
 
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                       + objImprovementSource + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
@@ -4293,12 +4282,7 @@ namespace Chummer
             using (objCharacter.LockObject.EnterReadLock(token))
             {
                 // A List of Improvements to hold all the items that will eventually be deleted.
-                if (lstSourceNames == null || lstSourceNames.Count == 0)
-                {
-                    objImprovementList = objCharacter.Improvements
-                        .Where(objImprovement => objImprovement.ImproveSource == objImprovementSource).ToList();
-                }
-                else if (lstSourceNames.Any(x => x.IsGuid()))
+                if (lstSourceNames.Any(x => x.IsGuid()))
                 {
                     // Compatibility fix for when blnConcatSelectedValue was around
                     HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
@@ -4351,6 +4335,15 @@ namespace Chummer
             {
                 return 0;
             }
+            // If there is nothing to remove, don't try to remove any Improvements
+            if (lstImprovementSources == null || lstImprovementSources.Count == 0)
+            {
+                return 0;
+            }
+            if (lstSourceNames == null || lstSourceNames.Count == 0)
+            {
+                return 0;
+            }
 
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
                       + lstImprovementSources + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
@@ -4358,12 +4351,7 @@ namespace Chummer
             using (objCharacter.LockObject.EnterReadLock(token))
             {
                 // A List of Improvements to hold all the items that will eventually be deleted.
-                if (lstSourceNames == null || lstSourceNames.Count == 0)
-                {
-                    objImprovementList = objCharacter.Improvements
-                        .Where(objImprovement => lstImprovementSources.Contains(objImprovement.ImproveSource)).ToList();
-                }
-                else if (lstSourceNames.Any(x => x.IsGuid()))
+                if (lstSourceNames.Any(x => x.IsGuid()))
                 {
                     // Compatibility fix for when blnConcatSelectedValue was around
                     HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
@@ -4530,6 +4518,11 @@ namespace Chummer
             {
                 return 0;
             }
+            // If there is nothing to remove, don't try to remove any Improvements
+            if (lstSourceNames == null || lstSourceNames.Count == 0)
+            {
+                return 0;
+            }
 
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                       + objImprovementSource + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
@@ -4540,13 +4533,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 // A List of Improvements to hold all the items that will eventually be deleted.
-                if (lstSourceNames == null || lstSourceNames.Count == 0)
-                {
-                    objImprovementList = await objCharacter.Improvements
-                        .ToListAsync(objImprovement => objImprovement.ImproveSource == objImprovementSource,
-                            token: token).ConfigureAwait(false);
-                }
-                else if (lstSourceNames.Any(x => x.IsGuid()))
+                if (lstSourceNames.Any(x => x.IsGuid()))
                 {
                     // Compatibility fix for when blnConcatSelectedValue was around
                     HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
@@ -4604,6 +4591,15 @@ namespace Chummer
             {
                 return 0;
             }
+            // If there is nothing to remove, don't try to remove any Improvements
+            if (lstImprovementSources == null || lstImprovementSources.Count == 0)
+            {
+                return 0;
+            }
+            if (lstSourceNames == null || lstSourceNames.Count == 0)
+            {
+                return 0;
+            }
 
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
                       + lstImprovementSources + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
@@ -4614,13 +4610,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 // A List of Improvements to hold all the items that will eventually be deleted.
-                if (lstSourceNames == null || lstSourceNames.Count == 0)
-                {
-                    objImprovementList = await objCharacter.Improvements
-                        .ToListAsync(objImprovement => lstImprovementSources.Contains(objImprovement.ImproveSource),
-                            token: token).ConfigureAwait(false);
-                }
-                else if (lstSourceNames.Any(x => x.IsGuid()))
+                if (lstSourceNames.Any(x => x.IsGuid()))
                 {
                     // Compatibility fix for when blnConcatSelectedValue was around
                     HashSet<string> setSpacedSourceNames = new HashSet<string>(lstSourceNames.Count);
@@ -5161,11 +5151,15 @@ namespace Chummer
                                 }
                             }
                             else if (blnSync)
-                                objCharacter.PrototypeTranshuman
-                                    -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
+                            {
+                                decimal decValue = ImprovementManager.ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
+                                objCharacter.PrototypeTranshuman -= decValue;
+                            }
                             else
-                                await objCharacter.ModifyPrototypeTranshumanAsync(
-                                    -Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                            {
+                                decimal decValue = await ImprovementManager.ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
+                                await objCharacter.ModifyPrototypeTranshumanAsync(-decValue, token).ConfigureAwait(false);
+                            }
 
                             break;
 
@@ -5768,7 +5762,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             Log.Debug("CreateImprovement");
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
             {
                 sbdTrace.Append("strImprovedName = ").AppendLine(strImprovedName);
                 sbdTrace.Append("objImprovementSource = ").AppendLine(objImprovementSource.ToString());
@@ -5866,7 +5860,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             Log.Debug("CreateImprovement");
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
             {
                 sbdTrace.Append("strImprovedName = ").AppendLine(strImprovedName);
                 sbdTrace.Append("objImprovementSource = ").AppendLine(objImprovementSource.ToString());
@@ -5905,8 +5899,6 @@ namespace Chummer
                         SourceName = strSourceName,
                         ImproveType = objImprovementType,
                         UniqueName = strUnique,
-                        Value = decValue,
-                        Rating = intRating,
                         Minimum = intMinimum,
                         Maximum = intMaximum,
                         Augmented = decAugmented,
@@ -5916,6 +5908,8 @@ namespace Chummer
                         Target = strTarget,
                         Condition = strCondition
                     };
+                    await objImprovement.SetRatingAsync(intRating, token).ConfigureAwait(false);
+                    await objImprovement.SetValueAsync(decValue, token).ConfigureAwait(false);
                     // This is initially set to false make sure no property changers are triggered by the setters in the section above
                     objImprovement.SetupComplete = true;
                     // Add the Improvement to the list.
@@ -6015,7 +6009,7 @@ namespace Chummer
             if (objImprovement?.SetupComplete != true)
                 return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
@@ -6094,7 +6088,7 @@ namespace Chummer
             if (lstImprovements == null)
                 return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
@@ -6154,7 +6148,7 @@ namespace Chummer
             if (objImprovement?.SetupComplete != true)
                 return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
@@ -6233,7 +6227,7 @@ namespace Chummer
             if (lstImprovements == null)
                 return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {

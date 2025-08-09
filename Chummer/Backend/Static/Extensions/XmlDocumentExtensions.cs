@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -36,14 +37,25 @@ namespace Chummer
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
         /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void LoadStandard(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true)
+        public static void LoadStandard(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
-            using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                blnSafe ? GlobalSettings.SafeXmlReaderSettings : GlobalSettings.UnSafeXmlReaderSettings))
-                xmlDocument.Load(objReader);
+            {
+                token.ThrowIfCancellationRequested();
+                using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                               blnSafe ? GlobalSettings.SafeXmlReaderSettings : GlobalSettings.UnSafeXmlReaderSettings))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        xmlDocument.Load(objReader);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -83,21 +95,35 @@ namespace Chummer
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
         /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void LoadStandardFromLzmaCompressed(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true)
+        public static void LoadStandardFromLzmaCompressed(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager, "LzmaMemoryStream", (int)objFileStream.Length))
             {
-                objFileStream.DecompressLzmaFile(objMemoryStream);
-                objMemoryStream.Seek(0, SeekOrigin.Begin);
-                using (StreamReader objStreamReader
-                       = new StreamReader(objMemoryStream, Encoding.UTF8, true))
-                using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                                                              blnSafe
-                                                                  ? GlobalSettings.SafeXmlReaderSettings
-                                                                  : GlobalSettings.UnSafeXmlReaderSettings))
-                    xmlDocument.Load(objReader);
+                token.ThrowIfCancellationRequested();
+                using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager, "LzmaMemoryStream", (int)objFileStream.Length))
+                {
+                    token.ThrowIfCancellationRequested();
+                    objFileStream.DecompressLzmaFile(objMemoryStream);
+                    token.ThrowIfCancellationRequested();
+                    objMemoryStream.Seek(0, SeekOrigin.Begin);
+                    token.ThrowIfCancellationRequested();
+                    using (StreamReader objStreamReader
+                           = new StreamReader(objMemoryStream, Encoding.UTF8, true))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                   blnSafe
+                                       ? GlobalSettings.SafeXmlReaderSettings
+                                       : GlobalSettings.UnSafeXmlReaderSettings))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            xmlDocument.Load(objReader);
+                        }
+                    }
+                }
             }
         }
 
@@ -137,6 +163,146 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously loading an XmlDocument from a file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// </summary>
+        /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
+        /// <param name="strFileName">The file to use.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="intTimeout">Maximum amount of time to wait in case a file is in use, in milliseconds.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void LoadStandardPatient(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true, int intTimeout = Utils.SleepEmergencyReleaseMaxTicks, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            bool blnSuccess = false;
+            for (int i = 0; i < intTimeout; i += Utils.DefaultSleepDuration)
+            {
+                try
+                {
+                    xmlDocument.LoadStandard(strFileName, blnSafe, token);
+                    blnSuccess = true;
+                    break;
+                }
+                catch (IOException)
+                {
+                    // swallow this unless we are at the emergency release stage
+                    if (i >= intTimeout - Utils.DefaultSleepDuration)
+                        throw;
+                }
+
+                Utils.SafeSleep(token);
+            }
+
+            if (!blnSuccess)
+                throw new TimeoutException();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for asynchronously loading an XmlDocument from a file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// </summary>
+        /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
+        /// <param name="strFileName">The file to use.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="intTimeout">Maximum amount of time to wait in case a file is in use, in milliseconds.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task LoadStandardPatientAsync(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true, int intTimeout = Utils.SleepEmergencyReleaseMaxTicks, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            bool blnSuccess = false;
+            for (int i = 0; i < intTimeout; i += Utils.DefaultSleepDuration)
+            {
+                try
+                {
+                    await xmlDocument.LoadStandardAsync(strFileName, blnSafe, token).ConfigureAwait(false);
+                    blnSuccess = true;
+                    break;
+                }
+                catch (IOException)
+                {
+                    // swallow this unless we are at the emergency release stage
+                    if (i >= intTimeout - Utils.DefaultSleepDuration)
+                        throw;
+                }
+
+                await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+            }
+
+            if (!blnSuccess)
+                throw new TimeoutException();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously loading an XmlDocument from an LZMA-compressed file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// </summary>
+        /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
+        /// <param name="strFileName">The file to use.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="intTimeout">Maximum amount of time to wait in case a file is in use, in milliseconds.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void LoadStandardFromLzmaCompressedPatient(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true, int intTimeout = Utils.SleepEmergencyReleaseMaxTicks, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            bool blnSuccess = false;
+            for (int i = 0; i < intTimeout; i += Utils.DefaultSleepDuration)
+            {
+                try
+                {
+                    xmlDocument.LoadStandardFromLzmaCompressed(strFileName, blnSafe, token);
+                    blnSuccess = true;
+                    break;
+                }
+                catch (IOException)
+                {
+                    // swallow this unless we are at the emergency release stage
+                    if (i >= intTimeout - Utils.DefaultSleepDuration)
+                        throw;
+                }
+
+                Utils.SafeSleep(token);
+            }
+
+            if (!blnSuccess)
+                throw new TimeoutException();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for asynchronously loading an XmlDocument from an LZMA-compressed file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// </summary>
+        /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
+        /// <param name="strFileName">The file to use.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="intTimeout">Maximum amount of time to wait in case a file is in use, in milliseconds.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task LoadStandardFromLzmaCompressedPatientAsync(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true, int intTimeout = Utils.SleepEmergencyReleaseMaxTicks, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            bool blnSuccess = false;
+            for (int i = 0; i < intTimeout; i += Utils.DefaultSleepDuration)
+            {
+                try
+                {
+                    await xmlDocument.LoadStandardFromLzmaCompressedAsync(strFileName, blnSafe, token).ConfigureAwait(false);
+                    blnSuccess = true;
+                    break;
+                }
+                catch (IOException)
+                {
+                    // swallow this unless we are at the emergency release stage
+                    if (i >= intTimeout - Utils.DefaultSleepDuration)
+                        throw;
+                }
+
+                await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+            }
+
+            if (!blnSuccess)
+                throw new TimeoutException();
         }
 
         /// <summary>

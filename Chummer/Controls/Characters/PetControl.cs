@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -360,19 +361,23 @@ namespace Chummer
         {
             try
             {
+                string strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                Color objColor = await _objContact.GetNotesColorAsync(_objMyToken).ConfigureAwait(false);
                 using (ThreadSafeForm<EditNotes> frmContactNotes = await ThreadSafeForm<EditNotes>
-                           .GetAsync(() => new EditNotes(_objContact.Notes, _objContact.NotesColor), _objMyToken)
+                           .GetAsync(() => new EditNotes(strNotes, objColor), _objMyToken)
                            .ConfigureAwait(false))
                 {
                     if (await frmContactNotes.ShowDialogSafeAsync(_objContact.CharacterObject, _objMyToken).ConfigureAwait(false) !=
                         DialogResult.OK)
                         return;
-                    _objContact.Notes = frmContactNotes.MyForm.Notes;
+                    await _objContact.SetNotesAsync(frmContactNotes.MyForm.Notes, _objMyToken).ConfigureAwait(false);
+                    await _objContact.SetNotesColorAsync(frmContactNotes.MyForm.NotesColor, _objMyToken).ConfigureAwait(false);
                 }
 
                 string strTooltip = await LanguageManager.GetStringAsync("Tip_Contact_EditNotes", token: _objMyToken).ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(_objContact.Notes))
-                    strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+                strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strNotes))
+                    strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
                 strTooltip = strTooltip.WordWrap();
                 await cmdNotes.SetToolTipTextAsync(strTooltip, _objMyToken).ConfigureAwait(false);
             }
@@ -388,7 +393,7 @@ namespace Chummer
 
         private async Task LoadContactList(CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
             {
                 lstMetatypes.Add(ListItem.Blank);
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);

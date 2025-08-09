@@ -218,16 +218,16 @@ namespace SevenZip.Compression.LZMA
         private void SetLiteralProperties(int lp, int lc)
         {
             if (lp > 8)
-                throw new InvalidParamException();
+                throw new ArgumentOutOfRangeException(nameof(lp));
             if (lc > 8)
-                throw new InvalidParamException();
+                throw new ArgumentOutOfRangeException(nameof(lc));
             m_LiteralDecoder.Create(lp, lc);
         }
 
         private void SetPosBitsProperties(int pb)
         {
             if (pb > Base.kNumPosStatesBitsMax)
-                throw new InvalidParamException();
+                throw new ArgumentOutOfRangeException(nameof(pb));
             unchecked
             {
                 uint numPosStates = (uint)1 << pb;
@@ -345,7 +345,7 @@ namespace SevenZip.Compression.LZMA
                     if (nowPos64 < outSize64)
                     {
                         if (m_IsMatchDecoders[state.Index << Base.kNumPosStatesBitsMax].Decode(m_RangeDecoder) != 0)
-                            throw new DataErrorException();
+                            throw new ArgumentException("Input stream is not valid", nameof(inStream));
                         state.UpdateChar();
                         byte b = m_LiteralDecoder.DecodeNormal(m_RangeDecoder, 0, 0);
                         if (blnSync)
@@ -468,7 +468,7 @@ namespace SevenZip.Compression.LZMA
                                 {
                                     if (rep0 == 0xFFFFFFFF)
                                         break;
-                                    throw new DataErrorException();
+                                    throw new ArgumentException("Input stream is not valid", nameof(inStream));
                                 }
 
                                 token.ThrowIfCancellationRequested();
@@ -502,11 +502,11 @@ namespace SevenZip.Compression.LZMA
         public void SetDecoderProperties(byte[] properties)
         {
             if (properties.Length < 5)
-                throw new InvalidParamException();
+                throw new ArgumentOutOfRangeException(nameof(properties));
             int remainder = MathExtensions.DivRem(properties[0], 9, out int lc);
             int pb = remainder.DivRem(5, out int lp);
             if (pb > Base.kNumPosStatesBitsMax)
-                throw new InvalidParamException();
+                throw new ArgumentException("Incorrect number of bits used to store states.", nameof(properties));
             uint dictionarySize = BitConverter.ToUInt32(properties, 1);
             SetDictionarySize(dictionarySize);
             SetLiteralProperties(lp, lc);

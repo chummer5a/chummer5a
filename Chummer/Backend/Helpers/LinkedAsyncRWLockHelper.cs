@@ -791,7 +791,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
-            using (new FetchSafelyFromPool<Stack<Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>(
+            using (new FetchSafelyFromSafeObjectPool<Stack<Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>(
                        s_objWriterLockHelperStackPool,
                        out Stack<Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>> stkUndo))
             {
@@ -926,7 +926,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
-            using (new FetchSafelyFromPool<Stack<Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>(
+            using (new FetchSafelyFromSafeObjectPool<Stack<Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>(
                        s_objWriterLockHelperStackPool,
                        out Stack<Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>> stkUndo))
             {
@@ -1062,7 +1062,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
-            using (new FetchSafelyFromPool<Stack<DebuggableSemaphoreSlim>>(s_objSemaphoreStackPool,
+            using (new FetchSafelyFromSafeObjectPool<Stack<DebuggableSemaphoreSlim>>(s_objSemaphoreStackPool,
                        out Stack<DebuggableSemaphoreSlim> stkLockedSemaphores))
             {
                 try
@@ -1168,7 +1168,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
-            using (new FetchSafelyFromPool<Stack<DebuggableSemaphoreSlim>>(s_objSemaphoreStackPool,
+            using (new FetchSafelyFromSafeObjectPool<Stack<DebuggableSemaphoreSlim>>(s_objSemaphoreStackPool,
                        out Stack<DebuggableSemaphoreSlim> stkLockedSemaphores))
             {
                 try
@@ -1274,7 +1274,7 @@ namespace Chummer
             DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
             if (objLoopSemaphore.CurrentCount != 0)
                 throw new InvalidOperationException("Attempting to upgrade to write lock while not inside of an upgradeable read lock");
-            using (new FetchSafelyFromPool<Stack<DebuggableSemaphoreSlim>>(s_objSemaphoreStackPool,
+            using (new FetchSafelyFromSafeObjectPool<Stack<DebuggableSemaphoreSlim>>(s_objSemaphoreStackPool,
                        out Stack<DebuggableSemaphoreSlim> stkLockedSemaphores))
             {
                 try
@@ -1376,7 +1376,7 @@ namespace Chummer
             DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
             if (objLoopSemaphore.CurrentCount != 0)
                 throw new InvalidOperationException("Attempting to upgrade to write lock while not inside of an upgradeable read lock");
-            using (new FetchSafelyFromPool<Stack<DebuggableSemaphoreSlim>>(s_objSemaphoreStackPool,
+            using (new FetchSafelyFromSafeObjectPool<Stack<DebuggableSemaphoreSlim>>(s_objSemaphoreStackPool,
                        out Stack<DebuggableSemaphoreSlim> stkLockedSemaphores))
             {
                 try
@@ -1480,7 +1480,7 @@ namespace Chummer
             // There are upgradeable readers into which we have re-entered, so go up the chain
             if (objTopMostHeldUReader != null)
             {
-                using (new FetchSafelyFromPool<Stack<LinkedAsyncRWLockHelper>>(s_objHelperStackPool,
+                using (new FetchSafelyFromSafeObjectPool<Stack<LinkedAsyncRWLockHelper>>(s_objHelperStackPool,
                            out Stack<LinkedAsyncRWLockHelper> stkLockedUReaderHelpers))
                 {
                     // Unlock from bottom upwards to avoid race conditions

@@ -50,7 +50,7 @@ namespace Chummer
     /// <summary>
     /// A Contact or Enemy.
     /// </summary>
-    [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(GlobalSettings.DefaultLanguage)})")]
+    [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(\"en-us\")})")]
     public sealed class Contact : INotifyMultiplePropertiesChangedAsync, IHasName, IHasMugshots, IHasNotes, IHasInternalId, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -579,7 +579,7 @@ namespace Chummer
                     objWriter.WriteElementString("type", _eContactType.ToString());
                     objWriter.WriteElementString("file", _strFileName);
                     objWriter.WriteElementString("relative", _strRelativeName);
-                    objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                    objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                     objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                     objWriter.WriteElementString("groupname", _strGroupName);
                     objWriter.WriteElementString(
@@ -647,7 +647,7 @@ namespace Chummer
                         await objWriter.WriteElementStringAsync("relative", _strRelativeName, token: token)
                             .ConfigureAwait(false);
                         await objWriter
-                            .WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token: token)
+                            .WriteElementStringAsync("notes", _strNotes.CleanOfXmlInvalidUnicodeChars(), token: token)
                             .ConfigureAwait(false);
                         await objWriter
                             .WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes), token: token)
@@ -915,7 +915,7 @@ namespace Chummer
                         "family", Family.ToString(GlobalSettings.InvariantCultureInfo),
                         token: token).ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)
-                        await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                     await PrintMugshots(objWriter, token).ConfigureAwait(false);
                 }
@@ -1420,8 +1420,8 @@ namespace Chummer
 
         public async Task SetDisplayMetatypeAsync(string value, CancellationToken token = default)
         {
-            Metatype = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
-                                                                      token).ConfigureAwait(false);
+            await SetMetatypeAsync(await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
+                                                                      token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1491,6 +1491,25 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Metatype of this Contact.
+        /// </summary>
+        public async Task SetMetatypeAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strMetatype, value) != value)
+                    await OnPropertyChangedAsync(nameof(Metatype), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplayGenderMethod(string strLanguage)
         {
             string strGender = Gender;
@@ -1504,7 +1523,7 @@ namespace Chummer
 
         public async Task<string> DisplayGenderMethodAsync(string strLanguage, CancellationToken token = default)
         {
-            string strGender = Gender;
+            string strGender = await GetGenderAsync(token).ConfigureAwait(false);
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return strGender;
 
@@ -1525,8 +1544,8 @@ namespace Chummer
 
         public async Task SetDisplayGenderAsync(string value, CancellationToken token = default)
         {
-            Gender = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
-                                                                    token).ConfigureAwait(false);
+            await SetGenderAsync(await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
+                                                                    token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1569,6 +1588,25 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Gender of this Contact.
+        /// </summary>
+        public async Task SetGenderAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strGender, value) != value)
+                    await OnPropertyChangedAsync(nameof(Gender), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplayAgeMethod(string strLanguage)
         {
             string strAge = Age;
@@ -1582,7 +1620,7 @@ namespace Chummer
 
         public async Task<string> DisplayAgeMethodAsync(string strLanguage, CancellationToken token = default)
         {
-            string strAge = Age;
+            string strAge = await GetAgeAsync(token).ConfigureAwait(false);
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return strAge;
 
@@ -1602,8 +1640,8 @@ namespace Chummer
 
         public async Task SetDisplayAgeAsync(string value, CancellationToken token = default)
         {
-            Age = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
-                                     .ConfigureAwait(false);
+            await SetAgeAsync(await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
+                                     .ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1638,7 +1676,26 @@ namespace Chummer
                 Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
                 return objLinkedCharacter != null
                     ? await objLinkedCharacter.GetAgeAsync(token).ConfigureAwait(false)
-                    : _strGender;
+                    : _strAge;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// How old is this Contact.
+        /// </summary>
+        public async Task SetAgeAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strAge, value) != value)
+                    await OnPropertyChangedAsync(nameof(Age), token).ConfigureAwait(false);
             }
             finally
             {
@@ -2297,6 +2354,37 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // No need to write lock because interlocked guarantees safety
+                if (Interlocked.Exchange(ref _strNotes, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(Notes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Forecolor to use for Notes in treeviews.
         /// </summary>
@@ -2309,6 +2397,12 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_colNotes == value)
@@ -2319,6 +2413,58 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        public async Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _colNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _colNotes)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_colNotes == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _colNotes = value;
+                    await OnPropertyChangedAsync(nameof(NotesColor), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2354,6 +2500,11 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_objColor == value)
+                        return;
+                }
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_objColor == value)

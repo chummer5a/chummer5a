@@ -1,0 +1,1134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <categories amendoperation="addnode">
+    <category>Critters (Biodrones)</category>
+    <category>Critters (Mundane)</category>
+	<category>Critters (Awakened)</category>
+	<category>Critters (Toxic)</category>
+	<category>Critters (Mutant)</category>
+	<category>Critters (Techno)</category>	
+  </categories>
+  <gears>
+    <gear amendoperation="addnode">
+      <id>47b1ce99-89d2-41c3-acc0-05a67eb18d5e</id>
+      <name>Alligator</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>1200</cost>
+      <source>HS</source>
+      <page>39</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>f9e1d414-cb11-4e2f-8708-324e4c2b7098</id>
+      <name>Boar</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>6</avail>
+      <cost>800</cost>
+      <source>HS</source>
+      <page>39</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>1fc70eb1-13c8-4e47-a14b-181d7392a287</id>
+      <name>Cat, Domestic</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>0</avail>
+      <cost>150</cost>
+      <source>HS</source>
+      <page>44</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>e72151f5-bef1-4dc8-a54c-0a23fd5bb209</id>
+      <name>Chimpanzee</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>20F</avail>
+      <cost>Variable (15000-50000)</cost>
+      <source>HS</source>
+      <page>40</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>8e2fb6e1-8f3d-4f5c-af41-c4cf2e712029</id>
+      <name>Dog</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>0</avail>
+      <cost>400</cost>
+      <source>SR5</source>
+      <page>402</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>bf0e44ec-8161-4fee-a739-4273956b126e</id>
+      <name>Eagle</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>Variable(300-5000)</cost>
+      <source>HS</source>
+      <page>41</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>9410ea7a-37e2-41ca-a1ca-d5c1b8fe0e20</id>
+      <name>Ferret</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>6</avail>
+      <cost>150</cost>
+      <source>HS</source>
+      <page>45</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>7788b1fa-5832-494b-8bbb-f6f2f67b4b2c</id>
+      <name>Horse</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>10</avail>
+      <cost>7500</cost>
+      <source>SR5</source>
+      <page>402</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>19aafa82-b956-48b0-89aa-43cd0ad96863</id>
+      <name>Snake (Small, non-venomous)</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>4</avail>
+      <cost>200</cost>
+      <source>HS</source>
+      <page>42</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>bd817510-3ec9-4273-9a64-620b3d1d7189</id>
+      <name>Abrams Lobster</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>16F</avail>
+      <cost>20000</cost>
+      <source>HS</source>
+      <page>52</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>fe52eec6-d7f6-442a-a578-ed304af6b5ff</id>
+      <name>Agropelter</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>14F</avail>
+      <cost>15000</cost>
+      <source>HS</source>
+      <page>53</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>0d99e7ae-86a1-4764-82b7-5ef29f4a9ace</id>
+      <name>Bandit</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>10R</avail>
+      <cost>2000</cost>
+      <source>HS</source>
+      <page>54</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>161f8dea-b7c9-425b-93f3-6a0ffd405d23</id>
+      <name>Barghest</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>15F</avail>
+      <cost>20000</cost>
+      <source>SR5</source>
+      <page>403</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>3d89fdb6-6e16-4496-ae15-a96707a0e091</id>
+      <name>Bear</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>16F</avail>
+      <cost>Variable (20000-50000)</cost>
+      <source>HS</source>
+      <page>39</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>57b26348-4dfb-4c19-a97f-b4c0902789ea</id>
+      <name>Basilisk</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>14F</avail>
+      <cost>120000</cost>
+      <source>SR5</source>
+      <page>403</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>e4047066-353a-438a-8656-deff52032ce2</id>
+      <name>Blood Monkey</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>18F</avail>
+      <cost>42000</cost>
+      <source>HS</source>
+      <page>55</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>3e551854-d3ab-4f9a-aaa6-f60922659d3b</id>
+      <name>Cat, Great (exc. Tigers)</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>18F</avail>
+      <cost>5000</cost>
+      <source>SR5</source>
+      <page>402</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>6dd9fd5b-1249-4a3c-b7f1-363c85dd11b4</id>
+      <name>Cerberus Hound</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>14R</avail>
+      <cost>70000</cost>
+      <source>HS</source>
+      <page>56</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>cf96068a-e279-4dad-a59c-b17c1c5f55f1</id>
+      <name>Cockatrice</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>13000</cost>
+      <source>SR5</source>
+      <page>404</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>06e4b974-0812-4b16-950c-0274fb95d0ed</id>
+      <name>Death Rattle</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>16F</avail>
+      <cost>70000</cost>
+      <source>HS</source>
+      <page>57</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>25b879c0-cf7b-4967-98cc-ed6bed4d678b</id>
+      <name>Deathspiral Butterfly</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>12F</avail>
+      <cost>1500</cost>
+      <source>HS</source>
+      <page>58</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>c3db86da-877b-4b33-b77c-316efc92d301</id>
+      <name>Demon Rat (Alpha)</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>24F</avail>
+      <cost>100000</cost>
+      <source>HS</source>
+      <page>58</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>c59f50db-24be-401f-a56e-2dc8049b5f27</id>
+      <name>Devil Rat</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>6R</avail>
+      <cost>1000</cost>
+      <source>SR5</source>
+      <page>404</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>53867023-88e1-4254-8542-53aaaeae3a1a</id>
+      <name>Elephant</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>20F</avail>
+      <cost>50000</cost>
+      <source>HS</source>
+      <page>41</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>aa319b2b-96b7-418f-891e-41284551c0bc</id>
+      <name>Fenrir Wolf</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>16R</avail>
+      <cost>18000</cost>
+      <source>HS</source>
+      <page>61</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>3a67be9b-db13-41b7-a175-91454d8ee2d6</id>
+      <name>Gomatia</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>10</avail>
+      <cost>1500</cost>
+      <source>HS</source>
+      <page>62</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>bf92b949-c582-4922-b61d-ff1626dc5173</id>
+      <name>Hell Hound</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>10R</avail>
+      <cost>15000</cost>
+      <source>SR5</source>
+      <page>405</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>3d735cdb-1936-4d5c-9c87-e3e528e25132</id>
+      <name>Horned Bear</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>15R</avail>
+      <cost>150000</cost>
+      <source>HS</source>
+      <page>64</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>2e3e4a1f-d0b0-4c77-9fc4-208fa5db7664</id>
+      <name>Matrichoras</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>18F</avail>
+      <cost>120000</cost>
+      <source>HS</source>
+      <page>65</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>efeb0070-ffa3-4067-9afe-eaa8b742753b</id>
+      <name>Ozian Baboon</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>15R</avail>
+      <cost>300000</cost>
+      <source>HS</source>
+      <page>69</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>f5811749-6764-4246-9df5-0a9dd495449e</id>
+      <name>Phoenician Bird (Parrots, Birds of Prey)</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>15F</avail>
+      <cost>43000</cost>
+      <source>HS</source>
+      <page>70</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>be491b2b-3db4-433b-b20a-108a9520c31d</id>
+      <name>Pegasus</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>12</avail>
+      <cost>100000</cost>
+      <source>HS</source>
+      <page>70</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>aff9f277-0815-4d08-87d3-daf9152712a3</id>
+      <name>Peryton</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>135000</cost>
+      <source>HS</source>
+      <page>71</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>874c1e29-dbf2-442a-9980-b0c7668941ab</id>
+      <name>Piasma</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>18F</avail>
+      <cost>240000</cost>
+      <source>HS</source>
+      <page>71</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>8fac92ea-6bbb-4a1d-9a4c-27f593cddf9f</id>
+      <name>Roc, Lesser</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>11R</avail>
+      <cost>35500</cost>
+      <source>HS</source>
+      <page>71</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>2d518ab3-8207-4e00-9680-20f1fb3c7568</id>
+      <name>Sea Lion</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>5000</cost>
+      <source>HS</source>
+      <page>42</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>5b1aa7cf-f03f-4c6e-9a96-4800f4c83f81</id>
+      <name>Shadow Hound</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>10R</avail>
+      <cost>10000</cost>
+      <source>HS</source>
+      <page>72</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>ca685376-10f3-47f4-8d29-ac87e67927e1</id>
+      <name>Snow Snake</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>8R</avail>
+      <cost>7000</cost>
+      <source>HS</source>
+      <page>72</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>0fdcd293-3aeb-4812-b6e7-7e593bf56088</id>
+      <name>Unicorn</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>150000</cost>
+      <source>HS</source>
+      <page>76</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>b78a61e4-62f9-42f5-97a7-109bc1e0366b</id>
+      <name>Volleying Porcupines</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>10R</avail>
+      <cost>3000</cost>
+      <source>HS</source>
+      <page>76</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>7a2769be-52b8-468f-9c2d-10499b240cbf</id>
+      <name>Wolf</name>
+      <category>Critters (Mundane)</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>3500</cost>
+      <source>SR5</source>
+      <page>403</page>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>ce6d456b-def0-4d84-ba59-630a29fb23c6</id>
+      <name>Wolverine, Greater</name>
+      <category>Critters (Awakened)</category>
+      <rating>0</rating>
+      <avail>20F</avail>
+      <cost>140000</cost>
+      <source>HS</source>
+      <page>77</page>
+    </gear>
+	     <gear amendoperation="addnode">
+            <id>73f647d2-b1b1-4e41-bd55-68f38352a06d</id>
+            <name>Goldfish</name>
+            <category>Critters (Mundane)</category>
+            <rating>0</rating>
+            <avail>0</avail>
+            <cost>5</cost>
+            <source>HS</source>
+            <page>38</page>
+        </gear>
+		<gear amendoperation="addnode">
+            <id>999c1d54-0509-41a3-bdf8-b8865503296c</id>
+            <name>Goldfish (Ornamental)</name>
+            <category>Critters (Mundane)</category>
+            <rating>0</rating>
+            <avail>18</avail>
+            <cost>5000</cost>
+            <source>HS</source>
+            <page>38</page>
+        </gear>
+        <gear amendoperation="addnode">
+            <id>4cde77b4-1bf0-4737-be4b-9d576abc00d5</id>
+            <name>Junkyard Dog</name>
+            <category>Critters (Biodrones)</category>
+            <rating>0</rating>
+            <avail>20F</avail>
+            <cost>225000</cost>
+            <source>HS</source>
+            <page>38</page>
+        </gear>
+        <gear amendoperation="addnode">
+            <id>fe8729ba-c464-4d0e-83a3-f198864fc420</id>
+            <name>ReCondor</name>
+            <category>Critters (Biodrones)</category>
+            <rating>0</rating>
+            <avail>16R</avail>
+            <cost>30000</cost>
+            <source>HS</source>
+            <page>38</page>
+        </gear>
+        <gear amendoperation="addnode">
+            <id>d2656357-cb10-404c-84eb-f7ac4f5a263d</id>
+            <name>SkySpy</name>
+            <category>Critters (Biodrones)</category>
+            <rating>0</rating>
+            <avail>16R</avail>
+            <cost>30000</cost>
+            <source>HS</source>
+            <page>38</page>
+        </gear>
+        <gear amendoperation="addnode">
+            <id>9c9f5478-128b-40fe-a947-6a93f795451b</id>
+            <name>Roachdrone</name>
+            <category>Critters (Biodrones)</category>
+            <rating>0</rating>
+            <avail>16R</avail>
+            <cost>25000</cost>
+            <source>HS</source>
+            <page>38</page>
+        </gear>
+        <gear amendoperation="addnode">
+            <id>fb7434d8-da22-4ab2-81fe-49884f33bb85</id>
+            <name>Cybertooth Tiger</name>
+            <category>Critters (Biodrones)</category>
+            <rating>0</rating>
+            <avail>25F</avail>
+            <cost>600000</cost>
+            <source>HS</source>
+            <page>38</page>
+        </gear>
+		<gear amendoperation="addnode">
+            <id>ea57f5ad-142c-4621-a7d6-6bd64a474744</id>
+            <name>Rat</name>
+            <category>Critters (Mundane)</category>
+            <rating>0</rating>
+            <avail>0</avail>
+            <cost>25</cost>
+            <source>HS</source>
+            <page>46</page>
+        </gear>
+		<gear amendoperation="addnode">
+		<id>4453b7b5-8931-40c9-a03a-3a2456fceaf2</id>
+		<name>Arachnid (Non-Venomous)</name>
+		<category>Critters (Mundane)</category>
+		<rating>0</rating>
+		<avail>5</avail>
+		<cost>80</cost>
+		<source>HS</source>
+		<page>47</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>a57a792f-183a-4d85-a407-2d1931dede24</id>
+		<name>Amphora Mite</name>
+		<category>Critters (Toxic)</category>
+		<rating>0</rating>
+		<avail>8F</avail>
+		<cost>500</cost>
+		<costfor>10</costfor>
+		<source>HS</source>
+		<page>92</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>e5fd4928-0aec-490d-8a72-a443833a21d4</id>
+		<name>Void Wasp</name>
+		<category>Critters (Mutant)</category>
+		<rating>0</rating>
+		<avail>13R</avail>
+		<cost>8000</cost>
+		<costfor>10</costfor>
+		<source>HS</source>
+		<page>106</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>90a7ccb6-4d19-47aa-891e-bb6f3f7cf65c</id>
+		<name>Digits</name>
+		<category>Critters (Techno)</category>
+		<rating>0</rating>
+		<avail>10F</avail>
+		<cost>20000</cost>
+		<costfor>10</costfor>
+		<source>HS</source>
+		<page>146</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>061664e6-3228-42f6-b6f3-d20acf591ae4</id>
+		<name>Nezumi</name>
+		<category>Critters (Techno)</category>
+		<rating>0</rating>
+		<avail>12F</avail>
+		<cost>25000</cost>
+		<source>HS</source>
+		<page>146</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>7fef1f24-0d3d-4c26-a064-63dec4920ada</id>
+		<name>Corvid</name>
+		<category>Critters (Mundane)</category>
+		<rating>0</rating>
+		<avail>8R</avail>
+		<cost>200</cost>
+		<source>HS</source>
+		<page>45</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>4d7cf821-c24c-4d60-848a-bec2cc717e4e</id>
+		<name>Phoenician Bird (Cardinals, Pigeons, Chickens)</name>
+		<category>Critters (Awakened)</category>
+		<rating>0</rating>
+		<avail>9R</avail>
+		<cost>4800</cost>
+		<source>HS</source>
+		<page>70</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>a219b6e1-882b-42bc-acf2-32e283561acd</id>
+		<name>Glow Rat</name>
+		<category>Critters (Toxic)</category>
+		<rating>0</rating>
+		<avail>8F</avail>
+		<cost>4000</cost>
+		<source>HS</source>
+		<page>95</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>fbcbe98c-8382-4d69-854d-ce2bab328088</id>
+		<name>Razorcat (Domestic variants)</name>
+		<category>Critters (Toxic)</category>
+		<rating>0</rating>
+		<avail>18F</avail>
+		<cost>6000</cost>
+		<source>HS</source>
+		<page>102</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>6293c1d6-76a5-40e2-b89c-b6a239731d2f</id>
+		<name>Souleater Leech</name>
+		<category>Critters (Toxic)</category>
+		<rating>0</rating>
+		<avail>7F</avail>
+		<cost>1000</cost>
+		<source>HS</source>
+		<page>105</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>bb8e9f04-9edb-4d75-9e89-c239d96a6804</id>
+		<name>Neogargoyle</name>
+		<category>Critters (Mutant)</category>
+		<rating>0</rating>
+		<avail>8</avail>
+		<cost>500</cost>
+		<source>HS</source>
+		<page>99</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>b7bef14d-fea4-4878-9a8a-5d388314cd5b</id>
+		<name>Bastet (Domestic variants)</name>
+		<category>Critters (Techno)</category>
+		<rating>0</rating>
+		<avail>14F</avail>
+		<cost>30000</cost>
+		<source>HS</source>
+		<page>145</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>4372e886-54b5-4c58-b070-edca7be52ba9</id>
+		<name>Rook (Corvids and smaller bird variants)</name>
+		<category>Critters (Techno)</category>
+		<rating>0</rating>
+		<avail>17F</avail>
+		<cost>35000</cost>
+		<source>HS</source>
+		<page>148</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>5c1b65f1-5835-4e3d-84e7-1c3f3e36595d</id>
+		<name>Snakes (Large, non-venemous)</name>
+		<category>Critters (Mundane)</category>
+		<rating>0</rating>
+		<avail>12R</avail>
+		<cost>Variable(300-5000)</cost>
+		<source>HS</source>
+		<page>42</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>bdf8cafe-7807-4564-91a7-bcdf0be1a51d</id>
+		<name>Raccoon</name>
+		<category>Critters (Mundane)</category>
+		<rating>0</rating>
+		<avail>6</avail>
+		<cost>150</cost>
+		<source>HS</source>
+		<page>46</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>4e1edba8-a169-4ab2-abed-52633bae0bd4</id>
+		<name>Snake (Small, Venomous)</name>
+		<category>Critters (Mundane)</category>
+		<rating>0</rating>
+		<avail>14R</avail>
+		<cost>500</cost>
+		<source>HS</source>
+		<page>42</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>a4109de2-3e35-4ea0-88d8-4bb442ba5b71</id>
+		<name>Gomatia</name>
+		<category>Critters (Awakened)</category>
+		<rating>0</rating>
+		<avail>10</avail>
+		<cost>1500</cost>
+		<source>HS</source>
+		<page>62</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>f4bf15db-3508-4b52-bfe6-14aa7c7e95cf</id>
+		<name>Nova Scorpion</name>
+		<category>Critters (Awakened)</category>
+		<rating>0</rating>
+		<avail>12R</avail>
+		<cost>5000</cost>
+		<source>HS</source>
+		<page>69</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>512ab0a2-be5e-42c2-89f5-bf19b16c48e1</id>
+		<name>Spider-Beast</name>
+		<category>Critters (Awakened)</category>
+		<rating>0</rating>
+		<avail>9R</avail>
+		<cost>5000</cost>
+		<source>HS</source>
+		<page>73</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>5a9b495e-8790-4b95-8db1-1141fbe5d2e0</id>
+		<name>Angel Squirrel</name>
+		<category>Critters (Toxic)</category>
+		<rating>0</rating>
+		<avail>16F</avail>
+		<cost>10000</cost>
+		<source>HS</source>
+		<page>93</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>a386d04c-ff2a-4dcf-bfdd-04ca21c1ef67</id>
+		<name>Flatworm Viper</name>
+		<category>Critters (Toxic)</category>
+		<rating>0</rating>
+		<avail>11F</avail>
+		<cost>8000</cost>
+		<source>HS</source>
+		<page>95</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>fe217ab4-8b43-4b6b-b92a-8eed623f9289</id>
+		<name>Razorcat (Small wildcats)</name>
+		<category>Critters (Toxic)</category>
+		<rating>0</rating>
+		<avail>20F</avail>
+		<cost>10000</cost>
+		<source>HS</source>
+		<page>102</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>6c4d0f9f-bda4-4bf2-8f3b-b7960f0ec3e6</id>
+		<name>Blink Sloth</name>
+		<category>Critters (Mutant)</category>
+		<rating>0</rating>
+		<avail>17R</avail>
+		<cost>65000</cost>
+		<source>HS</source>
+		<page>93</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>baf1c735-bee4-43e5-a458-9e9eaae40b7c</id>
+		<name>Killdeer</name>
+		<category>Critters (Mutant)</category>
+		<rating>0</rating>
+		<avail>8R</avail>
+		<cost>2000</cost>
+		<source>HS</source>
+		<page>97</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>c90abfc0-a52d-4ec4-ba73-8d0831470237</id>
+		<name>Montauk</name>
+		<category>Critters (Mutant)</category>
+		<rating>0</rating>
+		<avail>12R</avail>
+		<cost>9500</cost>
+		<source>HS</source>
+		<page>99</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>7fa8173d-2440-4392-865e-555c9a147afe</id>
+		<name>Ahi (Small snake variants)</name>
+		<category>Critters (Techno)</category>
+		<rating>0</rating>
+		<avail>16F</avail>
+		<cost>100000</cost>
+		<source>HS</source>
+		<page>145</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>8bee69b6-9563-4459-9135-c2fc91c492b9</id>
+		<name>Ahi (Large snake variants)</name>
+		<category>Critters (Techno)</category>
+		<rating>0</rating>
+		<avail>20F</avail>
+		<cost>300000</cost>
+		<source>HS</source>
+		<page>145</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>116cdaf5-cf04-4891-ae32-56f3c5022ed8</id>
+		<name>Bastet (Small wild cat variants)</name>
+		<category>Critters (Techno)</category>
+		<rating>0</rating>
+		<avail>18F</avail>
+		<cost>120000</cost>
+		<source>HS</source>
+		<page>145</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>e00b08d4-a851-4355-96ca-7647b2db649f</id>
+		<name>Furfur</name>
+		<category>Critters (Techno)</category>
+		<rating>0</rating>
+		<avail>17F</avail>
+		<cost>80000</cost>
+		<source>HS</source>
+		<page>147</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>3bf19ce0-1124-4787-808e-84eb422c1cc4</id>
+		<name>Libertine</name>
+		<category>Critters (Techno)</category>
+		<rating>0</rating>
+		<avail>14F</avail>
+		<cost>32000</cost>
+		<source>HS</source>
+		<page>148</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>0f7dfb2b-f9a0-444d-ad3a-3d7f2e6ca982</id>
+		<name>Mongrel</name>
+		<category>Critters (Techno)</category>
+		<rating>0</rating>
+		<avail>15F</avail>
+		<cost>40000</cost>
+		<source>HS</source>
+		<page>148</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>36633ce3-e18f-4131-b8e6-8f83d1c84cfc</id>
+		<name>Rook (Bird of prey variants)</name>
+		<category>Critters (Techno)</category>
+		<rating>0</rating>
+		<avail>20F</avail>
+		<cost>90000</cost>
+		<source>HS</source>
+		<page>148</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>8ad04632-1502-406c-b1e3-ddcfd5cdd806</id>
+		<name>Octopus or Squid (non-giant)</name>
+		<category>Critters (Mundane)</category>
+		<rating>0</rating>
+		<avail>11</avail>
+		<cost>3500</cost>
+		<source>HS</source>
+		<page>43</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>a8cc3e95-5683-496e-8406-f45a1672b728</id>
+		<name>Drop Bear</name>
+		<category>Critters (Awakened)</category>
+		<rating>0</rating>
+		<avail>24F</avail>
+		<cost>20000</cost>
+		<source>HS</source>
+		<page>60</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>db9137a2-aabd-426f-bafa-087005874715</id>
+		<name>Harpy</name>
+		<category>Critters (Awakened)</category>
+		<rating>0</rating>
+		<avail>17F</avail>
+		<cost>30000</cost>
+		<source>HS</source>
+		<page>62</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>e83e086e-a7b2-4e1b-bf56-ef7ed30f9bee</id>
+		<name>Iridescent Owl</name>
+		<category>Critters (Toxic)</category>
+		<rating>0</rating>
+		<avail>12F</avail>
+		<cost>16000</cost>
+		<source>HS</source>
+		<page>97</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>e169f5e4-aef7-4d0a-a7c2-a6d4a2697bf5</id>
+		<name>Radhound</name>
+		<category>Critters (Toxic)</category>
+		<rating>0</rating>
+		<avail>12F</avail>
+		<cost>80000</cost>
+		<source>HS</source>
+		<page>100</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>5b04f213-17c2-405a-8300-ea30054fc1ca</id>
+		<name>Hellcow</name>
+		<category>Critters (Mutant)</category>
+		<rating>0</rating>
+		<avail>12R</avail>
+		<cost>6000</cost>
+		<source>HS</source>
+		<page>96</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>b59fe3a2-5b6a-4f4d-bf26-c124cb7c02c7</id>
+		<name>Hellcow</name>
+		<category>Critters (Mutant)</category>
+		<rating>0</rating>
+		<avail>12R</avail>
+		<cost>6000</cost>
+		<source>HS</source>
+		<page>96</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>099fcf31-12a6-4d4a-9358-f9dbcb8c10cd</id>
+		<name>Tigers</name>
+		<category>Critters (Mundane)</category>
+		<rating>0</rating>
+		<avail>24F</avail>
+		<cost>50000</cost>
+		<source>CRB</source>
+		<page>402</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>d7b1bc97-7d3f-497a-803b-36fe041206c4</id>
+		<name>Giraffe</name>
+		<category>Critters (Mundane)</category>
+		<rating>0</rating>
+		<avail>18F</avail>
+		<cost>40000</cost>
+		<source>HS</source>
+		<page>41</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>059cd3f2-e769-4a2c-8b0a-35ba13535bd2</id>
+		<name>Sharks (Bull)</name>
+		<category>Critters (Mundane)</category>
+		<rating>0</rating>
+		<avail>14R</avail>
+		<cost>Variable (1500-5000)</cost>
+		<source>CRB</source>
+		<page>403</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>b7a1b08a-c5df-4b46-a6cb-5c49ebb17d13</id>
+		<name>Barracuda</name>
+		<category>Critters (Mundane)</category>
+		<rating>0</rating>
+		<avail>12R</avail>
+		<cost>2500</cost>
+		<source>HS</source>
+		<page>42</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>e9d6564c-6f29-4af1-a7a4-6312e3f201de</id>
+		<name>Afanc</name>
+		<category>Critters (Awakened)</category>
+		<rating>0</rating>
+		<avail>20F</avail>
+		<cost>68000</cost>
+		<source>HS</source>
+		<page>53</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>69d0ea26-19e7-4ab7-8a4e-02731720069a</id>
+		<name>Demon Rat (vars. Beta, Gamma, Epsilion)</name>
+		<category>Critters (Awakened)</category>
+		<rating>0</rating>
+		<avail>26F</avail>
+		<cost>150000</cost>
+		<source>HS</source>
+		<page>58</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>107d4a24-c353-49a8-98dc-f7fafe4c68a1</id>
+		<name>Gargoyle</name>
+		<category>Critters (Awakened)</category>
+		<rating>0</rating>
+		<avail>19F</avail>
+		<cost>120000</cost>
+		<source>HS</source>
+		<page>61</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>104e7b80-84b6-4843-8564-53a660d03ad9</id>
+		<name>Razorcat (Great Cat variants)</name>
+		<category>Critters (Toxic)</category>
+		<rating>0</rating>
+		<avail>28F</avail>
+		<cost>230000</cost>
+		<source>HS</source>
+		<page>102</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>e54bd149-8074-46ce-a079-d4e97e48f6ca</id>
+		<name>Conway's Cheetah</name>
+		<category>Critters (Mutant)</category>
+		<rating>0</rating>
+		<avail>26F</avail>
+		<cost>120000</cost>
+		<source>HS</source>
+		<page>94</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>f9a8208f-6a2a-454e-b843-7eeffdacb37d</id>
+		<name>Pandamonium</name>
+		<category>Critters (Mutant)</category>
+		<rating>0</rating>
+		<avail>22F</avail>
+		<cost>500000</cost>
+		<source>HS</source>
+		<page>100</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>a4c29d7f-ee02-414e-847c-281417d76bd4</id>
+		<name>Spark Salmon</name>
+		<category>Critters (Mutant)</category>
+		<rating>0</rating>
+		<avail>12R</avail>
+		<cost>20000</cost>
+		<source>HS</source>
+		<page>104</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>27be7ce0-c10f-4da9-bb51-9880f8396986</id>
+		<name>Spidermoose</name>
+		<category>Critters (Mutant)</category>
+		<rating>0</rating>
+		<avail>12R</avail>
+		<cost>35000</cost>
+		<source>HS</source>
+		<page>105</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>0d101893-b62e-4c1f-bb88-28973759c1e8</id>
+		<name>Bastet (Great Cat variants)</name>
+		<category>Critters (Techno)</category>
+		<rating>0</rating>
+		<avail>30F</avail>
+		<cost>1000000</cost>
+		<source>HS</source>
+		<page>145</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>b4518598-930f-4b90-9ed7-66f79d74a4cf</id>
+		<name>Dolphin</name>
+		<category>Critters (Mundane)</category>
+		<rating>0</rating>
+		<avail>20F</avail>
+		<cost>100000</cost>
+		<source>HS</source>
+		<page>42</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>b2fa15c4-f3b8-4ce2-a73a-dd657fedb10a</id>
+		<name>Killer Whale</name>
+		<category>Critters (Mundane)</category>
+		<rating>0</rating>
+		<avail>24F</avail>
+		<cost>300000</cost>
+		<source>HS</source>
+		<page>43</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>f4c94b33-e71b-4e3e-a27b-ec68377ee648</id>
+		<name>Behemoth</name>
+		<category>Critters (Awakened)</category>
+		<rating>0</rating>
+		<avail>26F</avail>
+		<cost>2000000</cost>
+		<source>HS</source>
+		<page>43</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>6b5b6492-f5dc-4829-973c-c05693d99cfc</id>
+		<name>Devil Jack Diamond</name>
+		<category>Critters (Awakened)</category>
+		<rating>0</rating>
+		<avail>16R</avail>
+		<cost>40000</cost>
+		<source>HS</source>
+		<page>59</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>43e799db-1b8b-40b2-a7dc-3f2490b6efdd</id>
+		<name>Juggernaut</name>
+		<category>Critters (Awakened)</category>
+		<rating>0</rating>
+		<avail>30F</avail>
+		<cost>3500000</cost>
+		<source>HS</source>
+		<page>65</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>6845ef91-d47d-48b3-b680-53e0aee606bb</id>
+		<name>Thunderbird, Greater</name>
+		<category>Critters (Awakened)</category>
+		<rating>0</rating>
+		<avail>22F</avail>
+		<cost>700000</cost>
+		<source>HS</source>
+		<page>73</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>bf07d551-116d-4a51-bc3f-ee1ac2a5e10f</id>
+		<name>Kokoro Cobra</name>
+		<category>Critters (Toxic)</category>
+		<rating>0</rating>
+		<avail>22F</avail>
+		<cost>450000</cost>
+		<source>HS</source>
+		<page>98</page>
+		</gear>
+		<gear amendoperation="addnode">
+		<id>46fdaa37-785d-4efa-8fae-23ccd33012bf</id>
+		<name>Flipper</name>
+		<category>Critters (Techno)</category>
+		<rating>0</rating>
+		<avail>28F</avail>
+		<cost>2,000,000</cost>
+		<source>HS</source>
+		<page>147</page>
+		</gear>
+  </gears>
+</chummer>

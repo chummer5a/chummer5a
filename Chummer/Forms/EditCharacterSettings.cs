@@ -39,7 +39,7 @@ namespace Chummer
         private static Logger Log => s_ObjLogger.Value;
         private readonly CharacterSettings _objCharacterSettings;
         private CharacterSettings _objReferenceCharacterSettings;
-        private List<ListItem> _lstSettings = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstSettings;
 
         // List of custom data directory infos on the character, in load order. If the character has a directory name for which we have no info, key will be a string instead of an info
         private readonly LockingTypedOrderedDictionary<string, bool> _dicEnabledCharacterCustomDataDirectorys;
@@ -55,7 +55,7 @@ namespace Chummer
         // Used to revert to old selected setting if user cancels out of selecting a different one
         private int _intOldSelectedSettingIndex = -1;
 
-        private HashSet<string> _setPermanentSourcebooks = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setPermanentSourcebooks;
 
         #region Form Events
 
@@ -82,6 +82,8 @@ namespace Chummer
             _dicEnabledCharacterCustomDataDirectorys = new LockingTypedOrderedDictionary<string, bool>();
             _objCharacterSettings = new CharacterSettings(_objReferenceCharacterSettings);
             _objCharacterSettings.MultiplePropertiesChangedAsync += SettingsChanged;
+            _lstSettings = Utils.ListItemListPool.Get();
+            _setPermanentSourcebooks = Utils.StringHashSetPool.Get();
             Disposed += (sender, args) =>
             {
                 _dicEnabledCharacterCustomDataDirectorys.Dispose();
@@ -98,7 +100,7 @@ namespace Chummer
             await SetToolTips().ConfigureAwait(false);
             await PopulateSettingsList().ConfigureAwait(false);
 
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstBuildMethods))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstBuildMethods))
             {
                 lstBuildMethods.Add(new ListItem(CharacterBuildMethod.Priority,
                                                  await LanguageManager.GetStringAsync("String_Priority")
@@ -433,7 +435,7 @@ namespace Chummer
             {
                 if (await _objReferenceCharacterSettings.GetBuildMethodAsync().ConfigureAwait(false) != await _objCharacterSettings.GetBuildMethodAsync().ConfigureAwait(false))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdConflictingCharacters))
                     {
                         await Program.OpenCharacters.ForEachAsync(async objCharacter =>
@@ -1129,25 +1131,22 @@ namespace Chummer
             await gpbDirectoryInfo.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
             try
             {
-                string strDescription = await objSelected.GetDisplayDescriptionAsync(GlobalSettings.Language)
-                                                         .ConfigureAwait(false);
+                string strDescription = await objSelected.GetCurrentDisplayDescriptionAsync().ConfigureAwait(false);
                 await rtbDirectoryDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
                 await lblDirectoryVersion.DoThreadSafeAsync(x => x.Text = objSelected.MyVersion.ToString())
                                          .ConfigureAwait(false);
-                string strAuthors = await objSelected
-                                          .GetDisplayAuthorsAsync(GlobalSettings.Language, GlobalSettings.CultureInfo)
-                                          .ConfigureAwait(false);
+                string strAuthors = await objSelected.GetCurrentDisplayAuthorsAsync().ConfigureAwait(false);
                 await lblDirectoryAuthors.DoThreadSafeAsync(x => x.Text = strAuthors).ConfigureAwait(false);
-                string strName = await objSelected.GetDisplayNameAsync().ConfigureAwait(false);
+                string strName = await objSelected.GetCurrentDisplayNameAsync().ConfigureAwait(false);
                 await lblDirectoryName.DoThreadSafeAsync(x => x.Text = strName).ConfigureAwait(false);
 
                 if (objSelected.DependenciesList.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdDependencies))
                     {
                         foreach (DirectoryDependency dependency in objSelected.DependenciesList)
-                            sbdDependencies.AppendLine(await dependency.GetDisplayNameAsync().ConfigureAwait(false));
+                            sbdDependencies.AppendLine(dependency.CurrentDisplayName);
                         await lblDependencies.DoThreadSafeAsync(x => x.Text = sbdDependencies.ToString())
                                              .ConfigureAwait(false);
                     }
@@ -1160,12 +1159,11 @@ namespace Chummer
 
                 if (objSelected.IncompatibilitiesList.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdIncompatibilities))
                     {
                         foreach (DirectoryDependency exclusivity in objSelected.IncompatibilitiesList)
-                            sbdIncompatibilities.AppendLine(
-                                await exclusivity.GetDisplayNameAsync().ConfigureAwait(false));
+                            sbdIncompatibilities.AppendLine(exclusivity.CurrentDisplayName);
                         await lblIncompatibilities.DoThreadSafeAsync(x => x.Text = sbdIncompatibilities.ToString())
                                                   .ConfigureAwait(false);
                     }
@@ -1284,21 +1282,21 @@ namespace Chummer
                             if (objInfo != null)
                             {
                                 objNode.Tag = objInfo;
-                                objNode.Text = await objInfo.GetDisplayNameAsync(token).ConfigureAwait(false);
+                                objNode.Text = await objInfo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                                 if (objNode.Checked)
                                 {
                                     // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
                                     string missingDirectories = string.Empty;
                                     if (objInfo.DependenciesList.Count > 0)
                                         missingDirectories = await objInfo
-                                            .CheckDependencyAsync(_objCharacterSettings, token)
+                                            .CheckDependencyAsync(_objCharacterSettings, token: token)
                                             .ConfigureAwait(false);
 
                                     string prohibitedDirectories = string.Empty;
                                     if (objInfo.IncompatibilitiesList.Count > 0)
                                         prohibitedDirectories = await objInfo
                                             .CheckIncompatibilityAsync(
-                                                _objCharacterSettings, token)
+                                                _objCharacterSettings, token: token)
                                             .ConfigureAwait(false);
 
                                     if (!string.IsNullOrEmpty(missingDirectories)
@@ -1306,7 +1304,7 @@ namespace Chummer
                                     {
                                         objNode.ToolTipText
                                             = await CustomDataDirectoryInfo.BuildIncompatibilityDependencyStringAsync(
-                                                missingDirectories, prohibitedDirectories, token).ConfigureAwait(false);
+                                                missingDirectories, prohibitedDirectories, token: token).ConfigureAwait(false);
                                         objNode.ForeColor = objErrorColor;
                                     }
                                 }
@@ -1340,15 +1338,16 @@ namespace Chummer
                                 x => x.CharacterSettingsSaveKey == kvpKeyAndEnabled.Key);
                             int i1 = i;
                             TreeNode objNode = await treCustomDataDirectories
-                                .DoThreadSafeFuncAsync(x => x.Nodes[i1], token)
+                                .DoThreadSafeFuncAsync(x =>
+                                {
+                                    TreeNode objReturn = x.Nodes[i1];
+                                    objReturn.Checked = kvpKeyAndEnabled.Value;
+                                    return objReturn;
+                                }, token)
                                 .ConfigureAwait(false);
-                            await treCustomDataDirectories.DoThreadSafeAsync(() =>
-                            {
-                                objNode.Checked = kvpKeyAndEnabled.Value;
-                            }, token: token).ConfigureAwait(false);
                             if (objInfo != null)
                             {
-                                string strText = await objInfo.GetDisplayNameAsync(token).ConfigureAwait(false);
+                                string strText = await objInfo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                                 await treCustomDataDirectories.DoThreadSafeAsync(() =>
                                     {
                                         objNode.Tag = objInfo;
@@ -1361,14 +1360,14 @@ namespace Chummer
                                     string missingDirectories = string.Empty;
                                     if (objInfo.DependenciesList.Count > 0)
                                         missingDirectories = await objInfo
-                                            .CheckDependencyAsync(_objCharacterSettings, token)
+                                            .CheckDependencyAsync(_objCharacterSettings, token: token)
                                             .ConfigureAwait(false);
 
                                     string prohibitedDirectories = string.Empty;
                                     if (objInfo.IncompatibilitiesList.Count > 0)
                                         prohibitedDirectories = await objInfo
                                             .CheckIncompatibilityAsync(
-                                                _objCharacterSettings, token)
+                                                _objCharacterSettings, token: token)
                                             .ConfigureAwait(false);
 
                                     if (!string.IsNullOrEmpty(missingDirectories)
@@ -1376,7 +1375,7 @@ namespace Chummer
                                     {
                                         string strToolTip
                                             = await CustomDataDirectoryInfo.BuildIncompatibilityDependencyStringAsync(
-                                                missingDirectories, prohibitedDirectories, token).ConfigureAwait(false);
+                                                missingDirectories, prohibitedDirectories, token: token).ConfigureAwait(false);
                                         await treCustomDataDirectories.DoThreadSafeAsync(() =>
                                         {
                                             objNode.ToolTipText = strToolTip;
@@ -1476,7 +1475,7 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstPriorityTables))
                 {
                     foreach (XPathNavigator objXmlNode in (await XmlManager
@@ -1542,7 +1541,7 @@ namespace Chummer
                 Interlocked.Increment(ref _intSkipLimbCountUpdate);
                 try
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstLimbCount))
                     {
                         foreach (XPathNavigator objXmlNode in (await XmlManager
@@ -1607,7 +1606,7 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstGrades))
                 {
                     foreach (XPathNavigator objXmlNode in (await XmlManager
@@ -3033,32 +3032,32 @@ namespace Chummer
 
         private async Task<bool> IsAllTextBoxesLegalAsync(CancellationToken token = default)
         {
-            if (_objCharacterSettings.BuildMethod == CharacterBuildMethod.Priority
-                && _objCharacterSettings.PriorityArray.Length != 5)
+            if (await _objCharacterSettings.GetBuildMethodAsync(token).ConfigureAwait(false) == CharacterBuildMethod.Priority
+                && (await _objCharacterSettings.GetPriorityArrayAsync(token).ConfigureAwait(false)).Length != 5)
                 return false;
 
             return await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.ContactPointsExpression, token: token).ConfigureAwait(false) &&
+                       await _objCharacterSettings.GetContactPointsExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.KnowledgePointsExpression, token: token).ConfigureAwait(false) &&
+                       await _objCharacterSettings.GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                        (await _objCharacterSettings.GetChargenKarmaToNuyenExpressionAsync(token).ConfigureAwait(false))
                        .Replace("{Karma}", "1")
                        .Replace("{PriorityNuyen}", "1"), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                                            _objCharacterSettings.EssenceModifierPostExpression.Replace("{Modifier}",
-                                                "1.0"), token: token)
+                                            (await _objCharacterSettings.GetEssenceModifierPostExpressionAsync(token).ConfigureAwait(false))
+                                            .Replace("{Modifier}", "1.0"), token: token)
                                         .ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.RegisteredSpriteExpression, token: token).ConfigureAwait(false) &&
+                       await _objCharacterSettings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.BoundSpiritExpression, token: token).ConfigureAwait(false) &&
+                       await _objCharacterSettings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.LiftLimitExpression, token: token).ConfigureAwait(false) &&
+                       await _objCharacterSettings.GetLiftLimitExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.CarryLimitExpression, token: token).ConfigureAwait(false) &&
+                       await _objCharacterSettings.GetCarryLimitExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.EncumbranceIntervalExpression, token: token).ConfigureAwait(false);
+                       await _objCharacterSettings.GetEncumbranceIntervalExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         private bool IsDirty

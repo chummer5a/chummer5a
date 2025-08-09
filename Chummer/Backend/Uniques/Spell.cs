@@ -39,7 +39,7 @@ namespace Chummer
     /// A Magician Spell.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(\"en-us\")}")]
     public sealed class Spell : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -57,6 +57,7 @@ namespace Chummer
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strExtra = string.Empty;
+        private string _strUseSkill = string.Empty;
         private bool _blnLimited;
         private bool _blnExtended;
         private bool _blnCustomExtended;
@@ -143,6 +144,7 @@ namespace Chummer
                 objXmlSpellNode.TryGetStringFieldQuickly("damage", ref _strDamage);
                 objXmlSpellNode.TryGetStringFieldQuickly("duration", ref _strDuration);
                 objXmlSpellNode.TryGetStringFieldQuickly("dv", ref _strDV);
+                objXmlSpellNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
                 _blnLimited = blnLimited;
                 _blnAlchemical = blnAlchemical;
                 objXmlSpellNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -221,12 +223,12 @@ namespace Chummer
                 objXmlSpellNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
                 {
-                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlSpellNode, Name,
+                    await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(objXmlSpellNode, Name,
                         await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
                         await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
-                        token).ConfigureAwait(false);
+                        token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
 
                 if (objXmlSpellNode.TryGetStringFieldQuickly("descriptor", ref _strDescriptors))
@@ -237,6 +239,7 @@ namespace Chummer
                 objXmlSpellNode.TryGetStringFieldQuickly("damage", ref _strDamage);
                 objXmlSpellNode.TryGetStringFieldQuickly("duration", ref _strDuration);
                 objXmlSpellNode.TryGetStringFieldQuickly("dv", ref _strDV);
+                objXmlSpellNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
                 _blnLimited = blnLimited;
                 _blnAlchemical = blnAlchemical;
                 objXmlSpellNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -326,6 +329,7 @@ namespace Chummer
                 objWriter.WriteElementString("damage", _strDamage);
                 objWriter.WriteElementString("duration", _strDuration);
                 objWriter.WriteElementString("dv", _strDV);
+                objWriter.WriteElementString("useskill", _strUseSkill);
                 objWriter.WriteElementString("limited", _blnLimited.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("extended", _blnExtended.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("customextended",
@@ -335,7 +339,7 @@ namespace Chummer
                 objWriter.WriteElementString("source", _strSource);
                 objWriter.WriteElementString("page", _strPage);
                 objWriter.WriteElementString("extra", _strExtra);
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteElementString("freebonus", _blnFreeBonus.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("barehandedadept",
@@ -385,6 +389,7 @@ namespace Chummer
 
                 objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
                 objNode.TryGetStringFieldQuickly("dv", ref _strDV);
+                objNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
                 if (objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited) && _blnLimited
                                                                                && _objCharacter.LastSavedVersion
                                                                                <= new ValueVersion(5, 197, 30))
@@ -456,42 +461,48 @@ namespace Chummer
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
                     await objWriter
+                        .WriteElementStringAsync(
+                            "fullname_english", await DisplayNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false),
+                            token)
+                        .ConfigureAwait(false);
+                    await objWriter
                         .WriteElementStringAsync("descriptors",
                             await DisplayDescriptorsAsync(strLanguageToPrint, token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("descriptors_english", Descriptors, token)
+                    await objWriter.WriteElementStringAsync("descriptors_english", await DisplayDescriptorsAsync(GlobalSettings.DefaultLanguage, token)
+                                .ConfigureAwait(false), token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false),
                             token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("category_english", Category, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("category_english", await DisplayCategoryAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "type", await DisplayTypeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("type_english", Type, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("type_english", await DisplayTypeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "range", await DisplayRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("range_english", Range, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("range_english", await DisplayRangeAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
-                            "damage", await DisplayDamageAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            "damage", await DisplayDamageAsync(strLanguageToPrint, objCulture, token).ConfigureAwait(false),
                             token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("damage_english", Damage, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("damage_english", await DisplayDamageAsync(GlobalSettings.DefaultLanguage, GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "duration", await DisplayDurationAsync(strLanguageToPrint, token).ConfigureAwait(false),
                             token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("duration_english", Duration, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("duration_english", await DisplayDurationAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "dv", await DisplayDvAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("dv_english", CalculatedDv, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("dv_english", await DisplayDvAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("alchemy", Alchemical.ToString(GlobalSettings.InvariantCultureInfo),
                             token).ConfigureAwait(false);
@@ -519,7 +530,7 @@ namespace Chummer
                             await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)
-                        await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -691,7 +702,7 @@ namespace Chummer
             {
                 if (string.IsNullOrWhiteSpace(Descriptors))
                     return LanguageManager.GetString("String_None", strLanguage);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
                     string strSpace = LanguageManager.GetString("String_Space", strLanguage);
@@ -761,7 +772,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (string.IsNullOrWhiteSpace(Descriptors))
                     return await LanguageManager.GetStringAsync("String_None", strLanguage, token: token).ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
@@ -992,7 +1003,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strReturn = CalculatedDv.Replace('/', '÷').Replace('*', '×');
+                string strReturn = (await GetCalculatedDvAsync(token).ConfigureAwait(false)).Replace('/', '÷').Replace('*', '×');
                 if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     strReturn = await strReturn
@@ -1038,98 +1049,101 @@ namespace Chummer
         /// <summary>
         /// Drain Tooltip.
         /// </summary>
-        public string DvTooltip
+        public async Task<string> GetDvTooltipAsync(CancellationToken token = default)
         {
-            get
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                string strSpace = LanguageManager.GetString("String_Space");
-                using (LockObject.EnterReadLock())
+                token.ThrowIfCancellationRequested();
+                int intMag = await (await _objCharacter.GetAttributeAsync("MAG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
+                // Barehanded Adept is limited to a Force of MAG/3 rounded up
+                int intHighestForce = BarehandedAdept
+                    ? intMag.DivAwayFromZero(3)
+                    : intMag * 2;
+                string strDV = await GetCalculatedDvAsync(token).ConfigureAwait(false);
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdTip))
                 {
-                    // Barehanded Adept is limited to a Force of MAG/3 rounded up
-                    int intHighestForce = BarehandedAdept
-                        ? (_objCharacter.MAG.TotalValue + 2) / 3
-                        : _objCharacter.MAG.TotalValue * 2;
-                    string strDV = CalculatedDv;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdTip))
+                    sbdTip.Append(await LanguageManager.GetStringAsync("Tip_SpellDrain", token: token).ConfigureAwait(false));
+                    for (int i = 1; i <= intHighestForce; i++)
                     {
-                        sbdTip.Append(LanguageManager.GetString("Tip_SpellDrain"));
-                        for (int i = 1; i <= intHighestForce; i++)
+                        token.ThrowIfCancellationRequested();
+                        // Calculate the Spell's Drain for the current Force.
+                        (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                            strDV.Replace("F", i.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
+
+                        if (blnIsSuccess && strDV != "Special")
                         {
-                            // Calculate the Spell's Drain for the current Force.
-                            (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(
-                                strDV.Replace("F", i.ToString(GlobalSettings.InvariantCultureInfo))
-                                     .Replace("/", " div "));
-
-                            if (blnIsSuccess && strDV != "Special")
-                            {
-                                int intDV = ((double) xprResult).StandardRound();
-
-                                // Drain cannot be lower than 2 (4 for Barehanded Adept).
-                                int intMinDv = BarehandedAdept ? 4 : 2;
-                                if (intDV < intMinDv)
-                                    intDV = intMinDv;
-                                sbdTip.AppendLine().Append(LanguageManager.GetString("String_Force"))
-                                      .Append(strSpace).Append(i.ToString(GlobalSettings.CultureInfo))
-                                      .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
-                                      .Append(intDV.ToString(GlobalSettings.CultureInfo));
-                            }
-                            else
-                            {
-                                sbdTip.Clear();
-                                sbdTip.Append(LanguageManager.GetString("Tip_SpellDrainSeeDescription"));
-                                break;
-                            }
+                            // Drain is always minimum 2 (doubled for Barehanded Adept)
+                            int intDV = Math.Max(((double)xprResult).StandardRound(), BarehandedAdept ? 4 : 2);
+                            sbdTip.AppendLine().Append(await LanguageManager.GetStringAsync("String_Force", token: token).ConfigureAwait(false))
+                                  .Append(strSpace).Append(i.ToString(GlobalSettings.CultureInfo))
+                                  .Append(await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false)).Append(strSpace)
+                                  .Append(intDV.ToString(GlobalSettings.CultureInfo));
                         }
-
-                        sbdTip.AppendLine();
-                        if (BarehandedAdept)
-                            sbdTip.Append('(');
-                        sbdTip.Append(LanguageManager.GetString("Tip_SpellDrainBase")).Append(strSpace).Append('(')
-                              .Append(DvBase).Append(')');
-                        if (Limited)
+                        else
                         {
-                            sbdTip.Append(strSpace).Append('+').Append(strSpace)
-                                  .Append(LanguageManager.GetString("String_SpellLimited")).Append(strSpace)
-                                  .Append("(-2)");
+                            sbdTip.Clear();
+                            sbdTip.Append(await LanguageManager.GetStringAsync("Tip_SpellDrainSeeDescription", token: token).ConfigureAwait(false));
+                            break;
                         }
-
-                        if (Extended && _blnCustomExtended)
-                        {
-                            sbdTip.Append(strSpace).Append('+').Append(strSpace)
-                                  .Append(LanguageManager.GetString("String_SpellExtended")).Append(strSpace)
-                                  .Append("(+2)");
-                        }
-
-                        foreach (Improvement objLoopImprovement in RelevantImprovements(o =>
-                                     o.ImproveType == Improvement.ImprovementType.DrainValue
-                                     || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
-                                     || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
-                        {
-                            sbdTip.Append(strSpace).Append('+').Append(strSpace)
-                                  .Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
-                                  .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
-                        }
-
-                        if (BarehandedAdept)
-                        {
-                            Improvement objBarehandedAdeptImprovement = ImprovementManager
-                                                                        .GetCachedImprovementListForValueOf(
-                                                                            _objCharacter,
-                                                                            Improvement.ImprovementType.AllowSpellRange)
-                                                                        .Find(x => x.ImprovedName == "T"
-                                                                                  || x.ImprovedName == "T (A)");
-                            string strBarehandedAdeptName = objBarehandedAdeptImprovement != null
-                                ? _objCharacter.GetObjectName(objBarehandedAdeptImprovement)
-                                : _objCharacter.TranslateExtra("Barehanded Adept", GlobalSettings.Language,
-                                                               "qualities.xml");
-                            sbdTip.Append(')').Append(strSpace).Append('×').Append(strSpace)
-                                  .Append(strBarehandedAdeptName).Append(strSpace).Append("(×2)");
-                        }
-
-                        return sbdTip.ToString();
                     }
+
+                    sbdTip.AppendLine();
+                    if (BarehandedAdept)
+                        sbdTip.Append('(');
+                    sbdTip.Append(await LanguageManager.GetStringAsync("Tip_SpellDrainBase", token: token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                          .Append(DvBase).Append(')');
+                    if (Limited)
+                    {
+                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
+                              .Append(await LanguageManager.GetStringAsync("String_SpellLimited", token: token).ConfigureAwait(false)).Append(strSpace)
+                              .Append("(-2)");
+                    }
+
+                    if (Extended && _blnCustomExtended)
+                    {
+                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
+                              .Append(await LanguageManager.GetStringAsync("String_SpellExtended", token: token).ConfigureAwait(false)).Append(strSpace)
+                              .Append("(+2)");
+                    }
+
+                    foreach (Improvement objLoopImprovement in await RelevantImprovementsAsync(o =>
+                                 o.ImproveType == Improvement.ImprovementType.DrainValue
+                                 || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                                 || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, token: token).ConfigureAwait(false))
+                    {
+                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
+                              .Append(await _objCharacter.GetObjectNameAsync(objLoopImprovement, token: token).ConfigureAwait(false)).Append(strSpace)
+                              .Append('(').Append(objLoopImprovement.Value.ToString("#,0.##;-#,0.##;#,0.##", GlobalSettings.CultureInfo)).Append(')');
+                    }
+
+                    // Minimum drain of 2
+                    sbdTip.AppendLine().AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_MinimumAttribute", token: token).ConfigureAwait(false), 2);
+
+                    if (BarehandedAdept)
+                    {
+                        Improvement objBarehandedAdeptImprovement = (await ImprovementManager
+                                                                    .GetCachedImprovementListForValueOfAsync(
+                                                                        _objCharacter,
+                                                                        Improvement.ImprovementType.AllowSpellRange, token: token).ConfigureAwait(false))
+                                                                    .Find(x => x.ImprovedName == "T"
+                                                                              || x.ImprovedName == "T (A)");
+                        string strBarehandedAdeptName = objBarehandedAdeptImprovement != null
+                            ? await _objCharacter.GetObjectNameAsync(objBarehandedAdeptImprovement, token: token).ConfigureAwait(false)
+                            : await _objCharacter.TranslateExtraAsync("Barehanded Adept", GlobalSettings.Language,
+                                                           "qualities.xml", token).ConfigureAwait(false);
+                        sbdTip.Append(')').Append(strSpace).Append('×').Append(strSpace)
+                              .Append(strBarehandedAdeptName).Append(strSpace).Append("(×2)");
+                    }
+
+                    return sbdTip.ToString();
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1268,48 +1282,34 @@ namespace Chummer
         /// <summary>
         /// Translated Damage.
         /// </summary>
-        public string DisplayDamage(string strLanguage)
+        public string DisplayDamage(string strLanguage, CultureInfo objCultureInfo)
         {
             using (LockObject.EnterReadLock())
             {
                 if (Damage != "S" && Damage != "P")
                     return LanguageManager.GetString("String_None", strLanguage);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdReturn))
-                {
-                    sbdReturn.Append('0');
-                    foreach (Improvement improvement in RelevantImprovements(
+                decimal decBonus = RelevantImprovements(
                                  i => i.ImproveType == Improvement.ImprovementType.SpellDescriptorDamage
-                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage))
-                        sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, " + {0:0;-0;0}", improvement.Value);
-                    string output = sbdReturn.ToString();
+                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage).Sum(x => x.Value);
+                string strReturn = decBonus.StandardRound().ToString(objCultureInfo);
+                switch (Damage)
+                {
+                    case "P":
+                        strReturn += LanguageManager.GetString("String_DamagePhysical", strLanguage);
+                        break;
 
-                    (bool blnIsSuccess, object xprResult)
-                        = CommonFunctions.EvaluateInvariantXPath(output.TrimStart('+'));
-                    sbdReturn.Clear();
-                    if (blnIsSuccess)
-                        sbdReturn.Append(xprResult);
-
-                    switch (Damage)
-                    {
-                        case "P":
-                            sbdReturn.Append(LanguageManager.GetString("String_DamagePhysical", strLanguage));
-                            break;
-
-                        case "S":
-                            sbdReturn.Append(LanguageManager.GetString("String_DamageStun", strLanguage));
-                            break;
-                    }
-
-                    return sbdReturn.ToString();
+                    case "S":
+                        strReturn += LanguageManager.GetString("String_DamageStun", strLanguage);
+                        break;
                 }
+                return strReturn;
             }
         }
 
         /// <summary>
         /// Translated Damage.
         /// </summary>
-        public async Task<string> DisplayDamageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayDamageAsync(string strLanguage, CultureInfo objCultureInfo, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -1319,41 +1319,26 @@ namespace Chummer
                 if (Damage != "S" && Damage != "P")
                     return await LanguageManager.GetStringAsync("String_None", strLanguage, token: token)
                                                 .ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdReturn))
-                {
-                    sbdReturn.Append('0');
-                    foreach (Improvement improvement in RelevantImprovements(
+                decimal decBonus = (await RelevantImprovementsAsync(
                                  i => i.ImproveType == Improvement.ImprovementType.SpellDescriptorDamage
-                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage))
-                        sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, " + {0:0;-0;0}", improvement.Value);
-                    string output = sbdReturn.ToString();
+                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage, token: token)).Sum(x => x.Value);
+                string strReturn = decBonus.StandardRound().ToString(objCultureInfo);
+                switch (Damage)
+                {
+                    case "P":
+                        strReturn += await LanguageManager
+                                                .GetStringAsync("String_DamagePhysical", strLanguage, token: token)
+                                                .ConfigureAwait(false);
+                        break;
 
-                    (bool blnIsSuccess, object xprResult) = await CommonFunctions
-                                                                  .EvaluateInvariantXPathAsync(
-                                                                      output.TrimStart('+'), token)
-                                                                  .ConfigureAwait(false);
-                    sbdReturn.Clear();
-                    if (blnIsSuccess)
-                        sbdReturn.Append(xprResult);
-
-                    switch (Damage)
-                    {
-                        case "P":
-                            sbdReturn.Append(await LanguageManager
-                                                   .GetStringAsync("String_DamagePhysical", strLanguage, token: token)
-                                                   .ConfigureAwait(false));
-                            break;
-
-                        case "S":
-                            sbdReturn.Append(await LanguageManager
-                                                   .GetStringAsync("String_DamageStun", strLanguage, token: token)
-                                                   .ConfigureAwait(false));
-                            break;
-                    }
-
-                    return sbdReturn.ToString();
+                    case "S":
+                        strReturn += await LanguageManager
+                                                .GetStringAsync("String_DamageStun", strLanguage, token: token)
+                                                .ConfigureAwait(false);
+                        break;
                 }
+
+                return strReturn;
             }
             finally
             {
@@ -1436,47 +1421,151 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                 {
                     string strReturn = DvBase;
-                    if (!Limited && !(Extended && _blnCustomExtended) && !BarehandedAdept && !RelevantImprovements(o =>
+                    if (!Limited && !(Extended && _blnCustomExtended) && !BarehandedAdept && !strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue)
+                        && !RelevantImprovements(o =>
                             o.ImproveType == Improvement.ImprovementType.DrainValue
                             || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                             || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true).Any())
                         return strReturn;
                     bool blnForce = strReturn.StartsWith('F');
-                    string strDV = strReturn.TrimStartOnce('F');
+                    string strDv = blnForce ? strReturn.TrimStartOnce("F", true) : strReturn;
                     //Navigator can't do math on a single value, so inject a mathable value.
-                    if (string.IsNullOrEmpty(strDV))
+                    if (string.IsNullOrEmpty(strDv))
                     {
-                        strDV = "0";
+                        strDv = "0";
                     }
                     else
                     {
-                        int intPos = strReturn.IndexOf('-');
-                        if (intPos != -1)
-                        {
-                            strDV = strReturn.Substring(intPos);
-                        }
-                        else
-                        {
-                            intPos = strReturn.IndexOf('+');
-                            if (intPos != -1)
-                            {
-                                strDV = strReturn.Substring(intPos);
-                            }
-                        }
+                        strDv = strDv.TrimStart('+');
                     }
 
-                    object xprResult;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    string strToAppend = string.Empty;
+                    int intDrainDv = 0;
+                    if (strDv.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
+                    {
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdReturn))
+                        {
+                            sbdReturn.Append('(').Append(strDv).Append(')');
+                            foreach (Improvement objImprovement in RelevantImprovements(i =>
+                                         i.ImproveType == Improvement.ImprovementType.DrainValue
+                                         || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                                         || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
+                            {
+                                sbdReturn.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                            }
+
+                            if (Limited)
+                            {
+                                sbdReturn.Append("-2");
+                            }
+
+                            if (Extended && _blnCustomExtended)
+                            {
+                                sbdReturn.Append("+2");
+                            }
+
+                            if (BarehandedAdept && !blnForce)
+                            {
+                                sbdReturn.Insert(0, "2 * (").Append(')');
+                            }
+
+                            _objCharacter.ProcessAttributesInXPath(sbdReturn);
+                            (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(sbdReturn.ToString());
+                            if (blnIsSuccess)
+                                intDrainDv = ((double)xprResult).StandardRound();
+                            else
+                                strToAppend = sbdReturn.ToString();
+                        }
+                    }
+                    else
+                    {
+                        foreach (Improvement objImprovement in RelevantImprovements(i =>
+                                         i.ImproveType == Improvement.ImprovementType.DrainValue
+                                         || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                                         || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
+                        {
+                            decValue += objImprovement.Value;
+                        }
+                        if (Limited)
+                            decValue -= 2;
+                        if (Extended && _blnCustomExtended)
+                            decValue += 2;
+                        if (BarehandedAdept && !blnForce)
+                            decValue *= 2;
+                        intDrainDv = decValue.StandardRound();
+                    }
+
+                    if (blnForce)
+                    {
+                        if (!string.IsNullOrEmpty(strToAppend))
+                        {
+                            strReturn += 'F' + strToAppend;
+                            if (BarehandedAdept)
+                                strReturn = "2 * (" + strReturn + ')';
+                        }
+                        else
+                            strReturn = string.Format(GlobalSettings.InvariantCultureInfo,
+                                                  BarehandedAdept ? "2 * (F{0:+0;-0;})" : "F{0:+0;-0;}", intDrainDv);
+                    }
+                    else if (!string.IsNullOrEmpty(strToAppend))
+                    {
+                        strReturn += strToAppend;
+                        if (BarehandedAdept)
+                            strReturn = "2 * (" + strReturn + ')';
+                    }
+                    else
+                        // Drain always minimum 2 (doubled for Barehanded Adept)
+                        strReturn = Math.Max(intDrainDv, BarehandedAdept ? 4 : 2).ToString(GlobalSettings.InvariantCultureInfo);
+
+                    return strReturn;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Spell's drain value.
+        /// </summary>
+        public async Task<string> GetCalculatedDvAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strReturn = DvBase;
+                if (!Limited && !(Extended && _blnCustomExtended) && !BarehandedAdept && !strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue)
+                    && (await RelevantImprovementsAsync(o =>
+                        o.ImproveType == Improvement.ImprovementType.DrainValue
+                        || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                        || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true, token).ConfigureAwait(false)).Count == 0)
+                    return strReturn;
+                bool blnForce = strReturn.StartsWith('F');
+                string strDv = blnForce ? strReturn.TrimStartOnce("F", true) : strReturn;
+                //Navigator can't do math on a single value, so inject a mathable value.
+                if (string.IsNullOrEmpty(strDv))
+                {
+                    strDv = "0";
+                }
+                else
+                {
+                    strDv = strDv.TrimStart('+');
+                }
+
+                string strToAppend = string.Empty;
+                int intDrainDv = 0;
+                if (strDv.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
+                {
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdReturn))
                     {
-                        sbdReturn.Append(strDV);
-                        foreach (Improvement objImprovement in RelevantImprovements(i =>
+                        sbdReturn.Append('(').Append(strDv).Append(')');
+                        foreach (Improvement objImprovement in await RelevantImprovementsAsync(i =>
                                      i.ImproveType == Improvement.ImprovementType.DrainValue
                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
-                                     || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
+                                     || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, token: token).ConfigureAwait(false))
                         {
-                            sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
-                                                   objImprovement.Value);
+                            sbdReturn.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
                         }
 
                         if (Limited)
@@ -1494,24 +1583,59 @@ namespace Chummer
                             sbdReturn.Insert(0, "2 * (").Append(')');
                         }
 
-                        bool blnIsSuccess;
-                        (blnIsSuccess, xprResult) = CommonFunctions.EvaluateInvariantXPath(sbdReturn.ToString());
-                        if (!blnIsSuccess)
-                            return strReturn;
+                        await _objCharacter.ProcessAttributesInXPathAsync(sbdReturn, token: token).ConfigureAwait(false);
+                        (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdReturn.ToString(), token).ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            intDrainDv = ((double)xprResult).StandardRound();
+                        else
+                            strToAppend = sbdReturn.ToString();
                     }
-
-                    if (blnForce)
-                    {
-                        strReturn = string.Format(GlobalSettings.InvariantCultureInfo,
-                                                  BarehandedAdept ? "2 * (F{0:+0;-0;})" : "F{0:+0;-0;}", xprResult);
-                    }
-                    else if (xprResult.ToString() != "0")
-                    {
-                        strReturn += xprResult;
-                    }
-
-                    return strReturn;
                 }
+                else
+                {
+                    foreach (Improvement objImprovement in await RelevantImprovementsAsync(i =>
+                                     i.ImproveType == Improvement.ImprovementType.DrainValue
+                                     || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                                     || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, token: token).ConfigureAwait(false))
+                    {
+                        decValue += objImprovement.Value;
+                    }
+                    if (Limited)
+                        decValue -= 2;
+                    if (Extended && _blnCustomExtended)
+                        decValue += 2;
+                    if (BarehandedAdept && !blnForce)
+                        decValue *= 2;
+                    intDrainDv = decValue.StandardRound();
+                }
+
+                if (blnForce)
+                {
+                    if (!string.IsNullOrEmpty(strToAppend))
+                    {
+                        strReturn += "F" + strToAppend;
+                        if (BarehandedAdept)
+                            strReturn = "2 * (" + strReturn + ')';
+                    }
+                    else
+                        strReturn = string.Format(GlobalSettings.InvariantCultureInfo,
+                                              BarehandedAdept ? "2 * (F{0:+0;-0;})" : "F{0:+0;-0;}", intDrainDv);
+                }
+                else if (!string.IsNullOrEmpty(strToAppend))
+                {
+                    strReturn += strToAppend;
+                    if (BarehandedAdept)
+                        strReturn = "2 * (" + strReturn + ')';
+                }
+                else
+                    // Drain always minimum 2 (doubled for Barehanded Adept)
+                    strReturn = Math.Max(intDrainDv, BarehandedAdept ? 4 : 2).ToString(GlobalSettings.InvariantCultureInfo);
+
+                return strReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1617,9 +1741,9 @@ namespace Chummer
             }
             set
             {
-                string strExtra = _objCharacter.ReverseTranslateExtra(value);
+                value = _objCharacter.ReverseTranslateExtra(value);
                 using (LockObject.EnterUpgradeableReadLock())
-                    _strExtra = strExtra;
+                    _strExtra = value;
             }
         }
 
@@ -1715,8 +1839,52 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_strNotes == value)
+                        return;
+                }
                 using (LockObject.EnterUpgradeableReadLock())
                     _strNotes = value;
+            }
+        }
+
+        public async Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strNotes == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _strNotes = value;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1732,8 +1900,72 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _colNotes = value;
+                    }
+                }
+            }
+        }
+
+        public async Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _colNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _colNotes)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_colNotes == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
                     _colNotes = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1898,6 +2130,23 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Active Skill that should be used with this Spell instead of the default one.
+        /// </summary>
+        public string UseSkill
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _strUseSkill;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                    _strUseSkill = value;
+            }
+        }
+
         #endregion Properties
 
         #region ComplexProperties
@@ -1911,24 +2160,27 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    XPathNavigator objCategoryNode = _objCharacter.LoadDataXPath("spells.xml")
-                                                                  .SelectSingleNode(
-                                                                      "/chummer/categories/category[. = "
-                                                                      + Category.CleanXPath() + ']');
-                    if (objCategoryNode == null)
-                        return null;
-                    string strSkillKey = string.Empty;
-                    objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
-                    strSkillKey =
-                        RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell)
-                            .FirstOrDefault()?.Target ?? strSkillKey;
-                    if (Alchemical)
+                    string strSkillKey = UseSkill;
+                    if (string.IsNullOrEmpty(strSkillKey))
                     {
-                        objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
-                    }
-                    else if (BarehandedAdept)
-                    {
-                        objCategoryNode.TryGetStringFieldQuickly("@barehandedadeptskill", ref strSkillKey);
+                        XPathNavigator objCategoryNode = _objCharacter.LoadDataXPath("spells.xml")
+                                              .SelectSingleNode(
+                                                  "/chummer/categories/category[. = "
+                                                  + Category.CleanXPath() + ']');
+                        if (objCategoryNode == null)
+                            return null;
+                        objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
+                        strSkillKey =
+                            RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell)
+                                .FirstOrDefault()?.Target ?? strSkillKey;
+                        if (Alchemical)
+                        {
+                            objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
+                        }
+                        else if (BarehandedAdept)
+                        {
+                            objCategoryNode.TryGetStringFieldQuickly("@barehandedadeptskill", ref strSkillKey);
+                        }
                     }
 
                     return string.IsNullOrEmpty(strSkillKey)
@@ -1948,24 +2200,29 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                XPathNavigator objCategoryNode = (await _objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false))
+                string strSkillKey = UseSkill;
+                if (string.IsNullOrEmpty(strSkillKey))
+                {
+                    // If UseSkill is not set, we need to look it up in the XML file.
+                    // This is done asynchronously to avoid blocking the UI thread.
+                    XPathNavigator objCategoryNode = (await _objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false))
                     .SelectSingleNode(
                         "/chummer/categories/category[. = "
                         + Category.CleanXPath() + ']');
-                if (objCategoryNode == null)
-                    return null;
-                string strSkillKey = string.Empty;
-                objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
-                strSkillKey =
-                    (await RelevantImprovementsAsync(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell, token: token).ConfigureAwait(false))
-                        .FirstOrDefault()?.Target ?? strSkillKey;
-                if (Alchemical)
-                {
-                    objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
-                }
-                else if (BarehandedAdept)
-                {
-                    objCategoryNode.TryGetStringFieldQuickly("@barehandedadeptskill", ref strSkillKey);
+                    if (objCategoryNode == null)
+                        return null;
+                    objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
+                    strSkillKey =
+                        (await RelevantImprovementsAsync(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell, token: token).ConfigureAwait(false))
+                            .FirstOrDefault()?.Target ?? strSkillKey;
+                    if (Alchemical)
+                    {
+                        objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
+                    }
+                    else if (BarehandedAdept)
+                    {
+                        objCategoryNode.TryGetStringFieldQuickly("@barehandedadeptskill", ref strSkillKey);
+                    }
                 }
 
                 return string.IsNullOrEmpty(strSkillKey)
@@ -2043,7 +2300,7 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
                     string strFormat = strSpace + "{0}" + strSpace + "({1})";
@@ -2093,7 +2350,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
                     string strFormat = strSpace + "{0}" + strSpace + "({1})";
@@ -2145,7 +2402,12 @@ namespace Chummer
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -2171,7 +2433,9 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2181,7 +2445,12 @@ namespace Chummer
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                objLocker = LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -2207,7 +2476,9 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2253,10 +2524,10 @@ namespace Chummer
                                 {
                                     //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
                                     // we are returning either the original improvement, null or a newly instantiated improvement
-                                    Improvement bestFocus = CompareFocusPower(objImprovement);
-                                    if (bestFocus != null)
+                                    Improvement objCompensatedImprovement = _objCharacter.GetPowerFocusAdjustedImprovementValue(objImprovement);
+                                    if (objCompensatedImprovement != null)
                                     {
-                                        yield return bestFocus;
+                                        yield return objCompensatedImprovement;
                                         if (blnExitAfterFirst) yield break;
                                     }
                                 }
@@ -2374,10 +2645,10 @@ namespace Chummer
                                 {
                                     //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
                                     // we are returning either the original improvement, null or a newly instantiated improvement
-                                    Improvement bestFocus = await CompareFocusPowerAsync(objImprovement, token).ConfigureAwait(false);
-                                    if (bestFocus != null)
+                                    Improvement objCompensatedImprovement = await _objCharacter.GetPowerFocusAdjustedImprovementValueAsync(objImprovement, token).ConfigureAwait(false);
+                                    if (objCompensatedImprovement != null)
                                     {
-                                        lstReturn.Add(bestFocus);
+                                        lstReturn.Add(objCompensatedImprovement);
                                         if (blnExitAfterFirst)
                                             return false;
                                     }
@@ -2459,112 +2730,33 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Method to check we are only applying the highest focus to the spell dicepool
-        /// </summary>
-        private Improvement CompareFocusPower(Improvement objImprovement)
-        {
-            using (LockObject.EnterReadLock())
-            {
-                List<Focus> list
-                    = _objCharacter.Foci.FindAll(
-                        x => x.GearObject?.Bonded == true && x.GearObject.Bonus.InnerText == "MAGRating");
-                if (list.Count > 0)
-                {
-                    // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-                    int powerFocusRating = list.Max(x => x.Rating);
+        #endregion ComplexProperties
 
-                    // If our focus is higher, add in a partial bonus
-                    if (powerFocusRating > 0)
-                    {
-                        // This is hackz -- because we don't want to lose the original improvement's value
-                        // we instantiate a fake version of the improvement that isn't saved to represent the diff
-                        if (powerFocusRating < objImprovement.Value)
-                            return new Improvement(_objCharacter)
-                            {
-                                Value = objImprovement.Value - powerFocusRating,
-                                SourceName = objImprovement.SourceName,
-                                ImprovedName = objImprovement.ImprovedName,
-                                ImproveSource = objImprovement.ImproveSource,
-                                ImproveType = objImprovement.ImproveType
-                            };
-                        return null;
-                    }
-                }
+        #region UI Methods
 
-                return objImprovement;
-            }
-        }
-
-        /// <summary>
-        /// Method to check we are only applying the highest focus to the spell dicepool
-        /// </summary>
-        private async Task<Improvement> CompareFocusPowerAsync(Improvement objImprovement, CancellationToken token = default)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsSpell, bool blnForInitiationsTab = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                List<Focus> list
-                    = await _objCharacter.Foci.FindAllAsync(
-                            x => x.GearObject?.Bonded == true && x.GearObject.Bonus.InnerText == "MAGRating", token)
-                        .ConfigureAwait(false);
-                if (list.Count > 0)
-                {
-                    // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-                    int powerFocusRating = list.Max(x => x.Rating);
-
-                    // If our focus is higher, add in a partial bonus
-                    if (powerFocusRating > 0)
-                    {
-                        // This is hackz -- because we don't want to lose the original improvement's value
-                        // we instantiate a fake version of the improvement that isn't saved to represent the diff
-                        if (powerFocusRating < objImprovement.Value)
-                            return new Improvement(_objCharacter)
-                            {
-                                Value = objImprovement.Value - powerFocusRating,
-                                SourceName = objImprovement.SourceName,
-                                ImprovedName = objImprovement.ImprovedName,
-                                ImproveSource = objImprovement.ImproveSource,
-                                ImproveType = objImprovement.ImproveType
-                            };
-                        return null;
-                    }
-                }
-
-                return objImprovement;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
-        #endregion ComplexProperties
-
-        #region UI Methods
-
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsSpell, bool blnAddCategory = false)
-        {
-            using (LockObject.EnterReadLock())
-            {
-                if (Grade != 0 && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
+                if ((blnForInitiationsTab ? Grade < 0 : Grade != 0) && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
                     return null;
 
-                string strText = CurrentDisplayName;
-                if (blnAddCategory)
+                string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                if (blnForInitiationsTab)
                 {
                     switch (Category)
                     {
                         case "Rituals":
-                            strText = LanguageManager.GetString("Label_Ritual")
-                                      + LanguageManager.GetString("String_Space") + strText;
+                            strText = await LanguageManager.GetStringAsync("Label_Ritual", token: token)
+                                      + await LanguageManager.GetStringAsync("String_Space", token: token) + strText;
                             break;
 
                         case "Enchantments":
-                            strText = LanguageManager.GetString("Label_Enchantment")
-                                      + LanguageManager.GetString("String_Space") + strText;
+                            strText = await LanguageManager.GetStringAsync("Label_Enchantment", token: token)
+                                      + await LanguageManager.GetStringAsync("String_Space", token: token) + strText;
                             break;
                     }
                 }
@@ -2575,11 +2767,17 @@ namespace Chummer
                     Text = strText,
                     Tag = this,
                     ContextMenuStrip = cmsSpell,
-                    ForeColor = PreferredColor,
-                    ToolTipText = Notes.WordWrap()
+                    ForeColor = blnForInitiationsTab
+                        ? await GetPreferredColorForInitiationsTabAsync(token).ConfigureAwait(false)
+                        : await GetPreferredColorAsync(token).ConfigureAwait(false),
+                    ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
                 };
 
                 return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2603,18 +2801,81 @@ namespace Chummer
             }
         }
 
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+                {
+                    return Grade != 0
+                        ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                        : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+                }
+                return Grade != 0
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public Color PreferredColorForInitiationsTab
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    if (!string.IsNullOrEmpty(Notes))
+                    {
+                        return Grade < 0
+                            ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                            : ColorManager.GenerateCurrentModeColor(NotesColor);
+                    }
+
+                    return Grade < 0
+                        ? ColorManager.GrayText
+                        : ColorManager.WindowText;
+                }
+            }
+        }
+
+        public async Task<Color> GetPreferredColorForInitiationsTabAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+                {
+                    return Grade < 0
+                        ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                        : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+                }
+                return Grade < 0
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         #endregion UI Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
-                if (blnConfirmDelete)
+                if (Grade < 0)
+                    return false;
+                if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSpell")))
                 {
-                    if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
-                        return false;
-                    if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSpell")))
-                        return false;
+                    return false;
                 }
 
                 using (LockObject.EnterWriteLock())
@@ -2636,14 +2897,13 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (blnConfirmDelete)
-                {
-                    if (Grade != 0) // If we are prompting, we are not removing this by removing the initiation/submersion that granted it
-                        return false;
-                    if (!await CommonFunctions
+                if (Grade < 0)
+                    return false;
+                if (blnConfirmDelete && !await CommonFunctions
                             .ConfirmDeleteAsync(
                                 await LanguageManager.GetStringAsync("Message_DeleteSpell", token: token)
                                     .ConfigureAwait(false), token).ConfigureAwait(false))
+                {
                         return false;
                 }
 

@@ -89,6 +89,11 @@
           <text>Die Luft war voller Rauch, durchschnitten</text>
           <page>8</page>
         </match>
+		<match>
+          <language>fr-fr</language>
+		  <text>La fumée emplissait l’air, transpercée par les lignes cramoisies,</text>
+		  <page>10</page>
+		</match>
       </matches>
     </book>
     <book>
@@ -159,6 +164,11 @@
           <text>Freedom is a prison all its own</text>
           <page>4</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Die Freiheit ist eine ganz eigene Art von Gefängnis.</text>
+          <page>4</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -169,6 +179,11 @@
         <match>
           <language>en-us</language>
           <text>Less than a day before</text>
+          <page>6</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Vor ein paar Tagen war Edwards noch ein unwichtiger</text>
           <page>6</page>
         </match>
       </matches>
@@ -212,6 +227,11 @@
           <text>The Matrix is the vast, wild, and wooly frontier</text>
           <page>3</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Die größte Attraktion an der Matrix ist natürlich, dass</text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -223,6 +243,11 @@
           <language>en-us</language>
           <text>The Matrix is the vast, wild, and wooly frontier</text>
           <page>3</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Die größte Attraktion an der Matrix ist natürlich, dass</text>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -236,6 +261,11 @@
           <text>The tragedy of a shadowrunner</text>
           <page>3</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Aber natürlich gibt es darüber geteilte Meinungen. Für</text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -246,6 +276,11 @@
         <match>
           <language>en-us</language>
           <text>Shadowrunners will punch you in the face</text>
+          <page>5</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Runner sind Opportunisten. Um zu überleben, würden sie</text>
           <page>5</page>
         </match>
       </matches>
@@ -260,22 +295,32 @@
           <text>Operations in bad times are pretty much the same</text>
           <page>5</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Anfang 2077 gibt es in der Sechsten Welt zahlreiche</text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
       <id>bb5c7e4e-431b-404f-89da-e69cf3b75d50</id>
-      <name>Schattenhandbuch (German Handbook)</name>
+      <name>Schattenhandbuch (German-Only)</name>
       <code>SHB</code>
     </book>
     <book>
       <id>8798c923-8118-448e-b201-53d299d7e58c</id>
-      <name>Schattenhandbuch 2 (German Handbook)</name>
+      <name>Schattenhandbuch 2 (German-Only)</name>
       <code>SHB2</code>
     </book>
     <book>
       <id>08dea2f1-3add-4516-bdbe-b47ab9a5e31f</id>
-      <name>Schattenhandbuch 3 (German Handbook)</name>
+      <name>Schattenhandbuch 3 (German-Only)</name>
       <code>SHB3</code>
+    </book>
+    <book>
+      <id>e1f426ff-e35a-4ddd-a168-11faec92d3b6</id>
+      <name>Schattenhandbuch 4 (German-Only)</name>
+      <code>SHB4</code>
     </book>
     <book>
       <id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
@@ -285,6 +330,11 @@
         <match>
           <language>en-us</language>
           <text>There are obvious uses for riggers</text>
+          <page>5</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Es gibt offensichtliche Einsatzgebiete für Rigger, die </text>
           <page>5</page>
         </match>
       </matches>
@@ -297,6 +347,11 @@
         <match>
           <language>en-us</language>
           <text>In the Sixth World, people usually assume that the thing</text>
+          <page>5</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>In der Sechsten Welt nehmen die Leute für gewöhnlich an,</text>
           <page>5</page>
         </match>
       </matches>
@@ -321,6 +376,11 @@
         <match>
           <language>en-us</language>
           <text>FBI Agent Seth Dietrich had seen plenty of danger or</text>
+          <page>3</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>FBI-Agent Seth Dietrich hatte schon eine Menge Gefährliches</text>
           <page>3</page>
         </match>
       </matches>
@@ -359,6 +419,11 @@
           <text>A breakdown of civilization, new threats, crazy danger, corporate desperation, and secrets</text>
           <page>8</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Selbst unter Idealbedingungen ist Zivilisation stets eine</text>
+          <page>7</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -395,13 +460,64 @@
           <text>Real con artists know they never have to ask anyone</text>
           <page>3</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Oft sind die von Runnern eingesetzten Werkzeuge sehr</text>
+          <page>3</page>
+        </match>
       </matches>
     </book>
     <book>
       <id>71a6304e-03dc-41db-be01-a86acab1517b</id>
-      <name>Shadowrun 2050 (5th Edition)</name>
+      <name>Shadowrun 2050 (German-Only)</name>
       <code>2050</code>
       <!-- Only match to the German one because the English one is 4e -->
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Von seinem stillen Platz am North Avenue Beach</text>
+          <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>5b97fd1f-08d4-4ce9-99a8-d6a0c70b5bdc</id>
+      <name>Parabotany (German-Only)</name>
+      <code>PBG</code>
+      <!-- Only match to the German one because the English one is 4e -->
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Es hat zehntausend Jahre der Domestizierung gebraucht,</text>
+          <page>2</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>d7c0c5eb-0900-431c-9852-edcc86b03f67</id>
+      <name>Parageology (German-Only)</name>
+      <code>PGG</code>
+      <!-- Only match to the German one because the English one is 4e -->
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Magie auf Landschaft und Gesteine zu studieren. Zu</text>
+          <page>2</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>e5b9d556-d084-418d-a2d2-2d5b45b2dede</id>
+      <name>Parazoology (German-Only)</name>
+      <code>PZG</code>
+      <!-- Only match to the German one because the English one is 4e -->
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Die Erde hat eine durch den Menschen verursachte, einzigartige Phase der Ausrottung durchgemacht. Zum ersten Mal ist eine</text>
+          <page>2</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>485cc0ae-8221-4d5e-a527-33df76fd1f21</id>
@@ -411,6 +527,11 @@
         <match>
           <language>en-us</language>
           <text>Of course there are risks!</text>
+          <page>5</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Aber es gibt Risiken. Natürlich gibt es Risiken!</text>
           <page>5</page>
         </match>
       </matches>
@@ -425,17 +546,22 @@
           <text>The world of magic is infinite</text>
           <page>6</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Die Welt der Magie ist unendlich. Für jedes Ding, das</text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
       <id>c6b7136f-e461-457b-b6f7-09e95c2f6313</id>
-      <name>State of the Art ADL (German Handbook)</name>
+      <name>State of the Art ADL (German-Only)</name>
       <code>SAG</code>
       <matches>
         <match>
           <language>de-de</language>
-          <text>ihre Hauer oftmals etwas einschüchternd auf Norms wirkten</text>
-          <page>6</page>
+          <text>die beste Waffe der Welt in den Händen, schon hat der</text>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -449,6 +575,11 @@
           <text>That’s why trogs are taking it back.</text>
           <page>6</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Deshalb holen es sich die Trogs zurück. Werden</text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -459,6 +590,12 @@
         <match>
           <language>en-us</language>
           <text>Motherfucking dammit, Charlie!</text>
+          <page>3</page>
+        </match>
+		<!-- Germans have it united with other Shadows in Focus books centered on Sioux Nation -->
+		<match>
+          <language>de-de</language>
+          <text>Sie führen die Runner in die Schatten der Sioux</text>
           <page>3</page>
         </match>
       </matches>
@@ -472,6 +609,11 @@
           <language>en-us</language>
           <text>Knowing your opponent is a critical part of</text>
           <page>6</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Den Gegner zu kennen ist ein wichtiger Teil des </text>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -497,6 +639,11 @@
           <text>There is no better way to get a shadowrunner</text>
           <page>6</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Es gibt keine bessere Art, einen Runner dazu zu</text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -509,16 +656,21 @@
           <text>The Matrix is not a place, but it is everywhere</text>
           <page>6</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Die Matrix ist kein Ort, sondern sie ist überall. Sie ist</text>
+          <page>5</page>
+        </match>
       </matches>
     </book>
     <book>
       <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
-      <name>Hamburg (German-exclusive)</name>
+      <name>Datapuls Hamburg (German-Only)</name>
       <code>HAMG</code>
       <matches>
         <match>
           <language>de-de</language>
-          <text>Willkommen in Hamburg. Willkommen in einem Sprawl voller Gefahren und Möglichkeiten.</text>
+          <text>Willkommen in Hamburg. Willkommen in einem Sprawl</text>
           <page>7</page>
         </match>
       </matches>
@@ -532,6 +684,11 @@
           <language>en-us</language>
           <text>This book is not about them</text>
           <page>6</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>all den Drek in ihr schweifen lassen und sagen:</text>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -562,28 +719,33 @@
           <text>There is no future</text>
           <page>6</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Wenn man diesen Gedanken laut ausspricht, dann</text>
+          <page>7</page>
+        </match>
       </matches>
     </book>
     <book>
       <id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
-      <name>Datapuls SOTA 2080 (German-exclusive)</name>
+      <name>Datapuls SOTA 2080 (German-Only)</name>
       <code>SOTG</code>
       <matches>
         <match>
           <language>de-de</language>
-          <text>Laserwaffen stoßen bei der Energieversorgung (noch) an ihre Grenzen</text>
+          <text>Treibladung komplett abzulösen. Laserwaffen stoßen bei</text>
           <page>4</page>
         </match>
       </matches>
     </book>
     <book>
-      <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
-      <name>Datapuls Verschlusssache (German-exclusive)</name>
-      <code>DPVG</code>
+      <id>a43010ac-7b1a-420f-ab72-1644ee57ed7a</id>
+      <name>Datapuls SOX 2080 (German-Only)</name>
+      <code>SOXG</code>
       <matches>
         <match>
           <language>de-de</language>
-          <text>Das Verhältnis der Deutschen zu ihren Geheimdiensten ist kompliziert</text>
+          <text>Der Schweiß lief Virgil aus allen Poren und verklebte die</text>
           <page>4</page>
         </match>
       </matches>
@@ -599,6 +761,7 @@
           <text>KRIME!!!!!!!</text>
           <page>2</page>
         </match>
+		<!-- Do not match to German one because it is 6e-exclusive instead of being dual-statted -->
       </matches>
     </book>
     <book>
@@ -635,12 +798,24 @@
           <text>We have specifically designed these quick-start rules</text>
           <page>2</page>
         </match>
+		<match>
+          <language>de-de</language>
+          <text>Wir schreiben das Jahr 2075, und wenn man überleben will, muss man überlegen, was man zu zahlen bereit</text>
+          <page>6</page>
+        </match>
       </matches>
     </book>
     <book>
       <id>d7ac8252-fc5d-42d2-afca-2cf98ec14287</id>
-      <name>Grimmes Erwachen (German-exclusive)</name>
+      <name>Grimmes Erwachen (German-Only)</name>
       <code>GE</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Ich träumte einen alten Traum. Das Land war grün und weit. Menschen lebten dort, Menschen starben dort. Einer aber war unter</text>
+          <page>5</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>775703af-df57-4ee2-b8e7-c6b829b80539</id>
@@ -649,8 +824,97 @@
       <matches>
         <match>
           <language>en-us</language>
-          <text>Gamemastering is more of an art than a science</text>
+          <text>By 2075, commlinks have become a universal appliance. Because</text>
           <page>4</page>
+        </match>
+		<match>
+          <language>de-de</language>
+          <text>Im Jahre 2075 sind Kommlinks ein allgegenwärtiges</text>
+          <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>d90bad82-303e-4c0b-b00b-f8649af99db6</id>
+      <name>Shadows In Focus: Morocco</name>
+      <code>SFMO</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Morocco is my kind of place. It’s a combination of</text>
+          <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>00178f4e-b682-4742-b259-7c086b18bc95</id>
+      <name>Shadows In Focus: Casablanca-Rabat</name>
+      <code>SFCR</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>me say that modern Morocco was shaped largely by the</text>
+          <page>3</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>bd1e6ed4-5ae2-4745-8444-ba89630fd940</id>
+      <name>Datapuls Österreich (German-Only)</name>
+      <code>DATG</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Servas. Willkommen im Schattennetzwerk der</text>
+          <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>0f4619da-b7d9-4b62-81b6-20734267623c</id>
+      <name>Der Almanach – Gratisrollenspieltag 2019 (German-Only)</name>
+      <code>GRST2019</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Am 23. März 2019 findet bereits zum siebten Mal der Gratisrollen</text>
+          <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>71405233-c42c-46c7-b387-f5baae3c9e64</id>
+      <name>Schattenload 2 (German-Only)</name>
+      <code>SLG2</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Mit der Einführung der Puncheon reagiert</text>
+          <page>1</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>5295c4f3-53d6-4406-b5dc-79ffe54f7a4f</id>
+      <name>Schattenload 3 (German-Only)</name>
+      <code>SLG3</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Frohsinns. Was Karneval, Fastnacht oder</text>
+          <page>1</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>0851f253-fd27-4a66-ae56-10721d8be5e4</id>
+      <name>Schattenload 7 (German-Only)</name>
+      <code>SLG7</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>schlechter. Risse, Schlaglöcher, Unter</text>
+          <page>1</page>
         </match>
       </matches>
     </book>

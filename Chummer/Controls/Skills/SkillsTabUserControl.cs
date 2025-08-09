@@ -111,18 +111,18 @@ namespace Chummer.UI.Skills
                 {
                     if (_objCharacter == null)
                         await RealLoad(MyToken, MyToken).ConfigureAwait(false);
-                    await this.DoThreadSafeAsync(() =>
+                    await this.DoThreadSafeAsync(x =>
                     {
-                        SuspendLayout();
+                        x.SuspendLayout();
                         try
                         {
-                            RefreshSkillLabels(MyToken);
-                            RefreshKnowledgeSkillLabels(MyToken);
-                            RefreshSkillGroupLabels(MyToken);
+                            x.RefreshSkillLabels(MyToken);
+                            x.RefreshKnowledgeSkillLabels(MyToken);
+                            x.RefreshSkillGroupLabels(MyToken);
                         }
                         finally
                         {
-                            ResumeLayout(true);
+                            x.ResumeLayout(true);
                         }
                     }, MyToken).ConfigureAwait(false);
                 }
@@ -199,7 +199,7 @@ namespace Chummer.UI.Skills
                 ThreadSafeBindingList<SkillGroup> lstSkillGroups = await objSkillSection.GetSkillGroupsAsync(token).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(() =>
                 {
-                    using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch parts))
+                    using (new FetchSafelyFromSafeObjectPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch parts))
                     {
                         parts.Start();
                         SuspendLayout();
@@ -506,7 +506,7 @@ namespace Chummer.UI.Skills
                 intRatingLabelWidth = Math.Max(intRatingLabelWidth, objSkillControl.NudSkillWidth);
             }
             token.ThrowIfCancellationRequested();
-            lblActiveSkills.MinimumSize = new Size(intNameLabelWidth - lblActiveSkills.Margin.Right, lblActiveSkills.MinimumSize.Height);
+            lblActiveSkills.MinimumSize = new Size(intNameLabelWidth, lblActiveSkills.MinimumSize.Height);
             token.ThrowIfCancellationRequested();
             lblActiveKarma.Margin = new Padding(
                 Math.Max(0, lblActiveSp.Margin.Left + intRatingLabelWidth - lblActiveSp.Width),
@@ -1133,7 +1133,8 @@ namespace Chummer.UI.Skills
 
                     objSkill = await _objCharacter.SkillsSection.AddExoticSkillAsync(
                         frmPickExoticSkill.MyForm.SelectedExoticSkill,
-                        frmPickExoticSkill.MyForm.SelectedExoticSkillSpecialisation, MyToken).ConfigureAwait(false);
+                        await frmPickExoticSkill.MyForm.GetSelectedExoticSkillSpecialisationAsync(MyToken).ConfigureAwait(false),
+                        MyToken).ConfigureAwait(false);
                 }
 
                 IAsyncDisposable objLocker = await objSkill.LockObject.EnterUpgradeableReadLockAsync(MyToken).ConfigureAwait(false);

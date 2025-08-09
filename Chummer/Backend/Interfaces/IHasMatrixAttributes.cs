@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -855,85 +856,99 @@ namespace Chummer
                     lstStatsArray.Sort();
                     lstStatsArray.Reverse();
 
-                    string[] strCyberdeckArray = objThis.AttributeArray.Split(',');
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCyberdeckArray0))
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCyberdeckArray1))
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCyberdeckArray2))
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCyberdeckArray3))
+                    string[] strCyberdeckArray = objThis.AttributeArray.SplitFixedSizePooledArray(',', 4);
+                    try
                     {
-                        sbdCyberdeckArray0.Append(strCyberdeckArray[0]);
-                        sbdCyberdeckArray1.Append(strCyberdeckArray[1]);
-                        sbdCyberdeckArray2.Append(strCyberdeckArray[2]);
-                        sbdCyberdeckArray3.Append(strCyberdeckArray[3]);
-                        StringBuilder[] asbdCyberdeckArray =
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdCyberdeckArray0))
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdCyberdeckArray1))
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdCyberdeckArray2))
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdCyberdeckArray3))
                         {
+                            sbdCyberdeckArray0.Append(strCyberdeckArray[0]);
+                            sbdCyberdeckArray1.Append(strCyberdeckArray[1]);
+                            sbdCyberdeckArray2.Append(strCyberdeckArray[2]);
+                            sbdCyberdeckArray3.Append(strCyberdeckArray[3]);
+                            StringBuilder[] asbdCyberdeckArray =
+                            {
                             sbdCyberdeckArray0,
                             sbdCyberdeckArray1,
                             sbdCyberdeckArray2,
                             sbdCyberdeckArray3
                         };
-                        foreach (string strLoopArrayText in objThis.ChildrenWithMatrixAttributes.Select(
-                                     x => x.ModAttributeArray))
-                        {
-                            if (string.IsNullOrEmpty(strLoopArrayText))
-                                continue;
-                            string[] strLoopArray = strLoopArrayText.Split(',');
-                            for (int i = 0; i < 4; ++i)
+                            foreach (string strLoopArrayText in objThis.ChildrenWithMatrixAttributes.Select(
+                                         x => x.ModAttributeArray))
                             {
-                                asbdCyberdeckArray[i].Append("+(").Append(strLoopArray[i]).Append(')');
+                                if (string.IsNullOrEmpty(strLoopArrayText))
+                                    continue;
+                                string[] strLoopArray = strLoopArrayText.SplitFixedSizePooledArray(',', 4);
+                                try
+                                {
+                                    for (int i = 0; i < 4; ++i)
+                                    {
+                                        asbdCyberdeckArray[i].Append("+(").Append(strLoopArray[i]).Append(')');
+                                    }
+                                }
+                                finally
+                                {
+                                    ArrayPool<string>.Shared.Return(strLoopArray);
+                                }
+                            }
+
+                            IDisposable objLocker2 = objHasLock?.LockObject.EnterWriteLock();
+                            try
+                            {
+                                for (int i = 0; i < 4; ++i)
+                                {
+                                    if (intBaseAttack == lstStatsArray[i])
+                                    {
+                                        objThis.Attack = asbdCyberdeckArray[i].ToString();
+                                        lstStatsArray[i] = int.MinValue;
+                                        break;
+                                    }
+                                }
+
+                                for (int i = 0; i < 4; ++i)
+                                {
+                                    if (intBaseSleaze == lstStatsArray[i])
+                                    {
+                                        objThis.Sleaze = asbdCyberdeckArray[i].ToString();
+                                        lstStatsArray[i] = int.MinValue;
+                                        break;
+                                    }
+                                }
+
+                                for (int i = 0; i < 4; ++i)
+                                {
+                                    if (intBaseDataProcessing == lstStatsArray[i])
+                                    {
+                                        objThis.DataProcessing = asbdCyberdeckArray[i].ToString();
+                                        lstStatsArray[i] = int.MinValue;
+                                        break;
+                                    }
+                                }
+
+                                for (int i = 0; i < 4; ++i)
+                                {
+                                    if (intBaseFirewall == lstStatsArray[i])
+                                    {
+                                        objThis.Firewall = asbdCyberdeckArray[i].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                objLocker2?.Dispose();
                             }
                         }
-
-                        IDisposable objLocker2 = objHasLock?.LockObject.EnterWriteLock();
-                        try
-                        {
-                            for (int i = 0; i < 4; ++i)
-                            {
-                                if (intBaseAttack == lstStatsArray[i])
-                                {
-                                    objThis.Attack = asbdCyberdeckArray[i].ToString();
-                                    lstStatsArray[i] = int.MinValue;
-                                    break;
-                                }
-                            }
-
-                            for (int i = 0; i < 4; ++i)
-                            {
-                                if (intBaseSleaze == lstStatsArray[i])
-                                {
-                                    objThis.Sleaze = asbdCyberdeckArray[i].ToString();
-                                    lstStatsArray[i] = int.MinValue;
-                                    break;
-                                }
-                            }
-
-                            for (int i = 0; i < 4; ++i)
-                            {
-                                if (intBaseDataProcessing == lstStatsArray[i])
-                                {
-                                    objThis.DataProcessing = asbdCyberdeckArray[i].ToString();
-                                    lstStatsArray[i] = int.MinValue;
-                                    break;
-                                }
-                            }
-
-                            for (int i = 0; i < 4; ++i)
-                            {
-                                if (intBaseFirewall == lstStatsArray[i])
-                                {
-                                    objThis.Firewall = asbdCyberdeckArray[i].ToString();
-                                    break;
-                                }
-                            }
-                        }
-                        finally
-                        {
-                            objLocker2?.Dispose();
-                        }
+                    }
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(strCyberdeckArray);
                     }
                 }
 
@@ -992,89 +1007,103 @@ namespace Chummer
                     lstStatsArray.Sort();
                     lstStatsArray.Reverse();
 
-                    string[] strCyberdeckArray = objThis.AttributeArray.Split(',');
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                               out StringBuilder sbdCyberdeckArray0))
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                               out StringBuilder sbdCyberdeckArray1))
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                               out StringBuilder sbdCyberdeckArray2))
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                               out StringBuilder sbdCyberdeckArray3))
+                    string[] strCyberdeckArray = objThis.AttributeArray.SplitFixedSizePooledArray(',', 4);
+                    try
                     {
-                        sbdCyberdeckArray0.Append(strCyberdeckArray[0]);
-                        sbdCyberdeckArray1.Append(strCyberdeckArray[1]);
-                        sbdCyberdeckArray2.Append(strCyberdeckArray[2]);
-                        sbdCyberdeckArray3.Append(strCyberdeckArray[3]);
-                        StringBuilder[] asbdCyberdeckArray =
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdCyberdeckArray0))
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                   out StringBuilder sbdCyberdeckArray1))
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                   out StringBuilder sbdCyberdeckArray2))
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                   out StringBuilder sbdCyberdeckArray3))
                         {
+                            sbdCyberdeckArray0.Append(strCyberdeckArray[0]);
+                            sbdCyberdeckArray1.Append(strCyberdeckArray[1]);
+                            sbdCyberdeckArray2.Append(strCyberdeckArray[2]);
+                            sbdCyberdeckArray3.Append(strCyberdeckArray[3]);
+                            StringBuilder[] asbdCyberdeckArray =
+                            {
                             sbdCyberdeckArray0,
                             sbdCyberdeckArray1,
                             sbdCyberdeckArray2,
                             sbdCyberdeckArray3
                         };
-                        foreach (string strLoopArrayText in objThis.ChildrenWithMatrixAttributes.Select(
-                                     x => x.ModAttributeArray))
-                        {
-                            if (string.IsNullOrEmpty(strLoopArrayText))
-                                continue;
-                            string[] strLoopArray = strLoopArrayText.Split(',');
-                            for (int i = 0; i < 4; ++i)
+                            foreach (string strLoopArrayText in objThis.ChildrenWithMatrixAttributes.Select(
+                                         x => x.ModAttributeArray))
                             {
-                                asbdCyberdeckArray[i].Append("+(").Append(strLoopArray[i]).Append(')');
+                                if (string.IsNullOrEmpty(strLoopArrayText))
+                                    continue;
+                                string[] strLoopArray = strLoopArrayText.SplitFixedSizePooledArray(',', 4);
+                                try
+                                {
+                                    for (int i = 0; i < 4; ++i)
+                                    {
+                                        asbdCyberdeckArray[i].Append("+(").Append(strLoopArray[i]).Append(')');
+                                    }
+                                }
+                                finally
+                                {
+                                    ArrayPool<string>.Shared.Return(strLoopArray);
+                                }
+                            }
+
+                            IAsyncDisposable objLocker2 = null;
+                            if (objHasLock != null)
+                                objLocker2 = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                for (int i = 0; i < 4; ++i)
+                                {
+                                    if (intBaseAttack == lstStatsArray[i])
+                                    {
+                                        objThis.Attack = asbdCyberdeckArray[i].ToString();
+                                        lstStatsArray[i] = int.MinValue;
+                                        break;
+                                    }
+                                }
+
+                                for (int i = 0; i < 4; ++i)
+                                {
+                                    if (intBaseSleaze == lstStatsArray[i])
+                                    {
+                                        objThis.Sleaze = asbdCyberdeckArray[i].ToString();
+                                        lstStatsArray[i] = int.MinValue;
+                                        break;
+                                    }
+                                }
+
+                                for (int i = 0; i < 4; ++i)
+                                {
+                                    if (intBaseDataProcessing == lstStatsArray[i])
+                                    {
+                                        objThis.DataProcessing = asbdCyberdeckArray[i].ToString();
+                                        lstStatsArray[i] = int.MinValue;
+                                        break;
+                                    }
+                                }
+
+                                for (int i = 0; i < 4; ++i)
+                                {
+                                    if (intBaseFirewall == lstStatsArray[i])
+                                    {
+                                        objThis.Firewall = asbdCyberdeckArray[i].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                if (objLocker2 != null)
+                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                             }
                         }
-
-                        IAsyncDisposable objLocker2 = null;
-                        if (objHasLock != null)
-                            objLocker2 = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            for (int i = 0; i < 4; ++i)
-                            {
-                                if (intBaseAttack == lstStatsArray[i])
-                                {
-                                    objThis.Attack = asbdCyberdeckArray[i].ToString();
-                                    lstStatsArray[i] = int.MinValue;
-                                    break;
-                                }
-                            }
-
-                            for (int i = 0; i < 4; ++i)
-                            {
-                                if (intBaseSleaze == lstStatsArray[i])
-                                {
-                                    objThis.Sleaze = asbdCyberdeckArray[i].ToString();
-                                    lstStatsArray[i] = int.MinValue;
-                                    break;
-                                }
-                            }
-
-                            for (int i = 0; i < 4; ++i)
-                            {
-                                if (intBaseDataProcessing == lstStatsArray[i])
-                                {
-                                    objThis.DataProcessing = asbdCyberdeckArray[i].ToString();
-                                    lstStatsArray[i] = int.MinValue;
-                                    break;
-                                }
-                            }
-
-                            for (int i = 0; i < 4; ++i)
-                            {
-                                if (intBaseFirewall == lstStatsArray[i])
-                                {
-                                    objThis.Firewall = asbdCyberdeckArray[i].ToString();
-                                    break;
-                                }
-                            }
-                        }
-                        finally
-                        {
-                            if (objLocker2 != null)
-                                await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
+                    }
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(strCyberdeckArray);
                     }
                 }
 

@@ -19,19 +19,12 @@
 -->
 <chummer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critters.xsd">
    <categories>
-      <category>A.I.s</category>
       <category>Dracoforms</category>
-      <category>Entropic Sprites</category>
-      <category>Fey</category>
-      <category>Ghosts and Haunts</category>
-      <category>Harbingers</category>
-      <category>Imps</category>
       <category>Infected</category>
       <category>Insect Spirits</category>
       <category>Mundane Critters</category>
       <category>Mutant Critters</category>
       <category>Paranormal Critters</category>
-      <category>Primordial Spirits</category>
       <category>Protosapients</category>
       <category>Ritual</category>
       <category>Shadow Spirits</category>
@@ -802,7 +795,7 @@
             <skill rating="8">Sneaking</skill>
             <skill rating="6">Perception</skill>
             <group rating="3">Athletics</group>
-            <knowledge rating="8" category="Professional">Animal Calls</knowledge>
+            <knowledge rating="8" category="Professional" attribute="LOG">Animal Calls</knowledge>
          </skills>
          <source>SR5</source>
          <page>406</page>
@@ -3385,7 +3378,7 @@
       </metatype>
       <metatype>
          <id>3ac65435-45f1-4d78-ad90-42fbd36b1a85</id>
-         <name>Baboon</name>
+         <name>Ozian Baboon</name>
          <category>Paranormal Critters</category>
          <karma>0</karma>
          <bodmin>5</bodmin>
@@ -5405,88 +5398,6 @@
          <page>77</page>
       </metatype>
       <metatype>
-         <id>dcc973b7-db4f-4f48-8170-61bdb104a3f9</id>
-         <name>Wyrd Mantis</name>
-         <category>Paranormal Critters</category>
-         <karma>0</karma>
-         <bodmin>4</bodmin>
-         <bodmax>4</bodmax>
-         <bodaug>4</bodaug>
-         <agimin>4</agimin>
-         <agimax>4</agimax>
-         <agiaug>4</agiaug>
-         <reamin>4</reamin>
-         <reamax>4</reamax>
-         <reaaug>4</reaaug>
-         <strmin>3</strmin>
-         <strmax>3</strmax>
-         <straug>3</straug>
-         <chamin>2</chamin>
-         <chamax>2</chamax>
-         <chaaug>2</chaaug>
-         <intmin>4</intmin>
-         <intmax>4</intmax>
-         <intaug>4</intaug>
-         <logmin>2</logmin>
-         <logmax>2</logmax>
-         <logaug>2</logaug>
-         <wilmin>3</wilmin>
-         <wilmax>3</wilmax>
-         <wilaug>3</wilaug>
-         <inimin>2</inimin>
-         <inimax>14</inimax>
-         <iniaug>14</iniaug>
-         <edgmin>3</edgmin>
-         <edgmax>3</edgmax>
-         <edgaug>3</edgaug>
-         <magmin>4</magmin>
-         <magmax>7</magmax>
-         <magaug>7</magaug>
-         <resmin>0</resmin>
-         <resmax>6</resmax>
-         <resaug>6</resaug>
-         <depmin>0</depmin>
-         <depmax>0</depmax>
-         <depaug>0</depaug>
-         <essmin>0</essmin>
-         <essmax>6</essmax>
-         <essaug>6</essaug>
-         <movement>5/25</movement>
-         <bonus>
-            <enableattribute>
-               <name>MAG</name>
-               <min>1</min>
-               <max>7</max>
-               <aug>7</aug>
-               <val>4</val>
-            </enableattribute>
-            <enabletab>
-               <name>critter</name>
-            </enabletab>
-            <initiativepass>1</initiativepass>
-         </bonus>
-         <powers>
-            <power>Adaptive Coloration</power>
-            <power rating="2">Armor (Ballistic)</power>
-            <power rating="2">Armor (Impact)</power>
-            <power select="Low-Light Vision">Enhanced Senses</power>
-            <power select="Toxins">Immunity</power>
-            <power>Influence</power>
-            <power>Venom</power>
-            <power>Noxious Breath</power>
-         </powers>
-         <skills>
-            <skill rating="3">Gymnastics</skill>
-            <skill rating="4">Infiltration</skill>
-            <skill rating="3">Perception</skill>
-            <skill rating="2">Running</skill>
-            <skill rating="1">Shadowing</skill>
-            <skill rating="4">Unarmed Combat</skill>
-         </skills>
-         <source>RW</source>
-         <page>151</page>
-      </metatype>
-      <metatype>
          <id>bcae204e-e162-42d1-8cf0-6a4aec5c5c42</id>
          <name>Bandit</name>
          <category>Paranormal Critters</category>
@@ -5908,9 +5819,21 @@
          <wilmin>1</wilmin>
          <wilmax>1</wilmax>
          <wilaug>5</wilaug>
+         <inimin>3</inimin>
+         <inimax>3</inimax>
+         <iniaug>11</iniaug>
          <edgmin>3</edgmin>
          <edgmax>3</edgmax>
          <edgaug>7</edgaug>
+         <magmin>0</magmin>
+         <magmax>6</magmax>
+         <magaug>6</magaug>
+         <resmin>0</resmin>
+         <resmax>6</resmax>
+         <resaug>6</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>6</essmin>
          <essmax>6</essmax>
          <essaug>10</essaug>
@@ -5962,12 +5885,21 @@
          <wilmin>2</wilmin>
          <wilmax>2</wilmax>
          <wilaug>6</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>16</iniaug>
          <edgmin>1</edgmin>
          <edgmax>1</edgmax>
          <edgaug>5</edgaug>
          <magmin>6</magmin>
          <magmax>6</magmax>
          <magaug>10</magaug>
+         <resmin>0</resmin>
+         <resmax>6</resmax>
+         <resaug>6</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>6</essmin>
          <essmax>6</essmax>
          <essaug>10</essaug>
@@ -6022,15 +5954,27 @@
          <wilmin>4</wilmin>
          <wilmax>4</wilmax>
          <wilaug>8</wilaug>
+         <inimin>16</inimin>
+         <inimax>16</inimax>
+         <iniaug>24</iniaug>
          <edgmin>2</edgmin>
          <edgmax>2</edgmax>
          <edgaug>6</edgaug>
+         <magmin>0</magmin>
+         <magmax>6</magmax>
+         <magaug>6</magaug>
+         <resmin>0</resmin>
+         <resmax>6</resmax>
+         <resaug>6</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>6</essmin>
          <essmax>6</essmax>
          <essaug>10</essaug>
          <walk>2/1/0</walk>
          <run>6/0/0</run>
-         <sprint>5*/1/0</sprint>
+         <sprint>5/1/0</sprint>
          <armor>4</armor>
          <skills>
             <skill rating="5">Gymnastics</skill>
@@ -6079,12 +6023,21 @@
          <wilmin>5</wilmin>
          <wilmax>5</wilmax>
          <wilaug>9</wilaug>
+         <inimin>12</inimin>
+         <inimax>12</inimax>
+         <iniaug>20</iniaug>
          <edgmin>3</edgmin>
          <edgmax>3</edgmax>
          <edgaug>7</edgaug>
          <magmin>6</magmin>
          <magmax>6</magmax>
          <magaug>10</magaug>
+         <resmin>0</resmin>
+         <resmax>6</resmax>
+         <resaug>6</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>6</essmin>
          <essmax>6</essmax>
          <essaug>10</essaug>
@@ -6138,9 +6091,21 @@
          <wilmin>1</wilmin>
          <wilmax>1</wilmax>
          <wilaug>5</wilaug>
+         <inimin>3</inimin>
+         <inimax>3</inimax>
+         <iniaug>11</iniaug>
          <edgmin>3</edgmin>
          <edgmax>3</edgmax>
          <edgaug>7</edgaug>
+         <magmin>0</magmin>
+         <magmax>6</magmax>
+         <magaug>6</magaug>
+         <resmin>0</resmin>
+         <resmax>6</resmax>
+         <resaug>6</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>6</essmin>
          <essmax>6</essmax>
          <essaug>10</essaug>
@@ -6154,7 +6119,7 @@
             <skill rating="3">Unarmed Combat</skill>
          </skills>
          <powers>
-            <power select="DV 2P, AP -3">Natural Weapon (Fang)</power>
+            <power select="Fang: DV 2P, AP -3">Natural Weapon</power>
             <power select="Contact">Venom</power>
          </powers>
          <bonus>
@@ -6193,12 +6158,21 @@
          <wilmin>3</wilmin>
          <wilmax>3</wilmax>
          <wilaug>7</wilaug>
+         <inimin>10</inimin>
+         <inimax>10</inimax>
+         <iniaug>18</iniaug>
          <edgmin>2</edgmin>
          <edgmax>2</edgmax>
          <edgaug>2</edgaug>
          <magmin>4</magmin>
          <magmax>6</magmax>
          <magaug>6</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>0</essmin>
          <essmax>6</essmax>
          <essaug>6</essaug>
@@ -6268,9 +6242,21 @@
          <wilmin>1</wilmin>
          <wilmax>1</wilmax>
          <wilaug>5</wilaug>
+         <inimin>4</inimin>
+         <inimax>4</inimax>
+         <iniaug>12</iniaug>
          <edgmin>2</edgmin>
          <edgmax>2</edgmax>
          <edgaug>6</edgaug>
+         <magmin>0</magmin>
+         <magmax>6</magmax>
+         <magaug>6</magaug>
+         <resmin>0</resmin>
+         <resmax>6</resmax>
+         <resaug>6</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>6</essmin>
          <essmax>6</essmax>
          <essaug>10</essaug>
@@ -6325,9 +6311,21 @@
          <wilmin>6</wilmin>
          <wilmax>6</wilmax>
          <wilaug>10</wilaug>
+         <inimin>9</inimin>
+         <inimax>9</inimax>
+         <iniaug>17</iniaug>
          <edgmin>3</edgmin>
          <edgmax>3</edgmax>
          <edgaug>7</edgaug>
+         <magmin>0</magmin>
+         <magmax>6</magmax>
+         <magaug>6</magaug>
+         <resmin>0</resmin>
+         <resmax>6</resmax>
+         <resaug>6</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>6</essmin>
          <essmax>6</essmax>
          <essaug>10</essaug>
@@ -6378,9 +6376,21 @@
          <wilmin>1</wilmin>
          <wilmax>1</wilmax>
          <wilaug>5</wilaug>
+         <inimin>10</inimin>
+         <inimax>10</inimax>
+         <iniaug>18</iniaug>
          <edgmin>2</edgmin>
          <edgmax>2</edgmax>
          <edgaug>2</edgaug>
+         <magmin>0</magmin>
+         <magmax>6</magmax>
+         <magaug>6</magaug>
+         <resmin>0</resmin>
+         <resmax>6</resmax>
+         <resaug>6</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>0</essmin>
          <essmax>6</essmax>
          <essaug>6</essaug>
@@ -6640,7 +6650,6 @@
             <power select="Toxins">Immunity</power>
             <power rating="2">Toughness</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="8">Gymnastics</skill>
             <skill rating="4">Intimidation</skill>
@@ -6725,7 +6734,6 @@
             <power select="Toxins">Immunity</power>
             <power rating="2">Toughness</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="8">Gymnastics</skill>
             <skill rating="5">Intimidation</skill>
@@ -6788,7 +6796,6 @@
          <walk>1/0/0</walk>
          <run>4/0/0</run>
          <sprint>1/0/0</sprint>
-         <qualities />
          <bonus>
             <reach>-1</reach>
             <enabletab>
@@ -6801,11 +6808,10 @@
             <power select="Hearing, Smell, Motion Detection, Thermosense">Enhanced Senses</power>
             <power select="Toxins">Immunity</power>
             <power select="Bite: (STR+4)P, AP -6">Natural Weapon</power>
-            <power select="Spit">Substance Extrusion</power>
+            <power select="Spit">Secretion/Substance Extrusion</power>
             <power select="Spit">Venom</power>
             <power select="Vector: Contact, Injection, Speed: Instant, Penetration: -6, Power: 12, Effect: Agony, Nausea, Disorientation, Physical Damage">Vulnerability</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="6" spec="Spit">Exotic Ranged Weapon</skill>
             <skill rating="8">Perception</skill>
@@ -6865,7 +6871,6 @@
          <walk>2/0/0</walk>
          <run>8/0/0</run>
          <sprint>4/0/0</sprint>
-         <qualities />
          <bonus>
             <enabletab>
                <name>critter</name>
@@ -6877,11 +6882,10 @@
             <power rating="4">Armor</power>
             <power select="Hearing, Low-Light Vision, Smell">Enhanced Senses</power>
             <power select="Claws/Bite: (STR+2)P">Natural Weapon</power>
-            <power select="Spit">Substance Extrusion</power>
+            <power select="Spit">Secretion/Substance Extrusion</power>
             <power select="Vector: Injection, Speed: 1 Combat Turn, Penetration: 0, Power: 6, Effect: Malaise, Physical Damage">Venom</power>
             <power select="Sunlight, Mild">Allergy</power>
          </powers>
-         <optionalpowers />
          <skills>
             <group rating="4">Athletics</group>
             <skill rating="3">Locksmith</skill>
@@ -6964,7 +6968,6 @@
             <power select="Claws: (STR+2)P, AP -2">Natural Weapon</power>
             <power rating="3">Toughness</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="6">Perception</skill>
             <skill rating="4">Running</skill>
@@ -7025,7 +7028,6 @@
          <walk>2/0/0</walk>
          <run>8/0/0</run>
          <sprint>4/0/0</sprint>
-         <qualities />
          <bonus>
             <enabletab>
                <name>critter</name>
@@ -7041,7 +7043,6 @@
             <power>Regeneration</power>
             <power select="Radiation">Dietary Requirement</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="5">Gymnastics</skill>
             <skill rating="4">Intimidation</skill>
@@ -7103,7 +7104,6 @@
          <walk>2/0/0</walk>
          <run>8/0/0</run>
          <sprint>4/0/0</sprint>
-         <qualities />
          <bonus>
             <enabletab>
                <name>critter</name>
@@ -7119,7 +7119,6 @@
             <power>Regeneration</power>
             <power select="Radiation">Dietary Requirement</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="5">Gymnastics</skill>
             <skill rating="4">Intimidation</skill>
@@ -7205,7 +7204,6 @@
             <power rating="3">Toughness</power>
             <power select="Sunlight, Severe">Allergy</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="8">Intimidation</skill>
             <skill rating="8">Perception</skill>
@@ -7267,7 +7265,6 @@
          <walk>0/0/1</walk>
          <run>0/0/4</run>
          <sprint>0/0/3</sprint>
-         <qualities />
          <bonus>
             <enabletab>
                <name>critter</name>
@@ -7280,7 +7277,6 @@
             <power select="Toxins, Electricity">Immunity</power>
             <power select="Fire, Cold">Vulnerability</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="4" spec="Electricity">Exotic Ranged Weapon</skill>
             <skill rating="5">Perception</skill>
@@ -7341,7 +7337,6 @@
          <walk>2/0/0</walk>
          <run>5/0/0</run>
          <sprint>3/0/0</sprint>
-         <qualities />
          <bonus>
             <reach>1</reach>
             <enabletab>
@@ -7357,7 +7352,6 @@
             <power select="Silk">Secretion/Substance Extrusion</power>
             <power>Wall Walking</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="6">Gymnastics</skill>
             <skill rating="5">Perception</skill>
@@ -7418,7 +7412,6 @@
          <walk>1/0/0</walk>
          <run>2/0/0</run>
          <sprint>0.5/0/0</sprint>
-         <qualities />
          <bonus>
             <reach>-2</reach>
             <enabletab>
@@ -7434,7 +7427,6 @@
             <power rating="8">Fragile</power>
             <power select="Sight">Reduced Senses</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="6">Perception</skill>
             <skill rating="4">Sneaking</skill>
@@ -7494,7 +7486,6 @@
          <walk>1/0/0</walk>
          <run>3/0/0</run>
          <sprint>2/0/0</sprint>
-         <qualities />
          <bonus>
             <enabletab>
                <name>critter</name>
@@ -7510,7 +7501,6 @@
             <power select="Vector: Injection, Speed: 1 minute, Penetration: -4, Power: 10, Effect: Agony, Arcane Inhibitor, Disorientation, Stun Damage">Venom</power>
             <power rating="8">Fragile</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="4">Assensing</skill>
             <skill rating="10">Flight</skill>
@@ -7601,10 +7591,10 @@
             <power>Sense Link</power>
          </powers>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Perception</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <source>SG</source>
          <page>200</page>
@@ -8524,11 +8514,11 @@
             <power>Search</power>
          </powers>
          <skills>
-            <skill>Artisan</skill>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Perception</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Artisan</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <source>SG</source>
          <page>193</page>
@@ -8731,7 +8721,7 @@
          <chamin>F+1</chamin>
          <chamax>F+1</chamax>
          <chaaug>F+1</chaaug>
-         <intmin>(F</intmin>
+         <intmin>F</intmin>
          <intmax>F</intmax>
          <intaug>F</intaug>
          <logmin>F</logmin>
@@ -8788,7 +8778,7 @@
             <power>Deathly Aura</power>
             <power select="Essence">Energy Drain</power>
             <power>Fear</power>
-            <power> Magical Guard</power>
+            <power>Magical Guard</power>
             <power>Mimicry</power>
             <power select="Bones">Possession</power>
             <power>Realistic Form</power>
@@ -9780,7 +9770,7 @@
          <walk>2/2/2</walk>
          <run>4/4/4</run>
          <sprint>2/2/2</sprint>
-        <armor>F</armor>
+         <armor>F</armor>
          <bonus>
             <enableattribute>
                <name>MAG</name>
@@ -9868,7 +9858,7 @@
          <walk>2/2/2</walk>
          <run>4/4/4</run>
          <sprint>2/2/2</sprint>
-        <armor>F</armor>
+         <armor>F</armor>
          <bonus>
             <enableattribute>
                <name>MAG</name>
@@ -9951,7 +9941,7 @@
          <walk>2/2/2</walk>
          <run>4/4/4</run>
          <sprint>2/2/2</sprint>
-        <armor>0</armor>
+         <armor>0</armor>
          <bonus>
             <enableattribute>
                <name>MAG</name>
@@ -10035,7 +10025,7 @@
          <walk>2/2/2</walk>
          <run>4/4/4</run>
          <sprint>2/2/2</sprint>
-        <armor>0</armor>
+         <armor>0</armor>
          <bonus>
             <enableattribute>
                <name>MAG</name>
@@ -10049,19 +10039,19 @@
                <optionalpower>Dive Attack</optionalpower>
                <optionalpower>Haunt</optionalpower>
                <optionalpower select="Any Cannon or Launcher">Natural Weapon</optionalpower>
-              <optionalpower>Search</optionalpower>
+               <optionalpower>Search</optionalpower>
             </optionalpowers>
             <unlockskills>Magician</unlockskills>
          </bonus>
          <powers>
-            <power>Evasion</power>
-            <power>Maneuvering</power>
+            <power rating="F">Evasion</power>
+            <power rating="F">Maneuvering</power>
             <power>Materialization</power>
             <power>Sapience</power>
-            <power>Stealth</power>
+            <power rating="F">Stealth</power>
          </powers>
          <skills>
-            <skill rating="F">Free-fall</skill>
+            <skill rating="F">Free-Fall</skill>
             <skill rating="F">Navigation</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Pilot Aircraft</skill>
@@ -10138,7 +10128,7 @@
             <power>Astral Form</power>
             <power rating="14">Armor</power>
             <power>Banishing Resistance</power>
-            <power rating="LOS, Touch, and Self">Binding</power>
+            <power select="LOS, Touch, and Self">Binding</power>
             <power>Concealment</power>
             <power>Engulf</power>
             <power>Materialization</power>
@@ -10146,7 +10136,6 @@
             <power>Sapience</power>
             <power>Search</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
@@ -10226,21 +10215,22 @@
             <power>Banishing Resistance</power>
             <power>Concealment</power>
             <power>Confusion</power>
-            <power>Devour</power>
+            <power>Devouring</power>
+            <!-- "Devour" in source -->
             <power rating="6">Hardened Armor</power>
-            <power rating="Living Vessels">Inhabitation</power>
+            <power select="Living Vessels">Inhabitation</power>
             <power>Movement</power>
             <power>Sapience</power>
             <power>Search</power>
             <power rating="F">Skill</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Running</skill>
-            <skill rating="F">Shadowing</skill>
+            <skill rating="F">Sneaking</skill>
+            <!-- "Shadowing" in source -->
             <skill rating="F">Unarmed Combat</skill>
          </skills>
          <source>AET</source>
@@ -10314,14 +10304,13 @@
             <power>Accident</power>
             <power>Astral Form</power>
             <power>Banishing Resistance</power>
-            <power rating="Low-Light-Vision, Thermographic Vision, Spatial Sense">Enhanced Senses</power>
+            <power select="Low-Light-Vision, Thermographic Vision, Spatial Sense">Enhanced Senses</power>
             <power>Materialization</power>
             <power>Paralyzing Touch</power>
             <power>Sapience</power>
-            <power>Sillence</power>
+            <power>Silence</power>
             <power>Vanishing</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
@@ -10401,17 +10390,16 @@
             <power>Astral Form</power>
             <power>Aura Masking</power>
             <power>Banishing Resistance</power>
-            <power rating="Essence">Energy Drain</power>
-            <power rating="Thermographic Vision">Enhanced Senses</power>
-            <power rating="Foreboding">Innate Spell</power>
-            <power rating="Living Vessels">Inhabitation</power>
+            <power select="Essence">Energy Drain</power>
+            <power select="Thermographic Vision">Enhanced Senses</power>
+            <power select="Foreboding">Innate Spell</power>
+            <power select="Living Vessels">Inhabitation</power>
             <power>Materialization</power>
             <power>Sapience</power>
-            <power rating="Metahuman">Shift</power>
+            <power select="Metahuman">Shift</power>
             <power>Transfer Energy (Essence)</power>
             <power>Vanishing</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
@@ -10491,14 +10479,13 @@
             <power>Accident</power>
             <power>Aura Masking</power>
             <power>Desire Reflection</power>
-            <power rating="Karma">Energy Drain</power>
+            <power select="Karma">Energy Drain</power>
             <power>Influence</power>
-            <power rating="Alter Memory">Innate Spell</power>
+            <power select="Alter Memory">Innate Spell</power>
             <power>Movement</power>
-            <power rating="Inanimate Mechanical Devices Only">Inhabitation</power>
-            <power rating="Occupied Mechanical Device Only">Psychokinesis</power>
+            <power select="Inanimate Mechanical Devices Only">Inhabitation</power>
+            <power select="Occupied Mechanical Device Only">Psychokinesis</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
@@ -10560,7 +10547,7 @@
          <essmin>0</essmin>
          <essmax>6</essmax>
          <essaug>6</essaug>
-         <walk>0/0/(0</walk>
+         <walk>0/0/0</walk>
          <run>0/0/0</run>
          <sprint>2/2/2</sprint>
          <bonus>
@@ -10577,22 +10564,22 @@
             <initiativepass>1</initiativepass>
          </bonus>
          <powers>
-            <power rating="Spider Type">Animal Control</power>
+            <power select="Spider Type">Animal Control</power>
             <power>Astral Form</power>
-            <power rating="Touch">Binding</power>
+            <power select="Touch">Binding</power>
             <power>Concealment</power>
-            <power rating="Smell, Thermographic Vision, or Ultrasound">Enhanced Senses</power>
+            <power select="Smell, Thermographic Vision, or Ultrasound">Enhanced Senses</power>
             <power>Movement</power>
             <power>Reinforcement</power>
             <power>Sapience</power>
             <power>Search</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
-            <skill rating="F">Dodge</skill>
-            <skill rating="F">Infiltration</skill>
+            <skill rating="F" spec="Dodging">Gymnastics</skill>
+            <!-- "Dodge" in source -->
+            <!-- <skill rating="F">Infiltration</skill> Combined to Sneaking in 5E -->
             <skill rating="F">Perception</skill>
             <skill rating="F">Sneaking</skill>
             <skill rating="F">Unarmed Combat</skill>
@@ -10648,7 +10635,7 @@
          <essmin>0</essmin>
          <essmax>6</essmax>
          <essaug>6</essaug>
-         <walk>0/0/(0</walk>
+         <walk>0/0/0</walk>
          <run>0/0/0</run>
          <sprint>2/2/2</sprint>
          <bonus>
@@ -10666,13 +10653,12 @@
          </bonus>
          <powers>
             <power>Astral Form</power>
-            <power rating="LOS">Binding</power>
+            <power select="LOS">Binding</power>
             <power>Fear</power>
             <power>Natural Weapon</power>
             <power>Reinforcement</power>
             <power>Sapience</power>
          </powers>
-         <optionalpowers />
          <skills>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
@@ -11151,7 +11137,6 @@
                <name>Beetle</name>
                <karma>0</karma>
                <forcecreature />
-               <karma>0</karma>
                <bodmin>F</bodmin>
                <bodmax>F</bodmax>
                <bodaug>F</bodaug>
@@ -17724,10 +17709,10 @@
             <optionalpower>Silence</optionalpower>
          </optionalpowers>
          <skills>
-            <skill rating="F">Gymnastics</skill>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Blades</skill>
+            <skill rating="F">Gymnastics</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Running</skill>
             <skill rating="F">Sneaking</skill>
@@ -17828,10 +17813,10 @@
             <optionalpower>Silence</optionalpower>
          </optionalpowers>
          <skills>
-            <skill rating="F">Gymnastics</skill>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Blades</skill>
+            <skill rating="F">Gymnastics</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Running</skill>
             <skill rating="F">Sneaking</skill>
@@ -17931,16 +17916,16 @@
             <optionalpower>Silence</optionalpower>
          </optionalpowers>
          <skills>
-            <skill rating="F">Gymnastics</skill>
             <skill rating="F">Assensing</skill>
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Blades</skill>
+            <skill rating="F">Con</skill>
+            <skill rating="F">Disguise</skill>
+            <skill rating="F">Gymnastics</skill>
+            <skill rating="F">Impersonation</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Running</skill>
             <skill rating="F">Sneaking</skill>
-            <skill rating="F">Con</skill>
-            <skill rating="F">Disguise</skill>
-            <skill rating="F">Impersonation</skill>
             <skill rating="F">Unarmed Combat</skill>
          </skills>
          <source>DTR</source>
@@ -19107,12 +19092,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+1</inimin>
+         <inimax>(F*2)+1</inimax>
+         <iniaug>(F*2)+1</iniaug>
          <edgmin>F/2</edgmin>
          <edgmax>F/2</edgmax>
          <edgaug>F/2</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -19121,23 +19115,23 @@
          <sprint>2/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Automatics</skill>
-            <skill>Blades</skill>
-            <skill>Clubs</skill>
-            <skill>Con</skill>
-            <skill>Demolitions</skill>
-            <skill>Disguise</skill>
-            <skill>Forgery</skill>
-            <skill>Gymnastics</skill>
-            <skill>Impersonation</skill>
-            <skill>Locksmith</skill>
-            <skill>Palming</skill>
-            <skill>Perception</skill>
-            <skill>Pistols</skill>
-            <skill>Sneaking</skill>
-            <skill>Throwing Weapons</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Automatics</skill>
+            <skill rating="F">Blades</skill>
+            <skill rating="F">Clubs</skill>
+            <skill rating="F">Con</skill>
+            <skill rating="F">Demolitions</skill>
+            <skill rating="F">Disguise</skill>
+            <skill rating="F">Forgery</skill>
+            <skill rating="F">Gymnastics</skill>
+            <skill rating="F">Impersonation</skill>
+            <skill rating="F">Locksmith</skill>
+            <skill rating="F">Palming</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Pistols</skill>
+            <skill rating="F">Sneaking</skill>
+            <skill rating="F">Throwing Weapons</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <powers>
             <power>Accident</power>
@@ -19181,12 +19175,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)</inimin>
+         <inimax>(F*2)</inimax>
+         <iniaug>(F*2)</iniaug>
          <edgmin>F</edgmin>
          <edgmax>F</edgmax>
          <edgaug>F</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F-2</essmin>
          <essmax>F-2</essmax>
          <essaug>F-2</essaug>
@@ -19195,11 +19198,11 @@
          <sprint>2/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <group>Close Combat</group>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill select="Thorns">Exotic Ranged Weapon</skill>
-            <skill>Perception</skill>
+            <group rating="F">Close Combat</group>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F" select="Thorns">Exotic Ranged Weapon</skill>
+            <skill rating="F">Perception</skill>
          </skills>
          <optionalpowers>
             <optionalpower>Guard</optionalpower>
@@ -19255,12 +19258,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+1</inimin>
+         <inimax>(F*2)+1</inimax>
+         <iniaug>(F*2)+1</iniaug>
          <edgmin>F/2</edgmin>
          <edgmax>F/2</edgmax>
          <edgaug>F/2</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -19268,22 +19280,22 @@
          <run>4/0/0</run>
          <sprint>2/1/0</sprint>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Automatics</skill>
-            <skill>Blades</skill>
-            <skill>Clubs</skill>
-            <skill>Computer</skill>
-            <skill>First Aid</skill>
-            <skill>Gymnastics</skill>
-            <skill>Intimidation</skill>
-            <skill>Locksmith</skill>
-            <skill>Longarms</skill>
-            <skill>Perception</skill>
-            <skill>Pilot Ground Craft</skill>
-            <skill>Pistols</skill>
-            <skill>Sneaking</skill>
-            <skill>Throwing Weapons</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Automatics</skill>
+            <skill rating="F">Blades</skill>
+            <skill rating="F">Clubs</skill>
+            <skill rating="F">Computer</skill>
+            <skill rating="F">First Aid</skill>
+            <skill rating="F">Gymnastics</skill>
+            <skill rating="F">Intimidation</skill>
+            <skill rating="F">Locksmith</skill>
+            <skill rating="F">Longarms</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Pilot Ground Craft</skill>
+            <skill rating="F">Pistols</skill>
+            <skill rating="F">Sneaking</skill>
+            <skill rating="F">Throwing Weapons</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <powers>
             <power>Aura Masking</power>
@@ -19330,12 +19342,21 @@
          <wilmin>F+2</wilmin>
          <wilmax>F+2</wilmax>
          <wilaug>F+2</wilaug>
+         <inimin>(F*2)-1</inimin>
+         <inimax>(F*2)-1</inimax>
+         <iniaug>(F*2)-1</iniaug>
          <edgmin>F/2</edgmin>
          <edgmax>F/2</edgmax>
          <edgaug>F/2</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -19343,9 +19364,9 @@
          <run>4/0/0</run>
          <sprint>2/1/0</sprint>
          <skills>
-            <group>Close Combat</group>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
+            <group rating="F">Close Combat</group>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
          </skills>
          <powers>
             <power>Astral Form</power>
@@ -19365,44 +19386,74 @@
          <name>Bugul</name>
          <category>Extraplanar Travelers</category>
          <forcecreature />
-         <bod>F</bod>
-         <agi>F-1</agi>
-         <rea>F-1</rea>
-         <str>F-2</str>
-         <cha>F</cha>
-         <int>F</int>
-         <log>F+2</log>
-         <wil>F+1</wil>
-         <ini>0</ini>
-         <edg>F/2</edg>
-         <mag>F</mag>
-         <res>0</res>
-         <dep>0</dep>
-         <ess>F</ess>
+         <bodmin>F</bodmin>
+         <bodmax>F</bodmax>
+         <bodaug>F</bodaug>
+         <agimin>F-1</agimin>
+         <agimax>F-1</agimax>
+         <agiaug>F-1</agiaug>
+         <reamin>F-1</reamin>
+         <reamax>F-1</reamax>
+         <reaaug>F-1</reaaug>
+         <strmin>F-2</strmin>
+         <strmax>F-2</strmax>
+         <straug>F-2</straug>
+         <chamin>F</chamin>
+         <chamax>F</chamax>
+         <chaaug>F</chaaug>
+         <intmin>F</intmin>
+         <intmax>F</intmax>
+         <intaug>F</intaug>
+         <logmin>F+2</logmin>
+         <logmax>F+2</logmax>
+         <logaug>F+2</logaug>
+         <wilmin>F+1</wilmin>
+         <wilmax>F+1</wilmax>
+         <wilaug>F+1</wilaug>
+         <inimin>(F*2)-1</inimin>
+         <inimax>(F*2)-1</inimax>
+         <iniaug>(F*2)-1</iniaug>
+         <edgmin>F/2</edgmin>
+         <edgmax>F/2</edgmax>
+         <edgaug>F/2</edgaug>
+         <magmin>F</magmin>
+         <magmax>F</magmax>
+         <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>F</essmin>
+         <essmax>F</essmax>
+         <essaug>F</essaug>
          <walk>2/1/0</walk>
          <run>4/0/0</run>
          <sprint>2/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <skill>Artisan</skill>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Con</skill>
-            <skill>Counterspelling</skill>
-            <skill>Disenchanting</skill>
-            <skill>Gymnastics</skill>
-            <skill>Negotiation</skill>
-            <skill>Perception</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Artisan</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Con</skill>
+            <skill rating="F">Counterspelling</skill>
+            <skill rating="F">Disenchanting</skill>
+            <skill rating="F">Gymnastics</skill>
+            <skill rating="F">Negotiation</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <powers>
             <power>Astral Form</power>
             <power>Aura Masking</power>
-            <power select="Smell">Improved Senses</power>
-            <power select="Thermal">Improved Senses</power>
+            <power select="Smell">Enhanced Senses</power>
+            <!-- "Improved Senses" in source -->
+            <power select="Thermal">Enhanced Senses</power>
+            <!-- "Improved Senses" in source -->
             <power>Materialization</power>
             <power>Sapience</power>
-            <power select="4">Spell Resistance</power>
+            <power rating="4">Magic Resistance</power>
             <power>Spirit Pact</power>
          </powers>
          <bonus>
@@ -19442,12 +19493,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+2</inimin>
+         <inimax>(F*2)+2</inimax>
+         <iniaug>(F*2)+2</iniaug>
          <edgmin>F/2</edgmin>
          <edgmax>F/2</edgmax>
          <edgaug>F/2</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -19456,17 +19516,17 @@
          <sprint>2/1/0</sprint>
          <armor>F*2</armor>
          <skills>
-            <skill>Archery</skill>
-            <skill>Blades</skill>
-            <skill>Clubs</skill>
-            <skill>First Aid</skill>
-            <skill>Gymnastics</skill>
+            <skill rating="F">Archery</skill>
+            <skill rating="F">Blades</skill>
+            <skill rating="F">Clubs</skill>
+            <skill rating="F">First Aid</skill>
+            <skill rating="F">Gymnastics</skill>
          </skills>
          <powers>
             <power>Accident</power>
             <power>Astral Form</power>
             <power>Aura Masking</power>
-            <power>Banishing</power>
+            <power>Banishing Resistance</power>
          </powers>
          <bonus>
             <enabletab>
@@ -19505,12 +19565,21 @@
          <wilmin>5</wilmin>
          <wilmax>5</wilmax>
          <wilaug>9</wilaug>
+         <inimin>15</inimin>
+         <inimax>15</inimax>
+         <iniaug>23</iniaug>
          <edgmin>4</edgmin>
          <edgmax>4</edgmax>
          <edgaug>8</edgaug>
          <magmin>6</magmin>
          <magmax>6</magmax>
          <magaug>10</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>2D6</essmin>
          <essmax>2D6</essmax>
          <essaug>2D6</essaug>
@@ -19565,12 +19634,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+2</inimin>
+         <inimax>(F*2)+2</inimax>
+         <iniaug>(F*2)+2</iniaug>
          <edgmin>F</edgmin>
          <edgmax>F</edgmax>
          <edgaug>F</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -19579,22 +19657,25 @@
          <sprint>2/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <skill>Artificing</skill>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Gymnastics</skill>
-            <skill>Perception</skill>
-            <skill>Ritual Spellcasting</skill>
-            <skill>Spellcasting</skill>
+            <skill rating="F">Artificing</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Gymnastics</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Ritual Spellcasting</skill>
+            <skill rating="F">Spellcasting</skill>
          </skills>
          <powers>
             <power>Astral Form</power>
             <power>Aura Masking</power>
-            <power>Fae Glamour</power>
+            <power>Fey Glamour</power>
+            <!-- "Fae Glamour" in source -->
             <power>Flay Touch</power>
             <power>Fold Perception</power>
-            <power select="Smell">Improved Senses</power>
-            <power select="Thermal">Improved Senses</power>
+            <power select="Smell">Enhanced Senses</power>
+            <!-- "Improved Senses" in source -->
+            <power select="Thermal">Enhanced Senses</power>
+            <!-- "Improved Senses" in source -->
             <power>Materialization</power>
             <power>Sapience</power>
             <power>Spirit Pact</power>
@@ -19636,12 +19717,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+2</inimin>
+         <inimax>(F*2)+2</inimax>
+         <iniaug>(F*2)+2</iniaug>
          <edgmin>F</edgmin>
          <edgmax>F</edgmax>
          <edgaug>F</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -19650,22 +19740,26 @@
          <sprint>2/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Con</skill>
-            <skill>Gymnastics</skill>
-            <skill>Perception</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Con</skill>
+            <skill rating="F">Gymnastics</skill>
+            <skill rating="F">Perception</skill>
          </skills>
          <qualities>
-            <quality>Shiva Arms</quality>
+            <positive>
+               <quality>Shiva Arms (Pair)</quality>
+            </positive>
          </qualities>
          <powers>
             <power>Astral Form</power>
             <power>Aura Masking</power>
             <power select="Spirit Pact Only">Hidden Life</power>
-            <power select="Touch">Improved Sense</power>
+            <power select="Touch">Enhanced Senses</power>
+            <!-- "Improved Sense" in source -->
             <power>Materialization</power>
-            <power select="Spirit Pact Only">Regenerate</power>
+            <power select="Spirit Pact Only">Regeneration</power>
+            <!-- Regenerate in source -->
             <power>Sapience</power>
             <power>Spirit Pact</power>
          </powers>
@@ -19706,12 +19800,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+2</inimin>
+         <inimax>(F*2)+2</inimax>
+         <iniaug>(F*2)+2</iniaug>
          <edgmin>F</edgmin>
          <edgmax>F</edgmax>
          <edgaug>F</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -19720,21 +19823,20 @@
          <sprint>2/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Con</skill>
-            <skill>Counterspelling</skill>
-            <skill>Disenchanting</skill>
-            <skill>Gymnastics</skill>
-            <skill>Perception</skill>
-            <skill>Spellcasting</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Con</skill>
+            <skill rating="F">Counterspelling</skill>
+            <skill rating="F">Disenchanting</skill>
+            <skill rating="F">Gymnastics</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Spellcasting</skill>
          </skills>
          <powers>
             <power>Astral Form</power>
             <power>Aura Masking</power>
             <power>Materialization</power>
-            <power select="Essence">Energy Drain</power>
-            <power>Age)</power>
+            <power select="Essence,Age">Energy Drain</power>
             <power>Fey Glamour</power>
             <power>Sapience</power>
             <power>Spirit Pact</power>
@@ -19776,12 +19878,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)</inimin>
+         <inimax>(F*2)</inimax>
+         <iniaug>(F*2)</iniaug>
          <edgmin>F/2</edgmin>
          <edgmax>F/2</edgmax>
          <edgaug>F/2</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -19789,23 +19900,23 @@
          <run>4/0/0</run>
          <sprint>1/1/0</sprint>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Automatics</skill>
-            <skill>Blades</skill>
-            <skill>Clubs</skill>
-            <skill>Computer</skill>
-            <skill>First Aid</skill>
-            <skill>Gymnastics</skill>
-            <skill>Intimidation</skill>
-            <skill>Locksmith</skill>
-            <skill>Longarms</skill>
-            <skill>Perception</skill>
-            <skill>Pilot Ground Craft</skill>
-            <skill>Pistols</skill>
-            <skill>Sneaking</skill>
-            <skill>Throwing Weapons</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Automatics</skill>
+            <skill rating="F">Blades</skill>
+            <skill rating="F">Clubs</skill>
+            <skill rating="F">Computer</skill>
+            <skill rating="F">First Aid</skill>
+            <skill rating="F">Gymnastics</skill>
+            <skill rating="F">Intimidation</skill>
+            <skill rating="F">Locksmith</skill>
+            <skill rating="F">Longarms</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Pilot Ground Craft</skill>
+            <skill rating="F">Pistols</skill>
+            <skill rating="F">Sneaking</skill>
+            <skill rating="F">Throwing Weapons</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <powers>
             <power>Astral Form</power>
@@ -19852,12 +19963,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+2</inimin>
+         <inimax>(F*2)+2</inimax>
+         <iniaug>(F*2)+2</iniaug>
          <edgmin>F/2</edgmin>
          <edgmax>F/2</edgmax>
          <edgaug>F/2</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -19866,13 +19986,13 @@
          <sprint>4/1/0</sprint>
          <armor>(F x 2)H</armor>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Flight</skill>
-            <skill>Gymnastics</skill>
-            <skill>Perception</skill>
-            <skill>Sneaking</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Flight</skill>
+            <skill rating="F">Gymnastics</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Sneaking</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <powers>
             <power>Accident</power>
@@ -19885,9 +20005,7 @@
             <power>Influence</power>
             <power>Materialization</power>
             <power select="Claws (DV (F+2)P AP -F)">Natural Weapon</power>
-            <power select="Wings (DV (F+6)S AP -F)">Natural Weapon</power>
-            <power>AP -Force</power>
-            <power>Knockdown)</power>
+            <power select="Wings (DV (F+6)S AP -Force, Knockdown)">Natural Weapon</power>
             <power>Psychokinesis</power>
             <power>Sapience</power>
          </powers>
@@ -19928,12 +20046,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+2</inimin>
+         <inimax>(F*2)+2</inimax>
+         <iniaug>(F*2)+2</iniaug>
          <edgmin>F/2</edgmin>
          <edgmax>F/2</edgmax>
          <edgaug>F/2</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -19942,16 +20069,16 @@
          <sprint>2/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Counterspelling</skill>
-            <skill>Gymnastics</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Counterspelling</skill>
+            <skill rating="F">Gymnastics</skill>
          </skills>
          <powers>
             <power select="Domain">Accident</power>
             <power>Alienate</power>
             <power>Astral Form</power>
-            <power>Aura</power>
+            <power>Aura Masking</power>
          </powers>
          <bonus>
             <enabletab>
@@ -19990,12 +20117,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+3</inimin>
+         <inimax>(F*2)+3</inimax>
+         <iniaug>(F*2)+3</iniaug>
          <edgmin>F</edgmin>
          <edgmax>F</edgmax>
          <edgaug>F</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -20004,10 +20140,10 @@
          <sprint>2/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <skill>Alchemy</skill>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Con</skill>
+            <skill rating="F">Alchemy</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Con</skill>
          </skills>
          <powers>
             <power>Astral Form</power>
@@ -20051,12 +20187,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+4</inimin>
+         <inimax>(F*2)+4</inimax>
+         <iniaug>(F*2)+4</iniaug>
          <edgmin>F/2</edgmin>
          <edgmax>F/2</edgmax>
          <edgaug>F/2</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -20065,10 +20210,10 @@
          <sprint>2/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Counterspelling</skill>
-            <skill>Gymnastics</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Counterspelling</skill>
+            <skill rating="F">Gymnastics</skill>
          </skills>
          <powers>
             <power>Astral Form</power>
@@ -20112,12 +20257,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)-1</inimin>
+         <inimax>(F*2)-1</inimax>
+         <iniaug>(F*2)-1</iniaug>
          <edgmin>F</edgmin>
          <edgmax>F</edgmax>
          <edgaug>F</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F-2</essmin>
          <essmax>F-2</essmax>
          <essaug>F-2</essaug>
@@ -20126,9 +20280,9 @@
          <sprint>1/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill spec="Elemental Attack">Exotic Ranged Weapon</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
          </skills>
          <powers>
             <power>Astral Form</power>
@@ -20182,12 +20336,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+2</inimin>
+         <inimax>(F*2)+2</inimax>
+         <iniaug>(F*2)+2</iniaug>
          <edgmin>F/2</edgmin>
          <edgmax>F/2</edgmax>
          <edgaug>F/2</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -20196,19 +20359,19 @@
          <sprint>2/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Perception</skill>
-            <skill>Ritual Spellcasting</skill>
-            <skill>Sneaking</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Ritual Spellcasting</skill>
+            <skill rating="F">Sneaking</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <powers>
             <power>Accident</power>
             <power>Astral Form</power>
             <power>Banishing Resistance</power>
             <power select="Low Light">Enhanced Senses</power>
-            <power select="Augury">Innate Ritual</power>
+            <power select="Augury and Sortilege">Innate Ritual</power>
             <power>Magic Sense</power>
             <power>Materialization</power>
             <power>Search</power>
@@ -20250,12 +20413,21 @@
          <wilmin>F-1</wilmin>
          <wilmax>F-1</wilmax>
          <wilaug>F-1</wilaug>
+         <inimin>(F*2)+5</inimin>
+         <inimax>(F*2)+5</inimax>
+         <iniaug>(F*2)+5</iniaug>
          <edgmin>F/2</edgmin>
          <edgmax>F/2</edgmax>
          <edgaug>F/2</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -20263,11 +20435,11 @@
          <run>5/0/0</run>
          <sprint>2/1/0</sprint>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Perception</skill>
-            <skill>Sneaking</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Sneaking</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <powers>
             <power>Astral Form</power>
@@ -20317,12 +20489,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+2</inimin>
+         <inimax>(F*2)+2</inimax>
+         <iniaug>(F*2)+2</iniaug>
          <edgmin>F/2</edgmin>
          <edgmax>F/2</edgmax>
          <edgaug>F/2</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -20331,11 +20512,11 @@
          <sprint>2/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Gymnastics</skill>
-            <skill>Perception</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Gymnastics</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <powers>
             <power>Accident</power>
@@ -20350,15 +20531,15 @@
             <power>Psychokinesis</power>
          </powers>
          <optionalpowers>
-            <power>Confusion</power>
-            <power>Deathlock</power>
-            <power>Ghost Chain</power>
-            <power>Howl</power>
-            <power>Movement</power>
-            <power>Noxious Breath</power>
-            <power>Paralyzing Touch</power>
-            <power>Sapience</power>
-            <power>Spirit Pact</power>
+            <optionalpower>Confusion</optionalpower>
+            <optionalpower>Deathlock</optionalpower>
+            <optionalpower>Ghost Chain</optionalpower>
+            <optionalpower>Movement</optionalpower>
+            <optionalpower>Noxious Breath</optionalpower>
+            <optionalpower>Paralyzing Touch</optionalpower>
+            <optionalpower>Paralyzing Howl</optionalpower>
+            <optionalpower>Sapience</optionalpower>
+            <optionalpower>Spirit Pact</optionalpower>
          </optionalpowers>
          <bonus>
             <enabletab>
@@ -20397,12 +20578,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+2</inimin>
+         <inimax>(F*2)+2</inimax>
+         <iniaug>(F*2)+2</iniaug>
          <edgmin>F/2</edgmin>
          <edgmax>F/2</edgmax>
          <edgaug>F/2</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -20411,14 +20601,14 @@
          <sprint>2/1/0</sprint>
          <armor>F</armor>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Con</skill>
-            <skill>Intimidation</skill>
-            <skill>Negotiation</skill>
-            <skill>Perception</skill>
-            <skill>Sneaking</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Con</skill>
+            <skill rating="F">Intimidation</skill>
+            <skill rating="F">Negotiation</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Sneaking</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <powers>
             <power>Accident</power>
@@ -20433,8 +20623,7 @@
             <power select="F">Hardened Mystic Armor</power>
             <power>Influence</power>
             <power>Materialization</power>
-            <power select="DV (F-1)S">Natural Weapon (Fist)</power>
-            <power>AP -Force)</power>
+            <power select="Fist: (DV (F-1)S AP -Force)">Natural Weapon</power>
             <power>Psychokinesis</power>
             <power>Sapience</power>
             <power>Search</power>
@@ -20476,12 +20665,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+2</inimin>
+         <inimax>(F*2)+2</inimax>
+         <iniaug>(F*2)+2</iniaug>
          <edgmin>F/2</edgmin>
          <edgmax>F/2</edgmax>
          <edgaug>F/2</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -20490,11 +20688,11 @@
          <sprint>2/1/0</sprint>
          <armor>(F x 2)H</armor>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Gymnastics</skill>
-            <skill>Perception</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Gymnastics</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <powers>
             <power select="double pain modifers">Agonizing Pain</power>
@@ -20545,22 +20743,34 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+2</inimin>
+         <inimax>(F*2)+2</inimax>
+         <iniaug>(F*2)+2</iniaug>
          <edgmin>F</edgmin>
          <edgmax>F</edgmax>
          <edgaug>F</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
+         <walk>2/1/0</walk>
+         <run>4/0/0</run>
+         <sprint>2/1/0</sprint>
          <armor>(F x 2)H</armor>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Astral Combat</skill>
-            <skill>Gymnastics</skill>
-            <skill>Perception</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Gymnastics</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <powers>
             <power>Accident</power>
@@ -20613,12 +20823,21 @@
          <wilmin>4</wilmin>
          <wilmax>4</wilmax>
          <wilaug>8</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>16</iniaug>
          <edgmin>4</edgmin>
          <edgmax>4</edgmax>
          <edgaug>8</edgaug>
          <magmin>6</magmin>
          <magmax>6</magmax>
          <magaug>10</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>6</essmin>
          <essmax>6</essmax>
          <essaug>10</essaug>
@@ -20674,12 +20893,21 @@
          <wilmin>F</wilmin>
          <wilmax>F</wilmax>
          <wilaug>F</wilaug>
+         <inimin>(F*2)+5</inimin>
+         <inimax>(F*2)+5</inimax>
+         <iniaug>(F*2)+5</iniaug>
          <edgmin>F</edgmin>
          <edgmax>F</edgmax>
          <edgaug>F</edgaug>
          <magmin>F</magmin>
          <magmax>F</magmax>
          <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
          <essmin>F</essmin>
          <essmax>F</essmax>
          <essaug>F</essaug>
@@ -20688,10 +20916,10 @@
          <sprint>1/1/5</sprint>
          <armor>12H</armor>
          <skills>
-            <skill>Assensing</skill>
-            <skill>Flight</skill>
-            <skill>Perception</skill>
-            <skill>Unarmed Combat</skill>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Flight</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Unarmed Combat</skill>
          </skills>
          <powers>
             <power>Aura Masking</power>
@@ -20747,9 +20975,9 @@
          <wilmin>F-2</wilmin>
          <wilmax>F-2</wilmax>
          <wilaug>F-2</wilaug>
-         <inimin>F*2</inimin>
-         <inimax>F*2</inimax>
-         <iniaug>F*2</iniaug>
+         <inimin>(F*2)</inimin>
+         <inimax>(F*2)</inimax>
+         <iniaug>(F*2)</iniaug>
          <edgmin>0</edgmin>
          <edgmax>0</edgmax>
          <edgaug>0</edgaug>
@@ -21467,12 +21695,12 @@
             <power>Sapience</power>
          </powers>
          <optionalpowers>
-            <power>Magic Resistance</power>
-            <power>Combat Skill</power>
-            <power>Physical Skill</power>
-            <power>Social Skill</power>
-            <power>Technical Skill</power>
-            <power>Vehicle Skill</power>
+            <optionalpower>Magic Resistance</optionalpower>
+            <optionalpower>Combat Skill</optionalpower>
+            <optionalpower>Physical Skill</optionalpower>
+            <optionalpower>Social Skill</optionalpower>
+            <optionalpower>Technical Skill</optionalpower>
+            <optionalpower>Vehicle Skill</optionalpower>
          </optionalpowers>
          <skills>
             <skill rating="F">Assensing</skill>
@@ -21975,7 +22203,7 @@
             <skill rating="10">Sneaking</skill>
             <skill rating="7">Unarmed Combat</skill>
             <group rating="4">Athletics</group>
-            <knowledge rating="8" category="Professional">Animal Calls</knowledge>
+            <knowledge rating="8" category="Professional" attribute="LOG">Animal Calls</knowledge>
          </skills>
          <source>HS</source>
          <page>87</page>
@@ -23031,9 +23259,6 @@
             </enabletab>
             <genetechcostmultiplier>80</genetechcostmultiplier>
             <genetechessmultiplier>90</genetechessmultiplier>
-            <enabletab>
-               <name>critter</name>
-            </enabletab>
          </bonus>
          <powers>
             <power>Domesticated</power>
@@ -24836,6 +25061,11 @@
          <walk>2/0/0</walk>
          <run>6/0/0</run>
          <sprint>4/0/0</sprint>
+         <qualities>
+            <positive>
+               <quality>Munge</quality>
+            </positive>
+         </qualities>
          <bonus>
             <enableattribute>
                <name>RES</name>
@@ -24850,7 +25080,6 @@
             <power>Blend</power>
             <power>Gremlins</power>
             <power>Holographic Concealment</power>
-            <power>Munge</power>
             <power select="Bite: DV (STR+1)P, AP 0, Reach 1">Natural Weapon</power>
             <power>Resonance Feed</power>
             <power>Tunnel</power>
@@ -24929,6 +25158,11 @@
          <walk>2/0/0</walk>
          <run>6/0/0</run>
          <sprint>4/0/0</sprint>
+         <qualities>
+            <positive>
+               <quality>Munge</quality>
+            </positive>
+         </qualities>
          <bonus>
             <enableattribute>
                <name>RES</name>
@@ -24943,7 +25177,6 @@
             <power>Blend</power>
             <power>Gremlins</power>
             <power>Holographic Concealment</power>
-            <power>Munge</power>
             <power select="Bite: DV (STR+1)P, AP 0, Reach 1">Natural Weapon</power>
             <power>Resonance Feed</power>
             <power>Tunnel</power>
@@ -25022,6 +25255,11 @@
          <walk>2/0/0</walk>
          <run>6/0/0</run>
          <sprint>4/0/0</sprint>
+         <qualities>
+            <positive>
+               <quality>Munge</quality>
+            </positive>
+         </qualities>
          <bonus>
             <enableattribute>
                <name>RES</name>
@@ -25036,7 +25274,6 @@
             <power>Blend</power>
             <power>Gremlins</power>
             <power>Holographic Concealment</power>
-            <power>Munge</power>
             <power select="Bite: DV (STR+1)P, AP 0, Reach 1">Natural Weapon</power>
             <power>Resonance Feed</power>
             <power>Tunnel</power>
@@ -25115,6 +25352,11 @@
          <walk>2/0/0</walk>
          <run>6/0/0</run>
          <sprint>4/0/0</sprint>
+         <qualities>
+            <positive>
+               <quality>Munge</quality>
+            </positive>
+         </qualities>
          <bonus>
             <enableattribute>
                <name>RES</name>
@@ -25129,7 +25371,6 @@
             <power>Blend</power>
             <power>Gremlins</power>
             <power>Holographic Concealment</power>
-            <power>Munge</power>
             <power select="Bite: DV (STR+1)P, AP 0, Reach 1">Natural Weapon</power>
             <power>Resonance Feed</power>
             <power>Tunnel</power>
@@ -25788,6 +26029,8 @@
             <power rating="4">Armor</power>
             <power select="Hoof: DV (STR)P, AP 0">Natural Weapon</power>
             <power>Resonance Feed</power>
+            <power>Resonance Hosting</power>
+            <!-- Complex form NOT power in source -->
             <power>Blend</power>
             <power>AR-Parallelism</power>
          </powers>
@@ -25809,13 +26052,12 @@
             <complexform select="Attack">Diffusion of [Matrix Attribute]</complexform>
             <complexform select="Data Processing">Diffusion of [Matrix Attribute]</complexform>
             <complexform>Resonance Spike</complexform>
-            <complexform>Resonance Hosting</complexform>
             <complexform>Resonance Channel</complexform>
          </complexforms>
          <source>KC</source>
          <page>175</page>
       </metatype>
-           <metatype>
+      <metatype>
          <id>ae8062f7-8ba1-4e67-aa2c-491a87e72572</id>
          <name>Primate</name>
          <category>Technocritters</category>
@@ -25884,9 +26126,10 @@
          <skills>
             <group rating="4">Athletics</group>
             <skill rating="3">Clubs</skill>
-            <skill rating="4">Perception</skill>           
-            <skill rating="2">Thrown Weapons</skill>           
-            <skill rating="6">Unarmed Combat</skill>           
+            <skill rating="4">Perception</skill>
+            <skill rating="2">Throwing Weapons</skill>
+            <!-- "Thrown Weapons" in source -->
+            <skill rating="6">Unarmed Combat</skill>
             <skill rating="6">Computer</skill>
             <skill rating="5">Cybercombat</skill>
             <skill rating="5">Hacking</skill>
@@ -25894,7 +26137,7 @@
             <skill rating="5">Electronic Warfare</skill>
          </skills>
          <complexforms>
-            <complexform>Deezz</complexform>
+            <complexform>Derezz</complexform>
             <complexform select="Firewall">Diffusion of [Matrix Attribute]</complexform>
             <complexform>Editor</complexform>
             <complexform select="Sleaze">Infusion of [Matrix Attribute]</complexform>
@@ -26035,9 +26278,9 @@
          <resmin>0</resmin>
          <resmax>0</resmax>
          <resaug>0</resaug>
-         <depmin>F</depmin>
-         <depmax>F</depmax>
-         <depaug>F</depaug>
+         <depmin>6</depmin>
+         <depmax>6</depmax>
+         <depaug>6</depaug>
          <essmin>0</essmin>
          <essmax>6</essmax>
          <essaug>6</essaug>
@@ -26048,7 +26291,7 @@
                <quality>Munge</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26110,10 +26353,10 @@
          <resmin>0</resmin>
          <resmax>0</resmax>
          <resaug>0</resaug>
-         <depmin>0</depmin>
-         <depmax>F</depmax>
-         <depaug>F</depaug>
-         <essmin>F</essmin>
+         <depmin>5</depmin>
+         <depmax>5</depmax>
+         <depaug>5</depaug>
+         <essmin>0</essmin>
          <essmax>6</essmax>
          <essaug>6</essaug>
          <movement>Special</movement>
@@ -26124,7 +26367,7 @@
                <quality>Snooper</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26197,7 +26440,7 @@
                <quality>Munge</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26271,7 +26514,7 @@
                <quality>Munge</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26344,7 +26587,7 @@
                <quality>Munge</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26417,7 +26660,7 @@
                <quality>Munge</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26493,7 +26736,7 @@
                <quality>Munge</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -26568,7 +26811,7 @@
                <quality>Redundancy</quality>
             </positive>
             <negative>
-               <quality>Real World Naivete</quality>
+               <quality>Real World Naiveté</quality>
             </negative>
          </qualities>
          <bonus>
@@ -27232,8 +27475,8 @@
             <skill rating="6" spec="Sight">Perception</skill>
             <skill rating="8">Unarmed Combat</skill>
          </skills>
-         <source>SHB3</source>
-         <page>170</page>
+         <source>DATG</source>
+         <page>42</page>
       </metatype>
       <metatype>
          <id>75aa9c20-8c7f-4a99-8b69-06c0056f5ffe</id>
@@ -27310,8 +27553,8 @@
             <skill rating="5">Sneaking</skill>
             <skill rating="5">Unarmed Combat</skill>
          </skills>
-         <source>SHB3</source>
-         <page>207</page>
+         <source>SOXG</source>
+         <page>37</page>
       </metatype>
       <metatype>
          <id>7086b5a8-c5f4-4cb5-9b01-6854790aa02a</id>
@@ -27394,8 +27637,8 @@
             <skill rating="2">Perception</skill>
             <skill rating="2">Sneaking</skill>
          </skills>
-         <source>SHB3</source>
-         <page>208</page>
+         <source>SOXG</source>
+         <page>38</page>
       </metatype>
       <metatype>
          <id>259c1bbb-e7b3-4bea-a07a-e60c4a09ca03</id>
@@ -27471,8 +27714,8 @@
             <skill rating="3">Perception</skill>
             <skill rating="4">Unarmed Combat</skill>
          </skills>
-         <source>SHB3</source>
-         <page>209</page>
+         <source>SOXG</source>
+         <page>38</page>
       </metatype>
       <metatype>
          <id>8e1bd9aa-a042-405a-af6b-8aa1fcf42b62</id>
@@ -27544,8 +27787,8 @@
             <skill rating="2">Sneaking</skill>
             <skill rating="6">Unarmed Combat</skill>
          </skills>
-         <source>SHB3</source>
-         <page>207</page>
+         <source>SOXG</source>
+         <page>37</page>
       </metatype>
       <!-- End Region Schattenhandbuch -->
       <!-- Region Hard Targets -->
@@ -28124,7 +28367,8 @@
            <initiativepass>1</initiativepass>
          </bonus>
          <powers>
-             <power>Agony</power>
+             <power select="Agony">Innate Spell</power>
+             <!-- "Agony" in source-->
              <power rating="6">Armor</power>
              <power>Deathlock</power>
              <power select="Low-Light Vision, Smell">Enhanced Senses</power>

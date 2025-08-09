@@ -31,7 +31,7 @@ namespace Chummer
     {
         private readonly List<Gear> _lstGear = new List<Gear>();
         private readonly List<Vehicle> _lstVehicles = new List<Vehicle>();
-        private List<ListItem> _lstGeneralItems = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstGeneralItems;
         private string _strMode = "General";
         private Character _objCharacter;
         private bool _blnAllowAutoSelect = true;
@@ -45,12 +45,13 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            _lstGeneralItems = Utils.ListItemListPool.Get();
             Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstGeneralItems);
         }
 
         private async void SelectItem_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
                 switch (_strMode)
                 {
@@ -61,7 +62,7 @@ namespace Chummer
                         // Add each of the items to a new List since we need to also grab their plugin information.
                         foreach (Gear objGear in _lstGear)
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(
                                        Utils.StringBuilderPool, out StringBuilder sbdAmmoName))
                             {
                                 sbdAmmoName.Append(await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false));
@@ -88,7 +89,7 @@ namespace Chummer
                                                .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')');
                                 }
 
-                                sbdAmmoName.Append(strSpace).Append('x')
+                                sbdAmmoName.Append(strSpace).Append('×')
                                            .Append(objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
                                 lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
                             }

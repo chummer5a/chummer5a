@@ -33,9 +33,9 @@ namespace Chummer
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
-        private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
+        private readonly Dictionary<string, DrugComponent> _dicDrugComponents;
         private readonly List<DrugNodeData> _lstSelectedDrugComponents;
-        private List<ListItem> _lstGrade = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstGrade;
         private readonly Character _objCharacter;
         private Drug _objDrug;
         private readonly XmlDocument _objXmlDocument;
@@ -46,21 +46,31 @@ namespace Chummer
 
         public CreateCustomDrug(Character objCharacter)
         {
-            Disposed += (sender, args) =>
-            {
-                if (DialogResult != DialogResult.OK)
-                    Interlocked.Exchange(ref _objDrug, null)?.Dispose();
-                Utils.ListItemListPool.Return(ref _lstGrade);
-            };
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objDrug = new Drug(objCharacter);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objXmlDocument = objCharacter.LoadData("drugcomponents.xml");
-            LoadData();
-
+            XmlNodeList xmlComponentsNodeList = _objXmlDocument.SelectNodes("chummer/drugcomponents/drugcomponent");
+            _dicDrugComponents = new Dictionary<string, DrugComponent>(xmlComponentsNodeList?.Count ?? 0);
+            if (xmlComponentsNodeList?.Count > 0)
+            {
+                foreach (XmlNode objXmlComponent in xmlComponentsNodeList)
+                {
+                    DrugComponent objDrugComponent = new DrugComponent(_objCharacter);
+                    objDrugComponent.Load(objXmlComponent);
+                    _dicDrugComponents[objDrugComponent.Name] = objDrugComponent;
+                }
+            }
             _lstSelectedDrugComponents = new List<DrugNodeData>(5);
+            _lstGrade = Utils.ListItemListPool.Get();
+            Disposed += (sender, args) =>
+            {
+                if (DialogResult != DialogResult.OK)
+                    Interlocked.Exchange(ref _objDrug, null)?.Dispose();
+                Utils.ListItemListPool.Return(ref _lstGrade);
+            };
         }
 
         private async void CreateCustomDrug_Load(object sender, EventArgs e)
@@ -103,20 +113,6 @@ namespace Chummer
             await UpdateCustomDrugStats().ConfigureAwait(false);
             string strDescription = await _objDrug.GenerateDescriptionAsync(0).ConfigureAwait(false);
             await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
-        }
-
-        private void LoadData()
-        {
-            XmlNodeList xmlComponentsNodeList = _objXmlDocument.SelectNodes("chummer/drugcomponents/drugcomponent");
-            if (xmlComponentsNodeList?.Count > 0)
-            {
-                foreach (XmlNode objXmlComponent in xmlComponentsNodeList)
-                {
-                    DrugComponent objDrugComponent = new DrugComponent(_objCharacter);
-                    objDrugComponent.Load(objXmlComponent);
-                    _dicDrugComponents[objDrugComponent.Name] = objDrugComponent;
-                }
-            }
         }
 
         /// <summary>

@@ -711,9 +711,16 @@ namespace Chummer.Backend.Uniques
                     await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
+                            "fullname_english", await DisplayNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false),
+                            token)
+                        .ConfigureAwait(false);
+                    string strExtra = Extra;
+                    await objWriter
+                        .WriteElementStringAsync(
                             "extra",
-                            await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
+                            await _objCharacter.TranslateExtraAsync(strExtra, strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("extra_english", strExtra, token).ConfigureAwait(false);
                     if (Type == TraditionType.MAG)
                     {
                         await objWriter
@@ -742,12 +749,44 @@ namespace Chummer.Backend.Uniques
                             .WriteElementStringAsync("spiritform",
                                 await DisplaySpiritFormAsync(strLanguageToPrint, token)
                                     .ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("spiritcombat_english",
+                                await DisplaySpiritCombatMethodAsync(GlobalSettings.DefaultLanguage, token)
+                                    .ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("spiritdetection_english",
+                                await DisplaySpiritDetectionMethodAsync(
+                                        GlobalSettings.DefaultLanguage, token)
+                                    .ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("spirithealth_english",
+                                await DisplaySpiritHealthMethodAsync(GlobalSettings.DefaultLanguage, token)
+                                    .ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("spiritillusion_english",
+                                await DisplaySpiritIllusionMethodAsync(GlobalSettings.DefaultLanguage, token)
+                                    .ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("spiritmanipulation_english",
+                                await DisplaySpiritManipulationMethodAsync(
+                                        GlobalSettings.DefaultLanguage, token)
+                                    .ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objWriter
+                            .WriteElementStringAsync("spiritform_english",
+                                await DisplaySpiritFormAsync(GlobalSettings.DefaultLanguage, token)
+                                    .ConfigureAwait(false), token).ConfigureAwait(false);
                     }
 
                     await objWriter
                         .WriteElementStringAsync("drainattributes",
                             await DisplayDrainExpressionMethodAsync(
                                 objCulture, strLanguageToPrint, token).ConfigureAwait(false),
+                            token)
+                        .ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync("drainattributes_english",
+                            await DisplayDrainExpressionMethodAsync(
+                                GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false),
                             token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("drainvalue", DrainValue.ToString(objCulture), token)
@@ -1419,7 +1458,7 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplayDrainExpressionMethod(CultureInfo objCultureInfo, string strLanguage)
         {
-            return _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(DrainExpression, objCultureInfo, strLanguage, false);
+            return _objCharacter.ProcessAttributesInXPathForTooltip(DrainExpression, objCultureInfo, strLanguage, false);
         }
 
         /// <summary>
@@ -1427,7 +1466,7 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public async Task<string> DisplayDrainExpressionMethodAsync(CultureInfo objCultureInfo, string strLanguage, CancellationToken token = default)
         {
-            return await _objCharacter.AttributeSection
+            return await _objCharacter
                 .ProcessAttributesInXPathForTooltipAsync(await GetDrainExpressionAsync(token).ConfigureAwait(false),
                     objCultureInfo, strLanguage, false, token: token).ConfigureAwait(false);
         }
@@ -1444,20 +1483,15 @@ namespace Chummer.Backend.Uniques
                     if (Type == TraditionType.None)
                         return 0;
                     string strDrainAttributes = DrainExpression;
-                    string strDrain;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdDrain))
+                    if (strDrainAttributes.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decDrain))
                     {
-                        sbdDrain.Append(strDrainAttributes);
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdDrain, strDrainAttributes);
-                        strDrain = sbdDrain.ToString();
-                    }
-
-                    if (!decimal.TryParse(strDrain, out decimal decDrain))
-                    {
-                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strDrain);
-                        if (blnIsSuccess)
-                            decDrain = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                        string strDrain = _objCharacter.ProcessAttributesInXPath(strDrainAttributes);
+                        if (strDrain.DoesNeedXPathProcessingToBeConvertedToNumber(out decDrain))
+                        {
+                            (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strDrain);
+                            if (blnIsSuccess)
+                                decDrain = Convert.ToDecimal((double)objProcess);
+                        }
                     }
 
                     // Add any Improvements for Drain Resistance.
@@ -1485,23 +1519,16 @@ namespace Chummer.Backend.Uniques
                 if (eType == TraditionType.None)
                     return 0;
                 string strDrainAttributes = await GetDrainExpressionAsync(token).ConfigureAwait(false);
-                string strDrain;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                           out StringBuilder sbdDrain))
+                if (strDrainAttributes.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decDrain))
                 {
-                    sbdDrain.Append(strDrainAttributes);
-                    await _objCharacter.AttributeSection
-                        .ProcessAttributesInXPathAsync(sbdDrain, strDrainAttributes, token: token)
-                        .ConfigureAwait(false);
-                    strDrain = sbdDrain.ToString();
-                }
-
-                if (!decimal.TryParse(strDrain, out decimal decDrain))
-                {
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions
-                        .EvaluateInvariantXPathAsync(strDrain, token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        decDrain = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                    string strDrain = await _objCharacter.ProcessAttributesInXPathAsync(strDrainAttributes, token: token).ConfigureAwait(false);
+                    if (strDrain.DoesNeedXPathProcessingToBeConvertedToNumber(out decDrain))
+                    {
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions
+                            .EvaluateInvariantXPathAsync(strDrain, token).ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            decDrain = Convert.ToDecimal((double)objProcess);
+                    }
                 }
 
                 // Add any Improvements for Drain Resistance.
@@ -1527,12 +1554,12 @@ namespace Chummer.Backend.Uniques
                     if (Type == TraditionType.None)
                         return string.Empty;
                     string strSpace = LanguageManager.GetString("String_Space");
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
                         sbdToolTip.Append(DrainExpression);
                         // Update the Fading CharacterAttribute Value.
-                        _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(sbdToolTip, DrainExpression);
+                        _objCharacter.ProcessAttributesInXPathForTooltip(sbdToolTip, DrainExpression);
 
                         List<Improvement> lstUsedImprovements
                             = ImprovementManager.GetCachedImprovementListForValueOf(
@@ -1567,12 +1594,12 @@ namespace Chummer.Backend.Uniques
                     return string.Empty;
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                     .ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdToolTip))
                 {
                     sbdToolTip.Append(DrainExpression);
                     // Update the Fading CharacterAttribute Value.
-                    await _objCharacter.AttributeSection
+                    await _objCharacter
                         .ProcessAttributesInXPathForTooltipAsync(sbdToolTip, DrainExpression, token: token)
                         .ConfigureAwait(false);
 
@@ -1615,18 +1642,23 @@ namespace Chummer.Backend.Uniques
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None
-                && (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)) &&
-                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Unaug}"))
-                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalBase)) &&
-                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Base}"))
-                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMinimum)) &&
-                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Minimum}"))
-                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMaximum)) &&
-                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Maximum}"))))
+            if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None)
             {
-                await OnPropertyChangedAsync(nameof(DrainValue), token).ConfigureAwait(false);
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+                {
+                    await OnPropertyChangedAsync(nameof(DrainValue), token).ConfigureAwait(false);
+                }
+                else
+                {
+                    string strDrainExpression = await GetDrainExpressionAsync(token).ConfigureAwait(false);
+                    if ((e.PropertyNames.Contains(nameof(CharacterAttrib.Value)) && strDrainExpression.Contains("Unaug}"))
+                        || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalBase)) && strDrainExpression.Contains("Base}"))
+                        || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMinimum)) && strDrainExpression.Contains("Minimum}"))
+                        || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMaximum)) && strDrainExpression.Contains("Maximum}")))
+                    {
+                        await OnPropertyChangedAsync(nameof(DrainValue), token).ConfigureAwait(false);
+                    }
+                }
             }
         }
 

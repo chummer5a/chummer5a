@@ -30,7 +30,7 @@ using NLog;
 namespace Chummer
 {
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    [DebuggerDisplay("{DisplayNameShort(GlobalSettings.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayNameShort(\"en-us\")}")]
     public sealed class MentorSpirit : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource, IHasNotes, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -299,10 +299,10 @@ namespace Chummer
                     xmlMentor.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
                 string strDisplayName = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
-                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
                 {
-                    Notes = await CommonFunctions.GetBookNotesAsync(xmlMentor, await GetNameAsync(token).ConfigureAwait(false), strDisplayName, Source, Page,
-                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+                    await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(xmlMentor, await GetNameAsync(token).ConfigureAwait(false), strDisplayName, Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
 
                 // Cache the English list of advantages gained through the Mentor Spirit.
@@ -526,7 +526,7 @@ namespace Chummer
                     objWriter.WriteElementString("choice2", string.Empty);
 
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
 
                 if (SourceID != Guid.Empty)
                 {
@@ -654,21 +654,33 @@ namespace Chummer
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("disadvantage_english", Disadvantage, token)
                         .ConfigureAwait(false);
+                    string strExtra = await GetExtraAsync(token).ConfigureAwait(false);
+                    string strExtraChoice1 = await GetExtraChoice1Async(token).ConfigureAwait(false);
+                    string strExtraChoice2 = await GetExtraChoice2Async(token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "extra",
-                            await _objCharacter.TranslateExtraAsync(await GetExtraAsync(token).ConfigureAwait(false), strLanguageToPrint, token: token)
+                            await _objCharacter.TranslateExtraAsync(strExtra, strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "extrachoice1",
-                            await _objCharacter.TranslateExtraAsync(await GetExtraChoice1Async(token).ConfigureAwait(false), strLanguageToPrint, token: token)
+                            await _objCharacter.TranslateExtraAsync(strExtraChoice1, strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "extrachoice2",
-                            await _objCharacter.TranslateExtraAsync(await GetExtraChoice2Async(token).ConfigureAwait(false), strLanguageToPrint, token: token)
+                            await _objCharacter.TranslateExtraAsync(strExtraChoice2, strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "extra_english", strExtra, token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "extrachoice1_english", strExtraChoice1, token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "extrachoice2_english", strExtraChoice2, token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "source",
@@ -683,7 +695,7 @@ namespace Chummer
                             MentorMask.ToString(GlobalSettings.InvariantCultureInfo), token)
                         .ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)
-                        await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token)
+                        await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfXmlInvalidUnicodeChars(), token)
                             .ConfigureAwait(false);
                 }
                 finally
@@ -1431,8 +1443,52 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_strNotes == value)
+                        return;
+                }
                 using (LockObject.EnterUpgradeableReadLock())
                     _strNotes = value;
+            }
+        }
+
+        public async Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strNotes == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _strNotes = value;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1448,8 +1504,72 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _colNotes = value;
+                    }
+                }
+            }
+        }
+
+        public async Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _colNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _colNotes)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_colNotes == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
                     _colNotes = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1466,6 +1586,25 @@ namespace Chummer
 
                     return ColorManager.WindowText;
                 }
+            }
+        }
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+                {
+                    return ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+                }
+
+                return ColorManager.WindowText;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -45,20 +46,18 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseChummerNode;
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
-        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
 
         public SelectWeaponAccessory(Character objCharacter)
         {
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            lblMarkupLabel.Visible = objCharacter.Created;
-            nudMarkup.Visible = objCharacter.Created;
-            lblMarkupPercentLabel.Visible = objCharacter.Created;
+            _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             // Load the Weapon information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseChummerNode));
@@ -66,8 +65,14 @@ namespace Chummer
 
         private async void SelectWeaponAccessory_Load(object sender, EventArgs e)
         {
-            if (_objCharacter.Created)
+            bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync().ConfigureAwait(false);
+            await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount).ConfigureAwait(false);
+
+            if (await _objCharacter.GetCreatedAsync().ConfigureAwait(false))
             {
+                await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+                await nudMarkup.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+                await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
                 await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                 {
                     x.Visible = false;
@@ -76,15 +81,17 @@ namespace Chummer
             }
             else
             {
+                await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                await nudMarkup.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                int intMaxAvail = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetMaximumAvailabilityAsync().ConfigureAwait(false);
                 await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                 {
-                    x.Text = string.Format(GlobalSettings.CultureInfo, x.Text,
-                                           _objCharacter.Settings.MaximumAvailability);
+                    x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
+                    x.Visible = true;
                     x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                 }).ConfigureAwait(false);
             }
-
-            await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount).ConfigureAwait(false);
 
             _blnLoading = false;
             await RefreshList().ConfigureAwait(false);
@@ -95,15 +102,15 @@ namespace Chummer
         /// </summary>
         private async Task RefreshList(CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAccessories))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAccessories))
             {
                 // Populate the Accessory list.
                 string strFilter = string.Empty;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
                     sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
                              .Append(
-                                 ") and (contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
+                                 ") and (mount = \"\"");
                     foreach (string strAllowedMount in _lstAllowedMounts.Where(
                                  strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
                     {
@@ -140,7 +147,7 @@ namespace Chummer
                     if (!blnHideOverAvailLimit || await objXmlAccessory.CheckAvailRestrictionAsync(_objCharacter, token: token).ConfigureAwait(false)
                         && (blnFreeItem || !blnShowOnlyAffordItems
                                         || await objXmlAccessory.CheckNuyenRestrictionAsync(
-                                            decNuyen, decCostMultiplier, token: token).ConfigureAwait(false)))
+                                            _objCharacter, decNuyen, decCostMultiplier, token: token).ConfigureAwait(false)))
                     {
                         lstAccessories.Add(new ListItem(
                                                strId,
@@ -277,22 +284,7 @@ namespace Chummer
             _lstAllowedMounts.Clear();
             if (objWeapon != null)
             {
-                XPathNavigator xmlThisWeaponDataNode
-                    = _xmlBaseChummerNode.TryGetNodeById("weapons/weapon", objWeapon.SourceID);
-                if (xmlThisWeaponDataNode != null)
-                {
-                    foreach (XPathNavigator objXmlMount in xmlThisWeaponDataNode.Select("accessorymounts/mount"))
-                    {
-                        string strLoopMount = objXmlMount.Value;
-                        // Run through the Weapon's current Accessories and filter out any used up Mount points.
-                        if (!await _objParentWeapon.WeaponAccessories.AnyAsync(objMod =>
-                                objMod.Mount == strLoopMount
-                                || objMod.ExtraMount == strLoopMount, token: token).ConfigureAwait(false))
-                        {
-                            _lstAllowedMounts.Add(strLoopMount);
-                        }
-                    }
-                }
+                _lstAllowedMounts.AddRange(await objWeapon.GetAccessoryMountsAsync(token: token).ConfigureAwait(false));
 
                 //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
                 if (await _objCharacter.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
@@ -393,7 +385,16 @@ namespace Chummer
                 await lblRCLabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
             }
 
-            if (int.TryParse(xmlAccessory.SelectSingleNodeAndCacheExpression("rating", token)?.Value, out int intMaxRating) && intMaxRating > 0)
+            string strExpression = xmlAccessory.SelectSingleNodeAndCacheExpression("rating", token)?.Value ?? string.Empty;
+            if (strExpression == "0")
+                strExpression = string.Empty;
+            int intMaxRating = int.MaxValue;
+            if (!string.IsNullOrEmpty(strExpression))
+            {
+                intMaxRating = (await ProcessInvariantXPathExpression(strExpression, int.MaxValue, token).ConfigureAwait(false)).StandardRound();
+            }
+
+            if (intMaxRating > 0 && intMaxRating != int.MaxValue)
             {
                 await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaxRating, token: token).ConfigureAwait(false);
                 if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token)
@@ -430,7 +431,7 @@ namespace Chummer
                     decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                     while (intMaximum > intMinimum && !await xmlAccessory
                                                              .CheckNuyenRestrictionAsync(
-                                                                 decNuyen, decCostMultiplier, intMaximum,
+                                                                 _objCharacter, decNuyen, decCostMultiplier, intMaximum,
                                                                  token).ConfigureAwait(false))
                     {
                         --intMaximum;
@@ -467,24 +468,18 @@ namespace Chummer
                     lstMounts.AddRange(strDataMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
                 }
 
-                lstMounts.Add("None");
+                if (!lstMounts.Contains("None"))
+                    lstMounts.Add("None");
 
-                List<string> strAllowed = new List<string>(_lstAllowedMounts) {"None"};
                 string strSelectedMount = await cboMount.DoThreadSafeFuncAsync(x =>
                 {
                     x.Visible = true;
                     x.Items.Clear();
                     foreach (string strCurrentMount in lstMounts)
                     {
-                        if (!string.IsNullOrEmpty(strCurrentMount))
+                        if (!string.IsNullOrEmpty(strCurrentMount) && _lstAllowedMounts.Contains(strCurrentMount))
                         {
-                            foreach (string strAllowedMount in strAllowed)
-                            {
-                                if (strCurrentMount == strAllowedMount)
-                                {
-                                    x.Items.Add(strCurrentMount);
-                                }
-                            }
+                            x.Items.Add(strCurrentMount);
                         }
                     }
 
@@ -501,22 +496,17 @@ namespace Chummer
                     lstExtraMounts.AddRange(strExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
                 }
 
-                lstExtraMounts.Add("None");
+                if (!lstExtraMounts.Contains("None"))
+                    lstExtraMounts.Add("None");
 
                 bool blnShowExtraMountLabel = await cboExtraMount.DoThreadSafeFuncAsync(x =>
                 {
                     x.Items.Clear();
                     foreach (string strCurrentMount in lstExtraMounts)
                     {
-                        if (!string.IsNullOrEmpty(strCurrentMount))
+                        if (!string.IsNullOrEmpty(strCurrentMount) && _lstAllowedMounts.Contains(strCurrentMount))
                         {
-                            foreach (string strAllowedMount in strAllowed)
-                            {
-                                if (strCurrentMount == strAllowedMount)
-                                {
-                                    x.Items.Add(strCurrentMount);
-                                }
-                            }
+                            x.Items.Add(strCurrentMount);
                         }
                     }
 
@@ -548,17 +538,7 @@ namespace Chummer
             if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
             {
                 string strCost = "0";
-                if (xmlAccessory.TryGetStringFieldQuickly("cost", ref strCost))
-                {
-                    strCost = (await strCost.CheapReplaceAsync("Weapon Cost",
-                                                               async () => (await _objParentWeapon.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
-                                                                   GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Weapon Total Cost",
-                                                               async () => (await _objParentWeapon.MultipliableCostAsync(null, token).ConfigureAwait(false))
-                                                                   .ToString(GlobalSettings.InvariantCultureInfo),
-                                                               token: token).ConfigureAwait(false))
-                        .Replace("Rating", intRating.ToString(GlobalSettings.CultureInfo));
-                }
+                xmlAccessory.TryGetStringFieldQuickly("cost", ref strCost);
 
                 if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                 {
@@ -567,11 +547,16 @@ namespace Chummer
                     strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                     if (strCost.Contains('-'))
                     {
-                        string[] strValues = strCost.Split('-');
-                        decimal.TryParse(strValues[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out decMin);
-                        decimal.TryParse(strValues[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out decMax);
+                        string[] strValues = strCost.SplitFixedSizePooledArray('-', 2);
+                        try
+                        {
+                            decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                            decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                        }
+                        finally
+                        {
+                            ArrayPool<string>.Shared.Return(strValues);
+                        }
                     }
                     else
                     {
@@ -606,13 +591,8 @@ namespace Chummer
                 }
                 else
                 {
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions
-                                                                   .EvaluateInvariantXPathAsync(strCost, token)
-                                                                   .ConfigureAwait(false);
-                    decimal decCost = blnIsSuccess
-                        ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo)
-                        : 0;
-
+                    decimal decCost = await ProcessInvariantXPathExpression(strCost, intRating, token).ConfigureAwait(false);
+                    
                     // Apply any markup.
                     decCost *= 1
                                + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
@@ -624,17 +604,19 @@ namespace Chummer
                     decCost *= _objParentWeapon.AccessoryMultiplier;
                     if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
                     {
-                        string[] astrParentDoubledCostModificationSlots
-                            = _objParentWeapon.DoubledCostModificationSlots.Split(
-                                '/', StringSplitOptions.RemoveEmptyEntries);
-                        if (astrParentDoubledCostModificationSlots.Contains(
-                                await cboMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token)
-                                              .ConfigureAwait(false)) ||
-                            astrParentDoubledCostModificationSlots.Contains(
-                                await cboExtraMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token)
-                                                   .ConfigureAwait(false)))
+                        string strSelectedMount = await cboMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token).ConfigureAwait(false);
+                        string strSelectedExtraMount = await cboExtraMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token).ConfigureAwait(false);
+                        bool blnBreakAfterFound = string.IsNullOrEmpty(strSelectedMount) || string.IsNullOrEmpty(strSelectedExtraMount);
+                        foreach (string strDoubledCostSlot in _objParentWeapon.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                         {
-                            decCost *= 2;
+                            if (strDoubledCostSlot == strSelectedMount || strDoubledCostSlot == strSelectedExtraMount)
+                            {
+                                decCost *= 2;
+                                if (blnBreakAfterFound)
+                                    break;
+                                else
+                                    blnBreakAfterFound = true;
+                            }
                         }
                     }
 
@@ -729,6 +711,74 @@ namespace Chummer
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
+        }
+
+        private async Task<decimal> ProcessInvariantXPathExpression(string strExpression, int intRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            strExpression = strExpression.ProcessFixedValuesString(intRating);
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+            {
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
+                {
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        if (_objParentWeapon != null)
+                        {
+                            Microsoft.VisualStudio.Threading.AsyncLazy<int> intParentRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => _objParentWeapon.GetRatingAsync(token), Utils.JoinableTaskFactory);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
+                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Rating",
+                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Rating}",
+                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Weapon Rating",
+                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            Microsoft.VisualStudio.Threading.AsyncLazy<decimal> decParentCost = new Microsoft.VisualStudio.Threading.AsyncLazy<decimal>(() => _objParentWeapon.GetOwnCostAsync(token), Utils.JoinableTaskFactory);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Cost}",
+                                async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Weapon Cost",
+                                async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            Microsoft.VisualStudio.Threading.AsyncLazy<decimal> decParentTotalCost = new Microsoft.VisualStudio.Threading.AsyncLazy<decimal>(() => _objParentWeapon.MultipliableCostAsync(null, token), Utils.JoinableTaskFactory);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Total Cost}",
+                                async () => (await decParentTotalCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Weapon Total Cost",
+                                async () => (await decParentTotalCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await _objParentWeapon.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            sbdValue.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                .Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                .Replace("{Weapon Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                .Replace("Weapon Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo))
+                                .Replace("{Weapon Cost}", "0")
+                                .Replace("Weapon Cost", "0")
+                                .Replace("{Weapon Total Cost}", "0")
+                                .Replace("Weapon Total Cost", "0");
+                            Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                            await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        }
+                        sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                            .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strExpression = sbdValue.ToString();
+                    }
+                }
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions
+                                                                .EvaluateInvariantXPathAsync(strExpression, token)
+                                                                .ConfigureAwait(false);
+                return blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+            }
+            return decValue;
         }
 
         #endregion Methods

@@ -300,16 +300,111 @@ namespace Chummer
         {
             if (n <= 0)
                 throw new ArgumentOutOfRangeException(nameof(n));
-            int num = 0;
-            for (; n >= 65536; n /= 65536)
-                num += 16;
-            for (; n >= 256; n /= 256)
-                num += 8;
-            for (; n >= 16; n /= 16)
-                num += 4;
-            for (; n >= 2; n /= 2)
-                ++num;
-            return num;
+            // n is between 2^31 - 1 and 0, which means the fastest way is going to be to binary search between 30 and 0
+            if (n >= (1 << 15))
+            {
+                if (n >= (1 << 23))
+                {
+                    if (n >= (1 << 27))
+                    {
+                        if (n >= (1 << 29))
+                        {
+                            if (n >= (1 << 30))
+                                return 30;
+                            else
+                                return 29;
+                        }
+                        else if (n >= (1 << 28))
+                            return 28;
+                        else
+                            return 27;
+                    }
+                    else if (n >= (1 << 25))
+                    {
+                        if (n >= (1 << 26))
+                            return 26;
+                        else
+                            return 25;
+                    }
+                    else if (n >= (1 << 24))
+                        return 24;
+                    else
+                        return 23;
+                }
+                else if (n >= (1 << 19))
+                {
+                    if (n >= (1 << 21))
+                    {
+                        if (n >= (1 << 22))
+                            return 22;
+                        else
+                            return 21;
+                    }
+                    else if (n >= (1 << 20))
+                        return 20;
+                    else
+                        return 19;
+                }
+                else if (n >= (1 << 17))
+                {
+                    if (n >= (1 << 18))
+                        return 18;
+                    else
+                        return 17;
+                }
+                else if (n >= (1 << 16))
+                    return 16;
+                else
+                    return 15;
+            }
+            else if (n >= (1 << 8))
+            {
+                if (n >= (1 << 12))
+                {
+                    if (n >= (1 << 14))
+                        return 14;
+                    else if (n >= (1 << 13))
+                        return 13;
+                    else
+                        return 12;
+                }
+                else if (n >= (1 << 10))
+                {
+                    if (n >= (1 << 11))
+                        return 11;
+                    else
+                        return 10;
+                }
+                else if (n >= (1 << 9))
+                    return 9;
+                else
+                    return 8;
+            }
+            else if (n >= (1 << 4))
+            {
+                if (n >= (1 << 6))
+                {
+                    if (n >= (1 << 7))
+                        return 7;
+                    else
+                        return 6;
+                }
+                else if (n >= (1 << 5))
+                    return 5;
+                else
+                    return 4;
+            }
+            else if (n >= (1 << 2))
+            {
+                if (n >= (1 << 3))
+                    return 3;
+                else
+                    return 2;
+            }
+            else if (n >= 2)
+                return 1;
+            else
+                return 0;
         }
 
         /// <summary>
@@ -331,12 +426,39 @@ namespace Chummer
         {
             if (n <= 0)
                 throw new ArgumentOutOfRangeException(nameof(n));
-            int num = 0;
-            for (; n >= 10000; n /= 10000)
-                num += 4;
-            for (; n >= 10; n /= 10)
-                ++num;
-            return num;
+            // n is between 2*10^9 and 0, which means the fastest way is going to be to binary search between 9 and 0.
+            if (n >= 100000)
+            {
+                if (n >= 10000000)
+                {
+                    if (n >= 1000000000)
+                        return 9;
+                    else if (n >= 100000000)
+                        return 8;
+                    else
+                        return 7;
+                }
+                else if (n >= 1000000)
+                    return 6;
+                else
+                    return 5;
+            }
+            else if (n >= 1000)
+            {
+                if (n >= 10000)
+                    return 4;
+                else
+                    return 3;
+            }
+            else if (n >= 10)
+            {
+                if (n >= 100)
+                    return 2;
+                else
+                    return 1;
+            }
+            else
+                return 0;
         }
 
         /// <summary>
@@ -506,7 +628,7 @@ namespace Chummer
         public static decimal Sqrt(this decimal d, decimal decEpsilon = DecimalExtensions.Epsilon)
         {
             if (d < 0)
-                throw new ArgumentOutOfRangeException(nameof(d), "Cannot get square root of a fractional power");
+                throw new ArgumentOutOfRangeException(nameof(d), "Cannot get square root of a negative number");
 
             // Couple of common and/or trivial cases
             if (d < s_adecIntRoots.Length)
@@ -542,6 +664,113 @@ namespace Chummer
                 decCurrent = (decCurrent + d / decCurrent) / 2;
             }
             return decCurrent;
+        }
+
+        /// <summary>
+        /// A fast way of taking the square root of an integer and returning the result rounded up to the nearest integer.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="intBase"/> is less than 0, which is outside the domain for a square root.</exception>
+        public static int FastSqrtAndStandardRound(this int intBase)
+        {
+            if (intBase < 0)
+                throw new ArgumentOutOfRangeException(nameof(intBase), "Cannot get square root of a negative number");
+            // Handle trivial cases first (up to 100)
+            if (intBase <= 1)
+                return intBase;
+            if (intBase <= 100)
+            {
+                if (intBase <= 36)
+                {
+                    if (intBase <= 16)
+                    {
+                        if (intBase <= 9)
+                        {
+                            if (intBase <= 4)
+                                return 2;
+                            else
+                                return 3;
+                        }
+                        else
+                            return 4;
+                    }
+                    else if (intBase <= 25)
+                        return 5;
+                    else
+                        return 6;
+                }
+                else if (intBase <= 64)
+                {
+                    if (intBase <= 49)
+                        return 7;
+                    else
+                        return 8;
+                }
+                else if (intBase <= 81)
+                    return 9;
+                else
+                    return 10;
+            }
+            // We use a digit-by-digit calculation in binary base
+            int intReturn = 0;
+            // We take advantage of the fact that sqrt factors and so start factoring out powers of 4 (since we know their sqrt will be some form of 2^m)
+            int intMask = 1 << 30;
+            while (intMask > intBase)
+                intMask >>= 2;
+            while (intMask != 0)
+            {
+                int intTemp = intReturn + intMask;
+                if (intBase >= intTemp)
+                {
+                    intBase -= intTemp;
+                    intReturn = (intReturn >> 1) + intMask;
+                }
+                else
+                    intReturn >>= 1;
+                intMask >>= 2;
+            }
+            return intReturn;
+        }
+
+        /// <summary>
+        /// A fast way to take the square root of a decimal and then round up to the nearest integer in a single step.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than 0, which is outside the domain for a square root.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FastSqrtAndStandardRound(this decimal d)
+        {
+            if (d < 0)
+                throw new ArgumentOutOfRangeException(nameof(d), "Cannot get square root of a negative number");
+            // Square roots of non-integers cannot be integers and sqrt is a monotonic function
+            // Therefore, ceil(sqrt(d)) == ceil(sqrt(ceil(d)))
+            return decimal.ToInt32(Math.Ceiling(d)).FastSqrtAndStandardRound();
+        }
+
+        /// <summary>
+        /// A fast way to take the square root of a decimal and then round up to the nearest integer in a single step.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than 0, which is outside the domain for a square root.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FastSqrtAndStandardRound(this double d)
+        {
+            if (d < 0)
+                throw new ArgumentOutOfRangeException(nameof(d), "Cannot get square root of a negative number");
+            // Square roots of non-integers cannot be integers and sqrt is a monotonic function
+            // Therefore, ceil(sqrt(d)) == ceil(sqrt(ceil(d)))
+            return Convert.ToInt32(Math.Ceiling(d)).FastSqrtAndStandardRound();
+        }
+
+        /// <summary>
+        /// A fast way to take the square root of a decimal and then round up to the nearest integer in a single step.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than 0, which is outside the domain for a square root.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FastSqrtAndStandardRound(this float d)
+        {
+            if (d < 0)
+                throw new ArgumentOutOfRangeException(nameof(d), "Cannot get square root of a negative number");
+            // Square roots of non-integers cannot be integers and sqrt is a monotonic function
+            // Therefore, ceil(sqrt(d)) == ceil(sqrt(ceil(d)))
+            return Convert.ToInt32(Math.Ceiling(d)).FastSqrtAndStandardRound();
         }
 
         /// <summary>
@@ -747,7 +976,7 @@ namespace Chummer
             switch (y)
             {
                 case 3:
-                    if (x > 2097152 || x < -2097152) // cubing this will cause an overflow exception, so break
+                    if (x >= 2097152 || x <= -2097152) // cubing this will cause an overflow exception, so break
                     {
                         Utils.BreakIfDebug();
                         throw new ArgumentOutOfRangeException(nameof(x), "Number is too big to be cubed and still stay a 64-bit integer.");
@@ -756,6 +985,12 @@ namespace Chummer
                     return x * x * x;
 
                 case 2:
+                    if (x >= 3037000500L || x <= -3037000500L) // squaring this will cause an overflow exception, so break
+                    {
+                        Utils.BreakIfDebug();
+                        throw new ArgumentOutOfRangeException(nameof(x), "Number is too big to be squared and still stay a 64-bit integer.");
+                    }
+
                     return x * x;
 
                 case 1:

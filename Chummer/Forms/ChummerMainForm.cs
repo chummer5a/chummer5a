@@ -755,7 +755,7 @@ namespace Chummer
                                     string[] strArgs = Environment.GetCommandLineArgs();
                                     using (ProcessCommandLineArguments(strArgs, out blnShowTest,
                                                out HashSet<string> setFilesToLoad,
-                                               opFrmChummerMain))
+                                               opLoadActivity: opFrmChummerMain))
                                     {
                                         if (Directory.Exists(Utils.GetAutosavesFolderPath))
                                         {
@@ -1029,16 +1029,14 @@ namespace Chummer
                             //the config is invalid - reset it!
                             Properties.Settings.Default.Reset();
                             Properties.Settings.Default.Save();
-                            Log.Warn(
-                                "Configuration Settings were invalid and had to be reset. Exception: " + ex.Message);
+                            Log.Warn(ex, "Configuration Settings were invalid and had to be reset.");
                         }
                         catch (System.Configuration.ConfigurationErrorsException ex)
                         {
                             //the config is invalid - reset it!
                             Properties.Settings.Default.Reset();
                             Properties.Settings.Default.Save();
-                            Log.Warn(
-                                "Configuration Settings were invalid and had to be reset. Exception: " + ex.Message);
+                            Log.Warn(ex, "Configuration Settings were invalid and had to be reset");
                         }
 
                         if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0
@@ -1872,6 +1870,11 @@ namespace Chummer
             Process.Start(new ProcessStartInfo("https://github.com/chummer5a/chummer5a/issues/") { UseShellExecute = true });
         }
 
+        private void mnuReportBug_Click(object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://github.com/chummer5a/chummer5a/issues/new/choose") { UseShellExecute = true });
+        }
+
         public PrintMultipleCharacters PrintMultipleCharactersForm { get; private set; }
 
         private async void mnuFilePrintMultiple_Click(object sender, EventArgs e)
@@ -1925,8 +1928,8 @@ namespace Chummer
                         }
 
                         // Override the defaults for the setting.
-                        objCharacter.IgnoreRules = true;
-                        objCharacter.IsCritter = true;
+                        await objCharacter.SetIgnoreRulesAsync(true, _objGenericToken).ConfigureAwait(false);
+                        await objCharacter.SetIsCritterAsync(true, _objGenericToken).ConfigureAwait(false);
                         await objCharacter.SetCreatedAsync(true, token: _objGenericToken).ConfigureAwait(false);
 
                         // Show the Metatype selection window.
@@ -2987,6 +2990,19 @@ namespace Chummer
 
                 HeroLabImporter frmImporter = await this.DoThreadSafeFuncAsync(() => new HeroLabImporter(), token: _objGenericToken).ConfigureAwait(false);
                 await frmImporter.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void mnuDataExporter_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataExporter frmExporter = await this.DoThreadSafeFuncAsync(() => new DataExporter(), token: _objGenericToken).ConfigureAwait(false);
+                await frmExporter.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -4270,12 +4286,12 @@ namespace Chummer
                         if (objReceivedData.dwData == Program.CommandLineArgsDataTypeId)
                         {
                             string strParam = Marshal.PtrToStringUni(objReceivedData.lpData) ?? string.Empty;
-                            string[] strArgs = strParam.Split("<>", StringSplitOptions.RemoveEmptyEntries);
+                            string[] strArgs = strParam.SplitToPooledArray(out int intLength, "<|>", StringSplitOptions.RemoveEmptyEntries);
 
                             _objGenericToken.ThrowIfCancellationRequested();
                             bool blnShowTest;
                             using (ProcessCommandLineArguments(strArgs, out blnShowTest,
-                                       out HashSet<string> setFilesToLoad))
+                                       out HashSet<string> setFilesToLoad, intLength))
                             {
                                 _objGenericToken.ThrowIfCancellationRequested();
                                 if (Directory.Exists(Utils.GetAutosavesFolderPath))
@@ -4407,16 +4423,19 @@ namespace Chummer
             }
         }
 
-        private static FetchSafelyFromPool<HashSet<string>> ProcessCommandLineArguments(string[] strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
+        private static FetchSafelyFromSafeObjectPool<HashSet<string>> ProcessCommandLineArguments(string[] strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, int intLength = int.MaxValue, CustomActivity opLoadActivity = null)
         {
             blnShowTest = false;
-            FetchSafelyFromPool<HashSet<string>> objReturn = new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out setFilesToLoad);
-            if (strArgs.Length == 0)
+            FetchSafelyFromSafeObjectPool<HashSet<string>> objReturn = new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out setFilesToLoad);
+            if (Math.Min(strArgs.Length, intLength) == 0)
                 return objReturn;
             try
             {
+                int intIndex = -1;
                 foreach (string strArg in strArgs)
                 {
+                    if (++intIndex >= intLength)
+                        return objReturn;
                     if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath), StringComparison.OrdinalIgnoreCase))
                         continue;
                     switch (strArg)

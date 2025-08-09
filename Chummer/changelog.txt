@@ -81,9 +81,32 @@ Application Changes:
 - Costs for shared advanced lifestyles, as well as lifestyles in general, now properly follow the order of operations specified in HT pp. 139-140.
 - Associating PDF files with sourcebooks added by custom data is now possible, as is the functionality to automatically open them to a specific page when a source entry is clicked on.
 - Mods can now be properly added or removed from weapon mounts after character creation.
+- The selection system (required/forbidden) can now evaluate whether a character has an adept power of specific ratings, using the rating, minrating or maxrating attributes. This allows for the use of rating-based requirements on adept powers, ie checking whether a character has two levels of Keratin Control.
+- Fixed a bug in the echo/metamagics selection system that incorrectly showed false if the character had the metamagic or echo.
+- Fixed implementation of the weaponcategorydv bonus node using skill names rather than weapon categories. This caused issues for Unarmed weapons incorrectly looking for the Unarmed Combat skill rather than the Unarmed category. 
+- Weapons that have their Range changed by ammunition will now include the name of the ammunition in the range display, and will only be presented once if there is no change in ranges. Closes #5183
+- Implemented the UseSkill element for Spells. This allows for overriding a Spell to use a specific skill (ie Attune Animal using Animal Handling) rather than the category default.
+- The default color to use for items with notes attached to them can now be modified as a global setting.
+- Added the ability for weapons to alter their own stats when wireless is turned on via a `wirelessweaponbonus` node that works identically to `weaponbonus` nodes in gear items. Added identical functionality to weapon accessories, though they will alter their parent's stats when wireless intead.
+- Weapon accessories can now modify their parent weapon's accuracy in a more dynamic way similar to how AP modifiers work.
+- Ammunition that alters that stats of a weapon into which it is loaded in a way that depends on its rating now properly uses the rating of the ammunition instead of the rating of the weapon into which it is loaded.
+- Weapon and weapon accessory reach and concealability entries can now work off of character attributes and/or ratings.
+- The rating entry in the Weapons tab has been changed to a dial in Create mode, allowing users to alter the ratings of eligible weapons, weapon accessories, and gear loaded into weapon accessories more easily.
+- Added a new Data Exporter tool that allows a user to export all internal data used by the program into a zip file. Data exported in this way will contain any translation entries added by non-English languages as well as any and all custom data content created, added, modified, removed, etc. by a specified character setting's enabled custom datasets.
+- The button to automatically scan a folder for PDFs can now also detect PDFs in languages different from the currently selected user interface language, though it will prioritize PDFs that match the current user interface language if possible. It can also now be used to scan folders recursively.
+- Complex forms can be set to use a skill other than Software through the same useskill data node that spells can have.
+- Weapon accessories can now add additional accessory mounting slots to their parent weapon through the addmount node.
+- Weapon accessories can now overwrite the range category of their parent weapon through the replacerange node.
+- Weapons now export the mounts they still have available for accessories and modifications as "availablemounts" and "availablemounts_english".
+- Added a handler for Cyberware that inherit their availabilty from a child item using the 'or Gear' suffix, preventing Restricted Gear from checking the sub-item twice. Specifically this supports the Chemical Gland bioware that has the drug selected at time of implantation, gaining the availability of the implanted bioware at that time. Implements #5174
+- Fixed SelectCyberware form not showing Availability correctly for items with 'Or Gear' Availability suffix.
+- Added a more obvious "Report a Bug" menu item that takes the user directly to the page to create a new GitHub issue (more obvious than using the Issues Tracker).
+- Vehicle mods, vehicle weapon mounts, and vehicle weapon mount options now support a lot more referential content in their various fields (i.e., they can draw from far more vehicle stats and weapon mount stats to determine their costs, availabilities, and various bonuses). These generally use the same curly bracket notation as fields that reference character attributes. Vehicle attributes are referenced directly by their names, with the suffixes "Base", "Total", and "Max" used for the base (before modifications), total (after modifications), and maximum values, respectively. 
+- Cyberware with custom values that work off of STR and/or AGI values (not minima or maxima) now properly uses the STR and AGI of their parent cyberware or vehicle when appropriate.
+- If Chummer5a encounters an error while loading a custom data file, it will now show the exception of the file to the user instead of silently swallowing it.
 
 Data Changes:
-- Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
+- Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.
 - Vocal Expansion can now properly only be taken at Betaware, Deltaware, or Gammaware grades and now properly adds conditional limit modifiers. Existing characters with this bioware will need to reapply improvements to get these bonuses.
 - Internal Synthlink now doubles the cost of the instrument into which it is taken instead of adding double the cost to the instrument. This is based on the way Internal Smartgun's cost is described in the core rulebook.
 - Fixed the Unrestricted Kill Code Qualities customdata not working correctly to allow non-technomancers taking the qualities.
@@ -123,6 +146,127 @@ Data Changes:
 - Removed the Delnar Skills Remake (Lite) custom dataset because it cannot properly be implemented in Chummer at its current time.
 - Morgan Cutlass' page reference is now properly p. 464.
 - Added missing Transys Graygul cyberdeck whose stats, cost, and availability were buried in an NPC statblock.
+- Fixed implementation of the Critical Strike power to properly provide the bonus for Unarmed Combat. Closes #5180
+- Fixed Capsule Ammo not using correct range.
+- Fixed Three-Dimensional Memory not being discounted by the Artist's Way.
+- Attune Animal spell now correctly uses Animal Handling as its skill instead of the Ritual Spellcasting skill.
+- Armory asset for advanced lifestyles now properly costs 1000. Fixes #5193.
+- Monofilament Whips now properly increase their Accuracy by 2 when they are wirelessly enabled.
+- Registered sprite limits are now equal to a character's Charisma in all English pre-made settings to match the entry in the fifth printing of the CRB. German settings are unaffected because it is still Logic-based in the German CRB.
+- Fixed some faulty text matches for German books that fetched strings that would span multiple lines, thus sometimes causing the books to not be detected.
+- Corrected multiple incorrect or faulty entries in State of the Art ADL content, including some weapons, some vehicles, the Svetoid tradition, the Squirrel mentor spirit, the Cyberdynamix Special HardCore and MCT Dusseldorf commlinks, and the Rheingold Pro Tec Plus Coat and Franzinger Fashion Tenor Coat armors. Existing characters that use these items will usually need to remove and re-add them to see any changes.
+- Corrected mistranslations, bad weapon entries, bad vehicle entries, and missing content for Datapuls Hamburg, Datapuls SOTA 2080, Schattenhandbuch 1, Schattenhandbuch 2, and Schattenhandbuch 3 content. Existing characters that use these items will usually need to remove and re-add them to see any changes.
+- Added missing content from Datapuls SOX, Der Almanach - Gratisrollenspieltag 2019, and the German versions of Parabotany, Parageology, and Parazoology (all of which are for SR5e).
+- Added missing content from Shadows in Focus: Morocco, Shadows in Focus: Casablanca-Rabat, and Schattenload numbers 2, 3, and 7.
+- Corrected cases where content from Datapuls SOX and Datapuls Österreich were sourced to the collection of Schattenhandbuch 3 instead of their specific books.
+- Corrected the Walther P99 being sourced to Datapuls Verschlusssache instead of to Schattenhandbuch 4 (it is exclusive to that collection and does not appear in the individual books).
+- Armor mods for custom liners have now had their categories renamed to be more generic.
+- Foci, formulae, and magical supplies and compounds will now use "Force" instead of "Rating" where appropriate.
+- Fixed page reference for the Guard, Hammer, Lockdown, Mugger, Shell, Sneak, Stealth, Track and Wrapper programs in gear.xml.
+- Spellcasting foci now properly no longer stack with individualised spellcasting foci of the same type. This change does not affect existing characters with spellcasting foci.
+- Added customdata for Critter Prices, as originally created by u/RunnerPakhet and implemented for Chummer by Mesothelioma.
+
+Fixes implemented by BM123499
+
+Armor.xml
+
+    Added missing <armor> entry for Parachute.
+    Added missing armor_capacity attribute for Pantheon Quick-Charge Battery Pack.
+
+Critterpowers.xml
+
+    Removed legacy SR4‑only power.
+    Standardized hyphenation: Low-Light, Wire-band using minus signs.
+    Added automotive powers.
+    Added “Fold Perception” and “Agonizing Pain” from Howling Shadows (HS).
+
+Critters.xml
+
+    Renamed Baboon → Ozian Baboon (per source text).
+    Removed “Wyrd Mantis” (SR4‑only).
+    Populated missing <initiative>, <magic>, <resonance>, and <depth> fields for several critters.
+    Remove unintended character across the file.
+    Applied <rating> to skill and automotive powers; replaced stray <select>.
+    Corrected power and quality names:
+        Sillence → Silence
+        Devour → Devouring
+        Substance Extrusion → Secretion/Substance Extrusion
+        Shadowing → Sneaking
+        Improved Senses → Enhanced Senses
+        Spell Resistance → Magic Resistance
+        Banishing → Banishing Resistance
+        Fae Glamour → Fey Glamour
+        Regenerate → Regeneration
+        Throw Weapon → Throwing Weapon
+        Deezz → Derezz
+        Real World Naivete → Real World Naiveté
+    Re-classified:
+        Moved Astral Perception into AdeptPower or Quality (chose Quality).
+        Fixed <power> nesting under <optionalpowers>.
+        Changed Munge to a Quality, Resonance Hosting to a Power, Agony to a Spell.
+
+cyberware.xml
+
+    Added missing <capacity> and <cost> attributes to several implants.
+    Removed duplicated <inheritattributes> tag.
+
+gears.xml
+
+    Removed leftover of a commented sections (removing -->).
+    Updated SR4 avail values to SR5 standards.
+    Added missing gear for vehicle Proteus Krake (Small)
+
+lifemodules.xml
+
+    Replaced non-existent <collegeeducation> and <technicalschooleducation> tags with <quality>.
+
+mentors.xml
+
+    Eliminated empty <choice> tag.
+
+metatypes.xml
+
+    Removed duplicate <karma> tags (now handled in priorities.xml).
+    Deleted redundant <mag> attribution.
+    Cleaned up stray empty tags for consistency.
+
+powers.xml
+
+    Removed residual <selectskill> from Enthralling Performance.
+
+priorities.xml
+
+    Removed Goblin metavariant (SR4‑only).
+    Trimmed blank/empty tags.
+
+skill.xml
+
+    Normalized whitespace (tabs → spaces, trimmed trailing spaces).
+
+traditions.xml
+
+    Standardized minus signs in place of Unicode en-dashes.
+    Corrected spelling: bon → bod.
+
+vehicles.xml
+
+    Renamed Rigger Adaptation → Rigger Interface.
+    Removed duplicate <mods> block.
+    Deleted SR4‑only Conestoga Vista (Bus).
+    Moved Flash-Pak from mod to gear (Grenade: Flash-Pak).
+    Removed nonexistent Manual Control mod.
+    Added Amenities (Street) entries per Krime Katalogue (KK).
+
+weapons.xml
+
+    Fixed whitespace and indentation.
+    Corrected source entry for AK-98 Grenade Launcher.
+    Consolidated underbarrel accessory mounts: removed <accessorymounts> tags and added <mount>Under</mount> where needed, ensuring Trigger Removal is now displayed.
+    Fixed malformed <weapondetails> wrapper.
+    Adjusted structure for Ruhrmetall SFW-30 accessories so that Trigger Removal appears correctly.
+    Added missing stats for Ontario Arms Sling-Shot.
+    Removed duplicate <rating> from Krime Explosive Securing Tripod.
+
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
@@ -158,6 +302,18 @@ Changed/New Strings:
 - String_NotSupported
 - Message_MetatypeNotSupported
 - Message_UndoExpenseNotSupported
+- Label_Options_HasNotesColor
+- Menu_Main_DataExporter
+- DialogFilter_Zip
+- Title_ExportData
+- Button_Export_SaveDataAs
+- String_SelectFolderForPDFScan
+- Message_ScanFoldersRecursively
+- String_Fallback_Pattern
+- Menu_Main_ReportBug
+- String_ModifyEllipses
+- MessageTitle_Load_Error_Generic
+- Message_Load_Error_CustomFile
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage

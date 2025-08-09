@@ -39,6 +39,14 @@
       <text>Chummer5 is currently not being run with permissions to modify registry values. Please make sure Chummer5 is being run by a user with appropriate access</text>
     </string>
     <string>
+      <key>MessageTitle_Load_Error_Generic</key>
+      <text>Error encountered while loading {0}</text>
+    </string>
+    <string>
+      <key>Message_Load_Error_CustomFile</key>
+      <text>Chummer5 has encountered an error while loading the following custom data file and will not attempt to load it again until the program is restarted:\n{0}\n\nThe details of the error are as follows:\n{1}</text>
+    </string>
+    <string>
       <key>Message_Load_Error_Warning</key>
       <text>Chummer5 encountered an error while loading the character.</text>
     </string>
@@ -119,6 +127,10 @@
     <string>
       <key>DialogFilter_ImagesPrefix</key>
       <text>All Image Files </text> <!-- Prefix only, actual file extensions depend on what codecs the user's computer supports -->
+    </string>
+    <string>
+      <key>DialogFilter_Zip</key>
+      <text>Zip Files (*.zip)|*.zip</text>
     </string>
     <string>
       <key>DialogFilter_All</key>
@@ -1451,6 +1463,10 @@
       <text>Issue Tracker</text>
     </string>
     <string>
+      <key>Menu_Main_ReportBug</key>
+      <text>Report a &amp;Bug</text>
+    </string>
+    <string>
       <key>Menu_Main_File</key>
       <text>&amp;File</text>
     </string>
@@ -1569,6 +1585,10 @@
     <string>
       <key>Menu_Main_CharacterRoster</key>
       <text>Ch&amp;aracter Roster</text>
+    </string>
+    <string>
+      <key>Menu_Main_DataExporter</key>
+      <text>Data E&amp;xporter</text>
     </string>
     <string>
       <key>String_MetatypeLoadError</key>
@@ -2513,6 +2533,14 @@
     <string>
       <key>MessageTitle_CannotRemoveCyberware</key>
       <text>Cannot Remove Cyberware</text>
+    </string>
+    <string>
+      <key>String_SelectFolderForPDFScan</key>
+      <text>Select the folder to scan for PDF files. If there are multiple, select the topmost folder.</text>
+    </string>
+    <string>
+      <key>Message_ScanFoldersRecursively</key>
+      <text>Scan the selected folder recursively (also scan any folders within the selected folder)?</text>
     </string>
     <string>
       <key>MessageTitle_FoundPDFsInFolder</key>
@@ -7375,6 +7403,10 @@
       <text>Color Mode:</text>
     </string>
     <string>
+      <key>Label_Options_HasNotesColor</key>
+      <text>Default Color for Items with Notes:</text>
+    </string>
+    <string>
       <key>Checkbox_Options_AutomaticUpdates</key>
       <text>Automatically download updates</text>
     </string>
@@ -8604,6 +8636,10 @@
       <key>MessageTitle_SelectBP_SwitchBuildMethods</key>
       <text>Switch Build Method?</text>
     </string>
+    <string>
+      <key>String_ModifyEllipses</key>
+      <text>Modify...</text>
+    </string>
     <!-- End Region-->
     <!-- Region Advanced Contact Options Window -->
     <string>
@@ -9644,6 +9680,10 @@
     <!-- End Region-->
     <!-- Region Export Window -->
     <string>
+      <key>Title_ExportData</key>
+      <text>Export Data Files to Archive</text>
+    </string>
+    <string>
       <key>Title_ExportCharacter</key>
       <text>Export Character</text>
     </string>
@@ -9670,6 +9710,10 @@
     <string>
       <key>String_Export_Blank</key>
       <text>Export {0}</text>
+    </string>
+    <string>
+      <key>Button_Export_SaveDataAs</key>
+      <text>Save Data Archive as</text>
     </string>
     <!-- End Region-->
     <!-- Region Create Spell Window -->
@@ -10282,6 +10326,10 @@
     <string>
       <key>String_Scanning_Pattern</key>
       <text>Scanning {0}...</text>
+    </string>
+    <string>
+      <key>String_Fallback_Pattern</key>
+      <text>Fallback {0}</text>
     </string>
     <string>
       <key>String_Initializing</key>

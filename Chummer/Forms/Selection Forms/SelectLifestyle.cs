@@ -207,7 +207,7 @@ namespace Chummer
 
                     async ValueTask AddToTree(LifestyleQuality objQuality)
                     {
-                        TreeNode objNode = objQuality.CreateTreeNode();
+                        TreeNode objNode = await objQuality.CreateTreeNode(token).ConfigureAwait(false);
                         if (objNode == null)
                             return;
                         TreeNode objParentNode;
@@ -339,7 +339,7 @@ namespace Chummer
 
             await _objLifestyle.LifestyleQualities.ForEachAsync(async objQuality =>
             {
-                TreeNode objNode = objQuality.CreateTreeNode();
+                TreeNode objNode = await objQuality.CreateTreeNode(token).ConfigureAwait(false);
                 if (objNode == null)
                     return;
                 if (await objQuality.GetIsFreeGridAsync(token).ConfigureAwait(false))
@@ -462,7 +462,7 @@ namespace Chummer
         {
             // Populate the Advanced Lifestyle ComboBoxes.
             // Lifestyles.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstLifestyles))
             {
                 string strFilter = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false);
@@ -642,7 +642,7 @@ namespace Chummer
             _objLifestyle.PropertyChangedAsync += RefreshLifestyleQualities;
 
             // Populate the City ComboBox
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCity))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCity))
             {
                 using (XmlNodeList xmlCityList = _xmlDocument.SelectNodes("/chummer/cities/city"))
                 {
@@ -1182,27 +1182,26 @@ namespace Chummer
         private async Task RefreshDistrictList(CancellationToken token = default)
         {
             string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(strSelectedCityRefresh))
-                strSelectedCityRefresh = string.Empty;
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDistrict))
+            if (!string.IsNullOrEmpty(strSelectedCityRefresh))
             {
-                using (XmlNodeList xmlDistrictList
-                       = _xmlDocument.SelectNodes("/chummer/cities/city[name = " + strSelectedCityRefresh.CleanXPath()
-                                                  + "]/district"))
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDistrict))
                 {
-                    if (xmlDistrictList?.Count > 0)
+                    using (XmlNodeList xmlDistrictList = _xmlDocument.SelectNodes("/chummer/cities/city[name = " + strSelectedCityRefresh.CleanXPath() + "]/district"))
                     {
-                        foreach (XmlNode objXmlDistrict in xmlDistrictList)
+                        if (xmlDistrictList?.Count > 0)
                         {
-                            string strName = objXmlDistrict["name"]?.InnerText
-                                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                            lstDistrict.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
+                            foreach (XmlNode objXmlDistrict in xmlDistrictList)
+                            {
+                                string strName = objXmlDistrict["name"]?.InnerText
+                                                    ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                                lstDistrict.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
+                            }
                         }
                     }
-                }
 
-                lstDistrict.Sort();
-                await cboDistrict.PopulateWithListItemsAsync(lstDistrict, token: token).ConfigureAwait(false);
+                    lstDistrict.Sort();
+                    await cboDistrict.PopulateWithListItemsAsync(lstDistrict, token: token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -1212,30 +1211,30 @@ namespace Chummer
         private async Task RefreshBoroughList(CancellationToken token = default)
         {
             string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(strSelectedCityRefresh))
-                strSelectedCityRefresh = string.Empty;
-            string strSelectedDistrictRefresh = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(strSelectedDistrictRefresh))
-                strSelectedDistrictRefresh = string.Empty;
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstBorough))
+            if (!string.IsNullOrEmpty(strSelectedCityRefresh))
             {
-                using (XmlNodeList xmlBoroughList = _xmlDocument.SelectNodes(
-                           "/chummer/cities/city[name = " + strSelectedCityRefresh.CleanXPath() + "]/district[name = "
-                           + strSelectedDistrictRefresh.CleanXPath() + "]/borough"))
+                string strSelectedDistrictRefresh = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strSelectedDistrictRefresh))
                 {
-                    if (xmlBoroughList?.Count > 0)
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstBorough))
                     {
-                        foreach (XmlNode objXmlDistrict in xmlBoroughList)
+                        using (XmlNodeList xmlBoroughList = _xmlDocument.SelectNodes("/chummer/cities/city[name = " + strSelectedCityRefresh.CleanXPath() + "]/district[name = " + strSelectedDistrictRefresh.CleanXPath() + "]/borough"))
                         {
-                            string strName = objXmlDistrict["name"]?.InnerText
-                                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                            lstBorough.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
+                            if (xmlBoroughList?.Count > 0)
+                            {
+                                foreach (XmlNode objXmlDistrict in xmlBoroughList)
+                                {
+                                    string strName = objXmlDistrict["name"]?.InnerText
+                                                     ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                                    lstBorough.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
+                                }
+                            }
                         }
+
+                        lstBorough.Sort();
+                        await cboBorough.PopulateWithListItemsAsync(lstBorough, token: token).ConfigureAwait(false);
                     }
                 }
-
-                lstBorough.Sort();
-                await cboBorough.PopulateWithListItemsAsync(lstBorough, token: token).ConfigureAwait(false);
             }
         }
 

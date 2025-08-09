@@ -348,7 +348,7 @@
       <name>Armory</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
-      <cost>2000</cost>
+      <cost>1000</cost>
       <allowed>High,Luxury</allowed>
       <source>RF</source>
       <page>220</page>
@@ -1546,6 +1546,26 @@
       <cost>250</cost>
       <source>CA</source>
       <page>144</page>
+    </quality>
+    <!-- End Region -->
+    <!-- Region Shadows in Focus: Casablanca-Rabat -->
+    <quality>
+      <id>f5924eae-0720-4e1e-accb-cee82fe850cb</id>
+      <name>Can't Miss It</name>
+      <category>Negative</category>
+      <lp>-1</lp>
+      <cost>0</cost>
+      <source>SFCR</source>
+      <page>28</page>
+    </quality>
+    <quality>
+      <id>dc4c92af-0085-4d6d-86df-cd28e01b315a</id>
+      <name>Dangerous Environment</name>
+      <category>Negative</category>
+      <lp>-1</lp>
+      <cost>0</cost>
+      <source>SFCR</source>
+      <page>28</page>
     </quality>
     <!-- End Region -->
   </qualities>

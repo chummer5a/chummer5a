@@ -233,7 +233,7 @@ namespace Chummer.Backend.Skills
                 objWriter.WriteElementString("base",
                     BasePoints.ToString(GlobalSettings
                         .InvariantCultureInfo)); //this could actually be saved in karma too during career
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteElementString("name", Name);
                 if (!CharacterObject.Created)
@@ -277,7 +277,7 @@ namespace Chummer.Backend.Skills
                     await objWriter.StartElementAsync("skill", token: token).ConfigureAwait(false);
                 try
                 {
-                    int intPool = Pool;
+                    int intPool = await GetPoolAsync(token).ConfigureAwait(false);
                     int intSpecPool = intPool + await GetSpecializationBonusAsync(token: token).ConfigureAwait(false);
 
                     int intRatingModifiers = await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
@@ -318,7 +318,7 @@ namespace Chummer.Backend.Skills
                                await SkillGroupObject.GetRatingAsync(token).ConfigureAwait(false) > 0)
                             .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("default", Default.ToString(GlobalSettings.InvariantCultureInfo),
+                        .WriteElementStringAsync("default", (await GetDefaultAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("requiresgroundmovement",
                             RequiresGroundMovement.ToString(GlobalSettings.InvariantCultureInfo), token: token)
@@ -365,7 +365,7 @@ namespace Chummer.Backend.Skills
                         await DisplayAttributeMethodAsync(strLanguageToPrint, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
                     if (GlobalSettings.PrintNotes)
-                        await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("source",
                         await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint, token)
                             .ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -887,6 +887,8 @@ namespace Chummer.Backend.Skills
             CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             LockObject = new AsyncFriendlyReaderWriterLock(); // We need a separate lock so that we can properly disconnect ourselves from the character lock while we are loading data
             _objCachedCyberwareRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objCachedTotalBaseRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objCachedLearnedRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedSuggestedSpecializationsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _lstSpecializations = new ThreadSafeObservableCollection<SkillSpecialization>(LockObject);
             _objAttribute = CharacterObject.GetAttribute(DefaultAttribute);
@@ -1601,6 +1603,34 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        // ReSharper disable once InconsistentNaming
+        private int _intCachedTotalBaseRating = int.MinValue;
+
+        [CLSCompliant(false)]
+        protected readonly AsyncFriendlyReaderWriterLock _objCachedTotalBaseRatingLock;
+
+        protected virtual void ResetCachedTotalBaseRating()
+        {
+            using (_objCachedTotalBaseRatingLock.EnterWriteLock())
+                _intCachedTotalBaseRating = int.MinValue;
+        }
+
+        protected virtual async Task ResetCachedTotalBaseRatingAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker =
+                await _objCachedTotalBaseRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _intCachedTotalBaseRating = int.MinValue;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// The rating the character has paid for, plus any improvement-based bonuses to skill rating.
         /// </summary>
@@ -1608,8 +1638,21 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (LockObject.EnterReadLock())
-                    return LearnedRating + RatingModifiers(Attribute);
+                using (_objCachedTotalBaseRatingLock.EnterReadLock())
+                {
+                    if (_intCachedTotalBaseRating != int.MinValue)
+                        return _intCachedTotalBaseRating;
+                }
+
+                using (_objCachedTotalBaseRatingLock.EnterUpgradeableReadLock())
+                {
+                    if (_intCachedTotalBaseRating != int.MinValue)
+                        return _intCachedTotalBaseRating;
+                    using (_objCachedTotalBaseRatingLock.EnterWriteLock())
+                    {
+                        return _intCachedTotalBaseRating = LearnedRating + RatingModifiers(Attribute);
+                    }
+                }
             }
         }
 
@@ -1618,11 +1661,67 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<int> GetTotalBaseRatingAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objCachedTotalBaseRatingLock.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetLearnedRatingAsync(token).ConfigureAwait(false) + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+                if (_intCachedTotalBaseRating != int.MinValue)
+                    return _intCachedTotalBaseRating;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await _objCachedTotalBaseRatingLock.EnterUpgradeableReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedTotalBaseRating != int.MinValue)
+                    return _intCachedTotalBaseRating;
+
+                IAsyncDisposable objLocker2 =
+                    await _objCachedTotalBaseRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    return _intCachedTotalBaseRating = await GetLearnedRatingAsync(token).ConfigureAwait(false) + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        // ReSharper disable once InconsistentNaming
+        private int _intCachedLearnedRating = int.MinValue;
+
+        [CLSCompliant(false)]
+        protected readonly AsyncFriendlyReaderWriterLock _objCachedLearnedRatingLock;
+
+        protected virtual void ResetCachedLearnedRating()
+        {
+            using (_objCachedLearnedRatingLock.EnterWriteLock())
+                _intCachedLearnedRating = int.MinValue;
+        }
+
+        protected virtual async Task ResetCachedLearnedRatingAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker =
+                await _objCachedLearnedRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _intCachedLearnedRating = int.MinValue;
             }
             finally
             {
@@ -1639,8 +1738,21 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (LockObject.EnterReadLock())
-                    return Karma + Base;
+                using (_objCachedLearnedRatingLock.EnterReadLock())
+                {
+                    if (_intCachedLearnedRating != int.MinValue)
+                        return _intCachedLearnedRating;
+                }
+
+                using (_objCachedLearnedRatingLock.EnterUpgradeableReadLock())
+                {
+                    if (_intCachedLearnedRating != int.MinValue)
+                        return _intCachedLearnedRating;
+                    using (_objCachedLearnedRatingLock.EnterWriteLock())
+                    {
+                        return _intCachedLearnedRating = Karma + Base;
+                    }
+                }
             }
         }
 
@@ -1651,11 +1763,39 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<int> GetLearnedRatingAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objCachedLearnedRatingLock.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetKarmaAsync(token).ConfigureAwait(false) + await GetBaseAsync(token).ConfigureAwait(false);
+                if (_intCachedLearnedRating != int.MinValue)
+                    return _intCachedLearnedRating;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await _objCachedLearnedRatingLock.EnterUpgradeableReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedLearnedRating != int.MinValue)
+                    return _intCachedLearnedRating;
+
+                IAsyncDisposable objLocker2 =
+                    await _objCachedLearnedRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    return _intCachedLearnedRating = await GetKarmaAsync(token).ConfigureAwait(false) + await GetBaseAsync(token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -1947,7 +2087,7 @@ namespace Chummer.Backend.Skills
                             .ToList();
                         if (lstReflexRecorders.Count > 0)
                         {
-                            using (new FetchSafelyFromPool<HashSet<string>>(
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
                                        Utils.StringHashSetPool, out HashSet<string> setSkillNames))
                             {
                                 if (SkillGroupObject != null)
@@ -2005,7 +2145,7 @@ namespace Chummer.Backend.Skills
                         .ToListAsync(async x => await x.GetSourceIDAsync(token).ConfigureAwait(false) == ReflexRecorderGUID, token: token).ConfigureAwait(false);
                     if (lstReflexRecorders.Count > 0)
                     {
-                        using (new FetchSafelyFromPool<HashSet<string>>(
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
                                    Utils.StringHashSetPool, out HashSet<string> setSkillNames))
                         {
                             if (SkillGroupObject != null)
@@ -3489,11 +3629,12 @@ namespace Chummer.Backend.Skills
         public virtual bool AllowDelete => false;
 
 #pragma warning disable CS1998
-        public virtual async Task<bool> GetAllowDeleteAsync(CancellationToken token = default)
+        public virtual Task<bool> GetAllowDeleteAsync(CancellationToken token = default)
 #pragma warning restore CS1998
         {
-            token.ThrowIfCancellationRequested();
-            return false;
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : Task.FromResult(false);
         }
 
         public bool Default
@@ -3583,31 +3724,34 @@ namespace Chummer.Backend.Skills
         public virtual bool AllowNameChange => false;
 
 #pragma warning disable CS1998
-        public virtual async Task<bool> GetAllowNameChangeAsync(CancellationToken token = default)
+        public virtual Task<bool> GetAllowNameChangeAsync(CancellationToken token = default)
 #pragma warning restore CS1998
         {
-            token.ThrowIfCancellationRequested();
-            return false;
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : Task.FromResult(false);
         }
 
         public virtual bool AllowTypeChange => false;
 
 #pragma warning disable CS1998
-        public virtual async Task<bool> GetAllowTypeChangeAsync(CancellationToken token = default)
+        public virtual Task<bool> GetAllowTypeChangeAsync(CancellationToken token = default)
 #pragma warning restore CS1998
         {
-            token.ThrowIfCancellationRequested();
-            return false;
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : Task.FromResult(false);
         }
 
         public virtual bool IsLanguage => false;
 
 #pragma warning disable CS1998
-        public virtual async Task<bool> GetIsLanguageAsync(CancellationToken token = default)
+        public virtual Task<bool> GetIsLanguageAsync(CancellationToken token = default)
 #pragma warning restore CS1998
         {
-            token.ThrowIfCancellationRequested();
-            return false;
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : Task.FromResult(false);
         }
 
         public virtual bool IsNativeLanguage
@@ -3621,18 +3765,21 @@ namespace Chummer.Backend.Skills
         }
 
 #pragma warning disable CS1998
-        public virtual async Task<bool> GetIsNativeLanguageAsync(CancellationToken token = default)
+        public virtual Task<bool> GetIsNativeLanguageAsync(CancellationToken token = default)
 #pragma warning restore CS1998
         {
-            token.ThrowIfCancellationRequested();
-            return false;
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : Task.FromResult(false);
         }
 
 #pragma warning disable CS1998
-        public virtual async Task SetIsNativeLanguageAsync(bool value, CancellationToken token = default)
+        public virtual Task SetIsNativeLanguageAsync(bool value, CancellationToken token = default)
 #pragma warning restore CS1998
         {
-            token.ThrowIfCancellationRequested();
+            return token.IsCancellationRequested
+                ? Task.FromCanceled(token)
+                : Task.CompletedTask;
         }
 
         protected string _strDictionaryKey;
@@ -4399,7 +4546,7 @@ namespace Chummer.Backend.Skills
 
                 string strSpace = LanguageManager.GetString("String_Space");
                 List<Improvement> lstRelevantImprovements = RelevantImprovements(null, abbrev, true).ToList();
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
                     int intCyberwareRating = CyberwareRating;
@@ -4438,7 +4585,7 @@ namespace Chummer.Backend.Skills
 
                     if (blnListAllLimbs || !Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev) ||
                         objShowOnlyCyberware == null)
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(att.DisplayAbbrev)
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(att.CurrentDisplayAbbrev)
                             .Append(strSpace)
                             .Append('(')
                             .Append(att.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
@@ -4446,7 +4593,7 @@ namespace Chummer.Backend.Skills
                     {
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace)
                             .Append(objShowOnlyCyberware.CurrentDisplayName)
-                            .Append(strSpace).Append(att.DisplayAbbrev).Append(strSpace).Append('(')
+                            .Append(strSpace).Append(att.CurrentDisplayAbbrev).Append(strSpace).Append('(')
                             .Append(objShowOnlyCyberware.GetAttributeTotalValue(att.Abbrev)
                                 .ToString(GlobalSettings.CultureInfo)).Append(')');
                         if (!CharacterObject.Ambidextrous
@@ -4754,7 +4901,7 @@ namespace Chummer.Backend.Skills
                     .ConfigureAwait(false);
                 List<Improvement> lstRelevantImprovements =
                     await RelevantImprovementsAsync(null, abbrev, true, token: token).ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
                     int intCyberwareRating = await GetCyberwareRatingAsync(token).ConfigureAwait(false);
@@ -4803,7 +4950,7 @@ namespace Chummer.Backend.Skills
                     if (blnListAllLimbs || !Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev) ||
                         objShowOnlyCyberware == null)
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace)
-                            .Append(await att.GetDisplayAbbrevAsync(GlobalSettings.Language, token)
+                            .Append(await att.GetCurrentDisplayAbbrevAsync(token)
                                 .ConfigureAwait(false)).Append(strSpace)
                             .Append('(')
                             .Append(intAttTotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
@@ -4812,7 +4959,7 @@ namespace Chummer.Backend.Skills
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace)
                             .Append(await objShowOnlyCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
                             .Append(strSpace)
-                            .Append(await att.GetDisplayAbbrevAsync(GlobalSettings.Language, token)
+                            .Append(await att.GetCurrentDisplayAbbrevAsync(token)
                                 .ConfigureAwait(false)).Append(strSpace).Append('(')
                             .Append((await objShowOnlyCyberware.GetAttributeTotalValueAsync(att.Abbrev, token)
                                     .ConfigureAwait(false))
@@ -5199,17 +5346,18 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 int intPrice = IsKnowledgeSkill
-                    ? CharacterObject.Settings.KarmaKnowledgeSpecialization
-                    : CharacterObject.Settings.KarmaSpecialization;
+                    ? await CharacterObject.Settings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
+                    : await CharacterObject.Settings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
 
                 int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                 decimal decSpecCostMultiplier = 1.0m;
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
                 decimal decExtraSpecCost = await CharacterObject.Improvements.SumAsync(objLoopImprovement =>
                 {
                     if (objLoopImprovement.Minimum > intTotalBaseRating
                         || (!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                            && (objLoopImprovement.Condition == "career") != CharacterObject.Created
-                            && (objLoopImprovement.Condition == "create") == CharacterObject.Created)
+                            && (objLoopImprovement.Condition == "career") != blnCreated
+                            && (objLoopImprovement.Condition == "create") == blnCreated)
                         || !objLoopImprovement.Enabled)
                         return 0;
                     if (objLoopImprovement.ImprovedName != SkillCategory)
@@ -5248,8 +5396,9 @@ namespace Chummer.Backend.Skills
                 using (LockObject.EnterReadLock())
                 {
                     string strSpace = LanguageManager.GetString("String_Space");
-                    string strReturn = !string.IsNullOrEmpty(Notes)
-                        ? LanguageManager.GetString("Label_Notes") + strSpace + Notes + Environment.NewLine +
+                    string strNotes = Notes;
+                    string strReturn = !string.IsNullOrEmpty(strNotes)
+                        ? LanguageManager.GetString("Label_Notes") + strSpace + strNotes + Environment.NewLine +
                           Environment.NewLine
                         : string.Empty;
                     string strMiddle = !string.IsNullOrWhiteSpace(SkillGroup)
@@ -5281,10 +5430,10 @@ namespace Chummer.Backend.Skills
                     ? await SkillGroupObject.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strSpace +
                       await LanguageManager.GetStringAsync("String_ExpenseSkillGroup", token: token).ConfigureAwait(false) + Environment.NewLine
                     : string.Empty;
-                strReturn += await GetCurrentDisplayCategoryAsync(token).ConfigureAwait(false) + Environment.NewLine + strMiddle +
-                             (await SourceString.GetSourceStringAsync(Source, Page, GlobalSettings.Language,
-                                                                      GlobalSettings.CultureInfo,
-                                                                      CharacterObject, token).ConfigureAwait(false)).LanguageBookTooltip;
+                strReturn += await GetCurrentDisplayCategoryAsync(token).ConfigureAwait(false) + Environment.NewLine + strMiddle
+                             + await (await SourceString.GetSourceStringAsync(Source, Page, GlobalSettings.Language,
+                                                                      GlobalSettings.CultureInfo, CharacterObject, token).ConfigureAwait(false))
+                                .GetLanguageBookTooltipAsync(token).ConfigureAwait(false);
                 return strReturn;
             }
             finally
@@ -5326,6 +5475,23 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // No need to write lock because interlocked guarantees safety
+                if (Interlocked.Exchange(ref _strNotes, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(Notes), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Forecolor to use for Notes in treeviews.
         /// </summary>
@@ -5357,6 +5523,58 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _colNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _colNotes)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_colNotes == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _colNotes = value;
+                    await OnPropertyChangedAsync(nameof(NotesColor), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public Color PreferredColor
         {
             get
@@ -5375,7 +5593,7 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 return !string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false))
-                    ? ColorManager.GenerateCurrentModeColor(NotesColor)
+                    ? ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false))
                     : ColorManager.ControlText;
             }
             finally
@@ -6321,6 +6539,10 @@ namespace Chummer.Backend.Skills
                                 _intCachedForcedNotBuyWithKarma = -1;
                             if (setNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
                                 ResetCachedCyberwareRating();
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalBaseRating)))
+                                ResetCachedTotalBaseRating();
+                            if (setNamesOfChangedProperties.Contains(nameof(LearnedRating)))
+                                ResetCachedLearnedRating();
                             if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
                                 _blnRecalculateCachedSuggestedSpecializations = true;
                             if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
@@ -6479,6 +6701,10 @@ namespace Chummer.Backend.Skills
                                 _intCachedForcedNotBuyWithKarma = -1;
                             if (setNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
                                 await ResetCachedCyberwareRatingAsync(token).ConfigureAwait(false);
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalBaseRating)))
+                                await ResetCachedTotalBaseRatingAsync(token).ConfigureAwait(false);
+                            if (setNamesOfChangedProperties.Contains(nameof(LearnedRating)))
+                                await ResetCachedLearnedRatingAsync(token).ConfigureAwait(false);
                             if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
                                 _blnRecalculateCachedSuggestedSpecializations = true;
                             if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
@@ -7418,17 +7644,17 @@ namespace Chummer.Backend.Skills
                 CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                 if (intTotalBaseRating == 0)
                 {
-                    intOptionsCost = objSettings.KarmaNewActiveSkill;
+                    intOptionsCost = await objSettings.GetKarmaNewActiveSkillAsync(token).ConfigureAwait(false);
                     upgrade += intOptionsCost;
                 }
                 else
                 {
-                    intOptionsCost = objSettings.KarmaImproveActiveSkill;
+                    intOptionsCost = await objSettings.GetKarmaImproveActiveSkillAsync(token).ConfigureAwait(false);
                     upgrade += (intTotalBaseRating + 1) * intOptionsCost;
                 }
 
                 int intSkillGroupCostAdjustment = 0;
-                if (objSettings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
+                if (await objSettings.GetCompensateSkillGroupKarmaDifferenceAsync(token).ConfigureAwait(false) && SkillGroupObject != null)
                 {
                     int intSkillGroupUpper = int.MaxValue;
                     foreach (Skill objSkillGroupMember in SkillGroupObject.SkillList)
@@ -7447,15 +7673,15 @@ namespace Chummer.Backend.Skills
                         int intNakedSkillCost = await SkillGroupObject.SkillList.CountAsync(async x => x == this || await x.GetEnabledAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         if (intTotalBaseRating == 0)
                         {
-                            intGroupCost = objSettings.KarmaNewSkillGroup;
-                            intNakedSkillCost *= objSettings.KarmaNewActiveSkill;
+                            intGroupCost = await objSettings.GetKarmaNewSkillGroupAsync(token).ConfigureAwait(false);
+                            intNakedSkillCost *= await objSettings.GetKarmaNewActiveSkillAsync(token).ConfigureAwait(false);
                         }
                         else
                         {
                             intGroupCost = (intTotalBaseRating + 1) *
-                                           objSettings.KarmaImproveSkillGroup;
+                                           await objSettings.GetKarmaImproveSkillGroupAsync(token).ConfigureAwait(false);
                             intNakedSkillCost *= (intTotalBaseRating + 1) *
-                                                 objSettings.KarmaImproveActiveSkill;
+                                                 await objSettings.GetKarmaImproveActiveSkillAsync(token).ConfigureAwait(false);
                         }
 
                         intSkillGroupCostAdjustment = intGroupCost - intNakedSkillCost;
@@ -7648,8 +7874,8 @@ namespace Chummer.Backend.Skills
                     else
                     {
                         int intPrice = IsKnowledgeSkill
-                            ? CharacterObject.Settings.KarmaKnowledgeSpecialization
-                            : CharacterObject.Settings.KarmaSpecialization;
+                            ? await CharacterObject.Settings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
+                            : await CharacterObject.Settings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
 
                         int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                         decimal decSpecCostMultiplier = 1.0m;
@@ -7711,8 +7937,8 @@ namespace Chummer.Backend.Skills
                 if (blnCreated)
                 {
                     int intPrice = IsKnowledgeSkill
-                        ? CharacterObject.Settings.KarmaKnowledgeSpecialization
-                        : CharacterObject.Settings.KarmaSpecialization;
+                        ? await CharacterObject.Settings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
+                        : await CharacterObject.Settings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
 
                     decimal decExtraSpecCost = 0;
                     int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
@@ -8159,6 +8385,8 @@ namespace Chummer.Backend.Skills
 
                 _lstSpecializations.Dispose();
                 _objCachedCyberwareRatingLock.Dispose();
+                _objCachedTotalBaseRatingLock.Dispose();
+                _objCachedLearnedRatingLock.Dispose();
                 _objCachedSuggestedSpecializationsLock.Dispose();
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);
@@ -8227,6 +8455,8 @@ namespace Chummer.Backend.Skills
                 }
                 await _lstSpecializations.DisposeAsync().ConfigureAwait(false);
                 await _objCachedCyberwareRatingLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedTotalBaseRatingLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedLearnedRatingLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedSuggestedSpecializationsLock.DisposeAsync().ConfigureAwait(false);
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);

@@ -34,7 +34,7 @@ namespace Chummer
     /// An Initiation Grade.
     /// </summary>
     [DebuggerDisplay("{" + nameof(Grade) + "}")]
-    public class InitiationGrade : IHasInternalId, IComparable, ICanRemove, IHasCharacterObject
+    public class InitiationGrade : IHasInternalId, IComparable, ICanRemove, IHasNotes, IHasCharacterObject
     {
         private Guid _guiID;
         private bool _blnGroup;
@@ -228,7 +228,7 @@ namespace Chummer
             objWriter.WriteElementString("group", _blnGroup.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("ordeal", _blnOrdeal.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("schooling", _blnSchooling.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
         }
@@ -377,12 +377,43 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The Initiation Grade's Karma cost.
+        /// </summary>
+        public async Task<int> GetKarmaCostAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+            decimal decCost = await objSettings.GetKarmaInitiationFlatAsync(token) + Grade * await objSettings.GetKarmaInitiationAsync(token);
+            decimal decMultiplier = 1.0m;
+
+            // Discount for Group.
+            if (Group)
+                decMultiplier -= Technomancer
+                    ? await objSettings.GetKarmaRESInitiationGroupPercentAsync(token).ConfigureAwait(false)
+                    : await objSettings.GetKarmaMAGInitiationGroupPercentAsync(token).ConfigureAwait(false);
+
+            // Discount for Ordeal.
+            if (Ordeal)
+                decMultiplier -= Technomancer
+                    ? await objSettings.GetKarmaRESInitiationOrdealPercentAsync(token).ConfigureAwait(false)
+                    : await objSettings.GetKarmaMAGInitiationOrdealPercentAsync(token).ConfigureAwait(false);
+
+            // Discount for Schooling.
+            if (Schooling)
+                decMultiplier -= Technomancer
+                    ? await objSettings.GetKarmaRESInitiationSchoolingPercentAsync(token).ConfigureAwait(false)
+                    : await objSettings.GetKarmaMAGInitiationSchoolingPercentAsync(token).ConfigureAwait(false);
+
+            return (decCost * decMultiplier).StandardRound();
+        }
+
+        /// <summary>
         /// Text to display in the Initiation Grade list.
         /// </summary>
         public string Text(string strLanguage)
         {
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
                 sbdReturn.Append(LanguageManager.GetString("String_Grade", strLanguage)).Append(strSpace)
@@ -419,12 +450,70 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Text to display in the Initiation Grade list.
+        /// </summary>
+        public async Task<string> TextAsync(string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdReturn))
+            {
+                sbdReturn.Append(await LanguageManager.GetStringAsync("String_Grade", strLanguage, token: token)).Append(strSpace)
+                         .Append(Grade.ToString(GlobalSettings.CultureInfo));
+                if (Group || Ordeal)
+                {
+                    sbdReturn.Append(strSpace).Append('(');
+                    if (Group)
+                    {
+                        sbdReturn.Append(
+                            await LanguageManager.GetStringAsync(Technomancer ? "String_Network" : "String_Group", strLanguage, token: token));
+                        if (Ordeal || Schooling)
+                            sbdReturn.Append(',').Append(strSpace);
+                    }
+
+                    if (Ordeal)
+                    {
+                        sbdReturn.Append(
+                            await LanguageManager.GetStringAsync(Technomancer ? "String_Task" : "String_Ordeal", strLanguage, token: token));
+                        if (Schooling)
+                            sbdReturn.Append(',').Append(strSpace);
+                    }
+
+                    if (Schooling)
+                    {
+                        sbdReturn.Append(await LanguageManager.GetStringAsync("String_Schooling", strLanguage, token: token));
+                    }
+
+                    sbdReturn.Append(')');
+                }
+
+                return sbdReturn.ToString();
+            }
+        }
+
+        /// <summary>
         /// Notes.
         /// </summary>
         public string Notes
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        public Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return Task.FromResult(_strNotes);
+        }
+
+        public Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _strNotes = value;
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -436,25 +525,49 @@ namespace Chummer
             set => _colNotes = value;
         }
 
+        public Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<Color>(token);
+            return Task.FromResult(_colNotes);
+        }
+
+        public Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _colNotes = value;
+            return Task.CompletedTask;
+        }
+
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
                 ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
 
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return !string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false))
+                ? ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                : ColorManager.WindowText;
+        }
+
         #endregion Complex Properties
 
         #region Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsInitiationGrade)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsInitiationGrade, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             TreeNode objNode = new TreeNode
             {
                 ContextMenuStrip = cmsInitiationGrade,
                 Name = InternalId,
-                Text = Text(GlobalSettings.Language),
+                Text = await TextAsync(GlobalSettings.Language, token),
                 Tag = this,
-                ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap()
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
             return objNode;
         }

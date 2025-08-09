@@ -40,13 +40,14 @@ namespace Chummer
     /// <summary>
     /// A Skill Limit Modifier.
     /// </summary>
-    [DebuggerDisplay("{" + nameof(DisplayName) + "}")]
-    public class LimitModifier : IHasInternalId, IHasName, ICanRemove, IHasCharacterObject
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
+    public class LimitModifier : IHasInternalId, IHasName, ICanRemove, IHasCharacterObject, IHasNotes
     {
         private Guid _guiID;
         private bool _blnCanDelete = true;
         private string _strName = string.Empty;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strLimit = string.Empty;
         private string _strCondition = string.Empty;
         private int _intBonus;
@@ -95,12 +96,13 @@ namespace Chummer
             objWriter.WriteElementString("bonus", _intBonus.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("condition", _strCondition);
             objWriter.WriteElementString("candelete", _blnCanDelete.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
         }
 
         /// <summary>
-        /// Load the Skill Limit Modifier from the XmlNode.
+        /// Load the Limit Modifier from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
@@ -116,6 +118,9 @@ namespace Chummer
                 _blnCanDelete = _objCharacter.Improvements.All(x => x.ImproveType != Improvement.ImprovementType.LimitModifier || x.ImprovedName != InternalId);
             }
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
 
         /// <summary>
@@ -136,14 +141,23 @@ namespace Chummer
                 await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
                 await objWriter
                       .WriteElementStringAsync(
-                          "name", await DisplayNameAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
+                          "fullname", await DisplayNameAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
                           token: token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name_english", Name, token: token).ConfigureAwait(false);
                 await objWriter
-                      .WriteElementStringAsync("condition",
-                                               await _objCharacter
-                                                     .TranslateExtraAsync(Condition, strLanguageToPrint, token: token)
-                                                     .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                      .WriteElementStringAsync(
+                          "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                          token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname_english", await DisplayNameAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync(
+                          "name_english", Name,
+                          token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("bonus", Bonus.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("limit", Limit, token: token).ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync("condition", await DisplayConditionAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync("condition_english", await DisplayConditionAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
             }
@@ -181,6 +195,45 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        public Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return Task.FromResult(_strNotes);
+        }
+
+        public Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _strNotes = value;
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        public Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<Color>(token);
+            return Task.FromResult(_colNotes);
+        }
+
+        public Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _colNotes = value;
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Limit.
         /// </summary>
@@ -202,24 +255,20 @@ namespace Chummer
             get
             {
                 // If we've already cached a value for this, just return it.
-                // TODO: invalidate cache if active language changes
-                // (Ghetto fix cache culture tag and compare to current?)
                 if (!string.IsNullOrWhiteSpace(_strCachedCondition))
                 {
                     return _strCachedCondition;
                 }
 
-                // Assume that if the original string contains spaces it's not a
-                // valid language key. Spare checking it against the dictionary.
-                _strCachedCondition = _strCondition.Contains(' ')
-                    ? _strCondition
-                    : LanguageManager.GetString(_strCondition, false);
-                if (string.IsNullOrWhiteSpace(_strCachedCondition))
+                string strReturn = _strCondition;
+                // Assume that if the original string contains underscores it's a valid language key. Otherwise, spare checking it against the dictionary.
+                if (strReturn.Contains('_'))
                 {
-                    _strCachedCondition = _strCondition;
+                    string strTemp = LanguageManager.GetString(strReturn, GlobalSettings.DefaultLanguage, false);
+                    if (!string.IsNullOrWhiteSpace(strTemp))
+                        strReturn = strTemp;
                 }
-
-                return _strCachedCondition;
+                return _strCachedCondition = strReturn;
             }
             set
             {
@@ -231,8 +280,34 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetConditionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // If we've already cached a value for this, just return it.
+            if (!string.IsNullOrWhiteSpace(_strCachedCondition))
+            {
+                return _strCachedCondition;
+            }
+
+            string strReturn = _strCondition;
+            // Assume that if the original string contains underscores it's a valid language key. Otherwise, spare checking it against the dictionary.
+            if (strReturn.Contains('_'))
+            {
+                string strTemp = await LanguageManager.GetStringAsync(_strCondition, GlobalSettings.DefaultLanguage, false, token).ConfigureAwait(false);
+                if (!string.IsNullOrWhiteSpace(strTemp))
+                    strReturn = strTemp;
+            }
+            return _strCachedCondition = strReturn;
+        }
+
+        public string CurrentDisplayCondition => DisplayCondition(GlobalSettings.Language);
+
+        public Task<string> GetCurrentDisplayConditionAsync(CancellationToken token = default) => DisplayConditionAsync(GlobalSettings.Language, token);
+
         public string DisplayCondition(string strLanguage)
         {
+            if (strLanguage == GlobalSettings.DefaultLanguage)
+                return Condition;
             // If we've already cached a value for this, just return it.
             // (Ghetto fix cache culture tag and compare to current?)
             if (!string.IsNullOrWhiteSpace(_strCachedDisplayCondition) && strLanguage == _strCachedDisplayConditionLanguage)
@@ -240,22 +315,19 @@ namespace Chummer
                 return _strCachedDisplayCondition;
             }
 
+            string strCondition = Condition;
+            string strReturn = LanguageManager.TranslateExtra(strCondition, strLanguage, _objCharacter);
+            if (string.IsNullOrWhiteSpace(strReturn))
+                strReturn = strCondition;
             _strCachedDisplayConditionLanguage = strLanguage;
-            // Assume that if the original string contains spaces it's not a
-            // valid language key. Spare checking it against the dictionary.
-            _strCachedDisplayCondition = _strCondition.Contains(' ')
-                ? _strCondition
-                : LanguageManager.GetString(_strCondition, strLanguage, false);
-            if (string.IsNullOrWhiteSpace(_strCachedDisplayCondition))
-            {
-                _strCachedDisplayCondition = _strCondition;
-            }
-
-            return _strCachedDisplayCondition;
+            return _strCachedDisplayCondition = strReturn;
         }
 
         public async Task<string> DisplayConditionAsync(string strLanguage, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            if (strLanguage == GlobalSettings.DefaultLanguage)
+                return await GetConditionAsync(token).ConfigureAwait(false);
             // If we've already cached a value for this, just return it.
             // (Ghetto fix cache culture tag and compare to current?)
             if (!string.IsNullOrWhiteSpace(_strCachedDisplayCondition) && strLanguage == _strCachedDisplayConditionLanguage)
@@ -263,18 +335,12 @@ namespace Chummer
                 return _strCachedDisplayCondition;
             }
 
+            string strCondition = await GetConditionAsync(token).ConfigureAwait(false);
+            string strReturn = await LanguageManager.TranslateExtraAsync(strCondition, strLanguage, _objCharacter, token: token).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(strReturn))
+                strReturn = strCondition;
             _strCachedDisplayConditionLanguage = strLanguage;
-            // Assume that if the original string contains spaces it's not a
-            // valid language key. Spare checking it against the dictionary.
-            _strCachedDisplayCondition = _strCondition.Contains(' ')
-                ? _strCondition
-                : await LanguageManager.GetStringAsync(_strCondition, strLanguage, false, token).ConfigureAwait(false);
-            if (string.IsNullOrWhiteSpace(_strCachedDisplayCondition))
-            {
-                _strCachedDisplayCondition = _strCondition;
-            }
-
-            return _strCachedDisplayCondition;
+            return _strCachedDisplayCondition = strReturn;
         }
 
         /// <summary>
@@ -294,13 +360,23 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort
+        public string DisplayNameShort(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strName;
-                return strReturn;
-            }
+            return strLanguage == GlobalSettings.DefaultLanguage
+                ? Name
+                : LanguageManager.TranslateExtra(Name, strLanguage, _objCharacter);
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return strLanguage == GlobalSettings.DefaultLanguage
+                ? Task.FromResult(Name)
+                : LanguageManager.TranslateExtraAsync(Name, strLanguage, _objCharacter, token: token);
         }
 
         /// <summary>
@@ -312,14 +388,12 @@ namespace Chummer
 
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            string strBonus;
-            if (_intBonus > 0)
-                strBonus = '+' + _intBonus.ToString(objCulture);
-            else
-                strBonus = _intBonus.ToString(objCulture);
-
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            string strReturn = DisplayNameShort + strSpace + '[' + strBonus + ']';
+            string strReturn = DisplayNameShort(strLanguage);
+            if (_intBonus >= 0)
+                strReturn += strSpace + "[+" + _intBonus.ToString(objCulture) + ']';
+            else
+                strReturn += strSpace + '[' + _intBonus.ToString(objCulture) + ']';
             string strCondition = DisplayCondition(strLanguage);
             if (!string.IsNullOrEmpty(strCondition))
                 strReturn += strSpace + '(' + strCondition + ')';
@@ -328,14 +402,12 @@ namespace Chummer
 
         public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            string strBonus;
-            if (_intBonus > 0)
-                strBonus = '+' + _intBonus.ToString(objCulture);
-            else
-                strBonus = _intBonus.ToString(objCulture);
-
+            string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-            string strReturn = DisplayNameShort + strSpace + '[' + strBonus + ']';
+            if (_intBonus >= 0)
+                strReturn += strSpace + "[+" + _intBonus.ToString(objCulture) + ']';
+            else
+                strReturn += strSpace + '[' + _intBonus.ToString(objCulture) + ']';
             string strCondition = await DisplayConditionAsync(strLanguage, token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strCondition))
                 strReturn += strSpace + '(' + strCondition + ')';
@@ -346,16 +418,16 @@ namespace Chummer
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsLimitModifier)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsLimitModifier, CancellationToken token = default)
         {
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
                 ContextMenuStrip = cmsLimitModifier,
-                Text = CurrentDisplayName,
+                Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                 Tag = this,
-                ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap()
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
             return objNode;
         }
@@ -367,13 +439,27 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return !CanDelete
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return !CanDelete
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }
+        }
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+            {
+                return !CanDelete
+                    ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                    : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+            }
+            return !CanDelete
+                ? ColorManager.GrayText
+                : ColorManager.WindowText;
         }
 
         #endregion UI Methods

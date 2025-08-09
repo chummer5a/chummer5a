@@ -315,7 +315,7 @@ namespace Chummer.Plugins
                         TelemetryClient objTelemetry = Program.ChummerTelemetryClient.Value;
                         if (objTelemetry != null)
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdLoaderExceptions))
                             {
                                 int counter = 0;
@@ -510,7 +510,7 @@ namespace Chummer.Plugins
                 }
                 catch (ReflectionTypeLoadException e)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdMessage))
                     {
                         sbdMessage.AppendLine("Exception loading plugins: ");
@@ -525,7 +525,7 @@ namespace Chummer.Plugins
                 }
                 catch (CompositionException e)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdMessage))
                     {
                         sbdMessage.AppendLine("Exception loading plugins: ");

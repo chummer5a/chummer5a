@@ -25,14 +25,14 @@ namespace Chummer
 {
     public static class ArrayExtensions
     {
-        public static Task SortAsync<T>(T[] keys, int index, int length, Func<T, T, Task<int>> comparer, CancellationToken token = default)
+        public static Task SortAsync<T>(this T[] keys, int index, int length, Func<T, T, Task<int>> comparer, CancellationToken token = default)
         {
             return length >= 2
                 ? IntroSortAsync(keys, index, length + index - 1, 2 * keys.Length.FloorLog2(), comparer, token)
                 : Task.CompletedTask;
         }
 
-        private static async Task IntroSortAsync<T>(T[] keys, int lo, int hi, int depthLimit, Func<T, T, Task<int>> comparer, CancellationToken token = default)
+        private static async Task IntroSortAsync<T>(this T[] keys, int lo, int hi, int depthLimit, Func<T, T, Task<int>> comparer, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int num1;
@@ -70,14 +70,14 @@ namespace Chummer
             }
         }
 
-        private static async Task SwapIfGreaterAsync<T>(T[] keys, Func<T, T, Task<int>> comparer, int a, int b, CancellationToken token = default)
+        private static async Task SwapIfGreaterAsync<T>(this T[] keys, Func<T, T, Task<int>> comparer, int a, int b, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (a != b && await comparer(keys[a], keys[b]).ConfigureAwait(false) > 0)
                 (keys[a], keys[b]) = (keys[b], keys[a]);
         }
 
-        private static Task SwapAsync<T>(T[] a, int i, int j, CancellationToken token = default)
+        private static Task SwapAsync<T>(this T[] a, int i, int j, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
@@ -86,7 +86,7 @@ namespace Chummer
             return Task.CompletedTask;
         }
 
-        private static async Task<int> PickPivotAndPartitionAsync<T>(T[] keys, int lo, int hi, Func<T, T, Task<int>> comparer, CancellationToken token = default)
+        private static async Task<int> PickPivotAndPartitionAsync<T>(this T[] keys, int lo, int hi, Func<T, T, Task<int>> comparer, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int index = lo + (hi - lo) / 2;
@@ -119,7 +119,7 @@ namespace Chummer
             return i;
         }
 
-        private static async Task HeapsortAsync<T>(T[] keys, int lo, int hi, Func<T, T, Task<int>> comparer, CancellationToken token = default)
+        private static async Task HeapsortAsync<T>(this T[] keys, int lo, int hi, Func<T, T, Task<int>> comparer, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int n = hi - lo + 1;
@@ -132,7 +132,7 @@ namespace Chummer
             }
         }
 
-        private static async Task DownHeapAsync<T>(T[] keys, int i, int n, int lo, Func<T, T, Task<int>> comparer, CancellationToken token = default)
+        private static async Task DownHeapAsync<T>(this T[] keys, int i, int n, int lo, Func<T, T, Task<int>> comparer, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             T key = keys[lo + i - 1];
@@ -151,7 +151,7 @@ namespace Chummer
             keys[lo + i - 1] = key;
         }
 
-        private static async Task InsertionSortAsync<T>(T[] keys, int lo, int hi, Func<T, T, Task<int>> comparer, CancellationToken token = default)
+        private static async Task InsertionSortAsync<T>(this T[] keys, int lo, int hi, Func<T, T, Task<int>> comparer, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             for (int index1 = lo; index1 < hi; ++index1)

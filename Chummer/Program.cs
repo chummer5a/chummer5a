@@ -150,7 +150,7 @@ namespace Chummer
                                                           NativeMethods.WM_SHOWME, 0, IntPtr.Zero);
 
                                 string strCommandLineArgumentsJoined =
-                                    string.Join("<>", Environment.GetCommandLineArgs());
+                                    string.Join("<|>", Environment.GetCommandLineArgs());
                                 NativeMethods.CopyDataStruct objData = default;
                                 IntPtr ptrCommandLineArguments = IntPtr.Zero;
                                 try
@@ -211,7 +211,7 @@ namespace Chummer
 
                         string strInfo;
 
-                        using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
+                        using (new FetchSafelyFromSafeObjectPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
                         {
                             sw.Start();
                             //If debugging and launched from other place (Bootstrap), launch debugger
@@ -320,12 +320,15 @@ namespace Chummer
                         // were made in an older version (i.e. an older assembly)
                         string strProfileOptimizationName
                             = "chummerprofile_" + Utils.CurrentChummerVersion + ".profile";
-                        foreach (string strProfileFile in Directory.GetFiles(Utils.GetStartupPath, "*.profile"))
+                        List<string> lstToDelete = new List<string>();
+                        foreach (string strProfileFile in Directory.EnumerateFiles(Utils.GetStartupPath, "*.profile"))
                         {
                             if (!string.Equals(strProfileFile, strProfileOptimizationName,
                                                StringComparison.OrdinalIgnoreCase))
-                                FileExtensions.SafeDelete(strProfileFile);
+                                lstToDelete.Add(strProfileFile);
                         }
+                        foreach (string strProfileFile in lstToDelete)
+                            FileExtensions.SafeDelete(strProfileFile);
 
                         // Mono, non-Windows native stuff, and Win11 don't always play nice with ProfileOptimization, so it's better to just not bother with it when running under them
                         if (!IsMono && Utils.HumanReadableOSVersion.StartsWith(
@@ -667,11 +670,11 @@ namespace Chummer
             }
         }
 
-        private static bool UnblockPath(string strPath)
+        private static bool UnblockPath(string strPath, bool blnTerminateOnFirstFail = true)
         {
             bool blnAllUnblocked = true;
 
-            foreach (string strFile in Directory.EnumerateFiles(strPath))
+            foreach (string strFile in Directory.EnumerateFiles(strPath, "*", SearchOption.AllDirectories))
             {
                 if (!UnblockFile(strFile))
                 {
@@ -686,21 +689,19 @@ namespace Chummer
 
                         case 5:
                             Log.Warn(exception);
+                            if (blnTerminateOnFirstFail)
+                                return false;
                             blnAllUnblocked = false;
                             break;
 
                         default:
                             Log.Error(exception);
+                            if (blnTerminateOnFirstFail)
+                                return false;
                             blnAllUnblocked = false;
                             break;
                     }
                 }
-            }
-
-            foreach (string strDir in Directory.EnumerateDirectories(strPath))
-            {
-                if (!UnblockPath(strDir))
-                    blnAllUnblocked = false;
             }
 
             return blnAllUnblocked;
@@ -1617,7 +1618,8 @@ namespace Chummer
         /// <returns></returns>
         public static ThreadSafeForm<LoadingBar> CreateAndShowProgressBar(string strFile = "", int intCount = 1)
         {
-            ThreadSafeForm<LoadingBar> frmReturn = ThreadSafeForm<LoadingBar>.Get(() => new LoadingBar { CharacterFile = strFile });
+            ThreadSafeForm<LoadingBar> frmReturn = ThreadSafeForm<LoadingBar>.Get(() => new LoadingBar());
+            frmReturn.MyForm.CharacterFile = strFile;
             if (intCount > 0)
                 frmReturn.MyForm.Reset(intCount);
             frmReturn.MyForm.DoThreadSafe(x =>
@@ -1645,7 +1647,8 @@ namespace Chummer
         public static async Task<ThreadSafeForm<LoadingBar>> CreateAndShowProgressBarAsync(string strFile = "", int intCount = 1, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            ThreadSafeForm<LoadingBar> frmReturn = await ThreadSafeForm<LoadingBar>.GetAsync(() => new LoadingBar { CharacterFile = strFile }, token).ConfigureAwait(false);
+            ThreadSafeForm<LoadingBar> frmReturn = await ThreadSafeForm<LoadingBar>.GetAsync(() => new LoadingBar(), token).ConfigureAwait(false);
+            await frmReturn.MyForm.SetCharacterFileAsync(strFile, token).ConfigureAwait(false);
             if (intCount > 0)
                 await frmReturn.MyForm.ResetAsync(intCount, token).ConfigureAwait(false);
             await frmReturn.MyForm.DoThreadSafeAsync(x =>

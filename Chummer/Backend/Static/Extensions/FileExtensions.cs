@@ -183,7 +183,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strPath) || !File.Exists(strPath))
                 return string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 token.ThrowIfCancellationRequested();
                 using (FileStream objFileStream = new FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -213,7 +213,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strPath) || !File.Exists(strPath))
                 return string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 token.ThrowIfCancellationRequested();
                 using (FileStream objFileStream = new FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -242,7 +242,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strPath) || !File.Exists(strPath))
                 return string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 token.ThrowIfCancellationRequested();
                 await using (FileStream objFileStream
@@ -279,7 +279,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strPath) || !File.Exists(strPath))
                 return string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 token.ThrowIfCancellationRequested();
                 await using (FileStream objFileStream

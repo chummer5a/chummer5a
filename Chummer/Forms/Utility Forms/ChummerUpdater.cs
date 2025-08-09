@@ -412,7 +412,7 @@ namespace Chummer
 
                             // Open the stream using a StreamReader for easy access.
                             string responseFromServer;
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                             {
                                 token.ThrowIfCancellationRequested();
                                 using (StreamReader objReader = new StreamReader(dataStream, Encoding.UTF8, true))
@@ -699,8 +699,8 @@ namespace Chummer
             }
 
             int intResult = 0;
-            if (VersionExtensions.TryParse(strLatestVersion, out Version objLatestVersion))
-                intResult = objLatestVersion?.CompareTo(Utils.CurrentChummerVersion) ?? 0;
+            if (ValueVersion.TryParse(strLatestVersion, out ValueVersion objLatestVersion))
+                intResult = objLatestVersion.CompareTo(Utils.CurrentChummerVersion);
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             string strStatusText;
@@ -867,7 +867,7 @@ namespace Chummer
                             using (ZipArchive zipNewArchive = new ZipArchive(objZipFileStream, ZipArchiveMode.Create))
                             {
                                 token.ThrowIfCancellationRequested();
-                                foreach (string strFile in Directory.GetFiles(_strAppPath))
+                                foreach (string strFile in Directory.EnumerateFiles(_strAppPath))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFile));
@@ -1258,7 +1258,7 @@ namespace Chummer
                         Utils.BreakIfDebug();
                         if (!SilentMode)
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdOutput))
                             {
                                 sbdOutput.Append(

@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -156,7 +157,7 @@ namespace Chummer.UI.Powers
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                     try
                     {
-                        using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch parts))
+                        using (new FetchSafelyFromSafeObjectPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch parts))
                         {
                             parts.Start();
                             parts.TaskEnd("MakePowerDisplay()");
@@ -866,7 +867,7 @@ namespace Chummer.UI.Powers
                             await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                         try
                         {
-                            return (await item.GetSourceDetailAsync(MyToken).ConfigureAwait(false)).LanguageBookTooltip;
+                            return await (await item.GetSourceDetailAsync(MyToken).ConfigureAwait(false)).GetLanguageBookTooltipAsync(MyToken).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -958,13 +959,18 @@ namespace Chummer.UI.Powers
                                     await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                                 try
                                 {
+                                    string strNotes = await p.GetNotesAsync(MyToken).ConfigureAwait(false);
+                                    Color objColor = await p.GetNotesColorAsync(MyToken).ConfigureAwait(false);
                                     using (ThreadSafeForm<EditNotes> frmPowerNotes = await ThreadSafeForm<EditNotes>
-                                               .GetAsync(() => new EditNotes(p.Notes, p.NotesColor, MyToken), MyToken)
+                                               .GetAsync(() => new EditNotes(strNotes, objColor, MyToken), MyToken)
                                                .ConfigureAwait(false))
                                     {
                                         if (await frmPowerNotes.ShowDialogSafeAsync(_objCharacter, MyToken)
                                                 .ConfigureAwait(false) == DialogResult.OK)
-                                            p.Notes = frmPowerNotes.MyForm.Notes;
+                                        {
+                                            await p.SetNotesAsync(frmPowerNotes.MyForm.Notes, MyToken).ConfigureAwait(false);
+                                            await p.SetNotesColorAsync(frmPowerNotes.MyForm.NotesColor, MyToken).ConfigureAwait(false);
+                                        }
                                     }
                                 }
                                 finally
@@ -994,9 +1000,10 @@ namespace Chummer.UI.Powers
                         {
                             string strTooltip = await LanguageManager
                                 .GetStringAsync("Tip_Power_EditNotes", token: MyToken).ConfigureAwait(false);
-                            if (!string.IsNullOrEmpty(p.Notes))
+                            string strNotes = await p.GetNotesAsync(MyToken).ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strNotes))
                                 strTooltip += Environment.NewLine + Environment.NewLine +
-                                              await p.Notes.RtfToPlainTextAsync(token: MyToken).ConfigureAwait(false);
+                                              await strNotes.RtfToPlainTextAsync(token: MyToken).ConfigureAwait(false);
                             return strTooltip.WordWrap();
                         }
                         finally

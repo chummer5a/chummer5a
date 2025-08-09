@@ -3063,6 +3063,7 @@ namespace Chummer
             this.cmsAmmoFullBurst.ImageDpi96 = null;
             this.cmsAmmoFullBurst.Name = "cmsAmmoFullBurst";
             this.cmsAmmoFullBurst.Size = new System.Drawing.Size(219, 22);
+            this.cmsAmmoFullBurst.Tag = "String_FullBurst";
             this.cmsAmmoFullBurst.Text = "Full Burst (10 bullets)";
             this.cmsAmmoFullBurst.Click += new System.EventHandler(this.cmsAmmoFullBurst_Click);
             // 
@@ -3077,6 +3078,7 @@ namespace Chummer
             this.cmsAmmoSuppressiveFire.ImageDpi96 = null;
             this.cmsAmmoSuppressiveFire.Name = "cmsAmmoSuppressiveFire";
             this.cmsAmmoSuppressiveFire.Size = new System.Drawing.Size(219, 22);
+            this.cmsAmmoSuppressiveFire.Tag = "String_SuppressiveFire";
             this.cmsAmmoSuppressiveFire.Text = "Suppressive Fire (20 bullets)";
             this.cmsAmmoSuppressiveFire.Click += new System.EventHandler(this.cmsAmmoSuppressiveFire_Click);
             // 
@@ -3405,6 +3407,7 @@ namespace Chummer
             this.cmsVehicleAmmoFullBurst.ImageDpi96 = null;
             this.cmsVehicleAmmoFullBurst.Name = "cmsVehicleAmmoFullBurst";
             this.cmsVehicleAmmoFullBurst.Size = new System.Drawing.Size(219, 22);
+            this.cmsVehicleAmmoFullBurst.Tag = "String_FullBurst";
             this.cmsVehicleAmmoFullBurst.Text = "Full Burst (10 bullets)";
             this.cmsVehicleAmmoFullBurst.Click += new System.EventHandler(this.cmsVehicleAmmoFullBurst_Click);
             // 
@@ -3419,6 +3422,7 @@ namespace Chummer
             this.cmsVehicleAmmoSuppressiveFire.ImageDpi96 = null;
             this.cmsVehicleAmmoSuppressiveFire.Name = "cmsVehicleAmmoSuppressiveFire";
             this.cmsVehicleAmmoSuppressiveFire.Size = new System.Drawing.Size(219, 22);
+            this.cmsVehicleAmmoSuppressiveFire.Text = "String_SuppressiveFire";
             this.cmsVehicleAmmoSuppressiveFire.Text = "Suppressive Fire (20 bullets)";
             this.cmsVehicleAmmoSuppressiveFire.Click += new System.EventHandler(this.cmsVehicleAmmoSuppressiveFire_Click);
             // 

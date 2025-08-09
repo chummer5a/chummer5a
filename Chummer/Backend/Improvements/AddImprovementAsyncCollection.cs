@@ -514,7 +514,7 @@ namespace Chummer
                 // Populate the Magician Traditions list.
                 XPathNavigator xmlTraditionsBaseChummerNode =
                     (await _objCharacter.LoadDataXPathAsync("traditions.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer", token);
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstTraditions))
                 {
                     if (xmlTraditionsBaseChummerNode != null)
@@ -1020,7 +1020,7 @@ namespace Chummer
             else
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sdbValue))
                 {
                     foreach (string s in AttributeSection.AttributeStrings)
@@ -1727,7 +1727,10 @@ namespace Chummer
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
             await objComplexform.CreateAsync(node, token: token).ConfigureAwait(false);
             if (objComplexform.InternalId.IsEmptyGuid())
+            {
+                await objComplexform.DisposeAsync().ConfigureAwait(false);
                 throw new AbortedException();
+            }
             objComplexform.Grade = -1;
 
             await _objCharacter.ComplexForms.AddAsync(objComplexform, token).ConfigureAwait(false);
@@ -1748,15 +1751,18 @@ namespace Chummer
 
             XmlNode node = objXmlComplexFormDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", bonusNode.InnerText) ?? throw new AbortedException();
 
-            ComplexForm objComplexform = new ComplexForm(_objCharacter);
-            await objComplexform.CreateAsync(node, token: token).ConfigureAwait(false);
-            if (objComplexform.InternalId.IsEmptyGuid())
+            ComplexForm objComplexForm = new ComplexForm(_objCharacter);
+            await objComplexForm.CreateAsync(node, token: token).ConfigureAwait(false);
+            if (objComplexForm.InternalId.IsEmptyGuid())
+            {
+                await objComplexForm.DisposeAsync().ConfigureAwait(false);
                 throw new AbortedException();
-            objComplexform.Grade = -1;
+            }
+            objComplexForm.Grade = -1;
 
-            await _objCharacter.ComplexForms.AddAsync(objComplexform, token).ConfigureAwait(false);
+            await _objCharacter.ComplexForms.AddAsync(objComplexForm, token).ConfigureAwait(false);
 
-            await CreateImprovementAsync(objComplexform.InternalId, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(objComplexForm.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.ComplexForm,
                 _strUnique, token: token).ConfigureAwait(false);
         }
@@ -1806,7 +1812,7 @@ namespace Chummer
                     intRating = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
                 decimal decQty = 1.0m;
                 if (xmlGearNode["quantity"] != null)
-                    decQty = Convert.ToDecimal(xmlGearNode["quantity"].InnerText, GlobalSettings.InvariantCultureInfo);
+                    decQty = await ImprovementManager.ValueToDecAsync(_objCharacter, xmlGearNode["quantity"].InnerText, _intRating, token).ConfigureAwait(false);
 
                 // Create the new piece of Gear.
                 List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -1817,7 +1823,7 @@ namespace Chummer
                 if (objNewGearToCreate.InternalId.IsEmptyGuid())
                     throw new AbortedException();
 
-                objNewGearToCreate.Quantity = decQty;
+                await objNewGearToCreate.SetQuantityAsync(decQty, token).ConfigureAwait(false);
 
                 // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
                 if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == null && await objNewGearToCreate.GetIsCommlinkAsync(token).ConfigureAwait(false))
@@ -1902,13 +1908,13 @@ namespace Chummer
                 Name = bonusNode["name"]?.InnerText ?? _strFriendlyName,
                 Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false),
                 RangeType = "Melee",
-                Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText ?? "0", GlobalSettings.InvariantCultureInfo),
+                Reach = bonusNode["reach"]?.InnerText ?? "0",
                 Accuracy = bonusNode["accuracy"]?.InnerText ?? "Physical",
                 Damage = bonusNode["damage"]?.InnerText ?? "({STR})S",
                 AP = bonusNode["ap"]?.InnerText ?? "0",
                 Mode = "0",
                 RC = "0",
-                Concealability = 0,
+                Concealability = "0",
                 Avail = "0",
                 Cost = "0",
                 Ammo = "0",
@@ -2207,7 +2213,7 @@ namespace Chummer
             {
                 if (strTemp.EndsWith("-natural", StringComparison.Ordinal))
                 {
-                    intMax = Convert.ToInt32(strTemp.TrimEndOnce("-natural", true), GlobalSettings.InvariantCultureInfo) -
+                    intMax = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp.TrimEndOnce("-natural", true), _intRating, token).ConfigureAwait(false) -
                              await (await _objCharacter.GetAttributeAsync(strAttribute, token: token).ConfigureAwait(false)).GetMetatypeMaximumAsync(token).ConfigureAwait(false);
                 }
                 else
@@ -2453,7 +2459,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, Convert.ToInt32(bonusNode.Value, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode.Value, _intRating, token).ConfigureAwait(false), token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task skillgrouplevel(XmlNode bonusNode, CancellationToken token = default)
@@ -2608,11 +2614,7 @@ namespace Chummer
             string strBonus = bonusNode["devicerating"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2623,11 +2625,7 @@ namespace Chummer
             strBonus = bonusNode["programlimit"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2638,11 +2636,7 @@ namespace Chummer
             strBonus = bonusNode["attack"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2653,11 +2647,7 @@ namespace Chummer
             strBonus = bonusNode["sleaze"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2668,11 +2658,7 @@ namespace Chummer
             strBonus = bonusNode["dataprocessing"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2683,11 +2669,7 @@ namespace Chummer
             strBonus = bonusNode["firewall"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -2698,11 +2680,7 @@ namespace Chummer
             strBonus = bonusNode["matrixcm"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
-                }
+                strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = '+' + strBonus;
@@ -3389,8 +3367,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await _objCharacter.ModifyPrototypeTranshumanAsync(Convert.ToDecimal(bonusNode.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
-            await CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique, token: token).ConfigureAwait(false);
+            decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false);
+            await _objCharacter.ModifyPrototypeTranshumanAsync(decValue, token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique, intRating: _intRating, token: token).ConfigureAwait(false);
         }
 
         // Check for Friends In High Places modifiers.
@@ -3559,6 +3538,77 @@ namespace Chummer
                 if (objPower != null)
                     await objPower.SetExtraAsync(strSelectedValue, token).ConfigureAwait(false);
             }
+            else if (bonusNode["selectcategories"] != null)
+            {
+                using (XmlNodeList xmlSelectCategoryList = bonusNode.SelectNodes("selectcategories"))
+                {
+                    if (xmlSelectCategoryList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlSelectCategory in xmlSelectCategoryList)
+                        {
+                            // Display the Select Category window and record which Category was selected.
+                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                           out List<ListItem> lstGeneralItems))
+                            {
+                                using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
+                                {
+                                    if (xmlCategoryList?.Count > 0)
+                                    {
+                                        foreach (XmlNode objXmlCategory in xmlCategoryList)
+                                        {
+                                            string strInnerText = objXmlCategory.InnerText;
+                                            lstGeneralItems.Add(new ListItem(strInnerText,
+                                                                             await _objCharacter.TranslateExtraAsync(
+                                                                                 strInnerText, GlobalSettings.Language,
+                                                                                 "weapons.xml", token).ConfigureAwait(false)));
+                                        }
+                                    }
+                                }
+
+                                string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
+                                                   ? string.Format(GlobalSettings.CultureInfo,
+                                                       await LanguageManager.GetStringAsync(
+                                                           "String_Improvement_SelectSkillNamed", token: token).ConfigureAwait(false), _strFriendlyName)
+                                                   : await LanguageManager.GetStringAsync("Title_SelectWeaponCategory", token: token).ConfigureAwait(false);
+                                using (ThreadSafeForm<SelectItem> frmPickCategory = await ThreadSafeForm<SelectItem>.GetAsync(() =>
+                                           new SelectItem
+                                           {
+                                               Description = strDescription
+                                           }, token).ConfigureAwait(false))
+                                {
+                                    frmPickCategory.MyForm.SetGeneralItemsMode(lstGeneralItems);
+
+                                    if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal)
+                                        || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
+                                        ForcedValue = string.Empty;
+
+                                    if (!string.IsNullOrEmpty(ForcedValue))
+                                    {
+                                        frmPickCategory.MyForm.Opacity = 0;
+                                        frmPickCategory.MyForm.ForceItem(ForcedValue);
+                                    }
+
+                                    // Make sure the dialogue window was not canceled.
+                                    if (await frmPickCategory.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
+                                    {
+                                        throw new AbortedException();
+                                    }
+
+                                    strSelectedValue = frmPickCategory.MyForm.SelectedItem;
+                                }
+                            }
+
+                            await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).ForEachAsync(async objPower =>
+                            {
+                                if (objPower.InternalId == SourceName)
+                                {
+                                    await objPower.SetExtraAsync(SelectedValue, token).ConfigureAwait(false);
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+            }
             else if (bonusNode["name"] != null)
             {
                 strSelectedValue = bonusNode["name"].InnerText;
@@ -3585,7 +3635,7 @@ namespace Chummer
                     {
                         string strSelectedValue;
                         // Display the Select Category window and record which Category was selected.
-                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstGeneralItems))
                         {
                             using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
@@ -3670,7 +3720,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGeneralItems))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGeneralItems))
             {
                 string strType = bonusNode.Attributes?["type"]?.InnerText;
                 if (!string.IsNullOrEmpty(strType))
@@ -4096,7 +4146,7 @@ namespace Chummer
                         foreach (XmlNode objNode in objXmlPowerList)
                         {
                             XmlNode objXmlPower;
-                            int intLevels = Convert.ToInt32(objNode["val"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
+                            int intLevels = await ImprovementManager.ValueToIntAsync(_objCharacter, objNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false);
                             string strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
                             // Display the Select Power window and record which Power was selected.
                             using (ThreadSafeForm<SelectPower> frmPickPower = await ThreadSafeForm<SelectPower>.GetAsync(() => new SelectPower(_objCharacter), token).ConfigureAwait(false))
@@ -4105,10 +4155,10 @@ namespace Chummer
                                 frmPickPower.MyForm.IgnoreLimits = objNode["ignorerating"]?.InnerText == bool.TrueString;
 
                                 if (!string.IsNullOrEmpty(strPointsPerLevel))
-                                    frmPickPower.MyForm.PointsPerLevel = Convert.ToDecimal(strPointsPerLevel, GlobalSettings.InvariantCultureInfo);
+                                    frmPickPower.MyForm.PointsPerLevel = await ImprovementManager.ValueToDecAsync(_objCharacter, strPointsPerLevel, _intRating, token).ConfigureAwait(false);
                                 string strLimit = objNode["limit"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                                 if (!string.IsNullOrEmpty(strLimit))
-                                    frmPickPower.MyForm.LimitToRating = Convert.ToInt32(strLimit, GlobalSettings.InvariantCultureInfo);
+                                    frmPickPower.MyForm.LimitToRating = await ImprovementManager.ValueToIntAsync(_objCharacter, strLimit, _intRating, token).ConfigureAwait(false);
                                 string strLimitToPowers = objNode.Attributes?["limittopowers"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strLimitToPowers))
                                     frmPickPower.MyForm.LimitToPowers = strLimitToPowers;
@@ -4204,7 +4254,7 @@ namespace Chummer
             {
                 if (xmlArtList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstArts))
                     {
                         foreach (XmlNode objXmlAddArt in xmlArtList)
@@ -4309,7 +4359,7 @@ namespace Chummer
             {
                 if (xmlMetamagicList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstMetamagics))
                     {
                         foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
@@ -4426,7 +4476,7 @@ namespace Chummer
             {
                 if (xmlEchoList?.Count > 0)
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstEchoes))
                     {
                         foreach (XmlNode objXmlAddEcho in xmlEchoList)
@@ -5277,7 +5327,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCritters))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCritters))
             {
                 using (XmlNodeList objXmlNodeList = (await _objCharacter.LoadDataAsync("critters.xml", token: token).ConfigureAwait(false))
                                                                  .SelectNodes(
@@ -5379,7 +5429,7 @@ namespace Chummer
 
             //.SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" + strFilter + ')' + SkillFilter(filter) + ']');
 
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstArmors))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstArmors))
             {
                 if (objXmlNodeList.Count > 0)
                 {
@@ -5441,7 +5491,7 @@ namespace Chummer
                 ? "/chummer/cyberwares/cyberware[(category = " + strCategory.CleanXPath() + ") and (" + strBookXPath + ")]"
                 : "/chummer/cyberwares/cyberware[(" + strBookXPath + ")]");
 
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> list))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> list))
             {
                 if (objXmlNodeList.Count > 0)
                 {
@@ -5525,7 +5575,7 @@ namespace Chummer
             }
             else
             {
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstWeapons))
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstWeapons))
                 {
                     bool blnIncludeUnarmed = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@includeunarmed", token)?.Value == bool.TrueString;
                     string strExclude = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory", token)?.Value ?? string.Empty;
@@ -5607,10 +5657,14 @@ namespace Chummer
             if (string.IsNullOrEmpty(strForcePower) && bonusNode.Attributes?["count"] != null)
             {
                 string strCount = bonusNode.Attributes?["count"]?.InnerText;
-                strCount = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strCount, token: token).ConfigureAwait(false);
-
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCount, token).ConfigureAwait(false);
-                powerCount = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
+                if (strCount.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                {
+                    strCount = await _objCharacter.ProcessAttributesInXPathAsync(strCount, token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCount, token).ConfigureAwait(false);
+                    powerCount = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
+                }
+                else
+                    powerCount = Math.Max(decValue.StandardRound(), 1);
             }
 
             for (int i = 0; i < powerCount; i++)
@@ -5730,7 +5784,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
                 using (XmlNodeList objXmlList = bonusNode.SelectNodes("category"))
                 {
@@ -5873,7 +5927,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQualities))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQualities))
             {
                 using (XmlNodeList xmlQualityList = bonusNode.SelectNodes("quality"))
                 {
@@ -5974,8 +6028,7 @@ namespace Chummer
                                 = bonusNode.SelectSingleNode("discountqualities/quality[. = "
                                                              + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
                             intQualityDiscount
-                                = Convert.ToInt32(objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@discount", token)?.Value,
-                                                  GlobalSettings.InvariantCultureInfo);
+                                = await ImprovementManager.ValueToIntAsync(_objCharacter, objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@discount", token)?.Value, _intRating, token).ConfigureAwait(false);
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality discountQuality = new Quality(_objCharacter);
                             await discountQuality.SetBPAsync(0, token).ConfigureAwait(false);
@@ -6291,7 +6344,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (xmlAllowedSpirits == null)
                 throw new ArgumentNullException(nameof(xmlAllowedSpirits));
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setAllowed))
             {
                 foreach (XmlNode n in xmlAllowedSpirits)
@@ -6299,7 +6352,7 @@ namespace Chummer
                     setAllowed.Add(n.InnerText);
                 }
 
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSpirits))
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSpirits))
                 {
                     foreach (XPathNavigator xmlSpirit in (await _objCharacter.LoadDataXPathAsync(strXmlDoc, token: token).ConfigureAwait(false))
                                                                       .SelectAndCacheExpression(
@@ -6509,7 +6562,7 @@ namespace Chummer
             }
             else
             {
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
                 {
                     using (XmlNodeList objXmlGroups = bonusNode.SelectNodes("skillgroup"))
                     {
@@ -7146,9 +7199,9 @@ namespace Chummer
                 // Populate the Magician Traditions list.
                 XPathNavigator xmlActionsBaseNode =
                     (await _objCharacter.LoadDataXPathAsync("actions.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer", token);
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstActions))
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstActions))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdXPath))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdXPath))
                     {
                         sbdXPath.Append("actions/action[").Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
                         string strCategory = bonusNode.Attributes?["category"]?.InnerText ?? string.Empty;
@@ -7273,7 +7326,10 @@ namespace Chummer
             {
                 foreach (XmlNode child in xmlMetamagicsList)
                 {
-                    int intRating = Convert.ToInt32(child.Attributes?["grade"]?.InnerText ?? "-1", GlobalSettings.InvariantCultureInfo);
+                    int intRating = -1;
+                    string strGrade = child.Attributes?["grade"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strGrade))
+                        intRating = await ImprovementManager.ValueToIntAsync(_objCharacter, strGrade, _intRating, token).ConfigureAwait(false);
                     await CreateImprovementAsync(child.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.MetamagicLimit, _strUnique, 0, intRating, token: token).ConfigureAwait(false);
                 }
             }

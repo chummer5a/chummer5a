@@ -109,7 +109,7 @@ namespace Chummer
         private string _strKnowledgePointsExpression = "({INTUnaug} + {LOGUnaug}) * 2";
         private string _strChargenKarmaToNuyenExpression = "{Karma} * 2000 + {PriorityNuyen}";
         private string _strBoundSpiritExpression = "{CHA}";
-        private string _strRegisteredSpriteExpression = "{LOG}";
+        private string _strRegisteredSpriteExpression = "{CHA}";
         private string _strEssenceModifierPostExpression = "{Modifier}";
         private string _strLiftLimitExpression = "{STR} * 15";
         private string _strCarryLimitExpression = "{STR} * 10";
@@ -1557,8 +1557,8 @@ namespace Chummer
                                                      _strChargenKarmaToNuyenExpression);
                         // <boundspiritexpression />
                         objWriter.WriteElementString("boundspiritexpression", _strBoundSpiritExpression);
-                        // <compiledspriteexpression />
-                        objWriter.WriteElementString("compiledspriteexpression", _strRegisteredSpriteExpression);
+                        // <registeredspriteexpression />
+                        objWriter.WriteElementString("registeredspriteexpression", _strRegisteredSpriteExpression);
                         // <essencemodifierpostexpression />
                         objWriter.WriteElementString("essencemodifierpostexpression", _strEssenceModifierPostExpression);
                         // <liftlimitexpression />
@@ -2061,7 +2061,7 @@ namespace Chummer
                                                                             EnabledCustomDataDirectoryPaths, token: token)
                                                                  .SelectAndCacheExpression(
                                                                      "/chummer/books/book[not(hide)]/code", token);
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string> setAllowedBooks))
                         {
                             foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
@@ -2306,9 +2306,9 @@ namespace Chummer
                         await objWriter
                             .WriteElementStringAsync("boundspiritexpression", _strBoundSpiritExpression, token: token)
                             .ConfigureAwait(false);
-                        // <compiledspriteexpression />
+                        // <registeredspriteexpression />
                         await objWriter
-                            .WriteElementStringAsync("compiledspriteexpression", _strRegisteredSpriteExpression,
+                            .WriteElementStringAsync("registeredspriteexpression", _strRegisteredSpriteExpression,
                                 token: token).ConfigureAwait(false);
                         // <essencemodifierpostexpression />
                         await objWriter
@@ -2965,7 +2965,7 @@ namespace Chummer
                                     token: token).ConfigureAwait(false))
                             .SelectAndCacheExpression(
                                 "/chummer/books/book[not(hide)]/code", token);
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string> setAllowedBooks))
                         {
                             foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
@@ -3127,17 +3127,7 @@ namespace Chummer
                     {
                         objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath, token: token);
                     }
-                    catch (IOException)
-                    {
-                        if (blnShowDialogs)
-                            Program.ShowScrollableMessageBox(
-                                LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", token: token),
-                                LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", token: token),
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                        return false;
-                    }
-                    catch (XmlException)
+                    catch (Exception e) when ((e is IOException) || (e is XmlException))
                     {
                         if (blnShowDialogs)
                             Program.ShowScrollableMessageBox(
@@ -3259,7 +3249,8 @@ namespace Chummer
                 }
 
                 // Various expressions used to determine certain character stats
-                objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
+                if (!objXmlNode.TryGetStringFieldQuickly("registeredspriteexpression", ref _strRegisteredSpriteExpression))
+                    objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression); // Legacy shim
                 objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
                 objXmlNode.TryGetStringFieldQuickly("essencemodifierpostexpression", ref _strEssenceModifierPostExpression);
                 objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
@@ -3384,7 +3375,7 @@ namespace Chummer
                             _strEssenceFormat += ".00";
                         else
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdZeros))
                             {
                                 for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
@@ -3562,7 +3553,7 @@ namespace Chummer
                             continue;
                         try
                         {
-                            objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strMruCharacterFile, token: token);
+                            objXmlDocument = XPathDocumentExtensions.LoadStandardFromFilePatient(strMruCharacterFile, token: token);
                         }
                         catch (XmlException)
                         {
@@ -3591,7 +3582,7 @@ namespace Chummer
                                 continue;
                             try
                             {
-                                objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strMruCharacterFile, token: token);
+                                objXmlDocument = XPathDocumentExtensions.LoadStandardFromFilePatient(strMruCharacterFile, token: token);
                             }
                             catch (XmlException)
                             {
@@ -3886,17 +3877,7 @@ namespace Chummer
                         objXmlDocument
                             = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
                     }
-                    catch (IOException)
-                    {
-                        if (blnShowDialogs)
-                            await Program.ShowScrollableMessageBoxAsync(
-                                await LanguageManager.GetStringAsync("Message_CharacterOptions_CannotLoadCharacter", token: token).ConfigureAwait(false),
-                                await LanguageManager.GetStringAsync("MessageText_CharacterOptions_CannotLoadCharacter", token: token).ConfigureAwait(false),
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error, token: token).ConfigureAwait(false);
-                        return false;
-                    }
-                    catch (XmlException)
+                    catch (Exception e) when ((e is IOException) || (e is XmlException))
                     {
                         if (blnShowDialogs)
                             await Program.ShowScrollableMessageBoxAsync(
@@ -4027,7 +4008,8 @@ namespace Chummer
                 }
 
                 // Various expressions used to determine certain character stats
-                objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
+                if (!objXmlNode.TryGetStringFieldQuickly("registeredspriteexpression", ref _strRegisteredSpriteExpression))
+                    objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression); // Legacy shim
                 objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
                 objXmlNode.TryGetStringFieldQuickly("essencemodifierpostexpression", ref _strEssenceModifierPostExpression);
                 objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
@@ -4143,7 +4125,7 @@ namespace Chummer
                     int intTemp = 2;
                     // Number of decimal places to round to when calculating Essence.
                     objXmlNode.TryGetInt32FieldQuickly("essencedecimals", ref intTemp);
-                    EssenceDecimals = intTemp;
+                    await SetEssenceDecimalsAsync(intTemp, token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -4154,7 +4136,7 @@ namespace Chummer
                             _strEssenceFormat += ".00";
                         else
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdZeros))
                             {
                                 for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
@@ -4331,7 +4313,7 @@ namespace Chummer
                             continue;
                         try
                         {
-                            objXmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strMruCharacterFile, token: token).ConfigureAwait(false);
+                            objXmlDocument = await XPathDocumentExtensions.LoadStandardFromFilePatientAsync(strMruCharacterFile, token: token).ConfigureAwait(false);
                         }
                         catch (XmlException)
                         {
@@ -4361,7 +4343,7 @@ namespace Chummer
                             try
                             {
                                 objXmlDocument
-                                    = await XPathDocumentExtensions.LoadStandardFromFileAsync(
+                                    = await XPathDocumentExtensions.LoadStandardFromFilePatientAsync(
                                         strMruCharacterFile, token: token).ConfigureAwait(false);
                             }
                             catch (XmlException)
@@ -5899,7 +5881,7 @@ namespace Chummer
         /// </summary>
         public string BookXPath(bool excludeHidden = true, CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdPath))
             {
                 if (excludeHidden)
@@ -5946,7 +5928,7 @@ namespace Chummer
         /// </summary>
         public async Task<string> BookXPathAsync(bool excludeHidden = true, CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdPath))
             {
                 if (excludeHidden)
@@ -6004,7 +5986,7 @@ namespace Chummer
             using (LockObject.EnterReadLock(token))
             {
                 _strBookXPath = string.Empty;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdBookXPath))
                 {
                     sbdBookXPath.Append('(');
@@ -6037,7 +6019,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 _strBookXPath = string.Empty;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdBookXPath))
                 {
                     sbdBookXPath.Append('(');
@@ -6299,6 +6281,216 @@ namespace Chummer
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for XmlManager.LoadXPath() where we use the current enabled custom data directory list from our options file.
+        /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
+        /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
+        /// </summary>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public XPathNavigator LoadDataXPath(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
+        {
+            IReadOnlyList<string> lstCustomPaths = EnabledCustomDataDirectoryPaths;
+            if (strFileName == "packs.xml")
+            {
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths)
+                {
+                    Utils.GetPacksFolderPath
+                };
+                return XmlManager.LoadXPath(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token);
+            }
+            return XmlManager.LoadXPath(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for XmlManager.LoadXPathAsync() where we use the current enabled custom data directory list from our options file.
+        /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
+        /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
+        /// </summary>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public async Task<XPathNavigator> LoadDataXPathAsync(string strFileName, string strLanguage = "",
+            bool blnLoadFile = false, CancellationToken token = default)
+        {
+            IReadOnlyList<string> lstCustomPaths = await GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
+            if (strFileName == "packs.xml")
+            {
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths)
+                {
+                    Utils.GetPacksFolderPath
+                };
+                return await XmlManager.LoadXPathAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+            }
+            return await XmlManager.LoadXPathAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for XmlManager.Load() where we use the current enabled custom data directory list from our options file.
+        /// </summary>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [NotNull]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public XmlDocument LoadData(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
+        {
+            IReadOnlyList<string> lstCustomPaths = EnabledCustomDataDirectoryPaths;
+            if (strFileName == "packs.xml")
+            {
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths)
+                {
+                    Utils.GetPacksFolderPath
+                };
+                return XmlManager.Load(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token);
+            }
+            return XmlManager.Load(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for XmlManager.LoadAsync() where we use the current enabled custom data directory list from our options file.
+        /// </summary>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public async Task<XmlDocument> LoadDataAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
+        {
+            IReadOnlyList<string> lstCustomPaths = await GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
+            if (strFileName == "packs.xml")
+            {
+                List<string> lstCustomPacksPaths = new List<string>(lstCustomPaths)
+                {
+                    Utils.GetPacksFolderPath
+                };
+                return await XmlManager.LoadAsync(strFileName, lstCustomPacksPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+            }
+            return await XmlManager.LoadAsync(strFileName, lstCustomPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Takes a semicolon-separated list of book codes and returns a formatted string with displaynames.
+        /// </summary>
+        /// <param name="strInput"></param>
+        /// <param name="strLanguage">Language to fetch</param>
+        public string TranslatedBookList(string strInput, string strLanguage = "")
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            List<string> lstBooks = new List<string>(strInput.Count(x => x == ';'));
+            // Load the Sourcebook information.
+            XPathNavigator objXmlDocument = LoadDataXPath("books.xml", strLanguage);
+
+            foreach (string strBook in strInput.TrimEndOnce(';')
+                                               .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                XPathNavigator objXmlBook
+                    = objXmlDocument.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strBook.CleanXPath() + ']');
+                if (objXmlBook != null)
+                {
+                    string strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value;
+                    if (!string.IsNullOrEmpty(strToAppend))
+                        lstBooks.Add(strToAppend);
+                    else
+                    {
+                        strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        if (!string.IsNullOrEmpty(strToAppend))
+                            lstBooks.Add(strToAppend);
+                        else
+                        {
+                            strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode")?.Value ?? strBook;
+                            lstBooks.Add(LanguageManager.GetString("String_Unknown", strLanguage)
+                                         + LanguageManager.GetString("String_Space", strLanguage) + '('
+                                         + strToAppend + ')');
+                        }
+                    }
+                }
+                else
+                {
+                    lstBooks.Add(LanguageManager.GetString("String_Unknown", strLanguage)
+                                 + LanguageManager.GetString("String_Space", strLanguage) + strBook);
+                }
+            }
+
+            lstBooks.Sort();
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                foreach (string strToAppend in lstBooks)
+                    sbdReturn.AppendLine(strToAppend);
+                return sbdReturn.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Takes a semicolon-separated list of book codes and returns a formatted string with displaynames.
+        /// </summary>
+        /// <param name="strInput"></param>
+        /// <param name="strLanguage">Language to fetch</param>
+        /// <param name="token">Cancellation token to use.</param>
+        public async Task<string> TranslatedBookListAsync(string strInput, string strLanguage = "",
+                                                          CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            List<string> lstBooks = new List<string>(strInput.Count(x => x == ';'));
+            // Load the Sourcebook information.
+            XPathNavigator objXmlDocument
+                = await LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false);
+
+            foreach (string strBook in strInput.TrimEndOnce(';')
+                                               .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                XPathNavigator objXmlBook
+                    = objXmlDocument.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strBook.CleanXPath() + ']', token);
+                if (objXmlBook != null)
+                {
+                    string strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("translate", token)?.Value;
+                    if (!string.IsNullOrEmpty(strToAppend))
+                        lstBooks.Add(strToAppend);
+                    else
+                    {
+                        strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                        if (!string.IsNullOrEmpty(strToAppend))
+                            lstBooks.Add(strToAppend);
+                        else
+                        {
+                            strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode", token)?.Value ?? strBook;
+                            lstBooks.Add(await LanguageManager
+                                               .GetStringAsync("String_Unknown", strLanguage, token: token)
+                                               .ConfigureAwait(false)
+                                         + await LanguageManager
+                                                 .GetStringAsync("String_Space", strLanguage, token: token)
+                                                 .ConfigureAwait(false) + '('
+                                         + strToAppend + ')');
+                        }
+                    }
+                }
+                else
+                {
+                    lstBooks.Add(await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
+                                                      .ConfigureAwait(false)
+                                 + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
+                                                        .ConfigureAwait(false) + strBook);
+                }
+            }
+
+            lstBooks.Sort();
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                foreach (string strToAppend in lstBooks)
+                    sbdReturn.AppendLine(strToAppend);
+                return sbdReturn.ToString();
             }
         }
 
@@ -7553,7 +7745,7 @@ namespace Chummer
                         return;
                     if (value)
                     {
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string> setProperties))
                         {
                             setProperties.Add(nameof(MysAdeptSecondMAGAttribute));
@@ -7629,7 +7821,7 @@ namespace Chummer
                     return;
                 if (value)
                 {
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setProperties))
                     {
                         setProperties.Add(nameof(MysAdeptSecondMAGAttribute));
@@ -9924,7 +10116,7 @@ namespace Chummer
                     }
                     else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdNuyenFormat))
                         {
                             sbdNuyenFormat.Append(string.IsNullOrEmpty(NuyenFormat) ? "#,0" : NuyenFormat);
@@ -9996,7 +10188,7 @@ namespace Chummer
                 }
                 else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdNuyenFormat))
                     {
                         string strNuyenFormat = await GetNuyenFormatAsync(token).ConfigureAwait(false);
@@ -10333,7 +10525,7 @@ namespace Chummer
                     }
                     else if (intNewWeightDecimals > intCurrentWeightDecimals)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdWeightFormat))
                         {
                             sbdWeightFormat.Append(string.IsNullOrEmpty(WeightFormat) ? "#,0" : WeightFormat);
@@ -10400,7 +10592,7 @@ namespace Chummer
                 }
                 else if (intNewWeightDecimals > intCurrentWeightDecimals)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdWeightFormat))
                     {
                         string strWeightFormat = await GetWeightFormatAsync(token).ConfigureAwait(false);
@@ -11411,7 +11603,7 @@ namespace Chummer
                     }
                     else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdEssenceFormat))
                         {
                             sbdEssenceFormat.Append(string.IsNullOrEmpty(EssenceFormat) ? "#,0" : EssenceFormat);
@@ -11478,7 +11670,7 @@ namespace Chummer
                 }
                 else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdEssenceFormat))
                     {
                         string strEssenceFormat = await GetEssenceFormatAsync(token).ConfigureAwait(false);
@@ -11522,7 +11714,7 @@ namespace Chummer
                         value += ".00";
                     else
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdZeros))
                         {
                             sbdZeros.Append(value);
@@ -17781,6 +17973,24 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
+        /// </summary>
+        public async Task<decimal> GetKarmaMAGInitiationGroupPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaMAGInitiationGroupPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if a member of a Group.
         /// </summary>
         public decimal KarmaRESInitiationGroupPercent
@@ -17802,6 +18012,24 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if a member of a Group.
+        /// </summary>
+        public async Task<decimal> GetKarmaRESInitiationGroupPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaRESInitiationGroupPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -17831,6 +18059,24 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
+        /// </summary>
+        public async Task<decimal> GetKarmaMAGInitiationOrdealPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaMAGInitiationOrdealPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
         /// </summary>
         public decimal KarmaRESInitiationOrdealPercent
@@ -17856,7 +18102,25 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
+        /// </summary>
+        public async Task<decimal> GetKarmaRESInitiationOrdealPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaRESInitiationOrdealPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if receiving schooling.
         /// </summary>
         public decimal KarmaMAGInitiationSchoolingPercent
         {
@@ -17881,7 +18145,25 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if receiving schooling.
+        /// </summary>
+        public async Task<decimal> GetKarmaMAGInitiationSchoolingPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaMAGInitiationSchoolingPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if receiving schooling.
         /// </summary>
         public decimal KarmaRESInitiationSchoolingPercent
         {
@@ -17905,6 +18187,24 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if receiving schooling.
+        /// </summary>
+        public async Task<decimal> GetKarmaRESInitiationSchoolingPercentAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decKarmaRESInitiationSchoolingPercent;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         #endregion Default Build
 
         #region Constant Values
@@ -17912,26 +18212,12 @@ namespace Chummer
         /// <summary>
         /// The value by which Specializations add to dicepool.
         /// </summary>
-        public int SpecializationBonus
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return 2;
-            }
-        }
+        public static int SpecializationBonus => 2;
 
         /// <summary>
         /// The value by which Expertise Specializations add to dicepool (does not stack with SpecializationBonus).
         /// </summary>
-        public int ExpertiseBonus
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return 3;
-            }
-        }
+        public static int ExpertiseBonus => 3;
 
         #endregion Constant Values
 

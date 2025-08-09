@@ -106,7 +106,7 @@ namespace Chummer
                 read = (T)Convert.ChangeType(fieldValue, typeof(T), GlobalSettings.InvariantCultureInfo);
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
                 //If we are debugging, great
                 //Utils.BreakIfDebug();
@@ -125,7 +125,7 @@ namespace Chummer
 #else
                 string errorMsg = "Tried to read missing field \"" + field + '\"';
 #endif
-                Log.Error(errorMsg);
+                Log.Error(ex, errorMsg);
                 //Finally, we have to assign an out parameter something, so default
                 //null or 0 most likely
                 read = onError;

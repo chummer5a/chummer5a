@@ -116,7 +116,13 @@
       </adeptwayrequires>
       <bonus>
         <weaponcategorydv>
-          <selectskill limittoskill="Astral Combat,Blades,Clubs,Exotic Melee Weapon,Unarmed Combat" />
+          <selectcategories>
+            <category>Astral Combat</category>
+            <category>Blades</category>
+            <category>Clubs</category>
+            <category>Exotic Melee Weapon</category>
+            <category>Unarmed Combat</category>
+          </selectcategories>
           <bonus>1</bonus>
         </weaponcategorydv>
       </bonus>
@@ -662,7 +668,6 @@
       <page>169</page>
       <action>Complex</action>
       <adeptway>0.5</adeptway>
-      <adeptwayrequires />
       <required>
         <oneof>
           <power>Berserk</power>
@@ -1292,6 +1297,7 @@
       <adeptwayrequires>
         <required>
           <oneof>
+            <quality>The Artist's Way</quality>
             <quality>The Artisan's Way</quality>
             <quality>The Invisible Way</quality>
             <quality>The Speaker's Way</quality>
@@ -1455,7 +1461,9 @@
       <source>SSP</source>
       <page>23</page>
       <adeptway>0.25</adeptway>
-      <selectskill />
+      <bonus>
+        <selectskill />
+      </bonus>
     </power>
     <power>
       <id>df257b19-9ef7-4f0b-9aaa-4dbc43372431</id>

@@ -352,7 +352,7 @@ namespace Chummer.UI.Skills
                                                                     ,
                                                               _objMyToken);
 
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstAttributeItems))
                     {
                         foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
@@ -565,7 +565,7 @@ namespace Chummer.UI.Skills
                                                                 x => x.GetAddSpecToolTipAsync(_objMyToken)
                                                                       , token).ConfigureAwait(false);
 
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstAttributeItems))
                 {
                     foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
@@ -1204,16 +1204,18 @@ namespace Chummer.UI.Skills
         {
             try
             {
+                string strNotes = await _objSkill.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                Color objColor = await _objSkill.GetNotesColorAsync(_objMyToken).ConfigureAwait(false);
                 using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>
                                                                       .GetAsync(
                                                                           () => new EditNotes(
-                                                                              _objSkill.Notes, _objSkill.NotesColor, _objMyToken),
+                                                                              strNotes, objColor, _objMyToken),
                                                                           _objMyToken).ConfigureAwait(false))
                 {
                     if (await frmItemNotes.ShowDialogSafeAsync(_objSkill.CharacterObject, _objMyToken)
                                           .ConfigureAwait(false) != DialogResult.OK)
                         return;
-                    _objSkill.Notes = frmItemNotes.MyForm.Notes;
+                    await _objSkill.SetNotesAsync(frmItemNotes.MyForm.Notes, _objMyToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -1230,10 +1232,13 @@ namespace Chummer.UI.Skills
                     = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
                 try
                 {
+                    Character objCharacter = _objSkill.CharacterObject;
                     await CommonFunctions.OpenPdf(
                         _objSkill.Source + ' ' + await _objSkill.DisplayPageAsync(GlobalSettings.Language, _objMyToken)
                                                                 .ConfigureAwait(false),
-                        _objSkill.CharacterObject, token: _objMyToken).ConfigureAwait(false);
+                        objCharacter != null
+                            ? await objCharacter.GetSettingsAsync(_objMyToken).ConfigureAwait(false)
+                            : null, token: _objMyToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -1251,12 +1256,10 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                lblName.DoThreadSafe(
-                    x => x.MinimumSize =
+                lblName.MinimumSize =
                         new Size(
-                            intNewNameWidth - x.Margin.Right -
-                            pnlAttributes.DoThreadSafeFunc(y => y.Margin.Left + y.Width, token: _objMyToken),
-                            x.MinimumSize.Height), token: _objMyToken);
+                            intNewNameWidth - lblName.Margin.Right - pnlAttributes.Margin.Left - pnlAttributes.Width,
+                            lblName.MinimumSize.Height);
             }
             catch (OperationCanceledException)
             {

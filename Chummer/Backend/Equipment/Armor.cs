@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -38,7 +39,7 @@ namespace Chummer.Backend.Equipment
     /// A specific piece of Armor.
     /// </summary>
     [HubClassTag("SourceID", true, "TotalArmor", "Extra")]
-    [DebuggerDisplay("{CurrentDisplayName}")]
+    [DebuggerDisplay("{DisplayName(null, \"en-us\")}")]
     public sealed class Armor : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear, IHasMatrixAttributes, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -55,7 +56,7 @@ namespace Chummer.Backend.Equipment
         private string _strCost = string.Empty;
         private string _strWeight = string.Empty;
         private int _intRating;
-        private int _intMaxRating;
+        private string _strMaxRating;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strArmorName = string.Empty;
@@ -184,7 +185,7 @@ namespace Chummer.Backend.Equipment
             if (_blnSkipEvents || _objCharacter?.IsLoading != false || !await _objCharacter.Armor.ContainsAsync(this, token).ConfigureAwait(false))
                 return;
 
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromSafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
@@ -361,8 +362,9 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("armor", ref _strArmorValue);
             if (objXmlArmorNode.TryGetStringFieldQuickly("armoroverride", ref _strArmorOverrideValue) && _strArmorOverrideValue == "0")
                 _strArmorOverrideValue = string.Empty;
-            _intRating = intRating;
-            objXmlArmorNode.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+            objXmlArmorNode.TryGetStringFieldQuickly("rating", ref _strMaxRating);
+            _intRating = intRating; // Set first to make MaxRatingValue work properly
+            _intRating = Math.Min(intRating, blnSync ? MaxRatingValue : await GetMaxRatingValueAsync(token).ConfigureAwait(false));
             objXmlArmorNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objXmlArmorNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
             objXmlArmorNode.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -385,10 +387,10 @@ namespace Chummer.Backend.Equipment
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             Page, DisplayPage(GlobalSettings.Language), _objCharacter, token);
                     else
-                        Notes = await CommonFunctions.GetBookNotesAsync(objXmlArmorNode, Name,
+                        await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(objXmlArmorNode, Name,
                             await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
                             await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
-                            token).ConfigureAwait(false);
+                            token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
             }
 
@@ -460,8 +462,9 @@ namespace Chummer.Backend.Equipment
                                 GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
                                 await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                            int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
                             using (ThreadSafeForm<SelectNumber> frmPickNumber
-                                   = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                   = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(intDecimalPlaces)
                                    {
                                        Minimum = decMin,
                                        Maximum = decMax,
@@ -567,7 +570,8 @@ namespace Chummer.Backend.Equipment
                                 objMod.IncludedInArmor = true;
                                 objMod.ArmorCapacity = "[0]";
                                 objMod.Cost = "0";
-                                objMod.MaximumRating = objMod.Rating;
+                                objMod.MaxRating = (blnSync ? objMod.Rating : await objMod.GetRatingAsync(token).ConfigureAwait(false))
+                                    .ToString(GlobalSettings.InvariantCultureInfo);
                             }
                             else
                             {
@@ -581,9 +585,12 @@ namespace Chummer.Backend.Equipment
                                     IncludedInArmor = true,
                                     ArmorCapacity = "[0]",
                                     Cost = "0",
-                                    Rating = 0,
-                                    MaximumRating = 0
+                                    MaxRating = "0"
                                 };
+                                if (blnSync)
+                                    Rating = 0;
+                                else
+                                    await SetRatingAsync(0, token).ConfigureAwait(false);
                             }
 
                             if (blnSync)
@@ -639,28 +646,32 @@ namespace Chummer.Backend.Equipment
                             //If maxrating is being specified, we're intentionally bypassing the normal maximum rating. Set the maxrating first, then the rating again.
                             if (!string.IsNullOrEmpty(strMaxRating))
                             {
-                                int.TryParse(strMaxRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                    out int intDummy);
-                                objMod.MaximumRating = intDummy;
-                                int.TryParse(objXmlAttributes["rating"]?.InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                    out intDummy);
-                                objMod.Rating = intDummy;
+                                objMod.MaxRating = strMaxRating;
+                                int intDummy = intRating;
+                                string strOverrideRating = objXmlAttributes["rating"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strOverrideRating))
+                                    int.TryParse(strOverrideRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                        out intDummy);
+                                if (blnSync)
+                                    objMod.Rating = intDummy;
+                                else
+                                    await objMod.SetRatingAsync(intDummy, token).ConfigureAwait(false);
                             }
                             else
                             {
-                                objMod.MaximumRating = objMod.Rating;
+                                objMod.MaxRating = (blnSync ? objMod.Rating : await objMod.GetRatingAsync(token).ConfigureAwait(false))
+                                    .ToString(GlobalSettings.InvariantCultureInfo);
                             }
                         }
                         else
                         {
                             int intLoopRating = 0;
-                            int intLoopMaximumRating = 0;
+                            string strLoopMaximumRating = string.Empty;
                             if (objXmlAttributes != null)
                             {
                                 int.TryParse(objXmlAttributes["rating"]?.InnerText, NumberStyles.Any,
                                     GlobalSettings.InvariantCultureInfo, out intLoopRating);
-                                int.TryParse(objXmlAttributes["maxrating"]?.InnerText, NumberStyles.Any,
-                                    GlobalSettings.InvariantCultureInfo, out intLoopMaximumRating);
+                                strLoopMaximumRating = objXmlAttributes["maxrating"]?.InnerText ?? string.Empty;
                             }
                             objMod = new ArmorMod(_objCharacter)
                             {
@@ -672,10 +683,13 @@ namespace Chummer.Backend.Equipment
                                 IncludedInArmor = true,
                                 ArmorCapacity = "[0]",
                                 Cost = "0",
-                                Rating = intLoopRating,
-                                MaximumRating = intLoopMaximumRating,
+                                MaxRating = strLoopMaximumRating,
                                 Extra = strForceValue
                             };
+                            if (blnSync)
+                                Rating = intLoopRating;
+                            else
+                                await SetRatingAsync(intLoopRating, token).ConfigureAwait(false);
                         }
 
                         if (blnSync)
@@ -737,11 +751,18 @@ namespace Chummer.Backend.Equipment
             else
             {
                 _blnCanSwapAttributes = true;
-                string[] strArray = _strAttributeArray.Split(',');
-                _strAttack = strArray[0];
-                _strSleaze = strArray[1];
-                _strDataProcessing = strArray[2];
-                _strFirewall = strArray[3];
+                string[] strArray = _strAttributeArray.SplitFixedSizePooledArray(',', 4);
+                try
+                {
+                    _strAttack = strArray[0];
+                    _strSleaze = strArray[1];
+                    _strDataProcessing = strArray[2];
+                    _strFirewall = strArray[3];
+                }
+                finally
+                {
+                    ArrayPool<string>.Shared.Return(strArray);
+                }
             }
             objXmlArmorNode.TryGetStringFieldQuickly("modattack", ref _strModAttack);
             objXmlArmorNode.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
@@ -779,18 +800,9 @@ namespace Chummer.Backend.Equipment
                     string strLoopRating = objXmlAddWeapon.SelectSingleNodeAndCacheExpression("@rating", token)?.Value;
                     if (!string.IsNullOrEmpty(strLoopRating))
                     {
-                        strLoopRating = blnSync
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            ? strLoopRating.CheapReplace("{Rating}",
-                                () => Rating.ToString(
-                                    GlobalSettings
-                                        .InvariantCultureInfo))
-                            : await strLoopRating.CheapReplaceAsync("{Rating}",
-                                () => Rating.ToString(
-                                    GlobalSettings
-                                        .InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                     out intAddWeaponRating);
+                        intAddWeaponRating = blnSync
+                            ? ProcessRatingString(strLoopRating, () => Rating)
+                            : await ProcessRatingStringAsync(strLoopRating, () => GetRatingAsync(token), token);
                     }
 
                     Weapon objGearWeapon = new Weapon(_objCharacter);
@@ -860,7 +872,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("damage", _intDamage.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("maxrating", _strMaxRating);
             objWriter.WriteElementString("ratinglabel", _strRatingLabel);
             objWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("emcumbrance", _blnEncumbrance.ToString(GlobalSettings.InvariantCultureInfo));
@@ -888,7 +900,7 @@ namespace Chummer.Backend.Equipment
             else
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
             if (_guiWeaponID != Guid.Empty)
@@ -962,7 +974,8 @@ namespace Chummer.Backend.Equipment
                 _strArmorOverrideValue = string.Empty;
             objNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
-            objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating);
+            objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
+            _intRating = Math.Min(_intRating, MaxRatingValue);
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("armorname", ref _strArmorName);
@@ -1180,7 +1193,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture), token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
             finally
             {
@@ -1309,10 +1322,10 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Rating
         {
-            get => Math.Min(_intRating, MaxRating);
+            get => Math.Min(_intRating, MaxRatingValue);
             set
             {
-                value = Math.Min(value, MaxRating);
+                value = Math.Min(value, MaxRatingValue);
                 if (Interlocked.Exchange(ref _intRating, value) == value)
                     return;
                 if (Equipped && _objCharacter != null)
@@ -1350,10 +1363,208 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Rating.
         /// </summary>
-        public int MaxRating
+        public async Task<int> GetRatingAsync(CancellationToken token = default)
         {
-            get => _intMaxRating;
-            set => _intMaxRating = value;
+            token.ThrowIfCancellationRequested();
+            return Math.Min(_intRating, await GetMaxRatingValueAsync(token).ConfigureAwait(false));
+        }
+
+        /// <summary>
+        /// Rating.
+        /// </summary>
+        public async Task SetRatingAsync(int value, CancellationToken token = default)
+        {
+            value = Math.Min(value, await GetMaxRatingValueAsync(token).ConfigureAwait(false));
+            if (Interlocked.Exchange(ref _intRating, value) == value)
+                return;
+            if (Equipped && _objCharacter != null)
+            {
+                if (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating"), token))
+                {
+                    if (ArmorValue.ContainsAny("FixedValues", "Rating") || ArmorOverrideValue.ContainsAny("FixedValues", "Rating"))
+                    {
+                        await _objCharacter.OnMultiplePropertyChangedAsync(token, nameof(Character.TotalCarriedWeight), nameof(Character.GetArmorRating)).ConfigureAwait(false);
+                        await _objCharacter.RefreshArmorEncumbranceAsync(token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
+                    }
+                }
+                else if (ArmorValue.ContainsAny("FixedValues", "Rating") || ArmorOverrideValue.ContainsAny("FixedValues", "Rating"))
+                {
+                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.GetArmorRating), token).ConfigureAwait(false);
+                    await _objCharacter.RefreshArmorEncumbranceAsync(token).ConfigureAwait(false);
+                }
+            }
+            if (await GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0)
+            {
+                await GearChildren.ForEachAsync(async objChild =>
+                {
+                    if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
+                    {
+                        // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                        await objChild.SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    }
+                }, token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Rating.
+        /// </summary>
+        public string MaxRating
+        {
+            get => _strMaxRating;
+            set => _strMaxRating = value;
+        }
+
+        /// <summary>
+        /// Maximum Rating (value form).
+        /// </summary>
+        public int MaxRatingValue
+        {
+            get
+            {
+                string strExpression = MaxRating;
+                if (string.IsNullOrEmpty(strExpression))
+                    return int.MaxValue;
+                return string.IsNullOrEmpty(strExpression) ? int.MaxValue : ProcessRatingString(strExpression, _intRating);
+            }
+            set => MaxRating = value.ToString(GlobalSettings.InvariantCultureInfo);
+        }
+
+        /// <summary>
+        /// Maximum Rating (value form).
+        /// </summary>
+        public Task<int> GetMaxRatingValueAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<int>(token);
+            string strExpression = MaxRating;
+            return string.IsNullOrEmpty(strExpression) ? Task.FromResult(int.MaxValue) : ProcessRatingStringAsync(strExpression, _intRating, token);
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private int ProcessRatingString(string strExpression, int intRating)
+        {
+            return ProcessRatingString(strExpression, () => intRating);
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private int ProcessRatingString(string strExpression, Func<int> funcRating)
+        {
+            return ProcessRatingStringAsDec(strExpression, funcRating, out bool _).StandardRound();
+        }
+
+        /// <summary>
+        /// Processes a string into a decimal based on logical processing.
+        /// </summary>
+        private decimal ProcessRatingStringAsDec(string strExpression, int intRating)
+        {
+            return ProcessRatingStringAsDec(strExpression, () => intRating, out bool _);
+        }
+
+        /// <summary>
+        /// Processes a string into a decimal based on logical processing.
+        /// </summary>
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating)
+        {
+            return ProcessRatingStringAsDec(strExpression, funcRating, out bool _);
+        }
+
+        /// <summary>
+        /// Processes a string into a decimal based on logical processing.
+        /// </summary>
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnIsSuccess)
+        {
+            blnIsSuccess = true;
+            if (string.IsNullOrEmpty(strExpression))
+                return 0;
+            strExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+            {
+                blnIsSuccess = false;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                {
+                    sbdValue.Append(strExpression);
+                    Lazy<string> strRating = new Lazy<string>(() => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.CheapReplace("{Rating}", () => strRating.Value);
+                    sbdValue.CheapReplace("Rating", () => strRating.Value);
+                    _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                    object objProcess;
+                    (blnIsSuccess, objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
+                    return blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                }
+            }
+
+            return decValue;
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private Task<int> ProcessRatingStringAsync(string strExpression, int intRating, CancellationToken token = default)
+        {
+            return ProcessRatingStringAsync(strExpression, () => Task.FromResult(intRating), token);
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private async Task<int> ProcessRatingStringAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await ProcessRatingStringAsDecAsync(strExpression, funcRating, token).ConfigureAwait(false)).Item1.StandardRound();
+        }
+
+        /// <summary>
+        /// Processes a string into a decimal based on logical processing.
+        /// </summary>
+        private Task<Tuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, int intRating, CancellationToken token = default)
+        {
+            return ProcessRatingStringAsDecAsync(strExpression, () => Task.FromResult(intRating), token);
+        }
+
+        /// <summary>
+        /// Processes a string into a decimal based on logical processing.
+        /// </summary>
+        private async Task<Tuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strExpression))
+                return new Tuple<decimal, bool>(0, true);
+            bool blnIsSuccess = true;
+            strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+            {
+                blnIsSuccess = false;
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
+                {
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        Microsoft.VisualStudio.Threading.AsyncLazy<string> strRating = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+                        await sbdValue.CheapReplaceAsync("{Rating}", () => strRating.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync("Rating", () => strRating.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await _objCharacter
+                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        strExpression = sbdValue.ToString();
+                    }
+                }
+                object objProcess;
+                (blnIsSuccess, objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decValue = Convert.ToDecimal((double)objProcess);
+            }
+
+            return new Tuple<decimal, bool>(decValue, blnIsSuccess);
         }
 
         /// <summary>
@@ -1382,14 +1593,9 @@ namespace Chummer.Backend.Equipment
             string strArmorCapacity = ArmorCapacity;
             if (string.IsNullOrEmpty(strArmorCapacity))
                 return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
-            if (strArmorCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strArmorCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strArmorCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-            }
+            strArmorCapacity = strArmorCapacity.ProcessFixedValuesString(() => Rating);
 
-            if (strArmorCapacity.Contains("Rating"))
+            if (strArmorCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 // If the Capacity is determined by the Rating, evaluate the expression.
                 // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
@@ -1397,19 +1603,15 @@ namespace Chummer.Backend.Equipment
                 string strCapacity = strArmorCapacity;
                 if (blnSquareBrackets)
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-
-                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
-                string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", objCultureInfo) : objProcess.ToString();
+                decimal decCapacity = ProcessRatingStringAsDec(strCapacity, () => Rating, out bool blnIsSuccess);
+                string strReturn = blnIsSuccess ? decCapacity.ToString("#,0.##", objCultureInfo) : strCapacity;
                 if (blnSquareBrackets)
                     strReturn = '[' + strReturn + ']';
 
                 return strReturn;
             }
 
-            return decimal.TryParse(strArmorCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                    out decimal decReturn)
-                ? decReturn.ToString("#,0.##", objCultureInfo)
-                : strArmorCapacity;
+            return decValue.ToString("#,0.##", objCultureInfo);
         }
 
         /// <summary>
@@ -1421,13 +1623,8 @@ namespace Chummer.Backend.Equipment
             string strArmorCapacity = ArmorCapacity;
             if (string.IsNullOrEmpty(strArmorCapacity))
                 return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
-            if (strArmorCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strArmorCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strArmorCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-            }
-            if (strArmorCapacity.Contains("Rating"))
+            strArmorCapacity = await strArmorCapacity.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+            if (strArmorCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 // If the Capacity is determined by the Rating, evaluate the expression.
                 // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
@@ -1435,22 +1632,17 @@ namespace Chummer.Backend.Equipment
                 string strCapacity = strArmorCapacity;
                 if (blnSquareBrackets)
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
-                    strCapacity.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                (decimal decCapacity, bool blnIsSuccess) = await ProcessRatingStringAsDecAsync(strCapacity, () => GetRatingAsync(token), token).ConfigureAwait(false);
                 string strReturn = blnIsSuccess
-                    ? ((double)objProcess).ToString("#,0.##", objCultureInfo)
-                    : objProcess.ToString();
+                    ? decCapacity.ToString("#,0.##", objCultureInfo)
+                    : strCapacity;
                 if (blnSquareBrackets)
                     strReturn = '[' + strReturn + ']';
 
                 return strReturn;
             }
 
-            return decimal.TryParse(strArmorCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                out decimal decReturn)
-                ? decReturn.ToString("#,0.##", objCultureInfo)
-                : strArmorCapacity;
+            return decValue.ToString("#,0.##", objCultureInfo);
         }
 
         public string CurrentTotalArmorCapacity => TotalArmorCapacity(GlobalSettings.CultureInfo);
@@ -1484,10 +1676,14 @@ namespace Chummer.Backend.Equipment
             set => _strWeight = value;
         }
 
-        public string DisplayCost(out decimal decItemCost, bool blnUseRating = true, decimal decMarkup = 0.0m)
+        public async Task<Tuple<string, decimal>> DisplayCost(bool blnUseRating = true, decimal decMarkup = 0.0m, CancellationToken token = default)
         {
-            decItemCost = 0;
+            decimal decItemCost = 0;
             string strReturn = Cost;
+            strReturn = blnUseRating
+                ? await strReturn.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false)
+                : await strReturn.ProcessFixedValuesStringAsync(() => GetMaxRatingValueAsync(token), token).ConfigureAwait(false);
+            string strNuyenSymbol = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             if (strReturn.StartsWith("Variable(", StringComparison.Ordinal))
             {
                 strReturn = strReturn.TrimStartOnce("Variable(", true).TrimEndOnce(')');
@@ -1495,41 +1691,33 @@ namespace Chummer.Backend.Equipment
                 decimal decMax = decimal.MaxValue;
                 if (strReturn.Contains('-'))
                 {
-                    string[] strValues = strReturn.Split('-');
-                    decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                    decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                    string[] strValues = strReturn.SplitFixedSizePooledArray('-', 2);
+                    try
+                    {
+                        decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                    }
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(strValues);
+                    }
                 }
                 else
                     decMin = Convert.ToDecimal(strReturn.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
 
+                string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                 if (decMax == decimal.MaxValue)
-                    strReturn = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol") + '+';
+                    strReturn = decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyenSymbol + '+';
                 else
-                    strReturn = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + " - " + decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
+                    strReturn = decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + " - " + decMax.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyenSymbol;
 
                 decItemCost = decMin;
-                return strReturn;
+                return new Tuple<string, decimal>(strReturn, decItemCost);
             }
 
             if (blnUseRating)
             {
-                if (strReturn.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strReturn.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strReturn = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                }
-                decimal decTotalCost;
-                // If the cost is determined by the Rating, evaluate the expression.
-                if (strReturn.Contains("Rating"))
-                {
-                    string strCost = strReturn.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCost);
-                    decTotalCost = blnIsSuccess ? Convert.ToDecimal(objProcess.ToString(), GlobalSettings.InvariantCultureInfo) : 0;
-                }
-                else
-                {
-                    decTotalCost = Convert.ToDecimal(strReturn, GlobalSettings.InvariantCultureInfo);
-                }
+                decimal decTotalCost = (await ProcessRatingStringAsDecAsync(strReturn, () => GetRatingAsync(token), token).ConfigureAwait(false)).Item1;
 
                 decTotalCost *= 1.0m + decMarkup;
 
@@ -1537,17 +1725,12 @@ namespace Chummer.Backend.Equipment
                     decTotalCost *= 0.9m;
 
                 decItemCost = decTotalCost;
-
-                return decTotalCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
+                string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
+                strReturn = decTotalCost.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyenSymbol;
+                return new Tuple<string, decimal>(strReturn, decItemCost);
             }
 
-            if (strReturn.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strReturn.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strReturn = strValues[0] + '-' + strValues[Math.Max(Math.Min(MaxRating, strValues.Length) - 1, 0)];
-            }
-
-            return strReturn.CheapReplace("Rating", () => LanguageManager.GetString(RatingLabel)) + LanguageManager.GetString("String_NuyenSymbol");
+            return new Tuple<string, decimal>(await strReturn.CheapReplaceAsync("Rating", () => LanguageManager.GetStringAsync(RatingLabel, token: token), token: token).ConfigureAwait(false) + strNuyenSymbol, decItemCost);
         }
 
         private SourceString _objCachedSourceDetail;
@@ -1794,60 +1977,15 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         private int GetOwnArmorValue(bool blnUseOverrideValue = false)
         {
-            string strArmorExpression = blnUseOverrideValue ? ArmorOverrideValue : ArmorValue;
-            if (string.IsNullOrEmpty(strArmorExpression))
-                return 0;
-            int intReturn = 0;
-            if (strArmorExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strArmorExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                       .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strArmorExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-            }
-
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdArmor))
-            {
-                sbdArmor.Append(strArmorExpression.TrimStart('+'));
-                sbdArmor.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdArmor, strArmorExpression);
-                (bool blnIsSuccess, object objProcess)
-                    = CommonFunctions.EvaluateInvariantXPath(sbdArmor.ToString());
-                if (blnIsSuccess)
-                    intReturn = ((double) objProcess).StandardRound();
-            }
-
-            return intReturn;
+            return ProcessRatingString(blnUseOverrideValue ? ArmorOverrideValue : ArmorValue, () => Rating);
         }
 
         /// <summary>
         /// The Armor's armor value excluding modifications
         /// </summary>
-        private async Task<int> GetOwnArmorValueAsync(bool blnUseOverrideValue = false, CancellationToken token = default)
+        private Task<int> GetOwnArmorValueAsync(bool blnUseOverrideValue = false, CancellationToken token = default)
         {
-            string strArmorExpression = blnUseOverrideValue ? ArmorOverrideValue : ArmorValue;
-            if (string.IsNullOrEmpty(strArmorExpression))
-                return 0;
-            int intReturn = 0;
-            if (strArmorExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strArmorExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strArmorExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-            }
-
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
-            {
-                sbdWeight.Append(strArmorExpression.TrimStart('+'));
-                sbdWeight.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdWeight, strArmorExpression,
-                    token: token).ConfigureAwait(false);
-                (bool blnIsSuccess, object objProcess)
-                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdWeight.ToString(), token).ConfigureAwait(false);
-                if (blnIsSuccess)
-                    intReturn = ((double)objProcess).StandardRound();
-            }
-
-            return intReturn;
+            return ProcessRatingStringAsync(blnUseOverrideValue ? ArmorOverrideValue : ArmorValue, () => GetRatingAsync(token), token);
         }
 
         /// <summary>
@@ -2033,24 +2171,9 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                // If the cost is determined by the Rating, evaluate the expression.
-                string strCostExpression = Cost;
-
-                decimal decReturn = 0;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
-                {
-                    sbdCost.Append(strCostExpression.TrimStart('+'));
-                    sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
-                    if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
-                }
-
+                decimal decReturn = ProcessRatingStringAsDec(Cost, () => Rating);
                 if (DiscountCost)
                     decReturn *= 0.9m;
-
                 return decReturn;
             }
         }
@@ -2061,24 +2184,9 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetOwnCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            // If the cost is determined by the Rating, evaluate the expression.
-            string strCostExpression = Cost;
-
-            decimal decReturn = 0;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
-            {
-                sbdCost.Append(strCostExpression.TrimStart('+'));
-                sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
-                (bool blnIsSuccess, object objProcess)
-                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
-                if (blnIsSuccess)
-                    decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
-            }
-
+            decimal decReturn = (await ProcessRatingStringAsDecAsync(Cost, () => GetRatingAsync(token), token)).Item1;
             if (DiscountCost)
                 decReturn *= 0.9m;
-
             return decReturn;
         }
 
@@ -2095,28 +2203,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strWeightExpression = Weight;
-                if (string.IsNullOrEmpty(strWeightExpression))
-                    return 0;
-                decimal decReturn = 0;
-                if (strWeightExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strWeightExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strWeightExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                }
-
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
-                {
-                    sbdWeight.Append(strWeightExpression.TrimStart('+'));
-                    sbdWeight.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
-                    if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
-                }
-
-                return decReturn;
+                return ProcessRatingStringAsDec(Weight, () => Rating);
             }
         }
 
@@ -2148,6 +2235,21 @@ namespace Chummer.Backend.Equipment
             set => _strNotes = value;
         }
 
+        public Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return Task.FromResult(_strNotes);
+        }
+
+        public Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _strNotes = value;
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Forecolor to use for Notes in treeviews.
         /// </summary>
@@ -2155,6 +2257,21 @@ namespace Chummer.Backend.Equipment
         {
             get => _colNotes;
             set => _colNotes = value;
+        }
+
+        public Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<Color>(token);
+            return Task.FromResult(_colNotes);
+        }
+
+        public Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _colNotes = value;
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -2383,7 +2500,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Matrix Condition Monitor boxes.
         /// </summary>
-        public int MatrixCM => BaseMatrixBoxes + (this.GetTotalMatrixAttribute("Device Rating") + 1) / 2
+        public int MatrixCM => BaseMatrixBoxes + this.GetTotalMatrixAttribute("Device Rating").DivAwayFromZero(2)
                                                + TotalBonusMatrixBoxes;
 
         /// <summary>
@@ -2436,11 +2553,7 @@ namespace Chummer.Backend.Equipment
             int intAvail = 0;
             if (strAvail.Length > 0)
             {
-                if (strAvail.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                }
+                strAvail = strAvail.ProcessFixedValuesString(() => Rating);
 
                 chrLastAvailChar = strAvail[strAvail.Length - 1];
                 if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
@@ -2449,17 +2562,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
-                {
-                    sbdAvail.Append(strAvail.TrimStart('+'));
-                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
-                    if (blnIsSuccess)
-                        intAvail = ((double)objProcess).StandardRound();
-                }
+                intAvail = ProcessRatingString(strAvail, () => Rating);
             }
 
             if (blnCheckChildren)
@@ -2513,11 +2616,7 @@ namespace Chummer.Backend.Equipment
             int intAvail = 0;
             if (strAvail.Length > 0)
             {
-                if (strAvail.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                }
+                strAvail = await strAvail.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
 
                 chrLastAvailChar = strAvail[strAvail.Length - 1];
                 if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
@@ -2526,44 +2625,30 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
-                {
-                    sbdAvail.Append(strAvail.TrimStart('+'));
-                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        intAvail = ((double)objProcess).StandardRound();
-                }
+                intAvail = await ProcessRatingStringAsync(strAvail, () => GetRatingAsync(token), token).ConfigureAwait(false);
             }
 
             if (blnCheckChildren)
             {
                 // Run through armor mod children and increase the Avail by any Mod whose Avail starts with "+" or "-".
-                intAvail += await ArmorMods.SumAsync(async objChild =>
+                intAvail += await ArmorMods.SumAsync(x => !x.IncludedInArmor, async objChild =>
                             {
-                                if (objChild.IncludedInArmor)
-                                    return 0;
                                 AvailabilityValue objLoopAvailTuple = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                                 if (objLoopAvailTuple.Suffix == 'F')
                                     chrLastAvailChar = 'F';
                                 else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                                     chrLastAvailChar = 'R';
-                                return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+                                return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
                             }, token).ConfigureAwait(false)
                             // Run through gear children and increase the Avail by any Mod whose Avail starts with "+" or "-".
-                            + await GearChildren.SumAsync(async objChild =>
+                            + await GearChildren.SumAsync(x => x.ParentID != InternalId, async objChild =>
                             {
-                                if (objChild.ParentID == InternalId)
-                                    return 0;
                                 AvailabilityValue objLoopAvailTuple = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                                 if (objLoopAvailTuple.Suffix == 'F')
                                     chrLastAvailChar = 'F';
                                 else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                                     chrLastAvailChar = 'R';
-                                return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+                                return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
                             }, token).ConfigureAwait(false);
             }
 
@@ -2589,27 +2674,26 @@ namespace Chummer.Backend.Equipment
             else if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decReturn))
                 strReturn = decReturn.ToString("#,0.##", objCultureInfo);
 
-            foreach (string strArmorModCapacity in ArmorMods.Select(x => x.ArmorCapacity))
+            foreach (ArmorMod objMod in ArmorMods)
             {
-                if (!strArmorModCapacity.StartsWith('-')
-                    && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
+                string strArmorModCapacity = objMod.ArmorCapacity;
+                if (!strArmorModCapacity.StartsWith('-') && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
                     continue;
-                // If the Capacity is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
-                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                string strCapacity = strArmorModCapacity
-                                     .FastEscape('[', ']')
-                                     .CheapReplace("Capacity", () => TotalArmorCapacity(GlobalSettings.InvariantCultureInfo))
-                                     .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity);
-                if (blnIsSuccess)
+                string strArmorModCalculatedCapacity = objMod.CalculatedCapacity.Trim('[', ']');
+                if (strArmorModCalculatedCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decTemp2))
                 {
-                    strCapacity = (Convert.ToDecimal(strReturn, objCultureInfo)
-                                   - Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo))
-                        .ToString("#,0.##", objCultureInfo);
+                    if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decTemp1))
+                        strReturn = '(' + decTemp1.ToString(GlobalSettings.InvariantCultureInfo) + ")-(" + strArmorModCalculatedCapacity + ')';
+                    else
+                        strReturn = '(' + strReturn + ")-(" + strArmorModCalculatedCapacity + ')';
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strReturn);
+                    if (blnIsSuccess)
+                        strReturn = Convert.ToDecimal((double)objProcess).ToString(objCultureInfo);
                 }
-
-                strReturn = strCapacity;
+                else if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decTemp1))
+                    strReturn = (decTemp1 - decTemp2).ToString("#,0.##", objCultureInfo);
+                else
+                    strReturn = '(' + strReturn + ")-(" + decTemp2.ToString(objCultureInfo) + ')';
             }
 
             return strReturn;
@@ -2626,32 +2710,31 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strReturn) || strReturn == "0")
                 strReturn = 0.0m.ToString("#,0.##", objCultureInfo);
             else if (strReturn == "Rating")
-                strReturn = Rating.ToString(objCultureInfo);
+                strReturn = (await GetRatingAsync(token).ConfigureAwait(false)).ToString(objCultureInfo);
             else if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decReturn))
                 strReturn = decReturn.ToString("#,0.##", objCultureInfo);
 
-            foreach (string strArmorModCapacity in ArmorMods.Select(x => x.ArmorCapacity))
+            await ArmorMods.ForEachAsync(async objMod =>
             {
-                if (!strArmorModCapacity.StartsWith('-')
-                    && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
-                    continue;
-                // If the Capacity is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
-                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                string strCapacity = (await strArmorModCapacity
-                        .FastEscape('[', ']')
-                        .CheapReplaceAsync("Capacity", () => TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token), token: token).ConfigureAwait(false))
-                    .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
-                if (blnIsSuccess)
+                string strArmorModCapacity = objMod.ArmorCapacity;
+                if (!strArmorModCapacity.StartsWith('-') && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
+                    return;
+                string strArmorModCalculatedCapacity = (await objMod.GetCalculatedCapacityAsync(token).ConfigureAwait(false)).Trim('[', ']');
+                if (strArmorModCalculatedCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decTemp2))
                 {
-                    strCapacity = (Convert.ToDecimal(strReturn, objCultureInfo)
-                                   - Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo))
-                        .ToString("#,0.##", objCultureInfo);
+                    if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decTemp1))
+                        strReturn = '(' + decTemp1.ToString(GlobalSettings.InvariantCultureInfo) + ")-(" + strArmorModCalculatedCapacity + ')';
+                    else
+                        strReturn = '(' + strReturn + ")-(" + strArmorModCalculatedCapacity + ')';
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strReturn, token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        strReturn = Convert.ToDecimal((double)objProcess).ToString(objCultureInfo);
                 }
-
-                strReturn = strCapacity;
-            }
+                else if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decTemp1))
+                    strReturn = (decTemp1 - decTemp2).ToString("#,0.##", objCultureInfo);
+                else
+                    strReturn = '(' + strReturn + ")-(" + decTemp2.ToString(objCultureInfo) + ')';
+            }, token).ConfigureAwait(false);
 
             return strReturn;
         }
@@ -2668,11 +2751,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // Get the Armor base Capacity.
-                decimal decCapacity = Convert.ToDecimal(CalculatedCapacity(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo);
-
                 // If there is no Capacity (meaning that the Armor Suit Capacity or Maximum Armor Modification rule is turned off depending on the type of Armor), don't bother to calculate the remaining
                 // Capacity since it's disabled and return 0 instead.
-                if (decCapacity == 0)
+                if (!decimal.TryParse(CalculatedCapacity(GlobalSettings.InvariantCultureInfo), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCapacity)
+                    || decCapacity == 0)
                     return 0;
 
                 // Calculate the remaining Capacity for a Suit of Armor.
@@ -2690,10 +2772,10 @@ namespace Chummer.Backend.Equipment
                 else // if (_objCharacter.Settings.MaximumArmorModifications)
                 {
                     // Run through its Armor Mods and deduct the Rating (or 1 if it has no Rating).
-                    decCapacity -= ArmorMods.Sum(x => !x.IncludedInArmor, x => x.Rating > 0 ? x.Rating : 1);
+                    decCapacity -= ArmorMods.Sum(x => !x.IncludedInArmor, x => Math.Max(x.Rating, 1));
 
                     // Run through its Gear and deduct the Rating (or 1 if it has no Rating).
-                    decCapacity -= GearChildren.Sum(x => !x.IncludedInParent, x => x.Rating > 0 ? x.Rating : 1);
+                    decCapacity -= GearChildren.Sum(x => !x.IncludedInParent, x => Math.Max(x.Rating, 1));
                 }
 
                 return decCapacity;
@@ -2706,11 +2788,11 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetCapacityRemainingAsync(CancellationToken token = default)
         {
             // Get the Armor base Capacity.
-            decimal decCapacity = Convert.ToDecimal(await CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false), GlobalSettings.InvariantCultureInfo);
-
+            // Get the Armor base Capacity.
             // If there is no Capacity (meaning that the Armor Suit Capacity or Maximum Armor Modification rule is turned off depending on the type of Armor), don't bother to calculate the remaining
             // Capacity since it's disabled and return 0 instead.
-            if (decCapacity == 0)
+            if (!decimal.TryParse(await CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCapacity)
+                || decCapacity == 0)
                 return 0;
 
             // Calculate the remaining Capacity for a Suit of Armor.
@@ -2722,16 +2804,16 @@ namespace Chummer.Backend.Equipment
                     decCapacity -= await ArmorMods.SumAsync(x => !x.IncludedInArmor, async x => Math.Max(await x.GetTotalCapacityAsync(token).ConfigureAwait(false), 0), token: token).ConfigureAwait(false);
                 // Run through its Gear and deduct the Armor Capacity costs.
                 if (await GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0)
-                    decCapacity -= await GearChildren.SumAsync(x => !x.IncludedInParent, async x => await x.GetPluginArmorCapacityAsync(token).ConfigureAwait(false) * x.Quantity, token: token).ConfigureAwait(false);
+                    decCapacity -= await GearChildren.SumAsync(x => x.ParentID != InternalId, async x => await x.GetPluginArmorCapacityAsync(token).ConfigureAwait(false) * x.Quantity, token: token).ConfigureAwait(false);
             }
             // Calculate the remaining Capacity for a standard piece of Armor using the Maximum Armor Modifications rules.
             else // if (_objCharacter.Settings.MaximumArmorModifications)
             {
                 // Run through its Armor Mods and deduct the Rating (or 1 if it has no Rating).
-                decCapacity -= await ArmorMods.SumAsync(x => !x.IncludedInArmor, x => Math.Min(x.Rating, 1), token: token).ConfigureAwait(false);
+                decCapacity -= await ArmorMods.SumAsync(x => !x.IncludedInArmor, async x => Math.Max(await x.GetRatingAsync(token).ConfigureAwait(false), 1), token: token).ConfigureAwait(false);
 
                 // Run through its Gear and deduct the Rating (or 1 if it has no Rating).
-                decCapacity -= await GearChildren.SumAsync(x => !x.IncludedInParent, async x => Math.Min(await x.GetRatingAsync(token).ConfigureAwait(false), 1), token: token).ConfigureAwait(false);
+                decCapacity -= await GearChildren.SumAsync(x => x.ParentID != InternalId, async x => Math.Max(await x.GetRatingAsync(token).ConfigureAwait(false), 1), token: token).ConfigureAwait(false);
             }
 
             return decCapacity;
@@ -2807,8 +2889,13 @@ namespace Chummer.Backend.Equipment
             string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
             if (!string.IsNullOrEmpty(CustomName))
                 strReturn += strSpace + "(\"" + CustomName + "\")";
-            if (Rating > 0)
-                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage, token: token) + strSpace + Rating.ToString(objCulture) + ')';
+            int intRating = Rating;
+            if (intRating > 0)
+            {
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
+                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage, token: token) + strSpace + intRating.ToString(objCulture) + ')';
+            }
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage, token: token) + ')';
             return strReturn;
@@ -2823,8 +2910,13 @@ namespace Chummer.Backend.Equipment
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(CustomName))
                 strReturn += strSpace + "(\"" + CustomName + "\")";
-            if (Rating > 0)
-                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace + Rating.ToString(objCulture) + ')';
+            int intRating = await GetRatingAsync(token).ConfigureAwait(false);
+            if (intRating > 0)
+            {
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
+                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ')';
+            }
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
             return strReturn;
@@ -2933,34 +3025,35 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
-                    sbdValue.Append(strExpression);
-                    foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
-                        sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => "0");
-                        sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => "0");
-                        if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                        sbdValue.Append(strExpression);
+                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                         {
-                            int intTotalChildrenValue = Children.Sum(x => x.Equipped, x => x.GetBaseMatrixAttribute(strMatrixAttribute));
-                            sbdValue.Replace("{Children " + strMatrixAttribute + '}',
-                                             intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => "0");
+                            sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => "0");
+                            if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                            {
+                                int intTotalChildrenValue = Children.Sum(x => x.Equipped, x => x.GetBaseMatrixAttribute(strMatrixAttribute));
+                                sbdValue.Replace("{Children " + strMatrixAttribute + '}',
+                                                 intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                            }
                         }
-                    }
 
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
-                    // Replace the division sign with "div" since we're using XPath.
-                    sbdValue.Replace("/", " div ");
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
-                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                        _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                        strExpression = sbdValue.ToString();
+                    }
                 }
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                (bool blnIsSuccess, object objProcess)
+                    = CommonFunctions.EvaluateInvariantXPath(strExpression);
+                return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
-            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
-            return intReturn;
+            return decValue.StandardRound();
         }
 
         public async Task<int> GetBaseMatrixAttributeAsync(string strAttributeName, CancellationToken token = default)
@@ -2999,44 +3092,44 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
-                    sbdValue.Append(strExpression);
-                    foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
-                        await sbdValue
-                            .CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}', () => "0",
-                                token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + '}',
-                            () => "0", token: token).ConfigureAwait(false);
-                        if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 &&
-                            strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                        sbdValue.Append(strExpression);
+                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                         {
-                            int intTotalChildrenValue = await Children.SumAsync(x => x.Equipped,
-                                    x => x.GetBaseMatrixAttributeAsync(strAttributeName, token), token)
-                                .ConfigureAwait(false);
+                            await sbdValue
+                                .CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}', () => "0",
+                                    token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + '}',
+                                () => "0", token: token).ConfigureAwait(false);
+                            if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                                strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                            {
+                                int intTotalChildrenValue = await Children.SumAsync(x => x.Equipped,
+                                        x => x.GetBaseMatrixAttributeAsync(strAttributeName, token), token)
+                                    .ConfigureAwait(false);
 
-                            sbdValue.Replace("{Children " + strMatrixAttribute + '}',
-                                intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdValue.Replace("{Children " + strMatrixAttribute + '}',
+                                    intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                            }
                         }
+
+                        await _objCharacter
+                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        strExpression = sbdValue.ToString();
                     }
-
-                    await _objCharacter.AttributeSection
-                        .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                    // Replace the division sign with "div" since we're using XPath.
-                    sbdValue.Replace("/", " div ");
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token)
-                            .ConfigureAwait(false);
-                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                 }
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token)
+                        .ConfigureAwait(false);
+                return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
-
-            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
-            return intReturn;
+            return decValue.StandardRound();
         }
 
         public int GetBonusMatrixAttribute(string strAttributeName)
@@ -3244,7 +3337,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Armor,
-                                                                     InternalId + "Wireless", WirelessBonus, Rating,
+                                                                     InternalId + "Wireless", WirelessBonus, await GetRatingAsync(token).ConfigureAwait(false),
                                                                      await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
                                                                      token: token).ConfigureAwait(false);
 
@@ -3294,8 +3387,8 @@ namespace Chummer.Backend.Equipment
                 Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                 Tag = this,
                 ContextMenuStrip = cmsArmor,
-                ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap()
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
@@ -3321,6 +3414,14 @@ namespace Chummer.Backend.Equipment
             !string.IsNullOrEmpty(Notes)
                 ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return !string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false))
+                ? ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                : ColorManager.WindowText;
+        }
 
         #endregion UI Methods
 
@@ -3419,9 +3520,9 @@ namespace Chummer.Backend.Equipment
         public async Task<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
         {
             AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token).ConfigureAwait(false);
-            int intAvailInt = objTotalAvail.Value;
+            int intAvailInt = await objTotalAvail.GetValueAsync(token).ConfigureAwait(false);
             int intRestrictedCount = 0;
-            if (intAvailInt > _objCharacter.Settings.MaximumAvailability)
+            if (intAvailInt > await _objCharacter.Settings.GetMaximumAvailabilityAsync(token).ConfigureAwait(false))
             {
                 int intLowestValidRestrictedGearAvail = -1;
                 foreach (int intValidAvail in dicRestrictedGearLimits.Keys)

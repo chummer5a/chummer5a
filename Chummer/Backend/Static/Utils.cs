@@ -44,7 +44,6 @@ using Microsoft.VisualStudio.Threading;
 using Microsoft.Win32;
 using NLog;
 using Microsoft.IO;
-using Chummer.Forms;
 using System.Xml.XPath;
 using System.Runtime.Versioning;
 
@@ -104,7 +103,7 @@ namespace Chummer
                 }
             }
 
-            using (new DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
+            using (new Forms.DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
             {
                 JoinableTaskContext objNewContext = new JoinableTaskContext();
                 JoinableTaskContext objReturn = Interlocked.CompareExchange(ref s_objJoinableTaskContext, objNewContext, default);
@@ -371,10 +370,10 @@ namespace Chummer
         public static ConcurrentDictionary<string, XPathExpression> CachedXPathExpressions => s_dicCachedExpressions.Value;
 
         [SupportedOSPlatform("windows")]
-        public static void TryCacheExpression(string xpath, CancellationToken token = default)
+        public static XPathExpression TryCacheExpression(string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile);
+            return CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile);
         }
 
         [SupportedOSPlatform("windows")]
@@ -949,7 +948,7 @@ namespace Chummer
                 // Get the parameters/arguments passed to program if any
                 if (lstToProcess != null)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(StringBuilderPool, out StringBuilder sbdArguments))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(StringBuilderPool, out StringBuilder sbdArguments))
                     {
                         foreach (CharacterShared objOpenCharacterForm in lstToProcess)
                         {
@@ -972,7 +971,7 @@ namespace Chummer
                     await objForm.DoThreadSafeAsync(x => x.Close(), token: token).ConfigureAwait(false);
                 }
             }
-            catch (Exception)
+            catch
             {
                 Application.UseWaitCursor = false;
                 throw;

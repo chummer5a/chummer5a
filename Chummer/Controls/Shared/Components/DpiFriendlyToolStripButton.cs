@@ -72,16 +72,26 @@ namespace Chummer
                     return;
             }
 
-            int intWidth = Width;
-            int intHeight = Height;
-            intWidth -= Padding.Left + Padding.Right;
-            intHeight -= Padding.Top + Padding.Bottom;
+            int intWidth;
+            int intHeight;
+            if (Parent != null)
+            {
+                Size ePreferredImageSize = Parent.ImageScalingSize;
+                // No Padding incorporated into preferred image size because it's also ignored on the toolstrip side
+                intWidth = ePreferredImageSize.Width;
+                intHeight = ePreferredImageSize.Height;
+            }
+            else
+            {
+                intWidth = Width - (Padding.Left + Padding.Right);
+                intHeight = Height - (Padding.Top + Padding.Bottom);
+            }
             Image objBestImage = null;
             int intBestImageMetric = int.MaxValue;
             foreach (Image objLoopImage in lstImages)
             {
                 int intLoopMetric = (intHeight - objLoopImage.Height).Pow(2) + (intWidth - objLoopImage.Width).Pow(2);
-                // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not scaled up
+                // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not up
                 if (objLoopImage.Height >= intHeight)
                     --intLoopMetric;
                 if (objLoopImage.Width >= intWidth)
@@ -250,14 +260,33 @@ namespace Chummer
                 Image = objNewImage;
                 return;
             }
-            int intWidth = Width;
-            int intHeight = Height;
-            intWidth -= Padding.Left + Padding.Right;
-            intHeight -= Padding.Top + Padding.Bottom;
+            int intWidth;
+            int intHeight;
+            if (Parent != null)
+            {
+                Size ePreferredImageSize = Parent.ImageScalingSize;
+                // No Padding incorporated into preferred image size because it's also ignored on the toolstrip side
+                intWidth = ePreferredImageSize.Width;
+                intHeight = ePreferredImageSize.Height;
+            }
+            else
+            {
+                intWidth = Width - (Padding.Left + Padding.Right);
+                intHeight = Height - (Padding.Top + Padding.Bottom);
+            }
             int intCurrentMetric = (intHeight - Image.Height).Pow(2) +
                                    (intWidth - Image.Width).Pow(2);
             int intNewMetric = (intHeight - objNewImage.Height).Pow(2) +
                                (intWidth - objNewImage.Width).Pow(2);
+            // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not up
+            if (Image.Height >= intHeight)
+                --intCurrentMetric;
+            if (Image.Width >= intWidth)
+                --intCurrentMetric;
+            if (objNewImage.Height >= intHeight)
+                --intNewMetric;
+            if (objNewImage.Width >= intWidth)
+                --intNewMetric;
             if (intNewMetric < intCurrentMetric)
                 Image = objNewImage;
         }
@@ -277,6 +306,27 @@ namespace Chummer
         protected override void OnBoundsChanged()
         {
             base.OnBoundsChanged();
+            RefreshImage();
+        }
+
+        protected override void OnParentChanged(ToolStrip oldParent, ToolStrip newParent)
+        {
+            base.OnParentChanged(oldParent, newParent);
+            if (oldParent != null)
+            {
+                oldParent.DpiChangedAfterParent -= RefreshImage;
+                oldParent.SizeChanged -= RefreshImage;
+            }
+            if (newParent != null)
+            {
+                newParent.DpiChangedAfterParent += RefreshImage;
+                newParent.SizeChanged += RefreshImage;
+            }
+            RefreshImage();
+        }
+
+        private void RefreshImage(object sender, EventArgs e)
+        {
             RefreshImage();
         }
     }

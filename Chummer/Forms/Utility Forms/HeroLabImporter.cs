@@ -44,10 +44,10 @@ namespace Chummer
             Disposed += (sender, args) =>
             {
                 _lstCharacterCache.Dispose();
-                foreach (Bitmap objImage in _dicImages.Values)
-                {
+                List<Bitmap> lstImages = _dicImages.GetValuesToListSafe();
+                _dicImages.Clear();
+                foreach (Bitmap objImage in lstImages)
                     objImage.Dispose();
-                }
                 dlgOpenFile?.Dispose();
             };
             InitializeComponent();

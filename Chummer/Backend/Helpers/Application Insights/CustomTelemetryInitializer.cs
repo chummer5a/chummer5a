@@ -44,19 +44,12 @@ namespace Chummer
                 telemetry.Context.GlobalProperties.Add("Milestone", Utils.IsMilestoneVersion.ToString(GlobalSettings.InvariantCultureInfo));
 
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
-            if (Properties.Settings.Default.UploadClientId == Guid.Empty)
+            if (Properties.Settings.Default.UploadClientId == Guid.Empty
+                //sometimes, there are odd values stored in the UploadClientId.
+                || !Properties.Settings.Default.UploadClientId.ToString().IsGuid())
             {
                 Properties.Settings.Default.UploadClientId = Guid.NewGuid();
                 Properties.Settings.Default.Save();
-            }
-            else
-            {
-                //sometimes, there are odd values stored in the UploadClientId.
-                if (!Properties.Settings.Default.UploadClientId.ToString().IsGuid())
-                {
-                    Properties.Settings.Default.UploadClientId = Guid.NewGuid();
-                    Properties.Settings.Default.Save();
-                }
             }
             telemetry.Context.Cloud.RoleInstance = Properties.Settings.Default.UploadClientId.ToString();
             telemetry.Context.Cloud.RoleName = Properties.Settings.Default.UploadClientId.ToString();

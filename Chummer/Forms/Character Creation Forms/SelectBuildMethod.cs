@@ -280,7 +280,7 @@ namespace Chummer
                                                                          x => x.SelectedValue, token: token)
                                                                      .ConfigureAwait(false);
                         // Populate the Gameplay Settings list.
-                        using (new FetchSafelyFromPool<List<ListItem>>(
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                    Utils.ListItemListPool, out List<ListItem> lstCharacterSettings))
                         {
                             IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
@@ -375,38 +375,40 @@ namespace Chummer
                 // Load the Priority information.
                 if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false) is CharacterSettings objSelectedGameplayOption)
                 {
-                    string strText = await LanguageManager.GetStringAsync("String_" + objSelectedGameplayOption.BuildMethod, token: token).ConfigureAwait(false);
-                    await lblBuildMethod.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                    string strBuildMethod = await LanguageManager.GetStringAsync("String_" + await objSelectedGameplayOption.GetBuildMethodAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await lblBuildMethod.DoThreadSafeAsync(x => x.Text = strBuildMethod, token).ConfigureAwait(false);
                     switch (objSelectedGameplayOption.BuildMethod)
                     {
                         case CharacterBuildMethod.Priority:
                             {
-                                string strText2 = await LanguageManager.GetStringAsync("Label_SelectBP_Priorities", token: token)
+                                string strText1 = await LanguageManager.GetStringAsync("Label_SelectBP_Priorities", token: token)
                                                                .ConfigureAwait(false);
                                 await lblBuildMethodParamLabel.DoThreadSafeAsync(x =>
                                 {
-                                    x.Text = strText2;
+                                    x.Text = strText1;
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
+                                string strText2 = await objSelectedGameplayOption.GetPriorityArrayAsync(token).ConfigureAwait(false);
                                 await lblBuildMethodParam.DoThreadSafeAsync(x =>
                                 {
-                                    x.Text = objSelectedGameplayOption.PriorityArray;
+                                    x.Text = strText2;
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
                                 break;
                             }
                         case CharacterBuildMethod.SumtoTen:
                             {
-                                string strText2 = await LanguageManager.GetStringAsync("String_SumtoTen", token: token)
+                                string strText1 = await LanguageManager.GetStringAsync("String_SumtoTen", token: token)
                                                                .ConfigureAwait(false);
                                 await lblBuildMethodParamLabel.DoThreadSafeAsync(x =>
                                 {
-                                    x.Text = strText2;
+                                    x.Text = strText1;
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
+                                string strText2 = (await objSelectedGameplayOption.GetSumtoTenAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                                 await lblBuildMethodParam.DoThreadSafeAsync(x =>
                                 {
-                                    x.Text = objSelectedGameplayOption.SumtoTen.ToString(GlobalSettings.CultureInfo);
+                                    x.Text = strText2;
                                     x.Visible = true;
                                 }, token).ConfigureAwait(false);
                                 break;
@@ -418,36 +420,35 @@ namespace Chummer
                     }
 
                     string strNone = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
+                    string strMaxAvail = (await objSelectedGameplayOption.GetMaximumAvailabilityAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                    await lblMaxAvail.DoThreadSafeAsync(x => x.Text = strMaxAvail, token).ConfigureAwait(false);
+                    string strKarma = (await objSelectedGameplayOption.GetBuildKarmaAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                    await lblKarma.DoThreadSafeAsync(x => x.Text = strKarma, token).ConfigureAwait(false);
+                    string strMaxNuyen = (await objSelectedGameplayOption.GetNuyenMaximumBPAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                    await lblMaxNuyen.DoThreadSafeAsync(x => x.Text = strMaxNuyen, token).ConfigureAwait(false);
+                    string strQualityKarma = (await objSelectedGameplayOption.GetQualityKarmaLimitAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                    await lblQualityKarma.DoThreadSafeAsync(x => x.Text = strQualityKarma, token).ConfigureAwait(false);
 
-                    await lblMaxAvail.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.MaximumAvailability.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
-                    await lblKarma.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.BuildKarma.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
-                    await lblMaxNuyen.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.NuyenMaximumBP.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
-                    await lblQualityKarma.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
+                    string strBookList = await objSelectedGameplayOption.TranslatedBookListAsync(string.Join(";",
+                        await objSelectedGameplayOption.GetBooksAsync(token).ConfigureAwait(false)), token: token).ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(strBookList))
+                        strBookList = strNone;
+                    await lblBooks.DoThreadSafeAsync(x => x.Text = strBookList, token).ConfigureAwait(false);
 
-                    string strBookList = await _objCharacter.TranslatedBookListAsync(string.Join(";",
-                        objSelectedGameplayOption.Books), token: token).ConfigureAwait(false);
-                    await lblBooks.DoThreadSafeAsync(x =>
-                    {
-                        x.Text = strBookList;
-                        if (string.IsNullOrEmpty(x.Text))
-                            x.Text = strNone;
-                    }, token).ConfigureAwait(false);
-
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    string strCustomDataText;
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdCustomDataDirectories))
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in await objSelectedGameplayOption
                                      .GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false))
-                            sbdCustomDataDirectories.AppendLine(await objLoopInfo.GetDisplayNameAsync(token)
+                            sbdCustomDataDirectories.AppendLine(await objLoopInfo.GetCurrentDisplayNameAsync(token)
                                 .ConfigureAwait(false));
 
-                        await lblCustomData.DoThreadSafeAsync(x =>
-                        {
-                            x.Text = sbdCustomDataDirectories.ToString();
-                            if (string.IsNullOrEmpty(x.Text))
-                                x.Text = strNone;
-                        }, token).ConfigureAwait(false);
+                        strCustomDataText = sbdCustomDataDirectories.ToString();
                     }
+                    if (string.IsNullOrEmpty(strCustomDataText))
+                        strCustomDataText = strNone;
+                    await lblCustomData.DoThreadSafeAsync(x => x.Text = strCustomDataText, token).ConfigureAwait(false);
                 }
             }
         }

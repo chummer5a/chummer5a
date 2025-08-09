@@ -30,6 +30,7 @@ namespace Chummer
         private string _strCondition = string.Empty;
         private string _strLimitType = string.Empty;
         private readonly LimitModifier _objLimitModifier;
+        private readonly Character _objCharacter;
         private readonly string[] _lstLimits;
 
         #region Control Events
@@ -37,6 +38,7 @@ namespace Chummer
         public SelectLimitModifier(LimitModifier objLimitModifier = null, params string[] lstLimits)
         {
             _objLimitModifier = objLimitModifier;
+            _objCharacter = objLimitModifier?.CharacterObject;
             _lstLimits = lstLimits;
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -46,7 +48,7 @@ namespace Chummer
         private async void SelectLimitModifier_Load(object sender, EventArgs e)
         {
             // Build the list of Limits.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLimitItems))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLimitItems))
             {
                 foreach (string strLimit in _lstLimits)
                 {
@@ -63,26 +65,39 @@ namespace Chummer
 
             if (_objLimitModifier != null)
             {
-                await cboLimit.DoThreadSafeAsync(x => x.SelectedValue = _objLimitModifier.Limit).ConfigureAwait(false);
-                await txtName.DoThreadSafeAsync(x => x.Text = _objLimitModifier.Name).ConfigureAwait(false);
+                _strReturnName = _objLimitModifier.Name;
                 _intBonus = _objLimitModifier.Bonus;
-                await txtCondition.DoThreadSafeAsync(x => x.Text = _objLimitModifier.Condition).ConfigureAwait(false);
+                _strLimitType = _objLimitModifier.Limit;
+                _strCondition = await _objLimitModifier.GetConditionAsync().ConfigureAwait(false);
+                string strName = await LanguageManager.TranslateExtraAsync(_strReturnName, objCharacter: _objCharacter).ConfigureAwait(false);
+                string strCondition = await _objLimitModifier.GetCurrentDisplayConditionAsync().ConfigureAwait(false);
+                await cboLimit.DoThreadSafeAsync(x => x.SelectedValue = _strLimitType).ConfigureAwait(false);
+                await txtName.DoThreadSafeAsync(x => x.Text = strName).ConfigureAwait(false);
+                await nudBonus.DoThreadSafeAsync(x => x.Value = _intBonus).ConfigureAwait(false);
+                await txtCondition.DoThreadSafeAsync(x => x.Text = strCondition).ConfigureAwait(false);
             }
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            if (txtName.TextLength > 0)
+            string strName = await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strName))
             {
-                string strLimitType = cboLimit.SelectedValue?.ToString();
+                string strLimitType = await cboLimit.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false) ?? string.Empty;
                 if (!string.IsNullOrEmpty(strLimitType))
                 {
-                    _strReturnName = txtName.Text;
-                    _intBonus = nudBonus.ValueAsInt;
-                    _strCondition = txtCondition.Text;
-                    _strLimitType = strLimitType;
-                    DialogResult = DialogResult.OK;
-                    Close();
+                    strName = await LanguageManager.ReverseTranslateExtraAsync(strName, objCharacter: _objCharacter).ConfigureAwait(false);
+                    int intBonus = await nudBonus.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
+                    string strCondition = await LanguageManager.ReverseTranslateExtraAsync(await txtCondition.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false), objCharacter: _objCharacter).ConfigureAwait(false);
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        _strReturnName = strName;
+                        _intBonus = intBonus;
+                        _strCondition = strCondition;
+                        _strLimitType = strLimitType;
+                        x.DialogResult = DialogResult.OK;
+                        x.Close();
+                    }).ConfigureAwait(false);
                 }
             }
         }

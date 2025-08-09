@@ -21,6 +21,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -46,7 +47,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             bool blnAddSeparator = false;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 foreach (Task<string> tskString in lstStringTasks)
                 {
@@ -85,7 +86,7 @@ namespace Chummer
             int intHead = strInput.IndexOf(strOldValue, eStringComparison);
             if (intHead == -1)
                 return strInput;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 // Buffer size is increased by 1 in addition to the length-dependent stuff in order to compensate for integer division rounding down
                 int intNewCapacity = strInput.Length + 1 + Math.Max(0, strNewValue.Length - strOldValue.Length);
@@ -123,8 +124,7 @@ namespace Chummer
             if (intLength > GlobalSettings.MaxStackLimit)
             {
                 string strReturn;
-                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                try
+                using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
                 {
                     // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
                     int intCurrent = 0;
@@ -137,10 +137,6 @@ namespace Chummer
 
                     // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
                     strReturn = new string(achrNewChars, 0, intCurrent);
-                }
-                finally
-                {
-                    ArrayPool<char>.Shared.Return(achrNewChars);
                 }
 
                 return strReturn;
@@ -183,8 +179,7 @@ namespace Chummer
             if (intLength > GlobalSettings.MaxStackLimit)
             {
                 string strReturn;
-                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                try
+                using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
                 {
                     // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
                     int intCurrent = 0;
@@ -207,10 +202,6 @@ namespace Chummer
 
                     // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
                     strReturn = new string(achrNewChars, 0, intCurrent);
-                }
-                finally
-                {
-                    ArrayPool<char>.Shared.Return(achrNewChars);
                 }
 
                 return strReturn;
@@ -330,9 +321,21 @@ namespace Chummer
         /// <param name="strHaystack">String to search.</param>
         /// <param name="astrNeedles">Array of strings to match.</param>
         /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, IReadOnlyCollection<string> astrNeedles, StringComparison eComparison)
+        {
+            return IndexOfAny(strHaystack, astrNeedles, 0, eComparison);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, IReadOnlyCollection<string> astrNeedles, int intStartIndex, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strHaystack))
                 return -1;
@@ -347,13 +350,13 @@ namespace Chummer
 
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
-            if (astrNeedles.All(x => x.Length > intHaystackLength))
+            if (astrNeedles.All(x => x.Length + intStartIndex > intHaystackLength))
                 return -1;
 
             int intEarliestNeedleIndex = intHaystackLength;
             foreach (string strNeedle in astrNeedles)
             {
-                int intNeedleIndex = strHaystack.IndexOf(strNeedle, 0, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
+                int intNeedleIndex = strHaystack.IndexOf(strNeedle, intStartIndex, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
                 if (intNeedleIndex >= 0 && intNeedleIndex < intEarliestNeedleIndex)
                     intEarliestNeedleIndex = intNeedleIndex;
             }
@@ -366,9 +369,21 @@ namespace Chummer
         /// <param name="strHaystack">String to search.</param>
         /// <param name="astrNeedles">Array of strings to match.</param>
         /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, IEnumerable<string> astrNeedles, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            return IndexOfAny(strHaystack, astrNeedles, 0, eComparison);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, IEnumerable<string> astrNeedles, int intStartIndex, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strHaystack))
                 return -1;
@@ -384,7 +399,7 @@ namespace Chummer
             int intEarliestNeedleIndex = intHaystackLength;
             foreach (string strNeedle in astrNeedles)
             {
-                int intNeedleIndex = strHaystack.IndexOf(strNeedle, 0, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
+                int intNeedleIndex = strHaystack.IndexOf(strNeedle, intStartIndex, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
                 if (intNeedleIndex >= 0 && intNeedleIndex < intEarliestNeedleIndex)
                     intEarliestNeedleIndex = intNeedleIndex;
             }
@@ -396,11 +411,35 @@ namespace Chummer
         /// </summary>
         /// <param name="strHaystack">String to search.</param>
         /// <param name="astrNeedles">Array of strings to match.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, params string[] astrNeedles)
         {
             return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, params string[] astrNeedles)
+        {
+            return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for string::LastIndexOfAny that uses params in its argument for the char array.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="anyOf">Array of characters to match with LastIndexOfAny</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LastIndexOfAny(this string strHaystack, params char[] anyOf)
+        {
+            if (string.IsNullOrEmpty(strHaystack))
+                return -1;
+            return strHaystack.LastIndexOfAny(anyOf);
         }
 
         /// <summary>
@@ -529,7 +568,6 @@ namespace Chummer
         /// <param name="strInput">String to search.</param>
         /// <param name="chrSeparator">Separator to use.</param>
         /// <param name="eSplitOptions">String split options.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, char chrSeparator, StringSplitOptions eSplitOptions)
         {
@@ -544,13 +582,69 @@ namespace Chummer
         /// <param name="strInput">String to search.</param>
         /// <param name="strSeparator">Separator to use.</param>
         /// <param name="eSplitOptions">String split options.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, string strSeparator, StringSplitOptions eSplitOptions)
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.Split([strSeparator], eSplitOptions);
+            return strInput.Split(new[] {strSeparator}, eSplitOptions);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for a version of Contains(char) for strings that is faster than messing with Linq
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="chrNeedle">Character for which to look.</param>
+        /// <param name="intStartIndex">Index from which to begin searching.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this string strHaystack, char chrNeedle, int intStartIndex = 0)
+        {
+            if (strHaystack == null)
+                throw new ArgumentNullException(nameof(strHaystack));
+            return strHaystack.IndexOf(chrNeedle, intStartIndex) != -1;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for a version of Contains(string) for strings based on a specified StringComparison
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="strNeedle">String for which to look.</param>
+        /// <param name="eComparison">Comparison to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this string strHaystack, string strNeedle, StringComparison eComparison)
+        {
+            if (strHaystack == null)
+                throw new ArgumentNullException(nameof(strHaystack));
+            return strHaystack.IndexOf(strNeedle, eComparison) != -1;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for a version of Contains(string) for strings from a specific starting index
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="strNeedle">String for which to look.</param>
+        /// <param name="intStartIndex">Index from which to begin searching.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this string strHaystack, string strNeedle, int intStartIndex)
+        {
+            if (strHaystack == null)
+                throw new ArgumentNullException(nameof(strHaystack));
+            return strHaystack.IndexOf(strNeedle, intStartIndex) != -1;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for a version of Contains(string) for strings based on a specified StringComparison from a specific starting index
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="strNeedle">String for which to look.</param>
+        /// <param name="intStartIndex">Index from which to begin searching.</param>
+        /// <param name="eComparison">Comparison to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this string strHaystack, string strNeedle, int intStartIndex, StringComparison eComparison)
+        {
+            if (strHaystack == null)
+                throw new ArgumentNullException(nameof(strHaystack));
+            return strHaystack.IndexOf(strNeedle, intStartIndex, eComparison) != -1;
         }
 
         /// <summary>
@@ -564,11 +658,51 @@ namespace Chummer
                                                        StringSplitOptions eSplitOptions = StringSplitOptions.None)
         {
             if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
+                yield break;
+            }
+            int intInputLength = strInput.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    yield return strInput.Substring(intStart, intLoopLength);
+                else if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, char chrSplit, int intCount,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
+                yield break;
+            }
+            if (intCount <= 0)
                 yield break;
             int intInputLength = strInput.Length;
             int intLoopLength;
             for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
             {
+                if (--intCount < 0)
+                    yield break;
                 intLoopLength = strInput.IndexOf(chrSplit, intStart);
                 if (intLoopLength < 0)
                     intLoopLength = intInputLength;
@@ -592,7 +726,11 @@ namespace Chummer
             StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
                 yield break;
+            }
             if (string.IsNullOrEmpty(strSplit))
             {
                 yield return strInput;
@@ -619,12 +757,64 @@ namespace Chummer
         /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
+        /// <param name="strSplit">String to use for splitting.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, string strSplit, int intCount,
+            StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (intCount <= 0)
+                yield break;
+            if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
+                yield break;
+            }
+            if (string.IsNullOrEmpty(strSplit))
+            {
+                yield return strInput;
+                yield break;
+            }
+
+            int intInputLength = strInput.Length;
+            int intSplitLength = strSplit.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+            {
+                if (--intCount < 0)
+                    yield break;
+                intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    yield return strInput.Substring(intStart, intLoopLength);
+                else if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
         /// <param name="achrSplit">Characters to use for splitting.</param>
         /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
         public static IEnumerable<string> SplitNoAlloc(this string strInput, params char[] achrSplit)
         {
             if (string.IsNullOrEmpty(strInput))
+            {
+                yield return string.Empty;
                 yield break;
+            }
+            if (achrSplit.Length == 0)
+            {
+                yield return strInput;
+                yield break;
+            }
             int intLoopLength;
             for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
             {
@@ -633,6 +823,664 @@ namespace Chummer
                     intLoopLength = strInput.Length;
                 intLoopLength -= intStart;
                 yield return intLoopLength != 0 ? strInput.Substring(intStart, intLoopLength) : string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Version of string::Split() that guarantees that the returned string will be of a specific size, padding with string.Empty when needed.
+        /// Slightly faster than built-in versions of string:Split() because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static string[] SplitFixedSize(this string strInput, char chrSplit, int intSize,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            if (intSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            string[] astrReturn = new string[intSize];
+            Array.Clear(astrReturn, 0, intSize);
+            if (string.IsNullOrEmpty(strInput))
+                return astrReturn;
+            if (intSize == 1)
+            {
+                astrReturn[0] = strInput;
+                return astrReturn;
+            }
+            int intInputLength = strInput.Length;
+            int intLoopLength;
+            int intIndex = 0;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                else if (eSplitOptions == StringSplitOptions.None)
+                    ++intIndex;
+                if (intIndex >= intSize)
+                    break;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of string::Split() that guarantees that the returned string will be of a specific size, padding with string.Empty when needed.
+        /// Slightly faster than built-in versions of string:Split() because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="strSplit">String to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        public static string[] SplitFixedSize(this string strInput, string strSplit, int intSize,
+            StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (intSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            string[] astrReturn = new string[intSize];
+            Array.Clear(astrReturn, 0, intSize);
+            if (string.IsNullOrEmpty(strInput))
+                return astrReturn;
+            if (string.IsNullOrEmpty(strSplit) || intSize == 1)
+            {
+                astrReturn[0] = strInput;
+                return astrReturn;
+            }
+
+            int intInputLength = strInput.Length;
+            int intSplitLength = strSplit.Length;
+            int intLoopLength;
+            int intIndex = 0;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+            {
+                intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                else if (eSplitOptions == StringSplitOptions.None)
+                    ++intIndex;
+                if (intIndex >= intSize)
+                    break;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of string::Split() that guarantees that the returned string will be of a specific size, padding with string.Empty when needed.
+        /// Slightly faster than built-in versions of string:Split() because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="achrSplit">Characters to use for splitting.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
+        public static string[] SplitFixedSize(this string strInput, int intSize, params char[] achrSplit)
+        {
+            if (intSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            string[] astrReturn = new string[intSize];
+            Array.Clear(astrReturn, 0, intSize);
+            if (string.IsNullOrEmpty(strInput))
+                return astrReturn;
+            if (achrSplit.Length == 0 || intSize == 1)
+            {
+                astrReturn[0] = strInput;
+                return astrReturn;
+            }
+            int intLoopLength;
+            int intIndex = 0;
+            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOfAny(achrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = strInput.Length;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    astrReturn[intIndex] = strInput.Substring(intStart, intLoopLength);
+                ++intIndex;
+                if (intIndex >= intSize)
+                    break;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of string::Split() that returns an array from ArrayPool.Shared instead of allocating it, and only splits to a specific array size, padding with string.Empty when necessary.
+        /// Slightly faster than built-in versions of string:Split() because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Remember to return the result to ArrayPool.Shared when finished with it!
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static string[] SplitFixedSizePooledArray(this string strInput, char chrSplit, int intSize,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            if (intSize < 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            if (intSize == 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(intSize);
+            try
+            {
+                Array.Clear(astrReturn, 0, intSize);
+                if (string.IsNullOrEmpty(strInput))
+                    return astrReturn;
+                if (intSize == 1)
+                {
+                    astrReturn[0] = strInput;
+                    return astrReturn;
+                }
+                int intInputLength = strInput.Length;
+                int intLoopLength;
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+                {
+                    intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        ++intIndex;
+                    if (intIndex >= intSize)
+                        break;
+                }
+                return astrReturn;
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Version of string::Split() that returns an array from ArrayPool.Shared instead of allocating it, and only splits to a specific array size, padding with string.Empty when necessary.
+        /// Slightly faster than built-in versions of string:Split() because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Remember to return the result to ArrayPool.Shared when finished with it!
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="strSplit">String to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        public static string[] SplitFixedSizePooledArray(this string strInput, string strSplit, int intSize,
+            StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (intSize < 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            if (intSize == 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(intSize);
+            try
+            {
+                Array.Clear(astrReturn, 0, intSize);
+                if (string.IsNullOrEmpty(strInput))
+                    return astrReturn;
+                if (string.IsNullOrEmpty(strSplit) || intSize == 1)
+                {
+                    astrReturn[0] = strInput;
+                    return astrReturn;
+                }
+
+                int intInputLength = strInput.Length;
+                int intSplitLength = strSplit.Length;
+                int intLoopLength;
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+                {
+                    intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        ++intIndex;
+                    if (intIndex >= intSize)
+                        break;
+                }
+                return astrReturn;
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Version of string::Split() that returns an array from ArrayPool.Shared instead of allocating it, and only splits to a specific array size, padding with string.Empty when necessary.
+        /// Slightly faster than built-in versions of string:Split() because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Remember to return the result to ArrayPool.Shared when finished with it!
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="achrSplit">Characters to use for splitting.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
+        public static string[] SplitFixedSizePooledArray(this string strInput, int intSize, params char[] achrSplit)
+        {
+            if (intSize < 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            if (intSize == 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(intSize);
+            try
+            {
+                Array.Clear(astrReturn, 0, intSize);
+                if (string.IsNullOrEmpty(strInput))
+                    return astrReturn;
+                if (achrSplit.Length == 0 || intSize == 1)
+                {
+                    astrReturn[0] = strInput;
+                    return astrReturn;
+                }
+                int intLoopLength;
+                int intIndex = 0;
+                for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
+                {
+                    intLoopLength = strInput.IndexOfAny(achrSplit, intStart);
+                    if (intLoopLength < 0)
+                        intLoopLength = strInput.Length;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex] = strInput.Substring(intStart, intLoopLength);
+                    ++intIndex;
+                    if (intIndex >= intSize)
+                        break;
+                }
+                return astrReturn;
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Version of string::Split() that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>String array rented from ArrayPool{string}.Shared containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static string[] SplitToPooledArray(this string strInput, out int arrayLength, char chrSplit,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            arrayLength = 0;
+            if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                {
+                    arrayLength = 1;
+                    string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                    astrFastReturn[0] = string.Empty;
+                    return astrFastReturn;
+                }
+                else
+                    return ArrayPool<string>.Shared.Rent(0);
+            }
+            int intInputLength = strInput.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0 || eSplitOptions == StringSplitOptions.None)
+                    ++arrayLength;
+            }
+            if (arrayLength <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(arrayLength);
+            try
+            {
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+                {
+                    intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        astrReturn[intIndex++] = string.Empty;
+                }
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of string::Split() that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>String array rented from ArrayPool{string}.Shared containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static string[] SplitToPooledArray(this string strInput, out int arrayLength, char chrSplit, int intCount,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            arrayLength = 0;
+            if (intCount <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                {
+                    arrayLength = 1;
+                    string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                    astrFastReturn[0] = string.Empty;
+                    return astrFastReturn;
+                }
+                else
+                    return ArrayPool<string>.Shared.Rent(0);
+            }
+            int intInputLength = strInput.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+            {
+                if (arrayLength >= intCount)
+                    break;
+                intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0 || eSplitOptions == StringSplitOptions.None)
+                    ++arrayLength;
+            }
+            if (arrayLength <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(arrayLength);
+            try
+            {
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+                {
+                    if (arrayLength >= intCount)
+                        break;
+                    intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        astrReturn[intIndex++] = string.Empty;
+                }
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of string::Split() that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
+        /// <param name="strSplit">String to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
+        /// <returns>String array rented from ArrayPool{string}.Shared containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        public static string[] SplitToPooledArray(this string strInput, out int arrayLength, string strSplit,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            arrayLength = 0;
+            if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                {
+                    arrayLength = 1;
+                    string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                    astrFastReturn[0] = string.Empty;
+                    return astrFastReturn;
+                }
+                else
+                    return ArrayPool<string>.Shared.Rent(0);
+            }
+            if (string.IsNullOrEmpty(strSplit))
+            {
+                string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                astrFastReturn[0] = strInput;
+                return astrFastReturn;
+            }
+            int intInputLength = strInput.Length;
+            int intSplitLength = strSplit.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+            {
+                intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0 || eSplitOptions == StringSplitOptions.None)
+                    ++arrayLength;
+            }
+            if (arrayLength <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(arrayLength);
+            try
+            {
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+                {
+                    intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        astrReturn[intIndex++] = string.Empty;
+                }
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of string::Split() that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
+        /// <param name="strSplit">String to use for splitting.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
+        /// <returns>String array rented from ArrayPool{string}.Shared containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        public static string[] SplitToPooledArray(this string strInput, out int arrayLength, string strSplit, int intCount,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            arrayLength = 0;
+            if (intCount <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                {
+                    arrayLength = 1;
+                    string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                    astrFastReturn[0] = string.Empty;
+                    return astrFastReturn;
+                }
+                else
+                    return ArrayPool<string>.Shared.Rent(0);
+            }
+            if (string.IsNullOrEmpty(strSplit))
+            {
+                arrayLength = 1;
+                string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                astrFastReturn[0] = strInput;
+                return astrFastReturn;
+            }
+            int intInputLength = strInput.Length;
+            int intSplitLength = strSplit.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+            {
+                if (arrayLength >= intCount)
+                    break;
+                intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0 || eSplitOptions == StringSplitOptions.None)
+                    ++arrayLength;
+            }
+            if (arrayLength <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(arrayLength);
+            try
+            {
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+                {
+                    if (arrayLength >= intCount)
+                        break;
+                    intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        astrReturn[intIndex++] = string.Empty;
+                }
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
+        /// <param name="achrSplit">Characters to use for splitting.</param>
+        /// <returns>String array rented from ArrayPool{string}.Shared containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
+        public static string[] SplitToPooledArray(this string strInput, out int arrayLength, params char[] achrSplit)
+        {
+            arrayLength = 0;
+            if (string.IsNullOrEmpty(strInput))
+            {
+                arrayLength = 1;
+                string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                astrFastReturn[0] = string.Empty;
+                return astrFastReturn;
+            }
+            if (achrSplit.Length == 0)
+            {
+                arrayLength = 1;
+                string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                astrFastReturn[0] = strInput;
+                return astrFastReturn;
+            }
+            int intInputLength = strInput.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOfAny(achrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                ++arrayLength;
+            }
+            if (arrayLength <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(arrayLength);
+            try
+            {
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+                {
+                    intLoopLength = strInput.IndexOfAny(achrSplit, intStart);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else
+                        astrReturn[intIndex++] = string.Empty;
+                }
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Special version of SplitNoAlloc that is meant for processing command-line arguments (where we are supposed to ignore spaces inside of quotation mark blocks)
+        /// </summary>
+        /// <param name="strInput">String to process.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split by whitespace</returns>
+        public static IEnumerable<string> ProcessArgsString(this string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                yield break;
+            int intInputLength = strInput.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOfAny(s_achrWhiteSpaceAndQuotes, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                else
+                {
+                    while (!char.IsWhiteSpace(strInput, intLoopLength))
+                    {
+                        intLoopLength = strInput.IndexOf('"', intLoopLength + 1);
+                        if (intLoopLength < 0)
+                        {
+                            intLoopLength = intInputLength;
+                            break;
+                        }
+                        intLoopLength = strInput.IndexOfAny(s_achrWhiteSpaceAndQuotes, intLoopLength + 1);
+                        if (intLoopLength < 0)
+                        {
+                            intLoopLength = intInputLength;
+                            break;
+                        }
+                    }
+                }
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    yield return strInput.Substring(intStart, intLoopLength);
             }
         }
 
@@ -653,8 +1501,7 @@ namespace Chummer
             if (intLength > GlobalSettings.MaxStackLimit)
             {
                 string strReturn;
-                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                try
+                using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
                 {
                     // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
                     int intCurrent = 0;
@@ -692,10 +1539,6 @@ namespace Chummer
                     // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
                     // If the last char is whitespace, we don't copy that, either.
                     strReturn = new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
-                }
-                finally
-                {
-                    ArrayPool<char>.Shared.Return(achrNewChars);
                 }
 
                 return strReturn;
@@ -1428,7 +2271,7 @@ namespace Chummer
             if (intWidth >= strText.Length)
                 return strText;
 
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 int intNewCapacity = strText.Length;
                 if (sbdReturn.Capacity < intNewCapacity)
@@ -1528,9 +2371,19 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
-            return blnEscaped
-                ? s_RgxEscapedLineEndingsExpression.Value.Replace(strInput, Environment.NewLine)
-                : s_RgxLineEndingsExpression.Value.Replace(strInput, Environment.NewLine);
+            string[] astrLineEndingStrings = blnEscaped ? s_astrEscapedLineEndingStrings : s_astrLineEndingStrings;
+            if (!strInput.ContainsAnyParallel(astrLineEndingStrings))
+                return strInput;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                sbdReturn.Append(strInput);
+                // Two-step process so that newlines normalized in earlier iterations of the loop are not re-detected by later iterations
+                // Yes, this will replace null characters with newlines as well, too bad, we shouldn't have null characters in our strings anyway
+                foreach (string strSequence in astrLineEndingStrings)
+                    sbdReturn.Replace(strSequence, "\u0000");
+                sbdReturn.Replace("\u0000", Environment.NewLine);
+                return sbdReturn.ToString();
+            }
         }
 
         /// <summary>
@@ -1547,7 +2400,7 @@ namespace Chummer
                 return '\"' + strSearch + '\"';
             }
 
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 int intNewCapacity = strSearch.Length + 10;
                 if (sbdReturn.Capacity < intNewCapacity)
@@ -1566,6 +2419,9 @@ namespace Chummer
             }
         }
 
+        // Order is important so that we replace composites before chars
+        private static readonly string[] s_astrStringsToProcessForHtmlConversion = new[] { "&", "&amp;amp;", "<", ">", "\r\n", "\n\r", "\n", "\r" };
+
         /// <summary>
         /// Escapes characters in a string that would cause confusion if the string were placed as HTML content
         /// </summary>
@@ -1575,12 +2431,19 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strToClean))
                 return string.Empty;
-            string strReturn = strToClean
-                               .Replace("&", "&amp;")
-                               .Replace("&amp;amp;", "&amp;")
-                               .Replace("<", "&lt;")
-                               .Replace(">", "&gt;");
-            return s_RgxLineEndingsExpression.Value.Replace(strReturn, "<br />");
+            if (!strToClean.ContainsAnyParallel(s_astrStringsToProcessForHtmlConversion))
+                return strToClean;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                sbdReturn.Append(strToClean);
+                sbdReturn.Replace("&", "&amp;")
+                    .Replace("&amp;amp;", "&amp;")
+                    .Replace("<", "&lt;")
+                    .Replace(">", "&gt;");
+                foreach (string strSequence in s_astrLineEndingStrings)
+                    sbdReturn.Replace(strSequence, "<br />");
+                return sbdReturn.ToString();
+            }
         }
 
         private static readonly ReadOnlyCollection<char> s_achrPathInvalidPathChars
@@ -1730,7 +2593,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             string strReturn = strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
-            return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
+            return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfXmlInvalidUnicodeChars();
         }
 
         public static Task<string> RtfToHtmlAsync(this string strInput, CancellationToken token = default)
@@ -1744,8 +2607,120 @@ namespace Chummer
                 string strReturn = strInput.IsRtf()
                     ? Rtf.ToHtml(strInput)
                     : strInput.CleanForHtml();
-                return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
+                return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfXmlInvalidUnicodeChars();
             }, token);
+        }
+
+        /// <summary>
+        /// Takes a string with RTF formatting and transforms all of its colors to dark mode versions.
+        /// </summary>
+        /// <param name="strInput">String to process with light mode colors.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Version of <paramref name="strInput"/> with RTF color codes replaced with dark mode versions.</returns>
+        public static string RtfToDarkMode(this string strInput, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            string strInputTrimmed = strInput.TrimStart();
+            if (!strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal) && !strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
+                return strInput; // Faster and dirtier version of the full IsRtf check for performance reasons
+            int intColorTableStart = strInput.IndexOf(@"{\colortbl;", StringComparison.Ordinal);
+            if (intColorTableStart < 0)
+                return strInput;
+            int intColorTableEnd = strInput.IndexOf('}', intColorTableStart);
+            if (intColorTableEnd < 0 || intColorTableStart - intColorTableEnd <= 11)
+                return strInput;
+            string strInputColorTable = strInput.Substring(intColorTableStart, intColorTableEnd - intColorTableStart - 11);
+            if (string.IsNullOrEmpty(strInputColorTable))
+                return strInput;
+            MatchCollection lstColorMatches = s_RtfColorsRegex.Value.Matches(strInputColorTable);
+            if (lstColorMatches.Count == 0)
+                return strInput;
+            string strInputPreColorTable = strInput.Substring(0, intColorTableStart);
+            string strInputPostColorTable = intColorTableEnd + 1 < strInput.Length ? strInput.Substring(intColorTableEnd + 1) : string.Empty;
+            Dictionary<string, string> dicColorReplacements = new Dictionary<string, string>(lstColorMatches.Count);
+            foreach (Match objColorEntry in lstColorMatches)
+            {
+                if (dicColorReplacements.ContainsKey(objColorEntry.Value))
+                    continue;
+                GroupCollection lstColorValues = objColorEntry.Groups;
+                if (lstColorValues.Count < 3
+                    || !int.TryParse(lstColorValues[0].Value, out int intRed)
+                    || !int.TryParse(lstColorValues[1].Value, out int intGreen)
+                    || !int.TryParse(lstColorValues[2].Value, out int intBlue))
+                    continue;
+                Color objExistingColor = Color.FromArgb(intRed, intGreen, intBlue);
+                Color objDarkModeColor = ColorManager.GenerateDarkModeColor(objExistingColor);
+                dicColorReplacements.Add(objColorEntry.Value, "\\red" + objDarkModeColor.R.ToString(GlobalSettings.InvariantCultureInfo)
+                    + "\\green" + objDarkModeColor.G.ToString(GlobalSettings.InvariantCultureInfo)
+                    + "\\blue" + objDarkModeColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ';');
+            }
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
+            {
+                sbdInputColorTable.Append(strInputColorTable);
+                foreach (KeyValuePair<string, string> kvpReplace in dicColorReplacements)
+                {
+                    sbdInputColorTable.Replace(kvpReplace.Key, kvpReplace.Value);
+                }
+                return strInputPreColorTable + sbdInputColorTable.ToString() + strInputPostColorTable;
+            }
+        }
+
+        /// <summary>
+        /// Takes a string with RTF formatting that is assumed to have dark mode formatting and transforms all of its colors to light mode versions.
+        /// </summary>
+        /// <param name="strInput">String to process with dark mode colors.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Version of <paramref name="strInput"/> with RTF color codes replaced with light mode versions.</returns>
+        public static string RtfInverseToDarkMode(this string strInput, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            string strInputTrimmed = strInput.TrimStart();
+            if (!strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal) && !strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
+                return strInput; // Faster and dirtier version of the full IsRtf check for performance reasons
+            int intColorTableStart = strInput.IndexOf(@"{\colortbl;", StringComparison.Ordinal);
+            if (intColorTableStart < 0)
+                return strInput;
+            int intColorTableEnd = strInput.IndexOf('}', intColorTableStart);
+            if (intColorTableEnd < 0 || intColorTableEnd - intColorTableStart <= 11)
+                return strInput;
+            string strInputColorTable = strInput.Substring(intColorTableStart, intColorTableEnd - intColorTableStart - 11);
+            if (string.IsNullOrEmpty(strInputColorTable))
+                return strInput;
+            MatchCollection lstColorMatches = s_RtfColorsRegex.Value.Matches(strInputColorTable);
+            if (lstColorMatches.Count == 0)
+                return strInput;
+            string strInputPreColorTable = strInput.Substring(0, intColorTableStart);
+            string strInputPostColorTable = intColorTableEnd + 1 < strInput.Length ? strInput.Substring(intColorTableEnd + 1) : string.Empty;
+            Dictionary<string, string> dicColorReplacements = new Dictionary<string, string>(lstColorMatches.Count);
+            foreach (Match objColorEntry in lstColorMatches)
+            {
+                if (dicColorReplacements.ContainsKey(objColorEntry.Value))
+                    continue;
+                GroupCollection lstColorValues = objColorEntry.Groups;
+                if (lstColorValues.Count < 3
+                    || !int.TryParse(lstColorValues[0].Value, out int intRed)
+                    || !int.TryParse(lstColorValues[1].Value, out int intGreen)
+                    || !int.TryParse(lstColorValues[2].Value, out int intBlue))
+                    continue;
+                Color objDarkModeColor = Color.FromArgb(intRed, intGreen, intBlue);
+                Color objInvertedColor = ColorManager.GenerateInverseDarkModeColor(objDarkModeColor);
+                dicColorReplacements.Add(objColorEntry.Value, "\\red" + objInvertedColor.R.ToString(GlobalSettings.InvariantCultureInfo)
+                    + "\\green" + objInvertedColor.G.ToString(GlobalSettings.InvariantCultureInfo)
+                    + "\\blue" + objInvertedColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ';');
+            }
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
+            {
+                sbdInputColorTable.Append(strInputColorTable);
+                foreach (KeyValuePair<string, string> kvpReplace in dicColorReplacements)
+                {
+                    sbdInputColorTable.Replace(kvpReplace.Key, kvpReplace.Value);
+                }
+                return strInputPreColorTable + sbdInputColorTable.ToString() + strInputPostColorTable;
+            }
         }
 
         /// <summary>
@@ -1774,29 +2749,569 @@ namespace Chummer
         /// <returns>True if the string contains HTML tags, False otherwise.</returns>
         public static bool ContainsHtmlTags(this string strInput)
         {
-            return !string.IsNullOrEmpty(strInput) && s_RgxHtmlTagExpression.Value.IsMatch(strInput);
+            if (string.IsNullOrEmpty(strInput))
+                return false;
+            int intInputLength = strInput.Length;
+            int intIndex = strInput.IndexOf('<');
+            if (intIndex < 0 || intIndex + 1 >= intInputLength)
+                return false;
+            // First check for special tags that are easy to identify: comments and doctypes
+            int intCommentOpener = strInput.IndexOf("<!--", intIndex);
+            if (intCommentOpener > 0 && intCommentOpener + 7 < intInputLength && strInput.IndexOf("-->", intCommentOpener + 4) > intCommentOpener)
+                return true;
+            int intDoctypeOpener = strInput.IndexOf("<!DOCTYPE", intIndex);
+            if (intDoctypeOpener > 0 && intDoctypeOpener + 10 < intInputLength && strInput.IndexOf('>', intDoctypeOpener + 9) > intDoctypeOpener)
+                return true;
+            int intClosingIndex = strInput.IndexOf('>', intIndex + 1);
+            while (intClosingIndex - intIndex > 1)
+            {
+                bool blnHasSlash = false;
+                bool blnValidTag = true;
+                for (int i = intIndex + 1; i < intClosingIndex; ++i)
+                {
+                    char chrLoop = strInput[i];
+                    if (char.IsLetterOrDigit(chrLoop))
+                        continue; // Letters are generally allowed, digits have some restrictions but it's too expensive to check for those so let's not.
+                    switch (chrLoop)
+                    {
+                        case ' ':
+                            if (i > intIndex + 1)
+                                continue;
+                            blnValidTag = false;
+                            break;
+                        case '/':
+                            // Slash only allowed as part of a closing tag
+                            if (!blnHasSlash && (i == intIndex + 1 || i == intClosingIndex - 1))
+                            {
+                                blnHasSlash = true;
+                                continue;
+                            }
+                            blnValidTag = false;
+                            break;
+                        case '=':
+                            // Equals signs only valid as part of an attribute assignment
+                            if (i > intIndex + 1 && i < intClosingIndex - 1 && strInput[i+1] == '\"' && char.IsLetterOrDigit(strInput[i-1]))
+                                continue;
+                            blnValidTag = false;
+                            break;
+                        case '\"':
+                            // If we have a quote, skip immediately to the next instance of a quote
+                            if (i < intClosingIndex - 1)
+                            {
+                                int intNextQuote = strInput.IndexOf('\"', i + 1, intClosingIndex - i - 1);
+                                if (intNextQuote > i)
+                                {
+                                    i = intNextQuote;
+                                    continue;
+                                }
+                            }
+                            blnValidTag = false;
+                            break;
+                        default:
+                            blnValidTag = false;
+                            break;
+                    }
+                    if (!blnValidTag)
+                        break;
+                }
+                if (blnValidTag)
+                    return true;
+                if (intClosingIndex + 1 >= intInputLength)
+                    return false;
+                intIndex = strInput.IndexOf('<', intClosingIndex + 1);
+                if (intIndex < 0 || intIndex + 1 >= intInputLength)
+                    return false;
+                intClosingIndex = strInput.IndexOf('>', intIndex + 1);
+            }
+            return false;
         }
 
         /// <summary>
         /// Cleans a string of characters that could cause issues when saved in an xml file and then loaded back in
         /// </summary>
-        /// <param name="strInput"></param>
-        /// <returns></returns>
-        public static string CleanOfInvalidUnicodeChars(this string strInput)
+        public static string CleanOfXmlInvalidUnicodeChars(this string strInput)
         {
             return string.IsNullOrEmpty(strInput)
                 ? string.Empty
-                : GlobalSettings.InvalidUnicodeCharsExpression.Replace(strInput, string.Empty);
+                : strInput.FastEscape(s_achrXmlInvalidUnicodeChars);
         }
 
-        private static readonly Lazy<Regex> s_RgxHtmlTagExpression = new Lazy<Regex>(() => new Regex(@"/<\/?[a-z][\s\S]*>/i",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+        /// <summary>
+        /// Checks if a string has characters that could cause issues when saved in an xml file and then loaded back in
+        /// </summary>
+        public static bool HasAnyXmlInvalidUnicodeChars(this string strInput)
+        {
+            return !string.IsNullOrEmpty(strInput) && strInput.IndexOfAny(s_achrXmlInvalidUnicodeChars) >= 0;
+        }
 
-        private static readonly Lazy<Regex> s_RgxLineEndingsExpression = new Lazy<Regex>(() => new Regex(@"\r\n|\n\r|\n|\r",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+        /// <summary>
+        /// Processes a string containing one or more FixedValues elements to return the appropriate value based on the input rating.
+        /// Is also able to handle cases where there are functions with commas inside of the FixedValues string(s).
+        /// </summary>
+        /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
+        /// <param name="intRating">Rating to use for FixedValues.</param>
+        public static string ProcessFixedValuesString(this string strInput, int intRating)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            int intFixedValuesIndex = strInput.IndexOf("FixedValues(", StringComparison.Ordinal);
+            if (intFixedValuesIndex < 0)
+                return strInput;
+            if (intFixedValuesIndex == 0 && strInput[strInput.Length - 1] == ')' && strInput.LastIndexOf("FixedValues(", StringComparison.Ordinal) == 0)
+            {
+                // Simple case that is the most common, so handle separately: single FixedValues() entry that wraps around the entire string
+                strInput = strInput.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
+                int intIndexInner = strInput.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndexInner < 0)
+                    return strInput;
+                return ProcessFixedValuesStringCore(strInput, intRating, intIndexInner);
+            }
+            string strFirstPart = strInput.Substring(0, intFixedValuesIndex);
+            string strSecondPart = strInput.Substring(intFixedValuesIndex + 13);
+            int intIndex = strSecondPart.IndexOfAny(s_achrParentheses);
+            if (intIndex < 0)
+            {
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating);
+            }
+            if (strSecondPart[intIndex] != ')')
+            {
+                int intNumParentheses = 1;
+                while (intNumParentheses > 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                    if (intIndex < 0)
+                        break;
+                    switch (strSecondPart[intIndex])
+                    {
+                        case '(':
+                            ++intNumParentheses;
+                            break;
+                        case ')':
+                            --intNumParentheses;
+                            break;
+                    }
+                    ++intIndex;
+                    if (intNumParentheses == 0)
+                    {
+                        intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                        if (intIndex < 0 || strSecondPart[intIndex] == ')')
+                            break;
+                        ++intIndex;
+                        ++intNumParentheses;
+                    }
+                }
 
-        private static readonly Lazy<Regex> s_RgxEscapedLineEndingsExpression = new Lazy<Regex>(() => new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+                if (intIndex < 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                    if (intIndex < 0)
+                        return strFirstPart + strSecondPart;
+                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating);
+                }
+            }
+
+            // Simple case: we just have to process the entire second half of the string as a single FixedValues
+            if (intIndex + 1 >= strSecondPart.Length)
+            {
+                strSecondPart = strSecondPart.Substring(0, intIndex);
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating);
+            }
+
+            string strSecondPartA = strSecondPart.Substring(0, intIndex);
+            string strSecondPartB = intIndex + 2 < strSecondPart.Length ? strSecondPart.Substring(intIndex + 2) : string.Empty;
+            intIndex = strSecondPartA.IndexOfAny(s_achrOpenParenthesesComma);
+            if (intIndex < 0)
+                return strFirstPart + strSecondPartA + strSecondPartB;
+            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating) + ProcessFixedValuesString(strSecondPartB, intRating);
+        }
+
+        /// <summary>
+        /// Processes a string containing one or more FixedValues elements to return the appropriate value based on the input rating.
+        /// Is also able to handle cases where there are functions with commas inside of the FixedValues string.
+        /// </summary>
+        /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
+        /// <param name="funcRating">Function to get the rating to use for FixedValues.</param>
+        public static string ProcessFixedValuesString(this string strInput, Func<int> funcRating)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            int intFixedValuesIndex = strInput.IndexOf("FixedValues(", StringComparison.Ordinal);
+            if (intFixedValuesIndex < 0)
+                return strInput;
+            if (intFixedValuesIndex == 0 && strInput[strInput.Length - 1] == ')' && strInput.LastIndexOf("FixedValues(", StringComparison.Ordinal) == 0)
+            {
+                // Simple case that is the most common, so handle separately: single FixedValues() entry that wraps around the entire string
+                strInput = strInput.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
+                int intIndexInner = strInput.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndexInner < 0)
+                    return strInput;
+                return ProcessFixedValuesStringCore(strInput, funcRating(), intIndexInner);
+            }
+            string strFirstPart = strInput.Substring(0, intFixedValuesIndex);
+            string strSecondPart = strInput.Substring(intFixedValuesIndex + 13);
+            int intIndex = strSecondPart.IndexOfAny(s_achrParentheses);
+            if (intIndex < 0)
+            {
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = funcRating();
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+            }
+            if (strSecondPart[intIndex] != ')')
+            {
+                int intNumParentheses = 1;
+                while (intNumParentheses > 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                    if (intIndex < 0)
+                        break;
+                    switch (strSecondPart[intIndex])
+                    {
+                        case '(':
+                            ++intNumParentheses;
+                            break;
+                        case ')':
+                            --intNumParentheses;
+                            break;
+                    }
+                    ++intIndex;
+                    if (intNumParentheses == 0)
+                    {
+                        intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                        if (intIndex < 0 || strSecondPart[intIndex] == ')')
+                            break;
+                        ++intIndex;
+                        ++intNumParentheses;
+                    }
+                }
+
+                if (intIndex < 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                    if (intIndex < 0)
+                        return strFirstPart + strSecondPart;
+                    int intRatingInner = funcRating();
+                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                }
+            }
+
+            // Simple case: we just have to process the entire second half of the string as a single FixedValues
+            if (intIndex + 1 >= strSecondPart.Length)
+            {
+                strSecondPart = strSecondPart.Substring(0, intIndex);
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = funcRating();
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+            }
+
+            string strSecondPartA = strSecondPart.Substring(0, intIndex);
+            string strSecondPartB = intIndex + 2 < strSecondPart.Length ? strSecondPart.Substring(intIndex + 2) : string.Empty;
+            intIndex = strSecondPartA.IndexOfAny(s_achrOpenParenthesesComma);
+            if (intIndex < 0)
+                return strFirstPart + strSecondPartA + strSecondPartB;
+            int intRating = funcRating();
+            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating) + ProcessFixedValuesString(strSecondPartB, intRating);
+        }
+
+        /// <summary>
+        /// Processes a string containing one or more FixedValues elements to return the appropriate value based on the input rating.
+        /// Is also able to handle cases where there are functions with commas inside of the FixedValues string.
+        /// </summary>
+        /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
+        /// <param name="funcRating">Function to get the rating to use for FixedValues.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async static Task<string> ProcessFixedValuesStringAsync(this string strInput, Func<Task<int>> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            int intFixedValuesIndex = strInput.IndexOf("FixedValues(", StringComparison.Ordinal);
+            if (intFixedValuesIndex < 0)
+                return strInput;
+            if (intFixedValuesIndex == 0 && strInput[strInput.Length - 1] == ')' && strInput.LastIndexOf("FixedValues(", StringComparison.Ordinal) == 0)
+            {
+                // Simple case that is the most common, so handle separately: single FixedValues() entry that wraps around the entire string
+                strInput = strInput.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
+                int intIndexInner = strInput.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndexInner < 0)
+                    return strInput;
+                return ProcessFixedValuesStringCore(strInput, await funcRating().ConfigureAwait(false), intIndexInner);
+            }
+            string strFirstPart = strInput.Substring(0, intFixedValuesIndex);
+            string strSecondPart = strInput.Substring(intFixedValuesIndex + 13);
+            int intIndex = strSecondPart.IndexOfAny(s_achrParentheses);
+            if (intIndex < 0)
+            {
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = await funcRating().ConfigureAwait(false);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+            }
+            if (strSecondPart[intIndex] != ')')
+            {
+                int intNumParentheses = 1;
+                while (intNumParentheses > 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                    if (intIndex < 0)
+                        break;
+                    switch (strSecondPart[intIndex])
+                    {
+                        case '(':
+                            ++intNumParentheses;
+                            break;
+                        case ')':
+                            --intNumParentheses;
+                            break;
+                    }
+                    ++intIndex;
+                    if (intNumParentheses == 0)
+                    {
+                        intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                        if (intIndex < 0 || strSecondPart[intIndex] == ')')
+                            break;
+                        ++intIndex;
+                        ++intNumParentheses;
+                    }
+                }
+
+                if (intIndex < 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                    if (intIndex < 0)
+                        return strFirstPart + strSecondPart;
+                    int intRatingInner = await funcRating().ConfigureAwait(false);
+                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                }
+            }
+
+            // Simple case: we just have to process the entire second half of the string as a single FixedValues
+            if (intIndex + 1 >= strSecondPart.Length)
+            {
+                strSecondPart = strSecondPart.Substring(0, intIndex);
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = await funcRating().ConfigureAwait(false);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+            }
+
+            string strSecondPartA = strSecondPart.Substring(0, intIndex);
+            string strSecondPartB = intIndex + 2 < strSecondPart.Length ? strSecondPart.Substring(intIndex + 2) : string.Empty;
+            intIndex = strSecondPartA.IndexOfAny(s_achrOpenParenthesesComma);
+            if (intIndex < 0)
+                return strFirstPart + strSecondPartA + strSecondPartB;
+            int intRating = await funcRating().ConfigureAwait(false);
+            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating) + ProcessFixedValuesString(strSecondPartB, intRating);
+        }
+
+        private static string ProcessFixedValuesStringCore(this string strInput, int intRating, int intIndex)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            int intInputLength = strInput.Length;
+            if (intIndex >= intInputLength)
+                return strInput;
+            // Function is more complicated than just splitting by commas because we need to be able to ignore commas that are inside of parentheses
+            if (intRating <= 1)
+            {
+                if (strInput[intIndex] == ',')
+                    return strInput.Substring(0, intIndex);
+                ++intIndex;
+                int intNumParentheses = 1;
+                while (intNumParentheses > 0)
+                {
+                    intIndex = strInput.IndexOfAny(s_achrParentheses, intIndex);
+                    // Unclosed parantheses before our first comma, so return the entire string
+                    if (intIndex < 0 || intIndex == intInputLength - 1)
+                        break;
+                    switch (strInput[intIndex])
+                    {
+                        case '(':
+                            ++intNumParentheses;
+                            break;
+                        case ')':
+                            --intNumParentheses;
+                            break;
+                    }
+                    ++intIndex;
+                    if (intNumParentheses == 0)
+                    {
+                        intIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma, intIndex);
+                        if (intIndex < 0)
+                            break;
+                        if (strInput[intIndex] == ',')
+                            return strInput.Substring(0, intIndex);
+                        ++intIndex;
+                        ++intNumParentheses;
+                    }
+                }
+            }
+            else if (intRating == int.MaxValue)
+            {
+                // Do the same thing as with intRating == 1, but backwards and looking at closed parantheses instead
+                intIndex = strInput.LastIndexOfAny(s_achrClosedParenthesesComma);
+                if (strInput[intIndex] == ',')
+                    return strInput.Substring(intIndex + 1);
+                --intIndex;
+                int intNumParentheses = 1;
+                while (intNumParentheses > 0)
+                {
+                    intIndex = strInput.LastIndexOfAny(s_achrParentheses, 0, intIndex + 1);
+                    // Unclosed parantheses before our last comma, so just seek to last comma and split from there
+                    if (intIndex <= 0)
+                    {
+                        intIndex = strInput.LastIndexOf(',');
+                        return intIndex < 0
+                            ? strInput
+                            : strInput.Substring(intIndex + 1);
+                    }
+                    switch (strInput[intIndex])
+                    {
+                        case '(':
+                            --intNumParentheses;
+                            break;
+                        case ')':
+                            ++intNumParentheses;
+                            break;
+                    }
+                    --intIndex;
+                    if (intNumParentheses == 0)
+                    {
+                        intIndex = strInput.LastIndexOfAny(s_achrClosedParenthesesComma, 0, intIndex + 1);
+                        if (intIndex <= 0)
+                            break;
+                        if (strInput[intIndex] == ',')
+                            return strInput.Substring(intIndex + 1);
+                        --intIndex;
+                        ++intNumParentheses;
+                    }
+                }
+            }
+            else
+            {
+                int intLastCommaIndex = intIndex;
+                for (int intCurrentCount = 2; intCurrentCount <= intRating; intCurrentCount++)
+                {
+                    intIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma, intIndex + 1);
+                    if (intIndex < 0 || intIndex == intInputLength - 1)
+                        return strInput.Substring(intLastCommaIndex + 1);
+                    if (strInput[intIndex] == ',')
+                    {
+                        if (intCurrentCount == intRating)
+                            return strInput.Substring(intLastCommaIndex + 1, intIndex - intLastCommaIndex - 1);
+                        intLastCommaIndex = intIndex;
+                    }
+                    else
+                    {
+                        ++intIndex;
+                        int intNumParentheses = 1;
+                        while (intNumParentheses > 0)
+                        {
+                            intIndex = strInput.IndexOfAny(s_achrParentheses, intIndex);
+                            // Unclosed parantheses before our first comma, so skip directly to next comma
+                            if (intIndex < 0 || intIndex == intInputLength - 1)
+                            {
+                                intIndex = strInput.IndexOf(',', intLastCommaIndex + 1);
+                                if (intIndex < 0 || intIndex == intInputLength - 1)
+                                    return strInput.Substring(intLastCommaIndex + 1);
+                                else if (intCurrentCount == intRating)
+                                    return strInput.Substring(intLastCommaIndex + 1, intIndex - intLastCommaIndex - 1);
+                                intLastCommaIndex = intIndex;
+                                break;
+                            }
+                            intNumParentheses = 0;
+                            switch (strInput[intIndex])
+                            {
+                                case '(':
+                                    ++intNumParentheses;
+                                    break;
+                                case ')':
+                                    --intNumParentheses;
+                                    break;
+                            }
+                            ++intIndex;
+                            if (intNumParentheses == 0)
+                            {
+                                intIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma, intIndex);
+                                if (intIndex < 0 || intIndex == intInputLength - 1)
+                                    return strInput.Substring(intLastCommaIndex + 1);
+                                if (strInput[intIndex] == ',')
+                                {
+                                    if (intCurrentCount == intRating)
+                                        return strInput.Substring(intLastCommaIndex + 1, intIndex - intLastCommaIndex - 1);
+                                    intLastCommaIndex = intIndex;
+                                    break;
+                                }
+                                else
+                                {
+                                    ++intIndex;
+                                    ++intNumParentheses;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return strInput;
+        }
+
+        private static readonly char[] s_achrWhiteSpaceAndQuotes = new[] { ' ', '\u00a0', '\u0085', '\t', '\n', '\v', '\f', '\r', '\"' };
+        
+        private static readonly char[] s_achrParentheses = new[] { '(', ')' };
+
+        private static readonly char[] s_achrOpenParenthesesComma = new[] { '(', ',' };
+
+        private static readonly char[] s_achrClosedParenthesesComma = new[] { ')', ',' };
+
+        private static readonly char[] s_achrXmlInvalidUnicodeChars = new[]
+        {
+            '\u0000',
+            '\u0001',
+            '\u0002',
+            '\u0003',
+            '\u0004',
+            '\u0005',
+            '\u0006',
+            '\u0007',
+            '\u0008',
+            '\u000B',
+            '\u000C',
+            '\u000E',
+            '\u000F',
+            '\u0010',
+            '\u0011',
+            '\u0012',
+            '\u0013',
+            '\u0014',
+            '\u0015',
+            '\u0016',
+            '\u0017',
+            '\u0018',
+            '\u0019',
+            '\u001A',
+            '\u001B',
+            '\u001C',
+            '\u001D',
+            '\u001E',
+            '\u001F'
+        };
+
+        // Order is important so that we replace composites before chars
+        private static readonly string[] s_astrLineEndingStrings = new[] { "\r\n", "\n\r", "\n", "\r" };
+
+        // Order is important so that we replace composites before chars
+        private static readonly string[] s_astrEscapedLineEndingStrings = new[] { "\\r\\n", "\\n\\r", "\\n", "\\r" };
 
         private static readonly DebuggableSemaphoreSlim s_RtbRtfManipulatorLock = new DebuggableSemaphoreSlim();
         [SupportedOSPlatform("windows")]
@@ -1831,7 +3346,7 @@ namespace Chummer
             int intUCSkip = 1; // Number of ASCII characters to skip after a unicode character.
             int intCurSkip = 0; // Number of ASCII characters left to skip
 
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 for (; objMatch.Success; objMatch = objMatch.NextMatch())
                 {
@@ -1977,6 +3492,10 @@ namespace Chummer
         private static readonly Lazy<Regex> s_RtfStripperRegex = new Lazy<Regex>(() => new Regex(
             @"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)",
             RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+
+        private static readonly Lazy<Regex> s_RtfColorsRegex = new Lazy<Regex>(() => new Regex(
+            @"\\red(\d+)\\green(\d+)\\blue(\d+);",
+            RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         private static readonly IReadOnlyCollection<string> s_SetRtfDestinations = new HashSet<string>
         {

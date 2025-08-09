@@ -38,7 +38,7 @@ namespace Chummer
         private readonly bool _blnAdvancedProgramAllowed;
         private readonly bool _blnInherentProgram;
         private readonly Character _objCharacter;
-        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstCategory;
 
         private readonly XPathNavigator _xmlBaseChummerNode;
         private readonly XPathNavigator _xmlOptionalAIProgramsNode;
@@ -47,7 +47,6 @@ namespace Chummer
 
         public SelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
         {
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -56,8 +55,11 @@ namespace Chummer
             _blnInherentProgram = blnInherentProgram;
             // Load the Programs information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("programs.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            if (!_objCharacter.IsCritter) return;
+            if (!_objCharacter.IsCritter)
+                return;
             _xmlOptionalAIProgramsNode = _objCharacter.GetNodeXPath().SelectSingleNodeAndCacheExpression("optionalaiprograms");
+            _lstCategory = Utils.ListItemListPool.Get();
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectAIProgram_Load(object sender, EventArgs e)
@@ -244,8 +246,7 @@ namespace Chummer
                                 SourceString objSource = await SourceString.GetSourceStringAsync(
                                     strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
                                     _objCharacter, token).ConfigureAwait(false);
-                                await lblSource.DoThreadSafeAsync(x => x.Text = objSource.ToString(), token: token).ConfigureAwait(false);
-                                await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip, token: token).ConfigureAwait(false);
+                                await objSource.SetControlAsync(lblSource, token).ConfigureAwait(false);
                             }
                             else
                             {
@@ -282,7 +283,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
                 sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
                 string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
@@ -292,7 +293,7 @@ namespace Chummer
                     sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                 else
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdCategoryFilter))
                     {
                         foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
@@ -325,7 +326,7 @@ namespace Chummer
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
             bool blnHasSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength != 0, token: token).ConfigureAwait(false);
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstPrograms))
             {
                 foreach (XPathNavigator objXmlProgram in objXmlNodeList)

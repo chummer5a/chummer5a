@@ -109,11 +109,11 @@ namespace Chummer
 
                 await DoDataBindings(_objMyToken).ConfigureAwait(false);
 
-                if (_objContact.IsEnemy)
+                if (await _objContact.GetIsEnemyAsync(_objMyToken).ConfigureAwait(false))
                 {
                     if (cmdLink != null)
                     {
-                        string strText = !string.IsNullOrEmpty(_objContact.FileName)
+                        string strText = !string.IsNullOrEmpty(await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false))
                             ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenLinkedEnemy", token: _objMyToken)
                                 .ConfigureAwait(false)
                             : await LanguageManager.GetStringAsync("Tip_Enemy_LinkEnemy", token: _objMyToken)
@@ -123,15 +123,16 @@ namespace Chummer
 
                     string strTooltip = await LanguageManager.GetStringAsync("Tip_Enemy_EditNotes", token: _objMyToken)
                         .ConfigureAwait(false);
-                    if (!string.IsNullOrEmpty(_objContact.Notes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+                    string strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strNotes))
+                        strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
                     await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
                 }
                 else
                 {
                     if (cmdLink != null)
                     {
-                        string strText = !string.IsNullOrEmpty(_objContact.FileName)
+                        string strText = !string.IsNullOrEmpty(await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false))
                             ? await LanguageManager.GetStringAsync("Tip_Contact_OpenLinkedContact", token: _objMyToken)
                                 .ConfigureAwait(false)
                             : await LanguageManager.GetStringAsync("Tip_Contact_LinkContact", token: _objMyToken)
@@ -141,8 +142,9 @@ namespace Chummer
 
                     string strTooltip = await LanguageManager
                         .GetStringAsync("Tip_Contact_EditNotes", token: _objMyToken).ConfigureAwait(false);
-                    if (!string.IsNullOrEmpty(_objContact.Notes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+                    string strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strNotes))
+                        strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
                     await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
                 }
             }
@@ -730,23 +732,27 @@ namespace Chummer
         {
             try
             {
+                string strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                Color objColor = await _objContact.GetNotesColorAsync(_objMyToken).ConfigureAwait(false);
                 using (ThreadSafeForm<EditNotes> frmContactNotes
                        = await ThreadSafeForm<EditNotes>.GetAsync(
-                               () => new EditNotes(_objContact.Notes, _objContact.NotesColor, _objMyToken), _objMyToken)
+                               () => new EditNotes(strNotes, objColor, _objMyToken), _objMyToken)
                            .ConfigureAwait(false))
                 {
                     if (await frmContactNotes.ShowDialogSafeAsync(this, _objMyToken).ConfigureAwait(false) !=
                         DialogResult.OK)
                         return;
-                    _objContact.Notes = frmContactNotes.MyForm.Notes;
+                    await _objContact.SetNotesAsync(frmContactNotes.MyForm.Notes, _objMyToken).ConfigureAwait(false);
+                    await _objContact.SetNotesColorAsync(frmContactNotes.MyForm.NotesColor, _objMyToken).ConfigureAwait(false);
                 }
 
                 string strTooltip
-                    = await LanguageManager.GetStringAsync(_objContact.IsEnemy
+                    = await LanguageManager.GetStringAsync(await _objContact.GetIsEnemyAsync(_objMyToken).ConfigureAwait(false)
                         ? "Tip_Enemy_EditNotes"
                         : "Tip_Contact_EditNotes", token: _objMyToken).ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(_objContact.Notes))
-                    strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+                strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strNotes))
+                    strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
                 await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -763,8 +769,6 @@ namespace Chummer
         /// Contact object this is linked to.
         /// </summary>
         public Contact ContactObject => _objContact;
-
-        public bool Expanded => tlpStatBlock?.DoThreadSafeFunc(x => x.Visible) == true;
 
         public async Task<bool> GetExpandedAsync(CancellationToken token = default)
         {
@@ -1821,13 +1825,13 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             // Read the list of Categories from the XML file.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGenders))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAges))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPersonalLives))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPreferredPayments))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstHobbiesVices))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGenders))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAges))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPersonalLives))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPreferredPayments))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstHobbiesVices))
             {
                 token.ThrowIfCancellationRequested();
                 lstMetatypes.Add(ListItem.Blank);
@@ -1966,13 +1970,13 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             // Read the list of Categories from the XML file.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGenders))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAges))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPersonalLives))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPreferredPayments))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstHobbiesVices))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGenders))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAges))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPersonalLives))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPreferredPayments))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstHobbiesVices))
             {
                 token.ThrowIfCancellationRequested();
                 lstMetatypes.Add(ListItem.Blank);

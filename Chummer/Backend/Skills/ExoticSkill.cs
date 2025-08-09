@@ -35,7 +35,20 @@ namespace Chummer.Backend.Skills
 
         public void Load(XmlNode node)
         {
-            node.TryGetStringFieldQuickly("specific", ref _strSpecific);
+            if (node.TryGetStringFieldQuickly("specific", ref _strSpecific)
+                && _strSpecific.StartsWith("Elektro-") && CharacterObject.LastSavedVersion < new ValueVersion(5, 255, 949))
+            {
+                // Legacy shim
+                switch (_strSpecific)
+                {
+                    case "Elektro-Netz":
+                        _strSpecific = "Electro-Net";
+                        break;
+                    case "Elektro-Angel":
+                        _strSpecific = "Electro-Fishing Rod";
+                        break;
+                }
+            }
         }
 
         public static bool IsExoticSkillName(Character objCharacter, string strSkillName,

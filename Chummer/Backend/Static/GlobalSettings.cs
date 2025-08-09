@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -27,7 +28,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -269,6 +269,7 @@ namespace Chummer
         private static string _strDefaultMasterIndexSetting = DefaultMasterIndexSettingDefaultValue;
         private static int _intSavedImageQuality = -1; // Jpeg compression with automatic quality
         private static ColorMode _eColorMode;
+        private static Color _objDefaultHasNotesColor = Color.Chocolate;
         private static bool _blnConfirmDelete = true;
         private static bool _blnConfirmKarmaExpense = true;
         private static bool _blnHideItemsOverAvailLimit = true;
@@ -441,7 +442,7 @@ namespace Chummer
         [SupportedOSPlatform("windows")]
         static GlobalSettings()
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
 
             bool blnFirstEverLaunch = false;
@@ -545,6 +546,12 @@ namespace Chummer
             // In order to not throw off veteran users, forced Light mode is the default for them instead of Automatic
             else if (!blnFirstEverLaunch)
                 _eColorMode = ColorMode.Light;
+
+            int intColor = -1;
+            if (LoadInt32FromRegistry(ref intColor, "defaulthasnotescolor"))
+                _objDefaultHasNotesColor = Color.FromArgb(intColor);
+            else
+                _objDefaultHasNotesColor = Color.Chocolate;
 
             // Whether dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
@@ -904,6 +911,7 @@ namespace Chummer
                 objRegistry.SetValue("useloggingApplicationInsights", UseLoggingApplicationInsights.ToString());
                 objRegistry.SetValue("useloggingApplicationInsightsResetCounter", UseLoggingResetCounter);
                 objRegistry.SetValue("colormode", ColorModeSetting.ToString());
+                objRegistry.SetValue("defaulthasnotescolor", DefaultHasNotesColor.ToArgb().ToString(InvariantCultureInfo));
                 objRegistry.SetValue("language", Language);
                 objRegistry.SetValue("startupfullscreen", StartupFullscreen.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("singlediceroller", SingleDiceRoller.ToString(InvariantCultureInfo));
@@ -959,8 +967,9 @@ namespace Chummer
                             objSourceRegistry.DeleteValue(strCustomSourcebookKey, false);
 
                         IReadOnlyDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token).ConfigureAwait(false);
-                        foreach (SourcebookInfo objSourcebookInfo in dicSourcebookInfos.Values)
+                        foreach (KeyValuePair<string, SourcebookInfo> kvpSourcebookInfo in dicSourcebookInfos)
                         {
+                            SourcebookInfo objSourcebookInfo = kvpSourcebookInfo.Value; // Set up this way to avoid race condition in underlying SourcebookInfos dictionary
                             objSourceRegistry.SetValue(objSourcebookInfo.Code,
                                 objSourcebookInfo.Path + '|'
                                                        + objSourcebookInfo.Offset.ToString(
@@ -970,12 +979,7 @@ namespace Chummer
                 }
 
                 // Save the Custom Data Directory Info.
-                bool blnTemp;
-                using (RegistryKey objKey = objRegistry.OpenSubKey("CustomDataDirectory"))
-                    blnTemp = objKey != null;
-                if (blnTemp)
-                    objRegistry.DeleteSubKeyTree("CustomDataDirectory");
-
+                objRegistry.DeleteSubKeyTree("CustomDataDirectory", false);
                 using (RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory", true))
                 {
                     foreach (CustomDataDirectoryInfo objCustomDataDirectory in CustomDataDirectoryInfos)
@@ -1266,6 +1270,16 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Default (light mode) color to use for if/when an item has notes.
+        /// If you are requesting this directly, you are probably doing something wrong. What you want is ColorManager.HasNotesColor instead.
+        /// </summary>
+        public static Color DefaultHasNotesColor
+        {
+            get => _objDefaultHasNotesColor;
+            set => _objDefaultHasNotesColor = value;
+        }
+
+        /// <summary>
         /// Whether dates should include the time.
         /// </summary>
         public static bool DatesIncludeTime
@@ -1504,10 +1518,6 @@ namespace Chummer
         private static XmlDocument _xmlClipboard = new XmlDocument { XmlResolver = null };
         private static readonly AsyncFriendlyReaderWriterLock _objClipboardLocker = new AsyncFriendlyReaderWriterLock();
 
-        private static readonly Lazy<Regex> s_RgxInvalidUnicodeCharsExpression = new Lazy<Regex>(() => new Regex(
-            @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
-
         private static ClipboardContentType _eClipboardContentType;
 
         /// <summary>
@@ -1529,12 +1539,6 @@ namespace Chummer
         /// XmlReaderSettings that should only be used if invalid characters are found.
         /// </summary>
         public static XmlReaderSettings UnSafeXmlReaderAsyncSettings { get; } = new XmlReaderSettings { XmlResolver = null, IgnoreComments = true, IgnoreWhitespace = true, CheckCharacters = false, Async = true };
-
-        /// <summary>
-        /// Regex that indicates whether a given string is a match for text that cannot be saved in XML. Match == true.
-        /// </summary>
-        [CLSCompliant(false)]
-        public static Regex InvalidUnicodeCharsExpression => s_RgxInvalidUnicodeCharsExpression.Value;
 
         /// <summary>
         /// Lock the clipboard for reading.
@@ -1771,10 +1775,13 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (blnDisposeOldInfos)
                 {
-                    foreach (SourcebookInfo objInfo in s_DicSourcebookInfos.Values)
+                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
+                    s_DicSourcebookInfos.Clear();
+                    foreach (SourcebookInfo objInfo in lstInfos)
                         objInfo.Dispose();
                 }
-                s_DicSourcebookInfos.Clear();
+                else
+                    s_DicSourcebookInfos.Clear();
                 token.ThrowIfCancellationRequested();
                 foreach (SourcebookInfo objSourcebookInfo in dicNewValues.Values)
                 {
@@ -1797,11 +1804,13 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (blnDisposeOldInfos)
                 {
-                    foreach (SourcebookInfo objInfo in s_DicSourcebookInfos.Values)
+                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
+                    s_DicSourcebookInfos.Clear();
+                    foreach (SourcebookInfo objInfo in lstInfos)
                         objInfo.Dispose();
                 }
-
-                s_DicSourcebookInfos.Clear();
+                else
+                    s_DicSourcebookInfos.Clear();
                 token.ThrowIfCancellationRequested();
                 foreach (SourcebookInfo objSourcebookInfo in dicNewValues.Values)
                 {
@@ -1822,9 +1831,10 @@ namespace Chummer
                 return;
             try
             {
-                foreach (SourcebookInfo objInfo in s_DicSourcebookInfos.Values)
-                    objInfo.Dispose();
+                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
                 s_DicSourcebookInfos.Clear();
+                foreach (SourcebookInfo objInfo in lstInfos)
+                    objInfo.Dispose();
                 foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", token: token)
                              .SelectAndCacheExpression("/chummer/books/book", token: token))
                 {
@@ -1842,19 +1852,27 @@ namespace Chummer
                         if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
                             && !string.IsNullOrEmpty(strTemp))
                         {
-                            string[] strParts = strTemp.Split('|');
-                            objSource.Path = strParts[0];
-                            if (string.IsNullOrEmpty(objSource.Path))
+                            string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                            try
                             {
-                                objSource.Path = string.Empty;
-                                objSource.Offset = 0;
-                            }
-                            else
-                            {
-                                if (!File.Exists(objSource.Path))
+                                objSource.Path = strParts[0];
+                                if (string.IsNullOrEmpty(objSource.Path))
+                                {
                                     objSource.Path = string.Empty;
-                                if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                    objSource.Offset = intTmp;
+                                    objSource.Offset = 0;
+                                }
+                                else
+                                {
+                                    if (!File.Exists(objSource.Path))
+                                        objSource.Path = string.Empty;
+                                    string strSecondPart = strParts[1];
+                                    if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                        objSource.Offset = intTmp;
+                                }
+                            }
+                            finally
+                            {
+                                ArrayPool<string>.Shared.Return(strParts);
                             }
                         }
                     }
@@ -1871,8 +1889,9 @@ namespace Chummer
                 }
 
                 s_DicCustomSourcebookCodes.Clear();
-                foreach (CharacterSettings objCustomSettings in SettingsManager.LoadedCharacterSettings.Values)
+                foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in SettingsManager.LoadedCharacterSettings)
                 {
+                    CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
                     foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml",
                                      objCustomSettings.EnabledCustomDataDirectoryPaths, token: token)
                                  .SelectAndCacheExpression("/chummer/books/book", token: token))
@@ -1891,19 +1910,27 @@ namespace Chummer
                             if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
                                 && !string.IsNullOrEmpty(strTemp))
                             {
-                                string[] strParts = strTemp.Split('|');
-                                objSource.Path = strParts[0];
-                                if (string.IsNullOrEmpty(objSource.Path))
+                                string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                                try
                                 {
-                                    objSource.Path = string.Empty;
-                                    objSource.Offset = 0;
-                                }
-                                else
-                                {
-                                    if (!File.Exists(objSource.Path))
+                                    objSource.Path = strParts[0];
+                                    if (string.IsNullOrEmpty(objSource.Path))
+                                    {
                                         objSource.Path = string.Empty;
-                                    if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                        objSource.Offset = intTmp;
+                                        objSource.Offset = 0;
+                                    }
+                                    else
+                                    {
+                                        if (!File.Exists(objSource.Path))
+                                            objSource.Path = string.Empty;
+                                        string strSecondPart = strParts[1];
+                                        if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                            objSource.Offset = intTmp;
+                                    }
+                                }
+                                finally
+                                {
+                                    ArrayPool<string>.Shared.Return(strParts);
                                 }
                             }
                         }
@@ -1939,9 +1966,10 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                foreach (SourcebookInfo objInfo in s_DicSourcebookInfos.Values)
-                    objInfo.Dispose();
+                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
                 s_DicSourcebookInfos.Clear();
+                foreach (SourcebookInfo objInfo in lstInfos)
+                    objInfo.Dispose();
                 foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml", token: token)
                              .ConfigureAwait(false))
                          .SelectAndCacheExpression(
@@ -1961,19 +1989,27 @@ namespace Chummer
                         if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
                             && !string.IsNullOrEmpty(strTemp))
                         {
-                            string[] strParts = strTemp.Split('|');
-                            objSource.Path = strParts[0];
-                            if (string.IsNullOrEmpty(objSource.Path))
+                            string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                            try
                             {
-                                objSource.Path = string.Empty;
-                                objSource.Offset = 0;
-                            }
-                            else
-                            {
-                                if (!File.Exists(objSource.Path))
+                                objSource.Path = strParts[0];
+                                if (string.IsNullOrEmpty(objSource.Path))
+                                {
                                     objSource.Path = string.Empty;
-                                if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                    objSource.Offset = intTmp;
+                                    objSource.Offset = 0;
+                                }
+                                else
+                                {
+                                    if (!File.Exists(objSource.Path))
+                                        objSource.Path = string.Empty;
+                                    string strSecondPart = strParts[1];
+                                    if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                        objSource.Offset = intTmp;
+                                }
+                            }
+                            finally
+                            {
+                                ArrayPool<string>.Shared.Return(strParts);
                             }
                         }
                     }
@@ -1990,9 +2026,10 @@ namespace Chummer
                 }
 
                 s_DicCustomSourcebookCodes.Clear();
-                foreach (CharacterSettings objCustomSettings in (await SettingsManager
-                             .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)).Values)
+                foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in (await SettingsManager
+                             .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)))
                 {
+                    CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
                     foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml",
                                  await objCustomSettings.GetEnabledCustomDataDirectoryPathsAsync(token)
                                      .ConfigureAwait(false), token: token).ConfigureAwait(false))
@@ -2012,19 +2049,27 @@ namespace Chummer
                             if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
                                 && !string.IsNullOrEmpty(strTemp))
                             {
-                                string[] strParts = strTemp.Split('|');
-                                objSource.Path = strParts[0];
-                                if (string.IsNullOrEmpty(objSource.Path))
+                                string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                                try
                                 {
-                                    objSource.Path = string.Empty;
-                                    objSource.Offset = 0;
-                                }
-                                else
-                                {
-                                    if (!File.Exists(objSource.Path))
+                                    objSource.Path = strParts[0];
+                                    if (string.IsNullOrEmpty(objSource.Path))
+                                    {
                                         objSource.Path = string.Empty;
-                                    if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                        objSource.Offset = intTmp;
+                                        objSource.Offset = 0;
+                                    }
+                                    else
+                                    {
+                                        if (!File.Exists(objSource.Path))
+                                            objSource.Path = string.Empty;
+                                        string strSecondPart = strParts[1];
+                                        if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                            objSource.Offset = intTmp;
+                                    }
+                                }
+                                finally
+                                {
+                                    ArrayPool<string>.Shared.Return(strParts);
                                 }
                             }
                         }
@@ -2069,8 +2114,9 @@ namespace Chummer
                         }
 
                         s_DicCustomSourcebookCodes.Clear();
-                        foreach (CharacterSettings objCustomSettings in SettingsManager.LoadedCharacterSettings.Values)
+                        foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in SettingsManager.LoadedCharacterSettings)
                         {
+                            CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
                             foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml",
                                              objCustomSettings.EnabledCustomDataDirectoryPaths, token: token)
                                          .SelectAndCacheExpression("/chummer/books/book", token: token))
@@ -2090,19 +2136,27 @@ namespace Chummer
                                     if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
                                         && !string.IsNullOrEmpty(strTemp))
                                     {
-                                        string[] strParts = strTemp.Split('|');
-                                        objSource.Path = strParts[0];
-                                        if (string.IsNullOrEmpty(objSource.Path))
+                                        string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                                        try
                                         {
-                                            objSource.Path = string.Empty;
-                                            objSource.Offset = 0;
-                                        }
-                                        else
-                                        {
-                                            if (!File.Exists(objSource.Path))
+                                            objSource.Path = strParts[0];
+                                            if (string.IsNullOrEmpty(objSource.Path))
+                                            {
                                                 objSource.Path = string.Empty;
-                                            if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                                objSource.Offset = intTmp;
+                                                objSource.Offset = 0;
+                                            }
+                                            else
+                                            {
+                                                if (!File.Exists(objSource.Path))
+                                                    objSource.Path = string.Empty;
+                                                string strSecondPart = strParts[1];
+                                                if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                                    objSource.Offset = intTmp;
+                                            }
+                                        }
+                                        finally
+                                        {
+                                            ArrayPool<string>.Shared.Return(strParts);
                                         }
                                     }
                                 }
@@ -2152,9 +2206,10 @@ namespace Chummer
                         }
 
                         s_DicCustomSourcebookCodes.Clear();
-                        foreach (CharacterSettings objCustomSettings in (await SettingsManager
-                                     .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)).Values)
+                        foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in (await SettingsManager
+                                     .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)))
                         {
+                            CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
                             foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml",
                                          await objCustomSettings.GetEnabledCustomDataDirectoryPathsAsync(token)
                                              .ConfigureAwait(false), token: token).ConfigureAwait(false))
@@ -2175,19 +2230,27 @@ namespace Chummer
                                     if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
                                         && !string.IsNullOrEmpty(strTemp))
                                     {
-                                        string[] strParts = strTemp.Split('|');
-                                        objSource.Path = strParts[0];
-                                        if (string.IsNullOrEmpty(objSource.Path))
+                                        string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                                        try
                                         {
-                                            objSource.Path = string.Empty;
-                                            objSource.Offset = 0;
-                                        }
-                                        else
-                                        {
-                                            if (!File.Exists(objSource.Path))
+                                            objSource.Path = strParts[0];
+                                            if (string.IsNullOrEmpty(objSource.Path))
+                                            {
                                                 objSource.Path = string.Empty;
-                                            if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                                objSource.Offset = intTmp;
+                                                objSource.Offset = 0;
+                                            }
+                                            else
+                                            {
+                                                if (!File.Exists(objSource.Path))
+                                                    objSource.Path = string.Empty;
+                                                string strSecondPart = strParts[1];
+                                                if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                                    objSource.Offset = intTmp;
+                                            }
+                                        }
+                                        finally
+                                        {
+                                            ArrayPool<string>.Shared.Return(strParts);
                                         }
                                     }
                                 }

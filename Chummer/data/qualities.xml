@@ -5444,7 +5444,7 @@
         </oneof>
       </required>
       <source>RF</source>
-      <page>113</page>
+      <page>114</page>
     </quality>
     <quality>
       <id>27209cc3-756b-4cb2-b6fe-ffec5bd6a072</id>
@@ -15070,14 +15070,12 @@
       <required>
         <allof>
           <magenabled />
-        </allof>
-        <oneof>
           <critterpower>Dual Natured</critterpower>
           <skill>
             <name>Astral Combat</name>
             <val>3</val>
           </skill>
-        </oneof>
+        </allof>
       </required>
       <source>FA</source>
       <page>36</page>

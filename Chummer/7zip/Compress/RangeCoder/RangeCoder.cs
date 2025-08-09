@@ -123,18 +123,13 @@ namespace SevenZip.Compression.RangeCoder
                 {
                     if (_cacheSize > 1)
                     {
-                        byte[] data = ArrayPool<byte>.Shared.Rent(_cacheSize);
-                        try
+                        using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, _cacheSize, out byte[] data))
                         {
                             data[0] = (byte)(_cache + shiftedLow);
                             byte paddingValue = (byte)(0xFF + shiftedLow);
                             for (int i = 1; i < _cacheSize; ++i)
                                 data[i] = paddingValue;
                             Stream.Write(data, 0, _cacheSize);
-                        }
-                        finally
-                        {
-                            ArrayPool<byte>.Shared.Return(data);
                         }
                     }
                     else
@@ -158,18 +153,13 @@ namespace SevenZip.Compression.RangeCoder
                 {
                     if (_cacheSize > 1)
                     {
-                        byte[] data = ArrayPool<byte>.Shared.Rent(_cacheSize);
-                        try
+                        using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, _cacheSize, out byte[] data))
                         {
                             data[0] = (byte)(_cache + shiftedLow);
                             byte paddingValue = (byte)(0xFF + shiftedLow);
                             for (int i = 1; i < _cacheSize; ++i)
                                 data[i] = paddingValue;
                             await Stream.WriteAsync(data, 0, _cacheSize, token).ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            ArrayPool<byte>.Shared.Return(data);
                         }
                     }
                     else
@@ -287,8 +277,7 @@ namespace SevenZip.Compression.RangeCoder
 
             Code = 0;
             Range = 0xFFFFFFFF;
-            byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(5);
-            try
+            using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, 5, out byte[] achrBuffer))
             {
                 _ = Stream.Read(achrBuffer, 0, 5);
                 unchecked
@@ -303,10 +292,6 @@ namespace SevenZip.Compression.RangeCoder
                     }
                 }
             }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(achrBuffer);
-            }
         }
 
         public async Task InitAsync(Stream stream, CancellationToken token = default)
@@ -316,8 +301,7 @@ namespace SevenZip.Compression.RangeCoder
 
             Code = 0;
             Range = 0xFFFFFFFF;
-            byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(5);
-            try
+            using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, 5, out byte[] achrBuffer))
             {
                 _ = await Stream.ReadAsync(achrBuffer, 0, 5, token).ConfigureAwait(false);
                 unchecked
@@ -331,10 +315,6 @@ namespace SevenZip.Compression.RangeCoder
                         }
                     }
                 }
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(achrBuffer);
             }
         }
 
@@ -356,8 +336,7 @@ namespace SevenZip.Compression.RangeCoder
                 int intNumReads = Chummer.IntegerExtensions.DivAwayFromZero((int) (kTopValue / Range), 8);
                 if (intNumReads <= 0)
                     return;
-                byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(intNumReads);
-                try
+                using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, intNumReads, out byte[] achrBuffer))
                 {
                     _ = Stream.Read(achrBuffer, 0, intNumReads);
                     int i = 0;
@@ -373,10 +352,6 @@ namespace SevenZip.Compression.RangeCoder
                         }
                     }
                 }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(achrBuffer);
-                }
             }
         }
 
@@ -388,8 +363,7 @@ namespace SevenZip.Compression.RangeCoder
                 int intNumReads = Chummer.IntegerExtensions.DivAwayFromZero((int)(kTopValue / Range), 8);
                 if (intNumReads <= 0)
                     return;
-                byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(intNumReads);
-                try
+                using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, intNumReads, out byte[] achrBuffer))
                 {
                     _ = await Stream.ReadAsync(achrBuffer, 0, intNumReads, token).ConfigureAwait(false);
                     int i = 0;
@@ -404,10 +378,6 @@ namespace SevenZip.Compression.RangeCoder
                             }
                         }
                     }
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(achrBuffer);
                 }
             }
         }

@@ -286,8 +286,7 @@ namespace Chummer.Controls.Shared
             await objTTypeList.SortAsync((x, y) => _comparisonAsync(x.Item1, y.Item1, token), token: token).ConfigureAwait(false);
 
             // Can't use stackalloc in async methods, so always use array pool instead
-            int[] aintOldDisplayIndex = ArrayPool<int>.Shared.Rent(_lstDisplayIndex.Count);
-            try
+            using (new FetchSafelyFromArrayPool<int>(ArrayPool<int>.Shared, _lstDisplayIndex.Count, out int[] aintOldDisplayIndex))
             {
                 for (int i = 0; i < _lstDisplayIndex.Count; ++i)
                     aintOldDisplayIndex[i] = _lstDisplayIndex[i];
@@ -303,10 +302,6 @@ namespace Chummer.Controls.Shared
                         _ablnRendered[i] &= _lstDisplayIndex[i] == aintOldDisplayIndex[i];
                     }
                 }
-            }
-            finally
-            {
-                ArrayPool<int>.Shared.Return(aintOldDisplayIndex);
             }
         }
 
@@ -324,20 +319,19 @@ namespace Chummer.Controls.Shared
             LoadRange(top, top + toload);
         }
 
-        private Task LoadScreenContentAsync(CancellationToken token = default)
+        private async Task LoadScreenContentAsync(CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
+            token.ThrowIfCancellationRequested();
             if (_lstContentList.Count == 0 || ListItemControlHeight == 0)
-                return Task.CompletedTask;
+                return;
 
             int toload = _blnLoadVisibleOnly
-                ? NumVisibleElements
+                ? await GetNumVisibleElementsAsync(token).ConfigureAwait(false)
                 : _lstContentList.Count;
 
             int top = VerticalScroll.Value / ListItemControlHeight;
 
-            return LoadRangeAsync(top, top + toload, token);
+            await LoadRangeAsync(top, top + toload, token).ConfigureAwait(false);
         }
 
         private int NumVisibleElements
@@ -348,6 +342,14 @@ namespace Chummer.Controls.Shared
                     return 0;
                 return Math.Min(this.DoThreadSafeFunc(x => x.Height) / ListItemControlHeight + 2, _lstContentList.Count);
             }
+        }
+
+        private async Task<int> GetNumVisibleElementsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_lstContentList.Count == 0 || ListItemControlHeight == 0)
+                return 0;
+            return Math.Min(await this.DoThreadSafeFuncAsync(x => x.Height, token).ConfigureAwait(false) / ListItemControlHeight + 2, _lstContentList.Count);
         }
 
         private void ResetDisplayPanelHeight(int intNumVisible = -1)
@@ -417,7 +419,7 @@ namespace Chummer.Controls.Shared
                 end = _lstDisplayIndex.Count;
 
             end = Math.Min(end, firstUnrendered + _intOffScreenChunkSize);
-            using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
+            using (new FetchSafelyFromSafeObjectPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
             {
                 sw.Start();
 

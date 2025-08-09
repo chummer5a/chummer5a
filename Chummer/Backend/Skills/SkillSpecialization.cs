@@ -616,8 +616,8 @@ namespace Chummer.Backend.Skills
                         .Count == 0)
                     {
                         intReturn += Expertise
-                            ? _objCharacter.Settings.ExpertiseBonus
-                            : _objCharacter.Settings.SpecializationBonus;
+                            ? CharacterSettings.ExpertiseBonus
+                            : CharacterSettings.SpecializationBonus;
                     }
 
                     decimal decBonus = 0;
@@ -661,10 +661,9 @@ namespace Chummer.Backend.Skills
                            .ConfigureAwait(false))
                     .Count == 0)
                 {
-                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
                     intReturn += await GetExpertiseAsync(token).ConfigureAwait(false)
-                        ? objSettings.ExpertiseBonus
-                        : objSettings.SpecializationBonus;
+                        ? CharacterSettings.ExpertiseBonus
+                        : CharacterSettings.SpecializationBonus;
                 }
 
                 decimal decBonus = 0;

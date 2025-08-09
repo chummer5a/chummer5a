@@ -35,14 +35,14 @@ namespace Chummer
         private CharacterSettings _objSelectedSetting;
         private readonly DebuggableSemaphoreSlim _objLoadContentLocker = new DebuggableSemaphoreSlim();
         private readonly ConcurrentDictionary<MasterIndexEntry, Task<string>> _dicCachedNotes = new ConcurrentDictionary<MasterIndexEntry, Task<string>>();
-        private List<ListItem> _lstFileNamesWithItems = Utils.ListItemListPool.Get();
-        private List<ListItem> _lstItems = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstFileNamesWithItems;
+        private List<ListItem> _lstItems;
         private CancellationTokenSource _objPopulateCharacterSettingsCancellationTokenSource;
         private CancellationTokenSource _objLoadContentCancellationTokenSource;
         private CancellationTokenSource _objRefreshListCancellationTokenSource;
         private CancellationTokenSource _objItemsSelectedIndexChangedCancellationTokenSource;
         private CancellationTokenSource _objCharacterSettingSelectedIndexChangedCancellationTokenSource;
-        private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource;
         private readonly CancellationToken _objGenericToken;
 
         private static async Task<CharacterSettings> GetInitialSetting(CancellationToken token = default)
@@ -89,6 +89,12 @@ namespace Chummer
 
         public MasterIndex()
         {
+            InitializeComponent();
+            this.UpdateLightDarkMode();
+            this.TranslateWinForm();
+            _lstFileNamesWithItems = Utils.ListItemListPool.Get();
+            _lstItems = Utils.ListItemListPool.Get();
+            _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             Disposed += (sender, args) =>
             {
@@ -128,9 +134,6 @@ namespace Chummer
                 Utils.ListItemListPool.Return(ref _lstFileNamesWithItems);
                 Utils.ListItemListPool.Return(ref _lstItems);
             };
-            InitializeComponent();
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
         }
 
         private async Task PopulateCharacterSettings(CancellationToken token = default)
@@ -148,16 +151,17 @@ namespace Chummer
             {
                 token = objJoinedCancellationTokenSource.Token;
                 // Populate the Character Settings list.
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCharacterSettings))
                 {
                     IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
                         = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
-                    foreach (CharacterSettings objSetting in dicCharacterSettings.Values)
+                    foreach (KeyValuePair<string, CharacterSettings> kvpSettings in dicCharacterSettings)
                     {
+                        CharacterSettings objSettings = kvpSettings.Value; // Set up this way to avoid race condition in underlying dictionary
                         lstCharacterSettings.Add(
-                            new ListItem(objSetting,
-                                await objSetting.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                            new ListItem(objSettings,
+                                await objSettings.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
                     }
 
                     lstCharacterSettings.Sort(CompareListItems.CompareNames);
@@ -465,7 +469,7 @@ namespace Chummer
                                 Interlocked.CompareExchange(ref _objSelectedSetting,
                                                             await GetInitialSetting(token).ConfigureAwait(false), null);
                             string strSourceFilter;
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> setValidCodes))
                             {
                                 if (_objSelectedSetting != null)
@@ -620,7 +624,7 @@ namespace Chummer
                                                     }
                                                     else
                                                     {
-                                                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                                                    Utils.ListItemListPool,
                                                                    out List<ListItem> lstItemsNeedingNameChanges))
                                                         {
@@ -749,7 +753,7 @@ namespace Chummer
         {
             try
             {
-                await CommonFunctions.OpenPdfFromControl(sender, _objGenericToken).ConfigureAwait(false);
+                await CommonFunctions.OpenPdfFromControl(sender, _objSelectedSetting, _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -896,11 +900,11 @@ namespace Chummer
                                     {
                                         string strReturn = await CommonFunctions.GetTextFromPdfAsync(
                                             x.Source.ToString(),
-                                            x.EnglishNameOnPage, token: token).ConfigureAwait(false);
+                                            x.EnglishNameOnPage, _objSelectedSetting, token).ConfigureAwait(false);
                                         if (string.IsNullOrEmpty(strReturn))
                                             strReturn = await CommonFunctions.GetTextFromPdfAsync(
                                                                                  x.DisplaySource.ToString(),
-                                                                                 x.TranslatedNameOnPage, token: token)
+                                                                                 x.TranslatedNameOnPage, _objSelectedSetting, token)
                                                                              .ConfigureAwait(false);
                                         return strReturn;
                                     }, token);
@@ -908,7 +912,7 @@ namespace Chummer
                                 return Task.Run(() =>
                                                     CommonFunctions.GetTextFromPdfAsync(
                                                         x.Source.ToString(),
-                                                        x.EnglishNameOnPage, token: token), token);
+                                                        x.EnglishNameOnPage, _objSelectedSetting, token), token);
                             }).ConfigureAwait(false);
                             await txtNotes.DoThreadSafeAsync(x =>
                             {

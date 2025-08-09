@@ -729,12 +729,12 @@
     </weapon>
     <!-- SR5 2050 -->
     <weapon>
-      <name>Hand Razors (fixed) (2050)</name>
+      <name>Hand Razor, Fixed (2050)</name>
       <spec>Striking/Attacking</spec>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
-      <name>Hand Razors (retractable) (2050)</name>
+      <name>Hand Razors, Retractable (2050)</name>
       <spec>Striking/Attacking</spec>
       <useskill>Unarmed Combat</useskill>
     </weapon>

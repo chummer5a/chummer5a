@@ -76,7 +76,7 @@ namespace Chummer
             // See if a Kit with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
             if ((await _objCharacter.LoadDataXPathAsync("packs.xml").ConfigureAwait(false))
-                .TryGetNodeByNameOrId("/chummer/packs/pack", strName, "category = \"Custom\"]")
+                .TryGetNodeByNameOrId("/chummer/packs/pack", strName, "category = 'Custom'")
                 != null)
             {
                 await Program.ShowScrollableMessageBoxAsync(
@@ -728,10 +728,11 @@ namespace Chummer
                                     // <mod>
                                     await objWriter.WriteStartElementAsync("mod").ConfigureAwait(false);
                                     await objWriter.WriteElementStringAsync("name", objMod.Name).ConfigureAwait(false);
-                                    if (objMod.Rating > 0)
+                                    int intRating = await objMod.GetRatingAsync().ConfigureAwait(false);
+                                    if (intRating > 0)
                                         await objWriter
                                             .WriteElementStringAsync(
-                                                "rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                                "rating", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                                             .ConfigureAwait(false);
                                     // </mod>
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);

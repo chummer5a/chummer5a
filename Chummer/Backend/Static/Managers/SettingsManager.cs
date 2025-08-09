@@ -34,6 +34,7 @@ namespace Chummer
         private static int _intDicLoadedCharacterSettingsLoadedStatus = -1;
         private static readonly ConcurrentDictionary<string, CharacterSettings> s_DicLoadedCharacterSettings = new ConcurrentDictionary<string, CharacterSettings>();
         private static readonly FileSystemWatcher s_ObjSettingsFolderWatcher;
+        private static readonly DebuggableSemaphoreSlim s_ObjSettingsFolderWatcherSemaphore;
 
         static SettingsManager()
         {
@@ -50,6 +51,7 @@ namespace Chummer
                 }
             }
 
+            s_ObjSettingsFolderWatcherSemaphore = new DebuggableSemaphoreSlim();
             s_ObjSettingsFolderWatcher = new FileSystemWatcher(strSettingsPath, "*.xml");
             s_ObjSettingsFolderWatcher.BeginInit();
             s_ObjSettingsFolderWatcher.Created += ObjSettingsFolderWatcherOnChanged;
@@ -68,16 +70,40 @@ namespace Chummer
                 switch (e.ChangeType)
                 {
                     case WatcherChangeTypes.Created:
-                        await AddSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath)).ConfigureAwait(false);
+                        await s_ObjSettingsFolderWatcherSemaphore.WaitAsync().ConfigureAwait(false);
+                        try
+                        {
+                            await AddSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath)).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            s_ObjSettingsFolderWatcherSemaphore.Release();
+                        }
                         break;
 
                     case WatcherChangeTypes.Deleted:
-                        await RemoveSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath)).ConfigureAwait(false);
+                        await s_ObjSettingsFolderWatcherSemaphore.WaitAsync().ConfigureAwait(false);
+                        try
+                        {
+                            await RemoveSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath)).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            s_ObjSettingsFolderWatcherSemaphore.Release();
+                        }
                         break;
 
                     case WatcherChangeTypes.Changed:
                     case WatcherChangeTypes.Renamed:
-                        await ReloadSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath)).ConfigureAwait(false);
+                        await s_ObjSettingsFolderWatcherSemaphore.WaitAsync().ConfigureAwait(false);
+                        try
+                        {
+                            await ReloadSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath)).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            s_ObjSettingsFolderWatcherSemaphore.Release();
+                        }
                         break;
                 }
             }
@@ -152,9 +178,10 @@ namespace Chummer
         private static void LoadCharacterSettings()
         {
             _intDicLoadedCharacterSettingsLoadedStatus = 0;
-            foreach (CharacterSettings objSettings in s_DicLoadedCharacterSettings.Values)
-                objSettings.Dispose();
+            List<CharacterSettings> lstSettings = s_DicLoadedCharacterSettings.GetValuesToListSafe();
             s_DicLoadedCharacterSettings.Clear();
+            foreach (CharacterSettings objSettings in lstSettings)
+                objSettings.Dispose();
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
             {
                 CharacterSettings objNewCharacterSettings = new CharacterSettings();
@@ -237,9 +264,10 @@ namespace Chummer
         private static async Task LoadCharacterSettingsAsync(CancellationToken token = default)
         {
             _intDicLoadedCharacterSettingsLoadedStatus = 0;
-            foreach (CharacterSettings objSettings in s_DicLoadedCharacterSettings.Values)
-                await objSettings.DisposeAsync().ConfigureAwait(false);
+            List<CharacterSettings> lstSettings = s_DicLoadedCharacterSettings.GetValuesToListSafe();
             s_DicLoadedCharacterSettings.Clear();
+            foreach (CharacterSettings objSettings in lstSettings)
+                await objSettings.DisposeAsync().ConfigureAwait(false);
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
             {
                 CharacterSettings objNewCharacterSettings = new CharacterSettings();
@@ -444,7 +472,9 @@ namespace Chummer
             }
             finally
             {
-                s_DicLoadedCharacterSettings.TryRemove(strKeyToDelete, out _);
+                if (s_DicLoadedCharacterSettings.TryRemove(strKeyToDelete, out CharacterSettings objRemovedSetting)
+                    && !ReferenceEquals(objRemovedSetting, objSettingsToDelete))
+                    await objRemovedSetting.DisposeAsync().ConfigureAwait(false);
                 await objSettingsToDelete.DisposeAsync().ConfigureAwait(false);
             }
 
@@ -500,7 +530,9 @@ namespace Chummer
                             if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
                                 await objCharacter.SetSettingsKeyAsync(strKey, token).ConfigureAwait(false);
                         }, token: token).ConfigureAwait(false);
-                        s_DicLoadedCharacterSettings.TryRemove(strKeyToDelete, out _);
+                        if (s_DicLoadedCharacterSettings.TryRemove(strKeyToDelete, out CharacterSettings objRemovedSetting)
+                            && !ReferenceEquals(objRemovedSetting, objToDelete))
+                            await objRemovedSetting.DisposeAsync().ConfigureAwait(false);
                         await objToDelete.DisposeAsync().ConfigureAwait(false);
                     }
                 }
@@ -523,7 +555,7 @@ namespace Chummer
             int intReturn = int.MaxValue - ((await objBaselineSettings.GetBuildKarmaAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetBuildKarmaAsync(token).ConfigureAwait(false)).Pow(2)
                                             + (await objBaselineSettings.GetNuyenMaximumBPAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetNuyenMaximumBPAsync(token).ConfigureAwait(false))
                                             .Pow(2))
-                                           .FastSqrt().StandardRound();
+                                           .FastSqrtAndStandardRound();
             int intBaseline = await objOptionsToCheck.GetBuiltInOptionAsync(token).ConfigureAwait(false) ? 5 : 4;
             CharacterBuildMethod eLeftBuildMethod = await objBaselineSettings.GetBuildMethodAsync(token).ConfigureAwait(false);
             CharacterBuildMethod eRightBuildMethod = await objOptionsToCheck.GetBuildMethodAsync(token).ConfigureAwait(false);
@@ -577,7 +609,7 @@ namespace Chummer
                     intReturn -= intMismatchCount * intBaselineCustomDataCount * intBaseline;
             }
 
-            using (new FetchSafelyFromPool<HashSet<string>>(
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
                        Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
             {
                 setDummyBooks.AddRange(await objBaselineSettings.GetBooksAsync(token).ConfigureAwait(false));

@@ -98,7 +98,7 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 _dicSkills.TryRemove(await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false), out _);
-                if (!_dicSkillBackups.Values.Contains(objSkill))
+                if (_dicSkillBackups.All(x => x.Value != objSkill)) // Do not use Values collection to avoid race conditions
                     await objSkill.RemoveAsync(token).ConfigureAwait(false);
             }
             finally
@@ -121,7 +121,8 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 objSkill.MultiplePropertiesChangedAsync -= OnKnowledgeSkillPropertyChanged;
 
-                if (!_dicSkillBackups.Values.Contains(objSkill) && !await KnowsoftSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
+                if (_dicSkillBackups.All(x => x.Value != objSkill) // Do not use Values collection to avoid race conditions
+                    && !await KnowsoftSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
                     await objSkill.RemoveAsync(token).ConfigureAwait(false);
             }
             finally
@@ -142,7 +143,8 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (!_dicSkillBackups.Values.Contains(objSkill) && !await KnowledgeSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
+                if (_dicSkillBackups.All(x => x.Value != objSkill) // Do not use Values collection to avoid race conditions
+                    && !await KnowledgeSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
                     await objSkill.RemoveAsync(token).ConfigureAwait(false);
             }
             finally
@@ -286,17 +288,18 @@ namespace Chummer.Backend.Skills
                             .ForEachAsync(
                                 objSkill => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token),
                                 token: token).ConfigureAwait(false);
-                        foreach (Skill objSkill in _dicSkillBackups.Values)
+                        foreach (KeyValuePair<Guid, Skill> kvpSkill in _dicSkillBackups) // Do not use Values collection to avoid race conditions
                         {
-                            await objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token)
+                            await kvpSkill.Value.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token)
                                 .ConfigureAwait(false);
                         }
                     }
                     else
                     {
-                        foreach (Skill objSkill in _dicSkillBackups.Values)
+                        foreach (KeyValuePair<Guid, Skill> kvpSkill in _dicSkillBackups) // Do not use Values collection to avoid race conditions
                         {
                             token.ThrowIfCancellationRequested();
+                            Skill objSkill = kvpSkill.Value;
                             if (!objSkill.IsKnowledgeSkill)
                                 await objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token)
                                     .ConfigureAwait(false);
@@ -309,8 +312,10 @@ namespace Chummer.Backend.Skills
                         .ForEachAsync(
                             objSkill => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token),
                             token: token).ConfigureAwait(false);
-                    foreach (Skill objSkill in _dicSkillBackups.Values)
+                    foreach (KeyValuePair<Guid, Skill> kvpSkill in _dicSkillBackups) // Do not use Values collection to avoid race conditions
                     {
+                        token.ThrowIfCancellationRequested();
+                        Skill objSkill = kvpSkill.Value;
                         if (objSkill.IsKnowledgeSkill)
                             await objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token)
                                 .ConfigureAwait(false);
@@ -1263,7 +1268,7 @@ namespace Chummer.Backend.Skills
                             _dicSkills.Clear();
                             if (!blnLegacy)
                             {
-                                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                            out HashSet<string>
                                                setSkillIdsToSkip))
                                 {
@@ -1831,7 +1836,7 @@ namespace Chummer.Backend.Skills
 
                             if (!blnDidInitializeInLoad)
                             {
-                                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                            out HashSet<string>
                                                setSkillNames))
                                 {
@@ -2541,7 +2546,9 @@ namespace Chummer.Backend.Skills
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    foreach (Skill objSkill in _dicSkillBackups.Values)
+                    List<Skill> lstSkillBackups = _dicSkillBackups.GetValuesToListSafe();
+                    _dicSkillBackups.Clear();
+                    foreach (Skill objSkill in lstSkillBackups)
                         objSkill.Remove();
                     _lstSkills.ForEach(x => x.Remove(), token);
                     KnowledgeSkills.ForEach(x =>
@@ -2579,7 +2586,9 @@ namespace Chummer.Backend.Skills
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    foreach (Skill objSkill in _dicSkillBackups.Values)
+                    List<Skill> lstSkillBackups = _dicSkillBackups.GetValuesToListSafe();
+                    _dicSkillBackups.Clear();
+                    foreach (Skill objSkill in lstSkillBackups)
                         await objSkill.RemoveAsync(token).ConfigureAwait(false);
                     await _lstSkills.ForEachAsync(x => x.RemoveAsync(token), token).ConfigureAwait(false);
                     await KnowledgeSkills.ForEachAsync(objSkill =>
@@ -3038,27 +3047,18 @@ namespace Chummer.Backend.Skills
                     using (_objCachedKnowledgePointsLock.EnterWriteLock())
                     {
                         string strExpression = _objCharacter.Settings.KnowledgePointsExpression;
-                        if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1
-                            || strExpression.Contains("div"))
+                        if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                       out StringBuilder sbdValue))
-                            {
-                                sbdValue.Append(strExpression);
-                                _objCharacter.AttributeSection
-                                    .ProcessAttributesInXPath(sbdValue, strExpression);
-
-                                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                (bool blnIsSuccess, object objProcess)
-                                    = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString());
-                                _intCachedKnowledgePoints
-                                    = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
-                            }
+                            strExpression = _objCharacter.ProcessAttributesInXPath(strExpression);
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            (bool blnIsSuccess, object objProcess)
+                                = CommonFunctions.EvaluateInvariantXPath(
+                                    strExpression);
+                            _intCachedKnowledgePoints
+                                = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                         }
                         else
-                            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                out _intCachedKnowledgePoints);
+                            _intCachedKnowledgePoints = decValue.StandardRound();
 
                         _intCachedKnowledgePoints += ImprovementManager
                             .ValueOf(_objCharacter,
@@ -3102,28 +3102,20 @@ namespace Chummer.Backend.Skills
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    string strExpression = _objCharacter.Settings.KnowledgePointsExpression;
-                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1
-                        || strExpression.Contains("div"))
+                    string strExpression = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false);
+                    if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                   out StringBuilder sbdValue))
-                        {
-                            sbdValue.Append(strExpression);
-                            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(
-                                sbdValue, strExpression, token: token).ConfigureAwait(false);
-
-                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                            (bool blnIsSuccess, object objProcess)
-                                = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                    sbdValue.ToString(), token).ConfigureAwait(false);
-                            _intCachedKnowledgePoints
-                                = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
-                        }
+                        strExpression = await _objCharacter
+                                .ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                strExpression, token).ConfigureAwait(false);
+                        _intCachedKnowledgePoints
+                            = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                     }
                     else
-                        int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                            out _intCachedKnowledgePoints);
+                        _intCachedKnowledgePoints = decValue.StandardRound();
 
                     _intCachedKnowledgePoints += (await ImprovementManager
                             .ValueOfAsync(_objCharacter,
@@ -3572,9 +3564,10 @@ namespace Chummer.Backend.Skills
                     .SetBuyWithKarmaAsync(await objNewSkill.GetBuyWithKarmaAsync(token).ConfigureAwait(false),
                         token)
                     .ConfigureAwait(false);
-                objExistingSkill.Notes = await objExistingSkill.GetNotesAsync(token).ConfigureAwait(false) +
-                                         await objNewSkill.GetNotesAsync(token).ConfigureAwait(false);
-                objExistingSkill.NotesColor = objNewSkill.NotesColor;
+                await objExistingSkill.SetNotesAsync(
+                    await objExistingSkill.GetNotesAsync(token).ConfigureAwait(false)
+                    + await objNewSkill.GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objExistingSkill.SetNotesColorAsync(await objNewSkill.GetNotesColorAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objExistingSkill.Specializations
                     .AddAsyncRangeWithSortAsync(objNewSkill.Specializations,
                         (x, y) => CompareSpecializationsAsync(x, y, token)
@@ -4092,7 +4085,9 @@ namespace Chummer.Backend.Skills
                     //swallow this
                 }
                 _lstSkillGroups.ForEach(x => x.Dispose());
-                foreach (Skill objSkill in _dicSkillBackups.Values)
+                List<Skill> lstSkillBackups = _dicSkillBackups.GetValuesToListSafe();
+                _dicSkillBackups.Clear();
+                foreach (Skill objSkill in lstSkillBackups)
                     objSkill.Dispose();
                 _dicSkillBackups.Clear();
                 _lstSkills.ForEach(x => x.Dispose());
@@ -4148,9 +4143,10 @@ namespace Chummer.Backend.Skills
                     //swallow this
                 }
                 await _lstSkillGroups.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
-                foreach (Skill objSkill in _dicSkillBackups.Values)
-                    await objSkill.DisposeAsync().ConfigureAwait(false);
+                List<Skill> lstSkillBackups = _dicSkillBackups.GetValuesToListSafe();
                 _dicSkillBackups.Clear();
+                foreach (Skill objSkill in lstSkillBackups)
+                    await objSkill.DisposeAsync().ConfigureAwait(false);
                 await _lstSkills.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 await _lstSkills.DisposeAsync().ConfigureAwait(false);
                 await _lstKnowledgeSkills.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);

@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Buffers;
 using System.Text;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
@@ -46,12 +47,14 @@ namespace Chummer.Benchmarks
     {
         private readonly string _strLongWord;
 
-        [Params(100, 1000, 10000)]
+        [Params(10, 100, 1000, 10000)]
         // ReSharper disable once MemberCanBePrivate.Global
         // ReSharper disable once UnassignedField.Global
         public int N;
-        private static readonly string[] separator = { "rem " };
-        private static readonly char[] separator2 = { ' ' };
+        private const string StringSeparator = "rem ";
+        private const char CharSeparator = ' ';
+        private static readonly string[] separator = { StringSeparator };
+        private static readonly char[] separator2 = { CharSeparator };
 
         public ForeachSplitComparison()
         {
@@ -62,10 +65,10 @@ namespace Chummer.Benchmarks
             };
             StringBuilder sbdLongWord = new StringBuilder(600000);
             foreach (string strWord in astrWords)
-                sbdLongWord.Append(strWord).Append(' ');
+                sbdLongWord.Append(strWord).Append(CharSeparator);
             for (int iI = astrWords.Length; iI < 100000; ++iI)
             {
-                sbdLongWord.Append(astrWords[objRandom.Next(0, astrWords.Length)]).Append(' ');
+                sbdLongWord.Append(astrWords[objRandom.Next(0, astrWords.Length)]).Append(CharSeparator);
             }
             --sbdLongWord.Length;
             _strLongWord = sbdLongWord.ToString();
@@ -96,11 +99,35 @@ namespace Chummer.Benchmarks
         {
             string strBaseWord = _strLongWord.Substring((_strLongWord.Length - N) / 2, N);
             bool blnDummy = false;
-            foreach (string strWord in strBaseWord.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries))
+            foreach (string strWord in strBaseWord.SplitNoAlloc(CharSeparator, StringSplitOptions.RemoveEmptyEntries))
             {
                 blnDummy = strWord.Length > 3;
             }
             return blnDummy;
+        }
+
+        /// <summary>
+        /// Replace with a more suitable name in practice.
+        /// </summary>
+        /// <returns>Doesn't matter for benchmarks, but makes sure that key code isn't optimized away.</returns>
+        [Benchmark]
+        public bool ForeachSplitToPooledArray()
+        {
+            string strBaseWord = _strLongWord.Substring((_strLongWord.Length - N) / 2, N);
+            bool blnDummy = false;
+            string[] astrSplit = strBaseWord.SplitToPooledArray(out int intLength, CharSeparator, StringSplitOptions.RemoveEmptyEntries);
+            try
+            {
+                for (int i = 0; i < intLength; ++i)
+                {
+                    blnDummy = astrSplit[i].Length > 3;
+                }
+                return blnDummy;
+            }
+            finally
+            {
+                ArrayPool<string>.Shared.Return(astrSplit);
+            }
         }
 
         /// <summary>
@@ -128,11 +155,35 @@ namespace Chummer.Benchmarks
         {
             string strBaseWord = _strLongWord.Substring((_strLongWord.Length - N) / 2, N);
             bool blnDummy = false;
-            foreach (string strWord in strBaseWord.SplitNoAlloc("rem ", StringSplitOptions.RemoveEmptyEntries))
+            foreach (string strWord in strBaseWord.SplitNoAlloc(StringSeparator, StringSplitOptions.RemoveEmptyEntries))
             {
                 blnDummy = strWord.Length > 3;
             }
             return blnDummy;
+        }
+
+        /// <summary>
+        /// Replace with a more suitable name in practice.
+        /// </summary>
+        /// <returns>Doesn't matter for benchmarks, but makes sure that key code isn't optimized away.</returns>
+        [Benchmark]
+        public bool ForeachSplitToPooledArrayString()
+        {
+            string strBaseWord = _strLongWord.Substring((_strLongWord.Length - N) / 2, N);
+            bool blnDummy = false;
+            string[] astrSplit = strBaseWord.SplitToPooledArray(out int intLength, StringSeparator, StringSplitOptions.RemoveEmptyEntries);
+            try
+            {
+                for (int i = 0; i < intLength; ++i)
+                {
+                    blnDummy = astrSplit[i].Length > 3;
+                }
+                return blnDummy;
+            }
+            finally
+            {
+                ArrayPool<string>.Shared.Return(astrSplit);
+            }
         }
     }
 }

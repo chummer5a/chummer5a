@@ -33,7 +33,7 @@ namespace Chummer
     /// <summary>
     /// A Stacked Focus.
     /// </summary>
-    [DebuggerDisplay("{Name(GlobalSettings.DefaultLanguage)}")]
+    [DebuggerDisplay("{Name(\"en-us\")}")]
     public sealed class StackedFocus : IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;
@@ -186,6 +186,24 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return Gear.Sum(x => x.Rating);
+            }
+        }
+
+        /// <summary>
+        /// The Stacked Focus' total Force.
+        /// </summary>
+        public async Task<int> GetTotalForceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await Gear.SumAsync(x => x.GetRatingAsync(token), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -479,7 +497,7 @@ namespace Chummer
         /// </summary>
         public string Name(CultureInfo objCulture, string strLanguage)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
                 using (LockObject.EnterReadLock())
@@ -503,7 +521,7 @@ namespace Chummer
         /// </summary>
         public async Task<string> NameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);

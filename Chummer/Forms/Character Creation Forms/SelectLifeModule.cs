@@ -174,7 +174,7 @@ namespace Chummer
                 string strSource = (await SourceString.GetSourceStringAsync(xmlSelectedNodeInfo["source"]?.InnerText,
                                                                             strPage: xmlSelectedNodeInfo["altpage"]?.InnerText
                                                                             ?? xmlSelectedNodeInfo["page"]?.InnerText,
-                                                                            objCharacter: _objCharacter).ConfigureAwait(false))
+                                                                            objSettings: await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).ConfigureAwait(false))
                                                .ToString();
                 string strStage = xmlSelectedNodeInfo["stage"]?.InnerText
                                   ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
@@ -216,7 +216,7 @@ namespace Chummer
             {
                 if (await cboStage.DoThreadSafeFuncAsync(x => x.DataSource == null).ConfigureAwait(false))
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstStages))
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstStages))
                     {
                         lstStages.Add(new ListItem("0", await LanguageManager.GetStringAsync("String_All").ConfigureAwait(false)));
 

@@ -46,28 +46,30 @@ namespace Chummer
 
         private readonly XPathNavigator _xmlBaseVehicleDataNode;
         private readonly Character _objCharacter;
-        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private HashSet<string> _setDealerConnectionMaps = Utils.StringHashSetPool.Get();
-        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private List<ListItem> _lstCategory;
+        private HashSet<string> _setDealerConnectionMaps;
+        private HashSet<string> _setBlackMarketMaps;
         private bool _blnBlackMarketDiscount;
 
         private CancellationTokenSource _objUpdateSelectedVehicleCancellationTokenSource;
         private CancellationTokenSource _objUpdateSelectedVehicleCostCancellationTokenSource;
         private CancellationTokenSource _objDoRefreshListCancellationTokenSource;
-        private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _objGenericCancellationTokenSource;
         private readonly CancellationToken _objGenericToken;
 
         #region Control Events
 
         public SelectVehicle(Character objCharacter)
         {
-            Disposed += (sender, args) =>
-            {
-                Utils.ListItemListPool.Return(ref _lstCategory);
-                Utils.StringHashSetPool.Return(ref _setDealerConnectionMaps);
-                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
-            };
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            InitializeComponent();
+            tabViews.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            this.UpdateLightDarkMode();
+            this.TranslateWinForm();
+            _lstCategory = Utils.ListItemListPool.Get();
+            _setDealerConnectionMaps = Utils.StringHashSetPool.Get();
+            _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+            _objGenericCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             Disposed += (sender, args) =>
             {
@@ -90,14 +92,10 @@ namespace Chummer
                     objOldCancellationTokenSource.Dispose();
                 }
                 _objGenericCancellationTokenSource.Dispose();
+                Utils.ListItemListPool.Return(ref _lstCategory);
+                Utils.StringHashSetPool.Return(ref _setDealerConnectionMaps);
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             };
-            InitializeComponent();
-            tabViews.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
-            lblMarkupLabel.Visible = objCharacter.Created;
-            nudMarkup.Visible = objCharacter.Created;
-            lblMarkupPercentLabel.Visible = objCharacter.Created;
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode));
@@ -127,8 +125,15 @@ namespace Chummer
                     NullValue = null
                 };
                 dgvc_Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
+
+                bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync(_objGenericToken).ConfigureAwait(false);
+                await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount, _objGenericToken).ConfigureAwait(false);
+
                 if (await _objCharacter.GetCreatedAsync(_objGenericToken).ConfigureAwait(false))
                 {
+                    await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
+                    await nudMarkup.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
+                    await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
                     await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                     {
                         x.Visible = false;
@@ -137,17 +142,17 @@ namespace Chummer
                 }
                 else
                 {
+                    await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
+                    await nudMarkup.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
+                    await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
+                    int intMaxAvail = await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetMaximumAvailabilityAsync(_objGenericToken).ConfigureAwait(false);
                     await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                     {
-                        x.Text = string.Format(
-                            GlobalSettings.CultureInfo, x.Text,
-                            _objCharacter.Settings.MaximumAvailability);
+                        x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
+                        x.Visible = true;
                         x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                     }, _objGenericToken).ConfigureAwait(false);
                 }
-
-                bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync(_objGenericToken).ConfigureAwait(false);
-                await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount, _objGenericToken).ConfigureAwait(false);
 
                 // Populate the Vehicle Category list.
                 string strFilterPrefix = "vehicles/vehicle[(" + await _objCharacter.Settings.BookXPathAsync(token: _objGenericToken).ConfigureAwait(false) + ") and category = ";
@@ -587,7 +592,7 @@ namespace Chummer
                         .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty, token)
                         .ConfigureAwait(false);
                     string strFilter = string.Empty;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
                         sbdFilter.Append('(')
                             .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
@@ -598,7 +603,7 @@ namespace Chummer
                             sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                         else
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                        out StringBuilder sbdCategoryFilter))
                             {
                                 foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
@@ -702,7 +707,7 @@ namespace Chummer
                                             ?.Value))
                                     decCostMultiplier *= 0.9m;
                                 if (!await objXmlVehicle
-                                        .CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token)
+                                        .CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, token: token)
                                         .ConfigureAwait(false))
                                 {
                                     ++intOverLimit;
@@ -744,7 +749,7 @@ namespace Chummer
                                 string strMods;
                                 string strWeapons;
                                 string strMounts;
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdGear))
                                 {
                                     foreach (Gear objGear in objVehicle.GearChildren)
@@ -759,7 +764,7 @@ namespace Chummer
                                     strGear = sbdGear.ToString();
                                 }
 
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdMods))
                                 {
                                     await objVehicle.Mods.ForEachAsync(async objMod =>
@@ -774,7 +779,7 @@ namespace Chummer
                                     strMods = sbdMods.ToString();
                                 }
 
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdWeapons))
                                 {
                                     if (sbdWeapons.Length > 0)
@@ -788,7 +793,7 @@ namespace Chummer
                                     strWeapons = sbdWeapons.ToString();
                                 }
 
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdWeaponMounts))
                                 {
                                     await objVehicle.WeaponMounts.ForEachAsync(async objWeaponMount =>
@@ -813,9 +818,9 @@ namespace Chummer
                                     GlobalSettings.Language, GlobalSettings.CultureInfo,
                                     _objCharacter, token).ConfigureAwait(false);
                                 NuyenString strCost =
-                                    new NuyenString(
+                                    await NuyenString.GetNuyenStringAsync(
                                         (await objVehicle.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
-                                            GlobalSettings.CultureInfo));
+                                            GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
                                 tabVehicles.Rows.Add(strID, strVehicleName, strAccel, strArmor, strBody,
                                     strHandling, strPilot, strSensor, strSpeed, strSeats,
                                     strGear, strMods,
@@ -849,7 +854,7 @@ namespace Chummer
                 {
                     decimal decNuyen = blnFreeItem || !blnShowOnlyAffordItems ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstVehicles))
                     {
                         foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
@@ -874,7 +879,7 @@ namespace Chummer
                                                                               "category", token)
                                                                       ?.Value))
                                     decCostMultiplier *= 0.9m;
-                                if (!await objXmlVehicle.CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token).ConfigureAwait(false))
+                                if (!await objXmlVehicle.CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, token: token).ConfigureAwait(false))
                                 {
                                     ++intOverLimit;
                                     continue;
@@ -1022,11 +1027,8 @@ namespace Chummer
 
             if (await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
             {
-                decimal decCost = xmlVehicle != null
-                    ? Convert.ToDecimal(
-                        xmlVehicle.SelectSingleNodeAndCacheExpression("cost", token)
-                        ?.Value, GlobalSettings.InvariantCultureInfo)
-                    : 0;
+                decimal.TryParse(xmlVehicle?.SelectSingleNodeAndCacheExpression("cost", token)?.Value,
+                    NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCost);
                 decCost *= 1 - await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value, token: token)
                     .ConfigureAwait(false) / 100.0m;
 

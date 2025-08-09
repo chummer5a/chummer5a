@@ -497,7 +497,7 @@ namespace Chummer
             int intLastWin32Error = Marshal.GetLastWin32Error();
             if (intLastWin32Error == 122) // ERROR_INSUFFICIENT_BUFFER
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdBuffer))
                 {
                     if (GetDefaultPrinter(sbdBuffer, ref ptrBuffer))
