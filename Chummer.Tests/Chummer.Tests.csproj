@@ -165,10 +165,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="MSTest" Version="3.10.1" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.10.1" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.10.1" />
     <PackageReference Include="XMLUnit.Core" Version="2.11.1" />
   </ItemGroup>
 </Project>
