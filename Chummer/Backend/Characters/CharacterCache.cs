@@ -683,61 +683,58 @@ namespace Chummer
         public async Task OnDefaultDoubleClick(object sender, EventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            string strFilePath = string.Empty;
+            Character objOpenCharacter;
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 string strFileName = await GetFileNameAsync(token).ConfigureAwait(false);
-                Character objOpenCharacter = await Program.OpenCharacters
+                objOpenCharacter = await Program.OpenCharacters
                     .FirstOrDefaultAsync(x => string.Equals(x.FileName, strFileName, StringComparison.Ordinal), token)
                     .ConfigureAwait(false);
                 if (objOpenCharacter == null)
                 {
-                    string strFilePath = await GetFilePathAsync(token).ConfigureAwait(false);
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program
-                               .CreateAndShowProgressBarAsync(
-                                   strFilePath, Character.NumLoadingSections, token)
-                               .ConfigureAwait(false))
-                        objOpenCharacter = await Program
-                            .LoadCharacterAsync(strFilePath, frmLoadingBar: frmLoadingBar.MyForm, token: token)
-                            .ConfigureAwait(false);
+                    strFilePath = await GetFilePathAsync(token).ConfigureAwait(false);
                 }
-
-                if (!await Program.SwitchToOpenCharacter(objOpenCharacter, token).ConfigureAwait(false))
-                    await Program.OpenCharacter(objOpenCharacter, token: token).ConfigureAwait(false);
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+
+            if (!string.IsNullOrEmpty(strFilePath))
+            {
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program
+                               .CreateAndShowProgressBarAsync(
+                                   strFilePath, Character.NumLoadingSections, token)
+                               .ConfigureAwait(false))
+                    objOpenCharacter = await Program
+                        .LoadCharacterAsync(strFilePath, frmLoadingBar: frmLoadingBar.MyForm, token: token)
+                        .ConfigureAwait(false);
+            }
+
+            if (!await Program.SwitchToOpenCharacter(objOpenCharacter, token).ConfigureAwait(false))
+                await Program.OpenCharacter(objOpenCharacter, token: token).ConfigureAwait(false);
         }
 
         public async Task OnDefaultContextMenuDeleteClick(object sender, EventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            if (sender is TreeNode t)
             {
-                token.ThrowIfCancellationRequested();
-                if (sender is TreeNode t)
+                switch (t.Parent.Tag?.ToString())
                 {
-                    switch (t.Parent.Tag?.ToString())
-                    {
-                        case "Recent":
-                            await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-                            break;
+                    case "Recent":
+                        await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
+                        break;
 
-                        case "Favorite":
-                            await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-                            break;
-                    }
+                    case "Favorite":
+                        await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
+                        break;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1097,27 +1094,18 @@ namespace Chummer
         public async Task OnDefaultKeyDown(object sender, Tuple<KeyEventArgs, TreeNode> args, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            if (args?.Item1.KeyCode == Keys.Delete)
             {
-                token.ThrowIfCancellationRequested();
-                if (args?.Item1.KeyCode == Keys.Delete)
+                switch (args.Item2.Parent.Tag.ToString())
                 {
-                    switch (args.Item2.Parent.Tag.ToString())
-                    {
-                        case "Recent":
-                            await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            break;
+                    case "Recent":
+                        await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        break;
 
-                        case "Favorite":
-                            await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            break;
-                    }
+                    case "Favorite":
+                        await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        break;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
