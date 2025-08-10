@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -5959,9 +5960,7 @@ namespace Chummer
                                                 CritterPower objPower = new CritterPower(objMerge);
                                                 string strSelect = objXmlPower.Attributes?["select"]?.InnerText
                                                                     ?? string.Empty;
-                                                int intRating = Convert.ToInt32(
-                                                    objXmlPower.Attributes?["rating"]?.InnerText,
-                                                    GlobalSettings.InvariantCultureInfo);
+                                                int.TryParse(objXmlPower.Attributes?["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
 
                                                 await objPower.CreateAsync(objXmlCritterPower, intRating, strSelect, GenericToken).ConfigureAwait(false);
 
@@ -9151,9 +9150,8 @@ namespace Chummer
                         if (await objSelectedQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Negative
                             || objXmlDeleteQuality?.SelectSingleNodeAndCacheExpression("refundkarmaonremove", token: token) != null)
                         {
-                            intBP = Convert.ToInt32(
-                                objXmlDeleteQuality?.SelectSingleNodeAndCacheExpression("karma", token: token)?.Value,
-                                GlobalSettings.InvariantCultureInfo) * await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
+                            int.TryParse(objXmlDeleteQuality?.SelectSingleNodeAndCacheExpression("karma", token: token)?.Value, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intBP);
+                            intBP *= await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
                             if (blnCompleteDelete)
                                 intBP *= await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false);
                             if (!await CharacterObjectSettings.GetDontDoubleQualityPurchasesAsync(token).ConfigureAwait(false) && objSelectedQuality.DoubleCost)
@@ -11079,10 +11077,8 @@ namespace Chummer
 
                             ArmorMod objMod = new ArmorMod(CharacterObject);
                             List<Weapon> lstWeapons = new List<Weapon>(1);
-                            int intRating
-                                = Convert.ToInt32(objXmlArmor["maxrating"]?.InnerText,
-                                      GlobalSettings.InvariantCultureInfo)
-                                  > 1
+                            int.TryParse(objXmlArmor["maxrating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intMaxRating);
+                            int intRating = intMaxRating > 1
                                     ? frmPickArmorMod.MyForm.SelectedRating
                                     : 0;
 
@@ -27422,9 +27418,7 @@ namespace Chummer
                                 continue;
                             XmlNode objXmlChildCyberware
                                 = objXmlDocument.TryGetNodeByNameOrId("/chummer/" + strXPathPrefix, strChildName);
-                            int intChildRating
-                                = Convert.ToInt32(objXmlChild["rating"]?.InnerText,
-                                    GlobalSettings.InvariantCultureInfo);
+                            int.TryParse(objXmlChild["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intChildRating);
 
                             await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AddAsync(await CreateSuiteCyberware(objXmlChild,
                                 objXmlChildCyberware, objGrade,
@@ -27511,9 +27505,7 @@ namespace Chummer
                                     continue;
                                 XmlNode objXmlCyberware = objXmlDocument.TryGetNodeByNameOrId(
                                     "/chummer/" + strType + "s/" + strType, strItemName);
-                                int intRating
-                                    = Convert.ToInt32(xmlItem["rating"]?.InnerText,
-                                        GlobalSettings.InvariantCultureInfo);
+                                int.TryParse(xmlItem["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
 
                                 Cyberware objCyberware
                                     = await CreateSuiteCyberware(xmlItem, objXmlCyberware, objGrade, intRating,

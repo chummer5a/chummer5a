@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -993,16 +994,15 @@ namespace Chummer
             {
                 await chkModifier.DoThreadSafeAsync(x =>
                 {
-                    if (x.Visible && x.Checked)
+                    if (x.Visible && x.Checked && int.TryParse(x.Tag.ToString(), NumberStyles.Integer,
+                                GlobalSettings.InvariantCultureInfo, out int intDummy))
                     {
                         if (x == chkModifier3 && strCategory == "Combat")
-                            intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo)
-                                     * intNumberOfEffects;
+                            intDV += intDummy * intNumberOfEffects;
                         else if (x == chkModifier6 && strCategory == "Manipulation")
-                            intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo)
-                                     * intNumberOfEffects;
+                            intDV += intDummy * intNumberOfEffects;
                         else
-                            intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo);
+                            intDV += intDummy;
                     }
                 }, token: token).ConfigureAwait(false);
             }
@@ -1012,16 +1012,15 @@ namespace Chummer
                 {
                     await chkModifier.DoThreadSafeAsync(x =>
                     {
-                        if (x.Visible && x.Checked)
+                        if (x.Visible && x.Checked && int.TryParse(x.Tag.ToString(), NumberStyles.Integer,
+                                GlobalSettings.InvariantCultureInfo, out int intDummy))
                         {
                             if (x == chkModifier3 && strCategory == "Combat")
-                                intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo)
-                                         * intNumberOfEffects;
+                                intDV += intDummy * intNumberOfEffects;
                             else if (x == chkModifier6 && strCategory == "Manipulation")
-                                intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo)
-                                         * intNumberOfEffects;
+                                intDV += intDummy * intNumberOfEffects;
                             else
-                                intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo);
+                                intDV += intDummy;
                         }
                     }, token: token).ConfigureAwait(false);
                 }

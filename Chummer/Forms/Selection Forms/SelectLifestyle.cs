@@ -1056,7 +1056,8 @@ namespace Chummer
                 await _objLifestyle.SetBonusLPAsync(await nudBonusLP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
 
             // Get the starting Nuyen information.
-            await _objLifestyle.SetDiceAsync(Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+            if (int.TryParse(objXmlLifestyle["dice"]?.InnerText, System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intDice))
+                await _objLifestyle.SetDiceAsync(intDice, token).ConfigureAwait(false);
             await _objLifestyle.SetMultiplierAsync(Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
             SelectedLifestyle = _objLifestyle;
             await this.DoThreadSafeAsync(x =>

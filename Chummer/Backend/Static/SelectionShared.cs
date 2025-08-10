@@ -407,7 +407,7 @@ namespace Chummer
                     int intExtendedLimit = intLimit;
                     string strLimitWithInclusions = xmlNode.SelectSingleNodeAndCacheExpression("limitwithinclusions", token)?.Value;
                     if (!string.IsNullOrEmpty(strLimitWithInclusions))
-                        intExtendedLimit = Convert.ToInt32(strLimitWithInclusions, GlobalSettings.InvariantCultureInfo);
+                        int.TryParse(strLimitWithInclusions, System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intExtendedLimit);
                     int intCount = 0;
                     int intExtendedCount = 0;
                     if (objListToCheck != null || blnCheckCyberwareChildren)
@@ -1956,18 +1956,15 @@ namespace Chummer
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
-                                      ? LanguageManager.GetString(
-                                          "String_InitiateGrade",
-                                          token: token)
-                                      : await LanguageManager.GetStringAsync(
-                                          "String_InitiateGrade",
-                                          token: token).ConfigureAwait(false))
+                                      ? LanguageManager.GetString("String_InitiateGrade", token: token)
+                                      : await LanguageManager.GetStringAsync("String_InitiateGrade", token: token).ConfigureAwait(false))
                                   + strSpace + '≥' + strSpace + strNodeInnerText;
+                    int.TryParse(strNodeInnerText, System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intGrade);
                     return new Tuple<bool, string>(
                         (blnSync
                             ? objCharacter.InitiateGrade
                             : await objCharacter.GetInitiateGradeAsync(token).ConfigureAwait(false))
-                        >= Convert.ToInt32(strNodeInnerText, GlobalSettings.InvariantCultureInfo), strName);
+                        >= intGrade, strName);
                 }
                 case "martialart":
                 {

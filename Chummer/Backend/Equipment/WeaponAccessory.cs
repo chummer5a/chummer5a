@@ -403,8 +403,7 @@ namespace Chummer.Backend.Equipment
                                                            objXmlAccessoryGearNameAttributes?["addimprovements"]
                                                                ?.InnerText != bool.FalseString;
                             if (objXmlAccessoryGear["rating"] != null)
-                                intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText,
-                                    GlobalSettings.InvariantCultureInfo);
+                                int.TryParse(objXmlAccessoryGear["rating"].InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intGearRating);
                             if (objXmlAccessoryGearNameAttributes?["qty"] != null)
                             {
                                 decimal.TryParse(objXmlAccessoryGearNameAttributes["qty"].InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decGearQty);

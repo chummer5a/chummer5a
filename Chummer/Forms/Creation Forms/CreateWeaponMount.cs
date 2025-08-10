@@ -928,9 +928,10 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strSelectedId))
                             continue;
                         XmlNode xmlLoopNode = _xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strSelectedId);
-                        if (xmlLoopNode != null)
+                        if (xmlLoopNode != null && int.TryParse(xmlLoopNode["slots"]?.InnerText, NumberStyles.Integer,
+                                GlobalSettings.InvariantCultureInfo, out int intDummy))
                         {
-                            intSlots += Convert.ToInt32(xmlLoopNode["slots"]?.InnerText, GlobalSettings.InvariantCultureInfo);
+                            intSlots += intDummy;
                         }
                     }
 

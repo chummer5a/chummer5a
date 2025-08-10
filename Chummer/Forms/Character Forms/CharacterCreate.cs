@@ -7352,10 +7352,9 @@ namespace Chummer
 
                                 ArmorMod objMod = new ArmorMod(CharacterObject);
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
+                                int.TryParse(objXmlArmor["maxrating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intMaxRating);
                                 int intRating
-                                    = Convert.ToInt32(objXmlArmor?["maxrating"]?.InnerText,
-                                          GlobalSettings.InvariantCultureInfo)
-                                      > 1
+                                    = intMaxRating > 1
                                         ? frmPickArmorMod.MyForm.SelectedRating
                                         : 0;
 
@@ -22151,10 +22150,7 @@ namespace Chummer
                                 continue;
                             XmlNode objXmlChildCyberware = objXmlDocument.TryGetNodeByNameOrId(
                                 "/chummer/" + strType + "s/" + strType, strName);
-                            int intChildRating
-                                = Convert.ToInt32(objXmlChild["rating"]?.InnerText,
-                                    GlobalSettings.InvariantCultureInfo);
-
+                            int.TryParse(objXmlChild["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intChildRating);
                             await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AddAsync(await CreateSuiteCyberware(objXmlChild,
                                 objXmlChildCyberware, objGrade,
                                 intChildRating, eSource, token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -22459,10 +22455,10 @@ namespace Chummer
                                     EntityType = SpiritType.Spirit,
                                     Name = objXmlSpirit["name"].InnerText
                                 };
-                                await objSpirit.SetForceAsync(Convert.ToInt32(objXmlSpirit["force"].InnerText,
-                                    GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
-                                await objSpirit.SetServicesOwedAsync(Convert.ToInt32(objXmlSpirit["services"].InnerText,
-                                    GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                                int.TryParse(objXmlSpirit["force"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intForce);
+                                await objSpirit.SetForceAsync(intForce, token).ConfigureAwait(false);
+                                int.TryParse(objXmlSpirit["services"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intServices);
+                                await objSpirit.SetServicesOwedAsync(intServices, token).ConfigureAwait(false);
                                 await CharacterObject.Spirits.AddAsync(objSpirit, token).ConfigureAwait(false);
                             }
                         }
@@ -22487,14 +22483,12 @@ namespace Chummer
                         await objLifestyle.CreateAsync(objXmlLifestyleNode, token).ConfigureAwait(false);
                         // This is an Advanced Lifestyle, so build it manually.
                         objLifestyle.CustomName = objXmlLifestyle["name"]?.InnerText ?? string.Empty;
-                        objLifestyle.Comforts
-                            = Convert.ToInt32(objXmlLifestyle["comforts"]?.InnerText,
-                                GlobalSettings.InvariantCultureInfo);
-                        objLifestyle.Security
-                            = Convert.ToInt32(objXmlLifestyle["security"]?.InnerText,
-                                GlobalSettings.InvariantCultureInfo);
-                        objLifestyle.Area
-                            = Convert.ToInt32(objXmlLifestyle["area"]?.InnerText, GlobalSettings.InvariantCultureInfo);
+                        int.TryParse(objXmlLifestyle["comforts"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intComforts);
+                        objLifestyle.Comforts = intComforts;
+                        int.TryParse(objXmlLifestyle["security"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intSecurity);
+                        objLifestyle.Security = intSecurity;
+                        int.TryParse(objXmlLifestyle["area"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intArea);
+                        objLifestyle.Area = intArea;
 
                         foreach (XmlNode objXmlQuality in objXmlLifestyle.SelectNodes("qualities/quality"))
                         {
@@ -22540,9 +22534,9 @@ namespace Chummer
                         Armor objArmor = new Armor(CharacterObject);
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
+                        int.TryParse(objXmlArmor["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
                         await objArmor.CreateAsync(objXmlArmorNode,
-                            Convert.ToInt32(objXmlArmor["rating"]?.InnerText,
-                                GlobalSettings.InvariantCultureInfo), lstWeapons, false,
+                            intRating, lstWeapons, false,
                             blnCreateChildren, token: token).ConfigureAwait(false);
                         await CharacterObject.Armor.AddAsync(objArmor, token).ConfigureAwait(false);
 
@@ -22555,10 +22549,8 @@ namespace Chummer
                             if (objXmlModNode != null)
                             {
                                 ArmorMod objMod = new ArmorMod(CharacterObject);
-                                int intRating = 0;
                                 if (objXmlMod["rating"] != null)
-                                    intRating = Convert.ToInt32(objXmlMod["rating"].InnerText,
-                                        GlobalSettings.InvariantCultureInfo);
+                                    int.TryParse(objXmlMod["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intRating);
                                 await objMod.CreateAsync(objXmlModNode, intRating, lstWeapons, token: token)
                                     .ConfigureAwait(false);
 
@@ -23648,9 +23640,7 @@ namespace Chummer
                                 XmlNode objXmlCyberware
                                     = objXmlDocument.TryGetNodeByNameOrId(
                                         "/chummer/" + strXPathPrefix, strName);
-                                int intRating
-                                    = Convert.ToInt32(xmlItem["rating"]?.InnerText,
-                                        GlobalSettings.InvariantCultureInfo);
+                                int.TryParse(xmlItem["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
 
                                 Cyberware objCyberware
                                     = await CreateSuiteCyberware(xmlItem, objXmlCyberware, objGrade, intRating,
@@ -23697,12 +23687,12 @@ namespace Chummer
             if (objXmlGearNode == null)
                 return null;
 
-            int intRating = Convert.ToInt32(objXmlGear["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo);
+            int.TryParse(objXmlGear["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
             decimal decQty = 1;
             string strQty = objXmlGear["qty"]?.InnerText;
             if (!string.IsNullOrEmpty(strQty))
             {
-                decimal.TryParse(strQty, System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decQty);
+                decimal.TryParse(strQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decQty);
             }
 
             List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -23812,7 +23802,7 @@ namespace Chummer
                 Grade objGrade = await Grade.ConvertToCyberwareGradeAsync(xmlCyberware["grade"]?.InnerText,
                     Improvement.ImprovementSource.Cyberware, CharacterObject, token).ConfigureAwait(false);
 
-                int intRating = Convert.ToInt32(xmlCyberware["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo);
+                int.TryParse(xmlCyberware["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
 
                 Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware;
                 string strName = xmlCyberware["name"]?.InnerText;

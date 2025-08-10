@@ -4448,17 +4448,17 @@ namespace Chummer.Backend.Equipment
                 foreach (VehicleMod objMod in Mods)
                 {
                     string strBonusBoxes = objMod.Bonus?["matrixcmbonus"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strBonusBoxes))
+                    if (!string.IsNullOrEmpty(strBonusBoxes) && int.TryParse(strBonusBoxes, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intLoop))
                     {
                         // Add the Modification's Device Rating to the Vehicle's base Device Rating.
-                        intReturn += Convert.ToInt32(strBonusBoxes, GlobalSettings.InvariantCultureInfo);
+                        intReturn += intLoop;
                     }
                     if (objMod.WirelessOn)
                     {
                         strBonusBoxes = objMod.WirelessBonus?["matrixcmbonus"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strBonusBoxes))
+                        if (!string.IsNullOrEmpty(strBonusBoxes) && int.TryParse(strBonusBoxes, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intLoop2))
                         {
-                            intReturn += Convert.ToInt32(strBonusBoxes, GlobalSettings.InvariantCultureInfo);
+                            intReturn += intLoop2;
                         }
                     }
                 }
@@ -5305,14 +5305,14 @@ namespace Chummer.Backend.Equipment
                 foreach (VehicleMod objMod in Mods)
                 {
                     XmlElement objBonus = objMod.Bonus?[strAttributeNodeName];
-                    if (objBonus != null)
+                    if (objBonus != null && int.TryParse(objBonus.InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intLoop))
                     {
-                        intReturn += Convert.ToInt32(objBonus.InnerText, GlobalSettings.InvariantCultureInfo);
+                        intReturn += intLoop;
                     }
                     objBonus = objMod.WirelessOn ? objMod.WirelessBonus?[strAttributeNodeName] : null;
-                    if (objBonus != null)
+                    if (objBonus != null && int.TryParse(objBonus.InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intLoop2))
                     {
-                        intReturn += Convert.ToInt32(objBonus.InnerText, GlobalSettings.InvariantCultureInfo);
+                        intReturn += intLoop2;
                     }
                 }
             }
@@ -5355,15 +5355,15 @@ namespace Chummer.Backend.Equipment
                 {
                     int intInnerReturn = 0;
                     XmlElement objBonus = objMod.Bonus?[strAttributeNodeName];
-                    if (objBonus != null)
+                    if (objBonus != null && int.TryParse(objBonus.InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intLoop))
                     {
-                        intInnerReturn += Convert.ToInt32(objBonus.InnerText, GlobalSettings.InvariantCultureInfo);
+                        intInnerReturn += intLoop;
                     }
 
                     objBonus = objMod.WirelessOn ? objMod.WirelessBonus?[strAttributeNodeName] : null;
-                    if (objBonus != null)
+                    if (objBonus != null && int.TryParse(objBonus.InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intLoop2))
                     {
-                        intInnerReturn += Convert.ToInt32(objBonus.InnerText, GlobalSettings.InvariantCultureInfo);
+                        intInnerReturn += intLoop2;
                     }
 
                     return intInnerReturn;
