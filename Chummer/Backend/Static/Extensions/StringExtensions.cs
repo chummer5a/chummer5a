@@ -355,7 +355,7 @@ namespace Chummer
             int intEarliestNeedleIndex = intHaystackLength;
             foreach (string strNeedle in astrNeedles)
             {
-                int intNeedleIndex = strHaystack.IndexOf(strNeedle, intStartIndex, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
+                int intNeedleIndex = strHaystack.IndexOf(strNeedle, intStartIndex, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length) - intStartIndex, eComparison);
                 if (intNeedleIndex >= 0 && intNeedleIndex < intEarliestNeedleIndex)
                     intEarliestNeedleIndex = intNeedleIndex;
             }
@@ -398,7 +398,7 @@ namespace Chummer
             int intEarliestNeedleIndex = intHaystackLength;
             foreach (string strNeedle in astrNeedles)
             {
-                int intNeedleIndex = strHaystack.IndexOf(strNeedle, intStartIndex, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
+                int intNeedleIndex = strHaystack.IndexOf(strNeedle, intStartIndex, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length) - intStartIndex, eComparison);
                 if (intNeedleIndex >= 0 && intNeedleIndex < intEarliestNeedleIndex)
                     intEarliestNeedleIndex = intNeedleIndex;
             }

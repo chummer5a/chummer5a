@@ -48,7 +48,7 @@ namespace Chummer
         private readonly ConcurrentDictionary<Tuple<string, string>, Tuple<string, string>> _dicCache = new ConcurrentDictionary<Tuple<string, string>, Tuple<string, string>>();
         private CancellationTokenSource _objCharacterXmlGeneratorCancellationTokenSource;
         private CancellationTokenSource _objXmlGeneratorCancellationTokenSource;
-        private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
         private Task _tskCharacterXmlGenerator;
         private Task _tskXmlGenerator;
@@ -70,9 +70,14 @@ namespace Chummer
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             Disposed += (sender, args) =>
             {
-                _objGenericFormClosingCancellationTokenSource.Dispose();
-                _objXmlGeneratorCancellationTokenSource?.Dispose();
-                _objCharacterXmlGeneratorCancellationTokenSource?.Dispose();
+                CancellationTokenSource objSource = Interlocked.Exchange(ref _objGenericFormClosingCancellationTokenSource, null);
+                if (objSource != null)
+                {
+                    objSource.Cancel(false);
+                    objSource.Dispose();
+                }
+                Interlocked.Exchange(ref _objXmlGeneratorCancellationTokenSource, null)?.Dispose();
+                Interlocked.Exchange(ref _objCharacterXmlGeneratorCancellationTokenSource, null)?.Dispose();
                 dlgSaveFile?.Dispose();
             };
             _objCharacter = objCharacter;
@@ -469,7 +474,8 @@ namespace Chummer
                                 Task tskNew = _strXslt == "JSON"
                                     ? Task.Run(() => GenerateJson(objToken), objToken)
                                     : Task.Run(() => GenerateXml(objToken), objToken);
-                                if (Interlocked.CompareExchange(ref _tskXmlGenerator, tskNew, null) != null)
+                                tskOld = Interlocked.CompareExchange(ref _tskXmlGenerator, tskNew, null);
+                                if (tskOld != null && tskOld != Task.CompletedTask)
                                 {
                                     Interlocked.CompareExchange(ref _objXmlGeneratorCancellationTokenSource, null, objNewSource);
                                     try
@@ -489,6 +495,8 @@ namespace Chummer
                                         //swallow this
                                     }
                                 }
+                                else
+                                    await tskNew.ConfigureAwait(false);
                             }
                         }
                         finally
@@ -540,7 +548,8 @@ namespace Chummer
                     }
 
                     Task tskNew = Task.Run(() => GenerateCharacterXml(objToken), objToken);
-                    if (Interlocked.CompareExchange(ref _tskCharacterXmlGenerator, tskNew, null) != null)
+                    tskOld = Interlocked.CompareExchange(ref _tskCharacterXmlGenerator, tskNew, null);
+                    if (tskOld != null && tskOld != Task.CompletedTask)
                     {
                         Interlocked.CompareExchange(ref _objCharacterXmlGeneratorCancellationTokenSource, null, objNewSource);
                         try
@@ -560,6 +569,8 @@ namespace Chummer
                             //swallow this
                         }
                     }
+                    else
+                        await tskNew.ConfigureAwait(false);
                 }
             }
         }
@@ -835,63 +846,82 @@ namespace Chummer
 
         private Task SetTextToWorkerResult(string strText, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             string strDisplayText = strText;
-            // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
-            int intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>");
-            while (intSnipStartIndex >= 0)
+            try
             {
-                int intSnipEndIndex = strDisplayText.IndexOf("</mainmugshotbase64>", intSnipStartIndex);
-                if (intSnipEndIndex > intSnipStartIndex)
+                // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
+                int intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>");
+                while (intSnipStartIndex >= 0)
                 {
-                    string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 19);
-                    string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
-                    strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
-                    intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>");
-                }
-                else
-                    intSnipStartIndex = -1;
-            }
-            intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>");
-            while (intSnipStartIndex >= 0)
-            {
-                int intSnipEndIndex = strDisplayText.IndexOf("</stringbase64>", intSnipStartIndex);
-                if (intSnipEndIndex > intSnipStartIndex)
-                {
-                    string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 14);
-                    string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
-                    strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
-                    intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>");
-                }
-                else
-                    intSnipStartIndex = -1;
-            }
-            intSnipStartIndex = strDisplayText.IndexOf("base64\": \"");
-            while (intSnipStartIndex >= 0)
-            {
-                // Special case here, we do not want to get caught up on escaped quotation marks inside of the text
-                int intSnipEndIndex = strDisplayText.IndexOfAny(intSnipStartIndex, "\",", "\\\"");
-                if (intSnipEndIndex > intSnipStartIndex)
-                {
-                    while (strDisplayText[intSnipEndIndex] != '\"')
-                    {
-                        intSnipEndIndex = strDisplayText.IndexOfAny(intSnipEndIndex + 2, "\",", "\\\"");
-                    }
+                    if (token.IsCancellationRequested)
+                        return Task.FromCanceled(token);
+                    int intSnipEndIndex = strDisplayText.IndexOf("</mainmugshotbase64>", intSnipStartIndex);
                     if (intSnipEndIndex > intSnipStartIndex)
                     {
-                        string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 10);
+                        string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 19);
                         string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
                         strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
-                        intSnipStartIndex = strDisplayText.IndexOf("base64\": \"");
+                        intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>");
                     }
                     else
                         intSnipStartIndex = -1;
                 }
-                else
-                    intSnipStartIndex = -1;
+                intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>");
+                while (intSnipStartIndex >= 0)
+                {
+                    if (token.IsCancellationRequested)
+                        return Task.FromCanceled(token);
+                    int intSnipEndIndex = strDisplayText.IndexOf("</stringbase64>", intSnipStartIndex);
+                    if (intSnipEndIndex > intSnipStartIndex)
+                    {
+                        string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 14);
+                        string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
+                        strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
+                        intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>");
+                    }
+                    else
+                        intSnipStartIndex = -1;
+                }
+                intSnipStartIndex = strDisplayText.IndexOf("base64\": \"");
+                while (intSnipStartIndex >= 0)
+                {
+                    if (token.IsCancellationRequested)
+                        return Task.FromCanceled(token);
+                    // Special case here, we do not want to get caught up on escaped quotation marks inside of the text
+                    int intSnipEndIndex = strDisplayText.IndexOfAny(intSnipStartIndex, "\",", "\\\"");
+                    if (intSnipEndIndex > intSnipStartIndex)
+                    {
+                        while (strDisplayText[intSnipEndIndex] != '\"')
+                        {
+                            if (token.IsCancellationRequested)
+                                return Task.FromCanceled(token);
+                            intSnipEndIndex = strDisplayText.IndexOfAny(intSnipEndIndex + 2, "\",", "\\\"");
+                        }
+                        if (intSnipEndIndex > intSnipStartIndex)
+                        {
+                            string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 10);
+                            string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
+                            strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
+                            intSnipStartIndex = strDisplayText.IndexOf("base64\": \"", intSnipStartIndex + 18);
+                        }
+                        else
+                            intSnipStartIndex = -1;
+                    }
+                    else
+                        intSnipStartIndex = -1;
+                }
+                if (token.IsCancellationRequested)
+                    return Task.FromCanceled(token);
+                _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt),
+                    new Tuple<string, string>(strText, strDisplayText),
+                    (a, b) => new Tuple<string, string>(strText, strDisplayText));
             }
-            _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt),
-                new Tuple<string, string>(strText, strDisplayText),
-                (a, b) => new Tuple<string, string>(strText, strDisplayText));
+            catch (Exception e)
+            {
+                return Task.FromException(e);
+            }
             return txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token);
         }
 
