@@ -432,7 +432,7 @@ namespace Chummer
 
             try
             {
-                AsyncLazy<string> strBestMatchNewSettingsKey = new AsyncLazy<string>(async () =>
+                AsyncLazy<string> strBestMatchForCreatedNewSettingsKey = new AsyncLazy<string>(async () =>
                 {
                     int intBestScore = int.MinValue;
                     string strReturn = string.Empty;
@@ -443,7 +443,27 @@ namespace Chummer
                         // ReSharper disable once AccessToDisposedClosure
                         int intLoopScore
                             = await CalculateCharacterSettingsMatchScore(
-                                objSettingsToDelete, x.Value, token).ConfigureAwait(false);
+                                objSettingsToDelete, x.Value, true, token).ConfigureAwait(false);
+                        if (intLoopScore > intBestScore)
+                        {
+                            intBestScore = intLoopScore;
+                            strReturn = x.Key;
+                        }
+                    }, token: token).ConfigureAwait(false);
+                    return strReturn;
+                }, Utils.JoinableTaskFactory);
+                AsyncLazy<string> strBestMatchForNonCreatedNewSettingsKey = new AsyncLazy<string>(async () =>
+                {
+                    int intBestScore = int.MinValue;
+                    string strReturn = string.Empty;
+                    await s_DicLoadedCharacterSettings.ForEachAsync(async x =>
+                    {
+                        if (strKeyToDelete == x.Key)
+                            return;
+                        // ReSharper disable once AccessToDisposedClosure
+                        int intLoopScore
+                            = await CalculateCharacterSettingsMatchScore(
+                                objSettingsToDelete, x.Value, false, token).ConfigureAwait(false);
                         if (intLoopScore > intBestScore)
                         {
                             intBestScore = intLoopScore;
@@ -459,10 +479,13 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
+                        {
                             await objCharacter
-                                .SetSettingsKeyAsync(
-                                    await strBestMatchNewSettingsKey.GetValueAsync(token).ConfigureAwait(false),
+                                .SetSettingsKeyAsync(await objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                                ? await strBestMatchForCreatedNewSettingsKey.GetValueAsync(token).ConfigureAwait(false)
+                                : await strBestMatchForNonCreatedNewSettingsKey.GetValueAsync(token).ConfigureAwait(false),
                                     token).ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -550,27 +573,45 @@ namespace Chummer
             await GlobalSettings.ReloadCustomSourcebookInfosAsync(token).ConfigureAwait(false);
         }
 
-        private static async Task<int> CalculateCharacterSettingsMatchScore(CharacterSettings objBaselineSettings, CharacterSettings objOptionsToCheck, CancellationToken token = default)
+        private static async Task<int> CalculateCharacterSettingsMatchScore(CharacterSettings objBaselineSettings, CharacterSettings objOptionsToCheck, bool blnForCreatedCharacter, CancellationToken token = default)
         {
-            int intReturn = int.MaxValue - ((await objBaselineSettings.GetBuildKarmaAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetBuildKarmaAsync(token).ConfigureAwait(false)).Pow(2)
-                                            + (await objBaselineSettings.GetNuyenMaximumBPAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetNuyenMaximumBPAsync(token).ConfigureAwait(false))
-                                            .Pow(2))
-                                           .FastSqrtAndStandardRound();
+            int intReturn = int.MaxValue;
             int intBaseline = await objOptionsToCheck.GetBuiltInOptionAsync(token).ConfigureAwait(false) ? 5 : 4;
             CharacterBuildMethod eLeftBuildMethod = await objBaselineSettings.GetBuildMethodAsync(token).ConfigureAwait(false);
             CharacterBuildMethod eRightBuildMethod = await objOptionsToCheck.GetBuildMethodAsync(token).ConfigureAwait(false);
-            if (eLeftBuildMethod != eRightBuildMethod)
+            int intDeltaMaxKarma = await objBaselineSettings.GetBuildKarmaAsync(token).ConfigureAwait(false) -  await objOptionsToCheck.GetBuildKarmaAsync(token).ConfigureAwait(false);
+            decimal decDeltaMaxNuyen = await objBaselineSettings.GetNuyenMaximumBPAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetNuyenMaximumBPAsync(token).ConfigureAwait(false);
+            if (blnForCreatedCharacter)
             {
-                if (eLeftBuildMethod.UsesPriorityTables() == eRightBuildMethod.UsesPriorityTables())
+                if (eLeftBuildMethod != eRightBuildMethod)
                 {
-                    intBaseline += 2;
-                    intReturn -= int.MaxValue / 2;
+                    if (eLeftBuildMethod.UsesPriorityTables() == eRightBuildMethod.UsesPriorityTables())
+                        intReturn -= 2;
+                    else
+                        intReturn -= 4;
                 }
-                else
+                if (intDeltaMaxKarma != 0)
+                    intReturn -= Math.Min(Math.Abs(intDeltaMaxKarma), 2);
+                if (decDeltaMaxNuyen != 0)
+                    intReturn -= Math.Min(Math.Abs(decDeltaMaxNuyen).StandardRound(), 2);
+
+            }
+            else
+            {
+                if (eLeftBuildMethod != eRightBuildMethod)
                 {
-                    intBaseline += 4;
-                    intReturn -= int.MaxValue;
+                    if (eLeftBuildMethod.UsesPriorityTables() == eRightBuildMethod.UsesPriorityTables())
+                    {
+                        intBaseline += 2;
+                        intReturn -= int.MaxValue / 2;
+                    }
+                    else
+                    {
+                        intBaseline += 4;
+                        intReturn -= int.MaxValue;
+                    }
                 }
+                intReturn -= (intDeltaMaxKarma.Pow(2) + decDeltaMaxNuyen.Pow(2).StandardRound()).FastSqrtAndStandardRound();
             }
 
             IReadOnlyList<CustomDataDirectoryInfo> setBaselineCustomDataDirectoryInfos = await objBaselineSettings.GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false);
@@ -615,8 +656,9 @@ namespace Chummer
                 setDummyBooks.AddRange(await objBaselineSettings.GetBooksAsync(token).ConfigureAwait(false));
                 IReadOnlyCollection<string> setNewBooks = await objOptionsToCheck.GetBooksAsync(token).ConfigureAwait(false);
                 int intExtraBooks = setNewBooks.Count(x => !setDummyBooks.Remove(x));
-                setDummyBooks.IntersectWith(setNewBooks);
-                intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
+                setDummyBooks.ExceptWith(setNewBooks);
+                // Missing books are weighted a lot more heavily than extra books
+                intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + byte.MaxValue)
                               + intExtraBooks) * intBaseline;
             }
 

@@ -6488,12 +6488,7 @@ namespace Chummer
                                     // should not be considered suitable at all
                                     int CalculateCharacterSettingsMatchScore(CharacterSettings objOptionsToCheck)
                                     {
-                                        int intReturn = int.MaxValue
-                                                        - ((intLegacyMaxKarma - objOptionsToCheck.BuildKarma)
-                                                           .Pow(2)
-                                                           + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
-                                                           .Pow(2))
-                                                          .FastSqrtAndStandardRound();
+                                        int intReturn = int.MaxValue;
 
                                         int intBaseline = objOptionsToCheck.BuiltInOption ? 5 : 4;
 
@@ -6507,20 +6502,32 @@ namespace Chummer
                                                 else
                                                     intReturn -= 4;
                                             }
+                                            if (intLegacyMaxKarma != objOptionsToCheck.BuildKarma)
+                                                intReturn -= Math.Min(Math.Abs(intLegacyMaxKarma - objOptionsToCheck.BuildKarma), 2);
+                                            if (decLegacyMaxNuyen != objOptionsToCheck.NuyenMaximumBP)
+                                                intReturn -= Math.Min(Math.Abs(decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP).StandardRound(), 2);
                                         }
-                                        else if (objOptionsToCheck.BuildMethod != eSavedBuildMethod)
+                                        else
                                         {
-                                            if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
-                                                eSavedBuildMethod.UsesPriorityTables())
+                                            if (objOptionsToCheck.BuildMethod != eSavedBuildMethod)
                                             {
-                                                intBaseline += 2;
-                                                intReturn -= int.MaxValue / 2;
+                                                if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
+                                                    eSavedBuildMethod.UsesPriorityTables())
+                                                {
+                                                    intBaseline += 2;
+                                                    intReturn -= int.MaxValue / 2;
+                                                }
+                                                else
+                                                {
+                                                    intBaseline += 4;
+                                                    intReturn -= int.MaxValue;
+                                                }
                                             }
-                                            else
-                                            {
-                                                intBaseline += 4;
-                                                intReturn -= int.MaxValue;
-                                            }
+                                            intReturn -= ((intLegacyMaxKarma - objOptionsToCheck.BuildKarma)
+                                                           .Pow(2)
+                                                           + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
+                                                           .Pow(2))
+                                                          .FastSqrtAndStandardRound();
                                         }
 
                                         int intBaselineCustomDataCount
@@ -6569,8 +6576,9 @@ namespace Chummer
                                         {
                                             setDummyBooks.AddRange(setSavedBooks);
                                             int intExtraBooks = objOptionsToCheck.Books.Count(x => !setDummyBooks.Remove(x));
-                                            setDummyBooks.IntersectWith(objOptionsToCheck.Books);
-                                            intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
+                                            setDummyBooks.ExceptWith(objOptionsToCheck.Books);
+                                            // Missing books are weighted a lot more heavily than extra books
+                                            intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + byte.MaxValue)
                                                           + intExtraBooks) * intBaseline;
                                         }
 
@@ -6581,12 +6589,7 @@ namespace Chummer
                                     // should not be considered suitable at all
                                     async Task<int> CalculateCharacterSettingsMatchScoreAsync(CharacterSettings objOptionsToCheck)
                                     {
-                                        int intReturn = int.MaxValue
-                                                        - ((intLegacyMaxKarma - objOptionsToCheck.BuildKarma)
-                                                           .Pow(2)
-                                                           + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
-                                                           .Pow(2))
-                                                          .FastSqrtAndStandardRound();
+                                        int intReturn = int.MaxValue;
 
                                         int intBaseline = objOptionsToCheck.BuiltInOption ? 5 : 4;
 
@@ -6600,20 +6603,32 @@ namespace Chummer
                                                 else
                                                     intReturn -= 4;
                                             }
+                                            if (intLegacyMaxKarma != objOptionsToCheck.BuildKarma)
+                                                intReturn -= Math.Min(Math.Abs(intLegacyMaxKarma - objOptionsToCheck.BuildKarma), 2);
+                                            if (decLegacyMaxNuyen != objOptionsToCheck.NuyenMaximumBP)
+                                                intReturn -= Math.Min(Math.Abs(decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP).StandardRound(), 2);
                                         }
-                                        else if (objOptionsToCheck.BuildMethod != eSavedBuildMethod)
+                                        else
                                         {
-                                            if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
-                                                eSavedBuildMethod.UsesPriorityTables())
+                                            if (objOptionsToCheck.BuildMethod != eSavedBuildMethod)
                                             {
-                                                intBaseline += 2;
-                                                intReturn -= int.MaxValue / 2;
+                                                if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
+                                                    eSavedBuildMethod.UsesPriorityTables())
+                                                {
+                                                    intBaseline += 2;
+                                                    intReturn -= int.MaxValue / 2;
+                                                }
+                                                else
+                                                {
+                                                    intBaseline += 4;
+                                                    intReturn -= int.MaxValue;
+                                                }
                                             }
-                                            else
-                                            {
-                                                intBaseline += 4;
-                                                intReturn -= int.MaxValue;
-                                            }
+                                            intReturn -= ((intLegacyMaxKarma - objOptionsToCheck.BuildKarma)
+                                                           .Pow(2)
+                                                           + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
+                                                           .Pow(2))
+                                                          .FastSqrtAndStandardRound();
                                         }
 
                                         IReadOnlyList<CustomDataDirectoryInfo> lstOtherEnabledCustomDataDirectoryInfos
@@ -6667,8 +6682,9 @@ namespace Chummer
                                             IReadOnlyCollection<string> setOtherBooks
                                                 = await objOptionsToCheck.GetBooksAsync(token).ConfigureAwait(false);
                                             int intExtraBooks = setOtherBooks.Count(x => !setDummyBooks.Remove(x));
-                                            setDummyBooks.IntersectWith(setOtherBooks);
-                                            intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
+                                            setDummyBooks.ExceptWith(setOtherBooks);
+                                            // Missing books are weighted a lot more heavily than extra books
+                                            intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + byte.MaxValue)
                                                           + intExtraBooks) * intBaseline;
                                         }
 
