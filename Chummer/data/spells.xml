@@ -3282,9 +3282,10 @@
       <range>Special</range>
       <type>M</type>
        <required>
-        <allof>
+        <oneof>
           <metamagicart>Geomancy</metamagicart>
-        </allof>
+          <tradition>Toxic</tradition>
+        </oneof>
       </required>
     </spell>
     <spell>
