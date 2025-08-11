@@ -3197,8 +3197,9 @@ namespace Chummer.Backend.Equipment
                 Gear objGear = objCurrentClip.AmmoGear;
                 if (objGear == null)
                     return;
-                if (objGear.Quantity > intCurrentAmmo - value)
-                    objGear.Quantity -= intCurrentAmmo - value;
+                decimal decNewQuantity = objGear.Quantity + value - intCurrentAmmo;
+                if (decNewQuantity > 0)
+                    objGear.Quantity = decNewQuantity;
                 else
                     objGear.DeleteGear();
             }
@@ -3223,9 +3224,9 @@ namespace Chummer.Backend.Equipment
                 return Task.CompletedTask;
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
-            int intDiff = intCurrentAmmo - value;
-            if (objGear.Quantity > intDiff)
-                return objGear.SetQuantityAsync(objGear.Quantity - intCurrentAmmo - value, token);
+            decimal decNewQuantity = objGear.Quantity - value - intCurrentAmmo;
+            if (decNewQuantity > 0)
+                return objGear.SetQuantityAsync(decNewQuantity, token);
             else
                 return objGear.DeleteGearAsync(token: token);
         }
