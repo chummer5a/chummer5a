@@ -3281,6 +3281,11 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+       <required>
+        <allof>
+          <metamagicart>Geomancy</metamagicart>
+        </allof>
+      </required>
     </spell>
     <spell>
       <id>32bfb856-4df9-438a-9122-85f5ec8a647c</id>
