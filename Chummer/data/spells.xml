@@ -1598,6 +1598,9 @@
       <dv>F-3</dv>
       <range>LOS</range>
       <type>P</type>
+      <required>
+        <tradition>Toxic</tradition>
+      </required>
     </spell>
     <spell>
       <id>793736ac-c4a4-408c-824e-6cc5689622a3</id>
@@ -1611,6 +1614,9 @@
       <dv>F-1</dv>
       <range>LOS (A)</range>
       <type>P</type>
+      <required>
+        <tradition>Toxic</tradition>
+      </required>
     </spell>
     <spell>
       <id>e0b3608a-cf54-4a1d-a99a-a4cd513c5e8a</id>
@@ -1624,6 +1630,9 @@
       <dv>F-3</dv>
       <range>LOS</range>
       <type>P</type>
+      <required>
+        <tradition>Toxic</tradition>
+      </required>
     </spell>
     <spell>
       <id>7a6579fa-4eda-47e4-96d2-59f4e1f9f567</id>
@@ -1637,6 +1646,9 @@
       <dv>F-1</dv>
       <range>LOS (A)</range>
       <type>P</type>
+      <required>
+        <tradition>Toxic</tradition>
+      </required>
     </spell>
     <spell>
       <id>0c0c34cb-5df3-4928-8e81-b794ee2fb47c</id>
