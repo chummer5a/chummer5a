@@ -3194,6 +3194,24 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Calculates the Expected Value of an Lifestyle at chargen under the assumption that the average value was rolled
+        /// </summary>
+        public async Task<decimal> GetExpectedValueAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return 3.5m * await GetDiceAsync(token).ConfigureAwait(false) * await GetMultiplierAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string City
         {
             get

@@ -50,10 +50,10 @@ namespace Chummer
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 4;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Controls.Add(this.lblResult, 3, 2);
             this.tlpMain.Controls.Add(this.lblDice, 0, 2);
             this.tlpMain.Controls.Add(this.lblSelectLifestyle, 0, 1);
@@ -77,7 +77,7 @@ namespace Chummer
             // 
             this.lblResult.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblResult.AutoSize = true;
-            this.lblResult.Location = new System.Drawing.Point(204, 73);
+            this.lblResult.Location = new System.Drawing.Point(168, 73);
             this.lblResult.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblResult.Name = "lblResult";
             this.lblResult.Size = new System.Drawing.Size(37, 13);
@@ -89,7 +89,7 @@ namespace Chummer
             // 
             this.lblDice.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDice.AutoSize = true;
-            this.lblDice.Location = new System.Drawing.Point(40, 73);
+            this.lblDice.Location = new System.Drawing.Point(4, 73);
             this.lblDice.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDice.Name = "lblDice";
             this.lblDice.Size = new System.Drawing.Size(81, 13);
@@ -101,7 +101,7 @@ namespace Chummer
             // 
             this.lblSelectLifestyle.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSelectLifestyle.AutoSize = true;
-            this.lblSelectLifestyle.Location = new System.Drawing.Point(39, 45);
+            this.lblSelectLifestyle.Location = new System.Drawing.Point(3, 45);
             this.lblSelectLifestyle.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSelectLifestyle.Name = "lblSelectLifestyle";
             this.lblSelectLifestyle.Size = new System.Drawing.Size(82, 13);
@@ -115,7 +115,7 @@ namespace Chummer
             this.cmdRoll.AutoSize = true;
             this.cmdRoll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRoll.Image = global::Chummer.Properties.Resources.die_16;
-            this.cmdRoll.Location = new System.Drawing.Point(127, 68);
+            this.cmdRoll.Location = new System.Drawing.Point(91, 68);
             this.cmdRoll.Name = "cmdRoll";
             this.cmdRoll.Padding = new System.Windows.Forms.Padding(1);
             this.cmdRoll.Size = new System.Drawing.Size(24, 24);
@@ -127,7 +127,7 @@ namespace Chummer
             // 
             this.nudDiceResult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudDiceResult.AutoSize = true;
-            this.nudDiceResult.Location = new System.Drawing.Point(157, 70);
+            this.nudDiceResult.Location = new System.Drawing.Point(121, 70);
             this.nudDiceResult.Maximum = new decimal(new int[] {
             100,
             0,
@@ -149,9 +149,9 @@ namespace Chummer
             this.tlpMain.SetColumnSpan(this.cboSelectLifestyle, 3);
             this.cboSelectLifestyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSelectLifestyle.FormattingEnabled = true;
-            this.cboSelectLifestyle.Location = new System.Drawing.Point(127, 41);
+            this.cboSelectLifestyle.Location = new System.Drawing.Point(91, 41);
             this.cboSelectLifestyle.Name = "cboSelectLifestyle";
-            this.cboSelectLifestyle.Size = new System.Drawing.Size(196, 21);
+            this.cboSelectLifestyle.Size = new System.Drawing.Size(232, 21);
             this.cboSelectLifestyle.TabIndex = 5;
             this.cboSelectLifestyle.TooltipText = "";
             this.cboSelectLifestyle.SelectedIndexChanged += new System.EventHandler(this.cboSelectLifestyle_SelectionChanged);

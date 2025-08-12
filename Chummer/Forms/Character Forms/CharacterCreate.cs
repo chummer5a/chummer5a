@@ -22044,7 +22044,7 @@ namespace Chummer
                                 if (await frmStartingNuyen.ShowDialogSafeAsync(this, token).ConfigureAwait(false)
                                     != DialogResult.OK)
                                     return false;
-                                decStartingNuyen = frmStartingNuyen.MyForm.StartingNuyen;
+                                decStartingNuyen = await frmStartingNuyen.MyForm.GetStartingNuyenAsync(token).ConfigureAwait(false);
                             }
 
                             // Assign starting values and overflows.
