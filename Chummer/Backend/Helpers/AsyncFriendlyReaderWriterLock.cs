@@ -437,13 +437,17 @@ namespace Chummer
                     }
 #if DEBUG
                     catch (Exception e)
-#else
-                    catch
-#endif
                     {
                         // swallow all exceptions because we need to be able to properly unset AsyncLocals when we release
-                        Utils.BreakIfDebug();
+                        if (!(e is OperationCanceledException))
+                            Utils.BreakIfDebug();
                     }
+#else
+                    catch
+                    {
+                        // swallow all exceptions because we need to be able to properly unset AsyncLocals when we release
+                    }
+#endif
                     return await TakeWriteLockCoreAsync(
                         objInnerCurrentHelper, objInnerNextHelper, objInnerTopMostHeldUReader,
                         objInnerTopMostHeldWriter, objParentRelease, innerToken).ConfigureAwait(false);
@@ -636,13 +640,17 @@ namespace Chummer
                     }
 #if DEBUG
                     catch (Exception e)
-#else
-                    catch
-#endif
                     {
                         // swallow all exceptions because we need to be able to properly unset AsyncLocals when we release
-                        Utils.BreakIfDebug();
+                        if (!(e is OperationCanceledException))
+                            Utils.BreakIfDebug();
                     }
+#else
+                    catch
+                    {
+                        // swallow all exceptions because we need to be able to properly unset AsyncLocals when we release
+                    }
+#endif
                     return await TakeUpgradeableReadLockCoreAsync(
                         objInnerCurrentHelper, objInnerNextHelper, objInnerTopMostHeldUReader,
                         objInnerTopMostHeldWriter, objParentRelease, innerToken).ConfigureAwait(false);
@@ -914,13 +922,17 @@ namespace Chummer
                     }
 #if DEBUG
                     catch (Exception e)
-#else
-                    catch
-#endif
                     {
                         // swallow all exceptions because we need to be able to properly unset AsyncLocals when we release
-                        Utils.BreakIfDebug();
+                        if (!(e is OperationCanceledException))
+                            Utils.BreakIfDebug();
                     }
+#else
+                    catch
+                    {
+                        // swallow all exceptions because we need to be able to properly unset AsyncLocals when we release
+                    }
+#endif
                     return await TakeReadLockCoreAsync(
                         objInnerCurrentHelper, blnInnerIsInReadLock, objParentRelease, innerToken).ConfigureAwait(false);
                 }
