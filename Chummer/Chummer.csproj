@@ -25678,6 +25678,7 @@
   <ItemGroup>
     <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
     <PackageReference Include="Codaxy.WkHtmlToPdf" Version="0.5.8" />
+    <PackageReference Include="HtmlRenderer.Core" Version="1.5.0.6" />
     <PackageReference Include="HtmlRenderer.WinForms" Version="1.5.0.6" />
     <PackageReference Include="itext" Version="9.2.0" />
     <PackageReference Include="LiveCharts.WinForms" Version="0.9.7.1" />
@@ -25696,8 +25697,8 @@
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.14.15" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog" Version="6.0.2" />
-    <PackageReference Include="NLog.Schema" Version="6.0.2" />
+    <PackageReference Include="NLog" Version="6.0.3" />
+    <PackageReference Include="NLog.Schema" Version="6.0.3" />
     <PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
     <PackageReference Include="System.ComponentModel.Composition" Version="9.0.8" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
