@@ -19774,39 +19774,51 @@ namespace Chummer
                         .TryGetNodeByNameOrId("/chummer/improvements/improvement", objImprovement.CustomId);
                     if (objNode != null)
                     {
-                        await lblImprovementType
-                              .DoThreadSafeAsync(
-                                  x => x.Text = objNode["translate"]?.InnerText ?? objNode["name"]?.InnerText, token)
+                        string strText = objNode["translate"]?.InnerText ?? objNode["name"]?.InnerText ?? objImprovement.CustomId;
+                        await lblImprovementType.DoThreadSafeAsync(x => x.Text = strText, token)
                               .ConfigureAwait(false);
                     }
+                    else
+                        await lblImprovementType.DoThreadSafeAsync(x => x.Text = objImprovement.CustomId, token)
+                              .ConfigureAwait(false);
 
                     token.ThrowIfCancellationRequested();
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                            .ConfigureAwait(false);
                     // Build a string that contains the value(s) of the Improvement.
-                    string strValue = string.Empty;
-                    if (objImprovement.Value != 0)
-                        strValue += await LanguageManager.GetStringAsync("Label_CreateImprovementValue", token: token)
-                                                         .ConfigureAwait(false) + strSpace
-                            + objImprovement.Value.ToString(GlobalSettings.CultureInfo) + ',' + strSpace;
-                    if (objImprovement.Minimum != 0)
-                        strValue += await LanguageManager.GetStringAsync("Label_CreateImprovementMinimum", token: token)
-                                                         .ConfigureAwait(false) + strSpace
-                            + objImprovement.Minimum.ToString(GlobalSettings.CultureInfo) + ',' + strSpace;
-                    if (objImprovement.Maximum != 0)
-                        strValue += await LanguageManager.GetStringAsync("Label_CreateImprovementMaximum", token: token)
-                                                         .ConfigureAwait(false) + strSpace
-                            + objImprovement.Maximum.ToString(GlobalSettings.CultureInfo) + ',' + strSpace;
-                    if (objImprovement.Augmented != 0)
-                        strValue += await LanguageManager
-                                          .GetStringAsync("Label_CreateImprovementAugmented", token: token)
-                                          .ConfigureAwait(false) + strSpace
-                                                                 + objImprovement.Augmented.ToString(
-                                                                     GlobalSettings.CultureInfo) + ',' + strSpace;
-                    token.ThrowIfCancellationRequested();
-                    // Remove the trailing comma.
-                    if (!string.IsNullOrEmpty(strValue))
-                        strValue = strValue.Substring(0, strValue.Length - 1 - strSpace.Length);
+                    string strValue;
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(objImprovement.ImprovedName))
+                            sbdValue.AppendLine(await LanguageManager
+                                              .GetStringAsync("Label_CreateImprovementSelectedValue", token: token)
+                                              .ConfigureAwait(false) + strSpace
+                                                                     + objImprovement.ImprovedName);
+                        if (objImprovement.Rating != 0)
+                            sbdValue.AppendLine(await LanguageManager.GetStringAsync("Label_Rating", token: token)
+                                                             .ConfigureAwait(false) + strSpace
+                                + objImprovement.Rating.ToString(GlobalSettings.CultureInfo));
+                        if (objImprovement.Value != 0)
+                            sbdValue.AppendLine(await LanguageManager.GetStringAsync("Label_CreateImprovementValue", token: token)
+                                                             .ConfigureAwait(false) + strSpace
+                                + objImprovement.Value.ToString(GlobalSettings.CultureInfo));
+                        if (objImprovement.Minimum != 0)
+                            sbdValue.AppendLine(await LanguageManager.GetStringAsync("Label_CreateImprovementMinimum", token: token)
+                                                             .ConfigureAwait(false) + strSpace
+                                + objImprovement.Minimum.ToString(GlobalSettings.CultureInfo));
+                        if (objImprovement.Maximum != 0)
+                            sbdValue.AppendLine(await LanguageManager.GetStringAsync("Label_CreateImprovementMaximum", token: token)
+                                                             .ConfigureAwait(false) + strSpace
+                                + objImprovement.Maximum.ToString(GlobalSettings.CultureInfo));
+                        if (objImprovement.Augmented != 0)
+                            sbdValue.AppendLine(await LanguageManager
+                                              .GetStringAsync("Label_CreateImprovementAugmented", token: token)
+                                              .ConfigureAwait(false) + strSpace
+                                                                     + objImprovement.Augmented.ToString(
+                                                                         GlobalSettings.CultureInfo));
+                        strValue = sbdValue.ToString();
+                    }
                     await cmdImprovementsEnableAll.DoThreadSafeAsync(x => x.Visible = false, token)
                                                   .ConfigureAwait(false);
                     await cmdImprovementsDisableAll.DoThreadSafeAsync(x => x.Visible = false, token)

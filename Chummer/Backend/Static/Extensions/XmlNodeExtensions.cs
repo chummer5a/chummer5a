@@ -449,14 +449,23 @@ namespace Chummer
         {
             if (node == null || string.IsNullOrEmpty(strPath) || string.IsNullOrEmpty(strId))
                 return null;
+            XmlNode objReturn;
             if (Guid.TryParse(strId, out Guid guidId))
             {
-                XmlNode objReturn = node.TryGetNodeById(strPath, guidId, strExtraXPath);
+                objReturn = node.TryGetNodeById(strPath, guidId, strExtraXPath);
                 if (objReturn != null)
                     return objReturn;
             }
 
-            return node.SelectSingleNode(strPath + "[name = " + strId.CleanXPath()
+            string strIdCleaned = strId.CleanXPath();
+            objReturn = node.SelectSingleNode(strPath + "[name = " + strIdCleaned
+                                         + (string.IsNullOrEmpty(strExtraXPath)
+                                             ? "]"
+                                             : " and (" + strExtraXPath + ")]"));
+            if (objReturn != null)
+                return objReturn;
+            // There are cases where we use ids that are not Guids (e.g., custom improvements), so we need this part as well.
+            return node.SelectSingleNode(strPath + "[id = " + strIdCleaned
                                          + (string.IsNullOrEmpty(strExtraXPath)
                                              ? "]"
                                              : " and (" + strExtraXPath + ")]"));

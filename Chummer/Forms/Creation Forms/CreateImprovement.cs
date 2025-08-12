@@ -97,10 +97,20 @@ namespace Chummer
                     {
                         if (x.Visible)
                         {
-                            // specificattribute stores the Value in Augmented instead.
-                            x.Value = EditImprovementObject.CustomId == "specificattribute"
-                                ? EditImprovementObject.Augmented
-                                : EditImprovementObject.Value;
+                            switch (EditImprovementObject.ImproveType)
+                            {
+                                // Attribute improvements store the Value in Augmented instead.
+                                case Improvement.ImprovementType.Attribute:
+                                    x.Value = EditImprovementObject.Augmented;
+                                    break;
+                                // Adept power level improvements store the Value in Rating instead.
+                                case Improvement.ImprovementType.AdeptPowerFreeLevels:
+                                    x.Value = EditImprovementObject.Rating;
+                                    break;
+                                default:
+                                    x.Value = EditImprovementObject.Value;
+                                    break;
+                            }
                         }
                     }).ConfigureAwait(false);
 
@@ -829,7 +839,7 @@ namespace Chummer
 
             // Pass it to the Improvement Manager so that it can be added to the character.
             string strGuid = Guid.NewGuid().ToString("D", GlobalSettings.InvariantCultureInfo);
-            await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Custom, strGuid, objNode, 1, strName, token: token).ConfigureAwait(false);
+            await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Custom, strGuid, objNode, strFriendlyName: strName, token: token).ConfigureAwait(false);
 
             // If an Improvement was passed in, remove it from the character.
             string strNotes = string.Empty;
