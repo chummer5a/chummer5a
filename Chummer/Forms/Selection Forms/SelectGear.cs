@@ -788,7 +788,7 @@ namespace Chummer
                     int intRating = int.MaxValue;
                     if (!string.IsNullOrEmpty(strExpression))
                     {
-                        intRating = (await ProcessInvariantXPathExpression(strExpression, int.MaxValue, token).ConfigureAwait(false)).Item1.StandardRound();
+                        intRating = (await ProcessInvariantXPathExpression(strExpression, 0, token).ConfigureAwait(false)).Item1.StandardRound();
                     }
 
                     if (intRating > 0 && intRating != int.MaxValue)

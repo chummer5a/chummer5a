@@ -345,7 +345,7 @@ namespace Chummer
                     string strMinRating = objXmlMod.SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strMinRating))
                     {
-                        intMinRating = (await ProcessInvariantXPathExpression(strMinRating, int.MaxValue, token: token).ConfigureAwait(false)).Item1.StandardRound();
+                        intMinRating = (await ProcessInvariantXPathExpression(strMinRating, 0, token: token).ConfigureAwait(false)).Item1.StandardRound();
                     }
 
                     string strRating = objXmlMod.SelectSingleNodeAndCacheExpression("rating", token: token)?.Value;
@@ -490,7 +490,7 @@ namespace Chummer
                         = xmlVehicleMod.SelectSingleNodeAndCacheExpression("slots", token)?.Value ?? string.Empty;
                     if (!strSlots.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
-                        intExtraSlots = (await ProcessInvariantXPathExpression(strSlots, int.MaxValue, token: token).ConfigureAwait(false)).Item1.StandardRound();
+                        intExtraSlots = (await ProcessInvariantXPathExpression(strSlots, 0, token: token).ConfigureAwait(false)).Item1.StandardRound();
                         string strInnerText = intExtraSlots.ToString(GlobalSettings.CultureInfo);
                         await lblSlots.DoThreadSafeAsync(x => x.Text = strInnerText, token: token).ConfigureAwait(false);
                         await lblSlotsLabel
@@ -505,7 +505,7 @@ namespace Chummer
                     string strMinRating = xmlVehicleMod.SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strMinRating))
                     {
-                        intMinRating = (await ProcessInvariantXPathExpression(strMinRating, int.MaxValue, token: token).ConfigureAwait(false)).Item1.StandardRound();
+                        intMinRating = (await ProcessInvariantXPathExpression(strMinRating, 0, token: token).ConfigureAwait(false)).Item1.StandardRound();
                     }
 
                     await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
