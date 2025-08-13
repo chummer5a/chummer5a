@@ -195,6 +195,7 @@ namespace Chummer
             this.cmdExportClose.Tag = "String_Export_And_Close";
             this.cmdExportClose.Text = "Export and Close";
             this.cmdExportClose.UseVisualStyleBackColor = true;
+            this.cmdExport.Click += new System.EventHandler(this.cmdExportClose_Click);
             // 
             // cmdEditCharacterSetting
             // 
