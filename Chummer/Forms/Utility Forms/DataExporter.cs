@@ -152,7 +152,7 @@ namespace Chummer
                         await RefreshLanguageDocumentNames(_objGenericToken).ConfigureAwait(false);
                         await PopulateLanguageList(_objGenericToken).ConfigureAwait(false);
                         await RepopulateCharacterSettings(token: _objGenericToken).ConfigureAwait(false);
-                        await pgbExportProgress.DoThreadSafeAsync(x => x.Maximum = Utils.BasicDataFileNames.Count, _objGenericToken).ConfigureAwait(false);
+                        await pgbExportProgress.DoThreadSafeAsync(x => x.Maximum = Utils.BasicDataFileNames.Count + 1, _objGenericToken).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -463,6 +463,14 @@ namespace Chummer
                                 using (ZipArchive zipNewArchive = new ZipArchive(objZipFileStream, ZipArchiveMode.Create))
                                 {
                                     token.ThrowIfCancellationRequested();
+                                    ZipArchiveEntry objSettingsEntry = zipNewArchive.CreateEntry("_selectedsetting.xml");
+                                    token.ThrowIfCancellationRequested();
+                                    using (Stream objStream = objSettingsEntry.Open())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        await Task.Run(() => objSettings.SaveAsync(objStream, token: token), token).ConfigureAwait(false);
+                                    }
+                                    await pgbExportProgress.DoThreadSafeAsync(x => ++x.Value, _objGenericToken).ConfigureAwait(false);
                                     foreach (string strFileName in Utils.BasicDataFileNames)
                                     {
                                         token.ThrowIfCancellationRequested();
