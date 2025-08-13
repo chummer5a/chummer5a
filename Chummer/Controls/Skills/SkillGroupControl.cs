@@ -319,9 +319,7 @@ namespace Chummer.UI.Skills
         public void UnbindSkillGroupControl()
         {
             foreach (Control objControl in Controls)
-            {
                 objControl.DataBindings.Clear();
-            }
         }
 
         #region Control Events

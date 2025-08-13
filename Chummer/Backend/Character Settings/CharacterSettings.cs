@@ -60,6 +60,7 @@ namespace Chummer
         private string _strFileName = string.Empty;
         private string _strName = "Standard";
         private bool _blnDoingCopy;
+        private int _intIsDisposed;
 
         // Settings.
 
@@ -18257,11 +18258,18 @@ namespace Chummer
 
         #endregion Constant Values
 
+        public bool IsDisposed => _intIsDisposed > 0;
+
         /// <inheritdoc />
         public void Dispose()
         {
+            if (IsDisposed)
+                return;
+
             using (LockObject.EnterWriteLock())
             {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) != 0)
+                    return;
                 Utils.StringHashSetPool.Return(ref _setBooks);
                 Utils.StringHashSetPool.Return(ref _setBannedWareGrades);
                 Utils.StringHashSetPool.Return(ref _setRedlinerExcludes);
@@ -18274,9 +18282,14 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
+            if (IsDisposed)
+                return;
+
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) != 0)
+                    return;
                 Utils.StringHashSetPool.Return(ref _setBooks);
                 Utils.StringHashSetPool.Return(ref _setBannedWareGrades);
                 Utils.StringHashSetPool.Return(ref _setRedlinerExcludes);

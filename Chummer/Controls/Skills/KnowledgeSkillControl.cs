@@ -928,27 +928,23 @@ namespace Chummer.UI.Skills
         {
             _tmrNameChangeTimer?.Dispose();
             _tmrSpecChangeTimer?.Dispose();
-            try
+            if (_objSkill?.IsDisposed == false)
             {
-                _objSkill.MultiplePropertiesChangedAsync -= Skill_PropertyChanged;
                 try
                 {
-                    _objSkill.CharacterObject.SkillsSection.PropertyChangedAsync -= OnSkillsSectionPropertyChanged;
+                    _objSkill.MultiplePropertiesChangedAsync -= Skill_PropertyChanged;
+                    Character objCharacter = _objSkill.CharacterObject;
+                    if (objCharacter?.IsDisposed == false)
+                        objCharacter.SkillsSection.PropertyChangedAsync -= OnSkillsSectionPropertyChanged;
                 }
                 catch (ObjectDisposedException)
                 {
                     // swallow this
                 }
             }
-            catch (ObjectDisposedException)
-            {
-                // swallow this
-            }
 
             foreach (Control objControl in Controls)
-            {
                 objControl.DataBindings.Clear();
-            }
         }
 
         private async void btnCareerIncrease_Click(object sender, EventArgs e)

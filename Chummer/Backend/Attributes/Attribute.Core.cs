@@ -49,6 +49,7 @@ namespace Chummer.Backend.Attributes
         private string _strAbbrev;
         private readonly Character _objCharacter;
         private AttributeCategory _eMetatypeCategory;
+        private int _intIsDisposed;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -4115,25 +4116,36 @@ namespace Chummer.Backend.Attributes
 
         #endregion static
 
+        public bool IsDisposed => _intIsDisposed > 0;
+
         /// <inheritdoc />
         public void Dispose()
         {
+            if (IsDisposed)
+                return;
             using (LockObject.EnterWriteLock())
             {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) != 0)
+                    return;
                 if (_objCharacter != null)
                 {
-                    try
+                    if (!_objCharacter.IsDisposed)
                     {
-                        _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
+                        try
+                        {
+                            _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
                     }
 
                     try
                     {
-                        _objCharacter.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        CharacterSettings objSettings = _objCharacter.Settings;
+                        if (objSettings?.IsDisposed == false)
+                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -4147,23 +4159,32 @@ namespace Chummer.Backend.Attributes
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
+            if (IsDisposed)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) != 0)
+                    return;
                 if (_objCharacter != null)
                 {
-                    try
+                    if (!_objCharacter.IsDisposed)
                     {
-                        _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
+                        try
+                        {
+                            _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
                     }
 
                     try
                     {
-                        _objCharacter.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        CharacterSettings objSettings = _objCharacter.Settings;
+                        if (objSettings?.IsDisposed == false)
+                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {

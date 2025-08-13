@@ -49,6 +49,7 @@ namespace Chummer.Backend.Skills
         private int _intBase;
         private int _intKarma;
         private bool _blnBuyWithKarma;
+        private int _intIsDisposed;
 
         private int _intIsLoading = 1;
         public bool IsLoading
@@ -8343,9 +8344,11 @@ namespace Chummer.Backend.Skills
             await DisposeAsync().ConfigureAwait(false);
         }
 
+        public bool IsDisposed => _intIsDisposed > 0;
+
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) == 0)
             {
                 CharacterObject.MultiplePropertiesChangedAsync -= OnCharacterChanged;
                 CharacterObject.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
@@ -8407,7 +8410,7 @@ namespace Chummer.Backend.Skills
 
         protected virtual async ValueTask DisposeAsync(bool disposing)
         {
-            if (disposing)
+            if (disposing && Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) == 0)
             {
                 CharacterObject.MultiplePropertiesChangedAsync -= OnCharacterChanged;
                 CharacterSettings objSettings = await CharacterObject.GetSettingsAsync().ConfigureAwait(false);

@@ -190,12 +190,12 @@ namespace Chummer
 
         public void UnbindSpiritControl()
         {
-            _objSpirit.CharacterObject.PropertyChangedAsync -= RebuildSpiritListOnTraditionChange;
+            Character objCharacter = _objSpirit.CharacterObject; // for thread safety
+            if (objCharacter?.IsDisposed == false)
+                objCharacter.PropertyChangedAsync -= RebuildSpiritListOnTraditionChange;
 
             foreach (Control objControl in Controls)
-            {
                 objControl.DataBindings.Clear();
-            }
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)

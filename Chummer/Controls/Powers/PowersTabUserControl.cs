@@ -222,10 +222,13 @@ namespace Chummer.UI.Powers
 
         private void UnbindPowersTabUserControl()
         {
-            if (_objCharacter?.IsDisposed == false)
+            Character objCharacter = _objCharacter; // for thread safety
+            if (objCharacter?.IsDisposed == false)
             {
-                _objCharacter.Powers.ListChangedAsync -= OnPowersListChanged;
-                _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
+                objCharacter.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
+                ThreadSafeBindingList<Power> lstPowers = objCharacter.Powers;
+                if (lstPowers?.IsDisposed == false)
+                    lstPowers.ListChangedAsync -= OnPowersListChanged;
             }
         }
 

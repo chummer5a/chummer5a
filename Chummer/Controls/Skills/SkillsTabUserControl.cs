@@ -55,7 +55,7 @@ namespace Chummer.UI.Skills
         {
             InitializeComponent();
 
-            Disposed += (sender, args) => UnbindSkillsTabUserControl(CancellationToken.None);
+            Disposed += UnbindSkillsTabUserControlAsync;
 
             lblGroupKarma.Margin = new Padding(
                 lblGroupKarma.Margin.Left,
@@ -639,18 +639,60 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void UnbindSkillsTabUserControl(CancellationToken token = default)
+        private void UnbindSkillsTabUserControl()
         {
-            if (_objCharacter?.IsDisposed == false)
+            Character objCharacter = _objCharacter; // for thread safety
+            if (objCharacter?.IsDisposed == false)
             {
                 try
                 {
-                    using (_objCharacter.SkillsSection.LockObject.EnterWriteLock(token))
+                    SkillsSection objSkillsSection = objCharacter.SkillsSection;
+                    using (objSkillsSection.LockObject.EnterWriteLock())
                     {
-                        _objCharacter.SkillsSection.Skills.ListChangedAsync -= SkillsOnListChanged;
-                        _objCharacter.SkillsSection.SkillGroups.ListChanged -= SkillGroupsOnListChanged;
-                        _objCharacter.SkillsSection.KnowledgeSkills.ListChanged -= KnowledgeSkillsOnListChanged;
-                        _objCharacter.SkillsSection.MultiplePropertiesChangedAsync -= SkillsSectionOnPropertyChanged;
+                        objSkillsSection.MultiplePropertiesChangedAsync -= SkillsSectionOnPropertyChanged;
+                        ThreadSafeBindingList<Skill> lstSkills = objSkillsSection.Skills;
+                        if (lstSkills?.IsDisposed == false)
+                            lstSkills.ListChangedAsync -= SkillsOnListChanged;
+                        ThreadSafeBindingList<SkillGroup> lstSkillGroups = objSkillsSection.SkillGroups;
+                        if (lstSkillGroups?.IsDisposed == false)
+                            lstSkillGroups.ListChanged -= SkillGroupsOnListChanged;
+                        ThreadSafeBindingList<KnowledgeSkill> lstKnoSkills = objSkillsSection.KnowledgeSkills;
+                        if (lstKnoSkills?.IsDisposed == false)
+                            lstKnoSkills.ListChanged -= KnowledgeSkillsOnListChanged;
+                    }
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+            }
+        }
+
+        private async void UnbindSkillsTabUserControlAsync(object sender, EventArgs e)
+        {
+            Character objCharacter = _objCharacter; // for thread safety
+            if (objCharacter?.IsDisposed == false)
+            {
+                try
+                {
+                    SkillsSection objSkillsSection = await objCharacter.GetSkillsSectionAsync().ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await objSkillsSection.LockObject.EnterWriteLockAsync();
+                    try
+                    {
+                        objSkillsSection.MultiplePropertiesChangedAsync -= SkillsSectionOnPropertyChanged;
+                        ThreadSafeBindingList<Skill> lstSkills = await objSkillsSection.GetSkillsAsync().ConfigureAwait(false);
+                        if (lstSkills?.IsDisposed == false)
+                            lstSkills.ListChangedAsync -= SkillsOnListChanged;
+                        ThreadSafeBindingList<SkillGroup> lstSkillGroups = await objSkillsSection.GetSkillGroupsAsync().ConfigureAwait(false);
+                        if (lstSkillGroups?.IsDisposed == false)
+                            lstSkillGroups.ListChanged -= SkillGroupsOnListChanged;
+                        ThreadSafeBindingList<KnowledgeSkill> lstKnoSkills = await objSkillsSection.GetKnowledgeSkillsAsync().ConfigureAwait(false);
+                        if (lstKnoSkills?.IsDisposed == false)
+                            lstKnoSkills.ListChanged -= KnowledgeSkillsOnListChanged;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 catch (ObjectDisposedException)

@@ -1270,19 +1270,23 @@ namespace Chummer.UI.Skills
         private void UnbindSkillControl()
         {
             _tmrSpecChangeTimer?.Dispose();
-            try
-            {
-                _objSkill.MultiplePropertiesChangedAsync -= Skill_PropertyChanged;
-            }
-            catch (ObjectDisposedException)
-            {
-                //swallow this
-            }
-            if (AttributeActive != null)
+            if (_objSkill?.IsDisposed == false)
             {
                 try
                 {
-                    AttributeActive.MultiplePropertiesChangedAsync -= Attribute_PropertyChanged;
+                    _objSkill.MultiplePropertiesChangedAsync -= Skill_PropertyChanged;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+            }
+            CharacterAttrib objAttribute = AttributeActive; // for thread safety
+            if (objAttribute?.IsDisposed == false)
+            {
+                try
+                {
+                    objAttribute.MultiplePropertiesChangedAsync -= Attribute_PropertyChanged;
                 }
                 catch (ObjectDisposedException)
                 {
@@ -1291,9 +1295,7 @@ namespace Chummer.UI.Skills
             }
 
             foreach (Control objControl in Controls)
-            {
                 objControl.DataBindings.Clear();
-            }
         }
 
         /// <summary>
