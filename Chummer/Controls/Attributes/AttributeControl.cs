@@ -512,7 +512,8 @@ namespace Chummer.UI.Attributes
         {
             _tmrKarmaChangeTimer?.Dispose();
             _tmrBaseChangeTimer?.Dispose();
-            _objCharacter.AttributeSection.DeregisterAsyncPropertyChangedForActiveAttribute(AttributeName, OnAttributePropertyChanged);
+            if (!_objCharacter.IsDisposed)
+                _objCharacter.AttributeSection.DeregisterAsyncPropertyChangedForActiveAttribute(AttributeName, OnAttributePropertyChanged);
         }
 
         private async void cmdImproveATT_Click(object sender, EventArgs e)
