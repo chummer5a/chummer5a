@@ -41,29 +41,41 @@ namespace Chummer.Backend.Skills
         private int _intSkillFromSp;
         private int _intSkillFromKarma;
         private bool _blnIsBroken;
+        private int _intIsDisposed;
 
         public AsyncFriendlyReaderWriterLock LockObject { get; }
 
         public Character CharacterObject => _objCharacter; //readonly member, no locking required
 
+        public bool IsDisposed => _intIsDisposed > 0;
+
         public void Dispose()
         {
+            if (IsDisposed)
+                return;
             using (LockObject.EnterWriteLock())
             {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) != 0)
+                    return;
                 if (_objCharacter != null)
                 {
-                    try
+                    if (!_objCharacter.IsDisposed)
                     {
-                        _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
+                        try
+                        {
+                            _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
                     }
 
                     try
                     {
-                        _objCharacter.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        CharacterSettings objSettings = _objCharacter.Settings;
+                        if (objSettings?.IsDisposed == false)
+                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -73,13 +85,16 @@ namespace Chummer.Backend.Skills
 
                 foreach (Skill objSkill in _lstAffectedSkills)
                 {
-                    try
+                    if (objSkill?.IsDisposed == false)
                     {
-                        objSkill.MultiplePropertiesChangedAsync -= SkillOnMultiplePropertiesChanged;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        // swallow this
+                        try
+                        {
+                            objSkill.MultiplePropertiesChangedAsync -= SkillOnMultiplePropertiesChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // swallow this
+                        }
                     }
                 }
 
@@ -95,23 +110,32 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask DisposeAsync()
         {
+            if (IsDisposed)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) != 0)
+                    return;
                 if (_objCharacter != null)
                 {
-                    try
+                    if (!_objCharacter.IsDisposed)
                     {
-                        _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
+                        try
+                        {
+                            _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
                     }
 
                     try
                     {
-                        _objCharacter.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        CharacterSettings objSettings = _objCharacter.Settings;
+                        if (objSettings?.IsDisposed == false)
+                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -121,13 +145,16 @@ namespace Chummer.Backend.Skills
 
                 foreach (Skill objSkill in _lstAffectedSkills)
                 {
-                    try
+                    if (objSkill?.IsDisposed == false)
                     {
-                        objSkill.MultiplePropertiesChangedAsync -= SkillOnMultiplePropertiesChanged;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        // swallow this
+                        try
+                        {
+                            objSkill.MultiplePropertiesChangedAsync -= SkillOnMultiplePropertiesChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // swallow this
+                        }
                     }
                 }
 
@@ -2105,7 +2132,9 @@ namespace Chummer.Backend.Skills
             _objCachedToolTipLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _strGroupName = strGroupName;
             objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
-            objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+            CharacterSettings objSettings = objCharacter.Settings;
+            if (objSettings?.IsDisposed == false)
+                objSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
         }
 
         public string Name

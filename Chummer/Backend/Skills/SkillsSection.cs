@@ -58,7 +58,9 @@ namespace Chummer.Backend.Skills
             _lstKnowsoftSkills = new ThreadSafeBindingList<KnowledgeSkill>(LockObject);
             _lstSkillGroups = new ThreadSafeBindingList<SkillGroup>(LockObject);
             objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;
-            objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+            CharacterSettings objSettings = objCharacter.Settings;
+            if (objSettings?.IsDisposed == false)
+                objSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
             SkillGroups.BeforeRemoveAsync += SkillGroupsOnBeforeRemove;
             KnowsoftSkills.BeforeRemoveAsync += KnowsoftSkillsOnBeforeRemove;
             KnowledgeSkills.BeforeRemoveAsync += KnowledgeSkillsOnBeforeRemove;
@@ -4068,22 +4070,32 @@ namespace Chummer.Backend.Skills
         {
             using (LockObject.EnterWriteLock())
             {
-                try
+                if (_objCharacter != null)
                 {
-                    _objCharacter.PropertyChangedAsync -= OnCharacterPropertyChanged;
-                }
-                catch (ObjectDisposedException)
-                {
-                    //swallow this
-                }
+                    if (!_objCharacter.IsDisposed)
+                    {
+                        try
+                        {
+                            _objCharacter.PropertyChangedAsync -= OnCharacterPropertyChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                    }
 
-                try
-                {
-                    _objCharacter.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                }
-                catch (ObjectDisposedException)
-                {
-                    //swallow this
+                    CharacterSettings objSettings = _objCharacter.Settings;
+                    if (objSettings?.IsDisposed == false)
+                    {
+                        try
+                        {
+                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                    }
                 }
                 _lstSkillGroups.ForEach(x => x.Dispose());
                 List<Skill> lstSkillBackups = _dicSkillBackups.GetValuesToListSafe();
@@ -4126,22 +4138,32 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                try
+                if (_objCharacter != null)
                 {
-                    _objCharacter.PropertyChangedAsync -= OnCharacterPropertyChanged;
-                }
-                catch (ObjectDisposedException)
-                {
-                    //swallow this
-                }
+                    if (!_objCharacter.IsDisposed)
+                    {
+                        try
+                        {
+                            _objCharacter.PropertyChangedAsync -= OnCharacterPropertyChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                    }
 
-                try
-                {
-                    _objCharacter.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                }
-                catch (ObjectDisposedException)
-                {
-                    //swallow this
+                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync().ConfigureAwait(false);
+                    if (objSettings?.IsDisposed == false)
+                    {
+                        try
+                        {
+                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                    }
                 }
                 await _lstSkillGroups.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 List<Skill> lstSkillBackups = _dicSkillBackups.GetValuesToListSafe();

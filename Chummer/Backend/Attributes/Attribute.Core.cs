@@ -4141,15 +4141,17 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
-                    try
+                    CharacterSettings objSettings = _objCharacter.Settings;
+                    if (objSettings?.IsDisposed == false)
                     {
-                        CharacterSettings objSettings = _objCharacter.Settings;
-                        if (objSettings?.IsDisposed == false)
+                        try
+                        {
                             objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // swallow this
+                        }
                     }
                 }
                 _objCachedTotalValueLock.Dispose();
@@ -4180,15 +4182,17 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
-                    try
+                    CharacterSettings objSettings = _objCharacter.Settings;
+                    if (objSettings?.IsDisposed == false)
                     {
-                        CharacterSettings objSettings = _objCharacter.Settings;
-                        if (objSettings?.IsDisposed == false)
+                        try
+                        {
                             objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // swallow this
+                        }
                     }
                 }
 

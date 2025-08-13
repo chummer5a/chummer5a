@@ -895,9 +895,17 @@ namespace Chummer.Backend.Skills
             _objAttribute = CharacterObject.GetAttribute(DefaultAttribute);
             _objAttribute.MultiplePropertiesChangedAsync += OnLinkedAttributeChanged;
             objCharacter.MultiplePropertiesChangedAsync += OnCharacterChanged;
-            objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
-            objCharacter.AttributeSection.PropertyChangedAsync += OnAttributeSectionChanged;
-            objCharacter.AttributeSection.Attributes.CollectionChangedAsync += OnAttributesCollectionChanged;
+            CharacterSettings objSettings = objCharacter.Settings;
+            if (objSettings?.IsDisposed == false)
+                objSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+            AttributeSection objSection = objCharacter.AttributeSection;
+            if (objSection != null)
+            {
+                objSection.PropertyChangedAsync += OnAttributeSectionChanged;
+                ThreadSafeObservableCollection<CharacterAttrib> lstAttributes = objSection.Attributes;
+                if (lstAttributes?.IsDisposed == false)
+                    lstAttributes.CollectionChangedAsync += OnAttributesCollectionChanged;
+            }
 
             Specializations.CollectionChangedAsync += SpecializationsOnCollectionChanged;
             Specializations.BeforeClearCollectionChangedAsync += SpecializationsOnBeforeClearCollectionChanged;
@@ -8350,16 +8358,48 @@ namespace Chummer.Backend.Skills
         {
             if (disposing && Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) == 0)
             {
-                CharacterObject.MultiplePropertiesChangedAsync -= OnCharacterChanged;
-                CharacterObject.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                CharacterObject.AttributeSection.PropertyChangedAsync -= OnAttributeSectionChanged;
-                CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
+                Character objCharacter = CharacterObject; // for thread safety
+                if (objCharacter != null)
+                {
+                    if (!objCharacter.IsDisposed)
+                    {
+                        try
+                        {
+                            objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
+                            AttributeSection objSection = objCharacter.AttributeSection;
+                            if (objSection != null)
+                            {
+                                objSection.PropertyChangedAsync -= OnAttributeSectionChanged;
+                                ThreadSafeObservableCollection<CharacterAttrib> lstAttributes = objSection.Attributes;
+                                if (lstAttributes?.IsDisposed == false)
+                                    lstAttributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
+                            }
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                    }
+                    CharacterSettings objSettings = objCharacter.Settings;
+                    if (objSettings?.IsDisposed == false)
+                    {
+                        try
+                        {
+                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                    }
+                }
 
-                if (AttributeObject != null)
+                CharacterAttrib objAttribute = AttributeObject; // for thread safety
+                if (objAttribute?.IsDisposed == false)
                 {
                     try
                     {
-                        AttributeObject.MultiplePropertiesChangedAsync -= OnLinkedAttributeChanged;
+                        objAttribute.MultiplePropertiesChangedAsync -= OnLinkedAttributeChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -8367,11 +8407,12 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
-                if (SkillGroupObject != null)
+                SkillGroup objGroup = SkillGroupObject;
+                if (objGroup?.IsDisposed == false)
                 {
                     try
                     {
-                        SkillGroupObject.MultiplePropertiesChangedAsync -= OnSkillGroupChanged;
+                        objGroup.MultiplePropertiesChangedAsync -= OnSkillGroupChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -8412,16 +8453,44 @@ namespace Chummer.Backend.Skills
         {
             if (disposing && Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) == 0)
             {
-                CharacterObject.MultiplePropertiesChangedAsync -= OnCharacterChanged;
-                CharacterSettings objSettings = await CharacterObject.GetSettingsAsync().ConfigureAwait(false);
-                objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                AttributeSection objSection = await CharacterObject.GetAttributeSectionAsync().ConfigureAwait(false);
-                objSection.PropertyChangedAsync -= OnAttributeSectionChanged;
-                ThreadSafeObservableCollection<CharacterAttrib> objAttributes = await objSection.GetAttributesAsync().ConfigureAwait(false);
-                objAttributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
+                Character objCharacter = CharacterObject; // for thread safety
+                if (objCharacter != null)
+                {
+                    if (!objCharacter.IsDisposed)
+                    {
+                        try
+                        {
+                            objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
+                            AttributeSection objSection = await objCharacter.GetAttributeSectionAsync().ConfigureAwait(false);
+                            if (objSection != null)
+                            {
+                                objSection.PropertyChangedAsync -= OnAttributeSectionChanged;
+                                ThreadSafeObservableCollection<CharacterAttrib> lstAttributes = await objSection.GetAttributesAsync().ConfigureAwait(false);
+                                if (lstAttributes?.IsDisposed == false)
+                                    lstAttributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
+                            }
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                    }
+                    CharacterSettings objSettings = await objCharacter.GetSettingsAsync().ConfigureAwait(false);
+                    if (objSettings?.IsDisposed == false)
+                    {
+                        try
+                        {
+                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                    }
+                }
 
-                CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
-                if (objAttribute != null)
+                CharacterAttrib objAttribute = AttributeObject; // for thread safety
+                if (objAttribute?.IsDisposed == false)
                 {
                     try
                     {
@@ -8433,11 +8502,12 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
-                if (SkillGroupObject != null)
+                SkillGroup objGroup = SkillGroupObject;
+                if (objGroup?.IsDisposed == false)
                 {
                     try
                     {
-                        SkillGroupObject.MultiplePropertiesChangedAsync -= OnSkillGroupChanged;
+                        objGroup.MultiplePropertiesChangedAsync -= OnSkillGroupChanged;
                     }
                     catch (ObjectDisposedException)
                     {

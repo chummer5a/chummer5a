@@ -82,10 +82,18 @@ namespace Chummer
             _objCachedPowerPointsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedTotalRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             objCharacter.PropertyChangedAsync += OnCharacterChanged;
-            objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsChanged;
-            MAGAttributeObject = objCharacter.Settings.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept
-                ? objCharacter.MAGAdept
-                : objCharacter.MAG;
+            CharacterSettings objSettings = objCharacter.Settings;
+            if (objSettings?.IsDisposed == false)
+            {
+                objSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsChanged;
+                MAGAttributeObject = objSettings.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept
+                    ? objCharacter.MAGAdept
+                    : objCharacter.MAG;
+            }
+            else
+            {
+                MAGAttributeObject = objCharacter.MAG;
+            }
         }
 
         public void DeletePower()
@@ -3725,10 +3733,32 @@ namespace Chummer
         {
             using (LockObject.EnterWriteLock())
             {
-                if (CharacterObject != null)
+                Character objCharacter = CharacterObject;
+                if (objCharacter != null)
                 {
-                    CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
-                    CharacterObject.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsChanged;
+                    if (!objCharacter.IsDisposed)
+                    {
+                        try
+                        {
+                            objCharacter.PropertyChangedAsync -= OnCharacterChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // swallow this
+                        }
+                    }
+                    CharacterSettings objSettings = objCharacter.Settings;
+                    if (objSettings?.IsDisposed == false)
+                    {
+                        try
+                        {
+                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // swallow this
+                        }
+                    }
                 }
 
                 MAGAttributeObject = null;
@@ -3746,10 +3776,32 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                if (CharacterObject != null)
+                Character objCharacter = CharacterObject;
+                if (objCharacter != null)
                 {
-                    CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
-                    CharacterObject.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsChanged;
+                    if (!objCharacter.IsDisposed)
+                    {
+                        try
+                        {
+                            objCharacter.PropertyChangedAsync -= OnCharacterChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // swallow this
+                        }
+                    }
+                    CharacterSettings objSettings = await objCharacter.GetSettingsAsync().ConfigureAwait(false);
+                    if (objSettings?.IsDisposed == false)
+                    {
+                        try
+                        {
+                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // swallow this
+                        }
+                    }
                 }
 
                 await SetMAGAttributeObjectAsync(null).ConfigureAwait(false);

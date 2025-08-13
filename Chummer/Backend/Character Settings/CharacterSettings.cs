@@ -952,7 +952,21 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
-            if (objOther == null)
+            if (IsDisposed)
+            {
+                if (objOther?.IsDisposed != true)
+                {
+                    yield return nameof(SourceIdString);
+                    yield return nameof(FileName);
+                    foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
+                        yield return objProperty.Name;
+                    yield return nameof(CustomDataDirectoryKeys);
+                    yield return nameof(Books);
+                    yield return nameof(BannedWareGrades);
+                }
+                yield break;
+            }
+            else if (objOther?.IsDisposed != false)
             {
                 yield return nameof(SourceIdString);
                 yield return nameof(FileName);
@@ -1021,7 +1035,21 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
             List<string> lstReturn = new List<string>(aobjProperties.Length);
-            if (objOther == null)
+            if (IsDisposed)
+            {
+                if (objOther?.IsDisposed != true)
+                {
+                    lstReturn.Add(nameof(SourceIdString));
+                    lstReturn.Add(nameof(FileName));
+                    foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
+                        lstReturn.Add(objProperty.Name);
+                    lstReturn.Add(nameof(CustomDataDirectoryKeys));
+                    lstReturn.Add(nameof(Books));
+                    lstReturn.Add(nameof(BannedWareGrades));
+                }
+                return lstReturn;
+            }
+            else if (objOther?.IsDisposed != false)
             {
                 lstReturn.Add(nameof(SourceIdString));
                 lstReturn.Add(nameof(FileName));
@@ -1106,7 +1134,7 @@ namespace Chummer
         public bool HasIdenticalSettings(CharacterSettings objOther, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (objOther == null)
+            if (objOther?.IsDisposed != false)
                 return false;
             using (objOther.LockObject.EnterReadLock(token))
             using (LockObject.EnterReadLock(token))
@@ -1154,7 +1182,7 @@ namespace Chummer
 
         public async Task<bool> HasIdenticalSettingsAsync(CharacterSettings objOther, CancellationToken token = default)
         {
-            if (objOther == null)
+            if (objOther?.IsDisposed != false)
                 return false;
             IAsyncDisposable objLocker =
                 await objOther.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);

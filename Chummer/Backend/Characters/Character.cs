@@ -17377,7 +17377,7 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    IDisposable objReaderLock = value?.LockObject.EnterUpgradeableReadLock();
+                    IDisposable objReaderLock = value?.IsDisposed == false ? value.LockObject.EnterUpgradeableReadLock() : null;
                     try
                     {
                         CharacterSettings objOldSettings = Interlocked.Exchange(ref _objSettings, value);
@@ -17387,7 +17387,7 @@ namespace Chummer
                             if (ReferenceEquals(objOldSettings, value))
                                 return;
                             bool blnActuallyDifferentSettings = objOldSettings?.HasIdenticalSettings(value) != false;
-                            if (objOldSettings != null)
+                            if (objOldSettings?.IsDisposed == false)
                             {
                                 try
                                 {
@@ -17398,13 +17398,22 @@ namespace Chummer
                                     //swallow this
                                 }
                             }
-                            if (value != null)
-                                value.MultiplePropertiesChangedAsync += OptionsOnPropertyChanged;
+                            if (value?.IsDisposed == false)
+                            {
+                                try
+                                {
+                                    value.MultiplePropertiesChangedAsync += OptionsOnPropertyChanged;
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
+                            }
 
                             if (!blnActuallyDifferentSettings || IsLoading)
                                 return;
                             OnPropertyChanged();
-                            if (value != null)
+                            if (value?.IsDisposed == false)
                             {
                                 Utils.SafelyRunSynchronously(async () =>
                                 {
@@ -17465,7 +17474,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 IAsyncDisposable objLocker2 = null;
-                if (value != null)
+                if (value?.IsDisposed == false)
                     objLocker2 = await value.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -17481,14 +17490,14 @@ namespace Chummer
                         if (ReferenceEquals(objOldSettings, value))
                             return;
                         bool blnActuallyDifferentSettings = true;
-                        if (objOldSettings != null)
+                        if (objOldSettings?.IsDisposed == false)
                         {
                             blnActuallyDifferentSettings = !await objOldSettings.HasIdenticalSettingsAsync(value, token)
                                 .ConfigureAwait(false);
                             objOldSettings.MultiplePropertiesChangedAsync -= OptionsOnPropertyChanged;
                         }
 
-                        if (value != null)
+                        if (value?.IsDisposed == false)
                         {
                             value.MultiplePropertiesChangedAsync += OptionsOnPropertyChanged;
                         }
@@ -17496,7 +17505,7 @@ namespace Chummer
                         if (!blnActuallyDifferentSettings || IsLoading)
                             return;
                         await OnPropertyChangedAsync(nameof(Settings), token).ConfigureAwait(false);
-                        if (value != null)
+                        if (value?.IsDisposed == false)
                         {
                             await OptionsOnMultiplePropertyChanged(await value
                                     .GetDifferingPropertyNamesAsync(objOldSettings, token).ConfigureAwait(false), token)
