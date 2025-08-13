@@ -69,6 +69,7 @@ namespace Chummer
             {
                 _fntNormal.Dispose();
                 _fntStrikeout.Dispose();
+                Interlocked.Exchange(ref _objFormClosingSemaphore, null)?.Dispose();
                 // These tabs might not necessarily be present in our form, so check to dispose them manually
                 if (!tabInitiation.IsDisposed)
                 {
@@ -2505,192 +2506,209 @@ namespace Chummer
             }
         }
 
+        private DebuggableSemaphoreSlim _objFormClosingSemaphore = new DebuggableSemaphoreSlim();
+
         private async void CharacterCareer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Form frmSender = sender as Form;
-            if (frmSender != null)
-            {
-                e.Cancel = true; // Always have to cancel because of issues with async FormClosing events
-                await frmSender.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false); // Disable the form to make sure we can't interract with it anymore
-            }
-
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                DebuggableSemaphoreSlim objSemaphore = _objFormClosingSemaphore;
+                if (objSemaphore?.IsDisposed != false)
+                    return;
+                await objSemaphore.WaitAsync(GenericToken).ConfigureAwait(false);
                 try
                 {
-                    bool blnDoClose = false;
-                    IsLoading = true;
+                    Form frmSender = sender as Form;
+                    if (frmSender != null)
+                    {
+                        e.Cancel = true; // Always have to cancel because of issues with async FormClosing events
+                        await frmSender.DoThreadSafeAsync(x => x.Enabled = false, GenericToken).ConfigureAwait(false); // Disable the form to make sure we can't interract with it anymore
+                    }
+
                     try
                     {
-                        // Caller returns and form stays open (weird async FormClosing event issue workaround)
-                        await Task.Yield();
-
-                        // If there are unsaved changes to the character, as the user if they would like to save their changes.
-                        if (IsDirty && !Utils.IsUnitTest)
-                        {
-                            string strCharacterName = await CharacterObject.GetCharacterNameAsync(GenericToken)
-                                                                           .ConfigureAwait(false);
-                            DialogResult eResult = await Program.ShowScrollableMessageBoxAsync(
-                                this,
-                                string.Format(GlobalSettings.CultureInfo,
-                                    await LanguageManager
-                                        .GetStringAsync("Message_UnsavedChanges", token: GenericToken)
-                                        .ConfigureAwait(false),
-                                    strCharacterName),
-                                await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges", token: GenericToken)
-                                    .ConfigureAwait(false),
-                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, token: GenericToken).ConfigureAwait(false);
-                            switch (eResult)
-                            {
-                                case DialogResult.Yes:
-                                {
-                                    // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
-                                    bool blnResult = await SaveCharacter(token: GenericToken).ConfigureAwait(false);
-                                    if (!blnResult)
-                                        return;
-                                    break;
-                                }
-                                case DialogResult.Cancel:
-                                    return;
-                            }
-                        }
-
-                        await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, GenericToken).ConfigureAwait(false);
-                        GenericCancellationTokenSource?.Cancel(false);
-
-                        // Reset the ToolStrip so the Save button is removed for the currently closing window.
-                        if (Program.MainForm.ActiveMdiChild == this)
-                            ToolStripManager.RevertMerge("toolStrip");
-
-                        // Unsubscribe from events.
-                        Tradition objTradition = await CharacterObject.GetMagicTraditionAsync().ConfigureAwait(false);
-                        objTradition.PropertyChangedAsync -= TraditionOnPropertyChanged;
-                        GlobalSettings.ClipboardChangedAsync -= DoRefreshPasteStatus;
-                        CharacterObject.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
-                        CharacterObject.SettingsMultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                        CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
-                        CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
-                            -= AttributeBeforeClearCollectionChanged;
-                        CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= AttributeCollectionChanged;
-                        CharacterObject.Spells.CollectionChangedAsync -= SpellCollectionChanged;
-                        CharacterObject.ComplexForms.CollectionChangedAsync -= ComplexFormCollectionChanged;
-                        CharacterObject.Arts.CollectionChangedAsync -= ArtCollectionChanged;
-                        CharacterObject.Enhancements.CollectionChangedAsync -= EnhancementCollectionChanged;
-                        CharacterObject.Metamagics.CollectionChangedAsync -= MetamagicCollectionChanged;
-                        CharacterObject.InitiationGrades.CollectionChangedAsync -= InitiationGradeCollectionChanged;
-                        CharacterObject.Powers.ListChangedAsync -= PowersListChanged;
-                        CharacterObject.Powers.BeforeRemoveAsync -= PowersBeforeRemove;
-                        CharacterObject.AIPrograms.CollectionChangedAsync -= AIProgramCollectionChanged;
-                        CharacterObject.CritterPowers.CollectionChangedAsync -= CritterPowerCollectionChanged;
-                        CharacterObject.Qualities.CollectionChangedAsync -= QualityCollectionChanged;
-                        CharacterObject.MartialArts.BeforeClearCollectionChangedAsync -=
-                            MartialArtBeforeClearCollectionChanged;
-                        CharacterObject.MartialArts.CollectionChangedAsync -= MartialArtCollectionChanged;
-                        CharacterObject.Lifestyles.CollectionChangedAsync -= LifestylesCollectionChanged;
-                        CharacterObject.Contacts.BeforeClearCollectionChangedAsync -= ContactBeforeClearCollectionChanged;
-                        CharacterObject.Contacts.CollectionChangedAsync -= ContactCollectionChanged;
-                        CharacterObject.Spirits.BeforeClearCollectionChangedAsync -= SpiritBeforeClearCollectionChanged;
-                        CharacterObject.Spirits.CollectionChangedAsync -= SpiritCollectionChanged;
-                        CharacterObject.Armor.BeforeClearCollectionChangedAsync -=
-                            ArmorBeforeClearCollectionChanged;
-                        CharacterObject.Armor.CollectionChangedAsync -= ArmorCollectionChanged;
-                        CharacterObject.ArmorLocations.CollectionChangedAsync -= ArmorLocationCollectionChanged;
-                        CharacterObject.Weapons.BeforeClearCollectionChangedAsync -=
-                            WeaponBeforeClearCollectionChanged;
-                        CharacterObject.Weapons.CollectionChangedAsync -= WeaponCollectionChanged;
-                        CharacterObject.Drugs.CollectionChangedAsync -= DrugCollectionChanged;
-                        CharacterObject.WeaponLocations.CollectionChangedAsync -= WeaponLocationCollectionChanged;
-                        CharacterObject.Gear.BeforeClearCollectionChangedAsync -=
-                            GearBeforeClearCollectionChanged;
-                        CharacterObject.Gear.CollectionChangedAsync -= GearCollectionChanged;
-                        CharacterObject.GearLocations.CollectionChangedAsync -= GearLocationCollectionChanged;
-                        CharacterObject.Cyberware.BeforeClearCollectionChangedAsync -=
-                            CyberwareBeforeClearCollectionChanged;
-                        CharacterObject.Cyberware.CollectionChangedAsync -= CyberwareCollectionChanged;
-                        CharacterObject.Vehicles.BeforeClearCollectionChangedAsync -=
-                            VehicleBeforeClearCollectionChanged;
-                        CharacterObject.Vehicles.CollectionChangedAsync -= VehicleCollectionChanged;
-                        CharacterObject.VehicleLocations.CollectionChangedAsync -= VehicleLocationCollectionChanged;
-                        CharacterObject.Spirits.CollectionChangedAsync -= SpiritCollectionChanged;
-                        CharacterObject.Improvements.CollectionChangedAsync -= ImprovementCollectionChanged;
-                        CharacterObject.ImprovementGroups.CollectionChangedAsync -= ImprovementGroupCollectionChanged;
-                        CharacterObject.Calendar.ListChangedAsync -= CalendarWeekListChanged;
-                        CharacterObject.Drugs.CollectionChangedAsync -= DrugCollectionChanged;
-                        CharacterObject.SustainedCollection.BeforeClearCollectionChangedAsync -=
-                            SustainedSpellBeforeClearCollectionChanged;
-                        CharacterObject.SustainedCollection.CollectionChangedAsync -= SustainedSpellCollectionChanged;
-                        CharacterObject.ExpenseEntries.CollectionChangedAsync -= ExpenseEntriesCollectionChanged;
-
-                        SetupCommonCollectionDatabindings(false);
-
-                        // Clear the mugshot image so that we don't get crashes from disposal ordering (image can get disposed before its picturebox does)
-                        await picMugshot.DoThreadSafeAsync(x => x.Image = null, CancellationToken.None).ConfigureAwait(false);
-
-                        await Task.WhenAll(RefreshAttributesClearBindings(pnlAttributes, CancellationToken.None),
-                            RefreshMartialArtsClearBindings(treMartialArts, CancellationToken.None),
-                            RefreshArmorClearBindings(treArmor, CancellationToken.None),
-                            RefreshWeaponsClearBindings(treWeapons, CancellationToken.None),
-                            RefreshGearsClearBindings(treGear, CancellationToken.None),
-                            RefreshCyberwareClearBindings(treCyberware, CancellationToken.None),
-                            RefreshVehiclesClearBindings(treVehicles, CancellationToken.None),
-                            RefreshContactsClearBindings(panContacts, panEnemies, panPets,
-                                CancellationToken.None),
-                            RefreshSpiritsClearBindings(panSpirits, panSprites,
-                                CancellationToken.None),
-                            RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms,
-                                flpSustainedCritterPowers,
-                                CancellationToken.None)).ConfigureAwait(false);
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
                         try
                         {
-                            await UpdateCharacterInfoTask.ConfigureAwait(false);
+                            bool blnDoClose = false;
+                            IsLoading = true;
+                            try
+                            {
+                                // Caller returns and form stays open (weird async FormClosing event issue workaround)
+                                await Task.Yield();
+
+                                // If there are unsaved changes to the character, as the user if they would like to save their changes.
+                                if (IsDirty && !Utils.IsUnitTest)
+                                {
+                                    string strCharacterName = await CharacterObject.GetCharacterNameAsync(GenericToken)
+                                                                                   .ConfigureAwait(false);
+                                    DialogResult eResult = await Program.ShowScrollableMessageBoxAsync(
+                                        this,
+                                        string.Format(GlobalSettings.CultureInfo,
+                                            await LanguageManager
+                                                .GetStringAsync("Message_UnsavedChanges", token: GenericToken)
+                                                .ConfigureAwait(false),
+                                            strCharacterName),
+                                        await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges", token: GenericToken)
+                                            .ConfigureAwait(false),
+                                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, token: GenericToken).ConfigureAwait(false);
+                                    switch (eResult)
+                                    {
+                                        case DialogResult.Yes:
+                                            {
+                                                // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
+                                                bool blnResult = await SaveCharacter(token: GenericToken).ConfigureAwait(false);
+                                                if (!blnResult)
+                                                    return;
+                                                break;
+                                            }
+                                        case DialogResult.Cancel:
+                                            return;
+                                    }
+                                }
+
+                                await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, GenericToken).ConfigureAwait(false);
+                                GenericCancellationTokenSource?.Cancel(false);
+
+                                // Reset the ToolStrip so the Save button is removed for the currently closing window.
+                                if (Program.MainForm.ActiveMdiChild == this)
+                                    ToolStripManager.RevertMerge("toolStrip");
+
+                                // Unsubscribe from events.
+                                Tradition objTradition = await CharacterObject.GetMagicTraditionAsync().ConfigureAwait(false);
+                                objTradition.PropertyChangedAsync -= TraditionOnPropertyChanged;
+                                GlobalSettings.ClipboardChangedAsync -= DoRefreshPasteStatus;
+                                CharacterObject.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
+                                CharacterObject.SettingsMultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                                CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
+                                CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
+                                    -= AttributeBeforeClearCollectionChanged;
+                                CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= AttributeCollectionChanged;
+                                CharacterObject.Spells.CollectionChangedAsync -= SpellCollectionChanged;
+                                CharacterObject.ComplexForms.CollectionChangedAsync -= ComplexFormCollectionChanged;
+                                CharacterObject.Arts.CollectionChangedAsync -= ArtCollectionChanged;
+                                CharacterObject.Enhancements.CollectionChangedAsync -= EnhancementCollectionChanged;
+                                CharacterObject.Metamagics.CollectionChangedAsync -= MetamagicCollectionChanged;
+                                CharacterObject.InitiationGrades.CollectionChangedAsync -= InitiationGradeCollectionChanged;
+                                CharacterObject.Powers.ListChangedAsync -= PowersListChanged;
+                                CharacterObject.Powers.BeforeRemoveAsync -= PowersBeforeRemove;
+                                CharacterObject.AIPrograms.CollectionChangedAsync -= AIProgramCollectionChanged;
+                                CharacterObject.CritterPowers.CollectionChangedAsync -= CritterPowerCollectionChanged;
+                                CharacterObject.Qualities.CollectionChangedAsync -= QualityCollectionChanged;
+                                CharacterObject.MartialArts.BeforeClearCollectionChangedAsync -=
+                                    MartialArtBeforeClearCollectionChanged;
+                                CharacterObject.MartialArts.CollectionChangedAsync -= MartialArtCollectionChanged;
+                                CharacterObject.Lifestyles.CollectionChangedAsync -= LifestylesCollectionChanged;
+                                CharacterObject.Contacts.BeforeClearCollectionChangedAsync -= ContactBeforeClearCollectionChanged;
+                                CharacterObject.Contacts.CollectionChangedAsync -= ContactCollectionChanged;
+                                CharacterObject.Spirits.BeforeClearCollectionChangedAsync -= SpiritBeforeClearCollectionChanged;
+                                CharacterObject.Spirits.CollectionChangedAsync -= SpiritCollectionChanged;
+                                CharacterObject.Armor.BeforeClearCollectionChangedAsync -=
+                                    ArmorBeforeClearCollectionChanged;
+                                CharacterObject.Armor.CollectionChangedAsync -= ArmorCollectionChanged;
+                                CharacterObject.ArmorLocations.CollectionChangedAsync -= ArmorLocationCollectionChanged;
+                                CharacterObject.Weapons.BeforeClearCollectionChangedAsync -=
+                                    WeaponBeforeClearCollectionChanged;
+                                CharacterObject.Weapons.CollectionChangedAsync -= WeaponCollectionChanged;
+                                CharacterObject.Drugs.CollectionChangedAsync -= DrugCollectionChanged;
+                                CharacterObject.WeaponLocations.CollectionChangedAsync -= WeaponLocationCollectionChanged;
+                                CharacterObject.Gear.BeforeClearCollectionChangedAsync -=
+                                    GearBeforeClearCollectionChanged;
+                                CharacterObject.Gear.CollectionChangedAsync -= GearCollectionChanged;
+                                CharacterObject.GearLocations.CollectionChangedAsync -= GearLocationCollectionChanged;
+                                CharacterObject.Cyberware.BeforeClearCollectionChangedAsync -=
+                                    CyberwareBeforeClearCollectionChanged;
+                                CharacterObject.Cyberware.CollectionChangedAsync -= CyberwareCollectionChanged;
+                                CharacterObject.Vehicles.BeforeClearCollectionChangedAsync -=
+                                    VehicleBeforeClearCollectionChanged;
+                                CharacterObject.Vehicles.CollectionChangedAsync -= VehicleCollectionChanged;
+                                CharacterObject.VehicleLocations.CollectionChangedAsync -= VehicleLocationCollectionChanged;
+                                CharacterObject.Spirits.CollectionChangedAsync -= SpiritCollectionChanged;
+                                CharacterObject.Improvements.CollectionChangedAsync -= ImprovementCollectionChanged;
+                                CharacterObject.ImprovementGroups.CollectionChangedAsync -= ImprovementGroupCollectionChanged;
+                                CharacterObject.Calendar.ListChangedAsync -= CalendarWeekListChanged;
+                                CharacterObject.Drugs.CollectionChangedAsync -= DrugCollectionChanged;
+                                CharacterObject.SustainedCollection.BeforeClearCollectionChangedAsync -=
+                                    SustainedSpellBeforeClearCollectionChanged;
+                                CharacterObject.SustainedCollection.CollectionChangedAsync -= SustainedSpellCollectionChanged;
+                                CharacterObject.ExpenseEntries.CollectionChangedAsync -= ExpenseEntriesCollectionChanged;
+
+                                SetupCommonCollectionDatabindings(false);
+
+                                // Clear the mugshot image so that we don't get crashes from disposal ordering (image can get disposed before its picturebox does)
+                                await picMugshot.DoThreadSafeAsync(x => x.Image = null, CancellationToken.None).ConfigureAwait(false);
+
+                                await Task.WhenAll(RefreshAttributesClearBindings(pnlAttributes, CancellationToken.None),
+                                    RefreshMartialArtsClearBindings(treMartialArts, CancellationToken.None),
+                                    RefreshArmorClearBindings(treArmor, CancellationToken.None),
+                                    RefreshWeaponsClearBindings(treWeapons, CancellationToken.None),
+                                    RefreshGearsClearBindings(treGear, CancellationToken.None),
+                                    RefreshCyberwareClearBindings(treCyberware, CancellationToken.None),
+                                    RefreshVehiclesClearBindings(treVehicles, CancellationToken.None),
+                                    RefreshContactsClearBindings(panContacts, panEnemies, panPets,
+                                        CancellationToken.None),
+                                    RefreshSpiritsClearBindings(panSpirits, panSprites,
+                                        CancellationToken.None),
+                                    RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms,
+                                        flpSustainedCritterPowers,
+                                        CancellationToken.None)).ConfigureAwait(false);
+                                try
+                                {
+                                    await UpdateCharacterInfoTask.ConfigureAwait(false);
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    //swallow this
+                                }
+
+                                blnDoClose = true;
+                            }
+                            finally
+                            {
+                                if (!blnDoClose)
+                                    IsLoading = false;
+                            }
                         }
-                        catch (OperationCanceledException)
+                        finally
                         {
-                            //swallow this
+                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
                         }
 
-                        blnDoClose = true;
+                        // Now we close the original caller (weird async FormClosing event issue workaround)
+                        if (frmSender != null)
+                        {
+                            await frmSender.DoThreadSafeAsync(x =>
+                            {
+                                x.FormClosing -= CharacterCareer_FormClosing;
+                                try
+                                {
+                                    x.Close();
+                                }
+                                catch
+                                {
+                                    // Ignore disposal errors if we are quitting the program anyway
+                                    if (Program.MainForm.IsNullOrDisposed() || Program.MainForm.IsClosing)
+                                        return;
+                                    throw;
+                                }
+                            }).ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
-                        if (!blnDoClose)
-                            IsLoading = false;
+                        if (frmSender != null)
+                            await frmSender.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false); // Doesn't matter if we're closed
                     }
                 }
                 finally
                 {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
-
-                // Now we close the original caller (weird async FormClosing event issue workaround)
-                if (frmSender != null)
-                {
-                    await frmSender.DoThreadSafeAsync(x =>
-                    {
-                        x.FormClosing -= CharacterCareer_FormClosing;
-                        try
-                        {
-                            x.Close();
-                        }
-                        catch
-                        {
-                            // Ignore disposal errors if we are quitting the program anyway
-                            if (Program.MainForm.IsNullOrDisposed() || Program.MainForm.IsClosing)
-                                return;
-                            throw;
-                        }
-                    }).ConfigureAwait(false);
+                    if (objSemaphore?.IsDisposed == false)
+                        objSemaphore.Release();
                 }
             }
             catch (OperationCanceledException)
             {
                 // Swallow this
-            }
-            finally
-            {
-                if (frmSender != null)
-                    await frmSender.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false); // Doesn't matter if we're closed
             }
         }
 

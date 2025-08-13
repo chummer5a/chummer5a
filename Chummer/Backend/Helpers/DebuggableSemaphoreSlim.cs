@@ -38,6 +38,7 @@ namespace Chummer
     {
         private readonly bool _blnDisposeSemaphore;
         private readonly SemaphoreSlim _objSemaphoreSlim;
+        private int _intIsDisposed;
 
 #if SEMAPHOREDEBUG
         private readonly bool _blnTrackHolder;
@@ -441,15 +442,20 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            if (_blnDisposeSemaphore)
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) == 0)
             {
-                _objSemaphoreSlim.Dispose();
+                if (_blnDisposeSemaphore)
+                {
+                    _objSemaphoreSlim.Dispose();
 #if SEMAPHOREDEBUG
-                if (_blnTrackHolder)
-                    LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+                    if (_blnTrackHolder)
+                        LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
+                }
             }
         }
+
+        public bool IsDisposed => _intIsDisposed > 0;
 
         /// <inheritdoc cref="SemaphoreSlim.CurrentCount"/>
         public int CurrentCount => _objSemaphoreSlim.CurrentCount;
