@@ -9808,40 +9808,31 @@ namespace Chummer
         {
             try
             {
-                CalendarWeek objWeek = new CalendarWeek();
+                CalendarWeek objWeek;
+                ThreadSafeBindingList<CalendarWeek> lstCalendarWeeks = await CharacterObject.GetCalendarAsync(GenericToken).ConfigureAwait(false);
+                CalendarWeek objLastWeek
+                    = await lstCalendarWeeks.FirstOrDefaultAsync(GenericToken).ConfigureAwait(false);
+                if (objLastWeek != null)
+                {
+                    objWeek = new CalendarWeek(await objLastWeek.GetYearAsync(GenericToken).ConfigureAwait(false), await objLastWeek.GetWeekAsync(GenericToken).ConfigureAwait(false) + 1);
+                }
+                else
+                {
+                    using (ThreadSafeForm<SelectCalendarStart> frmPickStart
+                           = await ThreadSafeForm<SelectCalendarStart>.GetAsync(
+                               () => new SelectCalendarStart(), GenericToken).ConfigureAwait(false))
+                    {
+                        if (await frmPickStart.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                            == DialogResult.Cancel)
+                        {
+                            return;
+                        }
+
+                        objWeek = new CalendarWeek(frmPickStart.MyForm.SelectedYear, frmPickStart.MyForm.SelectedWeek);
+                    }
+                }
                 try
                 {
-                    ThreadSafeBindingList<CalendarWeek> lstCalendarWeeks = await CharacterObject.GetCalendarAsync(GenericToken).ConfigureAwait(false);
-                    CalendarWeek objLastWeek
-                        = await lstCalendarWeeks.FirstOrDefaultAsync(GenericToken).ConfigureAwait(false);
-                    if (objLastWeek != null)
-                    {
-                        objWeek.Year = objLastWeek.Year;
-                        objWeek.Week = objLastWeek.Week + 1;
-                        if (objWeek.Week > 52)
-                        {
-                            objWeek.Week = 1;
-                            ++objWeek.Year;
-                        }
-                    }
-                    else
-                    {
-                        using (ThreadSafeForm<SelectCalendarStart> frmPickStart
-                               = await ThreadSafeForm<SelectCalendarStart>.GetAsync(
-                                   () => new SelectCalendarStart(), GenericToken).ConfigureAwait(false))
-                        {
-                            if (await frmPickStart.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                                == DialogResult.Cancel)
-                            {
-                                await objWeek.DisposeAsync().ConfigureAwait(false);
-                                return;
-                            }
-
-                            objWeek.Year = frmPickStart.MyForm.SelectedYear;
-                            objWeek.Week = frmPickStart.MyForm.SelectedWeek;
-                        }
-                    }
-
                     await lstCalendarWeeks.AddWithSortAsync(objWeek, (x, y) => y.CompareTo(x), token: GenericToken)
                                          .ConfigureAwait(false);
                 }
@@ -9942,8 +9933,8 @@ namespace Chummer
                     return;
                 }
 
-                int intYear;
-                int intWeek;
+                int intNewStartYear;
+                int intNewStartWeek;
                 using (ThreadSafeForm<SelectCalendarStart> frmPickStart
                        = await ThreadSafeForm<SelectCalendarStart>.GetAsync(
                            () => new SelectCalendarStart(objStart), GenericToken).ConfigureAwait(false))
@@ -9952,32 +9943,24 @@ namespace Chummer
                         == DialogResult.Cancel)
                         return;
 
-                    intYear = frmPickStart.MyForm.SelectedYear;
-                    intWeek = frmPickStart.MyForm.SelectedWeek;
+                    intNewStartYear = frmPickStart.MyForm.SelectedYear;
+                    intNewStartWeek = frmPickStart.MyForm.SelectedWeek;
                 }
 
-                // Determine the difference between the starting value and selected values for year and week.
-                int intYearDiff = intYear - objStart.Year;
-                int intWeekDiff = intWeek - objStart.Week;
+                // Determine the total number of weeks' difference between the old and new values
+                int intTotalWeekDiff = intNewStartWeek - await objStart.GetWeekAsync(GenericToken).ConfigureAwait(false);
+                int intOldStartYear = await objStart.GetYearAsync(GenericToken).ConfigureAwait(false);
+                if (intNewStartYear != intOldStartYear)
+                {
+                    int intYearLoopDelta = intNewStartYear > intOldStartYear ? 1 : -1;
+                    for (; intNewStartYear != intOldStartYear; intNewStartYear -= intYearLoopDelta)
+                    {
+                        intTotalWeekDiff += intNewStartYear.IsYearLongYear() ? 53 : 52;
+                    }
+                }
 
                 // Update each of the CalendarWeek entries for the character.
-                await lstCalendarWeeks.ForEachWithSideEffectsAsync(objWeek =>
-                {
-                    objWeek.Week += intWeekDiff;
-                    objWeek.Year += intYearDiff;
-
-                    // If the date range goes outside of 52 weeks, increase or decrease the year as necessary.
-                    if (objWeek.Week < 1)
-                    {
-                        --objWeek.Year;
-                        objWeek.Week += 52;
-                    }
-                    else if (objWeek.Week > 52)
-                    {
-                        ++objWeek.Year;
-                        objWeek.Week -= 52;
-                    }
-                }, GenericToken).ConfigureAwait(false);
+                await lstCalendarWeeks.ForEachWithSideEffectsAsync(objWeek => objWeek.ModifyWeekAsync(intTotalWeekDiff, GenericToken), GenericToken).ConfigureAwait(false);
 
                 await SetDirty(true).ConfigureAwait(false);
             }

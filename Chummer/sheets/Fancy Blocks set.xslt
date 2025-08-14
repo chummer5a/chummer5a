@@ -2280,7 +2280,6 @@
           <tr>
             <td style="white-space:pre;">
                 <xsl:value-of select="year" /><xsl:text>, </xsl:text>
-                <xsl:value-of select="$lang.Month" /><xsl:text> </xsl:text><xsl:value-of select="month" /><xsl:text>, </xsl:text>
                 <xsl:value-of select="$lang.Week" /><xsl:text> </xsl:text><xsl:value-of select="week" />
             </td>
             <td style="width:100%;">

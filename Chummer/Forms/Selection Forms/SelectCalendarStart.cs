@@ -24,6 +24,8 @@ namespace Chummer
 {
     public partial class SelectCalendarStart : Form
     {
+        private string _strCachedDateSpanFormat;
+        private bool _blnCachedSelectedYearIsLeapYear = true;
         private int _intSelectedYear = DateTime.UtcNow.Year + 62;
         private int _intSelectedWeek = 1;
 
@@ -34,6 +36,14 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+
+            _strCachedDateSpanFormat = LanguageManager.GetString("String_DateSpan");
+            nudYear.Value = _intSelectedYear;
+            nudWeek.Value = _intSelectedWeek;
+            nudWeek.Maximum = _intSelectedYear.IsYearLongYear(out _blnCachedSelectedYearIsLeapYear) ? 53 : 52;
+
+            nudYear.ValueChanged += nudYear_ValueChanged;
+            nudWeek.ValueChanged += UpdateDateSpan;
         }
 
         public SelectCalendarStart(CalendarWeek objWeek)
@@ -44,9 +54,13 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
+            _strCachedDateSpanFormat = LanguageManager.GetString("String_DateSpan");
             nudYear.Value = objWeek.Year;
-            nudMonth.Value = objWeek.Month;
-            nudWeek.Value = objWeek.MonthWeek;
+            nudWeek.Value = objWeek.Week;
+            nudWeek.Maximum = objWeek.IsLongYear ? 53 : 52;
+
+            nudYear.ValueChanged += nudYear_ValueChanged;
+            nudWeek.ValueChanged += UpdateDateSpan;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -60,24 +74,6 @@ namespace Chummer
             Close();
         }
 
-        private void nudMonth_ValueChanged(object sender, EventArgs e)
-        {
-            // All months have 4 weeks with the exception of months 3, 6, 9, and 12 which have 5 each.
-            switch (nudMonth.ValueAsInt)
-            {
-                case 3:
-                case 6:
-                case 9:
-                case 12:
-                    nudWeek.Maximum = 5;
-                    break;
-
-                default:
-                    nudWeek.Maximum = 4;
-                    break;
-            }
-        }
-
         #endregion Control Events
 
         #region Methods
@@ -88,21 +84,37 @@ namespace Chummer
         private void AcceptForm()
         {
             _intSelectedYear = nudYear.ValueAsInt;
-            int intMonth = nudMonth.ValueAsInt;
-            int intWeek = nudWeek.ValueAsInt;
-
-            // Calculate the week number based on the selected month and week combination.
-            _intSelectedWeek = (intMonth - 1) * 4 + intWeek;
-            // Correct the number of weeks since every third month has 5 weeks instead of 4.
-            if (intMonth > 3)
-                _intSelectedWeek++;
-            if (intMonth > 6)
-                _intSelectedWeek++;
-            if (intMonth > 9)
-                _intSelectedWeek++;
-
+            _intSelectedWeek = nudWeek.ValueAsInt;
             DialogResult = DialogResult.OK;
             Close();
+        }
+
+        private void nudYear_ValueChanged(object sender, EventArgs e)
+        {
+            nudWeek.Maximum = nudYear.ValueAsInt.IsYearLongYear(out _blnCachedSelectedYearIsLeapYear) ? 53 : 52;
+            UpdateDateSpan(sender, e);
+        }
+
+
+        private void UpdateDateSpan(object sender, EventArgs e)
+        {
+            string strFormat = _strCachedDateSpanFormat;
+            int intYear = nudYear.ValueAsInt;
+            int intOrdinalDaySpanStart = nudWeek.ValueAsInt * 7 - 2 - intYear.GetWeekOfTheDayForJan4();
+            DateTime datStart;
+            if (intOrdinalDaySpanStart > 0)
+            {
+                int intMonth = 1 + intOrdinalDaySpanStart.DivRem(30, out int intDay);
+                intDay += (_blnCachedSelectedYearIsLeapYear ? 2 : 3) - (3 * (intMonth + 1)) / 5;
+                datStart = new DateTime(intYear, intMonth, intDay);
+            }
+            else
+            {
+                datStart = new DateTime(intYear - 1, 12, 31 + intOrdinalDaySpanStart);
+            }
+            DateTime datEnd = datStart.AddDays(6);
+            lblDateSpan.Text = string.Format(GlobalSettings.CultureInfo, strFormat,
+                datStart.ToString("D", GlobalSettings.CultureInfo), datEnd.ToString("D", GlobalSettings.CultureInfo));
         }
 
         #endregion Methods

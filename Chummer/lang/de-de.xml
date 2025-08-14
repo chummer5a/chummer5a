@@ -4910,7 +4910,7 @@
     </string>
     <string>
       <key>String_WeekDisplay</key>
-      <text>{0}: Monat {1}, Woche {2}</text>
+      <text>{0}-W{1}</text>
     </string>
     <string>
       <key>Title_CalendarStart</key>

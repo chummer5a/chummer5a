@@ -5887,7 +5887,7 @@
     </string>
     <string>
       <key>String_WeekDisplay</key>
-      <text>{0}: Month {1}, Week {2}</text>
+      <text>{0}-W{1}</text>
     </string>
     <!-- End Region-->
     <!-- Region Improvements Tab -->
@@ -9419,7 +9419,7 @@
     </string>
     <string>
       <key>Label_CalendarStart</key>
-      <text>Enter the year, month, and week number to start the calendar at.</text>
+      <text>Enter the year and week number at which to start the calendar.</text>
     </string>
     <string>
       <key>Label_Year</key>
@@ -9432,6 +9432,14 @@
     <string>
       <key>Label_Week</key>
       <text>Week:</text>
+    </string>
+    <string>
+      <key>Label_WeekSpansFollowingDates</key>
+      <text>This week spans the following dates:</text>
+    </string>
+    <string>
+      <key>String_DateSpan</key>
+      <text>{0} - {1}</text>
     </string>
     <!-- End Region-->
     <!-- Region Update Window -->

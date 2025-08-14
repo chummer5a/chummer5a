@@ -3422,7 +3422,7 @@
     </string>
     <string>
       <key>String_WeekDisplay</key>
-      <text>{0}年{1}月第{2}周</text>
+      <text>{0}－Ｗ{1}</text>
     </string>
     <!-- Improvements Tab -->
     <string>

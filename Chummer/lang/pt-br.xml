@@ -4624,7 +4624,7 @@
     </string>
     <string>
       <key>String_WeekDisplay</key>
-      <text>{0}: Mês {1}, Semana {2}</text>
+      <text>{0}-W{1}</text>
     </string>
     <!-- End Region-->
     <!-- Region Improvements Tab -->
