@@ -25,6 +25,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.XPath;
+using Chummer.Backend.Enums;
 using Microsoft.VisualStudio.Threading;
 
 namespace Chummer

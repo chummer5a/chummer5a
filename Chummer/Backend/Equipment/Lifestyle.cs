@@ -32,22 +32,13 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
+using Chummer.Backend.Enums;
 using NLog;
 
 // ReSharper disable ConvertToAutoProperty
 
 namespace Chummer.Backend.Equipment
 {
-    /// <summary>
-    /// Type of Lifestyle.
-    /// </summary>
-    public enum LifestyleIncrement
-    {
-        Month = 0,
-        Week = 1,
-        Day = 2
-    }
-
     /// <summary>
     /// Lifestyle.
     /// </summary>

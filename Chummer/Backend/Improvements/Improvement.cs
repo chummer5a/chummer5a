@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
+using Chummer.Backend.Enums;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
 using NLog;
@@ -2161,7 +2162,7 @@ namespace Chummer
                     foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                     {
                         if ((objCharacterAttrib.Abbrev != ImprovedName && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
-                            || objCharacterAttrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+                            || objCharacterAttrib.MetatypeCategory == AttributeCategory.Shapeshifter)
                             continue;
                         if (Maximum != 0)
                             yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
@@ -4700,7 +4701,7 @@ namespace Chummer
                         foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(token).ConfigureAwait(false))
                         {
                             if ((objCharacterAttrib.Abbrev != ImprovedName && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
-                                || objCharacterAttrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+                                || objCharacterAttrib.MetatypeCategory == AttributeCategory.Shapeshifter)
                                 continue;
                             if (Maximum != 0)
                                 lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,

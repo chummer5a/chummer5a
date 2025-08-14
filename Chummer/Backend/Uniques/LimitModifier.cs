@@ -28,15 +28,6 @@ using System.Xml;
 
 namespace Chummer
 {
-    public enum LimitType
-    {
-        Physical = 0,
-        Mental,
-        Social,
-        Astral,
-        NumLimitTypes // 🡐 This one should always be the last defined enum
-    }
-
     /// <summary>
     /// A Skill Limit Modifier.
     /// </summary>

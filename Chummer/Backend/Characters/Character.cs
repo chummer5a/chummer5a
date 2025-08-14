@@ -51,6 +51,7 @@ using Newtonsoft.Json;
 using NLog;
 using Application = System.Windows.Forms.Application;
 using System.Buffers;
+using Chummer.Backend.Enums;
 
 namespace Chummer
 {
@@ -39341,7 +39342,7 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard
+                    return AttributeSection.AttributeCategory == AttributeCategory.Standard
                         ? WalkString
                         : WalkAltString;
             }
@@ -39352,7 +39353,7 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard
+                    return AttributeSection.AttributeCategory == AttributeCategory.Standard
                         ? RunString
                         : RunAltString;
             }
@@ -39363,7 +39364,7 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard
+                    return AttributeSection.AttributeCategory == AttributeCategory.Standard
                         ? SprintString
                         : SprintAltString;
             }
@@ -39377,7 +39378,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return await (await GetAttributeSectionAsync(token).ConfigureAwait(false))
                              .GetAttributeCategoryAsync(token).ConfigureAwait(false)
-                       != CharacterAttrib.AttributeCategory.Standard
+                       != AttributeCategory.Standard
                     ? await GetWalkAltStringAsync(token).ConfigureAwait(false)
                     : await GetWalkStringAsync(token).ConfigureAwait(false);
             }
@@ -39395,7 +39396,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return await (await GetAttributeSectionAsync(token).ConfigureAwait(false))
                              .GetAttributeCategoryAsync(token).ConfigureAwait(false)
-                       != CharacterAttrib.AttributeCategory.Standard
+                       != AttributeCategory.Standard
                     ? await GetRunAltStringAsync(token).ConfigureAwait(false)
                     : await GetRunStringAsync(token).ConfigureAwait(false);
             }
@@ -39413,7 +39414,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return await (await GetAttributeSectionAsync(token).ConfigureAwait(false))
                              .GetAttributeCategoryAsync(token).ConfigureAwait(false)
-                       != CharacterAttrib.AttributeCategory.Standard
+                       != AttributeCategory.Standard
                     ? await GetSprintAltStringAsync(token).ConfigureAwait(false)
                     : await GetSprintStringAsync(token).ConfigureAwait(false);
             }
@@ -48376,42 +48377,42 @@ namespace Chummer
                                     new DependencyGraphNode<string, Character>(nameof(CurrentWalkingRateString),
                                         new DependencyGraphNode<string, Character>(nameof(WalkString),
                                             x => x.AttributeSection.AttributeCategory ==
-                                                 CharacterAttrib.AttributeCategory.Standard,
+                                                 AttributeCategory.Standard,
                                             async (x, t) => await (await x.GetAttributeSectionAsync(t).ConfigureAwait(false)).GetAttributeCategoryAsync(t).ConfigureAwait(false) ==
-                                                            CharacterAttrib.AttributeCategory.Standard),
+                                                            AttributeCategory.Standard),
                                         new DependencyGraphNode<string, Character>(nameof(WalkAltString),
                                             x => x.AttributeSection.AttributeCategory !=
-                                                 CharacterAttrib.AttributeCategory.Standard,
+                                                 AttributeCategory.Standard,
                                             async (x, t) => await (await x.GetAttributeSectionAsync(t).ConfigureAwait(false)).GetAttributeCategoryAsync(t).ConfigureAwait(false) !=
-                                                            CharacterAttrib.AttributeCategory.Standard)
+                                                            AttributeCategory.Standard)
                                     )
                                 ),
                                 new DependencyGraphNode<string, Character>(nameof(RunningRate),
                                     new DependencyGraphNode<string, Character>(nameof(CurrentRunningRateString),
                                         new DependencyGraphNode<string, Character>(nameof(RunString),
                                             x => x.AttributeSection.AttributeCategory ==
-                                                 CharacterAttrib.AttributeCategory.Standard,
+                                                 AttributeCategory.Standard,
                                             async (x, t) => await (await x.GetAttributeSectionAsync(t).ConfigureAwait(false)).GetAttributeCategoryAsync(t).ConfigureAwait(false) ==
-                                                            CharacterAttrib.AttributeCategory.Standard),
+                                                            AttributeCategory.Standard),
                                         new DependencyGraphNode<string, Character>(nameof(RunAltString),
                                             x => x.AttributeSection.AttributeCategory !=
-                                                 CharacterAttrib.AttributeCategory.Standard,
+                                                 AttributeCategory.Standard,
                                             async (x, t) => await (await x.GetAttributeSectionAsync(t).ConfigureAwait(false)).GetAttributeCategoryAsync(t).ConfigureAwait(false) !=
-                                                            CharacterAttrib.AttributeCategory.Standard)
+                                                            AttributeCategory.Standard)
                                     )
                                 ),
                                 new DependencyGraphNode<string, Character>(nameof(SprintingRate),
                                     new DependencyGraphNode<string, Character>(nameof(CurrentSprintingRateString),
                                         new DependencyGraphNode<string, Character>(nameof(SprintString),
                                             x => x.AttributeSection.AttributeCategory ==
-                                                 CharacterAttrib.AttributeCategory.Standard,
+                                                 AttributeCategory.Standard,
                                             async (x, t) => await (await x.GetAttributeSectionAsync(t).ConfigureAwait(false)).GetAttributeCategoryAsync(t).ConfigureAwait(false) ==
-                                                            CharacterAttrib.AttributeCategory.Standard),
+                                                            AttributeCategory.Standard),
                                         new DependencyGraphNode<string, Character>(nameof(SprintAltString),
                                             x => x.AttributeSection.AttributeCategory !=
-                                                 CharacterAttrib.AttributeCategory.Standard,
+                                                 AttributeCategory.Standard,
                                             async (x, t) => await (await x.GetAttributeSectionAsync(t).ConfigureAwait(false)).GetAttributeCategoryAsync(t).ConfigureAwait(false) !=
-                                                            CharacterAttrib.AttributeCategory.Standard)
+                                                            AttributeCategory.Standard)
                                     )
                                 )
                             )

@@ -1547,10 +1547,10 @@ namespace Chummer
                                         using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                    out List<ListItem> lstFireModes))
                                         {
-                                            foreach (Weapon.FiringMode mode in
-                                                     Enum.GetValues(typeof(Weapon.FiringMode)))
+                                            foreach (FiringMode mode in
+                                                     Enum.GetValues(typeof(FiringMode)))
                                             {
-                                                if (mode == Weapon.FiringMode.NumFiringModes)
+                                                if (mode == FiringMode.NumFiringModes)
                                                     continue;
                                                 lstFireModes.Add(new ListItem(mode,
                                                     await LanguageManager
@@ -17511,8 +17511,7 @@ namespace Chummer
                             {
                                 CharacterAttrib objNewAttribute = new CharacterAttrib(
                                     CharacterObject, objOldAttribute.Abbrev,
-                                    CharacterAttrib.AttributeCategory
-                                        .Shapeshifter);
+                                    AttributeCategory.Shapeshifter);
                                 await AttributeSection.CopyAttributeAsync(objOldAttribute, objNewAttribute,
                                     strMetavariantXPath,
                                     xmlDoc, token).ConfigureAwait(false);
@@ -20818,7 +20817,7 @@ namespace Chummer
                         int intCountAttributesAtMax
                             = await lstAttributes.CountAsync(
                                                      async x => x.MetatypeCategory
-                                                                == CharacterAttrib.AttributeCategory.Standard
+                                                                == AttributeCategory.Standard
                                                                 && await x.GetAtMetatypeMaximumAsync(token)
                                                                           .ConfigureAwait(false), token)
                                                  .ConfigureAwait(false);
@@ -25497,8 +25496,8 @@ namespace Chummer
                         objWeapon))
                     return;
                 objWeapon.FireMode = await cboVehicleWeaponFiringMode.DoThreadSafeFuncAsync(x => x.SelectedIndex >= 0
-                    ? (Weapon.FiringMode)x.SelectedValue
-                    : Weapon.FiringMode.DogBrain, GenericToken).ConfigureAwait(false);
+                    ? (FiringMode)x.SelectedValue
+                    : FiringMode.DogBrain, GenericToken).ConfigureAwait(false);
                 await RefreshSelectedVehicle(GenericToken).ConfigureAwait(false);
 
                 await SetDirty(true).ConfigureAwait(false);

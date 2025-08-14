@@ -32,19 +32,12 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
+using Chummer.Backend.Enums;
 
 // ReSharper disable StringLiteralTypo
 
 namespace Chummer
 {
-    public enum CharacterBuildMethod
-    {
-        Karma = 0,
-        Priority = 1,
-        SumtoTen = 2,
-        LifeModule = 3
-    }
-
     public static class CharacterBuildMethodExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

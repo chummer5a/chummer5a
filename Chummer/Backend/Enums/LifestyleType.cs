@@ -17,7 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-namespace Chummer.Backend.Equipment
+namespace Chummer.Backend.Enums
 {
     /// <summary>
     /// Type of Lifestyle.

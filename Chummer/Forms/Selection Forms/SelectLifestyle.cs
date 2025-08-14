@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Enums;
 using Chummer.Backend.Equipment;
 using Timer = System.Windows.Forms.Timer;
 

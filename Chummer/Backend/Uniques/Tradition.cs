@@ -31,16 +31,10 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
+using Chummer.Backend.Enums;
 
 namespace Chummer.Backend.Uniques
 {
-    public enum TraditionType
-    {
-        None,
-        MAG,
-        RES
-    }
-
     /// <summary>
     /// A Tradition
     /// </summary>

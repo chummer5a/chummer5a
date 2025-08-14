@@ -33,6 +33,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
+using Chummer.Backend.Enums;
 using Chummer.Backend.Skills;
 using Microsoft.VisualStudio.Threading;
 using NLog;
@@ -11544,16 +11545,6 @@ namespace Chummer.Backend.Equipment
                 else
                     _intMatrixCMFilled = value;
             }
-        }
-
-        public enum FiringMode
-        {
-            Skill,
-            GunneryCommandDevice,
-            RemoteOperated,
-            DogBrain,
-            ManualOperation,
-            NumFiringModes // 🡐 This one should always be the last defined enum
         }
 
         #endregion Complex Properties

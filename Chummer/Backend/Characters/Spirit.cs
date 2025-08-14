@@ -35,19 +35,11 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
+using Chummer.Backend.Enums;
 using Chummer.Backend.Skills;
 
 namespace Chummer
 {
-    /// <summary>
-    /// Type of Spirit.
-    /// </summary>
-    public enum SpiritType
-    {
-        Spirit = 0,
-        Sprite = 1
-    }
-
     /// <summary>
     /// A Magician's Spirit or Technomancer's Sprite.
     /// </summary>

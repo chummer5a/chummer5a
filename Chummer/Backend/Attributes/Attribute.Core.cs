@@ -29,6 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Chummer.Annotations;
+using Chummer.Backend.Enums;
 using Chummer.Backend.Equipment;
 
 namespace Chummer.Backend.Attributes
@@ -267,16 +268,6 @@ namespace Chummer.Backend.Attributes
         }
 
         #endregion Constructor, Save, Load, and Print Methods
-
-        /// <summary>
-        /// Type of Attribute.
-        /// </summary>
-        public enum AttributeCategory
-        {
-            Standard = 0,
-            Special,
-            Shapeshifter
-        }
 
         #region Properties
 

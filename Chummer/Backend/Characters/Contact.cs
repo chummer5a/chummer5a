@@ -33,20 +33,11 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
+using Chummer.Backend.Enums;
 using NLog;
 
 namespace Chummer
 {
-    /// <summary>
-    /// Type of Contact.
-    /// </summary>
-    public enum ContactType
-    {
-        Contact = 0,
-        Enemy = 1,
-        Pet = 2
-    }
-
     /// <summary>
     /// A Contact or Enemy.
     /// </summary>
