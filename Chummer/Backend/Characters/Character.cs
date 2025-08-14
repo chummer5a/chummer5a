@@ -39999,6 +39999,11 @@ namespace Chummer
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_intMetatypeBP == value)
+                        return;
+                }
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intMetatypeBP, value) == value)
@@ -40022,6 +40027,33 @@ namespace Chummer
             }
         }
 
+        public async Task SetMetatypeBPAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMetatypeBP == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMetatypeBP, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(MetatypeBP), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// MetatypeBP as a string, including Karma string and multiplied by options as relevant.
         /// TODO: Belongs in a viewmodel for frmCreate rather than the main character class?
@@ -40030,27 +40062,60 @@ namespace Chummer
         {
             get
             {
-                string s = string.Empty;
+                string strReturn = string.Empty;
                 using (LockObject.EnterReadLock())
                 {
                     switch (EffectiveBuildMethod)
                     {
                         case CharacterBuildMethod.Karma:
                         case CharacterBuildMethod.LifeModule:
-                            s = (MetatypeBP * Settings.MetatypeCostsKarmaMultiplier).ToString(
+                            strReturn = (MetatypeBP * Settings.MetatypeCostsKarmaMultiplier).ToString(
                                 GlobalSettings.CultureInfo);
                             break;
 
                         case CharacterBuildMethod.Priority:
                         case CharacterBuildMethod.SumtoTen:
-                            s = MetatypeBP.ToString(GlobalSettings.CultureInfo);
+                            strReturn = MetatypeBP.ToString(GlobalSettings.CultureInfo);
                             break;
                     }
                 }
 
-                s += LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
-                return s;
+                return strReturn + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
             }
+        }
+
+        /// <summary>
+        /// MetatypeBP as a string, including Karma string and multiplied by options as relevant.
+        /// TODO: Belongs in a viewmodel for frmCreate rather than the main character class?
+        /// </summary>
+        public async Task<string> GetDisplayMetatypeBPAsync(CancellationToken token = default)
+        {
+            string strReturn = string.Empty;
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                switch (await GetEffectiveBuildMethodAsync(token).ConfigureAwait(false))
+                {
+                    case CharacterBuildMethod.Karma:
+                    case CharacterBuildMethod.LifeModule:
+                        strReturn = (await GetMetatypeBPAsync(token).ConfigureAwait(false)
+                            * await (await GetSettingsAsync(token).ConfigureAwait(false))
+                                .GetMetatypeCostsKarmaMultiplierAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                        break;
+
+                    case CharacterBuildMethod.Priority:
+                    case CharacterBuildMethod.SumtoTen:
+                        strReturn = (await GetMetatypeBPAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                        break;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            return strReturn + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
         }
 
         /// <summary>

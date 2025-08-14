@@ -190,7 +190,7 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
                     {
-                        if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                        if (await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false) == CharacterBuildMethod.SumtoTen)
                         {
                             await lblSumtoTen.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
                         }
@@ -363,7 +363,7 @@ namespace Chummer
 
                             await ProcessTalentsIndexChanged(_objGenericToken).ConfigureAwait(false);
 
-                            switch (_objCharacter.EffectiveBuildMethod)
+                            switch (await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false))
                             {
                                 case CharacterBuildMethod.Priority:
                                     await ManagePriorityItems(cboHeritage, token: _objGenericToken).ConfigureAwait(false);
@@ -395,7 +395,7 @@ namespace Chummer
                             await PopulateMetavariants(token: _objGenericToken).ConfigureAwait(false);
                             await PopulateTalents(token: _objGenericToken).ConfigureAwait(false);
                             await RefreshSelectedMetatype(token: _objGenericToken).ConfigureAwait(false);
-                            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                            if (await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false) == CharacterBuildMethod.SumtoTen)
                                 await SumToTen(token: _objGenericToken).ConfigureAwait(false);
                         }
 
@@ -539,7 +539,7 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
                     {
-                        if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                        if (await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false) == CharacterBuildMethod.SumtoTen)
                         {
                             await SumToTen(token: _objGenericToken).ConfigureAwait(false);
                         }
@@ -976,7 +976,7 @@ namespace Chummer
                     await cboTalents.DoThreadSafeAsync(x => x.SelectedIndex = 0, token).ConfigureAwait(false);
                 }
 
-                if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                if (await _objCharacter.GetEffectiveBuildMethodAsync(token).ConfigureAwait(false) == CharacterBuildMethod.SumtoTen)
                 {
                     await SumToTen(true, token).ConfigureAwait(false);
                 }
@@ -1011,7 +1011,7 @@ namespace Chummer
                         {
                             //swallow this and move on in case this was canceled internally because of a duplicate call
                         }
-                        if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                        if (await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false) == CharacterBuildMethod.SumtoTen)
                         {
                             await SumToTen(token: _objGenericToken).ConfigureAwait(false);
                         }
@@ -1058,7 +1058,7 @@ namespace Chummer
                         {
                             //swallow this and move on in case this was canceled internally because of a duplicate call
                         }
-                        if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                        if (await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false) == CharacterBuildMethod.SumtoTen)
                         {
                             await SumToTen(token: _objGenericToken).ConfigureAwait(false);
                         }
@@ -1093,7 +1093,7 @@ namespace Chummer
                     {
                         try
                         {
-                            switch (_objCharacter.EffectiveBuildMethod)
+                            switch (await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false))
                             {
                                 case CharacterBuildMethod.Priority:
                                     await ManagePriorityItems(cboHeritage, token: _objGenericToken).ConfigureAwait(false);
@@ -1165,7 +1165,7 @@ namespace Chummer
                     {
                         try
                         {
-                            switch (_objCharacter.EffectiveBuildMethod)
+                            switch (await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false))
                             {
                                 case CharacterBuildMethod.Priority:
                                     await ManagePriorityItems(cboTalent, token: _objGenericToken).ConfigureAwait(false);
@@ -1211,7 +1211,7 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
                     {
-                        switch (_objCharacter.EffectiveBuildMethod)
+                        switch (await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false))
                         {
                             case CharacterBuildMethod.Priority:
                                 await ManagePriorityItems(cboAttributes, token: _objGenericToken).ConfigureAwait(false);
@@ -1250,7 +1250,7 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
                     {
-                        switch (_objCharacter.EffectiveBuildMethod)
+                        switch (await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false))
                         {
                             case CharacterBuildMethod.Priority:
                                 await ManagePriorityItems(cboSkills, token: _objGenericToken).ConfigureAwait(false);
@@ -1289,7 +1289,7 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
                     {
-                        switch (_objCharacter.EffectiveBuildMethod)
+                        switch (await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false))
                         {
                             case CharacterBuildMethod.Priority:
                                 await ManagePriorityItems(cboResources, token: _objGenericToken).ConfigureAwait(false);
@@ -1958,7 +1958,7 @@ namespace Chummer
 
                     await _objCharacter.SetSpecialAsync(intSpecialAttribPoints, token).ConfigureAwait(false);
                     await _objCharacter.SetTotalSpecialAsync(intSpecialAttribPoints, token).ConfigureAwait(false);
-                    _objCharacter.MetatypeBP = intMetatypeBP;
+                    await _objCharacter.SetMetatypeBPAsync(intMetatypeBP, token).ConfigureAwait(false);
 
                     // Set Attributes
                     XPathNodeIterator objXmlAttributesPriorityList = _xmlBasePriorityDataNode.Select(
@@ -2321,7 +2321,7 @@ namespace Chummer
         private async Task ManagePriorityItems(ComboBox comboBox, bool blnForce = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!blnForce && _objCharacter.EffectiveBuildMethod != CharacterBuildMethod.Priority)
+            if (!blnForce && await _objCharacter.GetEffectiveBuildMethodAsync(_objGenericToken).ConfigureAwait(false) != CharacterBuildMethod.Priority)
                 return;
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objNewToken = objNewCancellationTokenSource.Token;

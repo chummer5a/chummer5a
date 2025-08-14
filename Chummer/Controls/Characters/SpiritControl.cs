@@ -787,7 +787,7 @@ namespace Chummer
                         await objCharacter.CreateAsync(objXmlMetatype["category"]?.InnerText,
                             objXmlMetatype["id"]?.InnerText,
                             string.Empty, objXmlMetatype, intForce, token: token).ConfigureAwait(false);
-                        objCharacter.MetatypeBP = 0;
+                        await objCharacter.SetMetatypeBPAsync(0, token).ConfigureAwait(false);
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar =
                                await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
                         {
