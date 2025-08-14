@@ -9956,8 +9956,7 @@ namespace Chummer
                                 objXmlNodeList = objXmlCharacter.SelectNodes("sustainedobjects");
                                 foreach (XmlNode objXmlSustained in objXmlNodeList)
                                 {
-                                    SustainedObject objSustained = new SustainedObject(this);
-                                    objSustained.Load(objXmlSustained);
+                                    SustainedObject objSustained = new SustainedObject(this, objXmlSustained);
                                     if (!objSustained.InternalId.IsEmptyGuid())
                                     {
                                         if (blnSync)

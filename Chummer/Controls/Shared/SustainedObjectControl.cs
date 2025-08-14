@@ -42,10 +42,10 @@ namespace Chummer
             this.UpdateLightDarkMode(token: objMyToken);
             this.TranslateWinForm(token: objMyToken);
 
-            if (objLinkedSustainedObject.LinkedObjectType != Improvement.ImprovementSource.CritterPower)
+            if (objLinkedSustainedObject.LinkedObjectType == Improvement.ImprovementSource.CritterPower)
             {
-                chkSelfSustained.Visible = true;
-                lblSelfSustained.Visible = true;
+                chkSelfSustained.Visible = false;
+                lblSelfSustained.Visible = false;
             }
         }
 

@@ -40,26 +40,18 @@ namespace Chummer
         private bool _blnSelfSustained = true;
         private int _intForce;
         private int _intNetHits;
-        private IHasInternalId _objLinkedObject;
-        private Improvement.ImprovementSource _eLinkedObjectType;
+        private readonly IHasInternalId _objLinkedObject;
+        private readonly Improvement.ImprovementSource _eLinkedObjectType;
 
         public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, Load, and Print Methods
 
-        public SustainedObject(Character objCharacter)
+        public SustainedObject(Character objCharacter, IHasInternalId objLinkedObject)
         {
             // Create the GUID for the new Spell.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-        }
-
-        /// <summary>
-        /// Creates a sustained object from a thing that can be sustained (usually a Spell, Complex Form, or Critter Power)
-        /// </summary>
-        /// <param name="objLinkedObject">The liked object that is meant to be sustained.</param>
-        public void Create(IHasInternalId objLinkedObject)
-        {
             _objLinkedObject = objLinkedObject;
             switch (objLinkedObject)
             {
@@ -80,41 +72,23 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Save the object's XML to the XmlWriter.
-        /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlWriter objWriter)
+        public SustainedObject(Character objCharacter, XmlNode objNode)
         {
-            if (objWriter == null)
-                return;
-            objWriter.WriteStartElement("sustainedobject");
-            objWriter.WriteElementString("linkedobject", _objLinkedObject.InternalId);
-            objWriter.WriteElementString("linkedobjecttype", _eLinkedObjectType.ToString());
-            objWriter.WriteElementString("force", _intForce.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("nethits", _intNetHits.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("self", _blnSelfSustained.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteEndElement();
-        }
-
-        /// <summary>
-        /// Load the Sustained Object from the XmlNode.
-        /// </summary>
-        /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
-        {
+            _objCharacter = objCharacter;
             if (objNode == null)
+            {
+                _guiID = Guid.Empty;
                 return;
+            }
             string strLinkedId = string.Empty;
             if (!objNode.TryGetStringFieldQuickly("linkedobject", ref strLinkedId))
             {
                 _guiID = Guid.Empty;
                 return;
             }
-            if (objNode["linkedobjecttype"] != null)
-            {
-                _eLinkedObjectType = Improvement.ConvertToImprovementSource(objNode["linkedobjecttype"].InnerText);
-            }
+            string strType = string.Empty;
+            if (objNode.TryGetStringFieldQuickly("linkedobjecttype", ref strType))
+                _eLinkedObjectType = Improvement.ConvertToImprovementSource(strType);
             else
             {
                 _guiID = Guid.Empty;
@@ -125,15 +99,15 @@ namespace Chummer
             switch (_eLinkedObjectType)
             {
                 case Improvement.ImprovementSource.Spell:
-                    lstToSearch = _objCharacter.Spells;
+                    lstToSearch = objCharacter.Spells;
                     break;
 
                 case Improvement.ImprovementSource.ComplexForm:
-                    lstToSearch = _objCharacter.ComplexForms;
+                    lstToSearch = objCharacter.ComplexForms;
                     break;
 
                 case Improvement.ImprovementSource.CritterPower:
-                    lstToSearch = _objCharacter.CritterPowers;
+                    lstToSearch = objCharacter.CritterPowers;
                     break;
 
                 default:
@@ -150,6 +124,25 @@ namespace Chummer
             objNode.TryGetInt32FieldQuickly("force", ref _intForce);
             objNode.TryGetInt32FieldQuickly("nethits", ref _intNetHits);
             objNode.TryGetBoolFieldQuickly("self", ref _blnSelfSustained);
+            // Create the GUID for the new Spell.
+            _guiID = Guid.NewGuid();
+        }
+
+        /// <summary>
+        /// Save the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public void Save(XmlWriter objWriter)
+        {
+            if (objWriter == null)
+                return;
+            objWriter.WriteStartElement("sustainedobject");
+            objWriter.WriteElementString("linkedobject", _objLinkedObject.InternalId);
+            objWriter.WriteElementString("linkedobjecttype", _eLinkedObjectType.ToString());
+            objWriter.WriteElementString("force", _intForce.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("nethits", _intNetHits.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("self", _blnSelfSustained.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteEndElement();
         }
 
         /// <summary>
@@ -582,35 +575,40 @@ namespace Chummer
             }
         }
 
-        public async Task<string> GetNameAsync(CancellationToken token = default)
+        public Task<string> GetNameAsync(CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (_eLinkedObjectType)
             {
                 case Improvement.ImprovementSource.Spell:
                     if (_objLinkedObject is Spell objSpell)
-                        return objSpell.Name;
+                        return objSpell.GetNameAsync(token);
                     break;
 
                 case Improvement.ImprovementSource.ComplexForm:
                     if (_objLinkedObject is ComplexForm objComplexForm)
-                        return objComplexForm.Name;
+                        return objComplexForm.GetNameAsync(token);
                     break;
 
                 case Improvement.ImprovementSource.CritterPower:
                     if (_objLinkedObject is CritterPower objCritterPower)
-                        return objCritterPower.Name;
+                        return Task.FromResult(objCritterPower.Name);
                     break;
             }
-            return await LanguageManager.GetStringAsync("String_Unknown", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false);
+            return LanguageManager.GetStringAsync("String_Unknown", GlobalSettings.DefaultLanguage, token: token);
         }
 
-        public bool HasSustainingPenalty => SelfSustained && LinkedObjectType != Improvement.ImprovementSource.CritterPower;
+        public bool HasSustainingPenalty => LinkedObjectType != Improvement.ImprovementSource.CritterPower && SelfSustained;
 
-        public async Task<bool> GetHasSustainingPenaltyAsync(CancellationToken token = default)
+        public Task<bool> GetHasSustainingPenaltyAsync(CancellationToken token = default)
         {
-            return await GetSelfSustainedAsync(token).ConfigureAwait(false) && LinkedObjectType != Improvement.ImprovementSource.CritterPower;
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<bool>(token);
+            if (LinkedObjectType != Improvement.ImprovementSource.CritterPower)
+                return Task.FromResult(false);
+            return GetSelfSustainedAsync(token);
         }
 
         #endregion Properties
@@ -634,7 +632,7 @@ namespace Chummer
                 Utils.RunWithoutThreadLock(_setPropertyChangedAsync.Select(x => new Func<Task>(() => x.Invoke(this, objArgs))));
             if (PropertyChanged != null)
                 Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, objArgs));
-            if (strPropertyName == nameof(SelfSustained) || strPropertyName == nameof(LinkedObjectType))
+            if (strPropertyName == nameof(SelfSustained) && _objCharacter != null)
                 _objCharacter.RefreshSustainingPenalties();
         }
 
@@ -648,7 +646,7 @@ namespace Chummer
             if (PropertyChanged != null)
                 await Utils.RunOnMainThreadAsync(() => PropertyChanged?.Invoke(this, objArgs), token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
-            if (strPropertyName == nameof(SelfSustained) || strPropertyName == nameof(LinkedObjectType))
+            if (strPropertyName == nameof(SelfSustained) && _objCharacter != null)
                 await _objCharacter.RefreshSustainingPenaltiesAsync(token).ConfigureAwait(false);
         }
     }

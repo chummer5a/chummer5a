@@ -52,6 +52,8 @@ namespace Chummer
 
         private readonly ListViewColumnSorter _lvwKarmaColumnSorter;
         private readonly ListViewColumnSorter _lvwNuyenColumnSorter;
+        private DebuggableSemaphoreSlim _objKarmaChartSemaphore = new DebuggableSemaphoreSlim();
+        private DebuggableSemaphoreSlim _objNuyenChartSemaphore = new DebuggableSemaphoreSlim();
 
         public TabControl TabCharacterTabs => tabCharacterTabs;
 
@@ -69,6 +71,8 @@ namespace Chummer
             {
                 _fntNormal.Dispose();
                 _fntStrikeout.Dispose();
+                Interlocked.Exchange(ref _objKarmaChartSemaphore, null)?.Dispose();
+                Interlocked.Exchange(ref _objNuyenChartSemaphore, null)?.Dispose();
                 Interlocked.Exchange(ref _objFormClosingSemaphore, null)?.Dispose();
                 // These tabs might not necessarily be present in our form, so check to dispose them manually
                 if (!tabInitiation.IsDisposed)
@@ -26616,92 +26620,104 @@ namespace Chummer
 
         private async Task RepopulateKarmaExpenseList(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                await lstKarma.DoThreadSafeAsync(x =>
-                {
-                    x.Items.Clear();
-                    x.ContextMenuStrip = null;
-                }, token).ConfigureAwait(false);
-                await chtKarma.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                DebuggableSemaphoreSlim objSemaphore = _objKarmaChartSemaphore; // for thread safety
+                if (objSemaphore?.IsDisposed == false)
+                    await objSemaphore.WaitAsync(token).ConfigureAwait(false);
                 try
                 {
-                    chtKarma.ExpenseValues.Clear();
-                    decimal decKarmaValue = 0;
-                    bool blnShowFreeKarma = await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked, token)
-                                                                  .ConfigureAwait(false);
-                    //Find the last karma/nuyen entry as well in case a chart only contains one point
-                    DateTime KarmaLast = DateTime.MinValue;
-                    await CharacterObject.ExpenseEntries.ForEachAsync(async objExpense =>
+                    await lstKarma.DoThreadSafeAsync(x =>
                     {
-                        if (objExpense.Type != ExpenseType.Karma || (objExpense.Amount == 0 && !blnShowFreeKarma))
-                            return;
-                        ListViewItemWithValue.ListViewSubItemWithValue objAmountItem =
-                            new ListViewItemWithValue.ListViewSubItemWithValue
-                            {
-                                Value = objExpense.Amount,
-                                Text = objExpense.Amount.ToString("#,0.##", GlobalSettings.CultureInfo)
-                            };
-                        ListViewItemWithValue.ListViewSubItemWithValue objReasonItem =
-                            new ListViewItemWithValue.ListViewSubItemWithValue
-                            {
-                                Value = objExpense.Reason,
-                                Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language, token)
-                                                       .ConfigureAwait(false)
-                            };
-                        ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem =
-                            new ListViewItemWithValue.ListViewSubItemWithValue
-                            {
-                                Value = objExpense,
-                                Text = objExpense.InternalId
-                            };
-
-                        ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date,
-                                objExpense.Date.ToString(GlobalSettings.CustomDateTimeFormats
-                                                             ? GlobalSettings.CustomDateFormat
-                                                               + ' ' + GlobalSettings.CustomTimeFormat
-                                                             : GlobalSettings.CultureInfo.DateTimeFormat
-                                                                             .ShortDatePattern
-                                                               + ' ' + GlobalSettings.CultureInfo.DateTimeFormat
-                                                                   .ShortTimePattern,
-                                                         GlobalSettings.CultureInfo)
-                        );
-                        objItem.SubItems.Add(objAmountItem);
-                        objItem.SubItems.Add(objReasonItem);
-                        objItem.SubItems.Add(objInternalIdItem);
-
-                        await lstKarma.DoThreadSafeAsync(x =>
+                        x.Items.Clear();
+                        x.ContextMenuStrip = null;
+                    }, token).ConfigureAwait(false);
+                    await chtKarma.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                    try
+                    {
+                        chtKarma.ExpenseValues.Clear();
+                        decimal decKarmaValue = 0;
+                        bool blnShowFreeKarma = await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked, token)
+                                                                      .ConfigureAwait(false);
+                        //Find the last karma/nuyen entry as well in case a chart only contains one point
+                        DateTime KarmaLast = DateTime.MinValue;
+                        await CharacterObject.ExpenseEntries.ForEachAsync(async objExpense =>
                         {
-                            x.Items.Add(objItem);
-                            if (objExpense.Undo != null)
-                                x.ContextMenuStrip = cmsUndoKarmaExpense;
-                        }, token).ConfigureAwait(false);
-                        if (objExpense.Amount == 0)
-                            return;
-                        // ReSharper disable once AccessToModifiedClosure
-                        if (objExpense.Date > KarmaLast)
-                            KarmaLast = objExpense.Date;
-                        decKarmaValue += objExpense.Amount;
-                        chtKarma.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decKarmaValue)));
-                    }, GenericToken).ConfigureAwait(false);
+                            if (objExpense.Type != ExpenseType.Karma || (objExpense.Amount == 0 && !blnShowFreeKarma))
+                                return;
+                            ListViewItemWithValue.ListViewSubItemWithValue objAmountItem =
+                                new ListViewItemWithValue.ListViewSubItemWithValue
+                                {
+                                    Value = objExpense.Amount,
+                                    Text = objExpense.Amount.ToString("#,0.##", GlobalSettings.CultureInfo)
+                                };
+                            ListViewItemWithValue.ListViewSubItemWithValue objReasonItem =
+                                new ListViewItemWithValue.ListViewSubItemWithValue
+                                {
+                                    Value = objExpense.Reason,
+                                    Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language, token)
+                                                           .ConfigureAwait(false)
+                                };
+                            ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem =
+                                new ListViewItemWithValue.ListViewSubItemWithValue
+                                {
+                                    Value = objExpense,
+                                    Text = objExpense.InternalId
+                                };
 
-                    if (KarmaLast == DateTime.MinValue)
-                        KarmaLast = File.Exists(CharacterObject.FileName)
-                            ? File.GetCreationTime(CharacterObject.FileName)
-                            : new DateTime(DateTime.Now.Ticks - 1000, DateTimeKind.Local);
-                    if (chtKarma.ExpenseValues.Count < 2)
-                    {
-                        if (chtKarma.ExpenseValues.Count < 1)
-                            chtKarma.ExpenseValues.Add(new DateTimePoint(KarmaLast, decimal.ToDouble(decKarmaValue)));
-                        chtKarma.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decKarmaValue)));
+                            ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date,
+                                    objExpense.Date.ToString(GlobalSettings.CustomDateTimeFormats
+                                                                 ? GlobalSettings.CustomDateFormat
+                                                                   + ' ' + GlobalSettings.CustomTimeFormat
+                                                                 : GlobalSettings.CultureInfo.DateTimeFormat
+                                                                                 .ShortDatePattern
+                                                                   + ' ' + GlobalSettings.CultureInfo.DateTimeFormat
+                                                                       .ShortTimePattern,
+                                                             GlobalSettings.CultureInfo)
+                            );
+                            objItem.SubItems.Add(objAmountItem);
+                            objItem.SubItems.Add(objReasonItem);
+                            objItem.SubItems.Add(objInternalIdItem);
+
+                            await lstKarma.DoThreadSafeAsync(x =>
+                            {
+                                x.Items.Add(objItem);
+                                if (objExpense.Undo != null)
+                                    x.ContextMenuStrip = cmsUndoKarmaExpense;
+                            }, token).ConfigureAwait(false);
+                            if (objExpense.Amount == 0)
+                                return;
+                            // ReSharper disable once AccessToModifiedClosure
+                            if (objExpense.Date > KarmaLast)
+                                KarmaLast = objExpense.Date;
+                            decKarmaValue += objExpense.Amount;
+                            chtKarma.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decKarmaValue)));
+                        }, GenericToken).ConfigureAwait(false);
+
+                        if (KarmaLast == DateTime.MinValue)
+                            KarmaLast = File.Exists(CharacterObject.FileName)
+                                ? File.GetCreationTime(CharacterObject.FileName)
+                                : new DateTime(DateTime.Now.Ticks - 1000, DateTimeKind.Local);
+                        if (chtKarma.ExpenseValues.Count < 2)
+                        {
+                            if (chtKarma.ExpenseValues.Count < 1)
+                                chtKarma.ExpenseValues.Add(new DateTimePoint(KarmaLast, decimal.ToDouble(decKarmaValue)));
+                            chtKarma.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decKarmaValue)));
+                        }
+
+                        await chtKarma.NormalizeYAxis(token).ConfigureAwait(false);
                     }
-
-                    await chtKarma.NormalizeYAxis(token).ConfigureAwait(false);
+                    finally
+                    {
+                        await chtKarma.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
+                    }
                 }
                 finally
                 {
-                    await chtKarma.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
+                    if (objSemaphore?.IsDisposed == false)
+                        objSemaphore.Release();
                 }
             }
             finally
@@ -26729,92 +26745,104 @@ namespace Chummer
 
         private async Task RepopulateNuyenExpenseList(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                await lstNuyen.DoThreadSafeAsync(x =>
-                {
-                    x.Items.Clear();
-                    x.ContextMenuStrip = null;
-                }, token).ConfigureAwait(false);
-                await chtNuyen.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                DebuggableSemaphoreSlim objSemaphore = _objNuyenChartSemaphore; // for thread safety
+                if (objSemaphore?.IsDisposed == false)
+                    await objSemaphore.WaitAsync(token).ConfigureAwait(false);
                 try
                 {
-                    chtNuyen.ExpenseValues.Clear();
-                    decimal decNuyenValue = 0;
-                    bool blnShowFreeNuyen = await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked, token)
-                                                                  .ConfigureAwait(false);
-                    //Find the last karma/nuyen entry as well in case a chart only contains one point
-                    DateTime NuyenLast = DateTime.MinValue;
-                    await CharacterObject.ExpenseEntries.ForEachAsync(async objExpense =>
+                    await lstNuyen.DoThreadSafeAsync(x =>
                     {
-                        if (objExpense.Type != ExpenseType.Nuyen || (objExpense.Amount == 0 && !blnShowFreeNuyen))
-                            return;
-                        ListViewItemWithValue.ListViewSubItemWithValue objAmountItem =
-                            new ListViewItemWithValue.ListViewSubItemWithValue
-                            {
-                                Value = objExpense.Amount,
-                                Text = objExpense.Amount.ToString("#,0.##", GlobalSettings.CultureInfo)
-                            };
-                        ListViewItemWithValue.ListViewSubItemWithValue objReasonItem =
-                            new ListViewItemWithValue.ListViewSubItemWithValue
-                            {
-                                Value = objExpense.Reason,
-                                Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language, token)
-                                                       .ConfigureAwait(false)
-                            };
-                        ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem =
-                            new ListViewItemWithValue.ListViewSubItemWithValue
-                            {
-                                Value = objExpense,
-                                Text = objExpense.InternalId
-                            };
-
-                        ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date,
-                                objExpense.Date.ToString(GlobalSettings.CustomDateTimeFormats
-                                                             ? GlobalSettings.CustomDateFormat
-                                                               + ' ' + GlobalSettings.CustomTimeFormat
-                                                             : GlobalSettings.CultureInfo.DateTimeFormat
-                                                                             .ShortDatePattern
-                                                               + ' ' + GlobalSettings.CultureInfo.DateTimeFormat
-                                                                   .ShortTimePattern,
-                                                         GlobalSettings.CultureInfo)
-                        );
-                        objItem.SubItems.Add(objAmountItem);
-                        objItem.SubItems.Add(objReasonItem);
-                        objItem.SubItems.Add(objInternalIdItem);
-
-                        await lstNuyen.DoThreadSafeAsync(x =>
+                        x.Items.Clear();
+                        x.ContextMenuStrip = null;
+                    }, token).ConfigureAwait(false);
+                    await chtNuyen.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                    try
+                    {
+                        chtNuyen.ExpenseValues.Clear();
+                        decimal decNuyenValue = 0;
+                        bool blnShowFreeNuyen = await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked, token)
+                                                                      .ConfigureAwait(false);
+                        //Find the last karma/nuyen entry as well in case a chart only contains one point
+                        DateTime NuyenLast = DateTime.MinValue;
+                        await CharacterObject.ExpenseEntries.ForEachAsync(async objExpense =>
                         {
-                            x.Items.Add(objItem);
-                            if (objExpense.Undo != null)
-                                x.ContextMenuStrip = cmsUndoNuyenExpense;
-                        }, token).ConfigureAwait(false);
-                        if (objExpense.Amount == 0)
-                            return;
-                        // ReSharper disable once AccessToModifiedClosure
-                        if (objExpense.Date > NuyenLast)
-                            NuyenLast = objExpense.Date;
-                        decNuyenValue += objExpense.Amount;
-                        chtNuyen.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decNuyenValue)));
-                    }, GenericToken).ConfigureAwait(false);
+                            if (objExpense.Type != ExpenseType.Nuyen || (objExpense.Amount == 0 && !blnShowFreeNuyen))
+                                return;
+                            ListViewItemWithValue.ListViewSubItemWithValue objAmountItem =
+                                new ListViewItemWithValue.ListViewSubItemWithValue
+                                {
+                                    Value = objExpense.Amount,
+                                    Text = objExpense.Amount.ToString("#,0.##", GlobalSettings.CultureInfo)
+                                };
+                            ListViewItemWithValue.ListViewSubItemWithValue objReasonItem =
+                                new ListViewItemWithValue.ListViewSubItemWithValue
+                                {
+                                    Value = objExpense.Reason,
+                                    Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language, token)
+                                                           .ConfigureAwait(false)
+                                };
+                            ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem =
+                                new ListViewItemWithValue.ListViewSubItemWithValue
+                                {
+                                    Value = objExpense,
+                                    Text = objExpense.InternalId
+                                };
 
-                    if (NuyenLast == DateTime.MinValue)
-                        NuyenLast = File.Exists(CharacterObject.FileName)
-                            ? File.GetCreationTime(CharacterObject.FileName)
-                            : new DateTime(DateTime.Now.Ticks - 1000, DateTimeKind.Local);
-                    if (chtNuyen.ExpenseValues.Count < 2)
-                    {
-                        if (chtNuyen.ExpenseValues.Count < 1)
-                            chtNuyen.ExpenseValues.Add(new DateTimePoint(NuyenLast, decimal.ToDouble(decNuyenValue)));
-                        chtNuyen.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decNuyenValue)));
+                            ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date,
+                                    objExpense.Date.ToString(GlobalSettings.CustomDateTimeFormats
+                                                                 ? GlobalSettings.CustomDateFormat
+                                                                   + ' ' + GlobalSettings.CustomTimeFormat
+                                                                 : GlobalSettings.CultureInfo.DateTimeFormat
+                                                                                 .ShortDatePattern
+                                                                   + ' ' + GlobalSettings.CultureInfo.DateTimeFormat
+                                                                       .ShortTimePattern,
+                                                             GlobalSettings.CultureInfo)
+                            );
+                            objItem.SubItems.Add(objAmountItem);
+                            objItem.SubItems.Add(objReasonItem);
+                            objItem.SubItems.Add(objInternalIdItem);
+
+                            await lstNuyen.DoThreadSafeAsync(x =>
+                            {
+                                x.Items.Add(objItem);
+                                if (objExpense.Undo != null)
+                                    x.ContextMenuStrip = cmsUndoNuyenExpense;
+                            }, token).ConfigureAwait(false);
+                            if (objExpense.Amount == 0)
+                                return;
+                            // ReSharper disable once AccessToModifiedClosure
+                            if (objExpense.Date > NuyenLast)
+                                NuyenLast = objExpense.Date;
+                            decNuyenValue += objExpense.Amount;
+                            chtNuyen.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decNuyenValue)));
+                        }, GenericToken).ConfigureAwait(false);
+
+                        if (NuyenLast == DateTime.MinValue)
+                            NuyenLast = File.Exists(CharacterObject.FileName)
+                                ? File.GetCreationTime(CharacterObject.FileName)
+                                : new DateTime(DateTime.Now.Ticks - 1000, DateTimeKind.Local);
+                        if (chtNuyen.ExpenseValues.Count < 2)
+                        {
+                            if (chtNuyen.ExpenseValues.Count < 1)
+                                chtNuyen.ExpenseValues.Add(new DateTimePoint(NuyenLast, decimal.ToDouble(decNuyenValue)));
+                            chtNuyen.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decNuyenValue)));
+                        }
+
+                        await chtNuyen.NormalizeYAxis(token).ConfigureAwait(false);
                     }
-
-                    await chtNuyen.NormalizeYAxis(token).ConfigureAwait(false);
+                    finally
+                    {
+                        await chtNuyen.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
+                    }
                 }
                 finally
                 {
-                    await chtNuyen.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
+                    if (objSemaphore?.IsDisposed == false)
+                        objSemaphore.Release();
                 }
             }
             finally
@@ -27562,8 +27590,7 @@ namespace Chummer
             // Could be merged with AddSustainedComplex form and create an more or less universal method to add ISustainables from tre viewers. Not worth the trouble and probably not better at the moment.
             if (objNode?.Level > 0 && objNode.Tag is Spell objSpell)
             {
-                SustainedObject objSustained = new SustainedObject(CharacterObject);
-                objSustained.Create(objSpell);
+                SustainedObject objSustained = new SustainedObject(CharacterObject, objSpell);
                 await CharacterObject.SustainedCollection.AddAsync(objSustained, token).ConfigureAwait(false);
             }
         }
@@ -27577,8 +27604,7 @@ namespace Chummer
             TreeNode objNode = await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode, token).ConfigureAwait(false);
             if (objNode?.Level > 0 && objNode.Tag is ComplexForm objComplexForm)
             {
-                SustainedObject objSustained = new SustainedObject(CharacterObject);
-                objSustained.Create(objComplexForm);
+                SustainedObject objSustained = new SustainedObject(CharacterObject, objComplexForm);
                 await CharacterObject.SustainedCollection.AddAsync(objSustained, token).ConfigureAwait(false);
             }
         }
@@ -27592,8 +27618,7 @@ namespace Chummer
             TreeNode objNode = await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode, token).ConfigureAwait(false);
             if (objNode?.Level > 0 && objNode.Tag is CritterPower objCritterPower)
             {
-                SustainedObject objSustained = new SustainedObject(CharacterObject);
-                objSustained.Create(objCritterPower);
+                SustainedObject objSustained = new SustainedObject(CharacterObject, objCritterPower);
                 await CharacterObject.SustainedCollection.AddAsync(objSustained, token).ConfigureAwait(false);
             }
         }

@@ -164,7 +164,6 @@ namespace Chummer
             this.chkSelfSustained.Tag = "";
             this.chkSelfSustained.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.chkSelfSustained.UseVisualStyleBackColor = true;
-            this.chkSelfSustained.Visible = false;
             this.chkSelfSustained.CheckedChanged += new System.EventHandler(this.SustainedObject_ControlStateChanged);
             // 
             // cmdDelete
@@ -194,7 +193,6 @@ namespace Chummer
             this.lblSelfSustained.Tag = "Label_SustainedSelf";
             this.lblSelfSustained.Text = "Self \r\nsustained";
             this.lblSelfSustained.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblSelfSustained.Visible = false;
             // 
             // SustainedSpellControl
             // 
