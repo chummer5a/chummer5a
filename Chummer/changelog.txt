@@ -166,6 +166,7 @@ Data Changes:
 - Fixed page reference for the Guard, Hammer, Lockdown, Mugger, Shell, Sneak, Stealth, Track and Wrapper programs in gear.xml.
 - Spellcasting foci now properly no longer stack with individualised spellcasting foci of the same type. This change does not affect existing characters with spellcasting foci.
 - Added customdata for Critter Prices, as originally created by u/RunnerPakhet and implemented for Chummer by Mesothelioma.
+- Added basic traditions for the Traditionalist and Ancestor Shamans from Forbidden Arcana. 
 
 Fixes implemented by BM123499
 

@@ -4495,23 +4495,15 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int CalcCategoryUsed(string strCategory)
         {
-            int intBase = Mods.Sum(objMod =>
-            {
-                if (objMod.IncludedInVehicle || !objMod.Equipped || objMod.Category != strCategory)
-                    return 0;
-                // Subtract the Modification's Slots from the Vehicle's base Body.
-                return Math.Max(objMod.CalculatedSlots, 0);
-            });
+            int intBase = Mods
+                .Where(objMod => !objMod.IncludedInVehicle && objMod.Equipped && objMod.Category == strCategory)
+                .Sum(objMod => objMod.CalculatedSlots);
 
             if (string.Equals(strCategory, "Weapons", StringComparison.OrdinalIgnoreCase))
             {
-                intBase += WeaponMounts.Sum(objMount =>
-                {
-                    if (objMount.IncludedInVehicle || !objMount.Equipped)
-                        return 0;
-                    // Subtract the Weapon Mount's Slots from the Vehicle's base Body.
-                    return Math.Max(objMount.CalculatedSlots, 0);
-                });
+                intBase += WeaponMounts
+                    .Where(objMount => !objMount.IncludedInVehicle && objMount.Equipped)
+                    .Sum(objMount => objMount.CalculatedSlots);
             }
 
             return intBase;
@@ -4525,16 +4517,14 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             int intBase = await Mods.SumAsync(
                 objMod => !objMod.IncludedInVehicle && objMod.Equipped && objMod.Category == strCategory,
-                // Subtract the Modification's Slots from the Vehicle's base Body.
-                async objMod => Math.Max(await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false), 0),
+                async objMod => await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false),
                 token: token).ConfigureAwait(false);
 
             if (string.Equals(strCategory, "Weapons", StringComparison.OrdinalIgnoreCase))
             {
                 intBase += await WeaponMounts.SumAsync(
                     objMount => !objMount.IncludedInVehicle && objMount.Equipped,
-                    // Subtract the Weapon Mount's Slots from the Vehicle's base Body.
-                    async objMod => Math.Max(await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false), 0),
+                    async objMod => await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false),
                     token: token).ConfigureAwait(false);
             }
 
