@@ -256,7 +256,9 @@ namespace Chummer
         {
             switch (strValue)
             {
+                case "nuyen":
                 case "Nuyen":
+                case "NUYEN":
                     return ExpenseType.Nuyen;
 
                 default:
@@ -357,7 +359,9 @@ namespace Chummer
                 {
                     await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("date", Date.ToString(objCulture), token: token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Settings.NuyenFormat : "#,0.##", objCulture), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("amount", Amount.ToString(Type == ExpenseType.Nuyen
+                        ? await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false)
+                        : "#,0.##", objCulture), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("reason", await DisplayReasonAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("type", Type.ToString(), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("refund", Refund.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
@@ -407,6 +411,21 @@ namespace Chummer
             }
         }
 
+        public Task SetAmountAsync(decimal value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (_decAmount != value)
+            {
+                _decAmount = value;
+                if (!Refund && _objCharacter != null)
+                    return _objCharacter.OnPropertyChangedAsync(Type == ExpenseType.Nuyen
+                                                         ? nameof(Character.CareerNuyen)
+                                                         : nameof(Character.CareerKarma), token);
+            }
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// The Reason for the Entry expense.
         /// </summary>
@@ -450,6 +469,15 @@ namespace Chummer
             }
         }
 
+        public Task SetTypeAsync(ExpenseType value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (InterlockedExtensions.Exchange(ref _eExpenseType, value) != value && Amount > 0 && !Refund)
+                return _objCharacter.OnMultiplePropertyChangedAsync(token, nameof(Character.CareerNuyen), nameof(Character.CareerKarma));
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Whether the Expense is a Karma refund.
         /// </summary>
@@ -465,6 +493,21 @@ namespace Chummer
                         _objCharacter?.OnPropertyChanged(Type == ExpenseType.Nuyen ? nameof(Character.CareerNuyen) : nameof(Character.CareerKarma));
                 }
             }
+        }
+
+        public Task SetRefundAsync(bool value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (_blnRefund != value)
+            {
+                _blnRefund = value;
+                if (Amount > 0 && _objCharacter != null)
+                    return _objCharacter.OnPropertyChangedAsync(Type == ExpenseType.Nuyen
+                                                         ? nameof(Character.CareerNuyen)
+                                                         : nameof(Character.CareerKarma), token);
+            }
+            return Task.CompletedTask;
         }
 
         /// <summary>

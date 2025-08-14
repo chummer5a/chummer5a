@@ -19628,7 +19628,7 @@ namespace Chummer
                     int intNewAmount = frmEditExpense.MyForm.Amount.ToInt32();
                     if (blnAllowEdit && intOldAmount != intNewAmount)
                     {
-                        objExpense.Amount = intNewAmount;
+                        await objExpense.SetAmountAsync(intNewAmount, GenericToken).ConfigureAwait(false);
                         await CharacterObject.ModifyKarmaAsync(intNewAmount - intOldAmount, GenericToken)
                                              .ConfigureAwait(false);
                         blnDoRepopulateList = true;
@@ -19703,7 +19703,7 @@ namespace Chummer
                     decimal decNewAmount = frmEditExpense.MyForm.Amount;
                     if (blnAllowEdit && decOldAmount != decNewAmount)
                     {
-                        objExpense.Amount = decNewAmount;
+                        await objExpense.SetAmountAsync(decNewAmount, GenericToken).ConfigureAwait(false);
                         await CharacterObject.ModifyNuyenAsync(decNewAmount - decOldAmount, GenericToken).ConfigureAwait(false);
                         blnDoRepopulateList = true;
                     }
@@ -26643,7 +26643,7 @@ namespace Chummer
                                                                       .ConfigureAwait(false);
                         //Find the last karma/nuyen entry as well in case a chart only contains one point
                         DateTime KarmaLast = DateTime.MinValue;
-                        await CharacterObject.ExpenseEntries.ForEachAsync(async objExpense =>
+                        await (await CharacterObject.GetExpenseEntriesAsync(token).ConfigureAwait(false)).ForEachAsync(async objExpense =>
                         {
                             if (objExpense.Type != ExpenseType.Karma || (objExpense.Amount == 0 && !blnShowFreeKarma))
                                 return;
@@ -26697,9 +26697,12 @@ namespace Chummer
                         }, GenericToken).ConfigureAwait(false);
 
                         if (KarmaLast == DateTime.MinValue)
-                            KarmaLast = File.Exists(CharacterObject.FileName)
-                                ? File.GetCreationTime(CharacterObject.FileName)
+                        {
+                            string strFileName = await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
+                            KarmaLast = File.Exists(strFileName)
+                                ? File.GetCreationTime(strFileName)
                                 : new DateTime(DateTime.Now.Ticks - 1000, DateTimeKind.Local);
+                        }
                         if (chtKarma.ExpenseValues.Count < 2)
                         {
                             if (chtKarma.ExpenseValues.Count < 1)
@@ -26768,7 +26771,7 @@ namespace Chummer
                                                                       .ConfigureAwait(false);
                         //Find the last karma/nuyen entry as well in case a chart only contains one point
                         DateTime NuyenLast = DateTime.MinValue;
-                        await CharacterObject.ExpenseEntries.ForEachAsync(async objExpense =>
+                        await (await CharacterObject.GetExpenseEntriesAsync(token).ConfigureAwait(false)).ForEachAsync(async objExpense =>
                         {
                             if (objExpense.Type != ExpenseType.Nuyen || (objExpense.Amount == 0 && !blnShowFreeNuyen))
                                 return;
@@ -26822,9 +26825,12 @@ namespace Chummer
                         }, GenericToken).ConfigureAwait(false);
 
                         if (NuyenLast == DateTime.MinValue)
-                            NuyenLast = File.Exists(CharacterObject.FileName)
-                                ? File.GetCreationTime(CharacterObject.FileName)
+                        {
+                            string strFileName = await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
+                            NuyenLast = File.Exists(strFileName)
+                                ? File.GetCreationTime(strFileName)
                                 : new DateTime(DateTime.Now.Ticks - 1000, DateTimeKind.Local);
+                        }
                         if (chtNuyen.ExpenseValues.Count < 2)
                         {
                             if (chtNuyen.ExpenseValues.Count < 1)
