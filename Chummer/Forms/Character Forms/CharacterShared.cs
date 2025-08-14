@@ -3067,7 +3067,7 @@ namespace Chummer
 
                     case NotifyCollectionChangedAction.Reset:
                     {
-                        await CharacterObject.ImprovementGroups.ForEachAsync(async strLocation =>
+                        await (await CharacterObject.GetImprovementGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async strLocation =>
                         {
                             TreeNode objLocation
                                 = await treImprovements.DoThreadSafeFuncAsync(
@@ -7329,7 +7329,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
 
                             // Add the Locations.
-                            await CharacterObject.ImprovementGroups.ForEachAsync(strGroup =>
+                            await (await CharacterObject.GetImprovementGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(strGroup =>
                             {
                                 TreeNode objGroup = new TreeNode
                                 {
@@ -7340,7 +7340,7 @@ namespace Chummer
                                 return treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objGroup), token);
                             }, token).ConfigureAwait(false);
 
-                            await CharacterObject.Improvements.ForEachAsync(objImprovement =>
+                            await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objImprovement =>
                             {
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
@@ -7889,13 +7889,14 @@ namespace Chummer
                 SkipUpdate = true;
                 try
                 {
+                    ThreadSafeBindingList<CalendarWeek> lstCalendarWeeks = await CharacterObject.GetCalendarAsync(token).ConfigureAwait(false);
                     if (listChangedEventArgs == null || listChangedEventArgs.ListChangedType == ListChangedType.Reset)
                     {
                         await lstCalendar.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                         try
                         {
                             await lstCalendar.DoThreadSafeAsync(x => x.Items.Clear(), token).ConfigureAwait(false);
-                            await CharacterObject.Calendar.ForEachAsync(async objWeek =>
+                            await lstCalendarWeeks.ForEachAsync(async objWeek =>
                             {
                                 Color objColor = await objWeek.GetPreferredColorAsync(token).ConfigureAwait(false);
                                 ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
@@ -7934,7 +7935,7 @@ namespace Chummer
                             case ListChangedType.ItemAdded:
                             {
                                 int intInsertIndex = listChangedEventArgs.NewIndex;
-                                CalendarWeek objWeek = await CharacterObject.Calendar.GetValueAtAsync(intInsertIndex, token).ConfigureAwait(false);
+                                CalendarWeek objWeek = await lstCalendarWeeks.GetValueAtAsync(intInsertIndex, token).ConfigureAwait(false);
                                 Color objColor = await objWeek.GetPreferredColorAsync(token).ConfigureAwait(false);
                                 ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                                 {
@@ -7974,7 +7975,7 @@ namespace Chummer
                                     x => x.Items.RemoveAt(listChangedEventArgs.NewIndex),
                                     token).ConfigureAwait(false);
                                 int intInsertIndex = listChangedEventArgs.NewIndex;
-                                CalendarWeek objWeek = await CharacterObject.Calendar.GetValueAtAsync(intInsertIndex, token).ConfigureAwait(false);
+                                CalendarWeek objWeek = await lstCalendarWeeks.GetValueAtAsync(intInsertIndex, token).ConfigureAwait(false);
                                 Color objColor = await objWeek.GetPreferredColorAsync(token).ConfigureAwait(false);
                                 ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                                 {
@@ -8006,7 +8007,7 @@ namespace Chummer
                                     x => x.Items.RemoveAt(listChangedEventArgs.OldIndex),
                                     token).ConfigureAwait(false);
                                 int intInsertIndex = listChangedEventArgs.NewIndex;
-                                CalendarWeek objWeek = await CharacterObject.Calendar.GetValueAtAsync(intInsertIndex, token).ConfigureAwait(false);
+                                CalendarWeek objWeek = await lstCalendarWeeks.GetValueAtAsync(intInsertIndex, token).ConfigureAwait(false);
                                 Color objColor = await objWeek.GetPreferredColorAsync(token).ConfigureAwait(false);
                                 ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                                 {

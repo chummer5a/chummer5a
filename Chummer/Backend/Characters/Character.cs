@@ -377,7 +377,7 @@ namespace Chummer
         private async Task CalendarOnBeforeRemove(object sender, RemovingOldEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await (await Calendar.GetValueAtAsync(e.OldIndex, token).ConfigureAwait(false)).DisposeAsync()
+            await (await (await GetCalendarAsync(token).ConfigureAwait(false)).GetValueAtAsync(e.OldIndex, token).ConfigureAwait(false)).DisposeAsync()
                     .ConfigureAwait(false);
         }
 
@@ -16586,9 +16586,10 @@ namespace Chummer
             string strLocation = nodOldNode.Tag.ToString();
             using (LockObject.EnterUpgradeableReadLock(token))
             {
-                if (!ImprovementGroups.Contains(strNewGroup))
+                ThreadSafeObservableCollection<string> lstImprovementGroups = ImprovementGroups;
+                if (!lstImprovementGroups.Contains(strNewGroup))
                     intNewIndex = 0;
-                ImprovementGroups.Move(ImprovementGroups.IndexOf(strLocation), intNewIndex);
+                lstImprovementGroups.Move(lstImprovementGroups.IndexOf(strLocation), intNewIndex);
             }
         }
 
@@ -16619,9 +16620,10 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (!await ImprovementGroups.ContainsAsync(strNewGroup, token).ConfigureAwait(false))
+                ThreadSafeObservableCollection<string> lstImprovementGroups = await GetImprovementGroupsAsync(token).ConfigureAwait(false);
+                if (!await lstImprovementGroups.ContainsAsync(strNewGroup, token).ConfigureAwait(false))
                     intNewIndex = 0;
-                await ImprovementGroups.MoveAsync(await ImprovementGroups.IndexOfAsync(strLocation, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+                await lstImprovementGroups.MoveAsync(await lstImprovementGroups.IndexOfAsync(strLocation, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
             }
             finally
             {

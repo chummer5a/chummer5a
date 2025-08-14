@@ -1870,11 +1870,11 @@ namespace Chummer
                                         CharacterObject.VehicleLocations.CollectionChangedAsync
                                             += VehicleLocationCollectionChanged;
                                         CharacterObject.Spirits.CollectionChangedAsync += SpiritCollectionChanged;
-                                        CharacterObject.Improvements.CollectionChangedAsync +=
+                                        (await CharacterObject.GetImprovementsAsync(GenericToken).ConfigureAwait(false)).CollectionChangedAsync +=
                                             ImprovementCollectionChanged;
-                                        CharacterObject.ImprovementGroups.CollectionChangedAsync
+                                        (await CharacterObject.GetImprovementGroupsAsync(GenericToken).ConfigureAwait(false)).CollectionChangedAsync
                                             += ImprovementGroupCollectionChanged;
-                                        CharacterObject.Calendar.ListChangedAsync += CalendarWeekListChanged;
+                                        (await CharacterObject.GetCalendarAsync(GenericToken).ConfigureAwait(false)).ListChangedAsync += CalendarWeekListChanged;
                                         CharacterObject.Drugs.CollectionChangedAsync += DrugCollectionChanged;
                                         CharacterObject.SustainedCollection.BeforeClearCollectionChangedAsync +=
                                             SustainedSpellBeforeClearCollectionChanged;
@@ -2628,9 +2628,9 @@ namespace Chummer
                                 CharacterObject.Vehicles.CollectionChangedAsync -= VehicleCollectionChanged;
                                 CharacterObject.VehicleLocations.CollectionChangedAsync -= VehicleLocationCollectionChanged;
                                 CharacterObject.Spirits.CollectionChangedAsync -= SpiritCollectionChanged;
-                                CharacterObject.Improvements.CollectionChangedAsync -= ImprovementCollectionChanged;
-                                CharacterObject.ImprovementGroups.CollectionChangedAsync -= ImprovementGroupCollectionChanged;
-                                CharacterObject.Calendar.ListChangedAsync -= CalendarWeekListChanged;
+                                (await CharacterObject.GetImprovementsAsync(CancellationToken.None).ConfigureAwait(false)).CollectionChangedAsync -= ImprovementCollectionChanged;
+                                (await CharacterObject.GetImprovementGroupsAsync(CancellationToken.None).ConfigureAwait(false)).CollectionChangedAsync -= ImprovementGroupCollectionChanged;
+                                (await CharacterObject.GetCalendarAsync(CancellationToken.None).ConfigureAwait(false)).ListChangedAsync -= CalendarWeekListChanged;
                                 CharacterObject.Drugs.CollectionChangedAsync -= DrugCollectionChanged;
                                 CharacterObject.SustainedCollection.BeforeClearCollectionChangedAsync -=
                                     SustainedSpellBeforeClearCollectionChanged;
@@ -7857,7 +7857,7 @@ namespace Chummer
                             objExpense.Create(frmNewExpense.MyForm.Amount, frmNewExpense.MyForm.Reason,
                                 ExpenseType.Nuyen,
                                 frmNewExpense.MyForm.SelectedDate);
-                            objExpense.Refund = frmNewExpense.MyForm.Refund;
+                            await objExpense.SetRefundAsync(frmNewExpense.MyForm.Refund, GenericToken).ConfigureAwait(false);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                 .ConfigureAwait(false);
 
@@ -9810,8 +9810,9 @@ namespace Chummer
                 CalendarWeek objWeek = new CalendarWeek();
                 try
                 {
+                    ThreadSafeBindingList<CalendarWeek> lstCalendarWeeks = await CharacterObject.GetCalendarAsync(GenericToken).ConfigureAwait(false);
                     CalendarWeek objLastWeek
-                        = await CharacterObject.Calendar.FirstOrDefaultAsync(GenericToken).ConfigureAwait(false);
+                        = await lstCalendarWeeks.FirstOrDefaultAsync(GenericToken).ConfigureAwait(false);
                     if (objLastWeek != null)
                     {
                         objWeek.Year = objLastWeek.Year;
@@ -9840,7 +9841,7 @@ namespace Chummer
                         }
                     }
 
-                    await CharacterObject.Calendar.AddWithSortAsync(objWeek, (x, y) => y.CompareTo(x), token: GenericToken)
+                    await lstCalendarWeeks.AddWithSortAsync(objWeek, (x, y) => y.CompareTo(x), token: GenericToken)
                                          .ConfigureAwait(false);
                 }
                 catch
@@ -9870,7 +9871,8 @@ namespace Chummer
                     = await lstCalendar.DoThreadSafeFuncAsync(x => x.SelectedItems[0].SubItems[2].Text, GenericToken)
                                        .ConfigureAwait(false);
 
-                CalendarWeek objCharacterWeek = CharacterObject.Calendar.FirstOrDefault(x => x.InternalId == strWeekId);
+                ThreadSafeBindingList<CalendarWeek> lstCalendarWeeks = await CharacterObject.GetCalendarAsync(GenericToken).ConfigureAwait(false);
+                CalendarWeek objCharacterWeek = lstCalendarWeeks.FirstOrDefault(x => x.InternalId == strWeekId);
 
                 if (objCharacterWeek == null)
                     return;
@@ -9879,7 +9881,7 @@ namespace Chummer
                                                                     .ConfigureAwait(false), GenericToken).ConfigureAwait(false))
                     return;
 
-                await CharacterObject.Calendar.RemoveAsync(objCharacterWeek, GenericToken).ConfigureAwait(false);
+                await lstCalendarWeeks.RemoveAsync(objCharacterWeek, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -9902,7 +9904,7 @@ namespace Chummer
                     = await lstCalendar.DoThreadSafeFuncAsync(x => x.SelectedItems[0].SubItems[2].Text, GenericToken)
                                        .ConfigureAwait(false);
 
-                CalendarWeek objWeek = await CharacterObject.Calendar.FirstOrDefaultAsync(x => x.InternalId == strWeekId, GenericToken).ConfigureAwait(false);
+                CalendarWeek objWeek = await (await CharacterObject.GetCalendarAsync(GenericToken).ConfigureAwait(false)).FirstOrDefaultAsync(x => x.InternalId == strWeekId, GenericToken).ConfigureAwait(false);
                 if (objWeek == null)
                     return;
                 string strNotes = await objWeek.GetNotesAsync(GenericToken).ConfigureAwait(false);
@@ -9932,7 +9934,8 @@ namespace Chummer
             try
             {
                 // Find the first date.
-                CalendarWeek objStart = CharacterObject.Calendar?.LastOrDefault();
+                ThreadSafeBindingList<CalendarWeek> lstCalendarWeeks = await CharacterObject.GetCalendarAsync(GenericToken).ConfigureAwait(false);
+                CalendarWeek objStart = lstCalendarWeeks.LastOrDefault();
                 if (objStart == null)
                 {
                     return;
@@ -9957,7 +9960,7 @@ namespace Chummer
                 int intWeekDiff = intWeek - objStart.Week;
 
                 // Update each of the CalendarWeek entries for the character.
-                await CharacterObject.Calendar.ForEachWithSideEffectsAsync(objWeek =>
+                await lstCalendarWeeks.ForEachWithSideEffectsAsync(objWeek =>
                 {
                     objWeek.Week += intWeekDiff;
                     objWeek.Year += intYearDiff;
@@ -10249,14 +10252,14 @@ namespace Chummer
                             await LanguageManager.GetStringAsync("Message_DeleteImprovementGroup", token: token)
                                                  .ConfigureAwait(false), token).ConfigureAwait(false))
                         return;
-                    await CharacterObject.Improvements.ForEachWithSideEffectsAsync(objImprovement =>
+                    await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(objImprovement =>
                     {
                         if (objImprovement.CustomGroup == strSelectedId)
                             objImprovement.CustomGroup = string.Empty;
                     }, token: token).ConfigureAwait(false);
 
                     // Remove the Group from the character, then remove the selected node.
-                    await CharacterObject.ImprovementGroups.RemoveAsync(strSelectedId, token).ConfigureAwait(false);
+                    await (await CharacterObject.GetImprovementGroupsAsync(token).ConfigureAwait(false)).RemoveAsync(strSelectedId, token).ConfigureAwait(false);
                     break;
             }
         }
@@ -14988,11 +14991,12 @@ namespace Chummer
                         if (objImprovement.CustomGroup == strOldLocation)
                             objImprovement.CustomGroup = strNewLocation;
                     }, GenericToken).ConfigureAwait(false);
-                    for (int i = await CharacterObject.ImprovementGroups.GetCountAsync(GenericToken).ConfigureAwait(false) - 1; i >= 0; --i)
+                    ThreadSafeObservableCollection<string> lstImprovementGroups = await CharacterObject.GetImprovementGroupsAsync(GenericToken).ConfigureAwait(false);
+                    for (int i = await lstImprovementGroups.GetCountAsync(GenericToken).ConfigureAwait(false) - 1; i >= 0; --i)
                     {
-                        if (await CharacterObject.ImprovementGroups.GetValueAtAsync(i, GenericToken).ConfigureAwait(false) != strOldLocation)
+                        if (await lstImprovementGroups.GetValueAtAsync(i, GenericToken).ConfigureAwait(false) != strOldLocation)
                             continue;
-                        await CharacterObject.ImprovementGroups.SetValueAtAsync(i, strNewLocation, GenericToken).ConfigureAwait(false);
+                        await lstImprovementGroups.SetValueAtAsync(i, strNewLocation, GenericToken).ConfigureAwait(false);
                         break;
                     }
                 }
@@ -19965,7 +19969,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strLocation))
                         return;
 
-                    await CharacterObject.ImprovementGroups.AddAsync(strLocation, GenericToken).ConfigureAwait(false);
+                    await (await CharacterObject.GetImprovementGroupsAsync(GenericToken).ConfigureAwait(false)).AddAsync(strLocation, GenericToken).ConfigureAwait(false);
                 }
 
                 await SetDirty(true).ConfigureAwait(false);
