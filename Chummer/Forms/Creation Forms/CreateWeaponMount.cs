@@ -426,21 +426,21 @@ namespace Chummer
                     if (await objControlOption.CreateAsync(xmlSelectedControl, _objGenericToken).ConfigureAwait(false))
                     {
                         _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Control");
-                        _objMount.WeaponMountOptions.Add(objControlOption);
+                        await _objMount.WeaponMountOptions.AddAsync(objControlOption, _objGenericToken).ConfigureAwait(false);
                     }
 
                     WeaponMountOption objFlexibilityOption = new WeaponMountOption(_objCharacter);
                     if (await objFlexibilityOption.CreateAsync(xmlSelectedFlexibility, _objGenericToken).ConfigureAwait(false))
                     {
                         _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Flexibility");
-                        _objMount.WeaponMountOptions.Add(objFlexibilityOption);
+                        await _objMount.WeaponMountOptions.AddAsync(objFlexibilityOption, _objGenericToken).ConfigureAwait(false);
                     }
 
                     WeaponMountOption objVisibilityOption = new WeaponMountOption(_objCharacter);
                     if (await objVisibilityOption.CreateAsync(xmlSelectedVisibility, _objGenericToken).ConfigureAwait(false))
                     {
                         _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Visibility");
-                        _objMount.WeaponMountOptions.Add(objVisibilityOption);
+                        await _objMount.WeaponMountOptions.AddAsync(objVisibilityOption, _objGenericToken).ConfigureAwait(false);
                     }
                 }
 

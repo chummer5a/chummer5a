@@ -171,11 +171,11 @@ namespace Chummer
             {
                 string strBP = xmlSelectedNodeInfo["karma"]?.InnerText
                                ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                string strSource = (await SourceString.GetSourceStringAsync(xmlSelectedNodeInfo["source"]?.InnerText,
+                string strSource = await (await SourceString.GetSourceStringAsync(xmlSelectedNodeInfo["source"]?.InnerText,
                                                                             strPage: xmlSelectedNodeInfo["altpage"]?.InnerText
                                                                             ?? xmlSelectedNodeInfo["page"]?.InnerText,
                                                                             objSettings: await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).ConfigureAwait(false))
-                                               .ToString();
+                                               .ToStringAsync().ConfigureAwait(false);
                 string strStage = xmlSelectedNodeInfo["stage"]?.InnerText
                                   ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                 await lblBP.DoThreadSafeAsync(x => x.Text = strBP).ConfigureAwait(false);

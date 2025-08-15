@@ -893,11 +893,11 @@ namespace Chummer
                                     return Task.Run(async () =>
                                     {
                                         string strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                            x.Source.ToString(),
+                                            await x.Source.ToStringAsync(token).ConfigureAwait(false),
                                             x.EnglishNameOnPage, _objSelectedSetting, token).ConfigureAwait(false);
                                         if (string.IsNullOrEmpty(strReturn))
                                             strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                                                                 x.DisplaySource.ToString(),
+                                                                                 await x.DisplaySource.ToStringAsync(token).ConfigureAwait(false),
                                                                                  x.TranslatedNameOnPage, _objSelectedSetting, token)
                                                                              .ConfigureAwait(false);
                                         return strReturn;

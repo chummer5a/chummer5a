@@ -569,8 +569,6 @@ namespace Chummer
                 }
                 else
                 {
-                    bool blnUseRelative = false;
-
                     // Make sure the file still exists before attempting to load it.
                     string strFileName = await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
                     if (!File.Exists(strFileName))

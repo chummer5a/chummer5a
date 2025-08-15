@@ -24,7 +24,7 @@ namespace Chummer
 {
     public partial class SelectCalendarStart : Form
     {
-        private string _strCachedDateSpanFormat;
+        private readonly string _strCachedDateSpanFormat;
         private bool _blnCachedSelectedYearIsLeapYear = true;
         private int _intSelectedYear = DateTime.UtcNow.Year + 62;
         private int _intSelectedWeek = 1;
