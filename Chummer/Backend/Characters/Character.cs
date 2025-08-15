@@ -16773,7 +16773,7 @@ namespace Chummer
                         if (i < await lstSpirits.GetCountAsync(token).ConfigureAwait(false))
                         {
                             Spirit objToRemove = await lstSpirits.GetValueAtAsync(i, token).ConfigureAwait(false);
-                            if (objToRemove.EntityType == SpiritType.Spirit)
+                            if (await objToRemove.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit)
                             {
                                 await lstSpirits.RemoveAtAsync(i, token).ConfigureAwait(false);
                             }
@@ -16974,7 +16974,7 @@ namespace Chummer
                         if (i < await lstSpirits.GetCountAsync(token).ConfigureAwait(false))
                         {
                             Spirit objToRemove = await lstSpirits.GetValueAtAsync(i, token).ConfigureAwait(false);
-                            if (objToRemove.EntityType == SpiritType.Sprite)
+                            if (await objToRemove.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Sprite)
                             {
                                 await lstSpirits.RemoveAtAsync(i, token).ConfigureAwait(false);
                             }
@@ -17799,6 +17799,24 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's portraits encoded using Base64.
+        /// </summary>
+        public async Task<ThreadSafeList<Image>> GetMugshotsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _lstMugshots;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Character's main portrait encoded using Base64.
         /// </summary>
         public Image MainMugshot
@@ -17852,10 +17870,13 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 int intIndex = await GetMainMugshotIndexAsync(token).ConfigureAwait(false);
-                if (intIndex >= await Mugshots.GetCountAsync(token).ConfigureAwait(false) || intIndex < 0)
+                if (intIndex < 0)
+                    return null;
+                ThreadSafeList<Image> lstMugshots = await GetMugshotsAsync(token).ConfigureAwait(false);
+                if (intIndex >= await lstMugshots.GetCountAsync(token).ConfigureAwait(false))
                     return null;
 
-                return await Mugshots.GetValueAtAsync(intIndex, token).ConfigureAwait(false);
+                return await lstMugshots.GetValueAtAsync(intIndex, token).ConfigureAwait(false);
             }
             finally
             {
@@ -17878,7 +17899,8 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                int intNewMainMugshotIndex = await Mugshots.IndexOfAsync(value, token).ConfigureAwait(false);
+                ThreadSafeList<Image> lstMugshots = await GetMugshotsAsync(token).ConfigureAwait(false);
+                int intNewMainMugshotIndex = await lstMugshots.IndexOfAsync(value, token).ConfigureAwait(false);
                 if (intNewMainMugshotIndex != -1)
                 {
                     await SetMainMugshotIndexAsync(intNewMainMugshotIndex, token).ConfigureAwait(false);
@@ -17889,12 +17911,12 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker3 = await Mugshots.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker3 = await lstMugshots.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            await Mugshots.AddAsync(value, token).ConfigureAwait(false);
-                            await SetMainMugshotIndexAsync(await Mugshots.IndexOfAsync(value, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            await lstMugshots.AddAsync(value, token).ConfigureAwait(false);
+                            await SetMainMugshotIndexAsync(await lstMugshots.IndexOfAsync(value, token).ConfigureAwait(false), token).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -17969,7 +17991,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (value >= await Mugshots.GetCountAsync(token).ConfigureAwait(false))
+                if (value >= await (await GetMugshotsAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false))
                     value = -1;
                 if (Interlocked.Exchange(ref _intMainMugshotIndex, value) != value)
                     await OnPropertyChangedAsync(nameof(MainMugshotIndex), token).ConfigureAwait(false);
@@ -17994,7 +18016,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 int intOldValue = _intMainMugshotIndex;
                 int intNewValue = Interlocked.Add(ref _intMainMugshotIndex, value);
-                if (intNewValue < -1 || intNewValue >= await Mugshots.GetCountAsync(token).ConfigureAwait(false))
+                if (intNewValue < -1 || intNewValue >= await (await GetMugshotsAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false))
                     intNewValue = -1;
                 if (intOldValue != intNewValue)
                     await OnPropertyChangedAsync(nameof(MainMugshotIndex), token).ConfigureAwait(false);
@@ -18060,7 +18082,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        await Mugshots.ForEachAsync(async imgMugshot =>
+                        await (await GetMugshotsAsync(token).ConfigureAwait(false)).ForEachAsync(async imgMugshot =>
                         {
                             await objWriter.WriteElementStringAsync(
                                 "mugshot",
@@ -18113,7 +18135,7 @@ namespace Chummer
                 }
 
                 // Legacy Shimmer
-                if (Mugshots.Count == 0)
+                if (_lstMugshots.Count == 0)
                 {
                     XPathNavigator objOldMugshotNode = xmlSavedNode.SelectSingleNodeAndCacheExpression("mugshot", token);
                     string strMugshot = objOldMugshotNode?.Value;
@@ -18162,7 +18184,7 @@ namespace Chummer
                 }
 
                 // Legacy Shimmer
-                if (await Mugshots.GetCountAsync(token).ConfigureAwait(false) == 0)
+                if (await _lstMugshots.GetCountAsync(token).ConfigureAwait(false) == 0)
                 {
                     XPathNavigator objOldMugshotNode = xmlSavedNode.SelectSingleNodeAndCacheExpression("mugshot", token);
                     string strMugshot = objOldMugshotNode?.Value;
@@ -18187,7 +18209,8 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (await Mugshots.GetCountAsync(token).ConfigureAwait(false) > 0)
+                ThreadSafeList<Image> lstMugshots = await GetMugshotsAsync(token).ConfigureAwait(false);
+                if (await lstMugshots.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     // Since IE is retarded and can't handle base64 images before IE9, the image needs to be dumped to a temporary directory and its information rewritten.
                     // If you give it an extension of jpg, gif, or png, it expects the file to be in that format and won't render the image unless it was originally that type.
@@ -18216,7 +18239,7 @@ namespace Chummer
 
                     // <othermugshots>
                     await objWriter.WriteElementStringAsync("hasothermugshots",
-                                                            (imgMainMugshot == null || await Mugshots.GetCountAsync(token).ConfigureAwait(false) > 1).ToString(
+                                                            (imgMainMugshot == null || await lstMugshots.GetCountAsync(token).ConfigureAwait(false) > 1).ToString(
                                                                 GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
 
                     // <othermugshots>
@@ -18224,11 +18247,11 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        for (int i = 0; i < await Mugshots.GetCountAsync(token).ConfigureAwait(false); ++i)
+                        for (int i = 0; i < await lstMugshots.GetCountAsync(token).ConfigureAwait(false); ++i)
                         {
                             if (i == await GetMainMugshotIndexAsync(token).ConfigureAwait(false))
                                 continue;
-                            Image imgMugshot = await Mugshots.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            Image imgMugshot = await lstMugshots.GetValueAtAsync(i, token).ConfigureAwait(false);
 
                             // <mugshot>
                             XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot", token: token).ConfigureAwait(false);

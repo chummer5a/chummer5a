@@ -491,7 +491,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (objTradition == null)
                 return;
-            string strCurrentValue = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? _objSpirit.Name;
+            string strCurrentValue = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? await _objSpirit.GetNameAsync(token).ConfigureAwait(false);
 
             XPathNavigator objXmlDocument = await _objSpirit.CharacterObject.LoadDataXPathAsync(
                 await _objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit

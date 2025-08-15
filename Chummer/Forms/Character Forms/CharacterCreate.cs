@@ -635,7 +635,7 @@ namespace Chummer
 
                                         // If the character has a mugshot, decode it and put it in the PictureBox.
                                         int intMugshotCount =
-                                            await CharacterObject.Mugshots.GetCountAsync(GenericToken).ConfigureAwait(false);
+                                            await (await CharacterObject.GetMugshotsAsync(GenericToken).ConfigureAwait(false)).GetCountAsync(GenericToken).ConfigureAwait(false);
                                         if (intMugshotCount > 0)
                                         {
                                             int intMainMugshotIndex =
@@ -5776,7 +5776,7 @@ namespace Chummer
                 if (!await AddMugshot(GenericToken).ConfigureAwait(false))
                     return;
                 int intMugshotCount =
-                    await CharacterObject.Mugshots.GetCountAsync(GenericToken).ConfigureAwait(false);
+                    await (await CharacterObject.GetMugshotsAsync(GenericToken).ConfigureAwait(false)).GetCountAsync(GenericToken).ConfigureAwait(false);
                 string strText = await LanguageManager.GetStringAsync("String_Of", token: GenericToken).ConfigureAwait(false)
                                  + intMugshotCount.ToString(GlobalSettings.CultureInfo);
                 await lblNumMugshots.DoThreadSafeAsync(x => x.Text = strText, GenericToken).ConfigureAwait(false);
@@ -5798,10 +5798,10 @@ namespace Chummer
             try
             {
                 int intMugshotCount =
-                    await CharacterObject.Mugshots.GetCountAsync(GenericToken).ConfigureAwait(false);
+                    await (await CharacterObject.GetMugshotsAsync(GenericToken).ConfigureAwait(false)).GetCountAsync(GenericToken).ConfigureAwait(false);
                 if (intMugshotCount == 0)
                     return;
-                await RemoveMugshot(await nudMugshotIndex.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false) - 1).ConfigureAwait(false);
+                await RemoveMugshot(await nudMugshotIndex.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false) - 1, GenericToken).ConfigureAwait(false);
                 --intMugshotCount;
                 string strText = await LanguageManager.GetStringAsync("String_Of", token: GenericToken).ConfigureAwait(false)
                                  + intMugshotCount.ToString(GlobalSettings.CultureInfo);
@@ -5828,7 +5828,7 @@ namespace Chummer
                             y.Checked = false;
                     }, GenericToken).ConfigureAwait(false);
 
-                    await UpdateMugshot(picMugshot, intMugshotIndex - 1).ConfigureAwait(false);
+                    await UpdateMugshot(picMugshot, intMugshotIndex - 1, GenericToken).ConfigureAwait(false);
                 }
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -5842,7 +5842,7 @@ namespace Chummer
         {
             try
             {
-                if (await CharacterObject.Mugshots.GetCountAsync(GenericToken).ConfigureAwait(false) == 0)
+                if (await (await CharacterObject.GetMugshotsAsync(GenericToken).ConfigureAwait(false)).GetCountAsync(GenericToken).ConfigureAwait(false) == 0)
                 {
                     await nudMugshotIndex.DoThreadSafeAsync(x =>
                     {
@@ -22474,11 +22474,9 @@ namespace Chummer
                         {
                             foreach (XmlNode objXmlSpirit in xmlSpiritsList)
                             {
-                                Spirit objSpirit = new Spirit(CharacterObject)
-                                {
-                                    EntityType = SpiritType.Spirit,
-                                    Name = objXmlSpirit["name"].InnerText
-                                };
+                                Spirit objSpirit = new Spirit(CharacterObject);
+                                await objSpirit.SetEntityTypeAsync(SpiritType.Spirit, token).ConfigureAwait(false);
+                                await objSpirit.SetNameAsync(objXmlSpirit["name"].InnerText, token).ConfigureAwait(false);
                                 int.TryParse(objXmlSpirit["force"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intForce);
                                 await objSpirit.SetForceAsync(intForce, token).ConfigureAwait(false);
                                 int.TryParse(objXmlSpirit["services"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intServices);

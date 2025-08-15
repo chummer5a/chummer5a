@@ -32,6 +32,8 @@ namespace Chummer
         Image MainMugshot { get; set; }
         int MainMugshotIndex { get; set; }
 
+        Task<ThreadSafeList<Image>> GetMugshotsAsync(CancellationToken token = default);
+
         Task<Image> GetMainMugshotAsync(CancellationToken token = default);
 
         Task SetMainMugshotAsync(Image value, CancellationToken token = default);

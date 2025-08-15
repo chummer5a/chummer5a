@@ -532,7 +532,7 @@ namespace Chummer
 
                                         // If the character has a mugshot, decode it and put it in the PictureBox.
                                         int intMugshotCount =
-                                            await CharacterObject.Mugshots.GetCountAsync(GenericToken).ConfigureAwait(false);
+                                            await (await CharacterObject.GetMugshotsAsync(GenericToken).ConfigureAwait(false)).GetCountAsync(GenericToken).ConfigureAwait(false);
                                         if (intMugshotCount > 0)
                                         {
                                             int intMainMugshotIndex =
@@ -5691,8 +5691,9 @@ namespace Chummer
                                 await objMerge.SetBurntStreetCredAsync(await objVessel.GetBurntStreetCredAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                                 await objMerge.SetNotorietyAsync(await objVessel.GetNotorietyAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                                 await objMerge.SetPublicAwarenessAsync(await objVessel.GetPublicAwarenessAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
-                                await objVessel.Mugshots.ForEachWithSideEffectsAsync(objMugshot =>
-                                    objMerge.Mugshots.AddAsync(objMugshot, GenericToken), GenericToken).ConfigureAwait(false);
+                                ThreadSafeList<Image> lstMergeMugshots = await objMerge.GetMugshotsAsync(GenericToken).ConfigureAwait(false);
+                                await (await objVessel.GetMugshotsAsync(GenericToken).ConfigureAwait(false)).ForEachWithSideEffectsAsync(objMugshot =>
+                                    lstMergeMugshots.AddAsync(objMugshot, GenericToken), GenericToken).ConfigureAwait(false);
                             }
                         }
                         finally
@@ -7169,7 +7170,7 @@ namespace Chummer
                     return;
 
                 int intMugshotCount =
-                    await CharacterObject.Mugshots.GetCountAsync(GenericToken).ConfigureAwait(false);
+                    await (await CharacterObject.GetMugshotsAsync(GenericToken).ConfigureAwait(false)).GetCountAsync(GenericToken).ConfigureAwait(false);
                 string strText = await LanguageManager.GetStringAsync("String_Of", token: GenericToken).ConfigureAwait(false)
                                  + intMugshotCount.ToString(GlobalSettings.CultureInfo);
                 await lblNumMugshots.DoThreadSafeAsync(x => x.Text = strText, GenericToken).ConfigureAwait(false);
@@ -7191,10 +7192,10 @@ namespace Chummer
             try
             {
                 int intMugshotCount =
-                    await CharacterObject.Mugshots.GetCountAsync(GenericToken).ConfigureAwait(false);
+                    await (await CharacterObject.GetMugshotsAsync(GenericToken).ConfigureAwait(false)).GetCountAsync(GenericToken).ConfigureAwait(false);
                 if (intMugshotCount == 0)
                     return;
-                await RemoveMugshot(await nudMugshotIndex.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false) - 1).ConfigureAwait(false);
+                await RemoveMugshot(await nudMugshotIndex.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false) - 1, GenericToken).ConfigureAwait(false);
                 --intMugshotCount;
                 string strText = await LanguageManager.GetStringAsync("String_Of", token: GenericToken).ConfigureAwait(false)
                                  + intMugshotCount.ToString(GlobalSettings.CultureInfo);
@@ -7221,7 +7222,7 @@ namespace Chummer
                             y.Checked = false;
                     }, GenericToken).ConfigureAwait(false);
 
-                    await UpdateMugshot(picMugshot, intMugshotIndex - 1).ConfigureAwait(false);
+                    await UpdateMugshot(picMugshot, intMugshotIndex - 1, GenericToken).ConfigureAwait(false);
                 }
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -7235,7 +7236,7 @@ namespace Chummer
         {
             try
             {
-                if (await CharacterObject.Mugshots.GetCountAsync(GenericToken).ConfigureAwait(false) == 0)
+                if (await (await CharacterObject.GetMugshotsAsync(GenericToken).ConfigureAwait(false)).GetCountAsync(GenericToken).ConfigureAwait(false) == 0)
                 {
                     await nudMugshotIndex.DoThreadSafeAsync(x =>
                     {
