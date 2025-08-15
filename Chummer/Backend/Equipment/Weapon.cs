@@ -6051,7 +6051,7 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayAccessoryMounts => DisplayAccessoryMounts(GlobalSettings.Language);
 
-        public Task<string> GetCurrentDisplayAccessoryMounts(CancellationToken token = default) => DisplayAlternateRangeAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayAccessoryMounts(CancellationToken token = default) => DisplayAccessoryMountsAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// The Weapon's total cost including Accessories and Modifications.

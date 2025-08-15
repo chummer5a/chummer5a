@@ -22186,7 +22186,6 @@ namespace Chummer
                                                .ConfigureAwait(false);
                             await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
-                            await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdSlotsText))
                             {
@@ -22243,8 +22242,11 @@ namespace Chummer
                                 }
     
                                 token.ThrowIfCancellationRequested();
-                                await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = sbdSlotsText.ToString(), token)
-                                                    .ConfigureAwait(false);
+                                await lblWeaponSlots.DoThreadSafeAsync(x =>
+                                {
+                                    x.Text = sbdSlotsText.ToString();
+                                    x.Visible = true;
+                                }, token).ConfigureAwait(false);
                             }
 
                             token.ThrowIfCancellationRequested();
