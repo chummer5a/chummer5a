@@ -1707,7 +1707,7 @@ namespace Chummer
 
         public async Task<string> DisplayTypeMethodAsync(string strLanguage, CancellationToken token = default)
         {
-            string strType = Type;
+            string strType = await GetTypeAsync(token).ConfigureAwait(false);
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return strType;
 
@@ -1727,8 +1727,8 @@ namespace Chummer
 
         public async Task SetDisplayTypeAsync(string value, CancellationToken token = default)
         {
-            Type = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
-                                      .ConfigureAwait(false);
+            await SetTypeAsync(await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
+                                      .ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1751,6 +1751,41 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// What type of Contact is this.
+        /// </summary>
+        public async Task<string> GetTypeAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strType;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// What type of Contact is this.
+        /// </summary>
+        public async Task SetTypeAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strType, value) != value)
+                    await OnPropertyChangedAsync(nameof(Type), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplayPreferredPaymentMethod(string strLanguage)
         {
             string strPreferredPayment = PreferredPayment;
@@ -1766,7 +1801,7 @@ namespace Chummer
         public async Task<string> DisplayPreferredPaymentMethodAsync(string strLanguage,
                                                                      CancellationToken token = default)
         {
-            string strPreferredPayment = PreferredPayment;
+            string strPreferredPayment = await GetPreferredPaymentAsync(token).ConfigureAwait(false);
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return strPreferredPayment;
 
@@ -1788,9 +1823,9 @@ namespace Chummer
 
         public async Task SetDisplayPreferredPaymentAsync(string value, CancellationToken token = default)
         {
-            PreferredPayment = await _objCharacter
+            await SetPreferredPaymentAsync(await _objCharacter
                                      .ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
-                                     .ConfigureAwait(false);
+                                     .ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1813,6 +1848,41 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Preferred payment method of this Contact.
+        /// </summary>
+        public async Task<string> GetPreferredPaymentAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPreferredPayment;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Preferred payment method of this Contact.
+        /// </summary>
+        public async Task SetPreferredPaymentAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPreferredPayment, value) != value)
+                    await OnPropertyChangedAsync(nameof(PreferredPayment), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplayHobbiesViceMethod(string strLanguage)
         {
             string strHobbiesVice = HobbiesVice;
@@ -1827,7 +1897,7 @@ namespace Chummer
 
         public async Task<string> DisplayHobbiesViceMethodAsync(string strLanguage, CancellationToken token = default)
         {
-            string strHobbiesVice = HobbiesVice;
+            string strHobbiesVice = await GetHobbiesViceAsync(token).ConfigureAwait(false);
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return strHobbiesVice;
 
@@ -1849,9 +1919,9 @@ namespace Chummer
 
         public async Task SetDisplayHobbiesViceAsync(string value, CancellationToken token = default)
         {
-            HobbiesVice = await _objCharacter
+            await SetHobbiesViceAsync(await _objCharacter
                                 .ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
-                                .ConfigureAwait(false);
+                                .ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1874,6 +1944,41 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Hobbies/Vice of this Contact.
+        /// </summary>
+        public async Task<string> GetHobbiesViceAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strHobbiesVice;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Hobbies/Vice of this Contact.
+        /// </summary>
+        public async Task SetHobbiesViceAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strHobbiesVice, value) != value)
+                    await OnPropertyChangedAsync(nameof(HobbiesVice), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplayPersonalLifeMethod(string strLanguage)
         {
             string strPersonalLife = PersonalLife;
@@ -1888,7 +1993,7 @@ namespace Chummer
 
         public async Task<string> DisplayPersonalLifeMethodAsync(string strLanguage, CancellationToken token = default)
         {
-            string strPersonalLife = PersonalLife;
+            string strPersonalLife = await GetPersonalLifeAsync(token).ConfigureAwait(false);
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return strPersonalLife;
 
@@ -1910,9 +2015,9 @@ namespace Chummer
 
         public async Task SetDisplayPersonalLifeAsync(string value, CancellationToken token = default)
         {
-            PersonalLife = await _objCharacter
+            await SetPersonalLifeAsync(await _objCharacter
                                  .ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token)
-                                 .ConfigureAwait(false);
+                                 .ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1932,6 +2037,41 @@ namespace Chummer
                     if (Interlocked.Exchange(ref _strPersonalLife, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Personal Life of this Contact.
+        /// </summary>
+        public async Task<string> GetPersonalLifeAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPersonalLife;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Personal Life of this Contact.
+        /// </summary>
+        public async Task SetPersonalLifeAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPersonalLife, value) != value)
+                    await OnPropertyChangedAsync(nameof(PersonalLife), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

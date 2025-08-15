@@ -250,23 +250,14 @@ namespace Chummer
                 }
                 else
                 {
-                    bool blnUseRelative = false;
-
                     // Make sure the file still exists before attempting to load it.
                     string strFileName = await _objSpirit.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
                     if (!File.Exists(strFileName))
                     {
-                        bool blnError = false;
+                        // If the file doesn't exist, use the relative path if one is available.
                         string strRelativeFileName = await _objSpirit.GetRelativeFileNameAsync(_objMyToken).ConfigureAwait(false);
                         // If the file doesn't exist, use the relative path if one is available.
-                        if (string.IsNullOrEmpty(strRelativeFileName))
-                            blnError = true;
-                        else if (!File.Exists(Path.GetFullPath(strRelativeFileName)))
-                            blnError = true;
-                        else
-                            blnUseRelative = true;
-
-                        if (blnError)
+                        if (string.IsNullOrEmpty(strRelativeFileName) || !File.Exists(Path.GetFullPath(strRelativeFileName)))
                         {
                             await Program.ShowScrollableMessageBoxAsync(
                                 string.Format(GlobalSettings.CultureInfo,
@@ -276,12 +267,11 @@ namespace Chummer
                                 MessageBoxButtons.OK, MessageBoxIcon.Error, token: _objMyToken).ConfigureAwait(false);
                             return;
                         }
+                        else
+                            strFileName = Path.GetFullPath(strRelativeFileName);
                     }
 
-                    string strFile = blnUseRelative
-                        ? Path.GetFullPath(await _objSpirit.GetRelativeFileNameAsync(_objMyToken).ConfigureAwait(false))
-                        : strFileName;
-                    Process.Start(new ProcessStartInfo(strFile) { UseShellExecute = true });
+                    Process.Start(new ProcessStartInfo(strFileName) { UseShellExecute = true });
                 }
             }
             catch (OperationCanceledException)

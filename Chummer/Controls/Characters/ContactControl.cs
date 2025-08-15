@@ -572,35 +572,28 @@ namespace Chummer
                     bool blnUseRelative = false;
 
                     // Make sure the file still exists before attempting to load it.
-                    if (!File.Exists(await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false)))
+                    string strFileName = await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
+                    if (!File.Exists(strFileName))
                     {
-                        bool blnError = false;
                         // If the file doesn't exist, use the relative path if one is available.
-                        if (string.IsNullOrEmpty(_objContact.RelativeFileName))
-                            blnError = true;
-                        else if (!File.Exists(Path.GetFullPath(_objContact.RelativeFileName)))
-                            blnError = true;
-                        else
-                            blnUseRelative = true;
-
-                        if (blnError)
+                        string strRelativeFileName = await _objContact.GetRelativeFileNameAsync(_objMyToken).ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(strRelativeFileName) || !File.Exists(Path.GetFullPath(strRelativeFileName)))
                         {
                             await Program.ShowScrollableMessageBoxAsync(
                                 string.Format(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync("Message_FileNotFound", token: _objMyToken)
                                         .ConfigureAwait(false),
-                                    await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false)),
+                                    strFileName),
                                 await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: _objMyToken)
                                     .ConfigureAwait(false), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error, token: _objMyToken).ConfigureAwait(false);
                             return;
                         }
+                        else
+                            strFileName = Path.GetFullPath(strRelativeFileName);
                     }
 
-                    string strFile = blnUseRelative
-                        ? Path.GetFullPath(_objContact.RelativeFileName)
-                        : await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
-                    Process.Start(new ProcessStartInfo(strFile) { UseShellExecute = true });
+                    Process.Start(new ProcessStartInfo(strFileName) { UseShellExecute = true });
                 }
             }
             catch (OperationCanceledException)
@@ -860,9 +853,10 @@ namespace Chummer
 
         private async Task LoadContactList(CancellationToken token = default)
         {
-            if (_objContact.IsEnemy)
+            token.ThrowIfCancellationRequested();
+            if (await _objContact.GetIsEnemyAsync(token).ConfigureAwait(false))
             {
-                string strContactRole = _objContact.DisplayRole;
+                string strContactRole = await _objContact.GetDisplayRoleAsync(token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strContactRole))
                     await cboContactRole.DoThreadSafeAsync(x => x.Text = strContactRole, token: token)
                                         .ConfigureAwait(false);
@@ -1044,8 +1038,10 @@ namespace Chummer
                     //We don't actually pay for contacts in play so everyone is free
                     //Don't present a useless field
                     if (_objContact.CharacterObject != null)
-                        await chkFree.DoThreadSafeAsync(x => x.Visible = !_objContact.CharacterObject.Created, token)
-                                     .ConfigureAwait(false);
+                    {
+                        await chkFree.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact.CharacterObject,
+                            nameof(Character.Created), x => x.GetCreatedAsync(_objMyToken), token).ConfigureAwait(false);
+                    }
                     else
                         await chkFree.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                     await chkGroup.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y, _objContact,
@@ -1613,10 +1609,10 @@ namespace Chummer
                     string strMetatype = await _objContact.GetMetatypeAsync(token).ConfigureAwait(false);
                     string strGender = await _objContact.GetGenderAsync(token).ConfigureAwait(false);
                     string strAge = await _objContact.GetAgeAsync(token).ConfigureAwait(false);
-                    string strPersonalLife = _objContact.PersonalLife;
-                    string strType = _objContact.Type;
-                    string strPreferredPayment = _objContact.PreferredPayment;
-                    string strHobbiesVice = _objContact.HobbiesVice;
+                    string strPersonalLife = await _objContact.GetPersonalLifeAsync(token).ConfigureAwait(false);
+                    string strType = await _objContact.GetTypeAsync(token).ConfigureAwait(false);
+                    string strPreferredPayment = await _objContact.GetPreferredPaymentAsync(token).ConfigureAwait(false);
+                    string strHobbiesVice = await _objContact.GetHobbiesViceAsync(token).ConfigureAwait(false);
                     await this.DoThreadSafeAsync(x =>
                     {
                         if (!string.IsNullOrEmpty(strMetatype))
